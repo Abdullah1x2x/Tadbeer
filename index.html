@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <script>
     (function() {
@@ -164,6 +164,7 @@
     html {
       scroll-behavior: smooth;
       font-size: 16px;
+      overflow-x: hidden;
     }
 
     body {
@@ -172,6 +173,7 @@
       transition: background-color var(--transition-smooth), color var(--transition-smooth);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      width: 100%;
     }
 
     .container {
@@ -191,6 +193,7 @@
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-subtle);
       transition: background-color var(--transition-smooth), border-color var(--transition-smooth);
+      padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
     }
 
     nav {
@@ -406,6 +409,7 @@
       letter-spacing: -0.01em;
       margin-bottom: 22px;
       color: var(--text);
+      text-wrap: balance;
     }
 
     .hero-title span {
@@ -586,12 +590,14 @@
       color: var(--text);
       line-height: 1.35;
       margin-bottom: 12px;
+      text-wrap: balance;
     }
 
     .section-subtitle {
       font-size: 1.08rem;
       color: var(--text-muted);
       line-height: 1.85;
+      text-wrap: balance;
     }
 
     html[lang="en"] .section-subtitle {
@@ -603,7 +609,7 @@
        ------------------------------------------------------------------------- */
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 22px;
     }
 
@@ -965,6 +971,16 @@
       font-size: 0.88rem;
     }
 
+    /* Scroll Hint for Tables on Mobile */
+    .table-scroll-hint {
+      display: none;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+      margin-bottom: 10px;
+    }
+
     /* -------------------------------------------------------------------------
        RESPONSIVE MEDIA QUERIES
        ------------------------------------------------------------------------- */
@@ -974,25 +990,382 @@
       }
     }
 
-    @media (max-width: 600px) {
-      .hero {
-        padding-block: 36px 28px;
+    /* Standard Mobile & Small Tablets */
+    @media (max-width: 680px) {
+      .container {
+        width: min(1120px, calc(100% - 28px));
       }
-      .btn {
-        width: 100%;
+
+      nav {
+        min-height: 60px;
+        gap: 8px;
       }
-      .hero-cta-group {
-        flex-direction: column;
+
+      .brand-wrap {
+        gap: 8px;
       }
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
+
+      .brand-logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
       }
+
+      .brand-title {
+        font-size: 1.15rem;
+      }
+
+      .brand-tagline {
+        font-size: 0.68rem;
+        letter-spacing: 0.02em;
+      }
+
+      .nav-actions {
+        gap: 6px;
+      }
+
+      .lang-toggle-btn {
+        height: 36px;
+        padding-inline: 9px;
+        font-size: 0.82rem;
+        gap: 4px;
+      }
+
+      .lang-toggle-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .theme-toggle-btn {
+        width: 36px;
+        height: 36px;
+      }
+
+      .theme-toggle-btn svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .btn-github {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        justify-content: center;
+        border-radius: var(--radius-pill);
+      }
+
       .btn-github span {
         display: none;
       }
-      .btn-github {
-        padding: 8px 12px;
+
+      .btn-github svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Sections & Headers */
+      section {
+        padding-block: clamp(36px, 8vw, 48px);
+      }
+
+      .section-header {
+        margin-bottom: 26px;
+      }
+
+      .section-eyebrow {
+        font-size: 0.78rem;
+        margin-bottom: 6px;
+      }
+
+      .section-title {
+        font-size: clamp(1.4rem, 1.15rem + 1.2vw, 1.85rem);
+        line-height: 1.35;
+        margin-bottom: 8px;
+      }
+
+      .section-subtitle {
+        font-size: 0.94rem;
+        line-height: 1.7;
+      }
+
+      /* Hero */
+      .hero {
+        padding-block: 24px 20px;
+      }
+
+      .hero-badge-wrap {
+        font-size: 0.78rem;
+        padding: 5px 12px;
+        margin-bottom: 14px;
+        gap: 6px;
+      }
+
+      .hero-title {
+        font-size: clamp(1.6rem, 1.25rem + 2vw, 2.2rem);
+        line-height: 1.35;
+        margin-bottom: 16px;
+      }
+
+      .hero-verse-card {
+        padding: 18px 14px;
+        margin-bottom: 22px;
+        border-radius: var(--radius-md);
+      }
+
+      .verse-text {
+        font-size: clamp(1.18rem, 1.05rem + 0.8vw, 1.45rem);
+        line-height: 2.0;
+        margin-bottom: 6px;
+      }
+
+      .verse-translation {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-block: 6px 10px;
+      }
+
+      .verse-ref {
+        font-size: 0.82rem;
+      }
+
+      .hero-description {
+        font-size: 0.96rem;
+        line-height: 1.8;
+        margin-bottom: 22px;
+      }
+
+      .hero-cta-group {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px 18px;
+        font-size: 0.96rem;
+        justify-content: center;
+      }
+
+      .trust-chips {
+        gap: 6px;
+      }
+
+      .chip {
+        font-size: 0.76rem;
+        padding: 4px 10px;
+        gap: 5px;
+      }
+
+      /* Features Grid */
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .feature-card {
+        padding: 20px 16px;
+        border-radius: var(--radius-md);
+      }
+
+      .feature-icon-wrap {
+        width: 44px;
+        height: 44px;
+        font-size: 1.35rem;
+        margin-bottom: 12px;
+        border-radius: var(--radius-sm);
+      }
+
+      .feature-card h3 {
+        font-size: 1.12rem;
+        margin-bottom: 6px;
+      }
+
+      .feature-card p {
+        font-size: 0.92rem;
+        line-height: 1.72;
+      }
+
+      .feature-badge {
+        margin-top: 12px;
+        font-size: 0.76rem;
+        padding: 3px 10px;
+      }
+
+      /* About & Methodology */
+      .about-card {
+        padding: 18px 14px;
+        border-radius: var(--radius-md);
+      }
+
+      .about-card p {
+        font-size: 0.94rem;
+        line-height: 1.85;
+        margin-bottom: 12px;
+      }
+
+      .methodology-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .method-step {
+        padding: 14px 12px;
+        border-radius: var(--radius-sm);
+      }
+
+      .method-step-num {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+      }
+
+      .method-step h4 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+      }
+
+      .method-step p {
+        font-size: 0.86rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      /* Privacy Card */
+      .privacy-card {
+        padding: 18px 14px;
+        border-radius: var(--radius-md);
+      }
+
+      .privacy-meta {
+        font-size: 0.78rem;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+      }
+
+      .privacy-list {
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .privacy-list li {
+        gap: 10px;
+        font-size: 0.9rem;
+        line-height: 1.7;
+      }
+
+      .privacy-bullet {
+        width: 20px;
+        height: 20px;
+        font-size: 0.72rem;
+        margin-top: 3px;
+      }
+
+      .privacy-en-box {
+        padding: 14px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 0.86rem;
+        line-height: 1.62;
+      }
+
+      .privacy-en-box h4 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+
+      .privacy-en-box ul {
+        padding-left: 16px;
+      }
+
+      /* Licenses & Table */
+      .table-scroll-hint {
+        display: block;
+      }
+
+      .licenses-table-wrap {
+        border-radius: var(--radius-md);
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .licenses-table {
+        min-width: 520px;
+        font-size: 0.84rem;
+      }
+
+      .licenses-table th, .licenses-table td {
+        padding: 10px 12px;
+      }
+
+      .license-badge {
+        font-size: 0.76rem;
+        padding: 2px 7px;
+      }
+
+      .legal-links {
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .legal-link-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 16px;
+        font-size: 0.88rem;
+      }
+
+      /* Footer */
+      footer {
+        padding-block: 26px 18px;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 14px;
+      }
+
+      .footer-links {
+        justify-content: center;
+        gap: 10px 14px;
+        font-size: 0.86rem;
+      }
+
+      .footer-copy {
+        margin-top: 14px;
+        padding-top: 12px;
+        font-size: 0.78rem;
+        line-height: 1.6;
+      }
+    }
+
+    /* Small Mobile Phones (<= 380px) */
+    @media (max-width: 380px) {
+      .container {
+        width: calc(100% - 20px);
+      }
+
+      .brand-tagline {
+        display: none;
+      }
+
+      .brand-title {
+        font-size: 1.08rem;
+      }
+
+      .lang-toggle-btn {
+        padding-inline: 7px;
+        font-size: 0.78rem;
+      }
+
+      .hero-title {
+        font-size: 1.5rem;
+      }
+
+      .verse-text {
+        font-size: 1.12rem;
       }
     }
   </style>
@@ -1523,6 +1896,13 @@
             <span data-lang="ar">التزام كامل بنسب الفضل لأهله وتوافق تام مع تراخيص البرمجيات الحرة والمصادر القرآنية.</span>
             <span data-lang="en">Full compliance with open source licenses, scholarly attributions, and verified Quranic sources.</span>
           </p>
+        </div>
+
+        <div class="table-scroll-hint" data-lang="ar">
+          <span>↔ يمكنك سحب الجدول أفقياً للاطلاع على كامل التفاصيل</span>
+        </div>
+        <div class="table-scroll-hint" data-lang="en">
+          <span>↔ Swipe table horizontally to view complete details</span>
         </div>
 
         <div class="licenses-table-wrap">
