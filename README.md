@@ -30,11 +30,13 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Zero-Overflow Adaptive Geometry:** Adaptive layout engine using `LayoutBuilder` and `SingleChildScrollView`, guaranteeing zero `RenderFlex` overflow on small screens (320px width), foldables, tablets, and desktop displays.
 - **Dual-Page Spread Layout:** Automatic side-by-side spread on tablets and wide viewports (`width >= 900dp`), mimicking an open physical Mushaf.
 
-### 📿 Istighfar & Tasbeeh (Digital Counter & Daily Dhikr)
-- **31 Authentic Prophetic & Quranic Formulas:** Comprehensive catalog classified into 7 categories (Istighfar & Repentance, Tasbeeh & Glorification, Tahmeed & Gratitude, Tahleel & Tawheed, Hawqalah, Salawat upon the Prophet ﷺ, and Comprehensive Duas) with documented virtues and references.
-- **Effortless Switching & Gesture Navigation:** Horizontal category filter chips, direct Previous/Next navigation controls, and horizontal swipe gestures (left/right) for fluid, distraction-free transitions between formulas.
-- **Smart Auto-Advance Mode:** Optional automated transition mode that seamlessly switches to the next dhikr upon reaching the cycle target (33 or 100) with celebration haptic feedback, keeping the worshiper's concentration unbroken.
-- **Interactive Digital Tasbeeh with Haptics:** Elegant circular touch counter with smooth pulse animation, light haptic feedback on each count, and distinct celebration haptics with milestone notifications.
+### 📿 Istighfar & Tasbeeh (Digital Counter & Sacred Remembrance)
+- **Dedicated Sanctuary Separation:** Dual-mode top segmented control cleanly dividing **Istighfar & Repentance (الاستغفار والتوبة)** from **Tasbeeh & Praises (التسبيح والتحميد)**, providing focused, distraction-free spiritual devotion.
+- **49 Authentic Prophetic & Quranic Formulas:** Expanded and authenticated catalog including 20 Istighfar formulas (Quranic, Prophetic, General) and 29 Tasbeeh, Tahmeed, Takbeer, and Salawat formulas with full virtues and sources.
+- **Effortless Switching, Quick-Copy & Gestures:** Horizontal category filter chips, direct Previous/Next navigation controls, full Arabic text copying with a single tap, and horizontal swipe gestures (left/right).
+- **Smart Auto-Advance Mode:** Optional automated transition mode that seamlessly switches to the next dhikr upon reaching the cycle target (33 or 100) with celebration haptic feedback, keeping devotion continuous.
+- **Interactive Adaptive Counter with Haptics:** Responsive circular touch counter dynamically adjusting its diameter to prevent vertical overflow, with light tactile haptics on every tap and celebration feedback.
+- **Searchable Modal Catalog Sheet:** Slide-up sheet allowing live search across all 49 formulas, virtues, and categories.
 - **Flexible Targets & Persistent Totals:** Selectable cycle targets (33, 100, or unlimited free counting), automatically persisting daily totals and lifetime counts locally across app restarts.
 
 ### 📚 Books & Study Booklets (Custom Sections & Attachments)

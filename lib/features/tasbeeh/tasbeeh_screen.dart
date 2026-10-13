@@ -6,9 +6,15 @@ import '../../app/theme.dart';
 import 'tasbeeh_model.dart';
 import 'tasbeeh_repository.dart';
 
-/// شاشة الاستغفار والتسبيح (السبحة الإلكترونية ومحراب الذكر اليومي).
+/// شاشة الاستغفار والتسبيح (محراب الذكر الشريف والسبحة الإلكترونية المطورة).
+///
+/// توفر فصلاً واضحاً بين محراب الاستغفار والتوبة، ومحراب التسبيح والتحميد
+/// مع عداد تفاعلي مرن، وتبديل تلقائي للأوراد، وإحصائيات يومية وتراكمية دقيقة.
 class TasbeehScreen extends StatefulWidget {
-  const TasbeehScreen({super.key});
+  /// القسم المبدئي المراد فتحه عند الدخول (اختياري).
+  final DhikrSection? initialSection;
+
+  const TasbeehScreen({super.key, this.initialSection});
 
   @override
   State<TasbeehScreen> createState() => _TasbeehScreenState();
@@ -25,6 +31,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   void initState() {
     super.initState();
     _repo.init();
+    if (widget.initialSection != null) {
+      _repo.setActiveSection(widget.initialSection!);
+    }
     _repo.addListener(_onRepoChanged);
 
     _pulseController = AnimationController(
@@ -47,25 +56,41 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     if (mounted) setState(() {});
   }
 
+  /// القسم الفعال حالياً في السبحة.
+  DhikrSection get _currentSection => _repo.activeSection;
+
+  /// قائمة التصنيفات الخاصة بالقسم الفعال.
+  List<String> get _currentCategories {
+    return _currentSection == DhikrSection.istighfar
+        ? TasbeehDhikr.istighfarCategories
+        : TasbeehDhikr.tasbeehCategories;
+  }
+
+  /// الأذكار المفلترة بحسب القسم النشط والتصنيف المحدد.
   List<TasbeehDhikr> get _filteredDhikrs {
+    final sectionDhikrs = _currentSection == DhikrSection.istighfar
+        ? TasbeehDhikr.istighfarDhikrs
+        : TasbeehDhikr.tasbeehDhikrs;
+
     if (_selectedCategory == 'الكل') {
-      return TasbeehDhikr.defaultDhikrs;
+      return sectionDhikrs;
     }
-    return TasbeehDhikr.defaultDhikrs
+    return sectionDhikrs
         .where((d) => d.category == _selectedCategory)
         .toList();
   }
 
-  void _nextDhikr() {
+  /// التبديل بين قسم الاستغفار وقسم التسبيح والتحميد.
+  void _onSectionSelected(DhikrSection section) {
+    if (_repo.activeSection == section) return;
     HapticFeedback.selectionClick();
-    _repo.nextDhikr(pool: _filteredDhikrs);
+    setState(() {
+      _selectedCategory = 'الكل';
+    });
+    _repo.setActiveSection(section);
   }
 
-  void _previousDhikr() {
-    HapticFeedback.selectionClick();
-    _repo.previousDhikr(pool: _filteredDhikrs);
-  }
-
+  /// اختيار تصنيف فرعي ضمن القسم الفعال.
   void _onCategorySelected(String category) {
     if (_selectedCategory == category) return;
     HapticFeedback.selectionClick();
@@ -78,6 +103,19 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     }
   }
 
+  /// الانتقال إلى الذكر التالي ضمن باقة القسم الفعال.
+  void _nextDhikr() {
+    HapticFeedback.selectionClick();
+    _repo.nextDhikr(pool: _filteredDhikrs);
+  }
+
+  /// الانتقال إلى الذكر السابق ضمن باقة القسم الفعال.
+  void _previousDhikr() {
+    HapticFeedback.selectionClick();
+    _repo.previousDhikr(pool: _filteredDhikrs);
+  }
+
+  /// معالجة نقرة التسبيح وتشغيل الأثر الحركي والحسي.
   void _handleTap() {
     _pulseController.forward().then((_) {
       if (mounted) _pulseController.reverse();
@@ -122,6 +160,26 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     }
   }
 
+  /// نسخ نص الذكر الشريف إلى الحافظة.
+  void _copyDhikrText(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    HapticFeedback.selectionClick();
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          'تم نسخ نص الذكر المبارك إلى الحافظة بنجاح.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontFamily: 'Amiri', fontSize: 13),
+        ),
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  /// حوار تأكيد تصفير عداد الدورة الحالية.
   void _confirmReset() {
     HapticFeedback.selectionClick();
     showDialog(
@@ -164,6 +222,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
+  /// فتح نافذة استعراض واختيار كافة الصيغ مع البحث والتصفية.
   void _showDhikrPickerSheet() {
     HapticFeedback.lightImpact();
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -178,22 +237,32 @@ class _TasbeehScreenState extends State<TasbeehScreen>
       ),
       builder: (ctx) {
         String sheetSearchQuery = '';
-        String sheetCategory = _selectedCategory;
+        String sheetCategory = 'الكل';
+        DhikrSection? sheetSection = _currentSection;
 
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            final filtered = TasbeehDhikr.defaultDhikrs.where((item) {
+            final allDhikrs = TasbeehDhikr.defaultDhikrs;
+            final filtered = allDhikrs.where((item) {
+              final matchesSection =
+                  sheetSection == null || item.section == sheetSection;
               final matchesCat =
                   sheetCategory == 'الكل' || item.category == sheetCategory;
               final matchesQuery = sheetSearchQuery.isEmpty ||
                   item.arabicText.contains(sheetSearchQuery) ||
                   item.virtue.contains(sheetSearchQuery) ||
                   item.category.contains(sheetSearchQuery);
-              return matchesCat && matchesQuery;
+              return matchesSection && matchesCat && matchesQuery;
             }).toList();
 
+            final availableCategories = sheetSection == null
+                ? TasbeehDhikr.categories
+                : (sheetSection == DhikrSection.istighfar
+                    ? TasbeehDhikr.istighfarCategories
+                    : TasbeehDhikr.tasbeehCategories);
+
             return DraggableScrollableSheet(
-              initialChildSize: 0.8,
+              initialChildSize: 0.85,
               minChildSize: 0.5,
               maxChildSize: 0.95,
               expand: false,
@@ -223,17 +292,81 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             Icon(Icons.format_list_bulleted_rounded,
                                 color: primaryColor, size: 20),
                             const SizedBox(width: 8),
-                            const Text(
-                              'صيغ الاستغفار والتسبيح (31 صيغة)',
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                'موسوعة الاستغفار والتسبيح (${allDhikrs.length} صيغة)',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 12),
+
+                        // مفتاح تبديل الأقسام داخل النافذة
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? AppColors.darkBackground
+                                : AppColors.lightBackground,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              _SheetSectionTab(
+                                title: 'الكل (${allDhikrs.length})',
+                                isSelected: sheetSection == null,
+                                isDark: isDark,
+                                primaryColor: primaryColor,
+                                onTap: () {
+                                  setSheetState(() {
+                                    sheetSection = null;
+                                    sheetCategory = 'الكل';
+                                  });
+                                },
+                              ),
+                              _SheetSectionTab(
+                                title:
+                                    'الاستغفار (${TasbeehDhikr.istighfarDhikrs.length})',
+                                isSelected: sheetSection == DhikrSection.istighfar,
+                                isDark: isDark,
+                                primaryColor: primaryColor,
+                                onTap: () {
+                                  setSheetState(() {
+                                    sheetSection = DhikrSection.istighfar;
+                                    sheetCategory = 'الكل';
+                                  });
+                                },
+                              ),
+                              _SheetSectionTab(
+                                title:
+                                    'التسبيح (${TasbeehDhikr.tasbeehDhikrs.length})',
+                                isSelected: sheetSection == DhikrSection.tasbeeh,
+                                isDark: isDark,
+                                primaryColor: primaryColor,
+                                onTap: () {
+                                  setSheetState(() {
+                                    sheetSection = DhikrSection.tasbeeh;
+                                    sheetCategory = 'الكل';
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+
+                        // حقل البحث
                         TextField(
                           onChanged: (val) {
                             setSheetState(() {
@@ -241,7 +374,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             });
                           },
                           decoration: InputDecoration(
-                            hintText: 'ابحث في الصيغ والفضائل...',
+                            hintText: 'ابحث في الصيغ والفضائل والتصنيفات...',
                             prefixIcon:
                                 const Icon(Icons.search_rounded, size: 20),
                             contentPadding: const EdgeInsets.symmetric(
@@ -257,15 +390,17 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           ),
                         ),
                         const SizedBox(height: 10),
+
+                        // شريط تصنيفات النافذة
                         SizedBox(
                           height: 36,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
-                            itemCount: TasbeehDhikr.categories.length,
+                            itemCount: availableCategories.length,
                             separatorBuilder: (_, _) =>
                                 const SizedBox(width: 6),
                             itemBuilder: (context, idx) {
-                              final cat = TasbeehDhikr.categories[idx];
+                              final cat = availableCategories[idx];
                               final isSelected = cat == sheetCategory;
                               return FilterChip(
                                 label: Text(cat,
@@ -281,10 +416,12 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           ),
                         ),
                         const SizedBox(height: 10),
+
+                        // قائمة النتائج
                         Expanded(
                           child: filtered.isEmpty
                               ? const Center(
-                                  child: Text('لا توجد نتائج مطابقة'),
+                                  child: Text('لا توجد صيغ مطابقة للبحث'),
                                 )
                               : ListView.separated(
                                   controller: scrollController,
@@ -318,7 +455,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                         ),
                                       ),
                                       subtitle: Text(
-                                        '${item.category} • الهدف: ${item.defaultTarget}',
+                                        '${item.section.shortTitle} • ${item.category} • الهدف: ${item.defaultTarget}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: isDark
@@ -333,7 +470,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                       onTap: () {
                                         _repo.setActiveDhikr(item);
                                         setState(() {
-                                          _selectedCategory = item.category;
+                                          _selectedCategory = 'الكل';
                                         });
                                         Navigator.pop(ctx);
                                       },
@@ -408,7 +545,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             },
           ),
           IconButton(
-            tooltip: 'تغيير صيغة الذكر',
+            tooltip: 'استعراض كل الصيغ',
             icon: const Icon(Icons.format_list_bulleted_rounded),
             onPressed: _showDhikrPickerSheet,
           ),
@@ -423,10 +560,13 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isCompact = constraints.maxHeight < 680;
-            final circleSize = isCompact ? 180.0 : 220.0;
+            final circleSize = isCompact ? 175.0 : 215.0;
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+              padding: EdgeInsets.symmetric(
+                horizontal: isCompact ? 14 : 18,
+                vertical: isCompact ? 8 : 12,
+              ),
               physics: const BouncingScrollPhysics(),
               child: Center(
                 child: ConstrainedBox(
@@ -434,19 +574,24 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // شريط تصنيفات الأذكار (تبديل سريع)
+                      // 1. مفتاح التبديل الرئيسي بين محراب الاستغفار ومحراب التسبيح
+                      _buildSectionSwitcher(isDark, primaryColor),
+                      const SizedBox(height: 8),
+
+                      // 2. شريط تصنيفات الأذكار التابع للقسم الفعال
                       _buildCategoryFilterBar(isDark, primaryColor),
                       const SizedBox(height: 10),
 
-                      // بطاقة الذكر الفعال مع أزرار التنقل السريع وإيماءة السحب
+                      // 3. بطاقة الذكر الفعال مع أزرار التنقل والنسخ وإيماءة السحب
                       _buildDhikrCard(dhikr, isDark, primaryColor, isCompact),
-                      SizedBox(height: isCompact ? 14 : 20),
+                      SizedBox(height: isCompact ? 14 : 18),
 
-                      // الدائرة التفاعلية للتسبيح
+                      // 4. الدائرة التفاعلية للتسبيح والعدّ
                       Center(
                         child: ScaleTransition(
                           scale: _scaleAnimation,
                           child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
                             onTap: _handleTap,
                             child: Container(
                               width: circleSize,
@@ -462,7 +607,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                             ? AppColors.darkAccentGold
                                             : AppColors.olive)
                                         .withValues(alpha: 0.12),
-                                    blurRadius: 28,
+                                    blurRadius: 26,
                                     spreadRadius: 2,
                                     offset: const Offset(0, 8),
                                   ),
@@ -497,7 +642,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                       ),
                                     ),
                                   ),
-                                  // الرقم والهدف
+                                  // الرقم والهدف ورسالة النقر
                                   Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -505,7 +650,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                         '${_repo.currentCount}',
                                         style: TextStyle(
                                           fontFamily: 'Amiri',
-                                          fontSize: isCompact ? 48 : 60,
+                                          fontSize: isCompact ? 46 : 56,
                                           fontWeight: FontWeight.bold,
                                           color: isDark
                                               ? AppColors.darkTextPrimary
@@ -553,14 +698,15 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           ),
                         ),
                       ),
-                      SizedBox(height: isCompact ? 16 : 22),
+                      SizedBox(height: isCompact ? 14 : 18),
 
-                      // بطاقة التحكم في الهدف + مفتاح التبديل التلقائي
+                      // 5. بطاقة ضبط الهدف + مفتاح التبديل التلقائي
                       _buildControlsCard(isDark, primaryColor),
                       const SizedBox(height: 12),
 
-                      // شريط الإحصائيات (اليوم والإجمالي)
+                      // 6. شريط الإحصائيات (اليوم والإجمالي)
                       _buildStatsRow(isDark, primaryColor),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -572,16 +718,71 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
+  /// مفتاح التبديل الرئيسي بين محراب الاستغفار ومحراب التسبيح والتحميد.
+  Widget _buildSectionSwitcher(bool isDark, Color primaryColor) {
+    final activeSection = _repo.activeSection;
+    final istighfarCount = TasbeehDhikr.istighfarDhikrs.length;
+    final tasbeehCount = TasbeehDhikr.tasbeehDhikrs.length;
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _SectionTab(
+              title: 'الاستغفار والتوبة',
+              count: istighfarCount,
+              icon: Icons.spa_rounded,
+              isSelected: activeSection == DhikrSection.istighfar,
+              isDark: isDark,
+              primaryColor: primaryColor,
+              onTap: () => _onSectionSelected(DhikrSection.istighfar),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: _SectionTab(
+              title: 'التسبيح والتحميد',
+              count: tasbeehCount,
+              icon: Icons.motion_photos_on_rounded,
+              isSelected: activeSection == DhikrSection.tasbeeh,
+              isDark: isDark,
+              primaryColor: primaryColor,
+              onTap: () => _onSectionSelected(DhikrSection.tasbeeh),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// شريط تصنيفات الأذكار المفلترة بحسب القسم النشط.
   Widget _buildCategoryFilterBar(bool isDark, Color primaryColor) {
+    final categories = _currentCategories;
+
     return SizedBox(
       height: 38,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: TasbeehDhikr.categories.length,
+        itemCount: categories.length,
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          final cat = TasbeehDhikr.categories[index];
+          final cat = categories[index];
           final isSelected = cat == _selectedCategory;
 
           return InkWell(
@@ -628,6 +829,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
+  /// بطاقة عرض الذكر الشريف مع أدوات التنقل والنسخ والاستعراض.
   Widget _buildDhikrCard(
     TasbeehDhikr dhikr,
     bool isDark,
@@ -639,6 +841,14 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     final positionText = currentIndex >= 0
         ? 'صيغة ${currentIndex + 1} من ${pool.length}'
         : '${pool.length} صيغة';
+
+    // ضبط حجم خط النص العربي ليتناسب مع طول الصيغة بدون إجهاد الشاشة
+    final textLength = dhikr.arabicText.length;
+    final double textFontSize = textLength > 120
+        ? (isCompact ? 16.0 : 17.5)
+        : textLength > 60
+            ? (isCompact ? 18.0 : 19.5)
+            : (isCompact ? 20.0 : 22.0);
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
@@ -653,7 +863,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: 14,
-          vertical: isCompact ? 12 : 15,
+          vertical: isCompact ? 12 : 14,
         ),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
@@ -672,63 +882,71 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: (isDark
-                                ? AppColors.darkAccentGold
-                                : AppColors.olive)
-                            .withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        dhikr.category,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkAccentGold
-                              : AppColors.oliveDark,
-                        ),
-                      ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: (isDark
+                            ? AppColors.darkAccentGold
+                            : AppColors.olive)
+                        .withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    dhikr.category,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? AppColors.darkAccentGold
+                          : AppColors.oliveDark,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      positionText,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    positionText,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'نسخ نص الذكر',
+                  icon: const Icon(Icons.copy_rounded, size: 16),
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints:
+                      const BoxConstraints(minWidth: 32, minHeight: 32),
+                  onPressed: () => _copyDhikrText(dhikr.arabicText),
+                ),
+                const SizedBox(width: 2),
                 InkWell(
                   onTap: _showDhikrPickerSheet,
                   borderRadius: BorderRadius.circular(8),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2),
+                        horizontal: 4, vertical: 2),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'كل الصيغ (31)',
+                          'الصيغ (${TasbeehDhikr.defaultDhikrs.length})',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             color: primaryColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 2),
                         Icon(Icons.keyboard_arrow_down_rounded,
-                            size: 18, color: primaryColor),
+                            size: 16, color: primaryColor),
                       ],
                     ),
                   ),
@@ -756,7 +974,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Amiri',
-                        fontSize: isCompact ? 19 : 22,
+                        fontSize: textFontSize,
                         fontWeight: FontWeight.bold,
                         height: 1.5,
                         color: isDark
@@ -848,6 +1066,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
+  /// بطاقة ضبط الهدف المطلوب وتفعيل التبديل التلقائي.
   Widget _buildControlsCard(bool isDark, Color primaryColor) {
     const targets = [33, 100, 0];
     final current = _repo.targetCount;
@@ -977,6 +1196,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
+  /// شريط إحصائيات الاستغفار والتسبيح اليومي والإجمالي.
   Widget _buildStatsRow(bool isDark, Color primaryColor) {
     return Row(
       children: [
@@ -1002,6 +1222,129 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   }
 }
 
+/// زر تبويب أنيق للاختيار بين محراب الاستغفار ومحراب التسبيح.
+class _SectionTab extends StatelessWidget {
+  final String title;
+  final int count;
+  final IconData icon;
+  final bool isSelected;
+  final bool isDark;
+  final Color primaryColor;
+  final VoidCallback onTap;
+
+  const _SectionTab({
+    required this.title,
+    required this.count,
+    required this.icon,
+    required this.isSelected,
+    required this.isDark,
+    required this.primaryColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark ? AppColors.darkAccentGold : AppColors.oliveDark)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isSelected
+                  ? (isDark ? Colors.black : Colors.white)
+                  : (isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary),
+            ),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                '$title ($count)',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 13,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                  color: isSelected
+                      ? (isDark ? Colors.black : Colors.white)
+                      : (isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// تبويب فرعي داخل نافذة استعراض الصيغ.
+class _SheetSectionTab extends StatelessWidget {
+  final String title;
+  final bool isSelected;
+  final bool isDark;
+  final Color primaryColor;
+  final VoidCallback onTap;
+
+  const _SheetSectionTab({
+    required this.title,
+    required this.isSelected,
+    required this.isDark,
+    required this.primaryColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? (isDark
+                    ? AppColors.darkAccentGold
+                    : AppColors.oliveDark)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              color: isSelected
+                  ? (isDark ? Colors.black : Colors.white)
+                  : (isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// بطاقة إحصاءات مصغرة ذات تصميم هادئ.
 class _StatCard extends StatelessWidget {
   final String label;
   final int count;

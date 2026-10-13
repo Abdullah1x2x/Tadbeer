@@ -1,3 +1,35 @@
+/// أقسام أذكار السبحة والمحراب الشريف (الفصل بين الاستغفار والتسبيح).
+enum DhikrSection {
+  /// محراب الاستغفار والتوبة والأوبة إلى الله.
+  istighfar,
+
+  /// محراب التسبيح والتحميد والتهليل والتكبير.
+  tasbeeh,
+}
+
+/// امتداد مساعد لقسم الذكر يوفر المسميات العربية.
+extension DhikrSectionX on DhikrSection {
+  /// العنوان الكامل للقسم.
+  String get title {
+    switch (this) {
+      case DhikrSection.istighfar:
+        return 'محراب الاستغفار والتوبة';
+      case DhikrSection.tasbeeh:
+        return 'محراب التسبيح والتحميد';
+    }
+  }
+
+  /// العنوان القصير للعرض في الأزرار والتبويبات.
+  String get shortTitle {
+    switch (this) {
+      case DhikrSection.istighfar:
+        return 'الاستغفار';
+      case DhikrSection.tasbeeh:
+        return 'التسبيح والتحميد';
+    }
+  }
+}
+
 /// نموذج بيانات الأذكار والاستغفار والتسبيح للسبحة الإلكترونية.
 class TasbeehDhikr {
   final String id;
@@ -6,6 +38,7 @@ class TasbeehDhikr {
   final String virtue;
   final String category;
   final int defaultTarget;
+  final DhikrSection section;
 
   /// ينشئ ذكراً أو صيغة استغفار وتسبيح.
   const TasbeehDhikr({
@@ -15,25 +48,63 @@ class TasbeehDhikr {
     required this.virtue,
     required this.category,
     this.defaultTarget = 33,
+    this.section = DhikrSection.tasbeeh,
   });
 
-  /// التصنيفات المعتمدة للأذكار والاستغفار والتسبيح.
+  /// ما إذا كان الذكر يتبع لمحراب الاستغفار.
+  bool get isIstighfar => section == DhikrSection.istighfar;
+
+  /// ما إذا كان الذكر يتبع لمحراب التسبيح والتحميد.
+  bool get isTasbeeh => section == DhikrSection.tasbeeh;
+
+  /// جميع التصنيفات المعتمدة للأذكار والاستغفار والتسبيح.
   static const List<String> categories = [
     'الكل',
     'استغفار وتوبة',
+    'استغفار قرآني',
+    'استغفار نبوي',
     'تسبيح وتنزيه',
     'حمد وشكر',
     'تهليل وتوحيد',
+    'تكبير وتعظيم',
     'حوقلة وتوكل',
     'صلاة على النبي',
     'أدعية جامعة',
   ];
 
-  /// باقة الأذكار والصيغ المعتمدة للاستغفار والتسبيح (31 صيغة موثقة).
+  /// تصنيفات محراب الاستغفار والتوبة.
+  static const List<String> istighfarCategories = [
+    'الكل',
+    'استغفار وتوبة',
+    'استغفار قرآني',
+    'استغفار نبوي',
+  ];
+
+  /// تصنيفات محراب التسبيح والتحميد والتهليل.
+  static const List<String> tasbeehCategories = [
+    'الكل',
+    'تسبيح وتنزيه',
+    'حمد وشكر',
+    'تهليل وتوحيد',
+    'تكبير وتعظيم',
+    'حوقلة وتوكل',
+    'صلاة على النبي',
+    'أدعية جامعة',
+  ];
+
+  /// قائمة صيغ الاستغفار والتوبة فقط.
+  static List<TasbeehDhikr> get istighfarDhikrs =>
+      defaultDhikrs.where((d) => d.section == DhikrSection.istighfar).toList();
+
+  /// قائمة صيغ التسبيح والتحميد والتهليل فقط.
+  static List<TasbeehDhikr> get tasbeehDhikrs =>
+      defaultDhikrs.where((d) => d.section == DhikrSection.tasbeeh).toList();
+
+  /// باقة الأذكار والصيغ المعتمدة للاستغفار والتسبيح (49 صيغة موثقة ومفصلة).
   static const List<TasbeehDhikr> defaultDhikrs = [
-    // ---------------------------------------------------------
-    // 1. استغفار وتوبة
-    // ---------------------------------------------------------
+    // =========================================================
+    // القسم الأول: محراب الاستغفار والتوبة (20 صيغة مباركة)
+    // =========================================================
     TasbeehDhikr(
       id: 'istighfar_1',
       arabicText: 'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ',
@@ -43,6 +114,7 @@ class TasbeehDhikr {
           'من لزم الاستغفار جعل الله له من كل هم فرجاً ومن كل ضيق مخرجاً ورزقه من حيث لا يحتسب.',
       category: 'استغفار وتوبة',
       defaultTarget: 100,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_sayyid',
@@ -52,8 +124,9 @@ class TasbeehDhikr {
           'O Allah, You are my Lord; none has the right to be worshipped but You. You created me and I am Your servant...',
       virtue:
           'سيد الاستغفار؛ من قالها موقناً بها حين يمسي فمات من ليلته دخل الجنة، وكذلك إذا أصبح.',
-      category: 'استغفار وتوبة',
+      category: 'استغفار نبوي',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_rabbi',
@@ -63,8 +136,9 @@ class TasbeehDhikr {
           'My Lord, forgive me and accept my repentance, for You are the Accepter of Repentance, the Most Merciful.',
       virtue:
           'كان النبي ﷺ يُعدّ له في المجلس الواحد مائة مرة قبل أن يقوم.',
-      category: 'استغفار وتوبة',
+      category: 'استغفار نبوي',
       defaultTarget: 100,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_hayy',
@@ -74,8 +148,9 @@ class TasbeehDhikr {
           'I seek forgiveness from Allah, other than Whom there is no deity, the Ever-Living, the Sustainer, and I repent to Him.',
       virtue:
           'قال رسول الله ﷺ: من قالها غُفر له وإن كان فرّ من الزحف.',
-      category: 'استغفار وتوبة',
+      category: 'استغفار نبوي',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_siddiq',
@@ -85,8 +160,9 @@ class TasbeehDhikr {
           'O Allah, I have wronged myself greatly, and none forgives sins except You...',
       virtue:
           'علّمها النبي ﷺ لأبي بكر الصديق رضي الله عنه ليدعو بها في صلاته ومحرابه.',
-      category: 'استغفار وتوبة',
+      category: 'استغفار نبوي',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_adam',
@@ -96,8 +172,20 @@ class TasbeehDhikr {
           'Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers.',
       virtue:
           'الكلمات القرآنية التي تلقاها آدم من ربه فتاب عليه [الأعراف: ٢٣]، وهي مفتاح التوبة الصادقة.',
-      category: 'استغفار وتوبة',
+      category: 'استغفار قرآني',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_musa',
+      arabicText: 'رَبِّ إِنِّي ظَلَمْتُ نَفْسِي فَاغْفِرْ لِي',
+      englishTranslation:
+          'My Lord, indeed I have wronged myself, so forgive me.',
+      virtue:
+          'تضرع كليم الله موسى عليه السلام حين ندم واستغفر فغفر الله له وكان من المقربين [القصص: ١٦].',
+      category: 'استغفار قرآني',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_nuh',
@@ -107,8 +195,9 @@ class TasbeehDhikr {
           'My Lord, forgive me and my parents and whoever enters my house a believer and the believing men and believing women.',
       virtue:
           'استغفار قرآني جامع للنفس والوالدين ولعموم أهل الإيمان أحياءً وأمواتاً [نوح: ٢٨].',
-      category: 'استغفار وتوبة',
+      category: 'استغفار قرآني',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_ibrahim',
@@ -118,8 +207,68 @@ class TasbeehDhikr {
           'Our Lord, forgive me and my parents and the believers the Day the account is established.',
       virtue:
           'دعوة خليل الرحمن إبراهيم عليه السلام الجامعة للنجاة والمغفرة يوم الحساب الأكبر [إبراهيم: ٤١].',
-      category: 'استغفار وتوبة',
+      category: 'استغفار قرآني',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_al_albab',
+      arabicText:
+          'رَبَّنَا فَاغْفِرْ لَنَا ذُنُوبَنَا وَكَفِّرْ عَنَّا سَيِّئَاتِنَا وَتَوَفَّنَا مَعَ الْأَبْرَارِ',
+      englishTranslation:
+          'Our Lord, forgive us our sins and remove from us our misdeeds and cause us to die with the righteous.',
+      virtue:
+          'دعاء أولي الألباب المتفكرين في خلق السماوات والأرض راجين مغفرة الذنوب وحسن الختام [آل عمران: ١٩٣].',
+      category: 'استغفار قرآني',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_mumineen',
+      arabicText:
+          'رَبَّنَا آمَنَّا فَاغْفِرْ لَنَا وَارْحَمْنَا وَأَنتَ خَيْرُ الرَّاحِمِينَ',
+      englishTranslation:
+          'Our Lord, we have believed, so forgive us and have mercy upon us, and You are the best of the merciful.',
+      virtue:
+          'توسل عباد الرحمن بالإيمان لنيل المغفرة والرحمة الواسعة [المؤمنون: ١٠٩].',
+      category: 'استغفار قرآني',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_zanbi_kulluh',
+      arabicText:
+          'اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ: دِقَّهُ وَجِلَّهُ، وَأَوَّلَهُ وَآخِرَهُ، وَعَلانِيَتَهُ وَسِرَّهُ',
+      englishTranslation:
+          'O Allah, forgive me all my sins, small and great, first and last, open and secret.',
+      virtue:
+          'كان النبي ﷺ يكثر منه في سجوده؛ استغفار شامل مستوعب لجميع الخطايا ظاهرها وباطنها (صحيح مسلم).',
+      category: 'استغفار نبوي',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_qaddamt',
+      arabicText:
+          'اللَّهُمَّ اغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ، وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ، وَمَا أَسْرَفْتُ، وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي، أَنْتَ الْمُقَدِّمُ وَأَنْتَ الْمُؤَخِّرُ، لا إِلَهَ إِلا أَنْتَ',
+      englishTranslation:
+          'O Allah, forgive me what I have sent before and what I have left behind, what I have concealed and what I have declared...',
+      virtue:
+          'من دعاء النبي ﷺ بين التشهد والتسليم في صلاته لجبر العمل وتمام المغفرة (صحيح مسلم).',
+      category: 'استغفار نبوي',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_sujood',
+      arabicText: 'سُبْحَانَكَ اللَّهُمَّ رَبَّنَا وَبِحَمْدِكَ، اللَّهُمَّ اغْفِرْ لِي',
+      englishTranslation:
+          'Glory be to You, O Allah, our Lord, and praise; O Allah, forgive me.',
+      virtue:
+          'كان النبي ﷺ يكثر أن يقوله في ركوعه وسجوده امتثالاً لأمر الله في سورة النصر (متفق عليه).',
+      category: 'استغفار نبوي',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_salat',
@@ -130,6 +279,7 @@ class TasbeehDhikr {
           'هدي النبي ﷺ دبر كل صلاة مكتوبة لجبر أي نقص أو سهو في أداء العبادة.',
       category: 'استغفار وتوبة',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
     TasbeehDhikr(
       id: 'istighfar_kaffara',
@@ -141,11 +291,58 @@ class TasbeehDhikr {
           'كفارة لما قد يقع في المجلس من لغو أو تقصير، وخاتمة مباركة لكل لقاء.',
       category: 'استغفار وتوبة',
       defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_umum_muslimeen',
+      arabicText:
+          'اللَّهُمَّ اغْفِرْ لِلْمُسْلِمِينَ وَالْمُسْلِمَاتِ، وَالْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ، الأَحْيَاءِ مِنْهُمْ وَالأَمْوَاتِ',
+      englishTranslation:
+          'O Allah, forgive the believing men and women, living and deceased.',
+      virtue:
+          'قال رسول الله ﷺ: من استغفر للمؤمنين والمؤمنات كتب الله له بكل مؤمن ومؤمنة حسنة (حديث حسن).',
+      category: 'استغفار وتوبة',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_mukhtasar',
+      arabicText: 'أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ',
+      englishTranslation:
+          'I seek forgiveness of Allah and repent to Him.',
+      virtue:
+          'الذكر الخفيف اليومي؛ كان النبي ﷺ يستغفر الله ويتوب إليه في اليوم أكثر من سبعين مرة وفي رواية مائة مرة.',
+      category: 'استغفار وتوبة',
+      defaultTarget: 100,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_dhu_alnoor',
+      arabicText: 'رَبَّنَا أَتْمِمْ لَنَا نُورَنَا وَاغْفِرْ لَنَا إِنَّكَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
+      englishTranslation:
+          'Our Lord, perfect for us our light and forgive us. Indeed, You are over all things competent.',
+      virtue:
+          'دعاء المؤمنين يوم القيامة حين يسعى نورهم بين أيديهم يسألون الله إتمام النور والمغفرة [التحريم: ٨].',
+      category: 'استغفار قرآني',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
+    ),
+    TasbeehDhikr(
+      id: 'istighfar_ikhwan',
+      arabicText:
+          'رَبَّنَا اغْفِرْ لَنَا وَلإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالإِيمَانِ وَلا تَجْعَلْ فِي قُلُوبِنَا غِلا لِّلَّذِينَ آمَنُوا',
+      englishTranslation:
+          'Our Lord, forgive us and our brothers who preceded us in faith and put not in our hearts any resentment toward those who have believed.',
+      virtue:
+          'دعاء سلامة الصدر والمغفرة للمسلمين والأسلاف السابقين بالإيمان [الحشر: ١٠].',
+      category: 'استغفار قرآني',
+      defaultTarget: 33,
+      section: DhikrSection.istighfar,
     ),
 
-    // ---------------------------------------------------------
-    // 2. تسبيح وتنزيه
-    // ---------------------------------------------------------
+    // =========================================================
+    // القسم الثاني: محراب التسبيح والتحميد والتهليل (29 صيغة مباركة)
+    // =========================================================
     TasbeehDhikr(
       id: 'tasbeeh_subhan_bihamdih',
       arabicText: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ',
@@ -155,6 +352,7 @@ class TasbeehDhikr {
           'كلمتان خفيفتان على اللسان، ثقيلتان في الميزان، حبيبتان إلى الرحمن.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tasbeeh_baqiyat',
@@ -166,6 +364,7 @@ class TasbeehDhikr {
           'الباقيات الصالحات؛ أحب الكلام إلى الله تعالى وغراس الجنة ونور للمؤمن.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tasbeeh_juwayriyah',
@@ -177,6 +376,7 @@ class TasbeehDhikr {
           'حديث جويرية رضي الله عنها؛ جوامع التسبيح التي تعدل ساعات طويلة من الذكر المتواصل.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tasbeeh_nakhlah',
@@ -187,6 +387,7 @@ class TasbeehDhikr {
           'قال رسول الله ﷺ: من قال سبحان الله العظيم وبحمده غُرست له نخلة في الجنة.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tasbeeh_malaikah',
@@ -197,6 +398,7 @@ class TasbeehDhikr {
           'تسبيح الملائكة الكرام؛ كان النبي ﷺ يكثر منه في ركوعه وسجوده تنزيهاً للرب العظيم.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tasbeeh_jabaroot',
@@ -208,6 +410,7 @@ class TasbeehDhikr {
           'تسبيح التعظيم الشريف الذي يرسخ هيبة الرب ومحبته في سويداء القلب.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tasbeeh_alquddoos',
@@ -218,6 +421,7 @@ class TasbeehDhikr {
           'سنة نبوية شريفة بعد الفراغ من صلاة الوتر في جوف الليل.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'yunus_dua',
@@ -228,6 +432,7 @@ class TasbeehDhikr {
           'دعوة ذي النون في بطن الحوت؛ ما دعا بها مكروب إلا فرج الله عنه وأبدل حزنه فرجاً.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tasbeeh_mujarrad',
@@ -237,10 +442,53 @@ class TasbeehDhikr {
           'قال ﷺ: أيعجز أحدكم أن يكسب كل يوم ألف حسنة؟ يسبح مائة تسبيحة فيكتب له ألف حسنة أو يحط عنه ألف خطيئة.',
       category: 'تسبيح وتنزيه',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
+    ),
+    TasbeehDhikr(
+      id: 'tasbeeh_rukoo',
+      arabicText: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ',
+      englishTranslation: 'Glory be to my Lord, the Supreme.',
+      virtue:
+          'تسبيح الركوع المفروض في كل صلاة؛ إعظاماً وإجلالاً لمقام الرب جل جلاله.',
+      category: 'تسبيح وتنزيه',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
+    ),
+    TasbeehDhikr(
+      id: 'tasbeeh_sujood',
+      arabicText: 'سُبْحَانَ رَبِّيَ الأَعْلَى',
+      englishTranslation: 'Glory be to my Lord, the Most High.',
+      virtue:
+          'تسبيح السجود وأقرب ما يكون العبد من ربه وهو ساجد؛ تنزيهاً لعلو شأن الله وقدره.',
+      category: 'تسبيح وتنزيه',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
+    ),
+    TasbeehDhikr(
+      id: 'tasbeeh_istiftah',
+      arabicText: 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلا إِلَهَ غَيْرُكَ',
+      englishTranslation:
+          'Glory is to You, O Allah, and praise. Blessed is Your name, exalted is Your majesty, and there is no deity other than You.',
+      virtue:
+          'دعاء استفتاح الصلاة المأثور في تمجيد الرب وتنزيهه قبل الشروع في التلاوة.',
+      category: 'تسبيح وتنزيه',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
+    ),
+    TasbeehDhikr(
+      id: 'tasbeeh_mizan',
+      arabicText: 'سُبْحَانَ اللَّهِ مِلْءَ الْمِيزَانِ، وَمُنْتَهَى الْعِلْمِ، وَمَبْلَغَ الرِّضَا، وَزِنَةَ الْعَرْشِ',
+      englishTranslation:
+          'Glory be to Allah to the fullness of the Scale, the limit of knowledge, the maximum of pleasure, and the weight of the Throne.',
+      virtue:
+          'تسبيح عظيم مأثور في سعة التنزيه ومبالغة التمجيد وطلب الرضا التام.',
+      category: 'تسبيح وتنزيه',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
 
     // ---------------------------------------------------------
-    // 3. حمد وشكر
+    // حمد وشكر
     // ---------------------------------------------------------
     TasbeehDhikr(
       id: 'tahmeed_alhamdulillah',
@@ -250,6 +498,7 @@ class TasbeehDhikr {
           'قال رسول الله ﷺ: والحمد لله تملأ الميزان؛ وأفضل الدعاء الحمد لله.',
       category: 'حمد وشكر',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tahmeed_katheeran',
@@ -260,6 +509,7 @@ class TasbeehDhikr {
           'قال النبي ﷺ: رأيت بضعة وثلاثين ملكاً يبتدرونها أيهم يكتبها أولاً لعظم أجرها.',
       category: 'حمد وشكر',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tahmeed_shukr',
@@ -270,10 +520,22 @@ class TasbeehDhikr {
           'شكر دائم للرب الرحيم في السراء والضراء، واعتراف بتمام الفضل ولطف القضاء.',
       category: 'حمد وشكر',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
+    ),
+    TasbeehDhikr(
+      id: 'tahmeed_quran_alhamd',
+      arabicText: 'الْحَمْدُ لِلَّهِ الَّذِي هَدَانَا لِهَٰذَا وَمَا كُنَّا لِنَهْتَدِيَ لَوْلَا أَنْ هَدَانَا اللَّهُ',
+      englishTranslation:
+          'Praise to Allah, who has guided us to this; and we would never have been guided if Allah had not guided us.',
+      virtue:
+          'حمد أهل الجنة والشاكرين اعترافاً بفضل الهداية ونعمة الإيمان [الأعراف: ٤٣].',
+      category: 'حمد وشكر',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
 
     // ---------------------------------------------------------
-    // 4. تهليل وتوحيد
+    // تهليل وتوحيد
     // ---------------------------------------------------------
     TasbeehDhikr(
       id: 'tahleel_wahdah',
@@ -285,6 +547,7 @@ class TasbeehDhikr {
           'كانت له عدل عشر رقاب، وكُتبت له مائة حسنة ومُحيت عنه مائة سيئة وكانت له حرزاً من الشيطان.',
       category: 'تهليل وتوحيد',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tahleel_khayr',
@@ -294,6 +557,7 @@ class TasbeehDhikr {
           'خير ما قلت أنا والنبيون من قبلي، وأعلى شعب الإيمان وعروته الوثقى.',
       category: 'تهليل وتوحيد',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'tahleel_ikhlas',
@@ -304,10 +568,48 @@ class TasbeehDhikr {
           'كلمة التوحيد الخالصة التي بها يحيا القلب وتثبت القدم على الصراط المستقيم.',
       category: 'تهليل وتوحيد',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
+    ),
+    TasbeehDhikr(
+      id: 'tahleel_la_mawgood',
+      arabicText: 'لا إِلَهَ إِلا اللَّهُ الْمَلِكُ الْحَقُّ الْمُبِينُ',
+      englishTranslation:
+          'There is no deity except Allah, the Sovereign, the Evident Truth.',
+      virtue:
+          'تهليل شريف في استشعار ملك الله الحق وتفرده بالخلق والتدبير والملك.',
+      category: 'تهليل وتوحيد',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
 
     // ---------------------------------------------------------
-    // 5. حوقلة وتوكل
+    // تكبير وتعظيم
+    // ---------------------------------------------------------
+    TasbeehDhikr(
+      id: 'takbeer_kabeera',
+      arabicText: 'اللَّهُ أَكْبَرُ كَبِيرًا، وَالْحَمْدُ لِلَّهِ كَثِيرًا، وَسُبْحَانَ اللَّهِ بُكْرَةً وَأَصِيلاً',
+      englishTranslation:
+          'Allah is Most Great, very great, and praise be to Allah abundantly, and glory be to Allah morning and evening.',
+      virtue:
+          'قال رسول الله ﷺ: عجبت لها! فُتحت لها أبواب السماء لعظم قدرها عند الله (صحيح مسلم).',
+      category: 'تكبير وتعظيم',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
+    ),
+    TasbeehDhikr(
+      id: 'takbeer_mutlaq',
+      arabicText: 'اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لا إِلَهَ إِلا اللَّهُ، وَاللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، وَلِلَّهِ الْحَمْدُ',
+      englishTranslation:
+          'Allah is Most Great, Allah is Most Great, there is no god but Allah; Allah is Most Great, Allah is Most Great, and to Allah belongs all praise.',
+      virtue:
+          'صيغة التكبير والتهليل والتحميد المشروعة في الأعياد والأيام الفاضلة ومواسم الطاعة.',
+      category: 'تكبير وتعظيم',
+      defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
+    ),
+
+    // ---------------------------------------------------------
+    // حوقلة وتوكل
     // ---------------------------------------------------------
     TasbeehDhikr(
       id: 'hawqalah',
@@ -318,6 +620,7 @@ class TasbeehDhikr {
           'كنز من كنوز الجنة وباب عظيم من أبواب تفريج الكروب والتوكل التام على الله.',
       category: 'حوقلة وتوكل',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'hasbuna_allah',
@@ -328,10 +631,11 @@ class TasbeehDhikr {
           'قالها إبراهيم عليه السلام حين أُلقي في النار، وقالها محمد ﷺ حين قيل له إن الناس قد جمعوا لكم [آل عمران: ١٧٣].',
       category: 'حوقلة وتوكل',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
 
     // ---------------------------------------------------------
-    // 6. صلاة على النبي ﷺ
+    // صلاة على النبي ﷺ
     // ---------------------------------------------------------
     TasbeehDhikr(
       id: 'salawat',
@@ -342,6 +646,7 @@ class TasbeehDhikr {
           'من صلى عليّ صلاة صلى الله عليه بها عشراً وحُطت عنه عشر خطيئات ورفعت له عشر درجات.',
       category: 'صلاة على النبي',
       defaultTarget: 100,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'salawat_ibrahimiyah',
@@ -353,10 +658,11 @@ class TasbeehDhikr {
           'أشرف صيغ الصلاة على النبي المصطفى ﷺ وأعظمها ثواباً وبركة وقربة إلى الله.',
       category: 'صلاة على النبي',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
 
     // ---------------------------------------------------------
-    // 7. أدعية جامعة
+    // أدعية جامعة
     // ---------------------------------------------------------
     TasbeehDhikr(
       id: 'ya_hayyu_ya_qayyum',
@@ -368,6 +674,7 @@ class TasbeehDhikr {
           'وصية النبي ﷺ لابنته فاطمة رضي الله عنها في الصباح والمساء لكفاية الهموم وصلاح الشأن.',
       category: 'أدعية جامعة',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
     TasbeehDhikr(
       id: 'radeetu_billah',
@@ -379,6 +686,7 @@ class TasbeehDhikr {
           'من قالها حين يصبح وحين يمسي كان حقاً على الله تعالى أن يرضيه يوم القيامة.',
       category: 'أدعية جامعة',
       defaultTarget: 33,
+      section: DhikrSection.tasbeeh,
     ),
   ];
 }

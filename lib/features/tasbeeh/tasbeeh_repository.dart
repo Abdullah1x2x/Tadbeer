@@ -23,6 +23,9 @@ class TasbeehRepository extends ChangeNotifier {
   /// الذكر الفعال حالياً في السبحة.
   TasbeehDhikr get activeDhikr => _activeDhikr;
 
+  /// القسم الفعال حالياً في السبحة (استغفار أو تسبيح).
+  DhikrSection get activeSection => _activeDhikr.section;
+
   /// العدد الحالي في الدورة الراهنة.
   int get currentCount => _currentCount;
 
@@ -136,6 +139,17 @@ class TasbeehRepository extends ChangeNotifier {
     _targetCount = dhikr.defaultTarget;
     _persistDebounced();
     notifyListeners();
+  }
+
+  /// التبديل إلى قسم محدد (استغفار أو تسبيح) واختيار أول ذكر فيه إذا لم يكن الذكر الحالي من نفس القسم.
+  void setActiveSection(DhikrSection section) {
+    if (_activeDhikr.section == section) return;
+    final targetDhikrs = section == DhikrSection.istighfar
+        ? TasbeehDhikr.istighfarDhikrs
+        : TasbeehDhikr.tasbeehDhikrs;
+    if (targetDhikrs.isNotEmpty) {
+      setActiveDhikr(targetDhikrs.first);
+    }
   }
 
   /// الانتقال إلى الذكر التالي ضمن قائمة محددة (أو القائمة الافتراضية).

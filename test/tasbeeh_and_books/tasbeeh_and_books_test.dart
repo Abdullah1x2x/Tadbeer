@@ -70,9 +70,13 @@ void main() {
       expect(repo.lifetimeTotalCount, initialLifetime + 2);
     });
 
-    test('TasbeehDhikr catalog has 31 authentic items across all categories', () {
-      expect(TasbeehDhikr.defaultDhikrs.length, 31);
-      expect(TasbeehDhikr.categories.length, greaterThanOrEqualTo(7));
+    test('TasbeehDhikr catalog has 49 authentic items across both sections', () {
+      expect(TasbeehDhikr.defaultDhikrs.length, 49);
+      expect(TasbeehDhikr.istighfarDhikrs.length, 20);
+      expect(TasbeehDhikr.tasbeehDhikrs.length, 29);
+      expect(TasbeehDhikr.categories.length, greaterThanOrEqualTo(10));
+      expect(TasbeehDhikr.istighfarCategories.length, greaterThanOrEqualTo(4));
+      expect(TasbeehDhikr.tasbeehCategories.length, greaterThanOrEqualTo(7));
 
       for (final cat in TasbeehDhikr.categories) {
         if (cat == 'الكل') continue;
@@ -177,20 +181,90 @@ void main() {
       expect(repo.activeDhikr.id, firstId);
     });
 
-    testWidgets('TasbeehScreen filters dhikrs by category chips', (
+    testWidgets('TasbeehScreen filters dhikrs by category chips and switches sections', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
       await tester.pumpAndSettle();
 
-      // Find category chip 'تسبيح وتنزيه' and tap it
-      final chipFinder = find.text('تسبيح وتنزيه');
-      expect(chipFinder, findsWidgets);
+      // 1. Filter within Istighfar section
+      final istighfarChip = find.text('استغفار قرآني');
+      expect(istighfarChip, findsWidgets);
+      await tester.tap(istighfarChip.first);
+      await tester.pumpAndSettle();
+      expect(repo.activeDhikr.category, 'استغفار قرآني');
 
-      await tester.tap(chipFinder.first);
+      // 2. Switch to Tasbeeh section and filter by 'تسبيح وتنزيه'
+      final tasbeehTab = find.textContaining('التسبيح والتحميد');
+      expect(tasbeehTab, findsWidgets);
+      await tester.tap(tasbeehTab.first);
       await tester.pumpAndSettle();
 
+      final tasbeehChip = find.text('تسبيح وتنزيه');
+      expect(tasbeehChip, findsWidgets);
+      await tester.tap(tasbeehChip.first);
+      await tester.pumpAndSettle();
       expect(repo.activeDhikr.category, 'تسبيح وتنزيه');
+    });
+
+    test('TasbeehRepository setActiveSection switches active dhikr between sections', () {
+      repo.setActiveSection(DhikrSection.istighfar);
+      expect(repo.activeSection, DhikrSection.istighfar);
+      expect(repo.activeDhikr.isIstighfar, isTrue);
+
+      repo.setActiveSection(DhikrSection.tasbeeh);
+      expect(repo.activeSection, DhikrSection.tasbeeh);
+      expect(repo.activeDhikr.isTasbeeh, isTrue);
+      expect(repo.activeDhikr.id, TasbeehDhikr.tasbeehDhikrs.first.id);
+
+      repo.setActiveSection(DhikrSection.istighfar);
+      expect(repo.activeSection, DhikrSection.istighfar);
+      expect(repo.activeDhikr.id, TasbeehDhikr.istighfarDhikrs.first.id);
+    });
+
+    testWidgets('TasbeehScreen changes target count via control chips', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
+      await tester.pumpAndSettle();
+
+      // Tap 33 target
+      final target33 = find.text('33 مرة');
+      expect(target33, findsOneWidget);
+      await tester.ensureVisible(target33);
+      await tester.tap(target33);
+      await tester.pumpAndSettle();
+      expect(repo.targetCount, 33);
+
+      // Tap Free Count (0)
+      final freeCount = find.text('عدّ حر (مفتوح)');
+      expect(freeCount, findsOneWidget);
+      await tester.ensureVisible(freeCount);
+      await tester.tap(freeCount);
+      await tester.pumpAndSettle();
+      expect(repo.targetCount, 0);
+
+      // Tap 100 target
+      final target100 = find.text('100 مرة');
+      expect(target100, findsOneWidget);
+      await tester.ensureVisible(target100);
+      await tester.tap(target100);
+      await tester.pumpAndSettle();
+      expect(repo.targetCount, 100);
+    });
+
+    testWidgets('TasbeehScreen copies dhikr text to clipboard', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
+      await tester.pumpAndSettle();
+
+      final copyButton = find.byTooltip('نسخ نص الذكر');
+      expect(copyButton, findsOneWidget);
+      await tester.tap(copyButton);
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('تم نسخ نص الذكر'), findsOneWidget);
     });
   });
 
