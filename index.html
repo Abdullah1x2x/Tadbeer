@@ -1,87 +1,212 @@
-
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#181914">
-  <meta name="description" content="تدبير، رفيقك في قراءة القرآن الكريم والتدبر في آياته.">
-  <title>تدبير | Tadbeer</title>
+  <meta name="description" content="تدبير (Tadbeer) — تطبيق قرآني مفتوح المصدر يعمل بالكامل دون إنترنت، يجمع بين قراءة المصحف الشريف، ومعجم معاني الكلمات، ووقفات التدبر، وشبكة روابط الآيات بخصوصية مطلقة.">
+  <link rel="icon" type="image/png" href="./assets/icons/app_logo.png">
+  <title>تدبير | Tadbeer — رفيق رحلة التدبر</title>
 
   <style>
+    @font-face {
+      font-family: 'AmiriWeb';
+      src: url('./assets/fonts/Amiri.ttf') format('truetype');
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'ScheherazadeWeb';
+      src: url('./assets/fonts/ScheherazadeNew-Regular.ttf') format('truetype');
+      font-display: swap;
+    }
+
     :root {
       --bg: #181914;
       --surface: #22241d;
+      --surface-alt: #282b22;
       --text: #f0f0e5;
       --muted: #b2b5a5;
       --olive: #a0a984;
+      --gold: #c9a84c;
       --border: #383b30;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: system-ui, sans-serif;
+      font-family: 'AmiriWeb', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       line-height: 1.9;
+      font-size: 1.05rem;
     }
 
     .container {
-      width: min(900px, 90%);
+      width: min(980px, 92%);
       margin-inline: auto;
     }
 
     header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(24, 25, 20, 0.92);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
     }
 
     nav {
-      min-height: 76px;
+      min-height: 74px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-block: 10px;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      object-fit: cover;
     }
 
     .brand {
       font-weight: 700;
-      font-size: 1.3rem;
+      font-size: 1.35rem;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.98rem;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--olive);
     }
 
     .hero {
-      padding-block: 100px 80px;
-      max-width: 700px;
+      padding-block: clamp(3.5rem, 6vw, 5.5rem) clamp(2.5rem, 5vw, 4rem);
+      max-width: 780px;
     }
 
     .eyebrow {
       color: var(--olive);
-      letter-spacing: .15em;
+      letter-spacing: 0.14em;
+      font-size: 0.9rem;
+      font-weight: 600;
     }
 
     h1 {
-      font-size: clamp(2.7rem, 7vw, 4.5rem);
-      line-height: 1.4;
-      margin: 14px 0;
+      font-size: clamp(2.4rem, 1.5rem + 4.5vw, 4.1rem);
+      line-height: 1.35;
+      margin: 12px 0 18px;
     }
 
-    p { color: var(--muted); }
+    h2 {
+      font-size: clamp(1.55rem, 1.2rem + 1.5vw, 2.1rem);
+      margin: 0 0 16px;
+      color: var(--text);
+    }
 
-    .description { font-size: 1.1rem; }
+    h3 {
+      font-size: 1.22rem;
+      margin: 0 0 8px;
+      color: var(--olive);
+    }
+
+    p {
+      color: var(--muted);
+      margin: 0 0 12px;
+    }
+
+    .verse-banner {
+      background: var(--surface);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin: 20px 0 24px;
+      font-family: 'ScheherazadeWeb', 'AmiriWeb', serif;
+      font-size: clamp(1.3rem, 1.1rem + 1vw, 1.65rem);
+      color: var(--text);
+      line-height: 2;
+    }
+
+    .verse-ref {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--gold);
+      margin-top: 6px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--olive);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+    }
+
+    .description {
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
 
     .links {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 28px;
+      margin-top: 26px;
     }
 
     .button {
-      padding: 10px 18px;
+      padding: 10px 20px;
       border: 1px solid var(--border);
       border-radius: 10px;
       color: var(--text);
       text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.15s ease, border-color 0.2s ease;
+    }
+
+    .button:hover {
+      border-color: var(--olive);
+      transform: translateY(-1px);
     }
 
     .primary {
@@ -91,8 +216,14 @@
     }
 
     section {
-      padding-block: 30px;
+      padding-block: 38px;
       border-top: 1px solid var(--border);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 16px;
     }
 
     .card {
@@ -102,42 +233,104 @@
       padding: 22px;
     }
 
-    footer {
-      margin-top: 45px;
-      padding-block: 24px;
-      border-top: 1px solid var(--border);
+    .card ul {
+      margin: 8px 0 0;
+      padding-inline-start: 20px;
       color: var(--muted);
-      font-size: .9rem;
     }
 
-    @media (max-width: 560px) {
-      .hero { padding-block: 65px; }
+    .card li {
+      margin-bottom: 8px;
+    }
+
+    .card strong {
+      color: var(--text);
+    }
+
+    .ltr-box {
+      direction: ltr;
+      text-align: left;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.96rem;
+      line-height: 1.75;
+      margin-top: 16px;
+    }
+
+    .inline-link {
+      color: var(--olive);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .meta-note {
+      font-size: 0.9rem;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    footer {
+      margin-top: 48px;
+      padding-block: 28px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.92rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .hero {
+        padding-block: 42px 28px;
+      }
     }
   </style>
 </head>
 
 <body>
   <header>
-    <nav class="container">
-      <div class="brand">تدبير · Tadbeer</div>
-      <span class="eyebrow">رفيق رحلة التدبر</span>
+    <nav class="container" aria-label="التنقل الرئيسي">
+      <a class="brand-wrap" href="#">
+        <img class="brand-logo" src="./assets/icons/app_logo.png" alt="شعار تطبيق تدبير" width="42" height="42">
+        <span class="brand">تدبير · Tadbeer</span>
+      </a>
+      <div class="nav-links">
+        <a href="#about">عن تدبير</a>
+        <a href="#features">المميزات</a>
+        <a href="#privacy">سياسة الخصوصية</a>
+        <a href="#licenses">التراخيص والمصادر</a>
+        <a href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </nav>
   </header>
 
   <main class="container">
     <div class="hero">
-      <div class="eyebrow">TADBEER</div>
+      <div class="badges">
+        <span class="badge">يعمل 100% دون إنترنت</span>
+        <span class="badge">مفتوح المصدر (MIT)</span>
+        <span class="badge">صفر إعلانات أو تتبع</span>
+        <span class="badge">خصوصية محلية مطلقة</span>
+      </div>
+
+      <div class="eyebrow">TADBEER · رفيق رحلة التدبر</div>
       <h1>القرآن هدى لخطواتك</h1>
 
+      <div class="verse-banner">
+        ﴿كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ وَلِيَتَذَكَّرَ أُولُو الْأَلْبَابِ﴾
+        <span class="verse-ref">سورة ص · الآية ٢٩</span>
+      </div>
+
       <p class="description">
-        مساحة هادئة لقراءة القرآن الكريم،
-        وتدوين ملاحظاتك، والعودة إلى الآيات
-        والتدبر فيها.
+        بيئة قرآنية هادئة ومفتوحة المصدر صُمّمت لتنقل علاقتك بالقرآن الكريم من مجرد التلاوة السريعة إلى الفهم العميق، والتدبر المنهجي، وربط الآيات، والعمل بهداياتها في حياتك اليومية — دون أي اتصال بالإنترنت أو مساس بخصوصيتك.
       </p>
 
       <div class="links">
-        <a class="button primary" href="#about">عن تدبير</a>
-        <a class="button" href="#privacy">الخصوصية والتراخيص</a>
+        <a class="button primary" href="#features">استكشف المميزات</a>
+        <a class="button" href="#privacy">سياسة الخصوصية (Privacy Policy)</a>
+        <a class="button" href="#licenses">التراخيص والمصادر</a>
+        <a class="button" href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">المستودع المصدري</a>
       </div>
     </div>
 
@@ -145,25 +338,133 @@
       <h2>عن تدبير</h2>
       <div class="card">
         <p>
-          تطبيق يرافقك في رحلة قراءة القرآن الكريم،
-          ويساعدك على تنظيم ملاحظاتك والعودة إليها.
+          <strong>تدبير (Tadbeer)</strong> هو تطبيق قرآني مجاني ومفتوح المصدر مبني بإطار العمل Flutter، يضع التدبر العملي في قلب تجربة القراءة. يجمع التطبيق بين المصحف الشريف بالرسم العثماني الموثق، ومعجم معاني الكلمات المفردة، ونظام وقفات التدبر الأربعة، وشبكة الروابط الموضوعية بين الآيات، ودفتر الخواطر القابل للتصدير.
+        </p>
+        <p>
+          يعمل التطبيق بالكامل محلياً على جهازك (Offline-First) دون طلب إذن الإنترنت، ودون أي خوادم وسيطة أو حسابات سحابية، لتبقى خواطرك وتأملاتك القرآنية ملكاً خالصاً لك.
         </p>
       </div>
     </section>
 
+    <section id="features">
+      <h2>المميزات الرئيسية</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>📖 مصحف متجاوب بـ 5 خطوط قرآنية</h3>
+          <p>
+            عرض كامل لصفحات المصحف الشريف الـ 604 بالرسم العثماني الموثق، مع دعم العرض المزدوج للشاشات العريضة، والتحكم الفوري بحجم الخط واختيار الخط المفضل من بين 5 خطوط قرآنية مفتوحة المصدر (الأميري القرآني، شهرزاد الجديد، نوتو نسخ، لطيف، هرمتان).
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>🌿 وقفات التدبّر الأربعة</h3>
+          <p>
+            نموذج تدبري منهجي مرافق لكل آية يوجّه القارئ عبر أربعة أسئلة جوهرية: ماذا أفهم من الآية؟ ما الشعور الذي تثيره؟ ماذا تعالج في نفسي؟ وما العمل التطبيقي الذي سألتزم به؟
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>📚 معجم معاني الكلمات المتزامن</h3>
+          <p>
+            يضم 6,465 معنى لغوياً معجمياً مفرداً يغطي كافة صفحات المصحف الـ 604، يُعرض في لوحة هامشية متزامنة لحظياً مع الصفحة التي تقرؤها أو عبر شاشة المعجم المستقلة.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>🔗 شبكة روابط الآيات ورمز QR</h3>
+          <p>
+            بناء شبكات ومسارات موضوعية تربط الآيات المتناظرة في المعنى مع عرض شبكي تفاعلي وعرض متسلسل، ومكتبة مسارات تدبرية جاهزة، ومشاركة فورية بين الأجهزة عبر رمز QR دون إنترنت.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>📝 دفتر التدبر والخواطر (PDF & Markdown)</h3>
+          <p>
+            تدوين الخواطر المرتبطة بالآيات أو الخواطر العامة، مع إمكانية تصدير دفتر التدبر الشامل أو الملاحظات في ملفات PDF وMarkdown منسقة وجاهزة للطباعة والمشاركة.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>🤲 الأدعية القرآنية والبحث الجذري</h3>
+          <p>
+            موسوعة تضم 88 دعاءً قرآنياً مباشراً مصنفة في 12 باباً موضوعياً، مع محرك بحث موحد فوري يدعم البحث بالجذر اللغوي العربي عبر 9 أقسام متزامنة.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <section id="privacy">
-      <h2>الخصوصية والمصادر</h2>
+      <h2>سياسة الخصوصية · Privacy Policy</h2>
+      <div class="card">
+        <div class="meta-note">تاريخ السريان والتحديث الأخير: 13 أكتوبر 2026 (Last Updated: October 13, 2026)</div>
+        <p>
+          صُمّم تطبيق <strong>تدبير (Tadbeer)</strong> وفق مبدأ <strong>الخصوصية المطلقة بالتصميم (Privacy by Design)</strong>:
+        </p>
+        <ul>
+          <li><strong>عدم جمع أي بيانات (Zero Data Collection):</strong> لا يجمع التطبيق أو يخزن على خوادم خارجية أو يشارك أي بيانات شخصية، أو معلومات هوية، أو سجلات قراءة، أو تحليلات استخدام، أو تقارير أعطال مع أي طرف ثالث.</li>
+          <li><strong>العمل الكامل دون اتصال بالإنترنت (100% Offline-First):</strong> لا يطلب التطبيق إذن الاتصال بالإنترنت (<code>android.permission.INTERNET</code>) في ملف البناء، ولا يجري أي اتصالات شبكية.</li>
+          <li><strong>التخزين المحلي والتشفير القياسي (Local Storage & AES-256 Encryption):</strong> تُحفظ كافة ملاحظاتك، ووقفات التدبر، والفواصل المرجعية، والتظليلات، وروابط الآيات محلياً داخل قاعدة بيانات جهازك فقط. وعند تصدير نسخة احتياطية (<code>.quranbackup</code>)، تُشفّر بياناتك محلياً بمعيار <strong>AES-256</strong> بكلمة مرور تختارها أنت.</li>
+          <li><strong>الأذونات المستخدمة والغرض منها (Device Permissions):</strong>
+            <ul>
+              <li><strong>الإشعارات المحلية (<code>POST_NOTIFICATIONS</code> / <code>RECEIVE_BOOT_COMPLETED</code> / <code>VIBRATE</code>):</strong> تُستخدم حصرياً لتشغيل منبهات الورد القرآني المحلي التي يجدولها المستخدم بنفسه داخل جهازه.</li>
+              <li><strong>مشاركة واختيار الملفات:</strong> تعمل فقط عند ضغط المستخدم يدوياً على زر تصدير أو استيراد النسخة الاحتياطية أو مشاركة آية أو ملف PDF عبر نافذة النظام القياسية.</li>
+            </ul>
+          </li>
+          <li><strong>خلو تام من الإعلانات والمتتبعات:</strong> لا يحتوي التطبيق على أي إعلانات تجارية أو حزم تتبع أو تحليلات خارجية.</li>
+        </ul>
+
+        <div class="ltr-box">
+          <h3>Official Privacy Policy Summary (English)</h3>
+          <p>
+            <strong>Tadbeer</strong> is an open-source, offline-first Quran contemplation application committed to 100% user privacy:
+          </p>
+          <ul>
+            <li><strong>No Data Collection or Sharing:</strong> Tadbeer does not collect, transmit, rent, or sell any personal data, device identifiers, location data, or usage analytics.</li>
+            <li><strong>No Internet Permission:</strong> The app does not declare <code>android.permission.INTERNET</code> and operates completely offline with zero external servers.</li>
+            <li><strong>Local-Only Storage &amp; Encrypted Backups:</strong> All user notes, reflections, bookmarks, highlights, and verse links are stored exclusively on the user's device in a local SQLite database. Optional backups (<code>.quranbackup</code>) are encrypted locally on-device using <strong>AES-256</strong> with a user-supplied password.</li>
+            <li><strong>Permissions Used:</strong> Notification permissions (<code>POST_NOTIFICATIONS</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>VIBRATE</code>) are used solely to deliver user-configured local reading reminders on the device.</li>
+            <li><strong>Zero Ads &amp; Zero Third-Party Trackers:</strong> The app contains no advertising SDKs, no telemetry, and no analytics frameworks.</li>
+            <li><strong>Contact &amp; Support:</strong> For any privacy questions or support inquiries, please open an issue on our official repository: <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/issues" target="_blank" rel="noopener">github.com/Abdullah-Alshami/Tadbeer/issues</a>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="licenses">
+      <h2>التراخيص والمصادر · Licenses &amp; Attribution</h2>
       <div class="card">
         <p>
-          ستُنشر هنا سياسة الخصوصية وتفاصيل تراخيص
-          المصادر المستخدمة في التطبيق قبل إطلاقه.
+          تطبيق <strong>تدبير</strong> مشروع مفتوح المصدر يلتزم التزاماً كاملاً بتراخيص المصادر القرآنية والخطوط الحاسوبية والبرمجيات الحرة:
         </p>
+        <ul>
+          <li><strong>ترخيص الشيفرة المصدرية للتطبيق:</strong> مرخصة بموجب رخصة <strong>MIT License</strong> (<a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/LICENSE" target="_blank" rel="noopener">ملف LICENSE</a>).</li>
+          <li><strong>النص القرآني ومعاني الكلمات:</strong>
+            <ul>
+              <li>بيانات المصحف الشريف ومعاني الكلمات المدمجة مستمدة من قاعدة بيانات مشروع <a class="inline-link" href="https://quranpedia.net" target="_blank" rel="noopener">Quranpedia.net</a> (إصدار 2026-10-10) المطروحة في الملكية العامة بموجب رخصة <strong>CC0 1.0 Universal Public Domain Dedication</strong>، ومن مشروع <a class="inline-link" href="https://tanzil.net" target="_blank" rel="noopener">Tanzil.net</a> بالرسم العثماني (بموجب رخصة <strong>CC-BY 3.0</strong>).</li>
+              <li>تم تحرير ومراجعة المفردات المعجمية الـ 6,465 بالاستئناس بـ <em>المعجم الوسيط</em> و<em>معجم ألفاظ القرآن الكريم</em> (مجمع اللغة العربية بالقاهرة) وأمهات المعاجم التراثية (<em>لسان العرب</em>، <em>مقاييس اللغة</em>، <em>مفردات الراغب الأصفهاني</em>).</li>
+            </ul>
+          </li>
+          <li><strong>الخطوط القرآنية وخطوط الواجهة (SIL Open Font License 1.1):</strong>
+            جميع الخطوط المضمنة مرخصة برخصة الخطوط المفتوحة <strong>SIL OFL-1.1</strong>:
+            <ul>
+              <li>خطا <code>Amiri Quran</code> و <code>Amiri</code> — تصميم د. خالد حسني (Amiri Font Project).</li>
+              <li>خطوط <code>Scheherazade New</code> و <code>Lateef</code> و <code>Harmattan</code> — تطوير مؤسسة SIL International.</li>
+              <li>خط <code>Noto Naskh Arabic</code> — تطوير Google / Monotype.</li>
+            </ul>
+          </li>
+          <li><strong>السجل القانوني الشامل للمكونات:</strong> يمكن الاطلاع على النصوص الكاملة لتراخيص جميع الحزم والمكتبات في ملف <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">THIRD_PARTY_NOTICES.md</a> وملف <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/ATTRIBUTION.md" target="_blank" rel="noopener">ATTRIBUTION.md</a>.</li>
+        </ul>
       </div>
     </section>
   </main>
 
   <footer class="container">
-    تدبير · Tadbeer
+    <div>تدبير · Tadbeer — مشروع قرآني مفتوح المصدر بترخيص MIT</div>
+    <div>
+      <a class="inline-link" href="#privacy">سياسة الخصوصية</a> ·
+      <a class="inline-link" href="#licenses">التراخيص</a> ·
+      <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">GitHub</a>
+    </div>
   </footer>
 </body>
 </html>
