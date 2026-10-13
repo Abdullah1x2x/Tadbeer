@@ -162,7 +162,7 @@ class SearchRegistry {
     String? providerId,
   }) async {
     final trimmed = query.trim();
-    if (trimmed.isEmpty) return const [];
+    if (providerId == null && trimmed.isEmpty) return const [];
 
     final targetProviders = providerId != null
         ? (_providers.containsKey(providerId)

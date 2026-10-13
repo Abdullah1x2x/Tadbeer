@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
@@ -14,6 +15,7 @@ import '../notes/notes_screen.dart';
 import '../quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../reminders/reminders_screen.dart';
+import '../search/search_provider.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import '../word_meanings/word_meanings_screen.dart';
@@ -171,6 +173,7 @@ class HomeScreen extends StatelessWidget {
     required bool isVeryCompact,
   }) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Settings Button (in place of the side menu button)
         _TopBarIconButton(
@@ -182,6 +185,19 @@ class HomeScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            );
+          },
+        ),
+        // Search Button in Top Bar
+        _TopBarIconButton(
+          icon: Icons.search_rounded,
+          tooltip: l10n.search,
+          isCompact: isCompact,
+          isVeryCompact: isVeryCompact,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SearchScreen()),
             );
           },
         ),
@@ -269,7 +285,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني شريط الانتقال السريع إلى شاشة البحث الشامل.
+  /// يبني شريط الانتقال السريع إلى شاشة البحث الشامل مع زر تصفية تفاعلي.
   Widget _buildGlobalSearchBar(
     BuildContext context,
     AppStrings l10n,
@@ -281,49 +297,183 @@ class HomeScreen extends StatelessWidget {
     final padH = isVeryCompact ? 12.0 : (isCompact ? 14.0 : 16.0);
     final iconSize = isVeryCompact ? 19.0 : (isCompact ? 20.0 : 22.0);
     final fontSize = isVeryCompact ? 12.5 : (isCompact ? 13.0 : 14.0);
+    final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const SearchScreen()),
-        );
-      },
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.search_rounded, color: AppColors.olive, size: iconSize),
-            SizedBox(width: isVeryCompact ? 8 : 12),
-            Expanded(
-              child: Text(
-                l10n.searchGlobalPlaceholder,
-                style: TextStyle(
-                  fontFamily: 'Amiri',
-                  fontSize: fontSize,
-                  color: isDark
-                      ? AppColors.nightSubtitle
-                      : AppColors.daySubtitle,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Icon(
-              Icons.tune_rounded,
-              size: isVeryCompact ? 16 : 18,
-              color: AppColors.olive.withValues(alpha: 0.6),
-            ),
-          ],
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : AppColors.comsilk,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
         ),
       ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SearchScreen()),
+            );
+          },
+          borderRadius: BorderRadius.circular(14),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.search_rounded,
+                  color: primaryColor,
+                  size: iconSize,
+                ),
+                SizedBox(width: isVeryCompact ? 8 : 12),
+                Expanded(
+                  child: Text(
+                    l10n.searchGlobalPlaceholder,
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: fontSize,
+                      color: isDark
+                          ? AppColors.nightSubtitle
+                          : AppColors.daySubtitle,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Semantics(
+                  button: true,
+                  label: l10n.filterSearchTitle,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => _showSearchFilterSheet(context),
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(
+                          Icons.tune_rounded,
+                          size: isVeryCompact ? 18 : 20,
+                          color: primaryColor.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// يعرض نافذة سفلية منبثقة لاختيار تصنيف البحث المطلوب مباشرة.
+  void _showSearchFilterSheet(BuildContext context) {
+    HapticFeedback.lightImpact();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final l10n = context.l10n;
+    final providers = SearchRegistry.instance.providers;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 14, 18, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 38,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Icon(Icons.tune_rounded, color: primaryColor, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.filterSearchTitle,
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightPrimaryDark,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  l10n.selectSearchSection,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.nightSubtitle
+                        : AppColors.daySubtitle,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ActionChip(
+                      avatar: const Icon(
+                        Icons.travel_explore_rounded,
+                        size: 16,
+                      ),
+                      label: Text(l10n.searchAll),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SearchScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    ...providers.map((p) {
+                      return ActionChip(
+                        avatar: Icon(p.icon, size: 16),
+                        label: Text(p.getSectionTitle(context)),
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SearchScreen(
+                                initialProviderId: p.id,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

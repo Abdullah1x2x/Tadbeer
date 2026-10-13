@@ -132,6 +132,14 @@ class AppStrings {
   String get searchNotesHint =>
       isArabic ? 'ابحث في الملاحظات...' : 'Search notes...';
   String get tadbeerSectionTitle => isArabic ? 'التدبر' : 'Tadbeer';
+  String get wordMeanings => isArabic ? 'معاني الكلمات' : 'Word Meanings';
+  String get searchInAllSections =>
+      isArabic ? 'البحث في جميع الأقسام' : 'Search in All Sections';
+  String get filterSearchTitle =>
+      isArabic ? 'تصفية نطاق البحث' : 'Filter Search Scope';
+  String get selectSearchSection => isArabic
+      ? 'اختر القسم المطلوب للبحث فيه مباشرة'
+      : 'Select a section to search directly';
   String get noSearchResults =>
       isArabic ? 'لا توجد نتائج مطابقة' : 'No matching results found';
 

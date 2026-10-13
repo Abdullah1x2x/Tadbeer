@@ -589,7 +589,7 @@ class WordMeaningsSearchProvider implements SearchProvider {
 
   /// يعيد عنوان قسم معاني الكلمات.
   @override
-  String getSectionTitle(BuildContext context) => 'معاني الكلمات';
+  String getSectionTitle(BuildContext context) => context.l10n.wordMeanings;
 
   /// أيقونة قسم معاني الكلمات.
   @override

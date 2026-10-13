@@ -428,5 +428,81 @@ void main() {
       // Navigated to SearchScreen
       expect(find.byType(SearchScreen), findsOneWidget);
     });
+
+    testWidgets('HomeScreen top bar search button navigates to SearchScreen', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const HomeScreen()));
+      await tester.pumpAndSettle();
+
+      // Top bar search button exists
+      final topBarSearchFinder = find.byTooltip('البحث');
+      expect(topBarSearchFinder, findsOneWidget);
+
+      await tester.tap(topBarSearchFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SearchScreen), findsOneWidget);
+    });
+
+    testWidgets('HomeScreen tune filter icon opens filter bottom sheet', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const HomeScreen()));
+      await tester.pumpAndSettle();
+
+      final tuneIconFinder = find.byIcon(Icons.tune_rounded);
+      expect(tuneIconFinder, findsOneWidget);
+
+      await tester.tap(tuneIconFinder);
+      await tester.pumpAndSettle();
+
+      // Bottom sheet with title is displayed
+      expect(find.text('تصفية نطاق البحث'), findsOneWidget);
+    });
+
+    testWidgets('SearchScreen switching filter chips dynamically updates results', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const SearchScreen()));
+      await tester.pumpAndSettle();
+
+      final textFieldFinder = find.byType(TextField);
+      await tester.enterText(textFieldFinder, 'الرحمن');
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Card), findsWidgets);
+
+      // Tap "المصحف" FilterChip to filter by Quran
+      final quranChipFinder = find.widgetWithText(FilterChip, 'المصحف');
+      expect(quranChipFinder, findsOneWidget);
+      await tester.tap(quranChipFinder);
+      await tester.pumpAndSettle();
+
+      // Results still show Quran matches under single section
+      expect(find.byType(Card), findsWidgets);
+
+      // Tap "المصحف" again to deselect back to All
+      await tester.tap(quranChipFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Card), findsWidgets);
+    });
+
+    testWidgets('SearchScreen opens with initialProviderId and populates section', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        buildTestWidget(const SearchScreen(initialProviderId: 'notes')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SearchScreen), findsOneWidget);
+      final notesChip = tester.widget<FilterChip>(
+        find.widgetWithText(FilterChip, 'الملاحظات'),
+      );
+      expect(notesChip.selected, isTrue);
+    });
   });
 }

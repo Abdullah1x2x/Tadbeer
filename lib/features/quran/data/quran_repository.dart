@@ -211,10 +211,13 @@ class QuranRepository {
 
   /// بحث لحظي في معاني الكلمات القرآنية المعتمدة ومفرداتها مع ترتيب الأولوية للمطابقة التامة والمباشرة.
   List<QuranWordMeaning> searchWordMeanings(String query, {int limit = 50}) {
-    if (!_isLoaded || query.trim().isEmpty) return const [];
+    if (!_isLoaded) return const [];
+    if (query.trim().isEmpty) {
+      return _wordMeanings.take(limit).toList();
+    }
 
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
-    if (normalizedQuery.isEmpty) return const [];
+    if (normalizedQuery.isEmpty) return _wordMeanings.take(limit).toList();
 
     final exactMatches = <QuranWordMeaning>[];
     final prefixMatches = <QuranWordMeaning>[];
