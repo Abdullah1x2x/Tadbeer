@@ -1,75 +1,162 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#181914">
-  <meta name="description" content="تدبير (Tadbeer) — تطبيق قرآني مفتوح المصدر يعمل بالكامل دون إنترنت، يجمع بين قراءة المصحف الشريف، ومعجم معاني الكلمات، ووقفات التدبر، وشبكة روابط الآيات بخصوصية مطلقة.">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    (function() {
+      try {
+        const stored = localStorage.getItem("tadbeer-theme");
+        if (stored === "dark" || stored === "light") {
+          document.documentElement.setAttribute("data-theme", stored);
+        } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <meta name="theme-color" content="#29483A" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121713" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="تَدْبِير (Tadbeer) — تطبيق قرآني مفتوح المصدر يعمل بالكامل دون إنترنت. يجمع بين تلاوة المصحف الشريف، ومعجم معاني الكلمات المتزامن، ووقفات التدبر المنهجية، وروابط الآيات بخصوصية مطلقة.">
   <link rel="icon" type="image/png" href="./assets/icons/app_logo.png">
-  <title>تدبير | Tadbeer — رفيق رحلة التدبر</title>
+  <title>تَدْبِير | Tadbeer — رفيق رحلة التدبر في كتاب الله</title>
 
   <style>
     @font-face {
       font-family: 'AmiriWeb';
-      src: url('./assets/fonts/Amiri.ttf') format('truetype');
+      src: url('./assets/fonts/Amiri-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'AmiriWeb';
+      src: url('./assets/fonts/Amiri-Bold.ttf') format('truetype');
+      font-weight: 700;
       font-display: swap;
     }
     @font-face {
       font-family: 'ScheherazadeWeb';
       src: url('./assets/fonts/ScheherazadeNew-Regular.ttf') format('truetype');
+      font-weight: 400;
       font-display: swap;
     }
 
+    /* -------------------------------------------------------------------------
+       🎨 DESIGN TOKENS — Derived strictly from Tadbeer AppColors (lib/app/theme.dart)
+       ------------------------------------------------------------------------- */
     :root {
-      --bg: #181914;
-      --surface: #22241d;
-      --surface-alt: #282b22;
-      --text: #f0f0e5;
-      --muted: #b2b5a5;
-      --olive: #a0a984;
-      --gold: #c9a84c;
-      --border: #383b30;
+      /* Base System Font Stack */
+      --font-body: 'AmiriWeb', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Arabic', sans-serif;
+      --font-quran: 'ScheherazadeWeb', 'AmiriWeb', serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      
+      /* Radius & Transitions */
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * {
+    /* ☀️ LIGHT THEME (Default) */
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #F6F3EA;             /* AppColors.lightBackground */
+      --surface: #EDE8DA;        /* AppColors.lightSurface */
+      --surface-card: #FFFFFF;
+      --surface-elevated: #F9F6EE;
+      --primary: #29483A;        /* AppColors.lightPrimary (Deep Forest Green) */
+      --primary-hover: #1C3329;  /* AppColors.lightPrimaryDark */
+      --primary-light: rgba(41, 72, 58, 0.08);
+      --accent-gold: #A88A55;    /* AppColors.lightAccentGold */
+      --accent-gold-soft: rgba(168, 138, 85, 0.15);
+      --text: #292824;           /* AppColors.lightTextPrimary */
+      --text-muted: #6F6B61;     /* AppColors.lightTextSecondary */
+      --border: #D4CBB8;         /* AppColors.lightBorder */
+      --border-subtle: rgba(41, 72, 58, 0.1);
+      --nav-bg: rgba(246, 243, 234, 0.88);
+      --shadow-sm: 0 2px 8px rgba(41, 72, 58, 0.05);
+      --shadow-md: 0 8px 24px -4px rgba(41, 72, 58, 0.08);
+      --shadow-lg: 0 16px 36px -6px rgba(41, 72, 58, 0.12);
+      --tag-bg: #E3DDCF;
+      --glow: rgba(168, 138, 85, 0.25);
+    }
+
+    /* 🌙 DARK THEME */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #121713;             /* AppColors.darkBackground */
+      --surface: #1C241F;        /* AppColors.darkSurface */
+      --surface-card: #18201B;
+      --surface-elevated: #222C26;
+      --primary: #3D6652;        /* AppColors.darkPrimary */
+      --primary-hover: #4E8067;
+      --primary-light: rgba(61, 102, 82, 0.2);
+      --accent-gold: #C0A66B;    /* AppColors.darkAccentGold */
+      --accent-gold-soft: rgba(192, 166, 107, 0.18);
+      --text: #E7E2D7;           /* AppColors.darkTextPrimary */
+      --text-muted: #AAA69C;     /* AppColors.darkTextSecondary */
+      --border: #384139;         /* AppColors.darkBorder */
+      --border-subtle: rgba(231, 226, 215, 0.08);
+      --nav-bg: rgba(18, 23, 19, 0.88);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+      --shadow-lg: 0 16px 36px -6px rgba(0, 0, 0, 0.6);
+      --tag-bg: #27332C;
+      --glow: rgba(192, 166, 107, 0.2);
+    }
+
+    /* -------------------------------------------------------------------------
+       RESET & BASE STYLES
+       ------------------------------------------------------------------------- */
+    *, *::before, *::after {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     html {
       scroll-behavior: smooth;
+      font-size: 16px;
     }
 
     body {
-      margin: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: 'AmiriWeb', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.9;
-      font-size: 1.05rem;
+      font-family: var(--font-body);
+      line-height: 1.85;
+      transition: background-color var(--transition-smooth), color var(--transition-smooth);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     .container {
-      width: min(980px, 92%);
+      width: min(1120px, 92%);
       margin-inline: auto;
     }
 
+    /* -------------------------------------------------------------------------
+       HEADER & NAVIGATION
+       ------------------------------------------------------------------------- */
     header {
       position: sticky;
       top: 0;
-      z-index: 10;
-      background: rgba(24, 25, 20, 0.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background-color var(--transition-smooth), border-color var(--transition-smooth);
     }
 
     nav {
-      min-height: 74px;
+      min-height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      padding-block: 10px;
+      gap: 16px;
     }
 
     .brand-wrap {
@@ -84,387 +171,1126 @@
       width: 42px;
       height: 42px;
       aspect-ratio: 1;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
       object-fit: cover;
+      transition: transform var(--transition-fast);
     }
 
-    .brand {
-      font-weight: 700;
+    .brand-wrap:hover .brand-logo {
+      transform: scale(1.05);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
       font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text);
     }
 
-    .nav-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.98rem;
-      transition: color 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--olive);
-    }
-
-    .hero {
-      padding-block: clamp(3.5rem, 6vw, 5.5rem) clamp(2.5rem, 5vw, 4rem);
-      max-width: 780px;
-    }
-
-    .eyebrow {
-      color: var(--olive);
-      letter-spacing: 0.14em;
-      font-size: 0.9rem;
+    .brand-tagline {
+      font-size: 0.78rem;
+      color: var(--accent-gold);
       font-weight: 600;
+      letter-spacing: 0.05em;
     }
 
-    h1 {
-      font-size: clamp(2.4rem, 1.5rem + 4.5vw, 4.1rem);
-      line-height: 1.35;
-      margin: 12px 0 18px;
-    }
-
-    h2 {
-      font-size: clamp(1.55rem, 1.2rem + 1.5vw, 2.1rem);
-      margin: 0 0 16px;
-      color: var(--text);
-    }
-
-    h3 {
-      font-size: 1.22rem;
-      margin: 0 0 8px;
-      color: var(--olive);
-    }
-
-    p {
-      color: var(--muted);
-      margin: 0 0 12px;
-    }
-
-    .verse-banner {
-      background: var(--surface);
-      border: 1px solid rgba(201, 168, 76, 0.35);
-      border-radius: 14px;
-      padding: 18px 22px;
-      margin: 20px 0 24px;
-      font-family: 'ScheherazadeWeb', 'AmiriWeb', serif;
-      font-size: clamp(1.3rem, 1.1rem + 1vw, 1.65rem);
-      color: var(--text);
-      line-height: 2;
-    }
-
-    .verse-ref {
-      display: block;
-      font-size: 0.95rem;
-      color: var(--gold);
-      margin-top: 6px;
-    }
-
-    .badges {
+    .nav-actions {
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      transition: color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .nav-menu a:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-pill);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .theme-toggle-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-gold);
+    }
+
+    .theme-toggle-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sun-icon { display: none; }
+    .moon-icon { display: block; }
+    html[data-theme="dark"] .sun-icon { display: block; }
+    html[data-theme="dark"] .moon-icon { display: none; }
+
+    /* GitHub Nav Button */
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      background: var(--primary);
+      color: #FFFFFF !important;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .btn-github:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-github svg {
+      width: 17px;
+      height: 17px;
+      fill: currentColor;
+    }
+
+    /* -------------------------------------------------------------------------
+       HERO SECTION
+       ------------------------------------------------------------------------- */
+    .hero {
+      padding-block: clamp(3.5rem, 6vw, 6rem) clamp(2.5rem, 5vw, 4.5rem);
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: var(--radius-pill);
+      background: var(--primary-light);
+      border: 1px solid var(--border);
+      color: var(--primary);
+      font-size: 0.88rem;
+      font-weight: 700;
       margin-bottom: 20px;
     }
 
-    .badge {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      color: var(--olive);
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 0.88rem;
+    html[data-theme="dark"] .hero-badge-wrap {
+      color: var(--accent-gold);
     }
 
-    .description {
-      font-size: 1.15rem;
-      color: var(--muted);
-    }
-
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 26px;
-    }
-
-    .button {
-      padding: 10px 20px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+    .hero-title {
+      font-size: clamp(2.3rem, 1.6rem + 3.8vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.32;
+      letter-spacing: -0.01em;
+      margin-bottom: 22px;
       color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      transition: transform 0.15s ease, border-color 0.2s ease;
     }
 
-    .button:hover {
-      border-color: var(--olive);
-      transform: translateY(-1px);
+    .hero-title span {
+      color: var(--primary);
+    }
+    html[data-theme="dark"] .hero-title span {
+      color: var(--accent-gold);
     }
 
-    .primary {
-      background: var(--olive);
-      color: var(--bg);
-      border-color: var(--olive);
+    .hero-description {
+      font-size: clamp(1.1rem, 1rem + 0.5vw, 1.3rem);
+      color: var(--text-muted);
+      max-width: 780px;
+      margin-inline: auto;
+      margin-bottom: 32px;
+      line-height: 1.95;
     }
 
-    section {
-      padding-block: 38px;
-      border-top: 1px solid var(--border);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 16px;
-    }
-
-    .card {
+    /* Verse Highlight Banner */
+    .hero-verse-card {
+      max-width: 820px;
+      margin-inline: auto;
+      margin-bottom: 38px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
+      border-radius: var(--radius-lg);
+      padding: clamp(20px, 3.5vw, 32px);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
     }
 
-    .card ul {
-      margin: 8px 0 0;
-      padding-inline-start: 20px;
-      color: var(--muted);
+    .hero-verse-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, var(--glow), transparent 70%);
+      pointer-events: none;
     }
 
-    .card li {
+    .verse-text {
+      font-family: var(--font-quran);
+      font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.85rem);
+      line-height: 2.1;
+      color: var(--text);
+      display: block;
       margin-bottom: 8px;
     }
 
-    .card strong {
+    .verse-ref {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      display: inline-block;
+    }
+
+    /* Hero CTA Buttons */
+    .hero-cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 26px;
+      border-radius: var(--radius-md);
+      font-size: 1.02rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF !important;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-outline {
+      background: var(--surface-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+
+    /* Trust Pill Chips */
+    .trust-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      max-width: 900px;
+      margin-inline: auto;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--tag-bg);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.88rem;
+      font-weight: 600;
       color: var(--text);
     }
 
-    .ltr-box {
-      direction: ltr;
-      text-align: left;
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 0.96rem;
-      line-height: 1.75;
-      margin-top: 16px;
+    .chip-icon {
+      color: var(--accent-gold);
     }
 
-    .inline-link {
-      color: var(--olive);
-      text-decoration: underline;
-      text-underline-offset: 4px;
+    /* -------------------------------------------------------------------------
+       SECTIONS
+       ------------------------------------------------------------------------- */
+    section {
+      padding-block: clamp(48px, 6vw, 76px);
+      border-top: 1px solid var(--border-subtle);
     }
 
-    .meta-note {
-      font-size: 0.9rem;
-      color: var(--gold);
+    .section-header {
+      text-align: center;
+      max-width: 680px;
+      margin-inline: auto;
+      margin-bottom: clamp(36px, 5vw, 54px);
+    }
+
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.6rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
       margin-bottom: 12px;
     }
 
-    footer {
-      margin-top: 48px;
-      padding-block: 28px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
+    .section-subtitle {
+      font-size: 1.08rem;
+      color: var(--text-muted);
+      line-height: 1.85;
+    }
+
+    /* -------------------------------------------------------------------------
+       FEATURES GRID
+       ------------------------------------------------------------------------- */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 22px;
+    }
+
+    .feature-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-gold);
+      box-shadow: var(--shadow-md);
+    }
+
+    .feature-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.85;
+      flex-grow: 1;
+    }
+
+    .feature-badge {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+      align-self: flex-start;
+    }
+
+    /* -------------------------------------------------------------------------
+       ABOUT & METHODOLOGY BANNER
+       ------------------------------------------------------------------------- */
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: clamp(28px, 4vw, 44px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .about-card p {
+      font-size: 1.08rem;
+      color: var(--text-muted);
+      line-height: 2;
+      margin-bottom: 16px;
+    }
+
+    .about-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .methodology-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 26px;
+    }
+
+    .method-step {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .method-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-pill);
+      background: var(--primary);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .method-step h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .method-step p {
       font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    /* -------------------------------------------------------------------------
+       PRIVACY POLICY SECTION (Bilingual Tabs / Display)
+       ------------------------------------------------------------------------- */
+    .privacy-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: clamp(24px, 4vw, 40px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .privacy-meta {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .privacy-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 34px;
+    }
+
+    .privacy-list li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: var(--text-muted);
+    }
+
+    .privacy-bullet {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    html[data-theme="dark"] .privacy-bullet {
+      color: var(--accent-gold);
+    }
+
+    .privacy-list strong {
+      color: var(--text);
+    }
+
+    /* English Summary for Store Reviewers */
+    .privacy-en-box {
+      direction: ltr;
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+
+    .privacy-en-box h4 {
+      font-size: 1.15rem;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .privacy-en-box ul {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+
+    .privacy-en-box li {
+      margin-bottom: 8px;
+    }
+
+    .privacy-en-box strong {
+      color: var(--text);
+    }
+
+    /* -------------------------------------------------------------------------
+       LICENSES & ATTRIBUTION SECTION
+       ------------------------------------------------------------------------- */
+    .licenses-table-wrap {
+      overflow-x: auto;
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .licenses-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: 0.98rem;
+    }
+
+    .licenses-table th, .licenses-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .licenses-table th {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .licenses-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .license-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--tag-bg);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.84rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    html[data-theme="dark"] .license-badge {
+      color: var(--accent-gold);
+    }
+
+    .legal-links {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
       gap: 12px;
+      margin-top: 24px;
+      justify-content: center;
+    }
+
+    .legal-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .legal-link-btn:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+    }
+
+    /* -------------------------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------------------------- */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding-block: 42px 32px;
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 0.94rem;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-copy {
+      width: 100%;
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.88rem;
+    }
+
+    /* -------------------------------------------------------------------------
+       RESPONSIVE MEDIA QUERIES
+       ------------------------------------------------------------------------- */
+    @media (max-width: 860px) {
+      .nav-menu {
+        display: none; /* Keep clean on small screens; actions remain accessible */
+      }
     }
 
     @media (max-width: 600px) {
       .hero {
-        padding-block: 42px 28px;
+        padding-block: 36px 28px;
+      }
+      .btn {
+        width: 100%;
+      }
+      .hero-cta-group {
+        flex-direction: column;
+      }
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
       }
     }
   </style>
 </head>
 
 <body>
+  <!-- -----------------------------------------------------------------------
+       HEADER & NAVIGATION
+       ----------------------------------------------------------------------- -->
   <header>
     <nav class="container" aria-label="التنقل الرئيسي">
       <a class="brand-wrap" href="#">
-        <img class="brand-logo" src="./assets/icons/app_logo.png" alt="شعار تطبيق تدبير" width="42" height="42">
-        <span class="brand">تدبير · Tadbeer</span>
+        <img class="brand-logo" src="./assets/icons/app_logo.png" alt="شعار تطبيق تَدْبِير" width="42" height="42">
+        <div class="brand-text">
+          <span class="brand-title">تَدْبِير</span>
+          <span class="brand-tagline">Tadbeer</span>
+        </div>
       </a>
-      <div class="nav-links">
-        <a href="#about">عن تدبير</a>
-        <a href="#features">المميزات</a>
-        <a href="#privacy">سياسة الخصوصية</a>
-        <a href="#licenses">التراخيص والمصادر</a>
-        <a href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">GitHub</a>
+
+      <div class="nav-actions">
+        <ul class="nav-menu">
+          <li><a href="#features">المميزات</a></li>
+          <li><a href="#about">عن التطبيق</a></li>
+          <li><a href="#privacy">الخصوصية</a></li>
+          <li><a href="#licenses">التراخيص</a></li>
+        </ul>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="تبديل وضع المظهر (فاتح / داكن)" title="تبديل وضع المظهر">
+          <!-- Sun Icon for switching to light -->
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <!-- Moon Icon for switching to dark -->
+          <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- GitHub Repo Button -->
+        <a class="btn-github" href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener" aria-label="المستودع المصدري على GitHub">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
       </div>
     </nav>
   </header>
 
-  <main class="container">
-    <div class="hero">
-      <div class="badges">
-        <span class="badge">يعمل 100% دون إنترنت</span>
-        <span class="badge">مفتوح المصدر (MIT)</span>
-        <span class="badge">صفر إعلانات أو تتبع</span>
-        <span class="badge">خصوصية محلية مطلقة</span>
-      </div>
+  <!-- -----------------------------------------------------------------------
+       MAIN CONTENT
+       ----------------------------------------------------------------------- -->
+  <main>
+    <!-- HERO -->
+    <div class="container">
+      <section class="hero" style="border-top: none;">
+        <div class="hero-badge-wrap">
+          <span>✨ تطبيق قرآني مفتوح المصدر · Offline-First 100%</span>
+        </div>
 
-      <div class="eyebrow">TADBEER · رفيق رحلة التدبر</div>
-      <h1>القرآن هدى لخطواتك</h1>
+        <h1 class="hero-title">
+          القرآن هدى لخطواتك<br><span>وميدان تدبّرك</span>
+        </h1>
 
-      <div class="verse-banner">
-        ﴿كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ وَلِيَتَذَكَّرَ أُولُو الْأَلْبَابِ﴾
-        <span class="verse-ref">سورة ص · الآية ٢٩</span>
-      </div>
+        <div class="hero-verse-card">
+          <span class="verse-text">﴿كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ وَلِيَتَذَكَّرَ أُولُو الْأَلْبَابِ﴾</span>
+          <span class="verse-ref">سورة ص · الآية ٢٩</span>
+        </div>
 
-      <p class="description">
-        بيئة قرآنية هادئة ومفتوحة المصدر صُمّمت لتنقل علاقتك بالقرآن الكريم من مجرد التلاوة السريعة إلى الفهم العميق، والتدبر المنهجي، وربط الآيات، والعمل بهداياتها في حياتك اليومية — دون أي اتصال بالإنترنت أو مساس بخصوصيتك.
-      </p>
+        <p class="hero-description">
+          مساحة هادئة ومفتوحة المصدر صُمّمت لتنقل قراءتك للقرآن الكريم من مجرد التلاوة السريعة إلى الفهم العميق، والتدبر المنهجي، وربط الآيات، والعمل بهداياتها في حياتك اليومية — دون أي اتصال بالإنترنت أو مساس بخصوصيتك.
+        </p>
 
-      <div class="links">
-        <a class="button primary" href="#features">استكشف المميزات</a>
-        <a class="button" href="#privacy">سياسة الخصوصية (Privacy Policy)</a>
-        <a class="button" href="#licenses">التراخيص والمصادر</a>
-        <a class="button" href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">المستودع المصدري</a>
-      </div>
+        <div class="hero-cta-group">
+          <a class="btn btn-primary" href="https://github.com/Abdullah-Alshami/Tadbeer/releases" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>تحميل التطبيق (Releases / APK)</span>
+          </a>
+          <a class="btn btn-outline" href="#features">
+            <span>استكشف المميزات</span>
+          </a>
+          <a class="btn btn-outline" href="#privacy">
+            <span>سياسة الخصوصية</span>
+          </a>
+        </div>
+
+        <div class="trust-chips">
+          <span class="chip"><span class="chip-icon">✦</span> يعمل 100% دون إنترنت</span>
+          <span class="chip"><span class="chip-icon">✦</span> مفتوح المصدر (MIT)</span>
+          <span class="chip"><span class="chip-icon">✦</span> صفر إعلانات أو تتبع</span>
+          <span class="chip"><span class="chip-icon">✦</span> 5 خطوط قرآنية أصيلة</span>
+          <span class="chip"><span class="chip-icon">✦</span> 6,465 معنى كلمة مفرد</span>
+          <span class="chip"><span class="chip-icon">✦</span> نسخ احتياطي مشفر (AES-256)</span>
+        </div>
+      </section>
     </div>
 
-    <section id="about">
-      <h2>عن تدبير</h2>
-      <div class="card">
-        <p>
-          <strong>تدبير (Tadbeer)</strong> هو تطبيق قرآني مجاني ومفتوح المصدر مبني بإطار العمل Flutter، يضع التدبر العملي في قلب تجربة القراءة. يجمع التطبيق بين المصحف الشريف بالرسم العثماني الموثق، ومعجم معاني الكلمات المفردة، ونظام وقفات التدبر الأربعة، وشبكة الروابط الموضوعية بين الآيات، ودفتر الخواطر القابل للتصدير.
-        </p>
-        <p>
-          يعمل التطبيق بالكامل محلياً على جهازك (Offline-First) دون طلب إذن الإنترنت، ودون أي خوادم وسيطة أو حسابات سحابية، لتبقى خواطرك وتأملاتك القرآنية ملكاً خالصاً لك.
-        </p>
-      </div>
-    </section>
-
+    <!-- FEATURES -->
     <section id="features">
-      <h2>المميزات الرئيسية</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>📖 مصحف متجاوب بـ 5 خطوط قرآنية</h3>
-          <p>
-            عرض كامل لصفحات المصحف الشريف الـ 604 بالرسم العثماني الموثق، مع دعم العرض المزدوج للشاشات العريضة، والتحكم الفوري بحجم الخط واختيار الخط المفضل من بين 5 خطوط قرآنية مفتوحة المصدر (الأميري القرآني، شهرزاد الجديد، نوتو نسخ، لطيف، هرمتان).
-          </p>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">إمكانات متكاملة للتدبر</span>
+          <h2 class="section-title">صُمّم ليعينك على الفهم والعمل</h2>
+          <p class="section-subtitle">أدوات عملية ومبتكرة تمزج بين جمال التلاوة وعمق التفكر، دون أي تعقيد أو تشتيت.</p>
         </div>
 
-        <div class="card">
-          <h3>🌿 وقفات التدبّر الأربعة</h3>
-          <p>
-            نموذج تدبري منهجي مرافق لكل آية يوجّه القارئ عبر أربعة أسئلة جوهرية: ماذا أفهم من الآية؟ ما الشعور الذي تثيره؟ ماذا تعالج في نفسي؟ وما العمل التطبيقي الذي سألتزم به؟
-          </p>
-        </div>
+        <div class="features-grid">
+          <!-- 1 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrap">📖</div>
+            <h3>مصحف متجاوب بـ 5 خطوط أصيلة</h3>
+            <p>
+              عرض كامل لصفحات المصحف الـ 604 بالرسم العثماني الموثق من مشروع تنزيل، مع دعم العرض المزدوج للأجهزة اللوحية، وتغيير حجم الخط (16–32 نقطة)، واختيار الخط المفضل من بين 5 خطوط قرآنية حرة: أميري قرآني، شهرزاد الجديد، نوتو نسخ، لطيف، وهرمتان.
+            </p>
+            <span class="feature-badge">هندسة متجاوبة Zero-Overflow</span>
+          </div>
 
-        <div class="card">
-          <h3>📚 معجم معاني الكلمات المتزامن</h3>
-          <p>
-            يضم 6,465 معنى لغوياً معجمياً مفرداً يغطي كافة صفحات المصحف الـ 604، يُعرض في لوحة هامشية متزامنة لحظياً مع الصفحة التي تقرؤها أو عبر شاشة المعجم المستقلة.
-          </p>
-        </div>
+          <!-- 2 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrap">🌿</div>
+            <h3>منهجية وقفات التدبّر الأربعة</h3>
+            <p>
+              بطاقة تدبرية منهجية ترافق كل آية، توجه القارئ للإجابة عن أربعة أسئلة تأصيلية: ماذا أفهم من الآية؟ ما الشعور الوجداني الذي تحركه؟ ماذا تعالج في نفسي؟ وما العمل التطبيقي الذي سألتزم به اليوم؟
+            </p>
+            <span class="feature-badge">تأصيل الفهم والتطبيق</span>
+          </div>
 
-        <div class="card">
-          <h3>🔗 شبكة روابط الآيات ورمز QR</h3>
-          <p>
-            بناء شبكات ومسارات موضوعية تربط الآيات المتناظرة في المعنى مع عرض شبكي تفاعلي وعرض متسلسل، ومكتبة مسارات تدبرية جاهزة، ومشاركة فورية بين الأجهزة عبر رمز QR دون إنترنت.
-          </p>
-        </div>
+          <!-- 3 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrap">📚</div>
+            <h3>معجم معاني الكلمات المتزامن</h3>
+            <p>
+              لوحة هامشية متزامنة لحظياً مع قارئ المصحف تتحدث آلياً عند تقليب كل صفحة، تضم 6,465 معنى لغوياً معجمياً مفرداً يغطي كافة صفحات المصحف الـ 604 بنسبة 100%، مستمدة من الموسوعة القرآنية والمعاجم التراثية المعتمدة.
+            </p>
+            <span class="feature-badge">تغطية تامة لكافة الصفحات</span>
+          </div>
 
-        <div class="card">
-          <h3>📝 دفتر التدبر والخواطر (PDF & Markdown)</h3>
-          <p>
-            تدوين الخواطر المرتبطة بالآيات أو الخواطر العامة، مع إمكانية تصدير دفتر التدبر الشامل أو الملاحظات في ملفات PDF وMarkdown منسقة وجاهزة للطباعة والمشاركة.
-          </p>
-        </div>
+          <!-- 4 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrap">🔗</div>
+            <h3>شبكة روابط الآيات ومشاركة QR</h3>
+            <p>
+              ربط موضوعي تفاعلي بين الآيات المتناظرة في المعنى عبر السور، مع عرضين متميزين (مخطط شبكي بصري وقائمة متسلسلة)، ومكتبة مسارات تدبرية جاهزة، ومشاركة فورية بين الأجهزة عبر رمز QR دون الحاجة لأي اتصال بالإنترنت.
+            </p>
+            <span class="feature-badge">مشاركة دون خوادم سحابية</span>
+          </div>
 
-        <div class="card">
-          <h3>🤲 الأدعية القرآنية والبحث الجذري</h3>
-          <p>
-            موسوعة تضم 88 دعاءً قرآنياً مباشراً مصنفة في 12 باباً موضوعياً، مع محرك بحث موحد فوري يدعم البحث بالجذر اللغوي العربي عبر 9 أقسام متزامنة.
-          </p>
+          <!-- 5 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrap">📝</div>
+            <h3>دفتر التدبر والخواطر وتصدير PDF</h3>
+            <p>
+              تدوين الخواطر المرتبطة بآيات معينة أو الخواطر العامة، مع إمكانية تصدير الخاطرة كـ PDF، أو تصدير «دفتر التدبر الشامل» أسبوعياً أو شهرياً في ملفات PDF وMarkdown منسقة تتضمن إحصاءات تدبرية دقيقة.
+            </p>
+            <span class="feature-badge">أرشفة شخصية وإحصاءات</span>
+          </div>
+
+          <!-- 6 -->
+          <div class="feature-card">
+            <div class="feature-icon-wrap">🤲</div>
+            <h3>الأدعية القرآنية والبحث بالجذور</h3>
+            <p>
+              موسوعة تضم 88 دعاءً قرآنياً مباشراً مصنفة في 12 باباً موضوعياً، مع محرك بحث فوري موحد يستعلم 9 أقسام بالتوازي ويدعم البحث بالجذور اللغوية العربية (مثل <code>جذر:صبر</code> أو <code>جذر:رحم</code>).
+            </p>
+            <span class="feature-badge">بحث معجمي دقيق</span>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ABOUT & METHODOLOGY -->
+    <section id="about">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">رؤية تدبير</span>
+          <h2 class="section-title">لماذا «تَدْبِير»؟</h2>
+          <p class="section-subtitle">الانتقال بالعلاقة مع القرآن من مجرد التلاوة السريعة إلى التدبّر الواعي والعمل المستمر.</p>
+        </div>
+
+        <div class="about-card">
+          <p>
+            أنشئ مشروع <strong>تَدْبِير (Tadbeer)</strong> ليكون تطبيقاً قرآنياً هادئاً، خالياً من الإعلانات والإشعارات المشتتة، مبنياً على مبدأ <strong>العمل المحلي دون اتصال (Offline-First)</strong>. تظل جميع خواطرك وتأملاتك ووقفاتك التدبرية محفوظة محلياً داخل جهازك فقط في قاعدة بيانات SQLite مخصصة.
+          </p>
+
+          <div class="methodology-grid">
+            <div class="method-step">
+              <span class="method-step-num">١</span>
+              <h4>الفهم المعرفي</h4>
+              <p>تجريد معاني المفردات الغريبة والوقوف على المعنى المباشر للآية.</p>
+            </div>
+            <div class="method-step">
+              <span class="method-step-num">٢</span>
+              <h4>الأثر الوجداني</h4>
+              <p>استحضار المشاعر الإيمانية والخشوع التي تثيرها الآية في القلب.</p>
+            </div>
+            <div class="method-step">
+              <span class="method-step-num">٣</span>
+              <h4>التزكية والمحاسبة</h4>
+              <p>فحص النفس وكشف ما تعالجه الآية من أمراض باطنة وسلوكيات.</p>
+            </div>
+            <div class="method-step">
+              <span class="method-step-num">٤</span>
+              <h4>العمل التطبيقي</h4>
+              <p>تحويل الهداية القرآنية إلى التزام وسلوك ملموس في اليوم والليلة.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRIVACY POLICY (Required for Google Play & Apple App Store) -->
     <section id="privacy">
-      <h2>سياسة الخصوصية · Privacy Policy</h2>
-      <div class="card">
-        <div class="meta-note">تاريخ السريان والتحديث الأخير: 13 أكتوبر 2026 (Last Updated: October 13, 2026)</div>
-        <p>
-          صُمّم تطبيق <strong>تدبير (Tadbeer)</strong> وفق مبدأ <strong>الخصوصية المطلقة بالتصميم (Privacy by Design)</strong>:
-        </p>
-        <ul>
-          <li><strong>عدم جمع أي بيانات (Zero Data Collection):</strong> لا يجمع التطبيق أو يخزن على خوادم خارجية أو يشارك أي بيانات شخصية، أو معلومات هوية، أو سجلات قراءة، أو تحليلات استخدام، أو تقارير أعطال مع أي طرف ثالث.</li>
-          <li><strong>العمل الكامل دون اتصال بالإنترنت (100% Offline-First):</strong> لا يطلب التطبيق إذن الاتصال بالإنترنت (<code>android.permission.INTERNET</code>) في ملف البناء، ولا يجري أي اتصالات شبكية.</li>
-          <li><strong>التخزين المحلي والتشفير القياسي (Local Storage & AES-256 Encryption):</strong> تُحفظ كافة ملاحظاتك، ووقفات التدبر، والفواصل المرجعية، والتظليلات، وروابط الآيات محلياً داخل قاعدة بيانات جهازك فقط. وعند تصدير نسخة احتياطية (<code>.quranbackup</code>)، تُشفّر بياناتك محلياً بمعيار <strong>AES-256</strong> بكلمة مرور تختارها أنت.</li>
-          <li><strong>الأذونات المستخدمة والغرض منها (Device Permissions):</strong>
-            <ul>
-              <li><strong>الإشعارات المحلية (<code>POST_NOTIFICATIONS</code> / <code>RECEIVE_BOOT_COMPLETED</code> / <code>VIBRATE</code>):</strong> تُستخدم حصرياً لتشغيل منبهات الورد القرآني المحلي التي يجدولها المستخدم بنفسه داخل جهازه.</li>
-              <li><strong>مشاركة واختيار الملفات:</strong> تعمل فقط عند ضغط المستخدم يدوياً على زر تصدير أو استيراد النسخة الاحتياطية أو مشاركة آية أو ملف PDF عبر نافذة النظام القياسية.</li>
-            </ul>
-          </li>
-          <li><strong>خلو تام من الإعلانات والمتتبعات:</strong> لا يحتوي التطبيق على أي إعلانات تجارية أو حزم تتبع أو تحليلات خارجية.</li>
-        </ul>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">الخصوصية بالتصميم</span>
+          <h2 class="section-title">سياسة الخصوصية · Privacy Policy</h2>
+          <p class="section-subtitle">التزام كامل وصارم بحماية خصوصية المستخدم، معتمد للنشر على كافة المتاجر الرسمية.</p>
+        </div>
 
-        <div class="ltr-box">
-          <h3>Official Privacy Policy Summary (English)</h3>
-          <p>
-            <strong>Tadbeer</strong> is an open-source, offline-first Quran contemplation application committed to 100% user privacy:
-          </p>
-          <ul>
-            <li><strong>No Data Collection or Sharing:</strong> Tadbeer does not collect, transmit, rent, or sell any personal data, device identifiers, location data, or usage analytics.</li>
-            <li><strong>No Internet Permission:</strong> The app does not declare <code>android.permission.INTERNET</code> and operates completely offline with zero external servers.</li>
-            <li><strong>Local-Only Storage &amp; Encrypted Backups:</strong> All user notes, reflections, bookmarks, highlights, and verse links are stored exclusively on the user's device in a local SQLite database. Optional backups (<code>.quranbackup</code>) are encrypted locally on-device using <strong>AES-256</strong> with a user-supplied password.</li>
-            <li><strong>Permissions Used:</strong> Notification permissions (<code>POST_NOTIFICATIONS</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>VIBRATE</code>) are used solely to deliver user-configured local reading reminders on the device.</li>
-            <li><strong>Zero Ads &amp; Zero Third-Party Trackers:</strong> The app contains no advertising SDKs, no telemetry, and no analytics frameworks.</li>
-            <li><strong>Contact &amp; Support:</strong> For any privacy questions or support inquiries, please open an issue on our official repository: <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/issues" target="_blank" rel="noopener">github.com/Abdullah-Alshami/Tadbeer/issues</a>.</li>
+        <div class="privacy-card">
+          <div class="privacy-meta">
+            <span>تاريخ السريان: أكتوبر 2026</span> · <span>Last Updated: October 2026</span>
+          </div>
+
+          <ul class="privacy-list">
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>عدم جمع أي بيانات شخصية (Zero Data Collection):</strong>
+                لا يجمع التطبيق ولا يرسل ولا يشارك أي بيانات شخصية أو معرّفات أجهزة أو سجلات قراءة أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>العمل الكامل دون إنترنت (100% Offline-First):</strong>
+                لا يطلب التطبيق إذن الوصول للإنترنت (<code>android.permission.INTERNET</code>) في ملف البناء، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>التخزين المحلي والتشفير القياسي (Local Storage &amp; AES-256):</strong>
+                تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً على جهازك في قاعدة بيانات SQLite. وعند تصدير نسخة احتياطية (<code>.quranbackup</code>)، تُشفّر بياناتك محلياً بمعيار <strong>AES-256-CBC</strong> بكلمة مرور تختارها أنت مع ضغط Gzip وفحص سلامة SHA-256.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>الأذونات المستخدمة والغرض الحصري منها (Device Permissions):</strong>
+                تُستخدم أذونات الإشعارات المحلية (<code>POST_NOTIFICATIONS</code>) حصراً لتشغيل منبهات الورد اليومي التي يجدولها المستخدم بنفسه على جهازه، ولا تُستخدم لأي أغراض ترويجية.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>خلو تام من الإعلانات والمتتبعات (Zero Ads &amp; Trackers):</strong>
+                التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.
+              </div>
+            </li>
           </ul>
+
+          <!-- English Policy Summary for App Store & Google Play Reviewers -->
+          <div class="privacy-en-box">
+            <h4>Official Privacy Policy Summary (English)</h4>
+            <p>
+              <strong>Tadbeer</strong> is an open-source, offline-first Quran contemplation application built with Flutter, strictly committed to user privacy:
+            </p>
+            <ul>
+              <li><strong>Zero Data Collection:</strong> Tadbeer does not collect, track, transmit, rent, or sell any personal data, usage analytics, or device identifiers.</li>
+              <li><strong>Offline Operation:</strong> The application does not declare <code>android.permission.INTERNET</code> and makes zero network requests. All functionality executes locally on-device.</li>
+              <li><strong>Local Persistence &amp; AES-256 Backups:</strong> All user notes, reflections, bookmarks, highlights, and verse links reside exclusively within the local SQLite database. User-initiated backups (<code>.quranbackup</code>) are encrypted locally using AES-256-CBC with a user-supplied password.</li>
+              <li><strong>Permissions:</strong> Notification permissions (<code>POST_NOTIFICATIONS</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>VIBRATE</code>) are utilized solely to trigger local, user-scheduled Quran reading reminders.</li>
+              <li><strong>Zero Third-Party SDKs:</strong> Contains no third-party telemetry, no analytics frameworks, and no advertising SDKs.</li>
+              <li><strong>Inquiries &amp; Support:</strong> For privacy inquiries, please open an issue on our official GitHub repository: <a href="https://github.com/Abdullah-Alshami/Tadbeer/issues" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: underline;">github.com/Abdullah-Alshami/Tadbeer/issues</a>.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- LICENSES & ATTRIBUTION -->
     <section id="licenses">
-      <h2>التراخيص والمصادر · Licenses &amp; Attribution</h2>
-      <div class="card">
-        <p>
-          تطبيق <strong>تدبير</strong> مشروع مفتوح المصدر يلتزم التزاماً كاملاً بتراخيص المصادر القرآنية والخطوط الحاسوبية والبرمجيات الحرة:
-        </p>
-        <ul>
-          <li><strong>ترخيص الشيفرة المصدرية للتطبيق:</strong> مرخصة بموجب رخصة <strong>MIT License</strong> (<a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/LICENSE" target="_blank" rel="noopener">ملف LICENSE</a>).</li>
-          <li><strong>النص القرآني ومعاني الكلمات:</strong>
-            <ul>
-              <li>بيانات المصحف الشريف ومعاني الكلمات المدمجة مستمدة من قاعدة بيانات مشروع <a class="inline-link" href="https://quranpedia.net" target="_blank" rel="noopener">Quranpedia.net</a> (إصدار 2026-10-10) المطروحة في الملكية العامة بموجب رخصة <strong>CC0 1.0 Universal Public Domain Dedication</strong>، ومن مشروع <a class="inline-link" href="https://tanzil.net" target="_blank" rel="noopener">Tanzil.net</a> بالرسم العثماني (بموجب رخصة <strong>CC-BY 3.0</strong>).</li>
-              <li>تم تحرير ومراجعة المفردات المعجمية الـ 6,465 بالاستئناس بـ <em>المعجم الوسيط</em> و<em>معجم ألفاظ القرآن الكريم</em> (مجمع اللغة العربية بالقاهرة) وأمهات المعاجم التراثية (<em>لسان العرب</em>، <em>مقاييس اللغة</em>، <em>مفردات الراغب الأصفهاني</em>).</li>
-            </ul>
-          </li>
-          <li><strong>الخطوط القرآنية وخطوط الواجهة (SIL Open Font License 1.1):</strong>
-            جميع الخطوط المضمنة مرخصة برخصة الخطوط المفتوحة <strong>SIL OFL-1.1</strong>:
-            <ul>
-              <li>خطا <code>Amiri Quran</code> و <code>Amiri</code> — تصميم د. خالد حسني (Amiri Font Project).</li>
-              <li>خطوط <code>Scheherazade New</code> و <code>Lateef</code> و <code>Harmattan</code> — تطوير مؤسسة SIL International.</li>
-              <li>خط <code>Noto Naskh Arabic</code> — تطوير Google / Monotype.</li>
-            </ul>
-          </li>
-          <li><strong>السجل القانوني الشامل للمكونات:</strong> يمكن الاطلاع على النصوص الكاملة لتراخيص جميع الحزم والمكتبات في ملف <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">THIRD_PARTY_NOTICES.md</a> وملف <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/ATTRIBUTION.md" target="_blank" rel="noopener">ATTRIBUTION.md</a>.</li>
-        </ul>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">المصادر والتراخيص المفتوحة</span>
+          <h2 class="section-title">سجل التراخيص والإسناد</h2>
+          <p class="section-subtitle">التزام كامل بنسب الفضل لأهله وتوافق تام مع تراخيص البرمجيات الحرة والمصادر القرآنية.</p>
+        </div>
+
+        <div class="licenses-table-wrap">
+          <table class="licenses-table">
+            <thead>
+              <tr>
+                <th>المكوّن</th>
+                <th>المصدر الرسمي</th>
+                <th>نوع الترخيص</th>
+                <th>الاستخدام في التطبيق</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>الشيفرة المصدرية لتطبيق تدبير</strong></td>
+                <td>مستودع المشروع المفتوح</td>
+                <td><span class="license-badge">MIT</span></td>
+                <td>البرمجية الرئيسية المفتوحة المصدر</td>
+              </tr>
+              <tr>
+                <td><strong>النص القرآني بالرسم العثماني</strong></td>
+                <td>مشروع تنزيل (Tanzil.net)</td>
+                <td><span class="license-badge">CC BY 3.0</span></td>
+                <td>نص المصحف الشريف المعتمد (6,236 آية)</td>
+              </tr>
+              <tr>
+                <td><strong>معجم معاني كلمات القرآن (6,465 مدخلاً)</strong></td>
+                <td>الموسوعة القرآنية (Quranpedia.net)</td>
+                <td><span class="license-badge">CC0 1.0</span></td>
+                <td>المعجم اللغوي المفرد المتزامن للمصحف</td>
+              </tr>
+              <tr>
+                <td><strong>الخطوط القرآنية الخمسة المعتمدة</strong></td>
+                <td>SIL International &amp; د. خالد حسني &amp; Google</td>
+                <td><span class="license-badge">SIL OFL-1.1</span></td>
+                <td>أميري قرآني، شهرزاد الجديد، نوتو نسخ، لطيف، وهرمتان</td>
+              </tr>
+              <tr>
+                <td><strong>إطار العمل وحزم واجهة المستخدم</strong></td>
+                <td>Flutter SDK &amp; Flutter Authors</td>
+                <td><span class="license-badge">BSD-3-Clause</span></td>
+                <td>محرك واجهة المستخدم وإضافات النظام</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="legal-links">
+          <a class="legal-link-btn" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/LICENSE" target="_blank" rel="noopener">
+            <span>ملف الترخيص (LICENSE)</span>
+          </a>
+          <a class="legal-link-btn" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/ATTRIBUTION.md" target="_blank" rel="noopener">
+            <span>ملف الإسناد (ATTRIBUTION.md)</span>
+          </a>
+          <a class="legal-link-btn" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">
+            <span>سجل إشعارات الأطراف الثالثة (THIRD_PARTY_NOTICES.md)</span>
+          </a>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="container">
-    <div>تدبير · Tadbeer — مشروع قرآني مفتوح المصدر بترخيص MIT</div>
-    <div>
-      <a class="inline-link" href="#privacy">سياسة الخصوصية</a> ·
-      <a class="inline-link" href="#licenses">التراخيص</a> ·
-      <a class="inline-link" href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">GitHub</a>
+  <!-- -----------------------------------------------------------------------
+       FOOTER
+       ----------------------------------------------------------------------- -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="./assets/icons/app_logo.png" alt="شعار تدبير" width="32" height="32" style="border-radius: 8px;">
+          <strong>تَدْبِير · Tadbeer</strong>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="#features">المميزات</a></li>
+          <li><a href="#about">عن التطبيق</a></li>
+          <li><a href="#privacy">سياسة الخصوصية</a></li>
+          <li><a href="#licenses">التراخيص</a></li>
+          <li><a href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">مستودع GitHub</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-copy">
+        حقوق النشر © 2026 مساهمو مشروع تَدْبِير (Tadbeer Contributors) · مرخّص بموجب رخصة MIT الحرة
+      </div>
     </div>
   </footer>
+
+  <!-- -----------------------------------------------------------------------
+       THEME TOGGLE JAVASCRIPT
+       ----------------------------------------------------------------------- -->
+  <script>
+    (function() {
+      const toggleBtn = document.getElementById('themeToggleBtn');
+      const htmlEl = document.documentElement;
+
+      function getEffectiveTheme() {
+        return htmlEl.getAttribute('data-theme') || 'light';
+      }
+
+      function setTheme(theme) {
+        htmlEl.setAttribute('data-theme', theme);
+        try {
+          localStorage.setItem('tadbeer-theme', theme);
+        } catch (e) {}
+      }
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          const current = getEffectiveTheme();
+          const next = current === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+        });
+      }
+
+      // Sync across browser tabs
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'tadbeer-theme' && (e.newValue === 'light' || e.newValue === 'dark')) {
+          htmlEl.setAttribute('data-theme', e.newValue);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
