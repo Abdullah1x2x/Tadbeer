@@ -1,53 +1,53 @@
-# إسناد المصادر والتراخيص (Attribution & Licenses)
+# Attribution & Licenses
 
-> **ملف مختصر يوضح مصادر النص القرآني، ومعاني الكلمات، والخطوط الحاسوبية، وتراخيص استخدامها وإسنادها في تطبيق «تَدْبِير» (Tadbeer).**
+> **A concise overview detailing the sources of the Noble Quran text, word meanings lexicon, typography fonts, and their respective licenses and attributions in Tadbeer (`تَدْبِير`).**
 
 ---
 
-## 1. النص القرآني الكريم (Holy Quran Text)
+## 1. Holy Quran Text
 
-| المكوّن | المصدر الرسمي | نوع الترخيص | بيان الاستخدام والالتزام |
+| Component | Official Source | License Type | Usage & Compliance Statement |
 | :--- | :--- | :--- | :--- |
-| **النص القرآني بالرسم العثماني** | [مشروع تنزيل (Tanzil Project)](https://tanzil.net/) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) | النص المعتمد للمصحف الشريف (114 سورة، 6,236 آية، 604 صفحات) مع الالتزام التام بعدم تغيير أو تحريف النص القرآني، وإسناد المصدر لمشروع تنزيل. |
+| **Quran Text in Uthmani Script** | [Tanzil Project](https://tanzil.net/) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) | The verified official text of the Noble Quran (114 Surahs, 6,236 Ayahs, 604 pages) with strict adherence to preserving the integrity of the sacred text with zero alterations, and explicit attribution to the Tanzil Project. |
 
 ---
 
-## 2. معجم معاني كلمات القرآن (Word Meanings Lexicon)
+## 2. Quran Vocabulary Lexicon (Word Meanings)
 
-| المكوّن | المصدر والرقمنة | المراجع المعجمية | نوع الترخيص |
+| Component | Source & Digitization | Scholarly & Lexicographical References | License Type |
 | :--- | :--- | :--- | :--- |
-| **معجم المفردات القرآنية (6,465 مدخلاً)** | [الموسوعة القرآنية (Quranpedia.net)](https://quranpedia.net) — إصدار `2026-10-10` | • **المعاجم التراثية (مشاع عام):** *لسان العرب* (ابن منظور)، *مقاييس اللغة* (ابن فارس)، *تاج العروس* (الزبيدي)، *مفردات ألفاظ القرآن* (الراغب الأصفهاني).<br>• **المراجع اللغوية:** *المعجم الوسيط* (مجمع اللغة العربية بالقاهرة). | [CC0 1.0 Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) (بيانات الموسوعة) + الملكية العامة التراثية |
+| **Quran Vocabulary Lexicon (6,465 entries)** | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) — Release `2026-10-10` | • **Classical Arabic Dictionaries (Public Domain):** *Lisan al-Arab* (Ibn Manzur), *Maqayis al-Lughah* (Ibn Faris), *Taj al-Arus* (al-Zabidi), *Mufradat Alfadh al-Quran* (al-Raghib al-Isfahani).<br>• **Linguistic References:** *Al-Mu'jam al-Wasit* (Academy of the Arabic Language, Cairo). | [CC0 1.0 Universal Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) (Encyclopedia dataset) + Classical Public Domain heritage |
 
 ---
 
-## 3. الخطوط الحاسوبية للمصحف والواجهة (Fonts)
+## 3. Typography & Quranic Fonts
 
-جميع الخطوط المضمّنة في التطبيق حرة ومفتوحة المصدر ومرخّصة بموجب **[رخصة الخطوط المفتوحة SIL Open Font License 1.1 (OFL-1.1)](https://openfontlicense.org/)**:
+All fonts bundled with the application are free, open source, and licensed under the **[SIL Open Font License 1.1 (OFL-1.1)](https://openfontlicense.org/)**:
 
-| الخط | المصدر والمؤلف | الترخيص | الاستخدام في التطبيق |
+| Font | Author & Source | License | Usage in Application |
 | :--- | :--- | :--- | :--- |
-| **Scheherazade New** (شهرزاد الجديد) | [SIL International](https://software.sil.org/scheherazade/) | SIL OFL-1.1 | خط قرآني أصيل لتصيير آيات المصحف |
-| **Noto Naskh Arabic** (نوتو نسخ) | [Google Fonts / Monotype](https://github.com/notofonts/arabic) | SIL OFL-1.1 | خط نسخ واضح ومقروء للمصحف |
-| **Harmattan** (هرمتان) | [SIL International](https://software.sil.org/harmattan/) | SIL OFL-1.1 | خط قرآني كلاسيكي لصفحات المصحف |
-| **Lateef** (لطيف) | [SIL International](https://software.sil.org/lateef/) | SIL OFL-1.1 | خط قرآني دقيق لصفحات المصحف |
-| **Amiri Quran** (أميري قرآني) | [د. خالد حسني (Alif Type)](https://github.com/aliftype/amiri) | SIL OFL-1.1 | خط نسخ قرآني مبني على مصحف بولاق |
-| **Amiri** (أميري للواجهة) | [د. خالد حسني (Alif Type)](https://github.com/aliftype/amiri) | SIL OFL-1.1 | عناوين السور، الأدعية، وواجهات التطبيق |
+| **Scheherazade New** (*شهرزاد الجديد*) | [SIL International](https://software.sil.org/scheherazade/) | SIL OFL-1.1 | Authentic Quranic typeface for rendering Mushaf ayahs |
+| **Noto Naskh Arabic** (*نوتو نسخ*) | [Google Fonts / Monotype](https://github.com/notofonts/arabic) | SIL OFL-1.1 | Clear, highly readable Naskh typeface for the Mushaf |
+| **Harmattan** (*هرمتان*) | [SIL International](https://software.sil.org/harmattan/) | SIL OFL-1.1 | Classic Quranic typeface for Mushaf pages |
+| **Lateef** (*لطيف*) | [SIL International](https://software.sil.org/lateef/) | SIL OFL-1.1 | Refined, elegant Quranic typeface for Mushaf pages |
+| **Amiri Quran** (*أميري قرآني*) | [Dr. Khaled Hosny (Alif Type)](https://github.com/aliftype/amiri) | SIL OFL-1.1 | Classical Quranic Naskh typeface based on the Bulaq Press edition |
+| **Amiri** (*أميري للواجهة*) | [Dr. Khaled Hosny (Alif Type)](https://github.com/aliftype/amiri) | SIL OFL-1.1 | Surah headers, Duas, and general application UI |
 
 ---
 
-## 4. خطوط الأيقونات والواجهات (Icon Fonts)
+## 4. Icon Fonts & UI Assets
 
-- **Material Design Icons:** خط أيقونات واجهة المستخدم الرسمي من Google مرخّص برخصة **[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)**.
-- **Flutter Islamic Icons:** حزمة الأيقونات الإسلامية للمصحف والمساجد مرخّصة برخصة **[BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause)**.
-
----
-
-## 5. الشيفرة المصدرية للتطبيق (Application Source Code)
-
-- كود التطبيق المصدري بالكامل متاح بموجب **[رخصة MIT (MIT License)](LICENSE)**.
-- شعار التطبيق وهوية التصميم تتبع ترخيص المشروع المفتوح المصدر.
+- **Material Design Icons:** Google LLC official user interface icon font, licensed under **[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)**.
+- **Flutter Islamic Icons:** Islamic icons package for mosques and Quranic elements, licensed under **[BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause)**.
 
 ---
 
-> **ملاحظة:** للاطلاع على السجل الشامل لجميع الحزم البرمجية والاعتماديات ونصوص التراخيص القانونية الكاملة، يُرجى الرجوع إلى ملف:  
+## 5. Application Source Code
+
+- The entire Tadbeer source code is freely available under the **[MIT License](LICENSE)**.
+- The application logo, icons, and visual design assets follow the project's open-source license.
+
+---
+
+> **Note:** For the complete, detailed audit register of all direct and transitive software dependencies along with full legal license texts, please refer to:  
 > **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**
