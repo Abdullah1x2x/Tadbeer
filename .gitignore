@@ -18,7 +18,7 @@ Thumbs.db
 .swiftpm/
 migrate_working_dir/
 __pycache__/
-
+logo.vectorcraft
 # =============================================================================
 # IDEs & Editors (IntelliJ, Android Studio, VS Code, Cursor, Antigravity)
 # =============================================================================
