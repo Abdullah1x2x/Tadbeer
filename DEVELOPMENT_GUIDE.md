@@ -41,7 +41,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (174 tests across 23 test files - 100% passing)
+# 3. Run automated tests (189 tests across 24 test files - 100% passing)
 flutter test
 
 # 4. Run application in debug mode
@@ -54,7 +54,7 @@ flutter build appbundle --release
 
 ---
 
-## 3. Codebase File Map (`lib/` — 58 Files)
+## 3. Codebase File Map (`lib/` — 64 Files)
 
 ```text
 lib/
@@ -76,7 +76,7 @@ lib/
 │       ├── note_pdf_exporter.dart        # Formatted single-note PDF exporter
 │       └── tadbeer_journal_exporter.dart # Reflection journal exporter (PDF & Markdown)
 │
-├── features/                         # Feature domain modules (46 files)
+├── features/                         # Feature domain modules (52 files)
 │   ├── ayah_links/                   # Thematic verse relationship graph (11 files)
 │   │   ├── ayah_link_detail_screen.dart, ayah_link_model.dart, ayah_link_repository.dart
 │   │   ├── ayah_links_screen.dart, curated_pathways.dart
@@ -84,6 +84,7 @@ lib/
 │   │   └── widgets/ (add_verse, picker, qr_dialog, create_link)
 │   ├── backup/                       # Encrypted backup UI (backup_screen.dart)
 │   ├── bookmarks/                    # Reading bookmarks (model, repo, screen - 3 files)
+│   ├── books/                        # Contemplation library & booklets (model, reader, screen - 3 files)
 │   ├── duas/                         # 88 Quranic duas catalog (model, repo, screen, card - 5 files)
 │   ├── highlights/                   # 4-color verse highlights (model, repo, screen - 3 files)
 │   ├── home/                         # Home dashboard & resume banner (home_screen.dart)
@@ -96,6 +97,7 @@ lib/
 │   ├── search/                       # Unified search system (providers, registry, screen - 3 files)
 │   ├── settings/                     # Appearance, font sizing/family, about (model, screen - 2 files)
 │   ├── tadbeer/                      # 4-prompt reflection worksheet (model, intro, sheet - 3 files)
+│   ├── tasbeeh/                      # Electronic tasbeeh & Istighfar counter (model, repo, screen - 3 files)
 │   └── word_meanings/                # Word meanings lexicon browser (word_meanings_screen.dart)
 │
 └── main.dart                         # Entrypoint & asynchronous engine bootstrap

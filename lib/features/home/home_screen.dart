@@ -8,6 +8,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/ayah_links_screen.dart';
 import '../backup/backup_screen.dart';
 import '../bookmarks/bookmarks_screen.dart';
+import '../books/books_screen.dart';
 import '../duas/duas_screen.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import '../highlights/highlights_screen.dart';
@@ -18,6 +19,7 @@ import '../reminders/reminders_screen.dart';
 import '../search/search_provider.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
+import '../tasbeeh/tasbeeh_screen.dart';
 import '../word_meanings/word_meanings_screen.dart';
 
 /// الشاشة الرئيسية لتطبيق تدبير وتضم لوحة الوصول السريع للمصحف وأدوات التدبر.
@@ -124,11 +126,41 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: spaceHeroToCore),
 
-                              // 2. Core 2x2 Feature Cards Grid
+                              // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)
+                              _IstighfarTasbeehCard(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const TasbeehScreen(),
+                                    ),
+                                  );
+                                },
+                                isCompact: isCompact,
+                                isVeryCompact: isVeryCompact,
+                              ),
+                              SizedBox(height: spaceHeroToCore),
+
+                              // 3. Core 2x2 Feature Cards Grid
                               _buildCoreFeaturesGrid(
                                 context,
                                 l10n,
                                 isDark,
+                                isCompact: isCompact,
+                                isVeryCompact: isVeryCompact,
+                              ),
+                              SizedBox(height: spaceHeroToCore),
+
+                              // 4. قسم كتب وملازم (مكتبة الملازم التدبرية وعلوم القرآن)
+                              _BooksHeroCard(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const BooksScreen(),
+                                    ),
+                                  );
+                                },
                                 isCompact: isCompact,
                                 isVeryCompact: isVeryCompact,
                               ),
@@ -1109,6 +1141,332 @@ class _SecondaryToolItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// البطاقة البارزة لقسم الاستغفار والتسبيح (السبحة الإلكترونية ومحراب الذكر).
+class _IstighfarTasbeehCard extends StatelessWidget {
+  final VoidCallback onTap;
+  final bool isCompact;
+  final bool isVeryCompact;
+
+  /// ينشئ بطاقة الاستغفار والتسبيح للشاشة الرئيسية.
+  const _IstighfarTasbeehCard({
+    required this.onTap,
+    this.isCompact = false,
+    this.isVeryCompact = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final l10n = context.l10n;
+
+    final padH = isVeryCompact ? 12.0 : 16.0;
+    final padV = isVeryCompact ? 7.0 : (isCompact ? 9.5 : 12.5);
+    final badgeDim = isVeryCompact ? 36.0 : (isCompact ? 40.0 : 46.0);
+    final iconDim = isVeryCompact ? 19.0 : (isCompact ? 21.0 : 24.0);
+    final titleSize = isVeryCompact ? 15.5 : (isCompact ? 16.5 : 17.5);
+    final subtitleSize = isVeryCompact ? 11.0 : (isCompact ? 11.8 : 12.5);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: (isDark ? AppColors.darkPrimary : AppColors.olive)
+              .withValues(alpha: 0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.035),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          hoverColor: primaryColor.withValues(alpha: 0.06),
+          splashColor: primaryColor.withValues(alpha: 0.1),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+            child: Row(
+              children: [
+                // Tasbeeh Icon Badge
+                Container(
+                  width: badgeDim,
+                  height: badgeDim,
+                  decoration: BoxDecoration(
+                    color: (isDark
+                            ? AppColors.darkAccentGold
+                            : AppColors.olive)
+                        .withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: (isDark
+                              ? AppColors.darkAccentGold
+                              : AppColors.olive)
+                          .withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Icon(
+                    FlutterIslamicIcons.prayer,
+                    color: isDark
+                        ? AppColors.darkAccentGold
+                        : AppColors.oliveDark,
+                    size: iconDim,
+                  ),
+                ),
+                SizedBox(width: isVeryCompact ? 10 : 14),
+
+                // Title & Subtitle
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              l10n.tasbeehAndIstighfar,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: titleSize,
+                                fontWeight: FontWeight.bold,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: (isDark
+                                        ? AppColors.darkAccentGold
+                                        : AppColors.olive)
+                                    .withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'الورد اليومي',
+                                style: TextStyle(
+                                  fontSize: isVeryCompact ? 9.5 : 10.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark
+                                      ? AppColors.darkAccentGold
+                                      : AppColors.oliveDark,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        l10n.tasbeehSubtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: subtitleSize,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Navigation Chevron
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: isVeryCompact ? 12 : 14,
+                  color: (isDark
+                          ? AppColors.darkAccentGold
+                          : AppColors.lightAccentGold)
+                      .withValues(alpha: 0.8),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// البطاقة البارزة لقسم الكتب والملازم التدبرية.
+class _BooksHeroCard extends StatelessWidget {
+  final VoidCallback onTap;
+  final bool isCompact;
+  final bool isVeryCompact;
+
+  /// ينشئ بطاقة الكتب والملازم للشاشة الرئيسية.
+  const _BooksHeroCard({
+    required this.onTap,
+    this.isCompact = false,
+    this.isVeryCompact = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final l10n = context.l10n;
+
+    final padH = isVeryCompact ? 12.0 : 16.0;
+    final padV = isVeryCompact ? 7.0 : (isCompact ? 9.5 : 12.5);
+    final badgeDim = isVeryCompact ? 36.0 : (isCompact ? 40.0 : 46.0);
+    final iconDim = isVeryCompact ? 19.0 : (isCompact ? 21.0 : 24.0);
+    final titleSize = isVeryCompact ? 15.5 : (isCompact ? 16.5 : 17.5);
+    final subtitleSize = isVeryCompact ? 11.0 : (isCompact ? 11.8 : 12.5);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.035),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          hoverColor: primaryColor.withValues(alpha: 0.06),
+          splashColor: primaryColor.withValues(alpha: 0.1),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+            child: Row(
+              children: [
+                // Books Icon Badge
+                Container(
+                  width: badgeDim,
+                  height: badgeDim,
+                  decoration: BoxDecoration(
+                    color: (isDark
+                            ? AppColors.darkPrimary
+                            : AppColors.lightPrimary)
+                        .withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: primaryColor.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.auto_stories_rounded,
+                    color: primaryColor,
+                    size: iconDim,
+                  ),
+                ),
+                SizedBox(width: isVeryCompact ? 10 : 14),
+
+                // Title & Subtitle
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              l10n.booksAndBooklets,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: titleSize,
+                                fontWeight: FontWeight.bold,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: (isDark
+                                        ? AppColors.darkAccentGold
+                                        : AppColors.olive)
+                                    .withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'مكتبة المتدبر',
+                                style: TextStyle(
+                                  fontSize: isVeryCompact ? 9.5 : 10.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark
+                                      ? AppColors.darkAccentGold
+                                      : AppColors.oliveDark,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        l10n.booksSubtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: subtitleSize,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Navigation Chevron
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: isVeryCompact ? 12 : 14,
+                  color: (isDark
+                          ? AppColors.darkAccentGold
+                          : AppColors.lightAccentGold)
+                      .withValues(alpha: 0.8),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

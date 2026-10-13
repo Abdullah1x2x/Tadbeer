@@ -46,6 +46,15 @@ class AppStrings {
   String get backup => isArabic ? 'النسخ الاحتياطي' : 'Backup & Restore';
   String get duas => isArabic ? 'الأدعية' : 'Duas';
   String get quranDuas => isArabic ? 'أدعية من القرآن' : 'Duas from the Quran';
+  String get tasbeehAndIstighfar =>
+      isArabic ? 'استغفار وتسبيح' : 'Istighfar & Tasbeeh';
+  String get tasbeehSubtitle => isArabic
+      ? 'سبحة إلكترونية وأوراد الاستغفار والتسبيح'
+      : 'Digital Tasbeeh & Istighfar Counter';
+  String get booksAndBooklets => isArabic ? 'كتب وملازم' : 'Books & Booklets';
+  String get booksSubtitle => isArabic
+      ? 'مكتبة الملازم التدبرية ومختصرات علوم القرآن'
+      : 'Tadbeer Library & Study Booklets';
   String get about => isArabic ? 'عن تَدْبِير' : 'About Tadbeer';
   String get more => isArabic ? 'المزيد' : 'More';
 

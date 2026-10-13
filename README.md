@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%5E3.4.0-0175C2.svg?logo=dart)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-174%20passed-success.svg)](test/)
+[![Tests](https://img.shields.io/badge/Tests-189%20passed-success.svg)](test/)
 [![Offline](https://img.shields.io/badge/Offline--First-100%25-blueviolet.svg)](#privacy--offline-first)
 [![Website](https://img.shields.io/badge/Website-GitHub%20Pages-informational.svg)](https://abdullah-alshami.github.io/Tadbeer/)
 
@@ -29,6 +29,15 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Customizable Font Sizing & Typography:** Fully adjustable font size (16.0pt to 32.0pt) accessible via a live slider in Settings and a quick-access modal button in the Quran reading toolbar.
 - **Zero-Overflow Adaptive Geometry:** Adaptive layout engine using `LayoutBuilder` and `SingleChildScrollView`, guaranteeing zero `RenderFlex` overflow on small screens (320px width), foldables, tablets, and desktop displays.
 - **Dual-Page Spread Layout:** Automatic side-by-side spread on tablets and wide viewports (`width >= 900dp`), mimicking an open physical Mushaf.
+
+### 📿 Istighfar & Tasbeeh (Digital Counter & Daily Dhikr)
+- **Interactive Digital Tasbeeh with Haptics:** Elegant circular touch counter with smooth pulse animation, light haptic feedback on each count, and distinct celebration haptics with milestone notifications upon target completion.
+- **Authentic Curated Supplications & Azkar:** Built-in catalog including Istighfar, Sayyid Al-Istighfar, Subhan Allah wa bihamdih, Al-Baqiyat Al-Salihat, Tahleel, Hawqalah, Salawat upon the Prophet ﷺ, and Yunus's Dua with documented virtues.
+- **Flexible Targets & Persistent Totals:** Selectable cycle targets (33, 100, or unlimited free counting), automatically persisting daily totals and lifetime counts locally across app restarts.
+
+### 📚 Books & Study Booklets (Tadbeer Library)
+- **Built-In Offline Contemplative Library:** Curated collection of essential guides and booklets including: *Beneficial Principles in Quranic Contemplation*, *Concise Introduction to Quranic Sciences and Tafsir Foundations*, *Ten Keys to Heart-Reviving Tadbeer*, and *Guidelines & Ethics for the Contemplative Reader*.
+- **Distraction-Free Dedicated Reader:** Specialized reading screen with smooth font size adjustments, chapter drawer navigation, chapter copying, and comfortable light and dark palettes.
 
 ### 🌿 Reflection & Study Tools
 - **Tadbeer Pause (وقفة تدبر):** Structured reflection worksheet anchored to individual verses with four foundational prompts: *What do I understand? What feeling does it evoke? What does it heal in me? What practical action will I take?*
