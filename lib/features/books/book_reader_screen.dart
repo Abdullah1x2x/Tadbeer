@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/theme.dart';
@@ -62,6 +63,16 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     });
 
     try {
+      if (path.startsWith('assets/')) {
+        final text = await rootBundle.loadString(path);
+        if (mounted) {
+          setState(() {
+            _loadedFileContent = text;
+            _isLoadingFile = false;
+          });
+        }
+        return;
+      }
       final file = File(path);
       if (await file.exists()) {
         final text = await file.readAsString();
@@ -245,11 +256,28 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     if (path == null) return;
 
     try {
-      final file = File(path);
-      if (await file.exists()) {
+      File? fileToShare;
+      if (path.startsWith('assets/')) {
+        final byteData = await rootBundle.load(path);
+        final tempDir = await getTemporaryDirectory();
+        final fileName = path.split('/').last;
+        final tempFile = File('${tempDir.path}/$fileName');
+        await tempFile.writeAsBytes(byteData.buffer.asUint8List(
+          byteData.offsetInBytes,
+          byteData.lengthInBytes,
+        ));
+        fileToShare = tempFile;
+      } else {
+        final file = File(path);
+        if (await file.exists()) {
+          fileToShare = file;
+        }
+      }
+
+      if (fileToShare != null && await fileToShare.exists()) {
         await SharePlus.instance.share(
           ShareParams(
-            files: [XFile(path)],
+            files: [XFile(fileToShare.path)],
             text: 'ملزمة: ${widget.book.title} — تطبيق تَدْبِير',
           ),
         );

@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'book_model.dart';
+import 'curated_books.dart';
 
 /// مستودع إدارة حالة وتخزين أقسام وملازم وكتب المكتبة التدبرية محلياً.
 class BookRepository extends ChangeNotifier {
@@ -51,6 +53,15 @@ class BookRepository extends ChangeNotifier {
     if (booksDirectory != null) _booksDirectoryOverride = booksDirectory;
     if (_initialized && storageFile == null && booksDirectory == null && !disableDisk) return;
 
+    _sections.clear();
+    _books.clear();
+
+    // 1. قراءة الأقسام والكتب المحددة برمجياً في curated_books.dart
+    _loadCuratedBooks();
+
+    // 2. قراءة كتالوج JSON إن وُجد في مجلد الأصول assets
+    await _loadCatalogJson();
+
     if (_disableDiskPersistence) {
       _initialized = true;
       notifyListeners();
@@ -64,17 +75,21 @@ class BookRepository extends ChangeNotifier {
         if (content.trim().isNotEmpty) {
           final jsonMap = jsonDecode(content) as Map<String, dynamic>;
 
-          _sections.clear();
           if (jsonMap['sections'] is List) {
             for (final item in jsonMap['sections'] as List<dynamic>) {
-              _sections.add(BookSection.fromJson(item as Map<String, dynamic>));
+              final section = BookSection.fromJson(item as Map<String, dynamic>);
+              if (!_sections.any((s) => s.name == section.name)) {
+                _sections.add(section);
+              }
             }
           }
 
-          _books.clear();
           if (jsonMap['books'] is List) {
             for (final item in jsonMap['books'] as List<dynamic>) {
-              _books.add(BookModel.fromJson(item as Map<String, dynamic>));
+              final book = BookModel.fromJson(item as Map<String, dynamic>);
+              if (!_books.any((b) => b.id == book.id || (b.title == book.title && b.category == book.category))) {
+                _books.add(book);
+              }
             }
           }
         }
@@ -86,6 +101,74 @@ class BookRepository extends ChangeNotifier {
 
     _initialized = true;
     notifyListeners();
+  }
+
+  void _loadCuratedBooks() {
+    for (final sec in curatedBookSections) {
+      if (!_sections.any((s) => s.name == sec.name)) {
+        _sections.add(sec.toSectionModel());
+      }
+      for (final book in sec.books) {
+        final model = book.toBookModel(sec.name);
+        if (!_books.any((b) => b.id == model.id || (b.title == model.title && b.category == model.category))) {
+          _books.add(model);
+        }
+      }
+    }
+  }
+
+  Future<void> _loadCatalogJson() async {
+    try {
+      final jsonStr = await rootBundle.loadString('assets/books/books_catalog.json');
+      if (jsonStr.trim().isEmpty) return;
+      final dynamic list = jsonDecode(jsonStr);
+      if (list is List) {
+        for (final secItem in list) {
+          if (secItem is Map<String, dynamic>) {
+            final secName = secItem['name'] as String? ?? '';
+            if (secName.trim().isEmpty) continue;
+            if (!_sections.any((s) => s.name == secName)) {
+              _sections.add(BookSection(
+                id: 'json_sec_${secName.hashCode.abs()}',
+                name: secName,
+                description: secItem['description'] as String? ?? '',
+              ));
+            }
+            final booksList = secItem['books'];
+            if (booksList is List) {
+              for (final bookItem in booksList) {
+                if (bookItem is Map<String, dynamic>) {
+                  final bTitle = bookItem['title'] as String? ?? '';
+                  if (bTitle.trim().isEmpty) continue;
+                  final assetPath = bookItem['assetPath'] as String?;
+                  final bookModel = BookModel(
+                    id: bookItem['id'] as String? ?? 'json_book_${secName}_${bTitle.hashCode.abs()}',
+                    title: bTitle,
+                    subtitle: bookItem['subtitle'] as String? ?? '',
+                    author: bookItem['author'] as String? ?? '',
+                    category: secName,
+                    estimatedMinutes: bookItem['estimatedMinutes'] as int? ?? 10,
+                    filePath: assetPath,
+                    fileName: assetPath?.split('/').last,
+                    fileType: bookItem['fileType'] as String? ??
+                        (assetPath != null && assetPath.toLowerCase().endsWith('.pdf') ? 'pdf' : (assetPath != null ? 'text' : null)),
+                    chapters: (bookItem['chapters'] as List<dynamic>?)
+                            ?.map((c) => BookChapter.fromJson(c as Map<String, dynamic>))
+                            .toList() ??
+                        const [],
+                  );
+                  if (!_books.any((b) => b.id == bookModel.id || (b.title == bookModel.title && b.category == bookModel.category))) {
+                    _books.add(bookModel);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (_) {
+      // التجاهل الآمن
+    }
   }
 
   /// الحصول على الكتب التابعة لقسم محدد (أو الكل).

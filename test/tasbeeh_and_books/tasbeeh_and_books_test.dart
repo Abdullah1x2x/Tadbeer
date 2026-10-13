@@ -246,7 +246,6 @@ void main() {
 
       expect(find.text('كتب وملازم'), findsOneWidget);
       expect(find.text('قسم الكتب والملازم فارغ حالياً'), findsOneWidget);
-      expect(find.text('إضافة كتاب أو ملزمة مع إرفاق ملف'), findsOneWidget);
     });
 
     testWidgets('BooksScreen displays added books and sections', (

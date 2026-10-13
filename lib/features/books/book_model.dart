@@ -111,7 +111,9 @@ class BookModel {
       fileType == 'text' ||
       fileType == 'markdown' ||
       (fileName?.toLowerCase().endsWith('.txt') ?? false) ||
-      (fileName?.toLowerCase().endsWith('.md') ?? false);
+      (fileName?.toLowerCase().endsWith('.md') ?? false) ||
+      (filePath?.toLowerCase().endsWith('.txt') ?? false) ||
+      (filePath?.toLowerCase().endsWith('.md') ?? false);
 
   /// حجم الملف بصيغة نصية مقروءة للمستخدم.
   String get formattedFileSize {

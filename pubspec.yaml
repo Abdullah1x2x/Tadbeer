@@ -102,6 +102,7 @@ flutter:
     - assets/fonts/
     - assets/icons/app_logo.png
     - assets/icons/app_icon.png
+    - assets/books/
 
   fonts:
     - family: ScheherazadeNew
