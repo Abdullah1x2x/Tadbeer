@@ -1,189 +1,169 @@
 # Tadbeer (تَدْبِير)
 
-> **Tadbeer is a Quranic reflection application designed to help Muslims contemplate the meanings and guidance of the Holy Quran, connect related verses, record personal reflections, and apply Quranic teachings in everyday life.**
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B.svg?logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-%5E3.4.0-0175C2.svg?logo=dart)](https://dart.dev)
+[![Tests](https://img.shields.io/badge/Tests-174%20passed-success.svg)](test/)
+[![Offline](https://img.shields.io/badge/Offline--First-100%25-blueviolet.svg)](#privacy--offline-first)
+[![Website](https://img.shields.io/badge/Website-GitHub%20Pages-informational.svg)](https://abdullah-alshami.github.io/Tadbeer/)
 
-Tadbeer is an open, offline-capable application built with **Flutter**. Rather than serving solely as a digital reader for rapid recitation, Tadbeer places contemplation (*Tadabbur*), thematic synthesis, and active practice at its center, providing a serene environment for engaging with the Book of Allah.
+**[العربية](README.ar.md) | English**
+
+> **Tadbeer is an open-source, offline-first Quranic application designed to shift the reader's journey from rapid recitation to deep contemplation (*Tadabbur*), thematic connection of verses, and practical everyday action.**
+
+Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https://abdullah-alshami.github.io/Tadbeer/)**
 
 ---
 
-## Key Features
+## ✨ Key Features
 
 ### 📖 Holy Quran Reader
-- **Responsive Authentic Layout:** Digital reproduction of the Holy Quran featuring authentic Medinan layout, ornate Surah header banners, Bismillah headings, and authentic verse rosettes `﴿1﴾` with Tanzil Uthmani text.
-- **Universal Amiri Quran Typography:** Pure, elegant Uthmani typography utilizing `AmiriQuran` (with `Amiri` for titles and UI), completely eliminating the heavy 202MB QCF V2 font dependency, slashing app asset footprint by ~96.6% (from 225MB to ~17MB) while ensuring crisp rendering across all screen densities.
-- **Customizable Font Sizing:** Fully adjustable Quran font size (16.0pt to 32.0pt) accessible via a live slider in Settings and a quick-access modal button directly in the Quran reading toolbar.
-- **Search & Navigation:** Diacritic-insensitive Quranic search, surah index, juz browser, and direct page navigation.
+- **Responsive Authentic Layout:** Digital reproduction of the Holy Quran featuring the verified Uthmani script from the Tanzil Project, Medinan layout, ornate Surah header banners, Bismillah headings, and authentic verse rosettes `﴿1﴾`.
+- **5 Selectable Open-Source Quranic Fonts:** Crisp rendering using authentic fonts under the SIL Open Font License 1.1:
+  - **Amiri Quran** (Dr. Khaled Hosny)
+  - **Scheherazade New** (SIL International)
+  - **Noto Naskh Arabic** (Google / Monotype)
+  - **Lateef** (SIL International)
+  - **Harmattan** (SIL International)
+  - *Plus Amiri for headings, supplications, and UI elements.*
+- **Customizable Font Sizing & Typography:** Fully adjustable font size (16.0pt to 32.0pt) accessible via a live slider in Settings and a quick-access modal button in the Quran reading toolbar.
+- **Zero-Overflow Adaptive Geometry:** Adaptive layout engine using `LayoutBuilder` and `SingleChildScrollView`, guaranteeing zero `RenderFlex` overflow on small screens (320px width), foldables, tablets, and desktop displays.
+- **Dual-Page Spread Layout:** Automatic side-by-side spread on tablets and wide viewports (`width >= 900dp`), mimicking an open physical Mushaf.
 
 ### 🌿 Reflection & Study Tools
-- **Tadbeer Pause (وقفة تدبر):** Structured reflection sheet anchored to individual verses with four foundational contemplative prompts.
-- **Verse Links (روابط الآيات):** Thematic cross-referencing system linking related ayahs across surahs, viewable in both interactive topological network and sequential ordered list views.
-- **Curated Thematic Pathways (المسارات التدبرية المقترحة):** Built-in curated pathways across major Quranic themes (e.g., Divine Names in Surah Al-Hashr, Prophetic Duas in Surah Al-Anbiya, Societal & Personal Transformation, Patience & Conviction) with one-tap import.
-- **Zero-Network QR Code Sharing:** Export and import Ayah Links offline via standard QR codes without cloud sync.
-- **Reflections & Notes:** Personal contemplative journaling per ayah or general note, with individual note PDF export and **Periodic Reflection Journal Export** (weekly, monthly, or full archive to beautifully formatted PDF and Markdown with reflection statistics).
-- **Highlights & Bookmarks:** Four-color verse highlighting with continuous multi-word line segments, plus quick-access reading bookmarks.
+- **Tadbeer Pause (وقفة تدبر):** Structured reflection worksheet anchored to individual verses with four foundational prompts: *What do I understand? What feeling does it evoke? What does it heal in me? What practical action will I take?*
+- **Thematic Verse Links (روابط الآيات):** Thematic cross-referencing system linking related ayahs across surahs, viewable in both interactive topological network and sequential ordered list views.
+- **Curated Thematic Pathways (المسارات التدبرية المقترحة):** Built-in pathways across major Quranic themes (e.g., Divine Names in Surah Al-Hashr, Prophetic Duas in Surah Al-Anbiya, Personal & Societal Transformation) with one-tap import.
+- **Zero-Network QR Sharing:** Export and import Ayah Links offline via standard QR codes without cloud sync.
+- **Reflections Journal (PDF & Markdown Export):** Personal contemplative journaling per ayah or general reflection, with single-note PDF export and periodic reflection journal archiving (weekly, monthly, or full archive) complete with reflection statistics.
+- **Highlights & Bookmarks:** Four-color verse highlighting rendered smoothly via `AyahHighlightPainter`, plus instant reading bookmarks.
 
-### 📿 Duas & Reminders
-- **Quranic Duas:** Catalog of 88 direct Quranic supplications extracted directly from verified Uthmani text, complete with 12 thematic categories, multi-verse rosette markers, and direct navigation to their exact page in the Mushaf.
-- **Offline Reminders:** Local scheduled notifications with native timezone support (`flutter_timezone`) for daily Quran reading and reflection routines, operating completely on device.
+### 📚 Quranic Word Meanings (معاني كلمات القرآن)
+- **Extensive Single-Word Lexicon:** Curated dataset of **6,465 single-word entries** covering all 604 pages and 114 surahs with 100% coverage.
+- **Pure Lexical Definitions:** Focused lexical meanings in concise Arabic, free from extraneous commentary or speculative tafsir.
+- **Authoritative Attributions:** Derived from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10`, CC0-1.0), *Al-Mu'jam Al-Waseet* (Academy of the Arabic Language in Cairo), and classical lexicons (*Lisan Al-Arab*, *Maqayis Al-Lughah*, *Taj Al-Arus*, *Mufradat Al-Raghib*).
+- **Synchronized Margin Panel:** Built-in collapsible reader panel updating dynamically on every page turn, alongside a dedicated standalone lexicon browser screen.
 
-### 📖 Quranic Word Meanings (معاني كلمات القرآن)
-- **Extensive Single-Word Lexicon:** Curated dataset of 6,465 authenticated single-word entries covering all 604 pages and 114 surahs of the Holy Quran, ensuring complete 100% coverage without any omitted pages.
-- **Pure Lexical Meanings:** Direct, focused presentation of authentic lexical meanings (*المعنى المعجمي*) in concise Arabic, free from extraneous contextual tafsir or speculative commentary.
-- **Authoritative Lexicographical Attribution:** Strictly derived from reputable classical and contemporary Arabic lexicons: *Al-Mu'jam Al-Waseet* (Academy of the Arabic Language in Cairo), *Lisan Al-Arab* (Ibn Manzur), *Maqayis Al-Lughah* (Ibn Faris), *Taj Al-Arus* (Al-Zabidi), and *Mufradat Alfadh Al-Quran* (Al-Raghib Al-Asfahani).
-- **Synchronized Margin Panel:** Built-in collapsible reader sheet (`WordMeaningsPanel`) on `QuranScreen` updating dynamically on every page turn, with outside-tap dismissal and balanced dimensions.
-- **Dedicated Lexicon Explorer:** Standalone `WordMeaningsScreen` accessible from home and side navigation, featuring instant surah filtering, diacritic-insensitive search, and source attribution documentation.
-
-### 🔍 Unified & Sectional Search System
-- **Central Search Registry:** Extensible `SearchRegistry` and `SearchProvider` architecture that queries 9 application domains concurrently with per-provider error isolation.
-- **Root & Morphological Search:** Instant root search via `جذر:XXX` syntax (e.g. `جذر:صبر` or `جذر:رحم`), matching across rich morphological variations (`فعل`, `فاعل`, `مفعول`, `فعيل`, `تفعيل`, `افتعل`, `استفعل`) across all 6,236 ayahs.
-- **Unified Global Search:** Global search entry from the home screen querying verified Quranic ayahs, user reflection notes, guided Tadbeer pauses, bookmarks, highlights, thematic Ayah Links, supplications, recitation reminders, and word meanings.
-- **Interactive Section Filter Chips:** Instant toggle between comprehensive results ("All") and targeted domain results with count badges.
-- **Independent Local Search:** Scoped, diacritic-insensitive search bars inside Notes, Ayah Links, Duas, Bookmarks, Highlights, and Reminders screens.
-
-### 🖥️ Universal Responsive & Tablet Layout
-- **Zero-Overflow Adaptive Geometry:** Adaptive layout engine using `LayoutBuilder` and flexible constraint containers, ensuring zero `RenderFlex` overflow across small phones (320px width), modern large displays, foldables, and tablets.
-- **Dual-Page Spread Layout:** Automatic side-by-side two-page spread on tablets, foldables, and desktop displays (`width >= 900dp`), mimicking a physical open Mushaf with center divider.
-
-### 🔒 Privacy & Encrypted Backups
-- **Offline-First Storage:** Core reading, notes, reflection, and database storage function entirely on the local device without requiring an active internet connection. No advertising or user telemetry SDKs are included.
-- **Encrypted Exports:** Export and import user datasets via password-protected `.quranbackup` files, utilizing AES-256 in CBC mode, Gzip payload compression, and pre-compression SHA-256 checksum verification.
+### 🤲 Duas & Unified Search
+- **Quranic Duas:** Catalog of 88 direct Quranic supplications extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
+- **Unified Global Search:** Extensible `SearchRegistry` querying 9 domains concurrently with error isolation and interactive filter chips.
+- **Root & Morphological Search:** Instant root search via `جذر:XXX` syntax (e.g. `جذر:صبر` or `جذر:رحم`), matching across rich morphological variations across all 6,236 ayahs.
+- **Offline Reminders:** Local scheduled notifications (`flutter_local_notifications` + `flutter_timezone`) for daily Quran reading and reflection routines, operating completely on-device without internet access.
 
 ---
 
-## Technology Stack
+## 🔒 Privacy & Offline-First
+
+Tadbeer is built with **Privacy by Design**:
+- **Zero Data Collection:** No personal data, device identifiers, or analytics are ever collected, transmitted, or sold.
+- **100% Offline Operation:** Tadbeer does not request `android.permission.INTERNET` in its Android manifest and makes zero network requests.
+- **Local SQLite Persistence:** All user notes, reflections, bookmarks, highlights, and links are stored locally on the user's device (`tadbeer_user_data.db`).
+- **AES-256 Encrypted Backups:** User-controlled backup export and import (`.quranbackup`) encrypted locally using AES-256-CBC with a user-defined password, Gzip compression, and SHA-256 checksum integrity verification.
+
+Official Privacy Policy is publicly available at: **[https://abdullah-alshami.github.io/Tadbeer/#privacy](https://abdullah-alshami.github.io/Tadbeer/#privacy)**
+
+---
+
+## 🛠️ Technology Stack
 
 - **Framework:** [Flutter](https://flutter.dev/) (SDK `>=3.22.0`)
 - **Language:** [Dart](https://dart.dev/) (SDK `^3.4.0`)
-- **Local Storage:** [SQLite](https://www.sqlite.org/) via `sqflite` (with `sqflite_common_ffi` for desktop testing)
-- **State Management:** Reactive local cache extending Flutter's native `ChangeNotifier`
-- **Typography:** `AmiriQuran` for verified Uthmani script; `Amiri` for headings, supplications, and UI text
+- **Database:** [SQLite](https://www.sqlite.org/) via `sqflite` (with `sqflite_common_ffi` for automated tests)
+- **State Management:** Reactive Single Source of Truth cache extending Flutter's native `ChangeNotifier` (`UserDataStore`)
+- **Typography:** 5 SIL OFL-1.1 Quranic fonts (`AmiriQuran`, `ScheherazadeNew`, `NotoNaskhArabic`, `Lateef`, `Harmattan`) + `Amiri` for interface
+- **Encryption:** `encrypt` (AES-256-CBC) + `crypto` (SHA-256) + `archive` (Gzip)
 
 ---
 
-## Prerequisites & Setup
+## 🚀 Getting Started
 
-### Requirements
+### Prerequisites
 - Flutter SDK: `3.22.0` or higher
-- Dart SDK: `^3.4.0` (as specified in `pubspec.yaml`)
-- Target platform: Android (primary release target; Linux, macOS, and Windows supported for local development and test execution)
+- Dart SDK: `^3.4.0`
 
-### Installation
-
-From the project root directory, install dependencies:
+### Setup & Run
 
 ```bash
+# Clone the repository
+git clone https://github.com/Abdullah-Alshami/Tadbeer.git
+cd Tadbeer
+
+# Install dependencies
 flutter pub get
-```
 
-### Running the App
-
-```bash
+# Run the app
 flutter run
 ```
 
 ---
 
-## Verification & Build Commands
-
-### Code Analysis & Formatting
+## 🧪 Testing & Verification
 
 ```bash
-# Check code formatting without applying modifications
-dart format --output=none --set-exit-if-changed lib/ test/
-
-# Run static analysis
+# Verify static analysis (0 warnings / 0 errors)
 dart analyze
-```
 
-### Running Automated Tests
-
-Tadbeer maintains an automated test suite covering repositories, the responsive Mushaf rendering engine, database storage, backup cryptography, and user flows:
-
-```bash
-# Run all tests (180 tests across 24 test files - 100% pass rate)
+# Run all automated tests (174 tests, 23 test files, 100% passing)
 flutter test
 
-# Run specific test suites
-flutter test test/quran/responsive_mushaf_viewports_test.dart
-flutter test test/word_meanings/word_meanings_test.dart
-flutter test test/quran/mushaf_visual_layout_test.dart
-flutter test test/backup/backup_restore_test.dart
-flutter test test/search/unified_search_test.dart
-```
-
-### Building for Release
-
-```bash
-# Build Android APK
+# Build production release packages
 flutter build apk --release
-
-# Build Android App Bundle (AAB)
 flutter build appbundle --release
 ```
 
 ---
 
-## Project Structure
+## 📁 Repository Structure
 
 ```text
-lib/
-├── app/          # Application entrypoint, localization (Arabic/English), theme configuration
-├── core/         # Core infrastructure:
-│   ├── services/ # Backup encryption (AES-256) and local reminder scheduling
-│   ├── storage/  # SQLite manager (UserDatabase) and in-memory cache (UserDataStore)
-│   └── utils/    # Arabic search normalization and PDF export utilities
-├── features/     # Feature-oriented domain modules:
-│   ├── ayah_links/    # Thematic verse relationship graph and screens
-│   ├── backup/        # Encrypted backup export and restore interface
-│   ├── bookmarks/     # Bookmark management and screen
-│   ├── duas/          # Catalog of 88 Quranic Duas and cards
-│   ├── highlights/    # Verse highlighting repository and screen
-│   ├── home/          # Dashboard, reading resume card, quick actions, settings button
-│   ├── notes/         # Note editor, reflection repository, and PDF export screen
-│   ├── quran/         # Responsive Mushaf engine (QuranPageView, lines, words, word meanings panel)
-│   ├── reminders/     # Notification scheduling and settings
-│   ├── search/        # Unified search system (SearchRegistry, providers, and UI)
-│   ├── settings/      # Appearance, font sizing, theme, verified sources, and about section
-│   ├── tadbeer/       # Contemplation pause sheet, intro, and models
-│   └── word_meanings/ # Quranic word meanings explorer, filters, and sources screen
-└── main.dart     # App bootstrap, engine initialization, and root runner
-
-assets/           # Active bundled assets (~4.1MB total)
-├── fonts/        # Amiri.ttf, AmiriQuran.ttf (964KB)
-├── icons/        # App launcher icons
-└── quran/        # Verified datasets:
-    ├── quran_data.json       # Tanzil Uthmani text (optimized: 2.0MB)
-    └── word_meanings.json    # 6,465 lexical entries (optimized: 1.1MB)
+tadbeer/
+├── assets/                     # Bundled assets (~6.6MB total)
+│   ├── fonts/                  # 5 Quran fonts + Amiri UI font (SIL OFL-1.1)
+│   ├── icons/                  # Application icons & logo
+│   └── quran/
+│       ├── quran_data.json     # Verified Tanzil Uthmani text (2.0MB)
+│       └── word_meanings.json  # 6,465 verified lexical entries (1.1MB)
+├── lib/                        # Production Dart code (58 files)
+│   ├── app/                    # App bootstrap, localization (ar/en), theme
+│   ├── core/
+│   │   ├── services/           # AES-256 crypto & local reminders
+│   │   ├── storage/            # SQLite database & reactive UserDataStore
+│   │   └── utils/              # Arabic root search & PDF export utilities
+│   ├── features/               # Feature domain modules:
+│   │   ├── ayah_links/         # Thematic verse links & network views
+│   │   ├── backup/             # Encrypted backup & restore screen
+│   │   ├── bookmarks/          # Bookmarks repository & screen
+│   │   ├── duas/               # 88 Quranic duas catalog
+│   │   ├── highlights/         # 4-color verse highlighting
+│   │   ├── home/               # Dashboard & reading resume
+│   │   ├── notes/              # Reflection notes & PDF journal export
+│   │   ├── quran/              # Responsive Mushaf engine & page view
+│   │   ├── reminders/          # Reading reminders scheduling
+│   │   ├── search/             # Unified search registry & providers
+│   │   ├── settings/           # Font family/size, theme, and about
+│   │   ├── tadbeer/            # Tadbeer pause worksheet & intro
+│   │   └── word_meanings/      # Word meanings explorer & sources
+│   └── main.dart               # Entrypoint & service initialization
+├── test/                       # Comprehensive test suite (174 tests, 23 files)
+├── DEVELOPMENT_GUIDE.md        # Technical developer & maintenance guide
+├── DEVELOPMENT_GUIDE.ar.md     # Arabic technical developer guide
+├── ATTRIBUTION.md              # Attribution statements & source details
+├── THIRD_PARTY_NOTICES.md      # Full third-party license notices
+├── LICENSE                     # MIT License
+└── index.html                  # Official GitHub Pages website & privacy policy
 ```
 
-For complete architecture documentation, data flow diagrams, database schemas, and step-by-step modification guides, refer to:
-**[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)**
+For detailed technical architecture, database schemas, and contribution guides, see:
+- **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)** (English)
+- **[DEVELOPMENT_GUIDE.ar.md](DEVELOPMENT_GUIDE.ar.md)** (العربية)
 
 ---
 
-## Attribution & Data Sources
+## 📜 Licenses & Attribution
 
-Tadbeer relies on verified open Quranic resources and typography:
+- **Application Code:** Licensed under the **[MIT License](LICENSE)**.
+- **Quranic Text:** [Tanzil Project](https://tanzil.net/) (`CC-BY 3.0`).
+- **Word Meanings:** [Quranpedia.net](https://quranpedia.net) (`CC0 1.0 Public Domain`) and classical Arabic lexicons in the public domain.
+- **Typography:** All 5 Quranic and interface fonts are licensed under the **SIL Open Font License 1.1** (`OFL-1.1`).
 
-- **Quranic Text:** [Tanzil Project](https://tanzil.net/) — Uthmani script (`Creative Commons Attribution 3.0 Unported`).
-- **Mushaf & Interface Typography (`SIL Open Font License 1.1`):**
-  - `Scheherazade New`, `Harmattan`, and `Lateef` by [SIL Global](https://software.sil.org/).
-  - `Noto Naskh Arabic` by the [Google Noto Project](https://github.com/notofonts/arabic).
-  - `Amiri Quran` and `Amiri` by [Khaled Hosny / Alif Type](https://github.com/aliftype/amiri).
-- **Quranic Word Meanings:** Structured dataset derived from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10` — [Quranpedia Data License](https://quranpedia.net/dumps/LICENSE.md)), cross-referenced with classical Arabic lexicons in the Public Domain (*Lisan Al-Arab*, *Maqayis Al-Lughah*, *Taj Al-Arus*, *Mufradat Al-Raghib*, *Al-Tibyan* by Ibn Al-Ha'im, *Tadhkirat Al-Arib* by Ibn Al-Jawzi) and contemporary references (*Al-Mu'jam Al-Waseet*, *Al-Siraj*).
-
-For detailed licensing statements and attributions, see [ATTRIBUTION.md](ATTRIBUTION.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
----
-
-## Project Status
-
-- **Status:** Active development.
-- **Primary Platforms:** Android & iOS (with Linux, macOS, and Windows desktop support).
-- **Architecture Philosophy:** Simple, pragmatic, offline-first. Avoid unnecessary abstractions, preserve user data integrity, and protect the sanctity of the Quranic text.
-
-
-## License
-
-This project's source code is licensed under the **MIT License** (`MIT`).
-Bundled Quranic text, lexical datasets, and fonts are governed by their respective licenses as documented in [LICENSE](LICENSE), [ATTRIBUTION.md](ATTRIBUTION.md), and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Complete legal details and verbatim license texts are available in [ATTRIBUTION.md](ATTRIBUTION.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
