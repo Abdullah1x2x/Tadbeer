@@ -264,6 +264,37 @@ void main() {
 
       expect(find.textContaining('تم نسخ نص الذكر'), findsOneWidget);
     });
+
+    testWidgets(
+      'TasbeehScreen AppBar has BackButton on right, actions on left, and dhikr text centered',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
+        await tester.pumpAndSettle();
+
+        final backButtonFinder = find.byType(BackButton);
+        expect(backButtonFinder, findsOneWidget);
+
+        final resetButtonFinder = find.byTooltip('تصفير عداد الدورة');
+        expect(resetButtonFinder, findsOneWidget);
+
+        final backOffset = tester.getCenter(backButtonFinder);
+        final resetOffset = tester.getCenter(resetButtonFinder);
+
+        // In RTL: BackButton (leading) is on the right, actions on the left
+        expect(backOffset.dx, greaterThan(resetOffset.dx));
+        expect(backOffset.dx, greaterThan(400.0));
+        expect(resetOffset.dx, lessThan(400.0));
+
+        // Dhikr text is strictly centered
+        final dhikrTextFinder = find.text(repo.activeDhikr.arabicText);
+        expect(dhikrTextFinder, findsOneWidget);
+        final textWidget = tester.widget<Text>(dhikrTextFinder);
+        expect(textWidget.textAlign, TextAlign.center);
+
+        final textCenter = tester.getCenter(dhikrTextFinder);
+        expect((textCenter.dx - 400.0).abs(), lessThan(10.0));
+      },
+    );
   });
 
   group('Books & Booklets Tests', () {

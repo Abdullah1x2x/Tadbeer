@@ -80,19 +80,22 @@ class _BooksScreenState extends State<BooksScreen> {
     final filtered = _filteredBooks;
     final categories = _repo.categoryNames;
 
-    return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
-      appBar: AppBar(
-        title: Text(
-          l10n.booksAndBooklets,
-          style: const TextStyle(
-            fontFamily: 'Amiri',
-            fontWeight: FontWeight.bold,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor:
+            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        appBar: AppBar(
+          leading: const BackButton(),
+          title: Text(
+            l10n.booksAndBooklets,
+            style: const TextStyle(
+              fontFamily: 'Amiri',
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -224,8 +227,9 @@ class _BooksScreenState extends State<BooksScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildEmptyState(bool isDark, Color primaryColor) {
     final hasSearch = _searchQuery.isNotEmpty;

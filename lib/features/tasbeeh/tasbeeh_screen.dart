@@ -428,62 +428,65 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         ? (_repo.currentCount / _repo.targetCount).clamp(0.0, 1.0)
         : 1.0;
 
-    return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
-      appBar: AppBar(
-        title: Text(
-          l10n.tasbeehAndIstighfar,
-          style: const TextStyle(
-            fontFamily: 'Amiri',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: _repo.autoAdvanceEnabled
-                ? 'التبديل التلقائي: مفعّل'
-                : 'التبديل التلقائي: معطّل',
-            icon: Icon(
-              _repo.autoAdvanceEnabled
-                  ? Icons.auto_mode_rounded
-                  : Icons.sync_disabled_rounded,
-              color: _repo.autoAdvanceEnabled
-                  ? (isDark ? AppColors.darkAccentGold : AppColors.oliveDark)
-                  : null,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor:
+            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        appBar: AppBar(
+          leading: const BackButton(),
+          title: Text(
+            l10n.tasbeehAndIstighfar,
+            style: const TextStyle(
+              fontFamily: 'Amiri',
+              fontWeight: FontWeight.bold,
             ),
-            onPressed: () {
-              HapticFeedback.selectionClick();
-              _repo.toggleAutoAdvance();
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    _repo.autoAdvanceEnabled
-                        ? 'تم تفعيل التبديل التلقائي عند اكتمال الورد'
-                        : 'تم إيقاف التبديل التلقائي',
-                    textAlign: TextAlign.center,
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              tooltip: _repo.autoAdvanceEnabled
+                  ? 'التبديل التلقائي: مفعّل'
+                  : 'التبديل التلقائي: معطّل',
+              icon: Icon(
+                _repo.autoAdvanceEnabled
+                    ? Icons.auto_mode_rounded
+                    : Icons.sync_disabled_rounded,
+                color: _repo.autoAdvanceEnabled
+                    ? (isDark ? AppColors.darkAccentGold : AppColors.oliveDark)
+                    : null,
+              ),
+              onPressed: () {
+                HapticFeedback.selectionClick();
+                _repo.toggleAutoAdvance();
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      _repo.autoAdvanceEnabled
+                          ? 'تم تفعيل التبديل التلقائي عند اكتمال الورد'
+                          : 'تم إيقاف التبديل التلقائي',
+                      textAlign: TextAlign.center,
+                    ),
+                    duration: const Duration(seconds: 1),
+                    behavior: SnackBarBehavior.floating,
                   ),
-                  duration: const Duration(seconds: 1),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-          ),
-          IconButton(
-            tooltip: 'استعراض كل الصيغ',
-            icon: const Icon(Icons.format_list_bulleted_rounded),
-            onPressed: _showDhikrPickerSheet,
-          ),
-          IconButton(
-            tooltip: 'تصفير عداد الدورة',
-            icon: const Icon(Icons.restart_alt_rounded),
-            onPressed: _confirmReset,
-          ),
-        ],
-      ),
-      body: SafeArea(
+                );
+              },
+            ),
+            IconButton(
+              tooltip: 'استعراض كل الصيغ',
+              icon: const Icon(Icons.format_list_bulleted_rounded),
+              onPressed: _showDhikrPickerSheet,
+            ),
+            IconButton(
+              tooltip: 'تصفير عداد الدورة',
+              icon: const Icon(Icons.restart_alt_rounded),
+              onPressed: _confirmReset,
+            ),
+          ],
+        ),
+        body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isCompact = constraints.maxHeight < 680;
@@ -645,8 +648,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           },
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   /// مفتاح التبديل المباشر بين الاستغفار والتسبيح.
   Widget _buildSectionSwitcher(bool isDark, Color primaryColor) {
@@ -781,6 +785,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                     Expanded(
                       child: Text(
                         positionText,
+                        textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 11,
@@ -846,20 +851,36 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       child: Center(
                         child: SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            child: Text(
-                              dhikr.arabicText,
-                              key: ValueKey<String>(dhikr.id),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: textFontSize,
-                                fontWeight: FontWeight.bold,
-                                height: 1.45,
-                                color: isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightPrimaryDark,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              layoutBuilder: (currentChild, previousChildren) {
+                                return Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    ...previousChildren,
+                                    ?currentChild,
+                                  ],
+                                );
+                              },
+                              child: Container(
+                                key: ValueKey<String>(dhikr.id),
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  dhikr.arabicText,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: textFontSize,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.45,
+                                    color: isDark
+                                        ? AppColors.darkTextPrimary
+                                        : AppColors.lightPrimaryDark,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -906,6 +927,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             Expanded(
                               child: Text(
                                 dhikr.virtue,
+                                textAlign: TextAlign.center,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
