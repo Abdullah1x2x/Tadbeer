@@ -37,9 +37,10 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Interactive Digital Tasbeeh with Haptics:** Elegant circular touch counter with smooth pulse animation, light haptic feedback on each count, and distinct celebration haptics with milestone notifications.
 - **Flexible Targets & Persistent Totals:** Selectable cycle targets (33, 100, or unlimited free counting), automatically persisting daily totals and lifetime counts locally across app restarts.
 
-### 📚 Books & Study Booklets (Tadbeer Library)
-- **Built-In Offline Contemplative Library:** Curated collection of essential guides and booklets including: *Beneficial Principles in Quranic Contemplation*, *Concise Introduction to Quranic Sciences and Tafsir Foundations*, *Ten Keys to Heart-Reviving Tadbeer*, and *Guidelines & Ethics for the Contemplative Reader*.
-- **Distraction-Free Dedicated Reader:** Specialized reading screen with smooth font size adjustments, chapter drawer navigation, chapter copying, and comfortable light and dark palettes.
+### 📚 Books & Study Booklets (Custom Sections & Attachments)
+- **Custom Categorized Sections:** Create and manage distinct study sections (e.g., Tadbeer Guides, Tafsir Books, Course Notes) to organize your personal reading library.
+- **Local File Attachments (PDF & Text):** Easily attach and import PDF documents and text files (`.txt`, `.md`) directly from your device, safely stored in offline application documents.
+- **Built-in Dedicated Reader & Sharing:** Clean reading interface with dynamic font resizing, chapter/outline navigation, external PDF app opening, and offline document sharing.
 
 ### 🌿 Reflection & Study Tools
 - **Tadbeer Pause (وقفة تدبر):** Structured reflection worksheet anchored to individual verses with four foundational prompts: *What do I understand? What feeling does it evoke? What does it heal in me? What practical action will I take?*

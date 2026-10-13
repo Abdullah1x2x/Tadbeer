@@ -5,6 +5,7 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/books/book_model.dart';
 import 'package:tadbeer/features/books/book_reader_screen.dart';
+import 'package:tadbeer/features/books/book_repository.dart';
 import 'package:tadbeer/features/books/books_screen.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
@@ -194,40 +195,103 @@ void main() {
   });
 
   group('Books & Booklets Tests', () {
-    test('BookModel has default curated study booklets', () {
-      expect(BookModel.defaultBooks.isNotEmpty, isTrue);
-      final firstBook = BookModel.defaultBooks.first;
-      expect(firstBook.chapters.isNotEmpty, isTrue);
-      expect(firstBook.title, contains('القواعد الحسان'));
+    setUp(() async {
+      await BookRepository.instance.init(disableDisk: true);
+      await BookRepository.instance.clearAll();
     });
 
-    testWidgets('BooksScreen displays booklets and filters by category', (
+    test('BookModel defaultBooks is empty as requested', () {
+      expect(BookModel.defaultBooks.isEmpty, isTrue);
+    });
+
+    test('BookRepository manages sections and books', () async {
+      final repo = BookRepository.instance;
+      expect(repo.sections.isEmpty, isTrue);
+      expect(repo.books.isEmpty, isTrue);
+
+      final section = await repo.addSection(
+        name: 'ملازم التدبر',
+        description: 'ملازم دورات التدبر وتفسير الآيات',
+      );
+      expect(section.name, 'ملازم التدبر');
+      expect(repo.sections.length, 1);
+      expect(repo.categoryNames, contains('ملازم التدبر'));
+
+      final book = await repo.addBook(
+        title: 'ملزمة مدارسة سورة الفاتحة',
+        sectionName: 'ملازم التدبر',
+        chapters: const [
+          BookChapter(title: 'المبحث الأول', content: 'محتوى تفسير الاستعاذة'),
+          BookChapter(title: 'المبحث الثاني', content: 'محتوى تفسير البسملة'),
+        ],
+      );
+      expect(book.title, 'ملزمة مدارسة سورة الفاتحة');
+      expect(repo.books.length, 1);
+      expect(repo.getBooksBySection('ملازم التدبر').length, 1);
+      expect(repo.getBooksBySection('الكل').length, 1);
+
+      await repo.deleteBook(book.id);
+      expect(repo.books.isEmpty, isTrue);
+
+      await repo.deleteSection(section.id);
+      expect(repo.sections.isEmpty, isTrue);
+    });
+
+    testWidgets('BooksScreen displays empty state when no books exist', (
       WidgetTester tester,
     ) async {
+      await BookRepository.instance.clearAll();
       await tester.pumpWidget(buildTestWidget(const BooksScreen()));
       await tester.pumpAndSettle();
 
       expect(find.text('كتب وملازم'), findsOneWidget);
-      expect(find.text('القواعد الحسان في تدبر القرآن'), findsOneWidget);
+      expect(find.text('قسم الكتب والملازم فارغ حالياً'), findsOneWidget);
+      expect(find.text('إضافة كتاب أو ملزمة مع إرفاق ملف'), findsOneWidget);
+    });
 
-      // Filter by 'علوم القرآن' specifically on FilterChip
-      await tester.tap(find.widgetWithText(FilterChip, 'علوم القرآن'));
+    testWidgets('BooksScreen displays added books and sections', (
+      WidgetTester tester,
+    ) async {
+      final repo = BookRepository.instance;
+      await repo.clearAll();
+      await repo.addSection(name: 'ملازم التدبر');
+      await repo.addBook(
+        title: 'ملزمة مدارسة الكهف',
+        sectionName: 'ملازم التدبر',
+        chapters: const [
+          BookChapter(title: 'المقدمة', content: 'قصص سورة الكهف'),
+        ],
+      );
+
+      await tester.pumpWidget(buildTestWidget(const BooksScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('مدخل ميسر إلى علوم القرآن وأصول التفسير'), findsOneWidget);
+      expect(find.text('كتب وملازم'), findsOneWidget);
+      expect(find.text('ملزمة مدارسة الكهف'), findsOneWidget);
+      expect(find.text('ملازم التدبر'), findsWidgets);
     });
 
     testWidgets('BookReaderScreen renders chapter content and navigates chapters', (
       WidgetTester tester,
     ) async {
-      final book = BookModel.defaultBooks.first;
+      const book = BookModel(
+        id: 'test_book_custom',
+        title: 'ملزمة القواعد الحسان',
+        category: 'ملازم',
+        chapters: [
+          BookChapter(title: 'المبحث الأول: الإخلاص', content: 'نص المبحث الأول عن الإخلاص'),
+          BookChapter(title: 'المبحث الثاني: التدبر', content: 'نص المبحث الثاني عن التدبر'),
+        ],
+      );
+
       await tester.pumpWidget(
-        buildTestWidget(BookReaderScreen(book: book, initialChapterIndex: 0)),
+        buildTestWidget(const BookReaderScreen(book: book, initialChapterIndex: 0)),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text(book.title), findsOneWidget);
-      expect(find.text(book.chapters[0].title), findsOneWidget);
+      expect(find.text('ملزمة القواعد الحسان'), findsOneWidget);
+      expect(find.text('المبحث الأول: الإخلاص'), findsOneWidget);
+      expect(find.text('نص المبحث الأول عن الإخلاص'), findsOneWidget);
 
       // Scroll to Next Chapter button and tap it
       await tester.ensureVisible(find.text('المبحث التالي'));
@@ -235,7 +299,30 @@ void main() {
       await tester.tap(find.text('المبحث التالي'));
       await tester.pumpAndSettle();
 
-      expect(find.text(book.chapters[1].title), findsOneWidget);
+      expect(find.text('المبحث الثاني: التدبر'), findsOneWidget);
+      expect(find.text('نص المبحث الثاني عن التدبر'), findsOneWidget);
+    });
+
+    testWidgets('BookReaderScreen renders PDF attachment info card', (
+      WidgetTester tester,
+    ) async {
+      const pdfBook = BookModel(
+        id: 'test_pdf_custom',
+        title: 'ملخص التفسير الموضوعي',
+        category: 'ملازم',
+        filePath: '/mock/path/tafseer.pdf',
+        fileName: 'tafseer.pdf',
+        fileType: 'pdf',
+        fileSizeBytes: 2097152,
+      );
+
+      await tester.pumpWidget(
+        buildTestWidget(const BookReaderScreen(book: pdfBook)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('ملخص التفسير الموضوعي'), findsWidgets);
+      expect(find.text('فتح ومطالعة ملف PDF'), findsOneWidget);
     });
   });
 
