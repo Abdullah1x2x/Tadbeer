@@ -1,0 +1,169 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#181914">
+  <meta name="description" content="تدبير، رفيقك في قراءة القرآن الكريم والتدبر في آياته.">
+  <title>تدبير | Tadbeer</title>
+
+  <style>
+    :root {
+      --bg: #181914;
+      --surface: #22241d;
+      --text: #f0f0e5;
+      --muted: #b2b5a5;
+      --olive: #a0a984;
+      --border: #383b30;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      line-height: 1.9;
+    }
+
+    .container {
+      width: min(900px, 90%);
+      margin-inline: auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .hero {
+      padding-block: 100px 80px;
+      max-width: 700px;
+    }
+
+    .eyebrow {
+      color: var(--olive);
+      letter-spacing: .15em;
+    }
+
+    h1 {
+      font-size: clamp(2.7rem, 7vw, 4.5rem);
+      line-height: 1.4;
+      margin: 14px 0;
+    }
+
+    p { color: var(--muted); }
+
+    .description { font-size: 1.1rem; }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .primary {
+      background: var(--olive);
+      color: var(--bg);
+      border-color: var(--olive);
+    }
+
+    section {
+      padding-block: 30px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    footer {
+      margin-top: 45px;
+      padding-block: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    @media (max-width: 560px) {
+      .hero { padding-block: 65px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="container">
+      <div class="brand">تدبير · Tadbeer</div>
+      <span class="eyebrow">رفيق رحلة التدبر</span>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <div class="eyebrow">TADBEER</div>
+      <h1>القرآن هدى لخطواتك</h1>
+
+      <p class="description">
+        مساحة هادئة لقراءة القرآن الكريم،
+        وتدوين ملاحظاتك، والعودة إلى الآيات
+        والتدبر فيها.
+      </p>
+
+      <div class="links">
+        <a class="button primary" href="#about">عن تدبير</a>
+        <a class="button" href="#privacy">الخصوصية والتراخيص</a>
+      </div>
+    </div>
+
+    <section id="about">
+      <h2>عن تدبير</h2>
+      <div class="card">
+        <p>
+          تطبيق يرافقك في رحلة قراءة القرآن الكريم،
+          ويساعدك على تنظيم ملاحظاتك والعودة إليها.
+        </p>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <h2>الخصوصية والمصادر</h2>
+      <div class="card">
+        <p>
+          ستُنشر هنا سياسة الخصوصية وتفاصيل تراخيص
+          المصادر المستخدمة في التطبيق قبل إطلاقه.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    تدبير · Tadbeer
+  </footer>
+</body>
+</html>
