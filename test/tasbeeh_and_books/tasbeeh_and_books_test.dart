@@ -74,12 +74,9 @@ void main() {
       expect(TasbeehDhikr.defaultDhikrs.length, 49);
       expect(TasbeehDhikr.istighfarDhikrs.length, 20);
       expect(TasbeehDhikr.tasbeehDhikrs.length, 29);
-      expect(TasbeehDhikr.categories.length, greaterThanOrEqualTo(10));
-      expect(TasbeehDhikr.istighfarCategories.length, greaterThanOrEqualTo(4));
-      expect(TasbeehDhikr.tasbeehCategories.length, greaterThanOrEqualTo(7));
+      expect(TasbeehDhikr.categories, containsAll(['استغفار', 'تسبيح']));
 
-      for (final cat in TasbeehDhikr.categories) {
-        if (cat == 'الكل') continue;
+      for (final cat in ['استغفار', 'تسبيح']) {
         final count = TasbeehDhikr.defaultDhikrs.where((d) => d.category == cat).length;
         expect(count, greaterThan(0), reason: 'Category $cat should have items');
       }
@@ -99,7 +96,7 @@ void main() {
       expect(repo.activeDhikr.id, TasbeehDhikr.defaultDhikrs[total - 1].id);
 
       // Testing within scoped pool
-      final pool = TasbeehDhikr.defaultDhikrs.where((d) => d.category == 'حمد وشكر').toList();
+      final pool = TasbeehDhikr.defaultDhikrs.where((d) => d.category == 'تسبيح').toList();
       repo.setActiveDhikr(pool.first);
       expect(repo.activeDhikr.id, pool[0].id);
 
@@ -181,30 +178,31 @@ void main() {
       expect(repo.activeDhikr.id, firstId);
     });
 
-    testWidgets('TasbeehScreen filters dhikrs by category chips and switches sections', (
+    testWidgets('TasbeehScreen switches sections between Istighfar and Tasbeeh', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
       await tester.pumpAndSettle();
 
-      // 1. Filter within Istighfar section
-      final istighfarChip = find.text('استغفار قرآني');
-      expect(istighfarChip, findsWidgets);
-      await tester.tap(istighfarChip.first);
-      await tester.pumpAndSettle();
-      expect(repo.activeDhikr.category, 'استغفار قرآني');
+      expect(repo.activeDhikr.isIstighfar, isTrue);
 
-      // 2. Switch to Tasbeeh section and filter by 'تسبيح وتنزيه'
-      final tasbeehTab = find.textContaining('التسبيح والتحميد');
+      // 1. Switch to Tasbeeh section
+      final tasbeehTab = find.textContaining('التسبيح');
       expect(tasbeehTab, findsWidgets);
       await tester.tap(tasbeehTab.first);
       await tester.pumpAndSettle();
 
-      final tasbeehChip = find.text('تسبيح وتنزيه');
-      expect(tasbeehChip, findsWidgets);
-      await tester.tap(tasbeehChip.first);
+      expect(repo.activeDhikr.isTasbeeh, isTrue);
+      expect(repo.activeSection, DhikrSection.tasbeeh);
+
+      // 2. Switch back to Istighfar section
+      final istighfarTab = find.textContaining('الاستغفار');
+      expect(istighfarTab, findsWidgets);
+      await tester.tap(istighfarTab.first);
       await tester.pumpAndSettle();
-      expect(repo.activeDhikr.category, 'تسبيح وتنزيه');
+
+      expect(repo.activeDhikr.isIstighfar, isTrue);
+      expect(repo.activeSection, DhikrSection.istighfar);
     });
 
     test('TasbeehRepository setActiveSection switches active dhikr between sections', () {
