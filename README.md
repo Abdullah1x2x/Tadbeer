@@ -31,8 +31,10 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Dual-Page Spread Layout:** Automatic side-by-side spread on tablets and wide viewports (`width >= 900dp`), mimicking an open physical Mushaf.
 
 ### 📿 Istighfar & Tasbeeh (Digital Counter & Daily Dhikr)
-- **Interactive Digital Tasbeeh with Haptics:** Elegant circular touch counter with smooth pulse animation, light haptic feedback on each count, and distinct celebration haptics with milestone notifications upon target completion.
-- **Authentic Curated Supplications & Azkar:** Built-in catalog including Istighfar, Sayyid Al-Istighfar, Subhan Allah wa bihamdih, Al-Baqiyat Al-Salihat, Tahleel, Hawqalah, Salawat upon the Prophet ﷺ, and Yunus's Dua with documented virtues.
+- **31 Authentic Prophetic & Quranic Formulas:** Comprehensive catalog classified into 7 categories (Istighfar & Repentance, Tasbeeh & Glorification, Tahmeed & Gratitude, Tahleel & Tawheed, Hawqalah, Salawat upon the Prophet ﷺ, and Comprehensive Duas) with documented virtues and references.
+- **Effortless Switching & Gesture Navigation:** Horizontal category filter chips, direct Previous/Next navigation controls, and horizontal swipe gestures (left/right) for fluid, distraction-free transitions between formulas.
+- **Smart Auto-Advance Mode:** Optional automated transition mode that seamlessly switches to the next dhikr upon reaching the cycle target (33 or 100) with celebration haptic feedback, keeping the worshiper's concentration unbroken.
+- **Interactive Digital Tasbeeh with Haptics:** Elegant circular touch counter with smooth pulse animation, light haptic feedback on each count, and distinct celebration haptics with milestone notifications.
 - **Flexible Targets & Persistent Totals:** Selectable cycle targets (33, 100, or unlimited free counting), automatically persisting daily totals and lifetime counts locally across app restarts.
 
 ### 📚 Books & Study Booklets (Tadbeer Library)
@@ -112,7 +114,7 @@ flutter run
 # Verify static analysis (0 warnings / 0 errors)
 dart analyze
 
-# Run all automated tests (174 tests, 23 test files, 100% passing)
+# Run all automated tests (195 tests, 24 test files, 100% passing)
 flutter test
 
 # Build production release packages
@@ -132,7 +134,7 @@ tadbeer/
 │   └── quran/
 │       ├── quran_data.json     # Verified Tanzil Uthmani text (2.0MB)
 │       └── word_meanings.json  # 6,465 verified lexical entries (1.1MB)
-├── lib/                        # Production Dart code (58 files)
+├── lib/                        # Production Dart code (64 files)
 │   ├── app/                    # App bootstrap, localization (ar/en), theme
 │   ├── core/
 │   │   ├── services/           # AES-256 crypto & local reminders
@@ -142,6 +144,7 @@ tadbeer/
 │   │   ├── ayah_links/         # Thematic verse links & network views
 │   │   ├── backup/             # Encrypted backup & restore screen
 │   │   ├── bookmarks/          # Bookmarks repository & screen
+│   │   ├── books/              # Curated booklets & study library
 │   │   ├── duas/               # 88 Quranic duas catalog
 │   │   ├── highlights/         # 4-color verse highlighting
 │   │   ├── home/               # Dashboard & reading resume
@@ -151,9 +154,10 @@ tadbeer/
 │   │   ├── search/             # Unified search registry & providers
 │   │   ├── settings/           # Font family/size, theme, and about
 │   │   ├── tadbeer/            # Tadbeer pause worksheet & intro
+│   │   ├── tasbeeh/            # Digital counter & daily dhikr sanctuary
 │   │   └── word_meanings/      # Word meanings explorer & sources
 │   └── main.dart               # Entrypoint & service initialization
-├── test/                       # Comprehensive test suite (174 tests, 23 files)
+├── test/                       # Comprehensive test suite (195 tests, 24 files)
 ├── DEVELOPMENT_GUIDE.md        # Technical developer & maintenance guide
 ├── DEVELOPMENT_GUIDE.ar.md     # Arabic technical developer guide
 ├── ATTRIBUTION.md              # Attribution statements & source details

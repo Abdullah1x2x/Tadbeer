@@ -41,7 +41,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (189 tests across 24 test files - 100% passing)
+# 3. Run automated tests (195 tests across 24 test files - 100% passing)
 flutter test
 
 # 4. Run application in debug mode
@@ -144,6 +144,12 @@ Managed by `BackupCryptoService`:
 - **Root Search:** Supports morphological root search via `جذر:XXX` syntax (e.g. `جذر:صبر`).
 - **Normalization:** All search matching utilizes `ArabicSearchNormalizer.normalize()`.
 
+### 4.6. Digital Tasbeeh & Istighfar Sanctuary (`lib/features/tasbeeh/`)
+- **Curated Dhikr Catalog (31 Authentic Formulas):** Comprehensive formulas across 7 categories (`TasbeehDhikr.categories`) with documented virtues.
+- **State Repository (`TasbeehRepository`):** Manages round counting, target cycles, daily counts, lifetime tallies, and auto-advance state locally in `tadbeer_tasbeeh_state.json`.
+- **Easy Switching & Gestures:** Category filter chips, directional Next/Previous navigation buttons, and horizontal touch swipe gestures (`onHorizontalDragEnd`).
+- **Auto-Advance Mode:** Automated seamless switching to the next dhikr upon reaching the target (33 or 100) with celebratory haptic feedback and clean cycle resets.
+
 ---
 
 ## 5. Coding & Contribution Guidelines
@@ -154,6 +160,6 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 174 tests must pass
+   flutter test    # All 195 tests must pass
    ```
 5. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.

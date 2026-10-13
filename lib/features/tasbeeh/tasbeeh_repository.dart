@@ -18,6 +18,7 @@ class TasbeehRepository extends ChangeNotifier {
   int _lifetimeTotalCount = 0;
   int _todayTotalCount = 0;
   String _lastDateIso = '';
+  bool _autoAdvanceEnabled = true;
 
   /// الذكر الفعال حالياً في السبحة.
   TasbeehDhikr get activeDhikr => _activeDhikr;
@@ -27,6 +28,9 @@ class TasbeehRepository extends ChangeNotifier {
 
   /// الهدف المحدد للدورة الحالية (0 تعني عدّاً حراً غير محدود).
   int get targetCount => _targetCount;
+
+  /// ما إذا كان التبديل التلقائي إلى الصيغة التالية مفعلاً عند بلوغ الهدف.
+  bool get autoAdvanceEnabled => _autoAdvanceEnabled;
 
   /// المجموع التراكمي الكلي لمرات الاستغفار والتسبيح منذ تثبيت التطبيق.
   int get lifetimeTotalCount => _lifetimeTotalCount;
@@ -67,6 +71,7 @@ class TasbeehRepository extends ChangeNotifier {
 
         _targetCount = (jsonMap['targetCount'] as num?)?.toInt() ?? _activeDhikr.defaultTarget;
         _currentCount = (jsonMap['currentCount'] as num?)?.toInt() ?? 0;
+        _autoAdvanceEnabled = jsonMap['autoAdvanceEnabled'] as bool? ?? true;
       } else {
         _targetCount = _activeDhikr.defaultTarget;
       }
@@ -109,14 +114,51 @@ class TasbeehRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// تغيير الذكر الفعال حالياً.
+  /// تفعيل أو تعطيل التبديل التلقائي إلى الذكر التالي عند إتمام الورد المستهدف.
+  void toggleAutoAdvance() {
+    _autoAdvanceEnabled = !_autoAdvanceEnabled;
+    _persistDebounced();
+    notifyListeners();
+  }
+
+  /// ضبط التبديل التلقائي بقيمة محددة.
+  void setAutoAdvance(bool enabled) {
+    if (_autoAdvanceEnabled == enabled) return;
+    _autoAdvanceEnabled = enabled;
+    _persistDebounced();
+    notifyListeners();
+  }
+
+  /// تغيير الذكر الفعال حالياً والبدء بدورة جديدة.
   void setActiveDhikr(TasbeehDhikr dhikr) {
-    if (_activeDhikr.id == dhikr.id) return;
     _activeDhikr = dhikr;
     _currentCount = 0;
     _targetCount = dhikr.defaultTarget;
     _persistDebounced();
     notifyListeners();
+  }
+
+  /// الانتقال إلى الذكر التالي ضمن قائمة محددة (أو القائمة الافتراضية).
+  void nextDhikr({List<TasbeehDhikr>? pool}) {
+    final list = (pool != null && pool.isNotEmpty)
+        ? pool
+        : TasbeehDhikr.defaultDhikrs;
+    final currentIndex = list.indexWhere((d) => d.id == _activeDhikr.id);
+    final nextIndex =
+        currentIndex == -1 ? 0 : (currentIndex + 1) % list.length;
+    setActiveDhikr(list[nextIndex]);
+  }
+
+  /// الانتقال إلى الذكر السابق ضمن قائمة محددة (أو القائمة الافتراضية).
+  void previousDhikr({List<TasbeehDhikr>? pool}) {
+    final list = (pool != null && pool.isNotEmpty)
+        ? pool
+        : TasbeehDhikr.defaultDhikrs;
+    final currentIndex = list.indexWhere((d) => d.id == _activeDhikr.id);
+    final prevIndex = currentIndex == -1
+        ? 0
+        : (currentIndex - 1 + list.length) % list.length;
+    setActiveDhikr(list[prevIndex]);
   }
 
   /// التحقق من تبدل اليوم لتصفير عداد اليوم.
@@ -157,6 +199,7 @@ class TasbeehRepository extends ChangeNotifier {
         'activeDhikrId': _activeDhikr.id,
         'currentCount': _currentCount,
         'targetCount': _targetCount,
+        'autoAdvanceEnabled': _autoAdvanceEnabled,
       });
       await file.writeAsString(payload, flush: true);
     } catch (_) {
