@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
@@ -42,73 +43,142 @@ class SettingsScreen extends StatelessWidget {
                 _buildSectionHeader(context, l10n.appearance),
                 _buildCard(
                   context: context,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(
-                          Icons.brightness_medium_outlined,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        title: Text(
-                          l10n.themeMode,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          settings.themeMode == ThemeMode.light
-                              ? l10n.light
-                              : settings.themeMode == ThemeMode.dark
-                              ? l10n.dark
-                              : l10n.system,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark
-                                ? AppColors.nightSubtitle
-                                : AppColors.daySubtitle,
-                          ),
-                        ),
-                        trailing: DropdownButton<ThemeMode>(
-                          value: settings.themeMode,
-                          underline: const SizedBox(),
-                          onChanged: (mode) {
-                            if (mode != null) {
-                              UserDataStore.instance.updateSettings(
-                                settings.copyWith(themeMode: mode),
-                              );
-                            }
-                          },
-                          items: [
-                            DropdownMenuItem(
-                              value: ThemeMode.light,
-                              child: Text(l10n.light),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.palette_outlined,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
-                            DropdownMenuItem(
-                              value: ThemeMode.dark,
-                              child: Text(l10n.dark),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.themeMode,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                              ),
                             ),
-                            DropdownMenuItem(
-                              value: ThemeMode.system,
-                              child: Text(l10n.system),
+                            const Spacer(),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: isDark ? 0.22 : 0.10),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.3),
+                                  width: 0.8,
+                                ),
+                              ),
+                              child: Text(
+                                _getActiveThemeLabel(
+                                  settings.themeMode,
+                                  isDark,
+                                  context.currentLanguage == AppLanguage.arabic,
+                                ),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                      const Divider(height: 1),
-                      Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Row(
+                        const SizedBox(height: 14),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildThemeOptionButton(
+                                context: context,
+                                mode: ThemeMode.light,
+                                currentMode: settings.themeMode,
+                                label: l10n.light,
+                                icon: Icons.light_mode_rounded,
+                                isDark: isDark,
+                                onSelect: () {
+                                  UserDataStore.instance.updateSettings(
+                                    settings.copyWith(
+                                      themeMode: ThemeMode.light,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: _buildThemeOptionButton(
+                                context: context,
+                                mode: ThemeMode.dark,
+                                currentMode: settings.themeMode,
+                                label: l10n.dark,
+                                icon: Icons.dark_mode_rounded,
+                                isDark: isDark,
+                                onSelect: () {
+                                  UserDataStore.instance.updateSettings(
+                                    settings.copyWith(
+                                      themeMode: ThemeMode.dark,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: _buildThemeOptionButton(
+                                context: context,
+                                mode: ThemeMode.system,
+                                currentMode: settings.themeMode,
+                                label: context.currentLanguage ==
+                                        AppLanguage.arabic
+                                    ? 'تلقائي'
+                                    : 'System',
+                                icon: Icons.brightness_auto_rounded,
+                                isDark: isDark,
+                                onSelect: () {
+                                  UserDataStore.instance.updateSettings(
+                                    settings.copyWith(
+                                      themeMode: ThemeMode.system,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        const Divider(height: 1),
+                        const SizedBox(height: 12),
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(
                               Icons.remove_red_eye_outlined,
-                              size: 20,
+                              size: 18,
                               color: Theme.of(context).colorScheme.primary,
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'راحة العين: الوضع الداكن والألوان الهادئة صُممت خصيصاً لتقليل إجهاد النظر أثناء التلاوة والتدبر الطويل.',
+                                _getThemeExplanation(
+                                  settings.themeMode,
+                                  isDark,
+                                  context.currentLanguage == AppLanguage.arabic,
+                                ),
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 11.5,
                                   height: 1.5,
                                   color: isDark
                                       ? AppColors.nightSubtitle
@@ -118,8 +188,8 @@ class SettingsScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 // 2. الخط والقراءة (Typography & Reading)
@@ -703,5 +773,150 @@ class SettingsScreen extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: child,
     );
+  }
+
+  /// يبني زراً تفاعلياً لأحد خيارات سمة المظهر (فاتح / داكن / تلقائي).
+  Widget _buildThemeOptionButton({
+    required BuildContext context,
+    required ThemeMode mode,
+    required ThemeMode currentMode,
+    required String label,
+    required IconData icon,
+    required bool isDark,
+    required VoidCallback onSelect,
+  }) {
+    final isSelected = currentMode == mode;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onSelect();
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? primaryColor.withValues(alpha: isDark ? 0.24 : 0.12)
+                  : (isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightBackground),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected
+                    ? primaryColor
+                    : (isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder),
+                width: isSelected ? 1.8 : 0.9,
+              ),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: primaryColor.withValues(
+                          alpha: isDark ? 0.25 : 0.12,
+                        ),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 22,
+                  color: isSelected
+                      ? primaryColor
+                      : (isDark
+                          ? AppColors.nightSubtitle
+                          : AppColors.daySubtitle),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.w600,
+                    color: isSelected
+                        ? primaryColor
+                        : (isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 180),
+                  opacity: isSelected ? 1.0 : 0.0,
+                  child: Icon(
+                    Icons.check_circle_rounded,
+                    size: 14,
+                    color: primaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// إرجاع التسمية التوضيحية للسمة المفعّلة حالياً مع توضيح حالة مظهر الجهاز عند تفعيل الوضع التلقائي.
+  String _getActiveThemeLabel(
+    ThemeMode mode,
+    bool isDark,
+    bool isArabic,
+  ) {
+    switch (mode) {
+      case ThemeMode.light:
+        return isArabic ? 'فاتح' : 'Light';
+      case ThemeMode.dark:
+        return isArabic ? 'داكن' : 'Dark';
+      case ThemeMode.system:
+        final resolved = isDark
+            ? (isArabic ? 'داكن' : 'Dark')
+            : (isArabic ? 'فاتح' : 'Light');
+        return isArabic ? 'تلقائي ($resolved)' : 'System ($resolved)';
+    }
+  }
+
+  /// إرجاع النص الإرشادي التوضيحي لمزايا السمة المحددة.
+  String _getThemeExplanation(
+    ThemeMode mode,
+    bool isDark,
+    bool isArabic,
+  ) {
+    if (mode == ThemeMode.light) {
+      return isArabic
+          ? 'الوضع النهاري: ألوان ورقية مستوحاة من ورق المصحف الشريف لقراءة نهارية مريحة وواضحة.'
+          : 'Light Mode: Calm parchment tones inspired by the Medina Mushaf for comfortable daytime reading.';
+    } else if (mode == ThemeMode.dark) {
+      return isArabic
+          ? 'الوضع الليلي: ألوان داكنة زمردية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.'
+          : 'Dark Mode: Subdued, deep forest tones engineered to minimize eye fatigue during extended nighttime reading.';
+    } else {
+      final current = isDark
+          ? (isArabic ? 'داكن' : 'Dark')
+          : (isArabic ? 'فاتح' : 'Light');
+      return isArabic
+          ? 'الوضع التلقائي: يتزامن مظهر التطبيق آلياً مع إعدادات هاتفك (المظهر المفعّل حالياً في جهازك: $current).'
+          : 'System Mode: Automatically synchronizes with your device settings (Currently active: $current).';
+    }
   }
 }
