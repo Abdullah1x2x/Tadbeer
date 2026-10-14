@@ -351,7 +351,7 @@ class _SectionDirectoryCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.arrow_forward_ios_rounded,
+                  Icons.arrow_back_ios_new_rounded,
                   size: 13,
                   color: isDark
                       ? AppColors.darkTextSecondary

@@ -926,7 +926,7 @@ class _QuranHeroCard extends StatelessWidget {
 
                 // Navigation Chevron
                 Icon(
-                  Icons.arrow_forward_ios_rounded,
+                  Icons.arrow_back_ios_new_rounded,
                   size: isVeryCompact ? 12 : 14,
                   color: (isDark
                           ? AppColors.darkAccentGold
@@ -1295,7 +1295,7 @@ class _IstighfarTasbeehCard extends StatelessWidget {
 
                 // Navigation Chevron
                 Icon(
-                  Icons.arrow_forward_ios_rounded,
+                  Icons.arrow_back_ios_new_rounded,
                   size: isVeryCompact ? 12 : 14,
                   color: (isDark
                           ? AppColors.darkAccentGold
@@ -1455,7 +1455,7 @@ class _BooksHeroCard extends StatelessWidget {
 
                 // Navigation Chevron
                 Icon(
-                  Icons.arrow_forward_ios_rounded,
+                  Icons.arrow_back_ios_new_rounded,
                   size: isVeryCompact ? 12 : 14,
                   color: (isDark
                           ? AppColors.darkAccentGold

@@ -62,6 +62,13 @@ class _TadbeerAppState extends State<TadbeerApp> {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: settings.themeMode,
+            locale: Locale(_currentLanguage.code),
+            builder: (context, child) {
+              return Directionality(
+                textDirection: _currentLanguage.direction,
+                child: child!,
+              );
+            },
             home: _initialHideIntro
                 ? const HomeScreen()
                 : const TadbeerIntroScreen(),

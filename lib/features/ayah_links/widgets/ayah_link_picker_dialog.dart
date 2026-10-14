@@ -276,7 +276,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                           .primary,
                                     ),
                                   )
-                                : const Icon(Icons.arrow_forward_ios, size: 14),
+                                : const Icon(Icons.arrow_back_ios_new_rounded, size: 14),
                             onTap: isAlreadyLinked
                                 ? null
                                 : () => _addVerseToLink(link.id, link.title),

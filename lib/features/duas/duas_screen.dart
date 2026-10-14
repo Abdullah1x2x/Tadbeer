@@ -397,7 +397,7 @@ class _DuaCategoryCard extends StatelessWidget {
 
               // Arrow Forward Icon
               Icon(
-                Icons.arrow_forward_ios_rounded,
+                Icons.arrow_back_ios_new_rounded,
                 size: 14,
                 color: isAvailable
                     ? (isDark

@@ -187,25 +187,29 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: SafeArea(
+            child: SizedBox(
+              height: MediaQuery.of(ctx).size.height * 0.72,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -284,9 +288,11 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
+  },
+);
   }
 
   void _copyChapterContent() {
@@ -379,10 +385,13 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
-      appBar: AppBar(
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor:
+            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        appBar: AppBar(
+          leading: const BackButton(),
         title: Column(
           children: [
             Text(
@@ -443,8 +452,9 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       body: SafeArea(
         child: _buildBody(isDark, primaryColor),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildBody(bool isDark, Color primaryColor) {
     // 1. إذا كان الكتاب مبنياً على فصول ومباحث نصية (استعراض القراءة المباشرة)
@@ -866,15 +876,19 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    // أزرار التنقل بين المباحث
+                    // أزرار التنقل بين المباحث / الأدعية
                     Row(
                       children: [
                         if (_currentChapterIndex > 0)
                           Expanded(
                             child: OutlinedButton.icon(
-                              icon: const Icon(Icons.arrow_forward_rounded,
-                                  size: 16),
-                              label: const Text('المبحث السابق'),
+                              icon: const Icon(Icons.chevron_right_rounded,
+                                  size: 18),
+                              label: Text(
+                                widget.book.id == 'sahifah_sajjadiyah'
+                                    ? 'الدعاء السابق'
+                                    : 'المبحث السابق',
+                              ),
                               onPressed: () =>
                                   _changeChapter(_currentChapterIndex - 1),
                             ),
@@ -892,9 +906,13 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                                 foregroundColor:
                                     isDark ? Colors.black : Colors.white,
                               ),
-                              icon: const Icon(Icons.arrow_back_rounded,
-                                  size: 16),
-                              label: const Text('المبحث التالي'),
+                              icon: const Icon(Icons.chevron_left_rounded,
+                                  size: 18),
+                              label: Text(
+                                widget.book.id == 'sahifah_sajjadiyah'
+                                    ? 'الدعاء التالي'
+                                    : 'المبحث التالي',
+                              ),
                               onPressed: () =>
                                   _changeChapter(_currentChapterIndex + 1),
                             ),

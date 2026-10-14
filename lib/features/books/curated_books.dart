@@ -175,7 +175,13 @@ class BookConfig {
 /// قائمة الأقسام والملازم التي يحددها المطور في التطبيق.
 /// قم بإضافة أقسامك وملازمك وملفاتك المرفقة هنا مباشرة:
 final List<BookSectionConfig> curatedBookSections = [
-  // 1. قسم ملازم السيد حسين الحوثي (86 ملزمة موثقة كاملة)
+  // 1. قسم تراث وأدعية أهل البيت (عليهم السلام)
+  ahlulbaytHeritageSection,
+
+  // 2. قسم علوم وتدبر القرآن الكريم
+  quranSciencesSection,
+
+  // 3. قسم ملازم السيد حسين الحوثي (86 ملزمة موثقة كاملة)
   BookSectionConfig(
     name: 'ملازم السيد حسين الحوثي',
     description:
@@ -183,10 +189,4 @@ final List<BookSectionConfig> curatedBookSections = [
     icon: Icons.auto_stories_rounded,
     books: malazemSayyedHusseinBooks,
   ),
-
-  // 2. قسم تراث وأدعية أهل البيت (عليهم السلام)
-  ahlulbaytHeritageSection,
-
-  // 3. قسم علوم وتدبر القرآن الكريم
-  quranSciencesSection,
 ];

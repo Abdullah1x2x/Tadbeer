@@ -434,17 +434,22 @@ void main() {
 
     test('curatedBookSections contains Sayyed Hussein booklets, Ahlulbayt heritage, and Quranic sciences', () {
       expect(curatedBookSections.length, 3);
+      expect(curatedBookSections[0].name, 'تراث وأدعية أهل البيت (عليهم السلام)');
+      expect(curatedBookSections[1].name, 'علوم وتدبر القرآن الكريم');
+      expect(curatedBookSections[2].name, 'ملازم السيد حسين الحوثي');
 
-      final malazemSec = curatedBookSections.firstWhere((s) => s.name == 'ملازم السيد حسين الحوثي');
+      final malazemSec = curatedBookSections[2];
       expect(malazemSec.books.length, 86);
       expect(malazemSec.books.every((b) => b.author == 'السيد حسين بدر الدين الحوثي'), isTrue);
       expect(malazemSec.books.every((b) => b.assetPath != null && b.assetPath!.startsWith('assets/books/malazem/')), isTrue);
 
-      final ahlulbaytSec = curatedBookSections.firstWhere((s) => s.name == 'تراث وأدعية أهل البيت (عليهم السلام)');
+      final ahlulbaytSec = curatedBookSections[0];
       expect(ahlulbaytSec.books.length, 4);
       expect(ahlulbaytSec.books.any((b) => b.title == 'الصحيفة السجادية الكاملة'), isTrue);
       final sahifah = ahlulbaytSec.books.firstWhere((b) => b.title == 'الصحيفة السجادية الكاملة');
       expect(sahifah.chapters.length, 54);
+      expect(sahifah.chapters[19].title, 'الدعاء العشرون (مكارم الأخلاق)');
+      expect(sahifah.chapters.every((c) => !c.title.contains('\u06cc') && !c.content.contains('\u06cc')), isTrue);
 
       expect(ahlulbaytSec.books.any((b) => b.title == 'رسالة الحقوق'), isTrue);
       final huquq = ahlulbaytSec.books.firstWhere((b) => b.title == 'رسالة الحقوق');
@@ -453,7 +458,7 @@ void main() {
       expect(ahlulbaytSec.books.any((b) => b.title.contains('نهج البلاغة')), isTrue);
       expect(ahlulbaytSec.books.any((b) => b.title.contains('تحف العقول')), isTrue);
 
-      final quranSciencesSec = curatedBookSections.firstWhere((s) => s.name == 'علوم وتدبر القرآن الكريم');
+      final quranSciencesSec = curatedBookSections[1];
       expect(quranSciencesSec.books.length, 3);
       expect(quranSciencesSec.books.any((b) => b.title.contains('أخلاق حَمَلَة القرآن')), isTrue);
       expect(quranSciencesSec.books.any((b) => b.title.contains('قواعد وأصول في تدبر القرآن')), isTrue);
