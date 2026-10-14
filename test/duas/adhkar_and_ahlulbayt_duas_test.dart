@@ -191,9 +191,9 @@ void main() {
       expect(find.textContaining('دعاء مكارم الأخلاق'), findsOneWidget);
     });
 
-    testWidgets('AhlulbaytDuaReaderScreen renders paragraphs and handles font size', (
-      WidgetTester tester,
-    ) async {
+    testWidgets(
+      'AhlulbaytDuaReaderScreen renders complete dua as a single unified piece and handles font size',
+      (WidgetTester tester) async {
       final dua = AhlulbaytDuasRepository.instance.getDuaById('dua_kumayl')!;
       await tester.pumpWidget(buildTestWidget(AhlulbaytDuaReaderScreen(dua: dua)));
       await tester.pumpAndSettle();

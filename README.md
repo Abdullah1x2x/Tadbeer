@@ -60,7 +60,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 ### 🤲 Organized Duas & Adhkar Section
 - **Quranic Duas:** Catalog of **88 direct Quranic supplications** extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
 - **Interactive Morning & Evening Adhkar:** Authentic fortress of the Muslim supplications with responsive per-dhikr countdown counters, instant copy, and documented virtues and sources.
-- **Ahlulbayt & Sahifah Sajjadiyah Duas:** Dedicated reader with font resizing, paragraph-by-paragraph breakdown, and instant copying, featuring:
+- **Ahlulbayt & Sahifah Sajjadiyah Duas (Complete Unabridged Texts):** Dedicated spiritual reader presenting each supplication as a single unified continuous text without segmented cuts, with font resizing and instant copying, featuring:
   - *Dua Makarim al-Akhlaq* (Noble Moral Traits by Imam Ali Zayn al-Abidin)
   - *Dua Ahl al-Thughoor* (Protection for Muslim Borders and Guardians by Imam Zayn al-Abidin)
   - *Dua Kumayl ibn Ziyad* (Taught by Imam Ali for Friday Eve and mid-Sha'ban)

@@ -15,11 +15,14 @@ class AhlulbaytDua {
   /// نبذة عن الدعاء وفضله ومناسبته.
   final String summary;
 
-  /// النص الشريف الكامل للدعاء مقسماً إلى فقرات لسهولة القراءة والتدبر.
-  final List<String> paragraphs;
+  /// النص الشريف الكامل للدعاء كقطعة واحدة متصلة دون تقطيع.
+  final String content;
 
-  /// النص الكامل مجمعاً.
-  String get fullText => paragraphs.join('\n\n');
+  /// النص الكامل للدعاء (متطابق مع content لضمان التوافقية).
+  String get fullText => content;
+
+  /// قائمة بمحتوى الدعاء (للتوافقية).
+  List<String> get paragraphs => [content];
 
   const AhlulbaytDua({
     required this.id,
@@ -27,6 +30,6 @@ class AhlulbaytDua {
     required this.attributedTo,
     required this.category,
     required this.summary,
-    required this.paragraphs,
+    required this.content,
   });
 }

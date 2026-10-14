@@ -419,7 +419,7 @@ class _DuaCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  '${ArabicSearchNormalizer.toArabicDigits(dua.paragraphs.length)} مقاطع',
+                  'نص كامل ومأثور',
                   style: TextStyle(
                     fontSize: 11,
                     color: isDark

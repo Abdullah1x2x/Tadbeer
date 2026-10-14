@@ -50,28 +50,9 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
     );
   }
 
-  void _copyParagraph(String paragraph) {
-    Clipboard.setData(ClipboardData(text: paragraph));
-    HapticFeedback.selectionClick();
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text(
-          'تم نسخ المقطع إلى الحافظة',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 13),
-        ),
-        duration: const Duration(seconds: 1),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -181,91 +162,66 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
 
               const SizedBox(height: 16),
 
-              // فقرات ومقاطع الدعاء الشريف
-              ...widget.dua.paragraphs.asMap().entries.map((entry) {
-                final idx = entry.key;
-                final paragraph = entry.value;
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkSurface
-                          : AppColors.lightSurface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: (isDark
-                                        ? AppColors.darkAccentGold
-                                        : primaryColor)
-                                    .withValues(alpha: 0.12),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                '${idx + 1}',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? AppColors.darkAccentGold
-                                      : primaryColor,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: 'نسخ هذا المقطع',
-                              icon: const Icon(Icons.copy_rounded, size: 16),
-                              visualDensity: VisualDensity.compact,
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(
-                                  minWidth: 28, minHeight: 28),
-                              onPressed: () => _copyParagraph(paragraph),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          paragraph,
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: _fontSize,
-                            fontWeight: FontWeight.w600,
-                            height: 1.7,
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
+              // النص الشريف للدعاء كاملاً قطعة واحدة متصلة
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 18, vertical: 20),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
                   ),
-                );
-              }),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black
+                          .withValues(alpha: isDark ? 0.2 : 0.03),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: SelectableText(
+                  widget.dua.fullText,
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                    fontFamily: 'Amiri',
+                    fontSize: _fontSize,
+                    fontWeight: FontWeight.w600,
+                    height: 1.85,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // زر نسخ الدعاء كاملاً في الأسفل
+              OutlinedButton.icon(
+                onPressed: _copyAllText,
+                icon: const Icon(Icons.copy_all_rounded, size: 18),
+                label: const Text(
+                  'نسخ نص الدعاء كاملاً',
+                  style: TextStyle(
+                    fontFamily: 'Amiri',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
