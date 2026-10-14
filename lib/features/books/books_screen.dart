@@ -193,7 +193,8 @@ class _SectionDirectoryCard extends StatelessWidget {
   });
 
   Color _getBadgeColor() {
-    if (section.name.contains('السيد حسين')) {
+    if (section.name.contains('هدي القرآن') ||
+        section.name.contains('السيد حسين')) {
       return isDark ? AppColors.darkAccentGold : const Color(0xFFC59B27);
     }
     if (section.name.contains('أهل البيت')) {
@@ -206,7 +207,8 @@ class _SectionDirectoryCard extends StatelessWidget {
   }
 
   IconData _getSectionIcon() {
-    if (section.name.contains('السيد حسين')) {
+    if (section.name.contains('هدي القرآن') ||
+        section.name.contains('السيد حسين')) {
       return Icons.auto_stories_rounded;
     }
     if (section.name.contains('أهل البيت')) {
@@ -219,7 +221,8 @@ class _SectionDirectoryCard extends StatelessWidget {
   }
 
   String _formatCountLabel() {
-    if (section.name.contains('السيد حسين')) {
+    if (section.name.contains('هدي القرآن') ||
+        section.name.contains('السيد حسين')) {
       return '$bookCount ملزمة موثقة • PDF مباشر';
     }
     if (section.name.contains('أهل البيت')) {

@@ -436,7 +436,7 @@ void main() {
       expect(curatedBookSections.length, 3);
       expect(curatedBookSections[0].name, 'تراث وأدعية أهل البيت (عليهم السلام)');
       expect(curatedBookSections[1].name, 'علوم وتدبر القرآن الكريم');
-      expect(curatedBookSections[2].name, 'ملازم السيد حسين الحوثي');
+      expect(curatedBookSections[2].name, 'ملازم هدي القرآن الكريم');
 
       final malazemSec = curatedBookSections[2];
       expect(malazemSec.books.length, 86);
@@ -475,12 +475,12 @@ void main() {
       expect(find.text('كتب وملازم'), findsWidgets);
 
       // Section cards exist in the directory
-      expect(find.textContaining('ملازم السيد حسين الحوثي'), findsWidgets);
+      expect(find.textContaining('ملازم هدي القرآن الكريم'), findsWidgets);
       expect(find.textContaining('تراث وأدعية أهل البيت'), findsWidgets);
       expect(find.textContaining('علوم وتدبر القرآن الكريم'), findsWidgets);
 
-      // Tap on 'ملازم السيد حسين الحوثي' section card to enter the section
-      final malazemCard = find.textContaining('ملازم السيد حسين الحوثي');
+      // Tap on 'ملازم هدي القرآن الكريم' section card to enter the section
+      final malazemCard = find.textContaining('ملازم هدي القرآن الكريم');
       await tester.tap(malazemCard.first);
       await tester.pumpAndSettle();
 

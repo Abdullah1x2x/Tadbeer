@@ -481,16 +481,4 @@ class AhlulbaytDuasRepository {
       return null;
     }
   }
-
-  /// البحث في الأدعية بالعنوان أو النص أو المنسوب إليه.
-  List<AhlulbaytDua> searchDuas(String query) {
-    if (query.trim().isEmpty) return defaultDuas;
-    final q = query.trim();
-    return defaultDuas.where((d) {
-      return d.title.contains(q) ||
-          d.attributedTo.contains(q) ||
-          d.summary.contains(q) ||
-          d.fullText.contains(q);
-    }).toList();
-  }
 }

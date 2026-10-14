@@ -839,13 +839,12 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      tooltip: 'الذكر السابق',
-                      icon: const Icon(Icons.arrow_forward_ios_rounded,
-                          size: 18),
+                      tooltip: 'الذكر التالي',
+                      icon: const Icon(Icons.chevron_right_rounded, size: 22),
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary,
-                      onPressed: _previousDhikr,
+                      onPressed: _nextDhikr,
                     ),
                     Expanded(
                       child: Center(
@@ -888,13 +887,12 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       ),
                     ),
                     IconButton(
-                      tooltip: 'الذكر التالي',
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                          size: 18),
+                      tooltip: 'الذكر السابق',
+                      icon: const Icon(Icons.chevron_left_rounded, size: 22),
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary,
-                      onPressed: _nextDhikr,
+                      onPressed: _previousDhikr,
                     ),
                   ],
                 ),

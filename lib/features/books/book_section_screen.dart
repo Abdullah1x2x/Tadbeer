@@ -59,6 +59,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
   }
 
   bool get _isMalazemSection =>
+      widget.section.name.contains('هدي القرآن') ||
       widget.section.name.contains('السيد حسين');
 
   List<BookModel> get _allSectionBooks =>
@@ -185,7 +186,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
                       hintText: _isMalazemSection
-                          ? 'ابحث في عناوين ملازم السيد حسين...'
+                          ? 'ابحث في عناوين ملازم هدي القرآن...'
                           : 'ابحث في كتب ومباحث هذا القسم...',
                       hintStyle: TextStyle(
                         fontSize: 13.5,

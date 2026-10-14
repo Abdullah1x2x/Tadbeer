@@ -181,9 +181,9 @@ final List<BookSectionConfig> curatedBookSections = [
   // 2. قسم علوم وتدبر القرآن الكريم
   quranSciencesSection,
 
-  // 3. قسم ملازم السيد حسين الحوثي (86 ملزمة موثقة كاملة)
+  // 3. قسم ملازم هدي القرآن الكريم (86 ملزمة موثقة كاملة)
   BookSectionConfig(
-    name: 'ملازم السيد حسين الحوثي',
+    name: 'ملازم هدي القرآن الكريم',
     description:
         'سلسلة ملازم ودروس ومحاضرات السيد حسين بدر الدين الحوثي من هدي القرآن الكريم',
     icon: Icons.auto_stories_rounded,
