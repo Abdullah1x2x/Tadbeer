@@ -41,7 +41,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (195 tests across 24 test files - 100% passing)
+# 3. Run automated tests (210 tests across 24 test files - 100% passing)
 flutter test
 
 # 4. Run application in debug mode
@@ -149,10 +149,19 @@ Managed by `BackupCryptoService`:
 - **Normalization:** All search matching utilizes `ArabicSearchNormalizer.normalize()`.
 
 ### 4.6. Digital Tasbeeh & Istighfar Sanctuary (`lib/features/tasbeeh/`)
-- **Curated Dhikr Catalog (31 Authentic Formulas):** Comprehensive formulas across 7 categories (`TasbeehDhikr.categories`) with documented virtues.
+- **Direct Dual Sections (`DhikrSection`):** Clean separation between **Istighfar** (`DhikrSection.istighfar`) and **Tasbeeh** (`DhikrSection.tasbeeh`).
+- **Fixed Display Card Dimensions (`_buildFixedDhikrCard`):** Guaranteed fixed height to eliminate jitter or layout jumps when navigating between dhikrs.
+- **Curated Dhikr Catalog (49 Authentic Formulas):** 20 Istighfar formulas and 29 Tasbeeh/Tahmeed/Takbeer/Salawat formulas.
 - **State Repository (`TasbeehRepository`):** Manages round counting, target cycles, daily counts, lifetime tallies, and auto-advance state locally in `tadbeer_tasbeeh_state.json`.
-- **Easy Switching & Gestures:** Category filter chips, directional Next/Previous navigation buttons, and horizontal touch swipe gestures (`onHorizontalDragEnd`).
-- **Auto-Advance Mode:** Automated seamless switching to the next dhikr upon reaching the target (33 or 100) with celebratory haptic feedback and clean cycle resets.
+- **Easy Switching & Gestures:** Next/Previous buttons, directional chips, and one-tap copy with SnackBar confirmation.
+
+### 4.7. Books & Booklets Library (`lib/features/books/`)
+- **Curated Sections Included in App:**
+  1. **Sayyed Hussein Al-Houthi Booklets («ملازم السيد حسين الحوثي»):** 86 unabridged booklets and lectures from the Quranic guidance series, safely organized under `assets/books/malazem/` to guarantee smooth builds across Android, iOS, and Linux.
+  2. **Ahlulbayt Heritage («تراث وأدعية أهل البيت (عليهم السلام)»):** Open Islamic heritage books with in-app interactive reading and companion high-resolution PDF attachments: **Al-Sahifah Al-Sajjadiyah**, **Risalat Al-Huquq**, and **Nahj Al-Balagha**.
+  3. **Quranic Sciences & Reflection («علوم وتدبر القرآن الكريم»):** Open public heritage works including **Akhlaq Hamalat Al-Quran** by Al-Ajurri, **Qawaid Wa Usul fi Tadabbur Al-Quran**, and **Al-Tibyan fi Adab Hamalat Al-Quran** by Imam Al-Nawawi.
+- **Developer Extensibility (`lib/features/books/curated_books.dart`):** Easily declare new sections and books in Dart code via `BookSectionConfig` and `BookConfig` with PDF attachments, text files, or in-code chapters (`BookChapter`).
+- **Reader & Document Viewer (`BookReaderScreen`):** Native interactive reading for chapters (font scaling, chapter index, copying) and external opening / sharing for PDF documents with automatic clean Arabic file naming.
 
 ---
 
@@ -164,6 +173,6 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 195 tests must pass
+   flutter test    # All 210 tests must pass
    ```
 5. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.

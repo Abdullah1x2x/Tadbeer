@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/app.dart';
 import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/books/book_model.dart';
 import 'package:tadbeer/features/books/book_reader_screen.dart';
 import 'package:tadbeer/features/books/book_repository.dart';
 import 'package:tadbeer/features/books/books_screen.dart';
+import 'package:tadbeer/features/books/curated_books.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_model.dart';
@@ -425,6 +425,27 @@ void main() {
 
       expect(find.text('ملخص التفسير الموضوعي'), findsWidgets);
       expect(find.text('فتح ومطالعة ملف PDF'), findsOneWidget);
+    });
+
+    test('curatedBookSections contains Sayyed Hussein booklets, Ahlulbayt heritage, and Quranic sciences', () {
+      expect(curatedBookSections.length, 3);
+
+      final malazemSec = curatedBookSections.firstWhere((s) => s.name == 'ملازم السيد حسين الحوثي');
+      expect(malazemSec.books.length, 86);
+      expect(malazemSec.books.every((b) => b.author == 'السيد حسين بدر الدين الحوثي'), isTrue);
+      expect(malazemSec.books.every((b) => b.assetPath != null && b.assetPath!.startsWith('assets/books/malazem/')), isTrue);
+
+      final ahlulbaytSec = curatedBookSections.firstWhere((s) => s.name == 'تراث وأدعية أهل البيت (عليهم السلام)');
+      expect(ahlulbaytSec.books.length, 3);
+      expect(ahlulbaytSec.books.any((b) => b.title == 'الصحيفة السجادية الكاملة'), isTrue);
+      expect(ahlulbaytSec.books.any((b) => b.title == 'رسالة الحقوق'), isTrue);
+      expect(ahlulbaytSec.books.any((b) => b.title.contains('نهج البلاغة')), isTrue);
+
+      final quranSciencesSec = curatedBookSections.firstWhere((s) => s.name == 'علوم وتدبر القرآن الكريم');
+      expect(quranSciencesSec.books.length, 3);
+      expect(quranSciencesSec.books.any((b) => b.title.contains('أخلاق حَمَلَة القرآن')), isTrue);
+      expect(quranSciencesSec.books.any((b) => b.title.contains('قواعد وأصول في تدبر القرآن')), isTrue);
+      expect(quranSciencesSec.books.any((b) => b.title.contains('التبيان')), isTrue);
     });
   });
 

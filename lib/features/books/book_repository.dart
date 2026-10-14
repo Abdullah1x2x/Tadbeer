@@ -7,7 +7,6 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
-import 'book_model.dart';
 import 'curated_books.dart';
 
 /// مستودع إدارة حالة وتخزين أقسام وملازم وكتب المكتبة التدبرية محلياً.

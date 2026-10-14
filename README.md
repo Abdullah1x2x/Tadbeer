@@ -76,6 +76,21 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Root & Morphological Search:** Instant root search via `جذر:XXX` syntax (e.g. `جذر:صبر` or `جذر:رحم`), matching across rich morphological variations across all 6,236 ayahs.
 - **Offline Reminders:** Local scheduled notifications (`flutter_local_notifications` + `flutter_timezone`) for daily Quran reading and reflection routines, operating completely on-device without internet access.
 
+### 📿 Digital Tasbeeh & Istighfar Sanctuary
+- **Simplified Dual Sections:** Direct switching between **Istighfar** (Seeking Forgiveness) and **Tasbeeh** (Glorification).
+- **Jitter-Free Fixed Display:** Card height is fixed to eliminate visual bouncing when stepping through supplications.
+- **49 Curated Authentic Formulas:** 20 Istighfar formulas and 29 Tasbeeh/Tahmeed/Takbeer/Salawat formulas.
+- **Flexible Target Cycles & Auto-Advance:** Supports preset targets (33, 100) or open count, with auto-advance to the next dhikr upon target completion.
+
+### 📚 Books & Booklets Library
+- **«ملازم السيد حسين الحوثي» (86 Unabridged Booklets):** Complete library of lectures and Quranic guidance booklets by Sayyed Hussein Badreddin Al-Houthi, categorized with clean Arabic titles across series (*Ma'rifat Allah*, *Madih al-Quran*, *Ramadan Lessons*, Surah Studies, Worship & Supplications, and Major Discourses).
+- **«تراث وأدعية أهل البيت (عليهم السلام)» (Ahlulbayt Heritage):** Public domain Islamic heritage works with in-app interactive reading and high-resolution companion PDF documents:
+  - *Al-Sahifah Al-Sajjadiyah* (The Psalms of Islam by Imam Zayn al-Abidin).
+  - *Risalat Al-Huquq* (The Treatise on Rights).
+  - *Nahj Al-Balagha* (Peak of Eloquence: Sermons, Letters, and Wisdom of Imam Ali).
+- **«علوم وتدبر القرآن الكريم» (Quranic Sciences & Reflection):** Open classical heritage works including *Akhlaq Hamalat Al-Quran* by Al-Ajurri, *Principles of Quranic Reflection*, and *Al-Tibyan* by Imam Al-Nawawi.
+- **Seamless Developer Extensibility:** Easily add sections, booklets, or PDF attachments directly in `curated_books.dart`.
+
 ---
 
 ## 🔒 Privacy & Offline-First

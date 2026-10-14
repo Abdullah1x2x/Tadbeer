@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'book_model.dart';
+import 'data/heritage_data.dart';
+import 'data/malazem_data.dart';
+
+export 'book_model.dart';
+export 'data/heritage_data.dart';
+export 'data/malazem_data.dart';
 
 /// تكوين قسم للملازم والكتب يُحدده المطور في ملفات التطبيق.
 class BookSectionConfig {
@@ -170,5 +176,18 @@ class BookConfig {
 /// قائمة الأقسام والملازم التي يحددها المطور في التطبيق.
 /// قم بإضافة أقسامك وملازمك وملفاتك المرفقة هنا مباشرة:
 final List<BookSectionConfig> curatedBookSections = [
-  // 👈 أضف أقسامك وملازمك هنا:
+  // 1. قسم ملازم السيد حسين الحوثي (86 ملزمة موثقة كاملة)
+  BookSectionConfig(
+    name: 'ملازم السيد حسين الحوثي',
+    description:
+        'سلسلة ملازم ودروس ومحاضرات السيد حسين بدر الدين الحوثي من هدي القرآن الكريم',
+    icon: Icons.auto_stories_rounded,
+    books: malazemSayyedHusseinBooks,
+  ),
+
+  // 2. قسم تراث وأدعية أهل البيت (عليهم السلام)
+  ahlulbaytHeritageSection,
+
+  // 3. قسم علوم وتدبر القرآن الكريم
+  quranSciencesSection,
 ];

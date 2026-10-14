@@ -257,11 +257,15 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
     try {
       File? fileToShare;
+      final safeTitle =
+          widget.book.title.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+      final ext = path.contains('.') ? path.split('.').last : 'pdf';
+      final targetFileName = '$safeTitle.$ext';
+
       if (path.startsWith('assets/')) {
         final byteData = await rootBundle.load(path);
         final tempDir = await getTemporaryDirectory();
-        final fileName = path.split('/').last;
-        final tempFile = File('${tempDir.path}/$fileName');
+        final tempFile = File('${tempDir.path}/$targetFileName');
         await tempFile.writeAsBytes(byteData.buffer.asUint8List(
           byteData.offsetInBytes,
           byteData.lengthInBytes,
@@ -277,8 +281,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       if (fileToShare != null && await fileToShare.exists()) {
         await SharePlus.instance.share(
           ShareParams(
-            files: [XFile(fileToShare.path)],
-            text: 'ملزمة: ${widget.book.title} — تطبيق تَدْبِير',
+            files: [XFile(fileToShare.path, name: targetFileName)],
+            text: '${widget.book.title} — تطبيق تَدْبِير',
           ),
         );
       } else {
@@ -364,12 +368,17 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   }
 
   Widget _buildBody(bool isDark, Color primaryColor) {
-    // 1. إذا كان الكتاب ملف PDF مرفق
+    // 1. إذا كان الكتاب مبنياً على فصول ومباحث نصية (استعراض القراءة المباشرة)
+    if (widget.book.chapters.isNotEmpty) {
+      return _buildChaptersView(isDark, primaryColor);
+    }
+
+    // 2. إذا كان الكتاب ملف PDF مرفق (للمطالعة والمشاركة الخارجية)
     if (widget.book.isPdf) {
       return _buildPdfView(isDark, primaryColor);
     }
 
-    // 2. إذا كان الكتاب ملفاً نصياً يجري تحميله
+    // 3. إذا كان الكتاب ملفاً نصياً يجري تحميله
     if (widget.book.hasAttachedFile && widget.book.isText) {
       if (_isLoadingFile) {
         return const Center(child: CircularProgressIndicator());
@@ -391,11 +400,6 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         isDark: isDark,
         primaryColor: primaryColor,
       );
-    }
-
-    // 3. إذا كان الكتاب مبنياً على فصول ومباحث نصية
-    if (widget.book.chapters.isNotEmpty) {
-      return _buildChaptersView(isDark, primaryColor);
     }
 
     // 4. لا يوجد محتوى
