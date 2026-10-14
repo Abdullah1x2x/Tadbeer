@@ -5,7 +5,6 @@ import 'data/heritage_data.dart';
 import 'data/malazem_data.dart';
 
 export 'book_model.dart';
-export 'data/heritage_data.dart';
 export 'data/malazem_data.dart';
 
 /// تكوين قسم للملازم والكتب يُحدده المطور في ملفات التطبيق.

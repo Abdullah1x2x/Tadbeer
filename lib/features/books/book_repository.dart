@@ -47,7 +47,7 @@ class BookRepository extends ChangeNotifier {
     Directory? booksDirectory,
     bool disableDisk = false,
   }) async {
-    _disableDiskPersistence = disableDisk;
+    if (disableDisk) _disableDiskPersistence = true;
     if (storageFile != null) _storageFileOverride = storageFile;
     if (booksDirectory != null) _booksDirectoryOverride = booksDirectory;
     if (_initialized && storageFile == null && booksDirectory == null && !disableDisk) return;
@@ -58,14 +58,14 @@ class BookRepository extends ChangeNotifier {
     // 1. قراءة الأقسام والكتب المحددة برمجياً في curated_books.dart
     _loadCuratedBooks();
 
-    // 2. قراءة كتالوج JSON إن وُجد في مجلد الأصول assets
-    await _loadCatalogJson();
-
     if (_disableDiskPersistence) {
       _initialized = true;
       notifyListeners();
       return;
     }
+
+    // 2. قراءة كتالوج JSON إن وُجد في مجلد الأصول assets
+    await _loadCatalogJson();
 
     try {
       final file = await _getStorageFile();

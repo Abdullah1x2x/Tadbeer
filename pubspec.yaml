@@ -47,6 +47,7 @@ dependencies:
   flutter_timezone: ^5.1.1
   qr_flutter: ^4.1.0
   flutter_islamic_icons: ^1.0.2
+  flutter_pdfview: ^1.4.5
 
 dev_dependencies:
   flutter_test:

@@ -151,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: spaceHeroToCore),
 
-                              // 4. قسم كتب وملازم (مكتبة الملازم التدبرية وعلوم القرآن)
+                              // 4. قسم كتب وملازم (مكتبة الملازم التدبرية والكتب الإسلامية)
                               _BooksHeroCard(
                                 onTap: () {
                                   Navigator.push(

@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -32,6 +34,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   bool _isLoadingFile = false;
   String? _fileLoadError;
 
+  String? _localPdfPath;
+  bool _isLoadingPdf = false;
+  String? _pdfLoadError;
+  int _currentPdfPage = 0;
+  int _totalPdfPages = 0;
+
   @override
   void initState() {
     super.initState();
@@ -45,12 +53,71 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     if (widget.book.hasAttachedFile && widget.book.isText) {
       _loadFileText();
     }
+    if (widget.book.isPdf) {
+      _loadPdf();
+    }
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadPdf() async {
+    final path = widget.book.filePath;
+    if (path == null) return;
+
+    setState(() {
+      _isLoadingPdf = true;
+      _pdfLoadError = null;
+    });
+
+    try {
+      if (path.startsWith('assets/')) {
+        final tempDir = await getTemporaryDirectory();
+        final fileName = path.split('/').last;
+        final file = File('${tempDir.path}/$fileName');
+        if (!await file.exists()) {
+          final byteData = await rootBundle.load(path);
+          await file.writeAsBytes(byteData.buffer.asUint8List(
+            byteData.offsetInBytes,
+            byteData.lengthInBytes,
+          ));
+        }
+        if (mounted) {
+          setState(() {
+            _localPdfPath = file.path;
+            _isLoadingPdf = false;
+          });
+        }
+        return;
+      }
+
+      final file = File(path);
+      if (await file.exists()) {
+        if (mounted) {
+          setState(() {
+            _localPdfPath = file.path;
+            _isLoadingPdf = false;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _pdfLoadError = 'ملف الـ PDF غير موجود على الجهاز.';
+            _isLoadingPdf = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _pdfLoadError = 'تعذر قراءة ملف الـ PDF: $e';
+          _isLoadingPdf = false;
+        });
+      }
+    }
   }
 
   Future<void> _loadFileText() async {
@@ -327,7 +394,18 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ),
               overflow: TextOverflow.ellipsis,
             ),
-            if (widget.book.author.isNotEmpty)
+            if (widget.book.isPdf && _totalPdfPages > 0)
+              Text(
+                'صفحة ${_currentPdfPage + 1} من $_totalPdfPages',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              )
+            else if (widget.book.author.isNotEmpty)
               Text(
                 widget.book.author,
                 style: TextStyle(
@@ -344,7 +422,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         actions: [
           if (widget.book.hasAttachedFile)
             IconButton(
-              tooltip: 'مشاركة / فتح الملف المرفق',
+              tooltip: 'مشاركة الملف',
               icon: const Icon(Icons.share_rounded),
               onPressed: _shareOrOpenFile,
             ),
@@ -354,11 +432,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               icon: const Icon(Icons.list_alt_rounded),
               onPressed: _showChapterListSheet,
             ),
-          IconButton(
-            tooltip: 'نسخ المحتوى',
-            icon: const Icon(Icons.copy_rounded),
-            onPressed: _copyChapterContent,
-          ),
+          if (widget.book.chapters.isNotEmpty || _loadedFileContent != null)
+            IconButton(
+              tooltip: 'نسخ المحتوى',
+              icon: const Icon(Icons.copy_rounded),
+              onPressed: _copyChapterContent,
+            ),
         ],
       ),
       body: SafeArea(
@@ -407,6 +486,147 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   }
 
   Widget _buildPdfView(bool isDark, Color primaryColor) {
+    final canUseNative = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+
+    if (canUseNative) {
+      if (_isLoadingPdf) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: primaryColor),
+              const SizedBox(height: 16),
+              const Text(
+                'جاري تجهيز وعرض الملزمة...',
+                style: TextStyle(fontFamily: 'Amiri', fontSize: 15),
+              ),
+            ],
+          ),
+        );
+      }
+
+      if (_pdfLoadError != null) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline_rounded,
+                  color: Colors.redAccent,
+                  size: 48,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  _pdfLoadError!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.redAccent, fontSize: 14),
+                ),
+                const SizedBox(height: 20),
+                FilledButton.icon(
+                  onPressed: _loadPdf,
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('إعادة المحاولة'),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      if (_localPdfPath != null) {
+        return Stack(
+          children: [
+            PDFView(
+              filePath: _localPdfPath,
+              enableSwipe: true,
+              swipeHorizontal: false,
+              autoSpacing: true,
+              pageFling: true,
+              pageSnap: false,
+              defaultPage: _currentPdfPage,
+              fitPolicy: FitPolicy.WIDTH,
+              nightMode: isDark,
+              onRender: (pages) {
+                if (mounted) {
+                  setState(() {
+                    _totalPdfPages = pages ?? 0;
+                    _isLoadingPdf = false;
+                  });
+                }
+              },
+              onError: (error) {
+                if (mounted) {
+                  setState(() {
+                    _pdfLoadError = 'خطأ أثناء عرض الملف: $error';
+                    _isLoadingPdf = false;
+                  });
+                }
+              },
+              onPageError: (page, error) {
+                if (mounted) {
+                  setState(() {
+                    _pdfLoadError = 'تعذر تحميل الصفحة $page: $error';
+                  });
+                }
+              },
+              onPageChanged: (page, total) {
+                if (mounted) {
+                  setState(() {
+                    _currentPdfPage = page ?? 0;
+                    _totalPdfPages = total ?? 0;
+                  });
+                }
+              },
+            ),
+            if (_totalPdfPages > 0)
+              Positioned(
+                bottom: 16,
+                right: 0,
+                left: 0,
+                child: Center(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: (isDark ? Colors.black : Colors.white)
+                          .withValues(alpha: 0.82),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: (isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder)
+                            .withValues(alpha: 0.6),
+                      ),
+                    ),
+                    child: Text(
+                      'صفحة ${_currentPdfPage + 1} من $_totalPdfPages',
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      }
+    }
+
+    // Fallback for non-mobile platforms (Desktop / Web / Test environment)
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),

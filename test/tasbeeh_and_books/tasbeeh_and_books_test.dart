@@ -436,10 +436,17 @@ void main() {
       expect(malazemSec.books.every((b) => b.assetPath != null && b.assetPath!.startsWith('assets/books/malazem/')), isTrue);
 
       final ahlulbaytSec = curatedBookSections.firstWhere((s) => s.name == 'تراث وأدعية أهل البيت (عليهم السلام)');
-      expect(ahlulbaytSec.books.length, 3);
+      expect(ahlulbaytSec.books.length, 4);
       expect(ahlulbaytSec.books.any((b) => b.title == 'الصحيفة السجادية الكاملة'), isTrue);
+      final sahifah = ahlulbaytSec.books.firstWhere((b) => b.title == 'الصحيفة السجادية الكاملة');
+      expect(sahifah.chapters.length, 54);
+
       expect(ahlulbaytSec.books.any((b) => b.title == 'رسالة الحقوق'), isTrue);
+      final huquq = ahlulbaytSec.books.firstWhere((b) => b.title == 'رسالة الحقوق');
+      expect(huquq.chapters.length, 17);
+
       expect(ahlulbaytSec.books.any((b) => b.title.contains('نهج البلاغة')), isTrue);
+      expect(ahlulbaytSec.books.any((b) => b.title.contains('تحف العقول')), isTrue);
 
       final quranSciencesSec = curatedBookSections.firstWhere((s) => s.name == 'علوم وتدبر القرآن الكريم');
       expect(quranSciencesSec.books.length, 3);
@@ -447,10 +454,40 @@ void main() {
       expect(quranSciencesSec.books.any((b) => b.title.contains('قواعد وأصول في تدبر القرآن')), isTrue);
       expect(quranSciencesSec.books.any((b) => b.title.contains('التبيان')), isTrue);
     });
+
+    testWidgets('BooksScreen renders sections, series chips for Sayyed Hussein, and filters', (
+      WidgetTester tester,
+    ) async {
+      await BookRepository.instance.init(disableDisk: true);
+      await tester.pumpWidget(buildTestWidget(const BooksScreen()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('كتب وملازم'), findsWidgets);
+
+      // Section FilterChips exist
+      expect(find.textContaining('الكل'), findsWidgets);
+      expect(find.textContaining('ملازم السيد حسين الحوثي'), findsWidgets);
+      expect(find.textContaining('تراث وأدعية أهل البيت'), findsWidgets);
+
+      // Tap on 'ملازم السيد حسين الحوثي' section chip
+      final malazemChip = find.textContaining('ملازم السيد حسين الحوثي');
+      await tester.tap(malazemChip);
+      await tester.pumpAndSettle();
+
+      // Verify series filter chips appear
+      expect(find.textContaining('معرفة الله'), findsWidgets);
+      expect(find.textContaining('مديح القرآن'), findsWidgets);
+
+      // Search for specific booklet title
+      await tester.enterText(find.byType(TextField), 'يوم القدس العالمي');
+      await tester.pump();
+
+      expect(find.textContaining('يوم القدس العالمي'), findsWidgets);
+    });
   });
 
   group('HomeScreen Integration Tests', () {
-    testWidgets('HomeScreen renders both new cards and navigates properly', (
+    testWidgets('HomeScreen renders cards and navigates properly', (
       WidgetTester tester,
     ) async {
       await tester.runAsync(() async {
@@ -464,7 +501,7 @@ void main() {
       await tester.pumpWidget(const TadbeerApp());
       await tester.pumpAndSettle();
 
-      // Check existence of both sections on HomeScreen
+      // Check existence of sections on HomeScreen
       expect(find.text('استغفار وتسبيح'), findsOneWidget);
       expect(find.text('كتب وملازم'), findsOneWidget);
 

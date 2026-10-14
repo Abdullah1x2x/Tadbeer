@@ -9,9 +9,14 @@ import 'book_reader_screen.dart';
 import 'book_repository.dart';
 
 /// شاشة تصفح واستعراض مكتبة الكتب والملازم التدبرية.
-/// تعرض الأقسام والملازم المعرفة برمجياً من قبل المطور في ملفات التطبيق.
+/// مقسمة إلى أقسام رئيسية: ملازم السيد حسين، تراث أهل البيت (ع)، وعلوم القرآن.
 class BooksScreen extends StatefulWidget {
-  const BooksScreen({super.key});
+  final String? initialSection;
+
+  const BooksScreen({
+    super.key,
+    this.initialSection,
+  });
 
   @override
   State<BooksScreen> createState() => _BooksScreenState();
@@ -21,12 +26,26 @@ class _BooksScreenState extends State<BooksScreen> {
   final BookRepository _repo = BookRepository.instance;
   final TextEditingController _searchController = TextEditingController();
 
-  String _selectedCategory = 'الكل';
+  late String _selectedCategory;
+  String _selectedMalazemSeries = 'الكل';
   String _searchQuery = '';
+
+  static const List<String> _malazemSeriesList = [
+    'الكل',
+    'سلسلة معرفة الله',
+    'سلسلة مديح القرآن',
+    'سلسلة دروس رمضان المبارك',
+    'سلسلة هدي القرآن: مدارسة سورة آل عمران',
+    'سلسلة هدي القرآن: مدارسة سورة المائدة',
+    'في ظلال الأدعية المباركة',
+    'في ظلال العبادة والتقوى',
+    'المحاضرات الكبرى والمناسبات',
+  ];
 
   @override
   void initState() {
     super.initState();
+    _selectedCategory = widget.initialSection ?? 'الكل';
     _repo.init();
     _repo.addListener(_onRepoChanged);
   }
@@ -43,7 +62,29 @@ class _BooksScreenState extends State<BooksScreen> {
   }
 
   List<BookModel> get _filteredBooks {
-    final list = _repo.getBooksBySection(_selectedCategory);
+    var list = _repo.getBooksBySection(_selectedCategory);
+
+    // إذا كان القسم المختار هو ملازم السيد حسين وتم اختيار سلسلة محددة
+    if (_selectedCategory == 'ملازم السيد حسين الحوثي' &&
+        _selectedMalazemSeries != 'الكل') {
+      list = list.where((b) {
+        if (_selectedMalazemSeries ==
+            'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
+          return b.subtitle.contains('آل عمران');
+        }
+        if (_selectedMalazemSeries ==
+            'سلسلة هدي القرآن: مدارسة سورة المائدة') {
+          return b.subtitle.contains('المائدة');
+        }
+        if (_selectedMalazemSeries == 'المحاضرات الكبرى والمناسبات') {
+          return b.subtitle.contains('المحاضرات') ||
+              b.subtitle.contains('دروس من هدي القرآن الكريم') ||
+              b.subtitle.contains('فهرس');
+        }
+        return b.subtitle.contains(_selectedMalazemSeries);
+      }).toList();
+    }
+
     if (_searchQuery.trim().isEmpty) return list;
 
     final normQuery = ArabicSearchNormalizer.normalize(_searchQuery);
@@ -72,6 +113,31 @@ class _BooksScreenState extends State<BooksScreen> {
     }).toList();
   }
 
+  String _formatSeriesLabel(String series, List<BookModel> allSectionBooks) {
+    if (series == 'الكل') {
+      return 'الكل (${allSectionBooks.length})';
+    }
+    final count = allSectionBooks.where((b) {
+      if (series == 'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
+        return b.subtitle.contains('آل عمران');
+      }
+      if (series == 'سلسلة هدي القرآن: مدارسة سورة المائدة') {
+        return b.subtitle.contains('المائدة');
+      }
+      if (series == 'المحاضرات الكبرى والمناسبات') {
+        return b.subtitle.contains('المحاضرات') ||
+            b.subtitle.contains('دروس من هدي القرآن الكريم') ||
+            b.subtitle.contains('فهرس');
+      }
+      return b.subtitle.contains(series);
+    }).length;
+
+    var cleanName = series
+        .replaceAll('سلسلة هدي القرآن: مدارسة ', '')
+        .replaceAll('سلسلة ', '');
+    return '$cleanName ($count)';
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -79,6 +145,8 @@ class _BooksScreenState extends State<BooksScreen> {
     final l10n = context.l10n;
     final filtered = _filteredBooks;
     final categories = _repo.categoryNames;
+    final allMalazemBooks =
+        _repo.getBooksBySection('ملازم السيد حسين الحوثي');
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -96,140 +164,201 @@ class _BooksScreenState extends State<BooksScreen> {
           ),
           centerTitle: true,
         ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // شريط البحث الموضعي
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-              child: Container(
-                decoration: BoxDecoration(
-                  color:
-                      isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
+        body: SafeArea(
+          child: Column(
+            children: [
+              // شريط البحث الموضعي
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                child: Container(
+                  decoration: BoxDecoration(
                     color:
-                        isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                  ),
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (val) => setState(() => _searchQuery = val),
-                  decoration: InputDecoration(
-                    hintText: 'ابحث في عناوين الملازم والكتب...',
-                    hintStyle: TextStyle(
-                      fontSize: 13.5,
-                      color: isDark
-                          ? AppColors.nightSubtitle
-                          : AppColors.daySubtitle,
+                        isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color:
+                          isDark ? AppColors.darkBorder : AppColors.lightBorder,
                     ),
-                    prefixIcon: Icon(Icons.search_rounded,
-                        color: primaryColor, size: 20),
-                    suffixIcon: _searchQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear_rounded, size: 18),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() => _searchQuery = '');
-                            },
-                          )
-                        : null,
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 12),
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (val) => setState(() => _searchQuery = val),
+                    decoration: InputDecoration(
+                      hintText: 'ابحث في عناوين الملازم والكتب...',
+                      hintStyle: TextStyle(
+                        fontSize: 13.5,
+                        color: isDark
+                            ? AppColors.nightSubtitle
+                            : AppColors.daySubtitle,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        color: primaryColor,
+                        size: 20,
+                      ),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear_rounded, size: 18),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _searchQuery = '');
+                              },
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            // شرائح تصنيفات الأقسام
-            if (categories.length > 1)
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  children: categories.map((cat) {
-                    final isSelected = _selectedCategory == cat;
-                    final count = _repo.getBooksBySection(cat).length;
-                    final label = cat == 'الكل' ? 'الكل ($count)' : '$cat ($count)';
+              // شرائح أقسام المكتبة الرئيسية
+              if (categories.length > 1)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: categories.map((cat) {
+                      final isSelected = _selectedCategory == cat;
+                      final count = _repo.getBooksBySection(cat).length;
+                      final label =
+                          cat == 'الكل' ? 'الكل ($count)' : '$cat ($count)';
 
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: FilterChip(
-                        selected: isSelected,
-                        label: Text(label),
-                        labelStyle: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 13,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: isSelected
-                              ? (isDark ? Colors.black : Colors.white)
-                              : (isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary),
-                        ),
-                        selectedColor: isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.oliveDark,
-                        backgroundColor: isDark
-                            ? AppColors.darkSurface
-                            : AppColors.lightSurface,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: FilterChip(
+                          selected: isSelected,
+                          label: Text(label),
+                          labelStyle: TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 13,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                             color: isSelected
-                                ? Colors.transparent
+                                ? (isDark ? Colors.black : Colors.white)
                                 : (isDark
-                                    ? AppColors.darkBorder
-                                    : AppColors.lightBorder),
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary),
                           ),
+                          selectedColor: isDark
+                              ? AppColors.darkAccentGold
+                              : AppColors.oliveDark,
+                          backgroundColor: isDark
+                              ? AppColors.darkSurface
+                              : AppColors.lightSurface,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: isSelected
+                                  ? Colors.transparent
+                                  : (isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder),
+                            ),
+                          ),
+                          onSelected: (_) {
+                            HapticFeedback.selectionClick();
+                            setState(() => _selectedCategory = cat);
+                          },
                         ),
-                        onSelected: (_) {
-                          HapticFeedback.selectionClick();
-                          setState(() => _selectedCategory = cat);
+                      );
+                    }).toList(),
+                  ),
+                ),
+
+              // شرائح سلاسل ملازم السيد حسين الحوثي (تظهر عند اختيار قسم الملازم)
+              if (_selectedCategory == 'ملازم السيد حسين الحوثي' &&
+                  allMalazemBooks.isNotEmpty)
+                Container(
+                  color: (isDark
+                          ? AppColors.darkAccentGold
+                          : AppColors.olive)
+                      .withValues(alpha: 0.05),
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: _malazemSeriesList.map((series) {
+                        final isSelected = _selectedMalazemSeries == series;
+                        final label =
+                            _formatSeriesLabel(series, allMalazemBooks);
+
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 6),
+                          child: ChoiceChip(
+                            selected: isSelected,
+                            label: Text(label),
+                            labelStyle: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 11.5,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: isSelected
+                                  ? (isDark ? Colors.black : Colors.white)
+                                  : (isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.lightTextPrimary),
+                            ),
+                            selectedColor: isDark
+                                ? AppColors.darkAccentGold
+                                : AppColors.oliveDark,
+                            backgroundColor: isDark
+                                ? AppColors.darkSurface
+                                : AppColors.lightSurface,
+                            onSelected: (_) {
+                              HapticFeedback.selectionClick();
+                              setState(() => _selectedMalazemSeries = series);
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+
+              // قائمة الكتب والملازم
+              Expanded(
+                child: filtered.isEmpty
+                    ? _buildEmptyState(isDark, primaryColor)
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: filtered.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final book = filtered[index];
+                          return _BookCard(
+                            book: book,
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                            index: index + 1,
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      BookReaderScreen(book: book),
+                                ),
+                              );
+                            },
+                          );
                         },
                       ),
-                    );
-                  }).toList(),
-                ),
               ),
-
-            // قائمة الكتب أو شاشة الحالة الفارغة
-            Expanded(
-              child: filtered.isEmpty
-                  ? _buildEmptyState(isDark, primaryColor)
-                  : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: filtered.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final book = filtered[index];
-                        return _BookCard(
-                          book: book,
-                          isDark: isDark,
-                          primaryColor: primaryColor,
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => BookReaderScreen(book: book),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildEmptyState(bool isDark, Color primaryColor) {
     final hasSearch = _searchQuery.isNotEmpty;
@@ -296,12 +425,14 @@ class _BookCard extends StatelessWidget {
   final BookModel book;
   final bool isDark;
   final Color primaryColor;
+  final int index;
   final VoidCallback onTap;
 
   const _BookCard({
     required this.book,
     required this.isDark,
     required this.primaryColor,
+    required this.index,
     required this.onTap,
   });
 
@@ -311,30 +442,29 @@ class _BookCard extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(14),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // أيقونة نوع الملزمة
+            // أيقونة الكتاب / الملزمة
             Container(
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: isPdf
                     ? Colors.redAccent.withValues(alpha: 0.12)
@@ -348,47 +478,68 @@ class _BookCard extends StatelessWidget {
                       ? Colors.redAccent.withValues(alpha: 0.3)
                       : (isDark
                               ? AppColors.darkAccentGold
-                              : AppColors.olive)
+                              : AppColors.oliveDark)
                           .withValues(alpha: 0.3),
                 ),
               ),
-              child: Icon(
-                isPdf
-                    ? Icons.picture_as_pdf_rounded
-                    : (book.hasAttachedFile
-                        ? Icons.description_rounded
-                        : Icons.menu_book_rounded),
-                color: isPdf
-                    ? Colors.redAccent
-                    : (isDark
-                        ? AppColors.darkAccentGold
-                        : AppColors.oliveDark),
-                size: 26,
+              child: Center(
+                child: Icon(
+                  isPdf
+                      ? Icons.picture_as_pdf_rounded
+                      : Icons.menu_book_rounded,
+                  color: isPdf
+                      ? Colors.redAccent
+                      : (isDark
+                          ? AppColors.darkAccentGold
+                          : AppColors.oliveDark),
+                  size: 22,
+                ),
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
 
-            // تفاصيل الكتاب
+            // عنوان الملزمة وتفاصيلها
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    book.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.bold,
+                      height: 1.35,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
                   Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: (isDark
                                   ? AppColors.darkAccentGold
                                   : AppColors.olive)
-                              .withValues(alpha: 0.15),
+                              .withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          book.category,
+                          book.subtitle.isNotEmpty
+                              ? book.subtitle
+                              : book.category,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 10.5,
                             fontWeight: FontWeight.bold,
                             color: isDark
                                 ? AppColors.darkAccentGold
@@ -396,80 +547,48 @@ class _BookCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (book.hasAttachedFile) ...[
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                      if (book.author.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        Expanded(
                           child: Text(
-                            isPdf ? 'PDF' : 'مستند نصي',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                            book.author,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary,
                             ),
+                          ),
+                        ),
+                      ],
+                      if (book.chapters.isNotEmpty) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          '${book.chapters.length} مباحث',
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.bold,
+                            color: isDark
+                                ? AppColors.darkAccentGold
+                                : AppColors.oliveDark,
                           ),
                         ),
                       ],
                     ],
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    book.title,
-                    style: const TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 16.5,
-                      fontWeight: FontWeight.bold,
-                      height: 1.3,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (book.subtitle.isNotEmpty) ...[
-                    const SizedBox(height: 3),
-                    Text(
-                      book.subtitle,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  if (book.author.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      book.author,
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
                 ],
               ),
             ),
 
-            // سهم الانتقال للقراءة
-            Padding(
-              padding: const EdgeInsets.only(top: 14),
-              child: Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 15,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-              ),
+            // مؤشر القراءة الفورية
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 13,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
             ),
           ],
         ),
