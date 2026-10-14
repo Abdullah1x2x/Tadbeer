@@ -57,8 +57,21 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Authoritative Attributions:** Derived from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10`, CC0-1.0), *Al-Mu'jam Al-Waseet* (Academy of the Arabic Language in Cairo), and classical lexicons (*Lisan Al-Arab*, *Maqayis Al-Lughah*, *Taj Al-Arus*, *Mufradat Al-Raghib*).
 - **Synchronized Margin Panel:** Built-in collapsible reader panel updating dynamically on every page turn, alongside a dedicated standalone lexicon browser screen.
 
-### 🤲 Duas & Unified Search
-- **Quranic Duas:** Catalog of 88 direct Quranic supplications extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
+### 🤲 Organized Duas & Adhkar Section
+- **Quranic Duas:** Catalog of **88 direct Quranic supplications** extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
+- **Interactive Morning & Evening Adhkar:** Authentic fortress of the Muslim supplications with responsive per-dhikr countdown counters, instant copy, and documented virtues and sources.
+- **Ahlulbayt & Sahifah Sajjadiyah Duas:** Dedicated reader with font resizing, paragraph-by-paragraph breakdown, and instant copying, featuring:
+  - *Dua Makarim al-Akhlaq* (Noble Moral Traits by Imam Ali Zayn al-Abidin)
+  - *Dua Ahl al-Thughoor* (Protection for Muslim Borders and Guardians by Imam Zayn al-Abidin)
+  - *Dua Kumayl ibn Ziyad* (Taught by Imam Ali for Friday Eve and mid-Sha'ban)
+  - *Dua al-Nudbah* (Supplication of Longing on Friday Mornings and Eids)
+  - *Dua al-Tawassul* (Supplication of Intercession through the Prophet and his Holy Progeny)
+  - *Imam Hussein's Dua on Day of Arafah* (Profound prayer of monotheism and gratitude)
+  - *Dua al-Jawshan al-Kabir* (The 1,000 Divine Names and Attributes for safety and protection)
+  - *Imam al-Sadiq's Dua for Needs* ("O Allah, make me fear You as though I see You...")
+  - *Sayyidah Fatimah al-Zahra's Dua* ("O Living, O Sustainer, by Your mercy I seek help...")
+  - *Additional Revered Duas:* Dua al-Faraj, Dua al-Sabah of Imam Ali, Dua al-Ahd, Al-Munajat al-Sha'baniyyah, and Dua Yastasheer.
+- **Prophetic & Comprehensive Duas:** Curated authentic supplications for distress, grief, debts, and righteousness in this life and the hereafter.
 - **Unified Global Search:** Extensible `SearchRegistry` querying 9 domains concurrently with error isolation and interactive filter chips.
 - **Root & Morphological Search:** Instant root search via `جذر:XXX` syntax (e.g. `جذر:صبر` or `جذر:رحم`), matching across rich morphological variations across all 6,236 ayahs.
 - **Offline Reminders:** Local scheduled notifications (`flutter_local_notifications` + `flutter_timezone`) for daily Quran reading and reflection routines, operating completely on-device without internet access.

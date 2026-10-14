@@ -84,9 +84,13 @@ lib/
 │   │   └── widgets/ (add_verse, picker, qr_dialog, create_link)
 │   ├── backup/                       # واجهة النسخ الاحتياطي (backup_screen.dart)
 │   ├── bookmarks/                    # الفواصل المرجعية (النموذج، المستودع، الشاشة - 3 ملفات)
-│   ├── books/                        # مكتبة الملازم والكتب التدبرية (النموذج، المستودع، القارئ، الشاشة - 4 ملفات)
-│   ├── duas/                         # موسوعة الأدعية القرآنية الـ 88 (5 ملفات)
-│   ├── highlights/                   # تظليل الآيات بأربعة ألوان (3 ملفات)
+│   ├── duas/                         # قسم الأدعية والأذكار الشامل (13 ملفاً)
+│   │   ├── duas_screen.dart          # الموزع الرئيسي المنظم لأقسام الأدعية والأذكار
+│   │   ├── quran_dua.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # الأدعية القرآنية الـ 88
+│   │   ├── adhkar_model.dart, adhkar_repository.dart, morning_evening_adhkar_screen.dart # أذكار الصباح والمساء التفاعلية
+│   │   ├── ahlulbayt_dua_model.dart, ahlulbayt_duas_repository.dart # مستودع ونماذج أدعية أهل البيت والصحيفة السجادية
+│   │   ├── ahlulbayt_duas_screen.dart, ahlulbayt_dua_reader_screen.dart # شاشة استعراض وقارئ أدعية أهل البيت
+│   │   └── sunnah_duas_repository.dart, general_duas_list_screen.dart # أدعية السنة وجوامع الدعاء والرجاء
 │   ├── home/                         # الشاشة الرئيسية وبطاقة استئناف القراءة (home_screen.dart)
 │   ├── notes/                        # الخواطر والملاحظات (النموذج، المحرر، المستودع، الشاشة - 4 ملفات)
 │   ├── quran/                        # محرك المصحف الشريف والصفحات (8 ملفات)

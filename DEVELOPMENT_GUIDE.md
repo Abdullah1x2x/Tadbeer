@@ -84,9 +84,13 @@ lib/
 │   │   └── widgets/ (add_verse, picker, qr_dialog, create_link)
 │   ├── backup/                       # Encrypted backup UI (backup_screen.dart)
 │   ├── bookmarks/                    # Reading bookmarks (model, repo, screen - 3 files)
-│   ├── books/                        # Contemplation library & booklets (model, reader, screen - 3 files)
-│   ├── duas/                         # 88 Quranic duas catalog (model, repo, screen, card - 5 files)
-│   ├── highlights/                   # 4-color verse highlights (model, repo, screen - 3 files)
+│   ├── duas/                         # Comprehensive Duas & Adhkar module (13 files)
+│   │   ├── duas_screen.dart          # Organized main hub for all duas & adhkar sections
+│   │   ├── quran_dua.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # 88 Quranic Duas
+│   │   ├── adhkar_model.dart, adhkar_repository.dart, morning_evening_adhkar_screen.dart # Morning & Evening Adhkar
+│   │   ├── ahlulbayt_dua_model.dart, ahlulbayt_duas_repository.dart # Ahlulbayt & Sahifah Sajjadiyah repo
+│   │   ├── ahlulbayt_duas_screen.dart, ahlulbayt_dua_reader_screen.dart # Ahlulbayt duas browser & reader
+│   │   └── sunnah_duas_repository.dart, general_duas_list_screen.dart # Prophetic & Comprehensive Duas
 │   ├── home/                         # Home dashboard & resume banner (home_screen.dart)
 │   ├── notes/                        # Reflection notes (model, repo, editor, screen - 4 files)
 │   ├── quran/                        # Mushaf rendering engine & page data (8 files)
