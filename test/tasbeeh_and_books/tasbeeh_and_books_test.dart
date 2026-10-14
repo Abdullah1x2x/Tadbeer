@@ -351,7 +351,7 @@ void main() {
       expect(find.text('قسم الكتب والملازم فارغ حالياً'), findsOneWidget);
     });
 
-    testWidgets('BooksScreen displays added books and sections', (
+    testWidgets('BooksScreen displays added sections and navigates to books', (
       WidgetTester tester,
     ) async {
       final repo = BookRepository.instance;
@@ -369,8 +369,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('كتب وملازم'), findsOneWidget);
-      expect(find.text('ملزمة مدارسة الكهف'), findsOneWidget);
       expect(find.text('ملازم التدبر'), findsWidgets);
+
+      // Tap on section to navigate into BookSectionScreen
+      await tester.tap(find.text('ملازم التدبر'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('ملزمة مدارسة الكهف'), findsOneWidget);
     });
 
     testWidgets('BookReaderScreen renders chapter content and navigates chapters', (
@@ -455,7 +460,7 @@ void main() {
       expect(quranSciencesSec.books.any((b) => b.title.contains('التبيان')), isTrue);
     });
 
-    testWidgets('BooksScreen renders sections, series chips for Sayyed Hussein, and filters', (
+    testWidgets('BooksScreen renders sections, navigates into Sayyed Hussein, and filters', (
       WidgetTester tester,
     ) async {
       await BookRepository.instance.init(disableDisk: true);
@@ -464,21 +469,21 @@ void main() {
 
       expect(find.text('كتب وملازم'), findsWidgets);
 
-      // Section FilterChips exist
-      expect(find.textContaining('الكل'), findsWidgets);
+      // Section cards exist in the directory
       expect(find.textContaining('ملازم السيد حسين الحوثي'), findsWidgets);
       expect(find.textContaining('تراث وأدعية أهل البيت'), findsWidgets);
+      expect(find.textContaining('علوم وتدبر القرآن الكريم'), findsWidgets);
 
-      // Tap on 'ملازم السيد حسين الحوثي' section chip
-      final malazemChip = find.textContaining('ملازم السيد حسين الحوثي');
-      await tester.tap(malazemChip);
+      // Tap on 'ملازم السيد حسين الحوثي' section card to enter the section
+      final malazemCard = find.textContaining('ملازم السيد حسين الحوثي');
+      await tester.tap(malazemCard.first);
       await tester.pumpAndSettle();
 
-      // Verify series filter chips appear
+      // Inside BookSectionScreen: verify series filter chips appear
       expect(find.textContaining('معرفة الله'), findsWidgets);
       expect(find.textContaining('مديح القرآن'), findsWidgets);
 
-      // Search for specific booklet title
+      // Search for specific booklet title inside the section
       await tester.enterText(find.byType(TextField), 'يوم القدس العالمي');
       await tester.pump();
 
