@@ -445,36 +445,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           centerTitle: true,
           actions: [
             IconButton(
-              tooltip: _repo.autoAdvanceEnabled
-                  ? 'التبديل التلقائي: مفعّل'
-                  : 'التبديل التلقائي: معطّل',
-              icon: Icon(
-                _repo.autoAdvanceEnabled
-                    ? Icons.auto_mode_rounded
-                    : Icons.sync_disabled_rounded,
-                color: _repo.autoAdvanceEnabled
-                    ? (isDark ? AppColors.darkAccentGold : AppColors.oliveDark)
-                    : null,
-              ),
-              onPressed: () {
-                HapticFeedback.selectionClick();
-                _repo.toggleAutoAdvance();
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      _repo.autoAdvanceEnabled
-                          ? 'تم تفعيل التبديل التلقائي عند اكتمال الورد'
-                          : 'تم إيقاف التبديل التلقائي',
-                      textAlign: TextAlign.center,
-                    ),
-                    duration: const Duration(seconds: 1),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              },
-            ),
-            IconButton(
               tooltip: 'استعراض كل الصيغ',
               icon: const Icon(Icons.format_list_bulleted_rounded),
               onPressed: _showDhikrPickerSheet,
@@ -840,7 +810,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   children: [
                     IconButton(
                       tooltip: 'الذكر التالي',
-                      icon: const Icon(Icons.chevron_right_rounded, size: 22),
+                      icon: const Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Icon(Icons.chevron_right_rounded, size: 24),
+                      ),
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary,
@@ -888,7 +861,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                     ),
                     IconButton(
                       tooltip: 'الذكر السابق',
-                      icon: const Icon(Icons.chevron_left_rounded, size: 22),
+                      icon: const Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Icon(Icons.chevron_left_rounded, size: 24),
+                      ),
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary,
