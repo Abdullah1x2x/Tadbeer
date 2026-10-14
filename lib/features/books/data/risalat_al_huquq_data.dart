@@ -9,7 +9,7 @@ const risalatAlHuquqBook = BookConfig(
   subtitle:
       'المنظومة الأخلاقية والإنسانية الكاملة في حقوق الله والنفس والجوارح والناس',
   author: 'الإمام علي بن الحسين (زين العابدين) عليه السلام',
-  assetPath: 'assets/books/risalat_al_huquq.pdf',
+  assetPath: null,
   estimatedMinutes: 35,
   icon: Icons.balance_rounded,
   chapters: [

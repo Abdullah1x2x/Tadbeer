@@ -9,7 +9,7 @@ const sahifahSajjadiyahBook = BookConfig(
   subtitle:
       'زبور آل محمد — ديوان أدعية ومناجاة الإمام زين العابدين علي بن الحسين عليه السلام (54 دعاء كاملاً)',
   author: 'الإمام علي بن الحسين (زين العابدين) عليه السلام',
-  assetPath: 'assets/books/sahifah_sajjadiyah.pdf',
+  assetPath: null,
   estimatedMinutes: 60,
   icon: Icons.menu_book_rounded,
   chapters: [

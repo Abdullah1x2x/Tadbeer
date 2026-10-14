@@ -261,29 +261,7 @@ class _SectionDirectoryCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // إطار الأيقونة البارز
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: badgeColor.withValues(alpha: isDark ? 0.18 : 0.12),
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                    color: badgeColor.withValues(alpha: 0.35),
-                    width: 1.2,
-                  ),
-                ),
-                child: Center(
-                  child: Icon(
-                    iconData,
-                    color: badgeColor,
-                    size: 26,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
-
-              // اسم القسم ووصفه وعدد الملازم/الكتب
+              // 1. تفاصيل القسم واسمه (على اليمين)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,24 +317,40 @@ class _SectionDirectoryCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 14),
 
-              // مؤشر السهم للتنقل داخل القسم
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: (isDark ? Colors.white : Colors.black)
-                      .withValues(alpha: 0.04),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 13,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
-                ),
+              // 2. أيقونة القسم وسهم الدخول (على اليسار)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: badgeColor.withValues(alpha: isDark ? 0.18 : 0.12),
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                        color: badgeColor.withValues(alpha: 0.35),
+                        width: 1.2,
+                      ),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        iconData,
+                        color: badgeColor,
+                        size: 26,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Icon(
+                    Icons.chevron_left_rounded,
+                    size: 18,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ],
               ),
             ],
           ),

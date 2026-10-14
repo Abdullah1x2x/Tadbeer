@@ -8,7 +8,7 @@ const nahjAlBalaghaBook = BookConfig(
   title: 'نهج البلاغة — روائع الخطب والعهود والحكم',
   subtitle: 'جامع ما اختاره الشريف الرضي من درر كلام أمير المؤمنين علي بن أبي طالب عليه السلام',
   author: 'أمير المؤمنين علي بن أبي طالب عليه السلام',
-  assetPath: 'assets/books/nahj_al_balagha.pdf',
+  assetPath: null,
   estimatedMinutes: 50,
   icon: Icons.auto_stories_rounded,
   chapters: [

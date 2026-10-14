@@ -59,7 +59,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
   }
 
   bool get _isMalazemSection =>
-      widget.section.name == 'ملازم السيد حسين الحوثي';
+      widget.section.name.contains('السيد حسين');
 
   List<BookModel> get _allSectionBooks =>
       _repo.getBooksBySection(widget.section.name);
@@ -193,11 +193,6 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                             ? AppColors.nightSubtitle
                             : AppColors.daySubtitle,
                       ),
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        color: primaryColor,
-                        size: 20,
-                      ),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear_rounded, size: 18),
@@ -206,7 +201,11 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                                 setState(() => _searchQuery = '');
                               },
                             )
-                          : null,
+                          : Icon(
+                              Icons.search_rounded,
+                              color: primaryColor,
+                              size: 20,
+                            ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 14,
@@ -379,15 +378,59 @@ class _SectionBookCard extends StatelessWidget {
     required this.onTap,
   });
 
+  String _formatChapterCount() {
+    if (book.id == 'heritage_sahifah_sajjadiyah') {
+      return '٥٤ دعاءً كاملاً';
+    }
+    if (book.id == 'heritage_risalat_al_huquq') {
+      return 'رسالة الحقوق (٥٠ حقاً)';
+    }
+    if (book.id == 'heritage_nahj_al_balagha') {
+      return 'كبرى الخطب والرسائل والحكم';
+    }
+    if (book.id == 'heritage_tuhaf_al_uqul') {
+      return 'جامع مواعظ ووصايا المعصومين';
+    }
+    if (book.isPdf) {
+      return 'ملزمة موثقة • PDF';
+    }
+    if (book.chapters.isNotEmpty) {
+      return '${book.chapters.length} مباحث كاملة';
+    }
+    return 'قراءة نصية مباشرة';
+  }
+
+  Color _getBadgeColor() {
+    if (book.isPdf) {
+      return Colors.redAccent;
+    }
+    if (book.id.startsWith('heritage_')) {
+      return isDark ? AppColors.darkAccentGold : AppColors.oliveDark;
+    }
+    if (book.category.contains('قرآن') || book.id.startsWith('quran_')) {
+      return isDark ? const Color(0xFF5BA4A4) : const Color(0xFF2C7A7B);
+    }
+    return primaryColor;
+  }
+
+  IconData _getBookIcon() {
+    if (book.isPdf) {
+      return Icons.picture_as_pdf_rounded;
+    }
+    return book.icon;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isPdf = book.isPdf;
+    final badgeColor = _getBadgeColor();
+    final iconData = _getBookIcon();
+    final countLabel = _formatChapterCount();
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
           borderRadius: BorderRadius.circular(14),
@@ -403,48 +446,13 @@ class _SectionBookCard extends StatelessWidget {
           ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // أيقونة الكتاب / الملزمة
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: isPdf
-                    ? Colors.redAccent.withValues(alpha: 0.12)
-                    : (isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.olive)
-                        .withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isPdf
-                      ? Colors.redAccent.withValues(alpha: 0.3)
-                      : (isDark
-                              ? AppColors.darkAccentGold
-                              : AppColors.oliveDark)
-                          .withValues(alpha: 0.3),
-                ),
-              ),
-              child: Center(
-                child: Icon(
-                  isPdf
-                      ? Icons.picture_as_pdf_rounded
-                      : Icons.menu_book_rounded,
-                  color: isPdf
-                      ? Colors.redAccent
-                      : (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.oliveDark),
-                  size: 22,
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // عنوان الملزمة وتفاصيلها
+            // 1. تفاصيل الكتاب وعنوانه (تبدأ من أقصى اليمين بأريحية كاملة)
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     book.title,
@@ -460,78 +468,100 @@ class _SectionBookCard extends StatelessWidget {
                           : AppColors.lightTextPrimary,
                     ),
                   ),
-                  const SizedBox(height: 3),
-                  Row(
+                  if (book.subtitle.isNotEmpty) ...[
+                    const SizedBox(height: 3),
+                    Text(
+                      book.subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        height: 1.35,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
+                          horizontal: 7,
+                          vertical: 2.5,
                         ),
                         decoration: BoxDecoration(
-                          color: (isDark
-                                  ? AppColors.darkAccentGold
-                                  : AppColors.olive)
-                              .withValues(alpha: 0.12),
+                          color: badgeColor.withValues(alpha: isDark ? 0.2 : 0.1),
                           borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: badgeColor.withValues(alpha: 0.35),
+                            width: 0.8,
+                          ),
                         ),
                         child: Text(
-                          book.subtitle.isNotEmpty
-                              ? book.subtitle
-                              : book.category,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          countLabel,
                           style: TextStyle(
                             fontSize: 10.5,
                             fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? AppColors.darkAccentGold
-                                : AppColors.oliveDark,
+                            color: badgeColor,
                           ),
                         ),
                       ),
-                      if (book.author.isNotEmpty) ...[
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            book.author,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary,
-                            ),
-                          ),
-                        ),
-                      ],
-                      if (book.chapters.isNotEmpty) ...[
-                        const SizedBox(width: 6),
+                      if (book.author.isNotEmpty)
                         Text(
-                          '${book.chapters.length} مباحث',
+                          book.author,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
                             color: isDark
-                                ? AppColors.darkAccentGold
-                                : AppColors.oliveDark,
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
                           ),
                         ),
-                      ],
                     ],
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 12),
 
-            // مؤشر السهم
-            Icon(
-              Icons.arrow_back_ios_new_rounded,
-              size: 13,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
+            // 2. أيقونة الكتاب وسهم الدخول (على أقصى اليسار)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: badgeColor.withValues(alpha: isDark ? 0.2 : 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: badgeColor.withValues(alpha: 0.4),
+                      width: 1,
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      iconData,
+                      color: badgeColor,
+                      size: 22,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Icon(
+                  Icons.chevron_left_rounded,
+                  size: 18,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ],
             ),
           ],
         ),
