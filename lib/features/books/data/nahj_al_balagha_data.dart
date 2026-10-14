@@ -11,6 +11,8 @@ const nahjAlBalaghaBook = BookConfig(
   assetPath: null,
   estimatedMinutes: 50,
   icon: Icons.auto_stories_rounded,
+  badgeText: 'كبرى الخطب والرسائل والحكم',
+  badgeColor: Color(0xFF2E6F4D),
   chapters: [
     BookChapter(
       title: 'الخطبة الأولى: في ابتداء خلق السماء والأرض، وخلق آدم',

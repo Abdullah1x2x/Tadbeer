@@ -193,43 +193,19 @@ class _SectionDirectoryCard extends StatelessWidget {
   });
 
   Color _getBadgeColor() {
-    if (section.name.contains('هدي القرآن') ||
-        section.name.contains('السيد حسين')) {
-      return isDark ? AppColors.darkAccentGold : const Color(0xFFC59B27);
-    }
-    if (section.name.contains('أهل البيت')) {
-      return isDark ? const Color(0xFF4E9F76) : const Color(0xFF2E6F4D);
-    }
-    if (section.name.contains('علوم وتدبر')) {
-      return isDark ? const Color(0xFF5BA4A4) : const Color(0xFF2C7A7B);
+    if (section.color != null) {
+      return section.color!;
     }
     return primaryColor;
   }
 
   IconData _getSectionIcon() {
-    if (section.name.contains('هدي القرآن') ||
-        section.name.contains('السيد حسين')) {
-      return Icons.auto_stories_rounded;
-    }
-    if (section.name.contains('أهل البيت')) {
-      return Icons.mosque_rounded;
-    }
-    if (section.name.contains('علوم وتدبر')) {
-      return Icons.menu_book_rounded;
-    }
     return section.icon;
   }
 
   String _formatCountLabel() {
-    if (section.name.contains('هدي القرآن') ||
-        section.name.contains('السيد حسين')) {
-      return '$bookCount ملزمة موثقة • PDF مباشر';
-    }
-    if (section.name.contains('أهل البيت')) {
-      return '$bookCount أمهات كتب كاملة • 54 دعاء و50 حقاً';
-    }
-    if (section.name.contains('علوم وتدبر')) {
-      return '$bookCount كتب تدبرية وتفسيرية';
+    if (section.countLabel != null && section.countLabel!.isNotEmpty) {
+      return '$bookCount ${section.countLabel}';
     }
     return '$bookCount كتاب/ملزمة';
   }

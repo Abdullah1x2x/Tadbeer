@@ -18,6 +18,15 @@ class BookSectionConfig {
   /// أيقونة القسم (اختياري، الافتراضي: Icons.folder_special_rounded).
   final IconData icon;
 
+  /// لون تمييز القسم في الواجهة والبطاقات (اختياري).
+  final Color? color;
+
+  /// وصف إحصائي أو تفصيلي مخصص للبطاقة (اختياري، مثل: 'أمهات كتب كاملة').
+  final String? countLabel;
+
+  /// قائمة فئات السلاسل لتصفية هذا القسم بأزرار تفاعلية أعلى الشاشة (اختياري).
+  final List<String> seriesFilterList;
+
   /// قائمة الكتب والملازم التابعة لهذا القسم.
   final List<BookConfig> books;
 
@@ -25,6 +34,9 @@ class BookSectionConfig {
     required this.name,
     this.description = '',
     this.icon = Icons.folder_special_rounded,
+    this.color,
+    this.countLabel,
+    this.seriesFilterList = const [],
     this.books = const [],
   });
 
@@ -35,6 +47,9 @@ class BookSectionConfig {
       name: name,
       description: description,
       icon: icon,
+      color: color,
+      countLabel: countLabel,
+      seriesFilterList: seriesFilterList,
     );
   }
 }
@@ -70,6 +85,12 @@ class BookConfig {
   /// أيقونة مخصصة للكتاب أو الملزمة.
   final IconData icon;
 
+  /// نص الشارة التوضيحية على بطاقة الكتاب (اختياري، مثل: '٥٤ دعاءً كاملاً').
+  final String? badgeText;
+
+  /// لون الشارة التوضيحية للبطاقة (اختياري).
+  final Color? badgeColor;
+
   const BookConfig({
     this.id,
     required this.title,
@@ -80,6 +101,8 @@ class BookConfig {
     this.chapters = const [],
     this.estimatedMinutes = 10,
     this.icon = Icons.menu_book_rounded,
+    this.badgeText,
+    this.badgeColor,
   });
 
   /// تحويل التكوين إلى نموذج BookModel للواجهة وقارئ الكتب.
@@ -106,6 +129,8 @@ class BookConfig {
       fileName: assetPath?.split('/').last,
       fileType: resolvedFileType,
       chapters: chapters,
+      badgeText: badgeText,
+      badgeColor: badgeColor,
     );
   }
 }
@@ -187,6 +212,19 @@ final List<BookSectionConfig> curatedBookSections = [
     description:
         'سلسلة ملازم ودروس ومحاضرات السيد حسين بدر الدين الحوثي من هدي القرآن الكريم',
     icon: Icons.auto_stories_rounded,
+    color: const Color(0xFFC59B27),
+    countLabel: 'ملزمة موثقة • PDF مباشر',
+    seriesFilterList: const [
+      'الكل',
+      'سلسلة معرفة الله',
+      'سلسلة مديح القرآن',
+      'سلسلة دروس رمضان المبارك',
+      'سلسلة هدي القرآن: مدارسة سورة آل عمران',
+      'سلسلة هدي القرآن: مدارسة سورة المائدة',
+      'في ظلال الأدعية المباركة',
+      'في ظلال العبادة والتقوى',
+      'المحاضرات الكبرى والمناسبات',
+    ],
     books: malazemSayyedHusseinBooks,
   ),
 ];

@@ -34,6 +34,9 @@ class BookSection {
   final String name;
   final String description;
   final IconData icon;
+  final Color? color;
+  final String? countLabel;
+  final List<String> seriesFilterList;
   final DateTime? createdAt;
 
   /// ينشئ قسماً جديداً للكتب والملازم.
@@ -42,6 +45,9 @@ class BookSection {
     required this.name,
     this.description = '',
     this.icon = Icons.folder_special_rounded,
+    this.color,
+    this.countLabel,
+    this.seriesFilterList = const [],
     this.createdAt,
   });
 
@@ -50,6 +56,9 @@ class BookSection {
         'id': id,
         'name': name,
         'description': description,
+        if (color != null) 'color': color!.toARGB32(),
+        if (countLabel != null) 'countLabel': countLabel,
+        if (seriesFilterList.isNotEmpty) 'seriesFilterList': seriesFilterList,
         'createdAt': (createdAt ?? DateTime.now()).toIso8601String(),
       };
 
@@ -59,6 +68,12 @@ class BookSection {
         name: json['name'] as String? ?? '',
         description: json['description'] as String? ?? '',
         icon: Icons.folder_special_rounded,
+        color: json['color'] != null ? Color(json['color'] as int) : null,
+        countLabel: json['countLabel'] as String?,
+        seriesFilterList: (json['seriesFilterList'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            const [],
         createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
             DateTime.now(),
       );
@@ -78,6 +93,8 @@ class BookModel {
   final String? fileType;
   final int fileSizeBytes;
   final List<BookChapter> chapters;
+  final String? badgeText;
+  final Color? badgeColor;
   final DateTime? createdAt;
 
   /// ينشئ ملزمة أو كتاباً.
@@ -94,6 +111,8 @@ class BookModel {
     this.fileType,
     this.fileSizeBytes = 0,
     this.chapters = const [],
+    this.badgeText,
+    this.badgeColor,
     this.createdAt,
   });
 
@@ -138,6 +157,8 @@ class BookModel {
         'fileType': fileType,
         'fileSizeBytes': fileSizeBytes,
         'chapters': chapters.map((c) => c.toJson()).toList(),
+        if (badgeText != null) 'badgeText': badgeText,
+        if (badgeColor != null) 'badgeColor': badgeColor!.toARGB32(),
         'createdAt': (createdAt ?? DateTime.now()).toIso8601String(),
       };
 
@@ -158,6 +179,10 @@ class BookModel {
                 ?.map((c) => BookChapter.fromJson(c as Map<String, dynamic>))
                 .toList() ??
             const [],
+        badgeText: json['badgeText'] as String?,
+        badgeColor: json['badgeColor'] != null
+            ? Color(json['badgeColor'] as int)
+            : null,
         createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
             DateTime.now(),
       );

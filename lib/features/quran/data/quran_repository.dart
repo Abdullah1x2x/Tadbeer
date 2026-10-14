@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import '../../../core/utils/arabic_root_search_helper.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
+import '../../word_meanings/data/custom_word_meanings.dart';
 import 'quran_models.dart';
 
 /// Repository providing verified, authentic Uthmani Quran data for Tadbeer.
@@ -117,6 +118,20 @@ class QuranRepository {
       }
     } catch (_) {
       // Graceful fallback if asset loading is not mocked in isolated unit tests
+    }
+
+    // دمج مفردات غريب القرآن المضافة برمجياً من قبل المطور
+    for (final customItem in customWordMeanings) {
+      final ayah = _ayahsByKey['${customItem.surah}:${customItem.ayah}'];
+      final pageNum = ayah?.page ?? 1;
+      final wordMeaning = customItem.toQuranWordMeaning(pageNum);
+      _wordMeanings.add(wordMeaning);
+      _wordMeaningsByPage.putIfAbsent(pageNum, () => []).add(wordMeaning);
+      _wordMeaningsBySurah.putIfAbsent(customItem.surah, () => []).add(wordMeaning);
+      final normWord = ArabicSearchNormalizer.normalize(wordMeaning.word);
+      final normMeaning = ArabicSearchNormalizer.normalize(wordMeaning.meaning);
+      _normalizedWordOnly.add(normWord);
+      _normalizedMeaningOnly.add(normMeaning);
     }
 
     _isLoaded = true;

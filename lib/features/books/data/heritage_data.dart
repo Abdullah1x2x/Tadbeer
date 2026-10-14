@@ -19,6 +19,8 @@ const tuhafAlUqulBook = BookConfig(
   assetPath: null,
   estimatedMinutes: 45,
   icon: Icons.auto_stories_rounded,
+  badgeText: 'جامع مواعظ ووصايا المعصومين',
+  badgeColor: Color(0xFF2E6F4D),
   chapters: [
     BookChapter(
       title: 'مواعظ وحكم النبي محمد صلى الله عليه وآله',
@@ -65,6 +67,8 @@ const ahlulbaytHeritageSection = BookSectionConfig(
   description:
       'أشرف كتب ومناجاة وأدعية أئمة الهدى ومختارات البلاغة والتربية الإيمانية الكاملة',
   icon: Icons.mosque_rounded,
+  color: Color(0xFF2E6F4D),
+  countLabel: 'أمهات كتب كاملة • 54 دعاء و50 حقاً',
   books: [
     sahifahSajjadiyahBook,
     nahjAlBalaghaBook,
@@ -78,6 +82,8 @@ const quranSciencesSection = BookSectionConfig(
   name: 'علوم وتدبر القرآن الكريم',
   description: 'أمهات كتب آداب التلاوة وقواعد التدبر الإيماني وأخلاق حملة القرآن',
   icon: Icons.menu_book_rounded,
+  color: Color(0xFF2C7A7B),
+  countLabel: 'كتب تدبرية وتفسيرية',
   books: [
     BookConfig(
       id: 'heritage_akhlaq_hamalat_quran',

@@ -9,6 +9,7 @@ import 'package:tadbeer/features/quran/data/quran_models.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/quran/widgets/word_meanings_panel.dart';
+import 'package:tadbeer/features/word_meanings/data/custom_word_meanings.dart';
 import 'package:tadbeer/features/word_meanings/word_meanings_screen.dart';
 
 void main() {
@@ -330,6 +331,22 @@ void main() {
 
       // Top bar word meanings button exists
       expect(find.byTooltip('معاني كلمات الصفحة'), findsOneWidget);
+    });
+
+    test('CustomWordMeaningConfig converts to QuranWordMeaning correctly', () {
+      const config = CustomWordMeaningConfig(
+        surah: 1,
+        ayah: 2,
+        word: 'الْحَمْدُ',
+        meaning: 'الثناء بالجميل على جهة التبجيل',
+      );
+      final model = config.toQuranWordMeaning(1);
+      expect(model.surah, 1);
+      expect(model.ayah, 2);
+      expect(model.word, 'الْحَمْدُ');
+      expect(model.page, 1);
+      expect(model.meaning, 'الثناء بالجميل على جهة التبجيل');
+      expect(model.sourceId, 999);
     });
   });
 }

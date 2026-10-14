@@ -12,6 +12,8 @@ const sahifahSajjadiyahBook = BookConfig(
   assetPath: null,
   estimatedMinutes: 60,
   icon: Icons.menu_book_rounded,
+  badgeText: '٥٤ دعاءً كاملاً',
+  badgeColor: Color(0xFF2E6F4D),
   chapters: [
     BookChapter(
       title: 'الدعاء الأول',

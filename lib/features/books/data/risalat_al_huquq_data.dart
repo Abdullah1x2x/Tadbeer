@@ -12,6 +12,8 @@ const risalatAlHuquqBook = BookConfig(
   assetPath: null,
   estimatedMinutes: 35,
   icon: Icons.balance_rounded,
+  badgeText: 'رسالة الحقوق (٥٠ حقاً)',
+  badgeColor: Color(0xFF2E6F4D),
   chapters: [
     BookChapter(
       title: 'مقدمة الرسالة وبيان أقسام الحقوق',

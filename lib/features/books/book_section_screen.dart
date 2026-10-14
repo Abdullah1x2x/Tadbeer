@@ -28,17 +28,6 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
   String _selectedMalazemSeries = 'الكل';
   String _searchQuery = '';
 
-  static const List<String> _malazemSeriesList = [
-    'الكل',
-    'سلسلة معرفة الله',
-    'سلسلة مديح القرآن',
-    'سلسلة دروس رمضان المبارك',
-    'سلسلة هدي القرآن: مدارسة سورة آل عمران',
-    'سلسلة هدي القرآن: مدارسة سورة المائدة',
-    'في ظلال الأدعية المباركة',
-    'في ظلال العبادة والتقوى',
-    'المحاضرات الكبرى والمناسبات',
-  ];
 
   @override
   void initState() {
@@ -58,9 +47,8 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
     if (mounted) setState(() {});
   }
 
-  bool get _isMalazemSection =>
-      widget.section.name.contains('هدي القرآن') ||
-      widget.section.name.contains('السيد حسين');
+  List<String> get _seriesList => widget.section.seriesFilterList;
+  bool get _hasSeriesFilter => _seriesList.isNotEmpty;
 
   List<BookModel> get _allSectionBooks =>
       _repo.getBooksBySection(widget.section.name);
@@ -68,8 +56,8 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
   List<BookModel> get _filteredBooks {
     var list = _allSectionBooks;
 
-    // تصفية السلاسل لملازم السيد حسين الحوثي
-    if (_isMalazemSection && _selectedMalazemSeries != 'الكل') {
+    // تصفية السلاسل التابعة للقسم في حال وجودها
+    if (_hasSeriesFilter && _selectedMalazemSeries != 'الكل') {
       list = list.where((b) {
         if (_selectedMalazemSeries ==
             'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
@@ -185,9 +173,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                     controller: _searchController,
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
-                      hintText: _isMalazemSection
-                          ? 'ابحث في عناوين ملازم هدي القرآن...'
-                          : 'ابحث في كتب ومباحث هذا القسم...',
+                      hintText: 'ابحث في محتويات وعناوين ${widget.section.name}...',
                       hintStyle: TextStyle(
                         fontSize: 13.5,
                         color: isDark
@@ -217,19 +203,17 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                 ),
               ),
 
-              // شرائح السلاسل (تظهر حصرياً لملازم السيد حسين الحوثي)
-              if (_isMalazemSection && allBooks.isNotEmpty)
+              // شرائح السلاسل (تظهر للأقسام التي تحدد سلاسل تصنيفية)
+              if (_hasSeriesFilter && allBooks.isNotEmpty)
                 Container(
-                  color: (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.olive)
+                  color: (widget.section.color ?? primaryColor)
                       .withValues(alpha: 0.05),
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
-                      children: _malazemSeriesList.map((series) {
+                      children: _seriesList.map((series) {
                         final isSelected = _selectedMalazemSeries == series;
                         final label = _formatSeriesLabel(series, allBooks);
 
@@ -250,9 +234,10 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                                       ? AppColors.darkTextPrimary
                                       : AppColors.lightTextPrimary),
                             ),
-                            selectedColor: isDark
-                                ? AppColors.darkAccentGold
-                                : AppColors.oliveDark,
+                            selectedColor: widget.section.color ??
+                                (isDark
+                                    ? AppColors.darkAccentGold
+                                    : AppColors.oliveDark),
                             backgroundColor: isDark
                                 ? AppColors.darkSurface
                                 : AppColors.lightSurface,
@@ -380,17 +365,8 @@ class _SectionBookCard extends StatelessWidget {
   });
 
   String _formatChapterCount() {
-    if (book.id == 'heritage_sahifah_sajjadiyah') {
-      return '٥٤ دعاءً كاملاً';
-    }
-    if (book.id == 'heritage_risalat_al_huquq') {
-      return 'رسالة الحقوق (٥٠ حقاً)';
-    }
-    if (book.id == 'heritage_nahj_al_balagha') {
-      return 'كبرى الخطب والرسائل والحكم';
-    }
-    if (book.id == 'heritage_tuhaf_al_uqul') {
-      return 'جامع مواعظ ووصايا المعصومين';
+    if (book.badgeText != null && book.badgeText!.isNotEmpty) {
+      return book.badgeText!;
     }
     if (book.isPdf) {
       return 'ملزمة موثقة • PDF';
@@ -402,14 +378,11 @@ class _SectionBookCard extends StatelessWidget {
   }
 
   Color _getBadgeColor() {
+    if (book.badgeColor != null) {
+      return book.badgeColor!;
+    }
     if (book.isPdf) {
       return Colors.redAccent;
-    }
-    if (book.id.startsWith('heritage_')) {
-      return isDark ? AppColors.darkAccentGold : AppColors.oliveDark;
-    }
-    if (book.category.contains('قرآن') || book.id.startsWith('quran_')) {
-      return isDark ? const Color(0xFF5BA4A4) : const Color(0xFF2C7A7B);
     }
     return primaryColor;
   }
