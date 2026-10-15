@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -596,10 +595,7 @@ class _QuranPageViewState extends State<QuranPageView> {
         : AppColors.lightAccentGold;
     final fontFamily = storage.settings.quranFontFamilyName;
 
-    int currentOffset = 0;
-    final ranges = <_AyahHighlightRange>[];
     final spanChildren = <InlineSpan>[];
-    final placeholderDimensions = <PlaceholderDimensions>[];
 
     for (final ayah in ayahs) {
       final isSelected = widget.selectedAyah?.id == ayah.id;
@@ -618,32 +614,16 @@ class _QuranPageViewState extends State<QuranPageView> {
           '\u00A0﴿${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}﴾';
       const trailingSpace = ' ';
 
-      final startOffset = currentOffset;
-      final endOffset = currentOffset + ayahText.length + rosetteText.length;
-
-      if (isSelected || highlight != null) {
-        Color color;
-        if (isSelected) {
-          color = AppColors.selectedAyah(context);
-        } else {
-          final baseColor = AppColors.highlightColors[highlight!.colorIndex];
-          color = isDark
-              ? baseColor.withValues(alpha: 0.40)
-              : baseColor.withValues(alpha: 0.32);
-        }
-
-        ranges.add(
-          _AyahHighlightRange(
-            startOffset: startOffset,
-            endOffset: endOffset,
-            color: color,
-            isSelected: isSelected,
-          ),
-        );
+      Color? highlightColor;
+      if (isSelected) {
+        highlightColor = AppColors.selectedAyah(context);
+      } else if (highlight != null) {
+        final baseColor = AppColors.highlightColors[highlight.colorIndex];
+        highlightColor = isDark
+            ? baseColor.withValues(alpha: 0.40)
+            : baseColor.withValues(alpha: 0.32);
       }
 
-      currentOffset =
-          endOffset + (hasIndicators ? 1 : 0) + trailingSpace.length;
       final recognizer = _getOrCreateRecognizer(ayah);
 
       spanChildren.add(
@@ -652,6 +632,7 @@ class _QuranPageViewState extends State<QuranPageView> {
           recognizer: recognizer,
           style: TextStyle(
             color: textColor,
+            backgroundColor: highlightColor,
           ),
         ),
       );
@@ -663,6 +644,7 @@ class _QuranPageViewState extends State<QuranPageView> {
             fontFamily: 'ScheherazadeNew',
             fontWeight: FontWeight.bold,
             fontSize: fontSize * 0.94,
+            backgroundColor: highlightColor,
             color: isSelected
                 ? (isDark
                     ? AppColors.darkAccentGold
@@ -679,16 +661,9 @@ class _QuranPageViewState extends State<QuranPageView> {
             4.0 + 12.0 + (iconCount * iconSize) + (iconCount > 1 ? 4.0 : 0.0);
         final badgeHeight = (iconSize + 6.0).clamp(18.0, 26.0);
 
-        placeholderDimensions.add(
-          PlaceholderDimensions(
-            size: Size(badgeWidth, badgeHeight),
-            alignment: ui.PlaceholderAlignment.middle,
-          ),
-        );
-
         spanChildren.add(
           WidgetSpan(
-            alignment: ui.PlaceholderAlignment.middle,
+            alignment: PlaceholderAlignment.middle,
             child: SizedBox(
               width: badgeWidth,
               height: badgeHeight,
@@ -774,7 +749,7 @@ class _QuranPageViewState extends State<QuranPageView> {
       children: spanChildren,
     );
 
-    final textWidget = Text.rich(
+    return Text.rich(
       rootSpan,
       textAlign: isCentered ? TextAlign.center : TextAlign.justify,
       textDirection: TextDirection.rtl,
@@ -783,212 +758,6 @@ class _QuranPageViewState extends State<QuranPageView> {
         applyHeightToLastDescent: false,
       ),
     );
-
-    if (ranges.isEmpty) {
-      return textWidget;
-    }
-
-    return CustomPaint(
-      painter: _AyahHighlightPainter(
-        textSpan: rootSpan,
-        textAlign: isCentered ? TextAlign.center : TextAlign.justify,
-        textDirection: TextDirection.rtl,
-        textScaler: MediaQuery.textScalerOf(context),
-        ranges: ranges,
-        placeholderDimensions: placeholderDimensions,
-        isDark: isDark,
-      ),
-      child: textWidget,
-    );
-  }
-}
-
-/// Model capturing character offsets and color styling for an Ayah highlight.
-/// نموذج يحدد نطاق الحروف ولون التظليل الخاص بالآية داخل الفقرة النصية.
-class _AyahHighlightRange {
-  final int startOffset;
-  final int endOffset;
-  final Color color;
-  final bool isSelected;
-
-  /// ينشئ نطاق تظليل لآية محددة.
-  const _AyahHighlightRange({
-    required this.startOffset,
-    required this.endOffset,
-    required this.color,
-    required this.isSelected,
-  });
-}
-
-/// Custom painter that draws neatly calibrated, rounded highlight ribbons
-/// behind Ayah text runs with immaculate line-by-line wrapping and padding.
-/// رسام مخصص يرسم أشرطة التظليل المستديرة خلف نص الآيات بدقة سطراً بسطر.
-class _AyahHighlightPainter extends CustomPainter {
-  final TextSpan textSpan;
-  final TextAlign textAlign;
-  final TextDirection textDirection;
-  final TextScaler textScaler;
-  final List<_AyahHighlightRange> ranges;
-  final List<PlaceholderDimensions> placeholderDimensions;
-  final bool isDark;
-
-  /// ينشئ رسام تظليل الآيات القرآنية.
-  _AyahHighlightPainter({
-    required this.textSpan,
-    required this.textAlign,
-    required this.textDirection,
-    required this.textScaler,
-    required this.ranges,
-    this.placeholderDimensions = const [],
-    required this.isDark,
-  });
-
-  /// يرسم مستطيلات التظليل الخلفية للآيات المحددة أو المظللة على لوحة الرسم.
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (ranges.isEmpty || size.width <= 0) return;
-
-    final textPainter = TextPainter(
-      text: textSpan,
-      textAlign: textAlign,
-      textDirection: textDirection,
-      textScaler: textScaler,
-    );
-    if (placeholderDimensions.isNotEmpty) {
-      textPainter.setPlaceholderDimensions(placeholderDimensions);
-    }
-    textPainter.layout(maxWidth: size.width);
-
-    for (final range in ranges) {
-      if (range.startOffset >= range.endOffset) continue;
-
-      final boxes = textPainter.getBoxesForSelection(
-        TextSelection(
-          baseOffset: range.startOffset,
-          extentOffset: range.endOffset,
-        ),
-        boxHeightStyle: ui.BoxHeightStyle.max,
-        boxWidthStyle: ui.BoxWidthStyle.tight,
-      );
-
-      final lineRects = _mergeTextBoxes(boxes, size.width);
-      if (lineRects.isEmpty) continue;
-
-      final fillPaint = Paint()
-        ..color = range.color
-        ..style = PaintingStyle.fill
-        ..isAntiAlias = true;
-
-      Paint? borderPaint;
-      if (range.isSelected) {
-        borderPaint = Paint()
-          ..color = (isDark ? AppColors.darkAccentGold : AppColors.oliveDark)
-              .withValues(alpha: 0.55)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.0
-          ..isAntiAlias = true;
-      }
-
-      for (final rect in lineRects) {
-        final vInset = (rect.height * 0.05).clamp(1.0, 2.0);
-        // AmiriQuran has a tall ascender-to-descent metric (~3:1 ratio), causing
-        // raw selection bounds to sit higher than the visual text center.
-        // A ~11% downward shift perfectly centers the highlight ribbon over the
-        // baseline, tashkeel, and descenders.
-        final vShift = rect.height * 0.11;
-        const hPadding = 2.0;
-
-        final adjustedRect = Rect.fromLTRB(
-          (rect.left - hPadding).clamp(0.0, size.width),
-          rect.top + vInset + vShift,
-          (rect.right + hPadding).clamp(0.0, size.width),
-          rect.bottom - vInset + vShift,
-        );
-
-        if (adjustedRect.width <= 1.0 || adjustedRect.height <= 1.0) continue;
-
-        final rrect = RRect.fromRectAndRadius(
-          adjustedRect,
-          const Radius.circular(5.0),
-        );
-
-        canvas.drawRRect(rrect, fillPaint);
-        if (borderPaint != null) {
-          canvas.drawRRect(rrect, borderPaint);
-        }
-      }
-    }
-  }
-
-  /// يدمج صناديق التحديد النصية المتجاورة في السطر الواحد لتكوين شريط تظليل متصل.
-  List<Rect> _mergeTextBoxes(List<TextBox> boxes, double maxWidth) {
-    if (boxes.isEmpty) return const [];
-
-    final lineGroups = <List<Rect>>[];
-
-    for (final box in boxes) {
-      var rect = box.toRect();
-      rect = Rect.fromLTRB(
-        rect.left.clamp(0.0, maxWidth),
-        rect.top,
-        rect.right.clamp(0.0, maxWidth),
-        rect.bottom,
-      );
-      if (rect.width <= 0.1 || rect.height <= 0.1) continue;
-
-      bool foundLine = false;
-      for (final group in lineGroups) {
-        final sample = group.first;
-        final vOverlap =
-            math.min(sample.bottom, rect.bottom) - math.max(sample.top, rect.top);
-        if (vOverlap > (sample.height * 0.45)) {
-          group.add(rect);
-          foundLine = true;
-          break;
-        }
-      }
-
-      if (!foundLine) {
-        lineGroups.add([rect]);
-      }
-    }
-
-    final mergedLines = <Rect>[];
-    for (final group in lineGroups) {
-      final minLeft = group.map((r) => r.left).reduce(math.min);
-      final maxRight = group.map((r) => r.right).reduce(math.max);
-      final minTop = group.map((r) => r.top).reduce(math.min);
-      final maxBottom = group.map((r) => r.bottom).reduce(math.max);
-
-      if (maxRight > minLeft) {
-        mergedLines.add(Rect.fromLTRB(minLeft, minTop, maxRight, maxBottom));
-      }
-    }
-
-    mergedLines.sort((a, b) => a.top.compareTo(b.top));
-    return mergedLines;
-  }
-
-  /// يحدد ما إذا كان يلزم إعادة رسم التظليل عند تغير النطاقات أو إعدادات العرض.
-  @override
-  bool shouldRepaint(covariant _AyahHighlightPainter oldDelegate) {
-    if (oldDelegate.ranges.length != ranges.length ||
-        oldDelegate.placeholderDimensions.length !=
-            placeholderDimensions.length ||
-        oldDelegate.isDark != isDark ||
-        oldDelegate.textAlign != textAlign ||
-        oldDelegate.textScaler != textScaler) {
-      return true;
-    }
-    for (int i = 0; i < ranges.length; i++) {
-      if (ranges[i].startOffset != oldDelegate.ranges[i].startOffset ||
-          ranges[i].endOffset != oldDelegate.ranges[i].endOffset ||
-          ranges[i].color != oldDelegate.ranges[i].color ||
-          ranges[i].isSelected != oldDelegate.ranges[i].isSelected) {
-        return true;
-      }
-    }
-    return false;
   }
 }
 
