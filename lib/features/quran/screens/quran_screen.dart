@@ -812,11 +812,11 @@ class _QuranScreenState extends State<QuranScreen> {
                           final int rightPageNum;
                           final int leftPageNum;
                           if (pageNumber.isEven) {
-                            rightPageNum = pageNumber;
-                            leftPageNum = (pageNumber + 1).clamp(1, 604);
-                          } else {
-                            rightPageNum = pageNumber - 1;
                             leftPageNum = pageNumber;
+                            rightPageNum = (pageNumber + 1).clamp(1, 604);
+                          } else {
+                            rightPageNum = pageNumber;
+                            leftPageNum = (pageNumber - 1).clamp(1, 604);
                           }
 
                           return Row(

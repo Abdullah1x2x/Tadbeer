@@ -10,6 +10,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
 import '../widgets/ayah_action_sheet.dart';
+import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
 
 /// Gesture recognizer specifically designed for inline Quranic Ayahs.
@@ -237,86 +238,98 @@ class _QuranPageViewState extends State<QuranPageView> {
         final surah = repo.getSurah(firstSurahNumber);
         final surahBlocks = _groupAyahsBySurah(quranPage.ayahs);
 
+        final marginStamps = MarginStampData.forPage(quranPage);
+
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
             color: isDark ? AppColors.darkBackground : AppColors.mushafBackground,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: isDark
-                      ? AppColors.darkBorder.withValues(alpha: 0.6)
-                      : AppColors.lightBorder,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(6),
-                color: isDark ? AppColors.darkSurface : null,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
-                      ),
-                      child: IntrinsicHeight(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            // 1. Top Page Header (Surah name & Juz number)
-                            if (widget.showHeader)
-                              _buildPageHeader(
-                                context,
-                                surah: surah,
-                                juzNumber: quranPage.juzNumber,
-                                isDark: isDark,
-                              )
-                            else
-                              const SizedBox(height: 4),
-
-                            const SizedBox(height: 6),
-
-                            // 2. Main Quranic Text Body
-                            Expanded(
-                              child: isOpeningPage
-                                  ? _buildOpeningPageContent(
-                                      context: context,
-                                      blocks: surahBlocks,
-                                      fontSize: effectiveFontSize,
-                                      isDark: isDark,
-                                      storage: storage,
-                                    )
-                                  : _buildStandardPageContent(
-                                      context: context,
-                                      blocks: surahBlocks,
-                                      fontSize: effectiveFontSize,
-                                      isDark: isDark,
-                                      storage: storage,
-                                    ),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkSurface : null,
+                    ),
+                    child: CustomPaint(
+                      painter: isOpeningPage
+                          ? OpeningMushafFramePainter(isDark: isDark)
+                          : MushafPageFramePainter(isDark: isDark),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isOpeningPage ? 14.0 : 10.0,
+                          vertical: 7.0,
+                        ),
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: math.max(
+                                0.0,
+                                constraints.maxHeight - 22.0,
+                              ),
                             ),
+                            child: IntrinsicHeight(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // 1. Top Page Header (Surah name & Juz number)
+                                  if (widget.showHeader)
+                                    _buildPageHeader(
+                                      context,
+                                      surah: surah,
+                                      juzNumber: quranPage.juzNumber,
+                                      isDark: isDark,
+                                      marginStamps: marginStamps,
+                                    )
+                                  else
+                                    const SizedBox(height: 4),
 
-                            const SizedBox(height: 6),
+                                  const SizedBox(height: 4),
 
-                            // 3. Bottom Page Footer (Arabic page number)
-                            if (widget.showFooter)
-                              _buildPageFooter(
-                                context,
-                                pageNumber: pageNumber,
-                                isDark: isDark,
-                              )
-                            else
-                              const SizedBox(height: 4),
-                          ],
+                                  // 2. Main Quranic Text Body
+                                  Expanded(
+                                    child: isOpeningPage
+                                        ? _buildOpeningPageContent(
+                                            context: context,
+                                            blocks: surahBlocks,
+                                            fontSize: effectiveFontSize,
+                                            isDark: isDark,
+                                            storage: storage,
+                                          )
+                                        : _buildStandardPageContent(
+                                            context: context,
+                                            blocks: surahBlocks,
+                                            fontSize: effectiveFontSize,
+                                            isDark: isDark,
+                                            storage: storage,
+                                          ),
+                                  ),
+
+                                  const SizedBox(height: 4),
+
+                                  // 3. Bottom Page Footer (Arabic page number)
+                                  if (widget.showFooter)
+                                    _buildPageFooter(
+                                      context,
+                                      pageNumber: pageNumber,
+                                      isDark: isDark,
+                                    )
+                                  else
+                                    const SizedBox(height: 4),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         );
@@ -324,46 +337,102 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يبني ترويسة الصفحة العلوية التي تعرض اسم السورة ورقم الجزء.
+  /// يبني ترويسة الصفحة العلوية التي تعرض اسم السورة ورقم الجزء وعلامات الهوامش إن وُجدت.
   Widget _buildPageHeader(
     BuildContext context, {
     required Surah surah,
     required int juzNumber,
     required bool isDark,
+    List<MarginStampData> marginStamps = const [],
   }) {
+    final goldColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.lightAccentGold;
     final headerColor = isDark
-        ? AppColors.nightSubtitle
-        : AppColors.lightTextSecondary;
+        ? AppColors.darkTextPrimary
+        : AppColors.lightPrimary;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-            width: 0.8,
+            color: goldColor.withValues(alpha: isDark ? 0.35 : 0.45),
+            width: 0.75,
           ),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            'سُورَةُ ${surah.name}',
-            style: TextStyle(
-              fontFamily: 'Amiri',
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: headerColor,
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '❖ ',
+                  style: TextStyle(
+                    fontSize: 7.5,
+                    color: goldColor.withValues(alpha: 0.8),
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    'سُورَةُ ${surah.name}',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.bold,
+                      color: headerColor,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Text(
-            'الجزء ${ArabicSearchNormalizer.toArabicDigits(juzNumber)}',
-            style: TextStyle(
-              fontFamily: 'Amiri',
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: headerColor,
+          if (marginStamps.isNotEmpty) ...[
+            const SizedBox(width: 4),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: marginStamps
+                  .map(
+                    (stamp) => MarginStampMedallion(
+                      stamp: stamp,
+                      isDark: isDark,
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(width: 4),
+          ] else
+            const SizedBox(width: 4),
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    'الجزء ${ArabicSearchNormalizer.toArabicDigits(juzNumber)}',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.bold,
+                      color: headerColor,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+                Text(
+                  ' ❖',
+                  style: TextStyle(
+                    fontSize: 7.5,
+                    color: goldColor.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -377,26 +446,45 @@ class _QuranPageViewState extends State<QuranPageView> {
     required int pageNumber,
     required bool isDark,
   }) {
+    final goldColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.lightAccentGold;
+
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 3),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-            width: 0.8,
+            color: goldColor.withValues(alpha: isDark ? 0.35 : 0.45),
+            width: 0.75,
           ),
         ),
       ),
       child: Center(
-        child: Text(
-          ArabicSearchNormalizer.toArabicDigits(pageNumber),
-          style: TextStyle(
-            fontFamily: 'Amiri',
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: isDark
-                ? AppColors.nightSubtitle
-                : AppColors.lightTextSecondary,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: goldColor.withValues(alpha: isDark ? 0.45 : 0.55),
+              width: 0.7,
+            ),
+            color: (isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.lightSurface)
+                .withValues(alpha: 0.35),
+          ),
+          child: Text(
+            ArabicSearchNormalizer.toArabicDigits(pageNumber),
+            style: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 13.5,
+              fontWeight: FontWeight.bold,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightPrimary,
+              height: 1.2,
+            ),
           ),
         ),
       ),
@@ -708,6 +796,10 @@ class _QuranPageViewState extends State<QuranPageView> {
       rootSpan,
       textAlign: isCentered ? TextAlign.center : TextAlign.justify,
       textDirection: TextDirection.rtl,
+      textHeightBehavior: const TextHeightBehavior(
+        applyHeightToFirstAscent: false,
+        applyHeightToLastDescent: false,
+      ),
     );
 
     if (ranges.isEmpty) {
