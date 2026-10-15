@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%5E3.4.0-0175C2.svg?logo=dart)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-189%20passed-success.svg)](test/)
+[![Tests](https://img.shields.io/badge/Tests-212%20passed-success.svg)](test/)
 [![Offline](https://img.shields.io/badge/Offline--First-100%25-blueviolet.svg)](#privacy--offline-first)
 [![Website](https://img.shields.io/badge/Website-GitHub%20Pages-informational.svg)](https://abdullah-alshami.github.io/Tadbeer/)
 
@@ -83,13 +83,13 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Flexible Target Cycles & Auto-Advance:** Supports preset targets (33, 100) or open count, with auto-advance to the next dhikr upon target completion.
 
 ### 📚 Books & Booklets Library
-- **«ملازم السيد حسين الحوثي» (86 Unabridged Booklets):** Complete library of lectures and Quranic guidance booklets by Sayyed Hussein Badreddin Al-Houthi, categorized with clean Arabic titles across series (*Ma'rifat Allah*, *Madih al-Quran*, *Ramadan Lessons*, Surah Studies, Worship & Supplications, and Major Discourses).
+- **«ملازم هدي القرآن الكريم» (86 Unabridged Booklets):** Complete library of lectures and Quranic guidance booklets by Sayyed Hussein Badreddin Al-Houthi, categorized with clean Arabic titles across series (*Ma'rifat Allah*, *Madih al-Quran*, *Ramadan Lessons*, Surah Studies, Worship & Supplications, and Major Discourses).
 - **«تراث وأدعية أهل البيت (عليهم السلام)» (Ahlulbayt Heritage):** Public domain Islamic heritage works with in-app interactive reading and high-resolution companion PDF documents:
   - *Al-Sahifah Al-Sajjadiyah* (The Psalms of Islam by Imam Zayn al-Abidin).
   - *Risalat Al-Huquq* (The Treatise on Rights).
   - *Nahj Al-Balagha* (Peak of Eloquence: Sermons, Letters, and Wisdom of Imam Ali).
 - **«علوم وتدبر القرآن الكريم» (Quranic Sciences & Reflection):** Open classical heritage works including *Akhlaq Hamalat Al-Quran* by Al-Ajurri, *Principles of Quranic Reflection*, and *Al-Tibyan* by Imam Al-Nawawi.
-- **Seamless Developer Extensibility:** Easily add sections, booklets, or PDF attachments directly in `curated_books.dart`.
+- **Pure-Dart Extensibility:** Built upon declarative, modular Dart registry files with detailed instructions, enabling any developer to easily add sections, PDF booklets, tasbeeh items, word meanings, duas, or ayah pathways without database schema changes; see [Developer Guide](DEVELOPMENT_GUIDE.md#6-declarative-pure-dart-content-extension-architecture).
 
 ---
 
@@ -144,7 +144,7 @@ flutter run
 # Verify static analysis (0 warnings / 0 errors)
 dart analyze
 
-# Run all automated tests (195 tests, 24 test files, 100% passing)
+# Run all automated tests (212 tests, 24 test files, 100% passing)
 flutter test
 
 # Build production release packages
@@ -164,7 +164,7 @@ tadbeer/
 │   └── quran/
 │       ├── quran_data.json     # Verified Tanzil Uthmani text (2.0MB)
 │       └── word_meanings.json  # 6,465 verified lexical entries (1.1MB)
-├── lib/                        # Production Dart code (64 files)
+├── lib/                        # Production Dart code (84 files)
 │   ├── app/                    # App bootstrap, localization (ar/en), theme
 │   ├── core/
 │   │   ├── services/           # AES-256 crypto & local reminders
@@ -187,7 +187,7 @@ tadbeer/
 │   │   ├── tasbeeh/            # Digital counter & daily dhikr sanctuary
 │   │   └── word_meanings/      # Word meanings explorer & sources
 │   └── main.dart               # Entrypoint & service initialization
-├── test/                       # Comprehensive test suite (195 tests, 24 files)
+├── test/                       # Comprehensive test suite (212 tests, 24 files)
 ├── DEVELOPMENT_GUIDE.md        # Technical developer & maintenance guide
 ├── DEVELOPMENT_GUIDE.ar.md     # Arabic technical developer guide
 ├── ATTRIBUTION.md              # Attribution statements & source details

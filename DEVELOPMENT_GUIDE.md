@@ -41,7 +41,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (210 tests across 24 test files - 100% passing)
+# 3. Run automated tests (212 tests across 24 test files - 100% passing)
 flutter test
 
 # 4. Run application in debug mode
@@ -54,7 +54,7 @@ flutter build appbundle --release
 
 ---
 
-## 3. Codebase File Map (`lib/` — 64 Files)
+## 3. Codebase File Map (`lib/` — 84 Files)
 
 ```text
 lib/
@@ -157,7 +157,7 @@ Managed by `BackupCryptoService`:
 
 ### 4.7. Books & Booklets Library (`lib/features/books/`)
 - **Curated Sections Included in App:**
-  1. **Sayyed Hussein Al-Houthi Booklets («ملازم السيد حسين الحوثي»):** 86 unabridged booklets and lectures from the Quranic guidance series, safely organized under `assets/books/malazem/` to guarantee smooth builds across Android, iOS, and Linux.
+  1. **Sayyed Hussein Al-Houthi Quranic Guidance Booklets («ملازم هدي القرآن الكريم»):** 86 unabridged booklets and lectures from the Quranic guidance series, safely organized under `assets/books/malazem/` to guarantee smooth builds across Android, iOS, and Linux.
   2. **Ahlulbayt Heritage («تراث وأدعية أهل البيت (عليهم السلام)»):** Open Islamic heritage books with in-app interactive reading and companion high-resolution PDF attachments: **Al-Sahifah Al-Sajjadiyah**, **Risalat Al-Huquq**, and **Nahj Al-Balagha**.
   3. **Quranic Sciences & Reflection («علوم وتدبر القرآن الكريم»):** Open public heritage works including **Akhlaq Hamalat Al-Quran** by Al-Ajurri, **Qawaid Wa Usul fi Tadabbur Al-Quran**, and **Al-Tibyan fi Adab Hamalat Al-Quran** by Imam Al-Nawawi.
 - **Developer Extensibility (`lib/features/books/curated_books.dart`):** Easily declare new sections and books in Dart code via `BookSectionConfig` and `BookConfig` with PDF attachments, text files, or in-code chapters (`BookChapter`).
@@ -173,6 +173,194 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 210 tests must pass
+   flutter test    # All 212 tests must pass
    ```
 5. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.
+
+---
+
+## 6. Declarative Pure-Dart Content Extension Architecture
+
+The codebase has been refactored to eliminate hardcoded UI checks and burdensome database migrations for static and curated content. All extensible features are exposed via **strongly typed, modular Dart configuration files** equipped with detailed Arabic developer guidelines in their header doc comments.
+
+### 6.1. Adding Sections, Books, & Booklets (`lib/features/books/curated_books.dart`)
+
+Developers can declare new sections, associate companion PDFs or text files, or write interactive in-app chapters directly in Dart:
+
+#### A. Adding a New Section with a PDF Booklet:
+1. Place the PDF file in `assets/books/` (e.g. `assets/books/tafseer_fatiha.pdf`).
+2. Add the section entry to `curatedBookSections` in `curated_books.dart`:
+
+```dart
+BookSectionConfig(
+  name: 'ملازم التدبر',
+  description: 'ملازم دورات التدبر وتفسير الآيات',
+  icon: Icons.folder_special_rounded,
+  color: Color(0xFF2E6F4D),
+  countLabel: 'ملزمة مدارسة معتمدة',
+  seriesFilterList: ['سلسلة مدارسة السور', 'سلسلة المفاهيم'],
+  books: [
+    BookConfig(
+      id: 'tadbeer_fatiha_guide',
+      title: 'ملزمة مدارسة سورة الفاتحة',
+      subtitle: 'دليل عملي في تدبر السبع المثاني',
+      author: 'مركز تدبر',
+      assetPath: 'assets/books/tafseer_fatiha.pdf',
+      estimatedMinutes: 30,
+      icon: Icons.auto_stories_rounded,
+      badgeText: 'ملزمة مصورة PDF',
+      badgeColor: Color(0xFF1B5E20),
+    ),
+  ],
+),
+```
+
+#### B. Adding In-Code Chapters (No External File Needed):
+```dart
+BookConfig(
+  id: 'custom_book_1',
+  title: 'مفاتيح تدبر القرآن الكريم',
+  subtitle: 'قواعد منهجية في فهم الذكر الحكيم',
+  author: 'د. خالد السبت',
+  estimatedMinutes: 40,
+  icon: Icons.menu_book_rounded,
+  badgeText: 'قراءة نصية تفاعلية',
+  badgeColor: Color(0xFF1E3A8A),
+  chapters: [
+    BookChapter(
+      title: 'الفصل الأول: معنى التدبر وغايته',
+      summary: 'الفرق بين التلاوة المجردة والتدبر العملي',
+      content: 'Chapter body text goes here...',
+    ),
+  ],
+),
+```
+
+---
+
+### 6.2. Adding Istighfar & Tasbeeh Formulas (`lib/features/tasbeeh/data/curated_dhikrs.dart`)
+
+To add a formula to the electronic counter, append an item to `curatedDhikrs`:
+
+```dart
+// 1. Adding an Istighfar formula:
+TasbeehDhikr(
+  id: 'istighfar_custom_1',
+  arabicText: 'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لا إِلَهَ إِلا هُوَ الرَّحْمَنُ الرَّحِيمُ وَأَتُوبُ إِلَيْهِ',
+  englishTranslation: 'I seek forgiveness from Allah...',
+  virtue: 'Documented virtue and reward...',
+  category: 'استغفار',
+  defaultTarget: 70, // 33, 70, or 100
+  section: DhikrSection.istighfar, // Automatically routes to Istighfar tab
+),
+
+// 2. Adding a Tasbeeh formula:
+TasbeehDhikr(
+  id: 'tasbeeh_custom_1',
+  arabicText: 'سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلا إِلَهَ إِلا اللَّهُ وَاللَّهُ أَكْبَرُ وَلا حَوْلَ وَلا قُوَّةَ إِلا بِاللَّهِ',
+  englishTranslation: 'Glory be to Allah, and all praise is due to Allah...',
+  virtue: 'Virtue and spiritual benefit...',
+  category: 'تسبيح',
+  defaultTarget: 33,
+  section: DhikrSection.tasbeeh, // Automatically routes to Tasbeeh tab
+),
+```
+
+---
+
+### 6.3. Adding & Correcting Quran Word Meanings (`lib/features/word_meanings/data/custom_word_meanings.dart`)
+
+Instead of manually editing the 1.1MB `word_meanings.json` file, add entries to `customWordMeanings`:
+
+```dart
+CustomWordMeaningConfig(
+  surah: 1, // Surah number (1 to 114)
+  ayah: 2,  // Ayah number
+  word: 'الْحَمْدُ', // Quranic word
+  meaning: 'الثناء بالجميل على جهة التبجيل والتعظيم لله عز وجل وحده.',
+  sourceName: 'السراج في بيان غريب القرآن', // Optional lexicon reference
+),
+```
+*`QuranRepository` automatically maps the entry to the correct Mushaf page (1–604) and indexes it into the global search engine, word meanings explorer, and the slide-up Mushaf panel.*
+
+---
+
+### 6.4. Adding & Updating Duas and Adhkar (`lib/features/duas/`)
+
+Duas repositories are cleanly separated into dedicated source files:
+
+1. **Ahlulbayt & Sahifah Sajjadiyah Duas (`lib/features/duas/ahlulbayt_duas_repository.dart`):**  
+   Append to `defaultDuas`:
+   ```dart
+   AhlulbaytDua(
+     id: 'dua_custom',
+     title: 'Supplication Title',
+     attributedTo: 'Imam Name (AS)',
+     category: 'Category',
+     summary: 'Context and timing summary...',
+     content: 'Full Arabic diacritized text as a single unified piece...',
+   ),
+   ```
+2. **Prophetic & Comprehensive Duas (`lib/features/duas/sunnah_duas_repository.dart`):**  
+   Append to `sunnahDuas` or `jawamiDuas`:
+   ```dart
+   GeneralDuaItem(
+     id: 'sunnah_custom',
+     title: 'Title',
+     text: 'Dua text...',
+     occasion: 'Occasion or situation',
+     source: 'Hadith Reference',
+     isSunnah: true,
+   ),
+   ```
+3. **Morning & Evening Adhkar (`lib/features/duas/adhkar_repository.dart`):**  
+   Append to `morningAdhkar` or `eveningAdhkar`:
+   ```dart
+   AdhkarItem(
+     id: 'adhkar_custom',
+     text: 'Adhkar text...',
+     repeatCount: 3,
+     virtue: 'Virtue description...',
+     source: 'Reference',
+   ),
+   ```
+4. **Quranic Duas Catalog (`lib/features/duas/quran_duas_repository.dart`):**  
+   Append to `_catalog` via `_DuaCatalogEntry`:
+   ```dart
+   _DuaCatalogEntry(
+     surahNumber: 2,
+     startAyah: 201,
+     endAyah: 201,
+     text: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
+     theme: DuaTheme.guidance,
+   ),
+   ```
+
+---
+
+### 6.5. Adding Thematic Ayah Pathways (`lib/features/ayah_links/curated_pathways.dart`)
+
+To propose ready-to-import thematic pathways connecting verses across the Quran, append to `CuratedPathwaysRegistry.pathways`:
+
+```dart
+CuratedPathway(
+  id: 'pathway_custom',
+  title: 'سنة التدافع ونصرة الحق',
+  description: 'Thematic reflection pathway exploring the divine law of check and balance.',
+  category: 'السنن الإلهية',
+  verses: [
+    CuratedPathwayVerse(
+      surah: 2,
+      ayah: 251,
+      reflectionPrompt: 'Reflection prompt for verse 2:251...',
+    ),
+    CuratedPathwayVerse(
+      surah: 22,
+      ayah: 40,
+      reflectionPrompt: 'Reflection prompt for verse 22:40...',
+    ),
+  ],
+),
+```
+
+*The pathway instantly appears in the Ayah Links screen, complete with topological graph views and one-tap import.*
