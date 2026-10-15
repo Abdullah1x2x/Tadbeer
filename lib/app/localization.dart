@@ -381,6 +381,16 @@ class AppStrings {
       isArabic ? 'المصادر والتوثيق المعتمد:' : 'Sources & Documentation:';
   String get openSourceLicenses =>
       isArabic ? 'تراخيص البرمجيات والمصادر المفتوحة' : 'Software & Open Source Licenses';
+  /// زر استعراض ميثاق وسياسة الخصوصية والأمان.
+  String get privacyPolicy =>
+      isArabic ? 'سياسة الخصوصية والأمان' : 'Privacy & Security Policy';
+  /// عنوان نافذة ميثاق الخصوصية والأمان.
+  String get privacyPolicyTitle =>
+      isArabic ? 'ميثاق الخصوصية والأمان' : 'Privacy & Security Charter';
+  /// وصف موجز للخصوصية والأمان.
+  String get privacyPolicySubtitle => isArabic
+      ? 'التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)'
+      : 'Uncompromising privacy guarantee with zero servers or trackers (100% Offline)';
 
   // Reminders Configuration
   String get alertType => isArabic ? 'طريقة التنبيه:' : 'Alert Type:';

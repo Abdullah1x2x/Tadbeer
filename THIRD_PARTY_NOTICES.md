@@ -28,6 +28,8 @@ A comprehensive legal and architectural audit was conducted across all component
 | **Holy Quran Text in Uthmani Script** (`quran_data.json`) | [Tanzil Project](https://tanzil.net/) | Tanzil 1.1 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) | • Modification or alteration of the Quranic text is strictly prohibited.<br>• Explicit attribution to the Tanzil Project with an official link. |
 | **Quran Vocabulary Lexicon** (`word_meanings.json` — 6,465 entries) | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) | `2026-10-10` | [CC0 1.0 Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) + Classical Lexicons | • Free for commercial and non-commercial bundling and redistribution.<br>• Attribution of digitization to Quranpedia with release specification. |
 | **Quranic Duas Repository** (`quran_duas_repository.dart` — 88 Duas) | Quran texts from Tanzil / Categorization & code by Tadbeer | `1.0.0` | Texts: `CC BY 3.0`<br>Code: `MIT` | Preserve Quranic textual accuracy and provide source attribution. |
+| **Books, Pamphlets & Heritage Works** (`lib/features/books/data/`, `assets/books/`) | Sayyed Hussein Badreddin al-Houthi, Ahlulbayt Heritage, Classical Quranic Scholars | `1.0.0` | Public Domain / Educational Non-Commercial Heritage | Public domain Islamic classical heritage and non-commercial educational texts for Quranic contemplation and cultural enrichment. |
+| **Mihrab Tasbeeh & Istighfar Repository** (`lib/features/tasbeeh/data/curated_dhikrs.dart` — 49 formulas) | Authentic Prophetic & Ahlulbayt Traditions / Curated by Tadbeer | `1.0.0` | Texts: Public Domain<br>Code: `MIT` | Free distribution and offline religious contemplation. |
 | **Curated Contemplation Pathways** (`curated_pathways.dart`) | Tadbeer Authors | `1.0.0` | [MIT](LICENSE) | Original project authorship covered under the primary MIT License. |
 | **Brand Identity, Logo & Icons** (`assets/icons/*`) | Tadbeer Design | `1.0.0` | [MIT](LICENSE) | Original visual brand identity covered under the primary MIT License. |
 
@@ -62,6 +64,7 @@ Packages explicitly declared in [`pubspec.yaml`](pubspec.yaml) and bundled into 
 | **`flutter`** | SDK | Core application user interface framework | BSD-3-Clause | Copyright 2014 The Flutter Authors. |
 | **`flutter_islamic_icons`** | `1.0.2` | Quranic and Islamic iconography | BSD-2-Clause | Copyright 2022, RAMAZAN ERBASARAN. |
 | **`flutter_local_notifications`**| `23.0.0-dev.2`| Offline local habit reminders and alarms | BSD-3-Clause | Copyright 2018 Michael Bui. |
+| **`flutter_pdfview`** | `1.4.5` | Native PDF viewer rendering for Islamic books and pamphlets | Apache-2.0 | Copyright 2018 Endre Zibolen. |
 | **`flutter_timezone`** | `5.1.1` | Local device timezone resolution | Apache-2.0 | flutter_timezone Authors. |
 | **`path`** | `1.9.1` | File system path manipulation | BSD-3-Clause | Copyright 2014, the Dart project authors. |
 | **`path_provider`** | `2.1.6` | Access to persistent local storage directories | BSD-3-Clause | Copyright 2013 The Flutter Authors. |

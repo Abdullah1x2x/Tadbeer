@@ -654,9 +654,11 @@ class SettingsScreen extends StatelessWidget {
                         Text(
                           '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n'
                           '• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n'
-                          '• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب لابن منظور، مقاييس اللغة لابن فارس، التبيان لابن الهائم، تذكرة الأريب لابن الجوزي، مفردات الراغب الأصفهاني، والمعجم الوسيط).\n'
-                          '• ترخيص التطبيق: مشروع مفتوح المصدر مرخص تحت رخصة MIT License.\n'
-                          '• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات.',
+                          '• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n'
+                          '• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n'
+                          '• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n'
+                          '• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n'
+                          '• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.',
                           style: TextStyle(
                             fontSize: 12,
                             height: 1.7,
@@ -667,22 +669,48 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 14),
                         const Divider(height: 1),
-                        const SizedBox(height: 8),
-                        OutlinedButton.icon(
-                          onPressed: () {
-                            showLicensePage(
-                              context: context,
-                              applicationName: l10n.appName,
-                              applicationVersion: '1.0.0',
-                              applicationLegalese:
-                                  'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
-                                  'Quran Text: Tanzil.net (CC BY 3.0)\n'
-                                  'Word Meanings Dataset: Quranpedia.net (Version 2026-10-10)\n'
-                                  'Fonts: SIL Open Font License 1.1',
-                            );
-                          },
-                          icon: const Icon(Icons.policy_outlined, size: 18),
-                          label: Text(l10n.openSourceLicenses),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    _showPrivacyPolicyDialog(context),
+                                icon: const Icon(Icons.shield_outlined,
+                                    size: 17),
+                                label: Text(
+                                  l10n.privacyPolicy,
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  showLicensePage(
+                                    context: context,
+                                    applicationName: l10n.appName,
+                                    applicationVersion: '1.0.0',
+                                    applicationLegalese:
+                                        'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
+                                        'Quran Text: Tanzil.net (CC BY 3.0)\n'
+                                        'Word Meanings Dataset: Quranpedia.net (Version 2026-10-10)\n'
+                                        'Fonts: SIL Open Font License 1.1\n'
+                                        'Books & Malazem: Authentic Public Domain & Heritage Works',
+                                  );
+                                },
+                                icon: const Icon(Icons.policy_outlined,
+                                    size: 17),
+                                label: Text(
+                                  l10n.openSourceLicenses,
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -916,5 +944,246 @@ class SettingsScreen extends StatelessWidget {
           ? 'الوضع التلقائي: يتزامن مظهر التطبيق آلياً مع إعدادات هاتفك (المظهر المفعّل حالياً في جهازك: $current).'
           : 'System Mode: Automatically synchronizes with your device settings (Currently active: $current).';
     }
+  }
+
+  /// يعرض نافذة ميثاق وسياسة الخصوصية والأمان للمستخدم داخل التطبيق بدون إنترنت.
+  void _showPrivacyPolicyDialog(BuildContext context) {
+    HapticFeedback.selectionClick();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final isArabic = context.currentLanguage == AppLanguage.arabic;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.85,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) {
+            return SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: primaryColor.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.shield_rounded,
+                              color: primaryColor, size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                context.l10n.privacyPolicyTitle,
+                                style: const TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                context.l10n.privacyPolicySubtitle,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(Icons.close_rounded, size: 20),
+                          tooltip: context.l10n.close,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    const Divider(height: 1),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: ListView(
+                        controller: scrollController,
+                        children: [
+                          _buildPrivacyTile(
+                            icon: Icons.cloud_off_rounded,
+                            title: isArabic
+                                ? 'عمل محلي تام دون إنترنت (100% Offline-First)'
+                                : '100% Offline-First by Architecture',
+                            description: isArabic
+                                ? 'لا يطلب التطبيق إذن الإنترنت (android.permission.INTERNET) في ملف التكوين، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.'
+                                : 'The application does not request internet permission and operates completely independently on your local device without external servers.',
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                          ),
+                          _buildPrivacyTile(
+                            icon: Icons.no_accounts_rounded,
+                            title: isArabic
+                                ? 'عدم جمع أي بيانات شخصية (Zero Data Collection)'
+                                : 'Zero Personal Data Collection',
+                            description: isArabic
+                                ? 'لا يجمع التطبيق ولا يسجل ولا يشارك أي بيانات شخصية، أو معرّفات أجهزة، أو سجلات قراءة، أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق.'
+                                : 'Tadbeer does not collect, record, transmit, or share any personal identity information, usage habits, or device identifiers.',
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                          ),
+                          _buildPrivacyTile(
+                            icon: Icons.enhanced_encryption_rounded,
+                            title: isArabic
+                                ? 'تخزين محلي وتشفير عالي (AES-256)'
+                                : 'Local Storage & AES-256 Encryption',
+                            description: isArabic
+                                ? 'تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.'
+                                : 'All reflections and notes reside strictly in on-device SQLite storage. Exported backups are encrypted locally with AES-256-CBC and verified via SHA-256.',
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                          ),
+                          _buildPrivacyTile(
+                            icon: Icons.notifications_active_rounded,
+                            title: isArabic
+                                ? 'استخدام حصري ومحدد للأذونات (Device Permissions)'
+                                : 'Strictly Scoped Device Permissions',
+                            description: isArabic
+                                ? 'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.'
+                                : 'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.',
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                          ),
+                          _buildPrivacyTile(
+                            icon: Icons.block_flipped,
+                            title: isArabic
+                                ? 'خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)'
+                                : 'Zero Advertisements & Trackers',
+                            description: isArabic
+                                ? 'التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.'
+                                : 'The app is completely free from advertising SDKs, marketing trackers, and analytics frameworks.',
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? AppColors.darkBackground
+                                  : AppColors.lightBackground,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder,
+                              ),
+                            ),
+                            child: Text(
+                              isArabic
+                                  ? 'تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.'
+                                  : 'Tadbeer is an open-source project licensed under MIT, fully accessible for public review and audit on GitHub.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12,
+                                height: 1.6,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// عنصر توضيحي فردي داخل نافذة سياسة الخصوصية.
+  Widget _buildPrivacyTile({
+    required IconData icon,
+    required String title,
+    required String description,
+    required bool isDark,
+    required Color primaryColor,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: primaryColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: primaryColor, size: 18),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontFamily: 'Amiri',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.6,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

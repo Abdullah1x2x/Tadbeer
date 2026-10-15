@@ -35,14 +35,25 @@ All fonts bundled with the application are free, open source, and licensed under
 
 ---
 
-## 4. Icon Fonts & UI Assets
+## 4. Books, Pamphlets & Heritage Works (مكتبة الكتب والملازم وتراث التدبر)
+
+| Collection / Work | Author / Scholar | Origin & Digital Source | License / Public Domain Status |
+| :--- | :--- | :--- | :--- |
+| **Lessons from the Guidance of the Holy Quran** (*ملازم هدي القرآن الكريم* — 86 Pamphlets) | Martyr Leader Sayyed Hussein Badreddin al-Houthi (*الشهيد القائد السيد حسين بدر الدين الحوثي*) | Official transcripts and verified PDF publications ([Al-Masirah / Ansar Allah Media](https://almasirah.net.ye)) | Freely available for religious, non-commercial education, and Quranic contemplation. |
+| **Ahlulbayt Heritage** (*تراث أهل البيت عليهم السلام*) | Imam Ali ibn Abi Talib, Imam Ali Zayn al-Abidin, Ibn Shu'ba al-Harrani | Classical Islamic Heritage: *Nahj al-Balagha* (*نهج البلاغة*), *Al-Sahifah al-Sajjadiyah* (*الصحيفة السجادية*), *Risalat al-Huquq* (*رسالة الحقوق*), *Tuhaf al-Uqul* (*تحف العقول*) | Public Domain (Classical Islamic Heritage) |
+| **Quranic Sciences & Contemplation** (*علوم وتدبر القرآن الكريم*) | Al-Ajurri (*الآجري*), Al-Sa'di (*السعدي*), Al-Nawawi (*النووي*) | Classical Treatises: *Akhlaq Hamalat al-Quran* (*أخلاق حملة القرآن*), *Al-Tibyan fi Adab Hamalat al-Quran* (*التبيان في آداب حملة القرآن*), *Qawa'id al-Hisan* (*القواعد الحسان*) | Public Domain (Classical Islamic Heritage) |
+| **Quranic Duas & Mihrab Tasbeeh/Istighfar** (*أدعية القرآن ومحراب التسبيح والاستغفار*) | Holy Quran & Prophetic and Ahlulbayt Traditions (88 Duas, 49 Formulas) | Authentic Quranic verses and documented classical Athar & Zikr collections | Public Domain / CC BY 3.0 (Texts) + MIT (Application code and curated schema) |
+
+---
+
+## 5. Icon Fonts & UI Assets
 
 - **Material Design Icons:** Google LLC official user interface icon font, licensed under **[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)**.
 - **Flutter Islamic Icons:** Islamic icons package for mosques and Quranic elements, licensed under **[BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause)**.
 
 ---
 
-## 5. Application Source Code
+## 6. Application Source Code
 
 - The entire Tadbeer source code is freely available under the **[MIT License](LICENSE)**.
 - The application logo, icons, and visual design assets follow the project's open-source license.
@@ -51,3 +62,4 @@ All fonts bundled with the application are free, open source, and licensed under
 
 > **Note:** For the complete, detailed audit register of all direct and transitive software dependencies along with full legal license texts, please refer to:  
 > **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**
+
