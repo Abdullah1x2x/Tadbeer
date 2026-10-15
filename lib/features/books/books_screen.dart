@@ -252,7 +252,7 @@ class _SectionDirectoryCard extends StatelessWidget {
                         fontFamily: 'Amiri',
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
-                        height: 1.25,
+                        height: 1.35,
                         color: isDark
                             ? AppColors.darkTextPrimary
                             : AppColors.lightTextPrimary,

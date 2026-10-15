@@ -16,9 +16,9 @@ class AppColors {
   static const Color lightPrimaryDark = Color(0xFF1C3329);
   static const Color lightAccentGold = Color(0xFFA88A55);
   static const Color lightTextPrimary = Color(0xFF292824);
-  static const Color lightTextSecondary = Color(0xFF6F6B61);
+  static const Color lightTextSecondary = Color(0xFF565248);
   static const Color lightBorder = Color(0xFFD4CBB8);
-  static const Color lightSelectedAyah = Color(0xFFA8B89F);
+  static const Color lightSelectedAyah = Color(0x42B89745);
 
   // ---------------------------------------------------------------------------
   // 🌙 DARK MODE PALETTE
@@ -31,7 +31,7 @@ class AppColors {
   static const Color darkTextPrimary = Color(0xFFE7E2D7);
   static const Color darkTextSecondary = Color(0xFFAAA69C);
   static const Color darkBorder = Color(0xFF384139);
-  static const Color darkSelectedAyah = Color(0xFF536B59);
+  static const Color darkSelectedAyah = Color(0x52C0A66B);
 
   // ---------------------------------------------------------------------------
   // 📖 MUSHAF PAGE (Fixed across both Light and Dark modes)
@@ -102,6 +102,18 @@ class AppColors {
       Theme.of(context).brightness == Brightness.dark
       ? darkBorder
       : lightBorder;
+
+  /// إرجاع لون النص الثانوي حسب السمة الحالية.
+  static Color textSecondary(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+      ? darkTextSecondary
+      : lightTextSecondary;
+
+  /// إرجاع اللون الذهبي المميز حسب السمة الحالية.
+  static Color accentGold(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+      ? darkAccentGold
+      : lightAccentGold;
 
   /// إرجاع لون تحديد الآية المختارة حسب السمة الحالية.
   static Color selectedAyah(BuildContext context) =>

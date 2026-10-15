@@ -267,7 +267,7 @@ class HomeScreen extends StatelessWidget {
                       color: isDark
                           ? AppColors.darkTextPrimary
                           : AppColors.lightPrimary,
-                      height: 1.1,
+                      height: 1.25,
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -546,12 +546,9 @@ class HomeScreen extends StatelessWidget {
                 icon: FlutterIslamicIcons.prayer,
                 title: l10n.duas,
                 subtitle: 'أدعية الكتاب والسنة',
-                accentColor: isDark
-                    ? AppColors.darkAccentGold
-                    : const Color(0xFF8B6B38),
-                badgeBackground: isDark
-                    ? const Color(0xFF332D20)
-                    : const Color(0xFFF7F1E2),
+                accentColor: AppColors.accentGold(context),
+                badgeBackground: AppColors.accentGold(context)
+                    .withValues(alpha: isDark ? 0.20 : 0.12),
                 isCompact: isCompact,
                 isVeryCompact: isVeryCompact,
                 onTap: () {
@@ -569,9 +566,8 @@ class HomeScreen extends StatelessWidget {
                 title: 'معاني الكلمات',
                 subtitle: 'غريب ألفاظ القرآن',
                 accentColor: AppColors.primary(context),
-                badgeBackground: isDark
-                    ? const Color(0xFF263A2F)
-                    : const Color(0xFFE5EDE6),
+                badgeBackground: AppColors.primary(context)
+                    .withValues(alpha: isDark ? 0.20 : 0.12),
                 isCompact: isCompact,
                 isVeryCompact: isVeryCompact,
                 onTap: () {
@@ -594,12 +590,11 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.edit_note_rounded,
                 title: l10n.notes,
                 subtitle: 'خواطرك وتدبراتك',
-                accentColor: isDark
-                    ? const Color(0xFF8BAA96)
-                    : const Color(0xFF3D6652),
-                badgeBackground: isDark
-                    ? const Color(0xFF243028)
-                    : const Color(0xFFE8EFEA),
+                accentColor:
+                    isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                badgeBackground:
+                    (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                        .withValues(alpha: isDark ? 0.20 : 0.12),
                 isCompact: isCompact,
                 isVeryCompact: isVeryCompact,
                 onTap: () {
@@ -616,12 +611,9 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.hub_rounded,
                 title: l10n.ayahLinks,
                 subtitle: 'الربط والعلاقات',
-                accentColor: isDark
-                    ? AppColors.darkAccentGold
-                    : const Color(0xFFA88A55),
-                badgeBackground: isDark
-                    ? const Color(0xFF302B20)
-                    : const Color(0xFFF6F0E4),
+                accentColor: AppColors.accentGold(context),
+                badgeBackground: AppColors.accentGold(context)
+                    .withValues(alpha: isDark ? 0.20 : 0.12),
                 isCompact: isCompact,
                 isVeryCompact: isVeryCompact,
                 onTap: () {
@@ -885,9 +877,7 @@ class _QuranHeroCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: resumeSize,
                                   fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? AppColors.darkAccentGold
-                                      : const Color(0xFF8B6B38),
+                                  color: AppColors.accentGold(context),
                                 ),
                               ),
                             ),

@@ -554,9 +554,7 @@ class _QuranPageViewState extends State<QuranPageView> {
       if (isSelected || highlight != null) {
         Color color;
         if (isSelected) {
-          color = isDark
-              ? const Color(0x52C0A66B)
-              : const Color(0x42B89745);
+          color = AppColors.selectedAyah(context);
         } else {
           final baseColor = AppColors.highlightColors[highlight!.colorIndex];
           color = isDark
