@@ -205,7 +205,6 @@ class HomeScreen extends StatelessWidget {
     required bool isVeryCompact,
   }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Settings Button (in place of the side menu button)
         _TopBarIconButton(
@@ -217,19 +216,6 @@ class HomeScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const SettingsScreen()),
-            );
-          },
-        ),
-        // Search Button in Top Bar
-        _TopBarIconButton(
-          icon: Icons.search_rounded,
-          tooltip: l10n.search,
-          isCompact: isCompact,
-          isVeryCompact: isVeryCompact,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const SearchScreen()),
             );
           },
         ),

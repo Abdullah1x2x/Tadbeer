@@ -429,20 +429,15 @@ void main() {
       expect(find.byType(SearchScreen), findsOneWidget);
     });
 
-    testWidgets('HomeScreen top bar search button navigates to SearchScreen', (
+    testWidgets('HomeScreen top bar does not render search button', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(buildTestWidget(const HomeScreen()));
       await tester.pumpAndSettle();
 
-      // Top bar search button exists
+      // Top bar search button was removed per user request
       final topBarSearchFinder = find.byTooltip('البحث');
-      expect(topBarSearchFinder, findsOneWidget);
-
-      await tester.tap(topBarSearchFinder);
-      await tester.pumpAndSettle();
-
-      expect(find.byType(SearchScreen), findsOneWidget);
+      expect(topBarSearchFinder, findsNothing);
     });
 
     testWidgets('HomeScreen tune filter icon opens filter bottom sheet', (
