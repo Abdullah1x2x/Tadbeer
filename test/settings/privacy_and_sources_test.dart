@@ -49,7 +49,7 @@ void main() {
         }
 
         // Privacy Policy button in About section
-        final privacyTileFinder = find.text('سياسة الخصوصية والأمان');
+        final privacyTileFinder = find.text('سياسة الخصوصية');
         expect(privacyTileFinder, findsWidgets);
 
         // Tap the Privacy Policy button
@@ -86,7 +86,7 @@ void main() {
     );
 
     testWidgets(
-      'SettingsScreen Sources card displays comprehensive attribution',
+      'SettingsScreen Sources card displays comprehensive Arabic attribution',
       (tester) async {
         await tester.pumpWidget(
           AppLocalizationScope(
@@ -112,6 +112,37 @@ void main() {
         expect(find.textContaining('ملازم هدي القرآن الكريم'), findsOneWidget);
         expect(find.textContaining('الصحيفة السجادية، رسالة الحقوق، نهج البلاغة'), findsOneWidget);
         expect(find.textContaining('باقة الاستغفار والتسبيح'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'SettingsScreen Sources card displays comprehensive English attribution in English locale',
+      (tester) async {
+        await tester.pumpWidget(
+          AppLocalizationScope(
+            currentLanguage: AppLanguage.english,
+            strings: const AppStrings(AppLanguage.english),
+            onLanguageChanged: (_) {},
+            child: const MaterialApp(home: SettingsScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Scroll down to the Sources card
+        for (int i = 0; i < 4; i++) {
+          await tester.drag(find.byType(ListView), const Offset(0, -800));
+          await tester.pumpAndSettle();
+        }
+
+        expect(find.text('Sources & Documentation:'), findsOneWidget);
+
+        final sourcesFinder = find.textContaining('Holy Quran Text: Tanzil Project');
+        expect(sourcesFinder, findsOneWidget);
+        expect(find.textContaining('Quran Vocabulary Lexicon: Quranic Encyclopedia'), findsOneWidget);
+        expect(find.textContaining('Lessons from the Guidance of the Holy Quran'), findsOneWidget);
+        expect(find.textContaining('Supplications, Adhkar & Tasbeeh: 88 Quranic duas'), findsOneWidget);
+        expect(find.text('Privacy Policy'), findsOneWidget);
+        expect(find.text('Open Source Licenses'), findsOneWidget);
       },
     );
   });

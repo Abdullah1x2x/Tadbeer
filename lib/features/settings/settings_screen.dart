@@ -21,6 +21,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isArabic = context.currentLanguage == AppLanguage.arabic;
 
     return Directionality(
       textDirection: context.currentLanguage.direction,
@@ -498,7 +499,12 @@ class SettingsScreen extends StatelessWidget {
                                 : AppColors.daySubtitle,
                           ),
                         ),
-                        trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+                        trailing: Icon(
+                          isArabic
+                              ? Icons.chevron_left_rounded
+                              : Icons.chevron_right_rounded,
+                          size: 20,
+                        ),
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -535,7 +541,12 @@ class SettingsScreen extends StatelessWidget {
                                 : AppColors.daySubtitle,
                           ),
                         ),
-                        trailing: const Icon(Icons.chevron_left_rounded, size: 20),
+                        trailing: Icon(
+                          isArabic
+                              ? Icons.chevron_left_rounded
+                              : Icons.chevron_right_rounded,
+                          size: 20,
+                        ),
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -604,7 +615,7 @@ class SettingsScreen extends StatelessWidget {
                                 Text(
                                   l10n.appName,
                                   style: TextStyle(
-                                    fontFamily: 'Amiri',
+                                    fontFamily: isArabic ? 'Amiri' : null,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: isDark
@@ -642,7 +653,7 @@ class SettingsScreen extends StatelessWidget {
                         Text(
                           l10n.sourcesAndCredits,
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: isArabic ? 'Amiri' : null,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: isDark
@@ -652,13 +663,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n'
-                          '• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n'
-                          '• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n'
-                          '• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n'
-                          '• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n'
-                          '• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n'
-                          '• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.',
+                          l10n.sourcesAndCreditsDetails,
                           style: TextStyle(
                             fontSize: 12,
                             height: 1.7,
