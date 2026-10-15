@@ -295,6 +295,90 @@ void main() {
         expect((textCenter.dx - 400.0).abs(), lessThan(10.0));
       },
     );
+
+    test('TasbeehDhikr estimated pace calculates smartly and respects override', () {
+      const shortDhikr = TasbeehDhikr(
+        id: 'short',
+        arabicText: 'سبحان الله',
+        englishTranslation: 'Glory be to Allah',
+        virtue: 'تسبيح',
+        category: 'تسبيح',
+      );
+      // 2 words -> 800 + 640 = 1440ms -> 1.4s
+      expect(shortDhikr.estimatedPaceSeconds, 1.4);
+      expect(shortDhikr.estimatedPaceDuration, const Duration(milliseconds: 1400));
+
+      const overriddenDhikr = TasbeehDhikr(
+        id: 'custom',
+        arabicText: 'سبحان الله',
+        englishTranslation: 'Glory be to Allah',
+        virtue: 'تسبيح',
+        category: 'تسبيح',
+        paceSeconds: 2.5,
+      );
+      expect(overriddenDhikr.estimatedPaceSeconds, 2.5);
+
+      const longDhikr = TasbeehDhikr(
+        id: 'long',
+        arabicText:
+            'اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت',
+        englishTranslation: 'O Allah, You are my Lord...',
+        virtue: 'استغفار',
+        category: 'استغفار',
+      );
+      expect(longDhikr.estimatedPaceSeconds, greaterThan(4.0));
+      expect(longDhikr.estimatedPaceSeconds, lessThanOrEqualTo(7.0));
+    });
+
+    testWidgets(
+      'TasbeehScreen auto-counter toggles, adjusts pace, and counts automatically',
+      (WidgetTester tester) async {
+        repo.resetCurrentCount();
+        repo.setTarget(10);
+        repo.setActiveDhikr(TasbeehDhikr.defaultDhikrs.first);
+
+        await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
+        await tester.pumpAndSettle();
+
+        // Verify auto-count button is present with 'عدّ تلقائي'
+        final autoCountButton = find.text('عدّ تلقائي');
+        expect(autoCountButton, findsOneWidget);
+        expect(find.textContaining('إيقاع'), findsOneWidget);
+
+        final initialPaceFinder = find.textContaining('إيقاع');
+        final initialPaceText = tester.widget<Text>(initialPaceFinder).data!;
+
+        // Tap speed up (-)
+        await tester.tap(find.byTooltip('تسريع الوتيرة'));
+        await tester.pump();
+        final fasterPaceText =
+            tester.widget<Text>(find.textContaining('إيقاع')).data!;
+        expect(fasterPaceText, isNot(equals(initialPaceText)));
+
+        // Tap slow down (+)
+        await tester.tap(find.byTooltip('إبطاء الوتيرة'));
+        await tester.pump();
+        expect(
+          tester.widget<Text>(find.textContaining('إيقاع')).data!,
+          initialPaceText,
+        );
+
+        // Start auto-counting
+        await tester.tap(autoCountButton);
+        await tester.pump();
+        expect(find.text('إيقاف'), findsOneWidget);
+
+        // Fast-forward time to simulate auto-count timer ticks
+        expect(repo.currentCount, 0);
+        await tester.pump(const Duration(seconds: 4));
+        expect(repo.currentCount, greaterThan(0));
+
+        // Stop auto-counting
+        await tester.tap(find.text('إيقاف'));
+        await tester.pump();
+        expect(find.text('عدّ تلقائي'), findsOneWidget);
+      },
+    );
   });
 
   group('Books & Booklets Tests', () {

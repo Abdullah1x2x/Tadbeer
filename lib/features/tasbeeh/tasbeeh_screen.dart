@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,6 +28,15 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   late AnimationController _pulseController;
   late Animation<double> _scaleAnimation;
 
+  /// حالة تفعيل وضع العدّ التلقائي الهادئ.
+  bool _isAutoCounting = false;
+
+  /// المؤقت الزمني المسؤول عن تكرار العدّ التلقائي بحسب إيقاع الذكر.
+  Timer? _autoCountTimer;
+
+  /// فارق زمني مخصص (بالثواني) لضبط الوتيرة يدوياً حسب رغبة المستخدم (+ أو -).
+  double _paceOffsetSeconds = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +57,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
 
   @override
   void dispose() {
+    _autoCountTimer?.cancel();
     _repo.removeListener(_onRepoChanged);
     _pulseController.dispose();
     super.dispose();
@@ -53,6 +65,73 @@ class _TasbeehScreenState extends State<TasbeehScreen>
 
   void _onRepoChanged() {
     if (mounted) setState(() {});
+  }
+
+  /// حساب الوتيرة الزمنية الحالية (بالثواني) لكل عَدّة بعد احتساب التعديل اليدوي.
+  double get _currentPaceSeconds {
+    final basePace = _repo.activeDhikr.estimatedPaceSeconds;
+    final total = basePace + _paceOffsetSeconds;
+    return double.parse(total.clamp(0.8, 10.0).toStringAsFixed(1));
+  }
+
+  /// بدء أو إعادة ضبط مؤقت العد التلقائي بحسب الوتيرة الحالية.
+  void _startAutoCountTimer() {
+    _autoCountTimer?.cancel();
+    final duration =
+        Duration(milliseconds: (_currentPaceSeconds * 1000).round());
+    _autoCountTimer = Timer.periodic(duration, (_) {
+      if (!mounted) return;
+      _handleTap();
+    });
+  }
+
+  /// إيقاف وضع العدّ التلقائي وإلغاء المؤقت الفعال.
+  void _stopAutoCount() {
+    _autoCountTimer?.cancel();
+    _autoCountTimer = null;
+    if (_isAutoCounting && mounted) {
+      setState(() {
+        _isAutoCounting = false;
+      });
+    }
+  }
+
+  /// التبديل بين تشغيل العدّ التلقائي وإيقافه مؤقتاً.
+  void _toggleAutoCount() {
+    HapticFeedback.mediumImpact();
+    setState(() {
+      _isAutoCounting = !_isAutoCounting;
+      if (_isAutoCounting) {
+        _startAutoCountTimer();
+      } else {
+        _autoCountTimer?.cancel();
+        _autoCountTimer = null;
+      }
+    });
+  }
+
+  /// تسريع وتيرة العدّ التلقائي بمقدار 0.2 ثانية.
+  void _speedUpPace() {
+    HapticFeedback.selectionClick();
+    setState(() {
+      _paceOffsetSeconds =
+          double.parse((_paceOffsetSeconds - 0.2).toStringAsFixed(1));
+      if (_isAutoCounting) {
+        _startAutoCountTimer();
+      }
+    });
+  }
+
+  /// إبطاء وتيرة العدّ التلقائي بمقدار 0.2 ثانية لمزيد من التدبر الهادئ.
+  void _slowDownPace() {
+    HapticFeedback.selectionClick();
+    setState(() {
+      _paceOffsetSeconds =
+          double.parse((_paceOffsetSeconds + 0.2).toStringAsFixed(1));
+      if (_isAutoCounting) {
+        _startAutoCountTimer();
+      }
+    });
   }
 
   /// القسم الفعال حالياً في السبحة.
@@ -70,18 +149,30 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     if (_repo.activeSection == section) return;
     HapticFeedback.selectionClick();
     _repo.setActiveSection(section);
+    _paceOffsetSeconds = 0.0;
+    if (_isAutoCounting) {
+      _startAutoCountTimer();
+    }
   }
 
   /// الانتقال إلى الذكر التالي ضمن باقة القسم الفعال.
   void _nextDhikr() {
     HapticFeedback.selectionClick();
     _repo.nextDhikr(pool: _filteredDhikrs);
+    _paceOffsetSeconds = 0.0;
+    if (_isAutoCounting) {
+      _startAutoCountTimer();
+    }
   }
 
   /// الانتقال إلى الذكر السابق ضمن باقة القسم الفعال.
   void _previousDhikr() {
     HapticFeedback.selectionClick();
     _repo.previousDhikr(pool: _filteredDhikrs);
+    _paceOffsetSeconds = 0.0;
+    if (_isAutoCounting) {
+      _startAutoCountTimer();
+    }
   }
 
   /// معالجة نقرة التسبيح وتشغيل الأثر الحركي والحسي.
@@ -96,6 +187,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
       final finishedTarget = _repo.targetCount;
       if (_repo.autoAdvanceEnabled) {
         _repo.nextDhikr(pool: _filteredDhikrs);
+        _paceOffsetSeconds = 0.0;
+        if (_isAutoCounting) {
+          _startAutoCountTimer();
+        }
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -110,6 +205,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           ),
         );
       } else {
+        if (_isAutoCounting) {
+          _stopAutoCount();
+        }
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -182,6 +280,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
               ),
               onPressed: () {
                 _repo.resetCurrentCount();
+                if (_isAutoCounting) {
+                  _stopAutoCount();
+                }
                 Navigator.pop(ctx);
               },
               child: Text(l10n.resetCycleAction),
@@ -400,6 +501,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                           : null,
                                       onTap: () {
                                         _repo.setActiveDhikr(item);
+                                        _paceOffsetSeconds = 0.0;
+                                        if (_isAutoCounting) {
+                                          _startAutoCountTimer();
+                                        }
                                         Navigator.pop(ctx);
                                       },
                                     );
@@ -497,6 +602,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: _handleTap,
+                            onLongPress: _toggleAutoCount,
                             child: Container(
                               width: circleSize,
                               height: circleSize,
@@ -602,13 +708,17 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           ),
                         ),
                       ),
-                      SizedBox(height: isCompact ? 14 : 18),
+                      SizedBox(height: isCompact ? 10 : 14),
 
-                      // 4. بطاقة ضبط الهدف + مفتاح التبديل التلقائي
+                      // 4. شريط كبسولة العدّ التلقائي الهادئ والتحكم بالوتيرة
+                      _buildAutoCountBar(isDark, primaryColor),
+                      SizedBox(height: isCompact ? 10 : 14),
+
+                      // 5. بطاقة ضبط الهدف + مفتاح التبديل التلقائي
                       _buildControlsCard(isDark, primaryColor),
                       const SizedBox(height: 12),
 
-                      // 5. شريط الإحصائيات (اليوم والإجمالي)
+                      // 6. شريط الإحصائيات (اليوم والإجمالي)
                       _buildStatsRow(isDark, primaryColor),
                       const SizedBox(height: 16),
                     ],
@@ -622,6 +732,149 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     ),
   );
 }
+
+  /// شريط كبسولة العدّ التلقائي الهادئ مع التحكم بالوتيرة الزمنية.
+  Widget _buildAutoCountBar(bool isDark, Color primaryColor) {
+    final l10n = context.l10n;
+    final pace = _currentPaceSeconds;
+    final activeColor = isDark ? AppColors.darkAccentGold : primaryColor;
+
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: _isAutoCounting
+                ? activeColor.withValues(alpha: 0.6)
+                : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            width: _isAutoCounting ? 1.4 : 1.0,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: _isAutoCounting
+                  ? activeColor.withValues(alpha: 0.15)
+                  : Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // زر التشغيل والإيقاف المؤقت للعد التلقائي
+            InkWell(
+              onTap: _toggleAutoCount,
+              borderRadius: BorderRadius.circular(18),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: _isAutoCounting
+                      ? activeColor
+                      : activeColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _isAutoCounting
+                          ? Icons.pause_rounded
+                          : Icons.play_arrow_rounded,
+                      size: 18,
+                      color: _isAutoCounting
+                          ? (isDark ? Colors.black : Colors.white)
+                          : activeColor,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      _isAutoCounting ? l10n.stopAutoCount : l10n.autoCount,
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: _isAutoCounting
+                            ? (isDark ? Colors.black : Colors.white)
+                            : activeColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            // فاصل عمودي ناعم
+            Container(
+              height: 18,
+              width: 1,
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+            ),
+            const SizedBox(width: 6),
+
+            // زر تسريع الوتيرة (-)
+            IconButton(
+              tooltip: l10n.decreasePace,
+              icon: const Icon(Icons.remove_rounded, size: 16),
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
+              onPressed: _speedUpPace,
+            ),
+
+            // عرض الوتيرة الحالية بالثواني
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.timer_outlined,
+                    size: 13,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    l10n.smartPaceSeconds(pace),
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // زر إبطاء الوتيرة (+)
+            IconButton(
+              tooltip: l10n.increasePace,
+              icon: const Icon(Icons.add_rounded, size: 16),
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.lightTextSecondary,
+              onPressed: _slowDownPace,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   /// مفتاح التبديل المباشر بين الاستغفار والتسبيح.
   Widget _buildSectionSwitcher(bool isDark, Color primaryColor) {

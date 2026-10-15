@@ -627,6 +627,17 @@ class AppStrings {
       isArabic ? 'اسحب أفقياً أو انقر للتبديل' : 'Swipe horizontally or tap to cycle';
   String get nextDhikr => isArabic ? 'الذكر التالي' : 'Next Dhikr';
   String get previousDhikr => isArabic ? 'الذكر السابق' : 'Previous Dhikr';
+  /// زر تفعيل وضع العد التلقائي للسبحة.
+  String get autoCount => isArabic ? 'عدّ تلقائي' : 'Auto Count';
+  /// زر إيقاف العد التلقائي المؤقت للسبحة.
+  String get stopAutoCount => isArabic ? 'إيقاف' : 'Pause';
+  /// عرض مدة الإيقاع الزمني المحسوب لكل عَدّة بالثواني.
+  String smartPaceSeconds(dynamic seconds) =>
+      isArabic ? 'إيقاع $seconds ث' : 'Pace ${seconds}s';
+  /// تلميح تسريع وتيرة العد التلقائي.
+  String get decreasePace => isArabic ? 'تسريع الوتيرة' : 'Faster pace';
+  /// تلميح إبطاء وتيرة العد التلقائي وتدبر الذكر.
+  String get increasePace => isArabic ? 'إبطاء الوتيرة' : 'Slower pace';
 
   // Books
   String get booksSectionEmpty => isArabic

@@ -37,6 +37,10 @@ class TasbeehDhikr {
   final int defaultTarget;
   final DhikrSection section;
 
+  /// مدة الإيقاع الزمني المخصصة للعد التلقائي بالثواني (اختيارية للمطور).
+  /// إذا تُركت فارغة أو null، تُحسب تلقائياً بذكاء بحسب طول الذكر وعدد كلماته.
+  final double? paceSeconds;
+
   /// ينشئ ذكراً أو صيغة استغفار وتسبيح.
   const TasbeehDhikr({
     required this.id,
@@ -46,7 +50,25 @@ class TasbeehDhikr {
     required this.category,
     this.defaultTarget = 33,
     this.section = DhikrSection.tasbeeh,
+    this.paceSeconds,
   });
+
+  /// مدة الإيقاع المقدرة بالثواني لكل عَدّة؛ إما القيمة المحددة من المطور أو المحسوبة تلقائياً بذكاء.
+  double get estimatedPaceSeconds {
+    if (paceSeconds != null && paceSeconds! > 0) {
+      return paceSeconds!;
+    }
+    // حساب عدد الكلمات العربية بدقة
+    final words = arabicText.trim().split(RegExp(r'\s+')).length;
+    // معادلة إيقاع التدبر الهادئ: 800 ملي ثانية وقفة تأمل + 320 ملي ثانية لكل كلمة
+    final totalMillis = 800 + (words * 320);
+    final clampedSeconds = (totalMillis / 1000.0).clamp(1.2, 7.0);
+    return double.parse(clampedSeconds.toStringAsFixed(1));
+  }
+
+  /// مدة الإيقاع الزمني المحسوبة ككائن [Duration] مناسب للمؤقتات التلقائية.
+  Duration get estimatedPaceDuration =>
+      Duration(milliseconds: (estimatedPaceSeconds * 1000).round());
 
   /// ما إذا كان الذكر يتبع لقسم الاستغفار.
   bool get isIstighfar => section == DhikrSection.istighfar;
