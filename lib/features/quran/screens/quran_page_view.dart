@@ -845,12 +845,14 @@ class _QuranPageViewState extends State<QuranPageView> {
 
       Color? highlightColor;
       if (isSelected) {
-        highlightColor = AppColors.selectedAyah(context);
+        highlightColor = isDark
+            ? AppColors.darkSelectedAyah
+            : const Color(0x36B89745);
       } else if (highlight != null) {
         final baseColor = AppColors.highlightColors[highlight.colorIndex];
         highlightColor = isDark
-            ? baseColor.withValues(alpha: 0.40)
-            : baseColor.withValues(alpha: 0.32);
+            ? baseColor.withValues(alpha: 0.35)
+            : baseColor.withValues(alpha: 0.25);
       }
 
       final recognizer = _getOrCreateRecognizer(ayah);
@@ -872,12 +874,13 @@ class _QuranPageViewState extends State<QuranPageView> {
           style: TextStyle(
             fontFamily: 'ScheherazadeNew',
             fontWeight: FontWeight.bold,
-            fontSize: fontSize * 0.94,
+            fontSize: fontSize,
+            height: 1.95,
             backgroundColor: highlightColor,
             color: isSelected
                 ? (isDark
-                    ? AppColors.darkAccentGold
-                    : AppColors.oliveDark)
+                    ? const Color(0xFFDFCA94)
+                    : const Color(0xFF7A5C1E))
                 : goldColor,
           ),
         ),
