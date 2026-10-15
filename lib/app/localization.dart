@@ -518,11 +518,27 @@ class AppStrings {
       ? 'ابحث في محتويات وعناوين $name...'
       : 'Search contents and titles of $name...';
   String get verifiedPamphletPdf =>
-      isArabic ? 'ملزمة موثقة • PDF' : 'Document • PDF';
+      isArabic ? 'ملزمة موثقة • PDF' : 'Verified Booklet • PDF';
   String fullSectionsCount(dynamic count) =>
       isArabic ? '$count مباحث كاملة' : '$count Full Sections';
   String get directTextReading =>
       isArabic ? 'قراءة نصية مباشرة' : 'Direct Text Reading';
+  String get textCopied =>
+      isArabic ? 'تم نسخ النص إلى الحافظة بنجاح.' : 'Text copied to clipboard successfully.';
+  String get fileNotFound =>
+      isArabic ? 'الملف غير موجود على الجهاز.' : 'File not found on device.';
+  String fileShareError(dynamic error) => isArabic
+      ? 'تعذر مشاركة أو فتح الملف: $error'
+      : 'Could not share or open file: $error';
+  String pdfReadError(dynamic error) => isArabic
+      ? 'تعذر قراءة ملف الـ PDF: $error'
+      : 'Could not read PDF file: $error';
+  String fileContentReadError(dynamic error) => isArabic
+      ? 'تعذر قراءة محتوى الملف: $error'
+      : 'Could not read file content: $error';
+  String get noTextContent =>
+      isArabic ? 'لا يوجد محتوى نصي.' : 'No text content available.';
+  String get textFile => isArabic ? 'ملف نصي' : 'Text File';
 
   // Ayah Links Views
   String get openInQuran =>

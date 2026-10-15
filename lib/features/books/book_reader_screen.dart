@@ -314,10 +314,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     HapticFeedback.lightImpact();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(
-          'تم نسخ النص إلى الحافظة بنجاح',
+        content: Text(
+          context.l10n.textCopied,
           textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'Amiri'),
+          style: const TextStyle(fontFamily: 'Amiri'),
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -363,8 +363,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('الملف غير موجود على الجهاز.'),
+            SnackBar(
+              content: Text(context.l10n.fileNotFound),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -374,7 +374,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('تعذر مشاركة أو فتح الملف: $e'),
+            content: Text(context.l10n.fileShareError(e)),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -488,7 +488,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         );
       }
       return _buildScrollableTextView(
-        content: _loadedFileContent ?? 'لا يوجد محتوى نصي.',
+        content: _loadedFileContent ?? context.l10n.noTextContent,
         isDark: isDark,
         primaryColor: primaryColor,
       );
@@ -961,12 +961,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
           child: Row(
             children: [
               Text(
-                widget.book.fileName ?? 'ملف نصي',
+                widget.book.fileName ?? context.l10n.textFile,
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               IconButton(
-                tooltip: 'تصغير الخط',
+                tooltip: context.l10n.decreaseFontSize,
                 icon: const Icon(Icons.text_decrease_rounded, size: 20),
                 onPressed: _fontSize > 14
                     ? () => setState(() => _fontSize -= 1.5)
@@ -977,7 +977,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
               IconButton(
-                tooltip: 'تكبير الخط',
+                tooltip: context.l10n.increaseFontSize,
                 icon: const Icon(Icons.text_increase_rounded, size: 20),
                 onPressed: _fontSize < 28
                     ? () => setState(() => _fontSize += 1.5)

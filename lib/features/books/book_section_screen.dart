@@ -130,12 +130,29 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
     return '$cleanName ($count)';
   }
 
+  String _getSectionTitle(BuildContext context) {
+    if (context.currentLanguage == AppLanguage.arabic) {
+      return widget.section.name;
+    }
+    if (widget.section.name.contains('ملازم')) {
+      return 'Huda Al-Quran Booklets';
+    }
+    if (widget.section.name.contains('تراث')) {
+      return 'Ahlulbayt Heritage & Duas';
+    }
+    if (widget.section.name.contains('علوم')) {
+      return 'Quranic Sciences & Reflection';
+    }
+    return widget.section.name;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final filtered = _filteredBooks;
     final allBooks = _allSectionBooks;
+    final sectionTitle = _getSectionTitle(context);
 
     return Directionality(
       textDirection: context.currentLanguage.direction,
@@ -145,7 +162,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
-            widget.section.name,
+            sectionTitle,
             style: const TextStyle(
               fontFamily: 'Amiri',
               fontWeight: FontWeight.bold,
@@ -174,7 +191,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                     controller: _searchController,
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
-                      hintText: context.l10n.searchSectionHint(widget.section.name),
+                      hintText: context.l10n.searchSectionHint(sectionTitle),
                       hintStyle: TextStyle(
                         fontSize: 13.5,
                         color: isDark
@@ -374,7 +391,19 @@ class _SectionBookCard extends StatelessWidget {
   });
 
   String _formatChapterCount(BuildContext context) {
+    final isArabic = context.currentLanguage == AppLanguage.arabic;
     if (book.badgeText != null && book.badgeText!.isNotEmpty) {
+      if (!isArabic) {
+        if (book.badgeText!.contains('دعاء')) {
+          return '54 Complete Duas';
+        }
+        if (book.badgeText!.contains('حق')) {
+          return '50 Detailed Rights';
+        }
+        if (book.badgeText!.contains('مواعظ')) {
+          return 'Teachings & Sermons';
+        }
+      }
       return book.badgeText!;
     }
     if (book.isPdf) {

@@ -204,16 +204,59 @@ class _SectionDirectoryCard extends StatelessWidget {
     return section.icon;
   }
 
+  String _getSectionTitle(BuildContext context) {
+    if (context.currentLanguage == AppLanguage.arabic) {
+      return section.name;
+    }
+    if (section.name.contains('ملازم')) {
+      return 'Huda Al-Quran Booklets';
+    }
+    if (section.name.contains('تراث')) {
+      return 'Ahlulbayt Heritage & Duas';
+    }
+    if (section.name.contains('علوم')) {
+      return 'Quranic Sciences & Reflection';
+    }
+    return section.name;
+  }
+
+  String _getSectionDescription(BuildContext context) {
+    if (context.currentLanguage == AppLanguage.arabic) {
+      return section.description;
+    }
+    if (section.name.contains('ملازم')) {
+      return 'Lectures & study booklets of Sayyed Hussein Badr al-Din al-Houthi from Quranic guidance';
+    }
+    if (section.name.contains('تراث')) {
+      return 'Supplications, Nahj al-Balagha, and spiritual heritage of the Ahlulbayt';
+    }
+    if (section.name.contains('علوم')) {
+      return 'Foundational books on Quran recitation etiquette and reflection principles';
+    }
+    return section.description;
+  }
+
   String _formatCountLabel(BuildContext context) {
-    final count = context.currentLanguage == AppLanguage.arabic
+    final isArabic = context.currentLanguage == AppLanguage.arabic;
+    final count = isArabic
         ? ArabicSearchNormalizer.toArabicDigits(bookCount)
         : bookCount.toString();
+    if (!isArabic) {
+      if (section.name.contains('ملازم')) {
+        return '$count Verified Booklets • Direct PDF';
+      }
+      if (section.name.contains('تراث')) {
+        return '$count Heritage Books • Complete Texts';
+      }
+      if (section.name.contains('علوم')) {
+        return '$count Study & Reflection Books';
+      }
+      return '$count books/booklets';
+    }
     if (section.countLabel != null && section.countLabel!.isNotEmpty) {
       return '$count ${section.countLabel}';
     }
-    return context.currentLanguage == AppLanguage.arabic
-        ? '$count كتاب/ملزمة'
-        : '$count books/booklets';
+    return '$count كتاب/ملزمة';
   }
 
   @override
@@ -253,7 +296,7 @@ class _SectionDirectoryCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      section.name,
+                      _getSectionTitle(context),
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 17,
@@ -267,7 +310,7 @@ class _SectionDirectoryCard extends StatelessWidget {
                     if (section.description.isNotEmpty) ...[
                       const SizedBox(height: 3),
                       Text(
-                        section.description,
+                        _getSectionDescription(context),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
