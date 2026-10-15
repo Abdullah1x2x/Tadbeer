@@ -119,7 +119,7 @@ class DuasScreen extends StatelessWidget {
                   'أدعية الأنبياء والصالحين وخواتيم السور المأثورة في كتاب الله',
               countBadge:
                   '${ArabicSearchNormalizer.toArabicDigits(totalQuranDuas)} دعاء',
-              isAvailable: true,
+              isQuran: true,
               onTap: () {
                 Navigator.push(
                   context,
@@ -134,10 +134,9 @@ class DuasScreen extends StatelessWidget {
             _DuaCategoryCard(
               icon: Icons.wb_sunny_outlined,
               title: 'أذكار الصباح والمساء',
-              subtitle: 'حصن المسلم وأذكار اليوم والليلة مع عدادات تفاعلية مريحة',
+              subtitle: 'أذكار اليوم والليلة وحصن المسلم مع عدادات تفاعلية',
               countBadge:
                   '${ArabicSearchNormalizer.toArabicDigits(totalAdhkar)} ذكر',
-              isAvailable: true,
               onTap: () {
                 Navigator.push(
                   context,
@@ -150,16 +149,13 @@ class DuasScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // القسم 3: أدعية مأثورة عن أهل البيت والصحيفة السجادية
+            // القسم 3: أدعية مأثورة عن أهل البيت
             _DuaCategoryCard(
               icon: FlutterIslamicIcons.prayer,
               title: 'أدعية مأثورة عن أهل البيت',
-              subtitle:
-                  'مكارم الأخلاق، الثغور، كميل، الندبة، التوسل، عرفة، الجوشن الكبير، ومناجاة الأئمة',
+              subtitle: 'الصحيفة السجادية ومناجاة وأدعية الأئمة الأطهار',
               countBadge:
                   '${ArabicSearchNormalizer.toArabicDigits(totalAhlulbaytDuas)} دعاء',
-              isAvailable: true,
-              isFeatured: true,
               onTap: () {
                 Navigator.push(
                   context,
@@ -176,11 +172,9 @@ class DuasScreen extends StatelessWidget {
             _DuaCategoryCard(
               icon: Icons.auto_awesome_outlined,
               title: 'أدعية من السنة النبوية',
-              subtitle:
-                  'أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب وتفريج الهم وقضاء الدين',
+              subtitle: 'أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب',
               countBadge:
                   '${ArabicSearchNormalizer.toArabicDigits(totalSunnahDuas)} أدعية',
-              isAvailable: true,
               onTap: () {
                 Navigator.push(
                   context,
@@ -200,11 +194,9 @@ class DuasScreen extends StatelessWidget {
             _DuaCategoryCard(
               icon: Icons.favorite_border_rounded,
               title: 'جوامع الدعاء والرجاء',
-              subtitle:
-                  'أدعية جامعة لخيري الدنيا والآخرة والهدى والتقى والعفاف والغنى',
+              subtitle: 'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية',
               countBadge:
                   '${ArabicSearchNormalizer.toArabicDigits(totalJawamiDuas)} أدعية',
-              isAvailable: true,
               onTap: () {
                 Navigator.push(
                   context,
@@ -233,8 +225,7 @@ class _DuaCategoryCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String countBadge;
-  final bool isAvailable;
-  final bool isFeatured;
+  final bool isQuran;
   final VoidCallback onTap;
 
   const _DuaCategoryCard({
@@ -242,8 +233,7 @@ class _DuaCategoryCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.countBadge,
-    required this.isAvailable,
-    this.isFeatured = false,
+    this.isQuran = false,
     required this.onTap,
   });
 
@@ -251,80 +241,116 @@ class _DuaCategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // الألوان الموحدة للأقسام الاعتيادية لضمان تطابق المقاس واللون
+    final standardBorderColor =
+        isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final standardIconBg = isDark
+        ? AppColors.darkPrimary.withValues(alpha: 0.25)
+        : AppColors.lightPrimary.withValues(alpha: 0.08);
+    final standardIconColor =
+        isDark ? AppColors.darkTextPrimary : AppColors.lightPrimary;
+    final standardBadgeBg = isDark
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.black.withValues(alpha: 0.04);
+    final standardBadgeTextColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
+    final standardArrowColor = isDark
+        ? AppColors.darkTextSecondary.withValues(alpha: 0.5)
+        : AppColors.lightTextSecondary.withValues(alpha: 0.5);
+
+    // الألوان والسمات المميزة لزر أدعية القرآن الكريم
+    final quranBorderColor =
+        isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
+    final quranIconBg = isDark
+        ? AppColors.darkAccentGold.withValues(alpha: 0.22)
+        : AppColors.lightAccentGold.withValues(alpha: 0.22);
+    final quranIconColor =
+        isDark ? AppColors.darkAccentGold : AppColors.oliveDark;
+    final quranBadgeBg = isDark
+        ? AppColors.darkAccentGold.withValues(alpha: 0.2)
+        : AppColors.lightAccentGold.withValues(alpha: 0.25);
+    final quranBadgeTextColor =
+        isDark ? AppColors.darkAccentGold : AppColors.oliveDark;
+    final quranArrowColor =
+        isDark ? AppColors.darkAccentGold : AppColors.lightPrimary;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: isQuran ? 16 : 14,
+          ),
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            gradient: isQuran
+                ? LinearGradient(
+                    colors: isDark
+                        ? [
+                            AppColors.darkSurface,
+                            AppColors.darkPrimary.withValues(alpha: 0.35),
+                          ]
+                        : [
+                            AppColors.lightSurface,
+                            AppColors.lightPrimary.withValues(alpha: 0.06),
+                          ],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isFeatured
-                  ? (isDark
-                      ? AppColors.darkAccentGold.withValues(alpha: 0.6)
-                      : AppColors.olive.withValues(alpha: 0.5))
-                  : isAvailable
-                      ? (isDark
-                          ? AppColors.darkAccentGold.withValues(alpha: 0.35)
-                          : AppColors.lightAccentGold.withValues(alpha: 0.4))
-                      : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-              width: isFeatured ? 1.5 : (isAvailable ? 1.2 : 1.0),
+              color: isQuran ? quranBorderColor : standardBorderColor,
+              width: isQuran ? 1.6 : 1.0,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.02),
-                blurRadius: 8,
+                color: isQuran
+                    ? (isDark
+                            ? AppColors.darkAccentGold
+                            : AppColors.lightPrimary)
+                        .withValues(alpha: isDark ? 0.18 : 0.08)
+                    : Colors.black.withValues(alpha: isDark ? 0.15 : 0.02),
+                blurRadius: isQuran ? 10 : 6,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
           child: Row(
             children: [
-              // Icon Badge
+              // أيقونة القسم
               Container(
-                width: 48,
-                height: 48,
+                width: isQuran ? 48 : 46,
+                height: isQuran ? 48 : 46,
                 decoration: BoxDecoration(
-                  color: isFeatured
-                      ? (isDark
-                          ? AppColors.darkAccentGold.withValues(alpha: 0.2)
-                          : AppColors.olive.withValues(alpha: 0.15))
-                      : isAvailable
-                          ? (isDark
-                              ? AppColors.darkPrimary.withValues(alpha: 0.35)
-                              : AppColors.lightPrimary.withValues(alpha: 0.12))
-                          : (isDark
-                              ? Colors.grey.withValues(alpha: 0.1)
-                              : Colors.grey.withValues(alpha: 0.08)),
+                  color: isQuran ? quranIconBg : standardIconBg,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isQuran
+                        ? quranBorderColor.withValues(alpha: 0.5)
+                        : standardBorderColor.withValues(alpha: 0.5),
+                    width: 0.8,
+                  ),
                 ),
                 alignment: Alignment.center,
                 child: Icon(
                   icon,
-                  size: 24,
-                  color: isFeatured
-                      ? (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.oliveDark)
-                      : isAvailable
-                          ? (isDark
-                              ? AppColors.darkAccentGold
-                              : AppColors.lightPrimary)
-                          : (isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary),
+                  size: isQuran ? 25 : 23,
+                  color: isQuran ? quranIconColor : standardIconColor,
                 ),
               ),
 
               const SizedBox(width: 14),
 
-              // Title & Subtitle
+              // العنوان والوصف وشارة العدد
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       children: [
@@ -333,11 +359,15 @@ class _DuaCategoryCard extends StatelessWidget {
                             title,
                             style: TextStyle(
                               fontFamily: 'Amiri',
-                              fontSize: 16,
+                              fontSize: isQuran ? 16.5 : 15.5,
                               fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary,
+                              color: isQuran
+                                  ? (isDark
+                                      ? AppColors.darkAccentGold
+                                      : AppColors.lightPrimary)
+                                  : (isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.lightTextPrimary),
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -349,16 +379,14 @@ class _DuaCategoryCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: isAvailable
-                                ? (isDark
-                                    ? AppColors.darkPrimary.withValues(
-                                        alpha: 0.3,
-                                      )
-                                    : AppColors.lightPrimary.withValues(
-                                        alpha: 0.08,
-                                      ))
-                                : (isDark ? Colors.black26 : Colors.black12),
+                            color: isQuran ? quranBadgeBg : standardBadgeBg,
                             borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: isQuran
+                                  ? quranBorderColor.withValues(alpha: 0.6)
+                                  : standardBorderColor,
+                              width: 0.8,
+                            ),
                           ),
                           child: Text(
                             countBadge,
@@ -366,13 +394,9 @@ class _DuaCategoryCard extends StatelessWidget {
                               fontFamily: 'Amiri',
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: isAvailable
-                                  ? (isDark
-                                      ? AppColors.darkAccentGold
-                                      : AppColors.lightPrimary)
-                                  : (isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.lightTextSecondary),
+                              color: isQuran
+                                  ? quranBadgeTextColor
+                                  : standardBadgeTextColor,
                             ),
                           ),
                         ),
@@ -381,6 +405,8 @@ class _DuaCategoryCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
+                      maxLines: isQuran ? 2 : 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 12,
@@ -395,19 +421,11 @@ class _DuaCategoryCard extends StatelessWidget {
 
               const SizedBox(width: 8),
 
-              // Arrow Forward Icon
+              // سهم التنقل
               Icon(
                 Icons.arrow_back_ios_new_rounded,
                 size: 14,
-                color: isAvailable
-                    ? (isDark
-                        ? AppColors.darkAccentGold
-                        : AppColors.lightPrimary)
-                    : (isDark
-                        ? AppColors.darkTextSecondary.withValues(alpha: 0.5)
-                        : AppColors.lightTextSecondary.withValues(
-                            alpha: 0.5,
-                          )),
+                color: isQuran ? quranArrowColor : standardArrowColor,
               ),
             ],
           ),
