@@ -555,6 +555,70 @@ class AppStrings {
   String get previous => isArabic ? 'السابق' : 'Previous';
   String get next => isArabic ? 'التالي' : 'Next';
   String get allCategories => isArabic ? 'الكل' : 'All';
+
+  // Tasbeeh & Istighfar
+  String get istighfar => isArabic ? 'الاستغفار' : 'Istighfar';
+  String get tasbeeh => isArabic ? 'التسبيح' : 'Tasbeeh';
+  String get browseAllFormulas =>
+      isArabic ? 'استعراض كل الصيغ' : 'Browse All Formulas';
+  String get resetCycleCounter =>
+      isArabic ? 'تصفير عداد الدورة' : 'Reset Cycle Counter';
+  String get resetCycleCounterTitle =>
+      isArabic ? 'تصفير عداد الدورة؟' : 'Reset cycle counter?';
+  String get resetCycleCounterConfirm => isArabic
+      ? 'سيتم إعادة عداد الدورة الحالية إلى الصفر مع الحفاظ التام على مجموعك الإجمالي المحفوظ.'
+      : 'The current cycle count will be reset to zero while preserving your total saved count.';
+  String get resetCycleAction =>
+      isArabic ? 'تصفير الدورة' : 'Reset Cycle';
+  String get tapAnywhereToCount =>
+      isArabic ? 'انقر في أي مكان للعدّ' : 'Tap anywhere to count';
+  String targetCount(dynamic target) =>
+      isArabic ? 'الهدف: $target' : 'Target: $target';
+  String get freeCount => isArabic ? 'عدّ حر' : 'Free count';
+  String get freeCountOpen =>
+      isArabic ? 'عدّ حر (مفتوح)' : 'Free count (open)';
+  String countTimes(dynamic count) =>
+      isArabic ? '$count مرة' : '$count times';
+  String get autoAdvanceUponCompletion => isArabic
+      ? 'التبديل التلقائي عند اكتمال الورد'
+      : 'Auto-advance upon completion';
+  String get todayCount =>
+      isArabic ? 'استغفار وتسبيح اليوم' : "Today's Count";
+  String get lifetimeTotalCount =>
+      isArabic ? 'المجموع الكلي المحفوظ' : 'Total Lifetime Count';
+  String formulaXOfY(dynamic current, dynamic total) =>
+      isArabic ? 'صيغة $current من $total' : 'Formula $current of $total';
+  String allFormulasCount(dynamic total) =>
+      isArabic ? 'كل الصيغ ($total)' : 'All formulas ($total)';
+  String get copyDhikrTooltip =>
+      isArabic ? 'نسخ نص الذكر' : 'Copy dhikr';
+  String get dhikrCopied => isArabic
+      ? 'تم نسخ نص الذكر إلى الحافظة بنجاح.'
+      : 'Dhikr copied to clipboard successfully.';
+  String targetReachedAuto(dynamic target) => isArabic
+      ? 'ما شاء الله! أتممت الورد ($target). تم الانتقال تلقائياً إلى الذكر التالي.'
+      : 'MashaAllah! Target completed ($target). Auto-advanced to next dhikr.';
+  String targetReached(dynamic target) => isArabic
+      ? 'ما شاء الله! أتممت الورد المستهدف ($target) بنجاح.'
+      : 'MashaAllah! Target ($target) completed successfully.';
+  String get tasbeehAndIstighfarFormulas =>
+      isArabic ? 'صيغ الاستغفار والتسبيح' : 'Tasbeeh & Istighfar Formulas';
+  String get searchDhikrHint =>
+      isArabic ? 'ابحث في نصوص الأذكار...' : 'Search in dhikr texts...';
+  String get noMatchingFormulas =>
+      isArabic ? 'لا توجد صيغ مطابقة للبحث' : 'No matching formulas found';
+  String get swipeOrTapToChange =>
+      isArabic ? 'اسحب أفقياً أو انقر للتبديل' : 'Swipe horizontally or tap to cycle';
+  String get nextDhikr => isArabic ? 'الذكر التالي' : 'Next Dhikr';
+  String get previousDhikr => isArabic ? 'الذكر السابق' : 'Previous Dhikr';
+
+  // Books
+  String get booksSectionEmpty => isArabic
+      ? 'قسم الكتب والملازم فارغ حالياً'
+      : 'Books & booklets section is currently empty';
+  String get booksSectionEmptyDescription => isArabic
+      ? 'لم تتم إضافة أي أقسام أو كتب في ملفات التطبيق حتى الآن.'
+      : 'No sections or books have been added yet.';
 }
 
 /// عنصر وراثة لتوفير إعدادات اللغة والنصوص المترجمة لجميع عناصر شجرة الواجهة.

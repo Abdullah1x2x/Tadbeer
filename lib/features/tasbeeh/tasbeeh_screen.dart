@@ -100,7 +100,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'ما شاء الله! أتممت الورد ($finishedTarget). تم الانتقال تلقائياً إلى الذكر التالي.',
+              context.l10n.targetReachedAuto(finishedTarget),
               textAlign: TextAlign.center,
               style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
             ),
@@ -114,7 +114,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'ما شاء الله! أتممت الورد المستهدف ($finishedTarget) بنجاح.',
+              context.l10n.targetReached(finishedTarget),
               textAlign: TextAlign.center,
               style: const TextStyle(fontFamily: 'Amiri', fontSize: 15),
             ),
@@ -136,10 +136,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(
-          'تم نسخ نص الذكر إلى الحافظة بنجاح.',
+        content: Text(
+          context.l10n.dhikrCopied,
           textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -151,6 +151,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   /// حوار تأكيد تصفير عداد الدورة الحالية.
   void _confirmReset() {
     HapticFeedback.selectionClick();
+    final l10n = context.l10n;
     showDialog(
       context: context,
       builder: (ctx) {
@@ -160,18 +161,18 @@ class _TasbeehScreenState extends State<TasbeehScreen>
               isDark ? AppColors.darkSurface : AppColors.lightSurface,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-          title: const Text(
-            'تصفير عداد الدورة؟',
-            style: TextStyle(fontFamily: 'Amiri', fontWeight: FontWeight.bold),
+          title: Text(
+            l10n.resetCycleCounterTitle,
+            style: const TextStyle(fontFamily: 'Amiri', fontWeight: FontWeight.bold),
           ),
-          content: const Text(
-            'سيتم إعادة عداد الدورة الحالية إلى الصفر مع الحفاظ التام على مجموعك الإجمالي المحفوظ.',
-            style: TextStyle(fontSize: 14),
+          content: Text(
+            l10n.resetCycleCounterConfirm,
+            style: const TextStyle(fontSize: 14),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('إلغاء'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -183,7 +184,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                 _repo.resetCurrentCount();
                 Navigator.pop(ctx);
               },
-              child: const Text('تصفير الدورة'),
+              child: Text(l10n.resetCycleAction),
             ),
           ],
         );
@@ -253,7 +254,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'صيغ الاستغفار والتسبيح (${allDhikrs.length})',
+                                '${context.l10n.tasbeehAndIstighfarFormulas} (${allDhikrs.length})',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontFamily: 'Amiri',
@@ -284,7 +285,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             children: [
                               _SheetSectionTab(
                                 title:
-                                    'الاستغفار (${TasbeehDhikr.istighfarDhikrs.length})',
+                                    '${context.l10n.istighfar} (${TasbeehDhikr.istighfarDhikrs.length})',
                                 isSelected: sheetSection == DhikrSection.istighfar,
                                 isDark: isDark,
                                 primaryColor: primaryColor,
@@ -296,7 +297,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                               ),
                               _SheetSectionTab(
                                 title:
-                                    'التسبيح (${TasbeehDhikr.tasbeehDhikrs.length})',
+                                    '${context.l10n.tasbeeh} (${TasbeehDhikr.tasbeehDhikrs.length})',
                                 isSelected: sheetSection == DhikrSection.tasbeeh,
                                 isDark: isDark,
                                 primaryColor: primaryColor,
@@ -307,7 +308,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                 },
                               ),
                               _SheetSectionTab(
-                                title: 'الكل (${allDhikrs.length})',
+                                title: '${context.l10n.allCategories} (${allDhikrs.length})',
                                 isSelected: sheetSection == null,
                                 isDark: isDark,
                                 primaryColor: primaryColor,
@@ -330,7 +331,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             });
                           },
                           decoration: InputDecoration(
-                            hintText: 'ابحث في نصوص الأذكار...',
+                            hintText: context.l10n.searchDhikrHint,
                             prefixIcon:
                                 const Icon(Icons.search_rounded, size: 20),
                             contentPadding: const EdgeInsets.symmetric(
@@ -350,8 +351,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         // قائمة النتائج
                         Expanded(
                           child: filtered.isEmpty
-                              ? const Center(
-                                  child: Text('لا توجد صيغ مطابقة للبحث'),
+                              ? Center(
+                                  child: Text(context.l10n.noMatchingFormulas),
                                 )
                               : ListView.separated(
                                   controller: scrollController,
@@ -385,7 +386,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                         ),
                                       ),
                                       subtitle: Text(
-                                        '${item.category} • الهدف: ${item.defaultTarget}',
+                                        '${item.category} • ${context.l10n.targetCount(item.defaultTarget)}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: isDark
@@ -445,12 +446,12 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           centerTitle: true,
           actions: [
             IconButton(
-              tooltip: 'استعراض كل الصيغ',
+              tooltip: l10n.browseAllFormulas,
               icon: const Icon(Icons.format_list_bulleted_rounded),
               onPressed: _showDhikrPickerSheet,
             ),
             IconButton(
-              tooltip: 'تصفير عداد الدورة',
+              tooltip: l10n.resetCycleCounter,
               icon: const Icon(Icons.restart_alt_rounded),
               onPressed: _confirmReset,
             ),
@@ -534,9 +535,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                       strokeWidth: 6,
                                       backgroundColor: isDark
                                           ? AppColors.darkBorder
-                                              .withValues(alpha: 0.3)
+                                          .withValues(alpha: 0.3)
                                           : AppColors.lightBorder
-                                              .withValues(alpha: 0.5),
+                                          .withValues(alpha: 0.5),
                                       valueColor:
                                           AlwaysStoppedAnimation<Color>(
                                         isDark
@@ -564,8 +565,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                       const SizedBox(height: 4),
                                       Text(
                                         _repo.targetCount > 0
-                                            ? 'الهدف: ${_repo.targetCount}'
-                                            : 'عدّ حر',
+                                            ? l10n.targetCount(_repo.targetCount)
+                                            : l10n.freeCount,
                                         style: TextStyle(
                                           fontSize: isCompact ? 13 : 14,
                                           fontWeight: FontWeight.w600,
@@ -585,7 +586,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                               BorderRadius.circular(10),
                                         ),
                                         child: Text(
-                                          'انقر في أي مكان للعدّ',
+                                          l10n.tapAnywhereToCount,
                                           style: TextStyle(
                                             fontSize: 11,
                                             color: primaryColor,
@@ -648,7 +649,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         children: [
           Expanded(
             child: _SectionTab(
-              title: 'الاستغفار',
+              title: context.l10n.istighfar,
               count: istighfarCount,
               icon: Icons.spa_rounded,
               isSelected: activeSection == DhikrSection.istighfar,
@@ -660,7 +661,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           const SizedBox(width: 6),
           Expanded(
             child: _SectionTab(
-              title: 'التسبيح',
+              title: context.l10n.tasbeeh,
               count: tasbeehCount,
               icon: Icons.motion_photos_on_rounded,
               isSelected: activeSection == DhikrSection.tasbeeh,
@@ -684,8 +685,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     final pool = _filteredDhikrs;
     final currentIndex = pool.indexWhere((d) => d.id == dhikr.id);
     final positionText = currentIndex >= 0
-        ? 'صيغة ${currentIndex + 1} من ${pool.length}'
-        : '${pool.length} صيغة';
+        ? context.l10n.formulaXOfY(currentIndex + 1, pool.length)
+        : context.l10n.allFormulasCount(pool.length);
 
     // ضبط حجم الخط العربي ليتناسب مع طول النص ضمن المساحة الثابتة
     final textLength = dhikr.arabicText.length;
@@ -766,7 +767,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       ),
                     ),
                     IconButton(
-                      tooltip: 'نسخ نص الذكر',
+                      tooltip: context.l10n.copyDhikrTooltip,
                       icon: const Icon(Icons.copy_rounded, size: 16),
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
@@ -785,7 +786,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'كل الصيغ (${pool.length})',
+                              context.l10n.allFormulasCount(pool.length),
                               style: TextStyle(
                                 fontSize: 11,
                                 color: primaryColor,
@@ -809,7 +810,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      tooltip: 'الذكر التالي',
+                      tooltip: context.l10n.nextDhikr,
                       icon: const Directionality(
                         textDirection: TextDirection.ltr,
                         child: Icon(Icons.chevron_right_rounded, size: 24),
@@ -843,6 +844,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                 child: Text(
                                   dhikr.arabicText,
                                   textAlign: TextAlign.center,
+                                  textDirection: TextDirection.rtl,
                                   style: TextStyle(
                                     fontFamily: 'Amiri',
                                     fontSize: textFontSize,
@@ -860,7 +862,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       ),
                     ),
                     IconButton(
-                      tooltip: 'الذكر السابق',
+                      tooltip: context.l10n.previousDhikr,
                       icon: const Directionality(
                         textDirection: TextDirection.ltr,
                         child: Icon(Icons.chevron_left_rounded, size: 24),
@@ -902,6 +904,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                               child: Text(
                                 dhikr.virtue,
                                 textAlign: TextAlign.center,
+                                textDirection: TextDirection.rtl,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -928,7 +931,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'اسحب أفقياً أو انقر للتبديل',
+                            context.l10n.swipeOrTapToChange,
                             style: TextStyle(
                               fontSize: 11,
                               color: (isDark
@@ -967,7 +970,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: targets.map((t) {
               final isSelected = current == t;
-              final label = t == 0 ? 'عدّ حر (مفتوح)' : '$t مرة';
+              final label = t == 0
+                  ? context.l10n.freeCountOpen
+                  : context.l10n.countTimes(t);
 
               return Expanded(
                 child: Padding(
@@ -1048,7 +1053,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'التبديل التلقائي عند اكتمال الورد',
+                      context.l10n.autoAdvanceUponCompletion,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -1083,7 +1088,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
       children: [
         Expanded(
           child: _StatCard(
-            label: 'استغفار وتسبيح اليوم',
+            label: context.l10n.todayCount,
             count: _repo.todayTotalCount,
             icon: Icons.today_rounded,
             isDark: isDark,
@@ -1092,7 +1097,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         const SizedBox(width: 10),
         Expanded(
           child: _StatCard(
-            label: 'المجموع الكلي المحفوظ',
+            label: context.l10n.lifetimeTotalCount,
             count: _repo.lifetimeTotalCount,
             icon: Icons.all_inclusive_rounded,
             isDark: isDark,

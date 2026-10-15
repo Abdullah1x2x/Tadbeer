@@ -148,10 +148,10 @@ class _BooksScreenState extends State<BooksScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-              const Text(
-                'قسم الكتب والملازم فارغ حالياً',
+              Text(
+                context.l10n.booksSectionEmpty,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -159,7 +159,7 @@ class _BooksScreenState extends State<BooksScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'لم تتم إضافة أي أقسام أو كتب في ملفات التطبيق حتى الآن.\nيمكن للمطور إضافة الأقسام والملازم بسهولة عبر ملف curated_books.dart.',
+                context.l10n.booksSectionEmptyDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.5,
