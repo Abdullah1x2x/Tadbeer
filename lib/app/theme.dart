@@ -129,6 +129,9 @@ class AppColors {
 class AppTheme {
   AppTheme._();
 
+  /// الخط العربي الموحد لواجهة التطبيق بالكامل
+  static const String appFontFamily = 'Amiri';
+
   /// System-safe modern Arabic and Latin UI font fallbacks
   static const List<String> uiFontFallbacks = [
     'Noto Sans Arabic',
@@ -140,7 +143,11 @@ class AppTheme {
 
   /// إعدادات السمة الفاتحة (النهارية) للتطبيق.
   static ThemeData get lightTheme {
-    final base = ThemeData.light(useMaterial3: true);
+    final base = ThemeData(
+      brightness: Brightness.light,
+      useMaterial3: true,
+      fontFamily: appFontFamily,
+    );
     return base.copyWith(
       scaffoldBackgroundColor: AppColors.lightBackground,
       hoverColor: AppColors.lightPrimary.withValues(alpha: 0.06),
@@ -179,6 +186,12 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 19,
+          fontWeight: FontWeight.bold,
+          color: AppColors.lightTextPrimary,
+        ),
       ),
       drawerTheme: const DrawerThemeData(
         backgroundColor: AppColors.lightBackground,
@@ -186,6 +199,17 @@ class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.lightSurface,
         elevation: 2,
+        titleTextStyle: const TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: AppColors.lightTextPrimary,
+        ),
+        contentTextStyle: const TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 14,
+          color: AppColors.lightTextPrimary,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: AppColors.lightBorder, width: 1),
@@ -203,6 +227,11 @@ class AppTheme {
           backgroundColor: AppColors.lightPrimary,
           foregroundColor: Colors.white,
           elevation: 0,
+          textStyle: const TextStyle(
+            fontFamily: appFontFamily,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -212,6 +241,11 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.lightPrimary,
+          textStyle: const TextStyle(
+            fontFamily: appFontFamily,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -221,6 +255,11 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.lightPrimary,
           side: const BorderSide(color: AppColors.lightPrimary),
+          textStyle: const TextStyle(
+            fontFamily: appFontFamily,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -233,6 +272,8 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.lightSurface,
+        labelStyle: const TextStyle(fontFamily: appFontFamily),
+        hintStyle: const TextStyle(fontFamily: appFontFamily),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 12,
@@ -253,6 +294,20 @@ class AppTheme {
           ),
         ),
       ),
+      tabBarTheme: const TabBarThemeData(
+        labelStyle: TextStyle(
+          fontFamily: appFontFamily,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 14,
+        ),
+      ),
+      snackBarTheme: const SnackBarThemeData(
+        contentTextStyle: TextStyle(fontFamily: appFontFamily, fontSize: 13),
+      ),
       textTheme: _buildTextTheme(
         base.textTheme,
         AppColors.lightTextPrimary,
@@ -268,7 +323,11 @@ class AppTheme {
 
   /// إعدادات السمة الداكنة (الليلية) للتطبيق.
   static ThemeData get darkTheme {
-    final base = ThemeData.dark(useMaterial3: true);
+    final base = ThemeData(
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      fontFamily: appFontFamily,
+    );
     return base.copyWith(
       scaffoldBackgroundColor: AppColors.darkBackground,
       hoverColor: AppColors.darkPrimary.withValues(alpha: 0.08),
@@ -307,6 +366,12 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 19,
+          fontWeight: FontWeight.bold,
+          color: AppColors.darkTextPrimary,
+        ),
       ),
       drawerTheme: const DrawerThemeData(
         backgroundColor: AppColors.darkBackground,
@@ -314,6 +379,17 @@ class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.darkSurface,
         elevation: 2,
+        titleTextStyle: const TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: AppColors.darkTextPrimary,
+        ),
+        contentTextStyle: const TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 14,
+          color: AppColors.darkTextPrimary,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: AppColors.darkBorder, width: 1),
@@ -331,6 +407,11 @@ class AppTheme {
           backgroundColor: AppColors.darkPrimary,
           foregroundColor: Colors.white,
           elevation: 0,
+          textStyle: const TextStyle(
+            fontFamily: appFontFamily,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -340,6 +421,11 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.darkPrimary,
+          textStyle: const TextStyle(
+            fontFamily: appFontFamily,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -349,6 +435,11 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.darkPrimary,
           side: const BorderSide(color: AppColors.darkPrimary),
+          textStyle: const TextStyle(
+            fontFamily: appFontFamily,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -361,6 +452,8 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.darkSurface,
+        labelStyle: const TextStyle(fontFamily: appFontFamily),
+        hintStyle: const TextStyle(fontFamily: appFontFamily),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 12,
@@ -380,6 +473,20 @@ class AppTheme {
             width: 1.5,
           ),
         ),
+      ),
+      tabBarTheme: const TabBarThemeData(
+        labelStyle: TextStyle(
+          fontFamily: appFontFamily,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 14,
+        ),
+      ),
+      snackBarTheme: const SnackBarThemeData(
+        contentTextStyle: TextStyle(fontFamily: appFontFamily, fontSize: 13),
       ),
       textTheme: _buildTextTheme(
         base.textTheme,
@@ -402,59 +509,69 @@ class AppTheme {
   ) {
     return base.copyWith(
       headlineLarge: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.bold,
         color: textColor,
         fontSize: 26,
       ),
       headlineMedium: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.bold,
         color: textColor,
         fontSize: 22,
       ),
       titleLarge: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.bold,
         color: textColor,
         fontSize: 19,
       ),
       titleMedium: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.w600,
         color: textColor,
         fontSize: 16,
       ),
       titleSmall: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.w600,
         color: subtitleColor,
         fontSize: 14,
       ),
       bodyLarge: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: textColor,
         fontSize: 15,
         height: 1.5,
       ),
       bodyMedium: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: textColor,
         fontSize: 14,
         height: 1.45,
       ),
       bodySmall: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: subtitleColor,
         fontSize: 12,
       ),
       labelLarge: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.bold,
         color: textColor,
         fontSize: 14,
       ),
       labelMedium: TextStyle(
+        fontFamily: appFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: subtitleColor,
         fontSize: 12,
