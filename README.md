@@ -80,7 +80,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Simplified Dual Sections:** Direct switching between **Istighfar** (Seeking Forgiveness) and **Tasbeeh** (Glorification).
 - **Jitter-Free Fixed Display:** Card height is fixed to eliminate visual bouncing when stepping through supplications.
 - **49 Curated Authentic Formulas:** 20 Istighfar formulas and 29 Tasbeeh/Tahmeed/Takbeer/Salawat formulas.
-- **Flexible Target Cycles & Auto-Advance:** Supports preset targets (33, 100) or open count, with auto-advance to the next dhikr upon target completion.
+- **Flexible Target Cycles & Smart Auto-Counter:** Supports preset targets (33, 100) or open count, with **smart dynamic auto-counting** calibrated to supplication word length, fine-tuning pace controls (+ / -), and automatic transition to the next dhikr upon target completion.
 
 ### 📚 Books & Booklets Library
 - **«ملازم هدي القرآن الكريم» (86 Unabridged Booklets):** Complete library of lectures and Quranic guidance booklets by Sayyed Hussein Badreddin Al-Houthi, categorized with clean Arabic titles across series (*Ma'rifat Allah*, *Madih al-Quran*, *Ramadan Lessons*, Surah Studies, Worship & Supplications, and Major Discourses).
@@ -89,7 +89,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
   - *Risalat Al-Huquq* (The Treatise on Rights).
   - *Nahj Al-Balagha* (Peak of Eloquence: Sermons, Letters, and Wisdom of Imam Ali).
 - **«علوم وتدبر القرآن الكريم» (Quranic Sciences & Reflection):** Open classical heritage works including *Akhlaq Hamalat Al-Quran* by Al-Ajurri, *Principles of Quranic Reflection*, and *Al-Tibyan* by Imam Al-Nawawi.
-- **Pure-Dart Extensibility:** Built upon declarative, modular Dart registry files with detailed instructions, enabling any developer to easily add sections, PDF booklets, tasbeeh items, word meanings, duas, or ayah pathways without database schema changes; see [Developer Guide](DEVELOPMENT_GUIDE.md#6-declarative-pure-dart-content-extension-architecture).
+- **Pure-Dart Extensibility:** Built upon declarative, modular Dart registry files with detailed instructions, enabling any developer to easily add sections, PDF booklets, tasbeeh items, word meanings, duas, or ayah pathways without database schema changes; see [Content Guide](docs/CONTENT_GUIDE.md) and [Developer Guide](DEVELOPMENT_GUIDE.md#6-declarative-pure-dart-content-extension-architecture).
 
 ---
 
@@ -187,7 +187,9 @@ tadbeer/
 │   │   ├── tasbeeh/            # Digital counter & daily dhikr sanctuary
 │   │   └── word_meanings/      # Word meanings explorer & sources
 │   └── main.dart               # Entrypoint & service initialization
-├── test/                       # Comprehensive test suite (212 tests, 24 files)
+├── test/                       # Comprehensive test suite (216 tests, 24 files)
+├── docs/                       # Technical documentation
+│   └── CONTENT_GUIDE.md        # Content addition & extension manual for developers
 ├── DEVELOPMENT_GUIDE.md        # Technical developer & maintenance guide
 ├── DEVELOPMENT_GUIDE.ar.md     # Arabic technical developer guide
 ├── ATTRIBUTION.md              # Attribution statements & source details
@@ -197,6 +199,7 @@ tadbeer/
 ```
 
 For detailed technical architecture, database schemas, and contribution guides, see:
+- **[CONTENT_GUIDE.md](docs/CONTENT_GUIDE.md)** (Developer manual for adding duas, dhikrs, books, and word meanings)
 - **[DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)** (English)
 - **[DEVELOPMENT_GUIDE.ar.md](DEVELOPMENT_GUIDE.ar.md)** (العربية)
 

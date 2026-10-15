@@ -41,7 +41,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (212 tests across 24 test files - 100% passing)
+# 3. Run automated tests (216 tests across 24 test files - 100% passing)
 flutter test
 
 # 4. Run application in debug mode
@@ -173,13 +173,16 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 212 tests must pass
+   flutter test    # All 216 tests must pass
    ```
 5. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.
 
 ---
 
 ## 6. Declarative Pure-Dart Content Extension Architecture
+
+> 💡 **For the unified, comprehensive reference manual covering all models and content registries with full code examples, see:**  
+> **[`docs/CONTENT_GUIDE.md`](docs/CONTENT_GUIDE.md)**.
 
 The codebase has been refactored to eliminate hardcoded UI checks and burdensome database migrations for static and curated content. All extensible features are exposed via **strongly typed, modular Dart configuration files** equipped with detailed Arabic developer guidelines in their header doc comments.
 
@@ -352,12 +355,12 @@ CuratedPathway(
     CuratedPathwayVerse(
       surah: 2,
       ayah: 251,
-      reflectionPrompt: 'Reflection prompt for verse 2:251...',
+      note: 'Reflection prompt for verse 2:251...',
     ),
     CuratedPathwayVerse(
       surah: 22,
       ayah: 40,
-      reflectionPrompt: 'Reflection prompt for verse 22:40...',
+      note: 'Reflection prompt for verse 22:40...',
     ),
   ],
 ),
