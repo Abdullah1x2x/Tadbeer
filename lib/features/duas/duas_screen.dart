@@ -36,8 +36,10 @@ class DuasScreen extends StatelessWidget {
     final totalSunnahDuas = SunnahDuasRepository.sunnahDuas.length;
     final totalJawamiDuas = SunnahDuasRepository.jawamiDuas.length;
 
+    final isArabic = context.currentLanguage == AppLanguage.arabic;
+
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -96,7 +98,10 @@ class DuasScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'سورة غافر · الآية ٦٠',
+                    l10n.ayahReference(
+                      isArabic ? 'غافر' : 'Ghafir',
+                      isArabic ? '٦٠' : '60',
+                    ),
                     style: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 12,
@@ -114,11 +119,13 @@ class DuasScreen extends StatelessWidget {
             // القسم 1: أدعية من القرآن الكريم
             _DuaCategoryCard(
               icon: FlutterIslamicIcons.quran,
-              title: 'أدعية من القرآن',
-              subtitle:
-                  'أدعية الأنبياء والصالحين وخواتيم السور المأثورة في كتاب الله',
-              countBadge:
-                  '${ArabicSearchNormalizer.toArabicDigits(totalQuranDuas)} دعاء',
+              title: l10n.quranDuasTitle,
+              subtitle: l10n.quranDuasSubtitle,
+              countBadge: l10n.duasCountBadge(
+                isArabic
+                    ? ArabicSearchNormalizer.toArabicDigits(totalQuranDuas)
+                    : totalQuranDuas,
+              ),
               isQuran: true,
               onTap: () {
                 Navigator.push(
@@ -133,10 +140,13 @@ class DuasScreen extends StatelessWidget {
             // القسم 2: أذكار الصباح والمساء
             _DuaCategoryCard(
               icon: Icons.wb_sunny_outlined,
-              title: 'أذكار الصباح والمساء',
-              subtitle: 'أذكار اليوم والليلة وحصن المسلم مع عدادات تفاعلية',
-              countBadge:
-                  '${ArabicSearchNormalizer.toArabicDigits(totalAdhkar)} ذكر',
+              title: l10n.morningEveningAdhkarTitle,
+              subtitle: l10n.morningEveningAdhkarSubtitle,
+              countBadge: l10n.adhkarCountBadge(
+                isArabic
+                    ? ArabicSearchNormalizer.toArabicDigits(totalAdhkar)
+                    : totalAdhkar,
+              ),
               onTap: () {
                 Navigator.push(
                   context,
@@ -152,10 +162,13 @@ class DuasScreen extends StatelessWidget {
             // القسم 3: أدعية مأثورة عن أهل البيت
             _DuaCategoryCard(
               icon: FlutterIslamicIcons.prayer,
-              title: 'أدعية مأثورة عن أهل البيت',
-              subtitle: 'الصحيفة السجادية ومناجاة وأدعية الأئمة الأطهار',
-              countBadge:
-                  '${ArabicSearchNormalizer.toArabicDigits(totalAhlulbaytDuas)} دعاء',
+              title: l10n.ahlulbaytDuasTitle,
+              subtitle: l10n.ahlulbaytDuasSubtitle,
+              countBadge: l10n.duasCountBadge(
+                isArabic
+                    ? ArabicSearchNormalizer.toArabicDigits(totalAhlulbaytDuas)
+                    : totalAhlulbaytDuas,
+              ),
               onTap: () {
                 Navigator.push(
                   context,
@@ -171,16 +184,19 @@ class DuasScreen extends StatelessWidget {
             // القسم 4: أدعية من السنة النبوية
             _DuaCategoryCard(
               icon: Icons.auto_awesome_outlined,
-              title: 'أدعية من السنة النبوية',
-              subtitle: 'أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب',
-              countBadge:
-                  '${ArabicSearchNormalizer.toArabicDigits(totalSunnahDuas)} أدعية',
+              title: l10n.sunnahDuasTitle,
+              subtitle: l10n.sunnahDuasSubtitle,
+              countBadge: l10n.duasCountBadge(
+                isArabic
+                    ? ArabicSearchNormalizer.toArabicDigits(totalSunnahDuas)
+                    : totalSunnahDuas,
+              ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => GeneralDuasListScreen(
-                      title: 'أدعية من السنة النبوية',
+                      title: l10n.sunnahDuasTitle,
                       items: SunnahDuasRepository.sunnahDuas,
                     ),
                   ),
@@ -193,16 +209,19 @@ class DuasScreen extends StatelessWidget {
             // القسم 5: جوامع الدعاء والرجاء
             _DuaCategoryCard(
               icon: Icons.favorite_border_rounded,
-              title: 'جوامع الدعاء والرجاء',
-              subtitle: 'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية',
-              countBadge:
-                  '${ArabicSearchNormalizer.toArabicDigits(totalJawamiDuas)} أدعية',
+              title: l10n.jawamiDuasTitle,
+              subtitle: l10n.jawamiDuasSubtitle,
+              countBadge: l10n.duasCountBadge(
+                isArabic
+                    ? ArabicSearchNormalizer.toArabicDigits(totalJawamiDuas)
+                    : totalJawamiDuas,
+              ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => GeneralDuasListScreen(
-                      title: 'جوامع الدعاء والرجاء',
+                      title: l10n.jawamiDuasTitle,
                       items: SunnahDuasRepository.jawamiDuas,
                     ),
                   ),
@@ -423,7 +442,9 @@ class _DuaCategoryCard extends StatelessWidget {
 
               // سهم التنقل
               Icon(
-                Icons.arrow_back_ios_new_rounded,
+                context.currentLanguage.direction == TextDirection.rtl
+                    ? Icons.arrow_back_ios_new_rounded
+                    : Icons.arrow_forward_ios_rounded,
                 size: 14,
                 color: isQuran ? quranArrowColor : standardArrowColor,
               ),

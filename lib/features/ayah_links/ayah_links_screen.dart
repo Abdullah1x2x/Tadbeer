@@ -57,15 +57,20 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
 
   /// يعرض نافذة تأكيد لحذف رابط الآيات المحدد.
   Future<void> _confirmDelete(AyahLinkItem link) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('حذف رابط الآيات'),
-        content: Text('هل أنت متأكد من رغبتك في حذف رابط «${link.title}»؟'),
+        title: Text(l10n.deleteConfirmTitle),
+        content: Text(
+          l10n.isArabic
+              ? 'هل أنت متأكد من رغبتك في حذف رابط «${link.title}»؟'
+              : 'Are you sure you want to delete link "${link.title}"?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
-            child: const Text('إلغاء'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -73,7 +78,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('حذف'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -84,7 +89,11 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('تم حذف رابط «${link.title}»'),
+            content: Text(
+              l10n.isArabic
+                  ? 'تم حذف رابط «${link.title}»'
+                  : 'Link "${link.title}" deleted',
+            ),
             backgroundColor: Theme.of(context).colorScheme.primary,
             behavior: SnackBarBehavior.floating,
           ),
@@ -111,7 +120,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
       ),
       builder: (sheetCtx) {
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: context.currentLanguage.direction,
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -123,11 +132,10 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                     children: [
                       Icon(Icons.explore_rounded, color: primary),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'المسارات التدبرية المقترحة',
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
+                          context.l10n.curatedPathways,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -213,7 +221,11 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '${ArabicSearchNormalizer.toArabicDigits(pathway.verses.length)} آيات مرتبطة',
+                                    context.l10n.linkedAyahsCount(
+                                      context.l10n.isArabic
+                                          ? ArabicSearchNormalizer.toArabicDigits(pathway.verses.length)
+                                          : pathway.verses.length,
+                                    ),
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: isDark
@@ -255,9 +267,9 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                       ),
                                     ),
                                     icon: const Icon(Icons.add, size: 16),
-                                    label: const Text(
-                                      'استيراد المسار',
-                                      style: TextStyle(
+                                    label: Text(
+                                      context.l10n.importPathway,
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -288,7 +300,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
     final primary = Theme.of(context).colorScheme.primary;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -298,12 +310,12 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.explore_outlined),
-              tooltip: 'المسارات التدبرية المقترحة',
+              tooltip: l10n.curatedPathways,
               onPressed: _showCuratedPathwaysSheet,
             ),
             IconButton(
               icon: const Icon(Icons.qr_code_scanner_rounded),
-              tooltip: 'استيراد رابط آيات عبر الرمز',
+              tooltip: l10n.importFromQrCode,
               onPressed: _importFromQr,
             ),
           ],
@@ -324,7 +336,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                     controller: _searchController,
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
-                      hintText: 'ابحث في روابط الآيات أو السور...',
+                      hintText: l10n.searchAyahLinksHint,
                       prefixIcon: Icon(Icons.search, color: primary),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
@@ -384,7 +396,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                 const SizedBox(height: 16),
                                 Text(
                                   _searchQuery.isNotEmpty
-                                      ? 'لا توجد نتائج مطابقة لبحثك'
+                                      ? l10n.noAyahLinkSearchResults
                                       : l10n.noAyahLinksYet,
                                   style: const TextStyle(
                                     fontSize: 16,
@@ -394,7 +406,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                 const SizedBox(height: 8),
                                 Text(
                                   _searchQuery.isNotEmpty
-                                      ? 'جرّب البحث بكلمة أخرى أو اسم سورة'
+                                      ? l10n.tryAnotherAyahLinkSearch
                                       : l10n.ayahLinksSubtitle,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -496,7 +508,11 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                '${ArabicSearchNormalizer.toArabicDigits(link.verses.length)} آيات مرتبطة',
+                                                l10n.linkedAyahsCount(
+                                                  l10n.isArabic
+                                                      ? ArabicSearchNormalizer.toArabicDigits(link.verses.length)
+                                                      : link.verses.length,
+                                                ),
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.bold,
@@ -521,32 +537,32 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                             }
                                           },
                                           itemBuilder: (ctx) => [
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'edit',
                                               child: Row(
                                                 children: [
-                                                  Icon(
+                                                  const Icon(
                                                     Icons.edit_outlined,
                                                     size: 18,
                                                   ),
-                                                  SizedBox(width: 8),
-                                                  Text('تعديل العنوان والوصف'),
+                                                  const SizedBox(width: 8),
+                                                  Text(l10n.editTitleAndDescription),
                                                 ],
                                               ),
                                             ),
-                                            const PopupMenuItem(
+                                            PopupMenuItem(
                                               value: 'delete',
                                               child: Row(
                                                 children: [
-                                                  Icon(
+                                                  const Icon(
                                                     Icons.delete_outline,
                                                     color: Colors.redAccent,
                                                     size: 18,
                                                   ),
-                                                  SizedBox(width: 8),
+                                                  const SizedBox(width: 8),
                                                   Text(
-                                                    'حذف الرابط',
-                                                    style: TextStyle(
+                                                    l10n.deleteAyahLink,
+                                                    style: const TextStyle(
                                                       color: Colors.redAccent,
                                                     ),
                                                   ),

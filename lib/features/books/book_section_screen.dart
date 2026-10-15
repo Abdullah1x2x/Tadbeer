@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'book_model.dart';
@@ -106,7 +107,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
 
   String _formatSeriesLabel(String series, List<BookModel> allBooks) {
     if (series == 'الكل') {
-      return 'الكل (${allBooks.length})';
+      return '${context.l10n.allCategories} (${allBooks.length})';
     }
     final count = allBooks.where((b) {
       if (series == 'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
@@ -137,7 +138,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
     final allBooks = _allSectionBooks;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -173,7 +174,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                     controller: _searchController,
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
-                      hintText: 'ابحث في محتويات وعناوين ${widget.section.name}...',
+                      hintText: context.l10n.searchSectionHint(widget.section.name),
                       hintStyle: TextStyle(
                         fontSize: 13.5,
                         color: isDark
@@ -319,8 +320,12 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
               const SizedBox(height: 16),
               Text(
                 hasSearch
-                    ? 'لا توجد نتائج مطابقة لبحثك'
-                    : 'هذا القسم فارغ حالياً',
+                    ? (context.l10n.isArabic
+                        ? 'لا توجد نتائج مطابقة لبحثك'
+                        : 'No results match your search')
+                    : (context.l10n.isArabic
+                        ? 'هذا القسم فارغ حالياً'
+                        : 'This section is currently empty'),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontFamily: 'Amiri',
@@ -331,8 +336,12 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
               const SizedBox(height: 8),
               Text(
                 hasSearch
-                    ? 'جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.'
-                    : 'لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.',
+                    ? (context.l10n.isArabic
+                        ? 'جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.'
+                        : 'Try searching with another word or choose a different category.')
+                    : (context.l10n.isArabic
+                        ? 'لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.'
+                        : 'No pamphlets or books have been added to this section yet.'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.5,
@@ -364,17 +373,17 @@ class _SectionBookCard extends StatelessWidget {
     required this.onTap,
   });
 
-  String _formatChapterCount() {
+  String _formatChapterCount(BuildContext context) {
     if (book.badgeText != null && book.badgeText!.isNotEmpty) {
       return book.badgeText!;
     }
     if (book.isPdf) {
-      return 'ملزمة موثقة • PDF';
+      return context.l10n.verifiedPamphletPdf;
     }
     if (book.chapters.isNotEmpty) {
-      return '${book.chapters.length} مباحث كاملة';
+      return context.l10n.fullSectionsCount(book.chapters.length);
     }
-    return 'قراءة نصية مباشرة';
+    return context.l10n.directTextReading;
   }
 
   Color _getBadgeColor() {
@@ -398,7 +407,7 @@ class _SectionBookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final badgeColor = _getBadgeColor();
     final iconData = _getBookIcon();
-    final countLabel = _formatChapterCount();
+    final countLabel = _formatChapterCount(context);
 
     return InkWell(
       onTap: onTap,
@@ -529,7 +538,9 @@ class _SectionBookCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Icon(
-                  Icons.chevron_left_rounded,
+                  context.currentLanguage.direction == TextDirection.rtl
+                      ? Icons.chevron_left_rounded
+                      : Icons.chevron_right_rounded,
                   size: 18,
                   color: isDark
                       ? AppColors.darkTextSecondary

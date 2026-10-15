@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
@@ -99,12 +100,17 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
 
     if (mounted) {
       Navigator.pop(context);
+      final l10n = context.l10n;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             answers.isEmpty
-                ? 'تم مسح الإجابات الفارغة بنجاح'
-                : 'تم حفظ وقفة التدبر بنجاح',
+                ? (l10n.isArabic
+                    ? 'تم مسح الإجابات الفارغة بنجاح'
+                    : 'Cleared empty answers successfully')
+                : (l10n.isArabic
+                    ? 'تم حفظ وقفة التدبر بنجاح'
+                    : 'Tadbeer pause saved successfully'),
             textAlign: TextAlign.center,
           ),
           backgroundColor: AppColors.olive,
@@ -138,6 +144,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
   /// يبني واجهة نافذة وقفة التدبر مع نص الآية ومؤشر التقدم وحقل الإجابة.
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surah = QuranRepository.instance.getSurah(widget.ayah.surahNumber);
     final questionNumber = _currentQuestionIndex + 1;
@@ -146,7 +153,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Container(
         padding: EdgeInsets.only(bottom: bottomInset),
         decoration: BoxDecoration(
@@ -198,7 +205,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'وقفة تدبر',
+                          l10n.tadbeerPause,
                           style: TextStyle(
                             fontFamily: 'Amiri',
                             fontSize: 18,
@@ -213,7 +220,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                     IconButton(
                       icon: const Icon(Icons.close, size: 20),
                       onPressed: () => Navigator.pop(context),
-                      tooltip: 'إغلاق',
+                      tooltip: l10n.close,
                     ),
                   ],
                 ),
@@ -235,7 +242,12 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(widget.ayah.ayahNumber)}',
+                            l10n.ayahReference(
+                              surah.name,
+                              l10n.isArabic
+                                  ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.ayahNumber)
+                                  : widget.ayah.ayahNumber,
+                            ),
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
@@ -245,7 +257,11 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                             ),
                           ),
                           Text(
-                            'ص ${ArabicSearchNormalizer.toArabicDigits(widget.ayah.page)}',
+                            l10n.pageAbbr(
+                              l10n.isArabic
+                                  ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.page)
+                                  : widget.ayah.page,
+                            ),
                             style: TextStyle(
                               fontSize: 12,
                               color: isDark
@@ -280,7 +296,9 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'السؤال ${ArabicSearchNormalizer.toArabicDigits(questionNumber)} من ٤',
+                      l10n.isArabic
+                          ? 'السؤال ${ArabicSearchNormalizer.toArabicDigits(questionNumber)} من ٤'
+                          : 'Question $questionNumber of 4',
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -342,7 +360,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 TextField(
                   controller: activeController,
                   maxLines: 4,
-                  textDirection: TextDirection.rtl,
+                  textDirection: context.currentLanguage.direction,
                   autofocus: false,
                   style: TextStyle(
                     fontSize: 15,
@@ -352,7 +370,9 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         : AppColors.dayQuranText,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'اكتب ما خطر ببالك...',
+                    hintText: l10n.isArabic
+                        ? 'اكتب ما خطر ببالك...'
+                        : 'Write your thoughts here...',
                     hintStyle: TextStyle(
                       color: isDark
                           ? AppColors.nightSubtitle
@@ -397,8 +417,13 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        icon: const Icon(Icons.arrow_forward, size: 16),
-                        label: const Text('السابق'),
+                        icon: Icon(
+                          context.currentLanguage.direction == TextDirection.rtl
+                              ? Icons.arrow_forward
+                              : Icons.arrow_back,
+                          size: 16,
+                        ),
+                        label: Text(l10n.previous),
                       ),
                       const SizedBox(width: 8),
                     ],
@@ -418,15 +443,17 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         icon: Icon(
                           _currentQuestionIndex <
                                   TadbeerItem.questions.length - 1
-                              ? Icons.arrow_back
+                              ? (context.currentLanguage.direction == TextDirection.rtl
+                                  ? Icons.arrow_back
+                                  : Icons.arrow_forward)
                               : Icons.check,
                           size: 16,
                         ),
                         label: Text(
                           _currentQuestionIndex <
                                   TadbeerItem.questions.length - 1
-                              ? 'التالي'
-                              : 'تم وحفظ',
+                              ? (l10n.isArabic ? 'التالي' : 'Next')
+                              : (l10n.isArabic ? 'تم وحفظ' : 'Done & Save'),
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -441,7 +468,11 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                     child: TextButton.icon(
                       onPressed: _saveAndClose,
                       icon: const Icon(Icons.save_outlined, size: 16),
-                      label: const Text('حفظ ما كتبت الآن وإنهاء'),
+                      label: Text(
+                        l10n.isArabic
+                            ? 'حفظ ما كتبت الآن وإنهاء'
+                            : 'Save reflections & finish',
+                      ),
                       style: TextButton.styleFrom(
                         foregroundColor: isDark
                             ? AppColors.oliveSoft

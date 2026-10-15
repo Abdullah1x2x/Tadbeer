@@ -193,12 +193,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 // 2. الخط والقراءة (Typography & Reading)
-                _buildSectionHeader(
-                  context,
-                  context.currentLanguage == AppLanguage.arabic
-                      ? 'الخط والقراءة'
-                      : 'Typography & Reading',
-                ),
+                _buildSectionHeader(context, l10n.typographyAndReading),
                 _buildCard(
                   context: context,
                   child: Padding(
@@ -214,9 +209,7 @@ class SettingsScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              context.currentLanguage == AppLanguage.arabic
-                                  ? 'نوع خط المصحف'
-                                  : 'Quran Font Family',
+                              l10n.quranFontFamily,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                               ),
@@ -284,7 +277,10 @@ class SettingsScreen extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            fontOpt.labelArabic,
+                                            fontOpt.getLabel(
+                                              context.currentLanguage ==
+                                                  AppLanguage.arabic,
+                                            ),
                                             style: TextStyle(
                                               fontWeight:
                                                   settings.quranFontFamily ==
@@ -296,7 +292,10 @@ class SettingsScreen extends StatelessWidget {
                                           ),
                                           const SizedBox(height: 2),
                                           Text(
-                                            fontOpt.subtitleArabic,
+                                            fontOpt.getSubtitle(
+                                              context.currentLanguage ==
+                                                  AppLanguage.arabic,
+                                            ),
                                             style: TextStyle(
                                               fontSize: 11.5,
                                               color: isDark
@@ -328,9 +327,7 @@ class SettingsScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  context.currentLanguage == AppLanguage.arabic
-                                      ? 'حجم خط المصحف'
-                                      : 'Quran Font Size',
+                                  l10n.fontSize,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -338,9 +335,15 @@ class SettingsScreen extends StatelessWidget {
                               ],
                             ),
                             Text(
-                              '${ArabicSearchNormalizer.toArabicDigits(settings.quranFontSize.round())} نقطة',
+                              l10n.fontSizePoints(
+                                context.currentLanguage == AppLanguage.arabic
+                                    ? ArabicSearchNormalizer.toArabicDigits(
+                                        settings.quranFontSize.round(),
+                                      )
+                                    : settings.quranFontSize.round(),
+                              ),
                               style: TextStyle(
-                                fontFamily: 'Amiri',
+                                fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.primary,
@@ -407,7 +410,13 @@ class SettingsScreen extends StatelessWidget {
                                           UserSettings.defaultQuranFontSize,
                                         ),
                                   icon: const Icon(Icons.refresh_rounded, size: 16),
-                                  label: const Text('إعادة للوضع الافتراضي (٢٠)'),
+                                  label: Text(
+                                    l10n.resetToDefaultWithVal(
+                                      context.currentLanguage == AppLanguage.arabic
+                                          ? '٢٠'
+                                          : '20',
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -420,12 +429,7 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // 3. التطبيق (Application)
-                _buildSectionHeader(
-                  context,
-                  context.currentLanguage == AppLanguage.arabic
-                      ? 'التطبيق'
-                      : 'Application',
-                ),
+                _buildSectionHeader(context, l10n.applicationSection),
                 _buildCard(
                   context: context,
                   child: Column(
@@ -486,7 +490,7 @@ class SettingsScreen extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          'تنبيهات الورد اليومي ومواعيد القراءة',
+                          l10n.dailyRemindersSubtitle,
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark
@@ -508,12 +512,7 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // 4. البيانات (Data)
-                _buildSectionHeader(
-                  context,
-                  context.currentLanguage == AppLanguage.arabic
-                      ? 'البيانات'
-                      : 'Data',
-                ),
+                _buildSectionHeader(context, l10n.dataSection),
                 _buildCard(
                   context: context,
                   child: Column(
@@ -528,7 +527,7 @@ class SettingsScreen extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          'تصدير واستعادة ملفات مشفرة بدون اتصال',
+                          l10n.backupSubtitle,
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark
@@ -550,15 +549,15 @@ class SettingsScreen extends StatelessWidget {
                           Icons.delete_forever_rounded,
                           color: Colors.redAccent,
                         ),
-                        title: const Text(
-                          'إعادة تعيين البيانات',
-                          style: TextStyle(
+                        title: Text(
+                          l10n.resetData,
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             color: Colors.redAccent,
                           ),
                         ),
                         subtitle: Text(
-                          'حذف الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية',
+                          l10n.resetDataSubtitle,
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark
@@ -614,7 +613,7 @@ class SettingsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  'الإصدار ١.٠.٠ · مجاني وبدون إعلانات أو إنترنت',
+                                  l10n.versionInfo,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: isDark
@@ -641,7 +640,7 @@ class SettingsScreen extends StatelessWidget {
                         const Divider(height: 1),
                         const SizedBox(height: 14),
                         Text(
-                          'المصادر والتوثيق المعتمد:',
+                          l10n.sourcesAndCredits,
                           style: TextStyle(
                             fontFamily: 'Amiri',
                             fontSize: 15,
@@ -683,7 +682,7 @@ class SettingsScreen extends StatelessWidget {
                             );
                           },
                           icon: const Icon(Icons.policy_outlined, size: 18),
-                          label: const Text('تراخيص البرمجيات والمصادر المفتوحة'),
+                          label: Text(l10n.openSourceLicenses),
                         ),
                       ],
                     ),
@@ -699,24 +698,23 @@ class SettingsScreen extends StatelessWidget {
 
   /// يعرض نافذة تأكيد لإعادة تعيين جميع بيانات المستخدم إلى الوضع الافتراضي.
   Future<void> _confirmResetData(BuildContext context) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 24),
-            SizedBox(width: 8),
-            Text('إعادة تعيين البيانات'),
+            const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 24),
+            const SizedBox(width: 8),
+            Text(l10n.resetData),
           ],
         ),
-        content: const Text(
-          'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.',
-        ),
+        content: Text(l10n.resetWarningMessage),
         actions: [
           TextButton.icon(
             onPressed: () => Navigator.pop(dialogCtx, false),
             icon: const Icon(Icons.close_rounded, size: 16),
-            label: const Text('إلغاء'),
+            label: Text(l10n.cancel),
           ),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
@@ -728,7 +726,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             onPressed: () => Navigator.pop(dialogCtx, true),
             icon: const Icon(Icons.delete_forever_rounded, size: 16),
-            label: const Text('تأكيد إعادة التعيين'),
+            label: Text(l10n.confirmReset),
           ),
         ],
       ),
@@ -739,7 +737,7 @@ class SettingsScreen extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('تمت إعادة تعيين البيانات بنجاح'),
+            content: Text(l10n.resetSuccess),
             backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         );

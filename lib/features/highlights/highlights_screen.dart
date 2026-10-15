@@ -40,7 +40,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -235,9 +235,14 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(item.ayahNumber)}',
+                                                context.l10n.ayahReference(
+                                                  surah.name,
+                                                  context.currentLanguage == AppLanguage.arabic
+                                                      ? ArabicSearchNormalizer.toArabicDigits(item.ayahNumber)
+                                                      : item.ayahNumber,
+                                                ),
                                                 style: TextStyle(
-                                                  fontFamily: 'Amiri',
+                                                  fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                   color: isDark
@@ -247,7 +252,11 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                                 ),
                                               ),
                                               Text(
-                                                'ص ${ArabicSearchNormalizer.toArabicDigits(item.page)}',
+                                                context.l10n.pageAbbr(
+                                                  context.currentLanguage == AppLanguage.arabic
+                                                      ? ArabicSearchNormalizer.toArabicDigits(item.page)
+                                                      : item.page,
+                                                ),
                                                 style: TextStyle(
                                                   fontSize: 13,
                                                   fontWeight: FontWeight.bold,
@@ -273,6 +282,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                                 '﴿ ${ayah.text} ﴾',
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
+                                                textDirection: TextDirection.rtl,
                                                 style: TextStyle(
                                                   fontFamily: 'AmiriQuran',
                                                   fontSize: 14,
@@ -290,7 +300,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                         Icons.more_vert,
                                         size: 20,
                                       ),
-                                      tooltip: 'خيارات التمييز',
+                                      tooltip: l10n.removeHighlight,
                                       onSelected: (val) {
                                         if (val == 'delete') {
                                           UserDataStore.instance.removeHighlight(
@@ -300,19 +310,19 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                         }
                                       },
                                       itemBuilder: (ctx) => [
-                                        const PopupMenuItem(
+                                        PopupMenuItem(
                                           value: 'delete',
                                           child: Row(
                                             children: [
-                                              Icon(
+                                              const Icon(
                                                 Icons.delete_outline,
                                                 color: Colors.redAccent,
                                                 size: 20,
                                               ),
-                                              SizedBox(width: 8),
+                                              const SizedBox(width: 8),
                                               Text(
-                                                'إزالة التمييز',
-                                                style: TextStyle(
+                                                l10n.removeHighlight,
+                                                style: const TextStyle(
                                                   color: Colors.redAccent,
                                                 ),
                                               ),

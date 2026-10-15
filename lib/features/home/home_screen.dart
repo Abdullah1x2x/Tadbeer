@@ -514,7 +514,7 @@ class HomeScreen extends StatelessWidget {
           child: Divider(color: borderColor, thickness: 1, endIndent: 12),
         ),
         Text(
-          'أدوات إضافية',
+          context.l10n.additionalTools,
           style: TextStyle(
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
@@ -545,7 +545,7 @@ class HomeScreen extends StatelessWidget {
               child: _GridFeatureCard(
                 icon: FlutterIslamicIcons.prayer,
                 title: l10n.duas,
-                subtitle: 'أدعية الكتاب والسنة',
+                subtitle: l10n.quranAndSunnahDuas,
                 accentColor: AppColors.accentGold(context),
                 badgeBackground: AppColors.accentGold(context)
                     .withValues(alpha: isDark ? 0.20 : 0.12),
@@ -563,8 +563,8 @@ class HomeScreen extends StatelessWidget {
             Expanded(
               child: _GridFeatureCard(
                 icon: Icons.library_books_rounded,
-                title: 'معاني الكلمات',
-                subtitle: 'غريب ألفاظ القرآن',
+                title: l10n.wordMeanings,
+                subtitle: l10n.wordsOfQuran,
                 accentColor: AppColors.primary(context),
                 badgeBackground: AppColors.primary(context)
                     .withValues(alpha: isDark ? 0.20 : 0.12),
@@ -589,7 +589,7 @@ class HomeScreen extends StatelessWidget {
               child: _GridFeatureCard(
                 icon: Icons.edit_note_rounded,
                 title: l10n.notes,
-                subtitle: 'خواطرك وتدبراتك',
+                subtitle: l10n.yourThoughtsAndReflections,
                 accentColor:
                     isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
                 badgeBackground:
@@ -610,7 +610,7 @@ class HomeScreen extends StatelessWidget {
               child: _GridFeatureCard(
                 icon: Icons.hub_rounded,
                 title: l10n.ayahLinks,
-                subtitle: 'الربط والعلاقات',
+                subtitle: l10n.connectionsAndThemes,
                 accentColor: AppColors.accentGold(context),
                 badgeBackground: AppColors.accentGold(context)
                     .withValues(alpha: isDark ? 0.20 : 0.12),
@@ -774,8 +774,12 @@ class _QuranHeroCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final pos = UserDataStore.instance.readingPosition;
     final surah = QuranRepository.instance.getSurah(pos.surahNumber);
-    final readingSubtitle =
-        'سورة ${surah.name} · صفحة ${ArabicSearchNormalizer.toArabicDigits(pos.page)}';
+    final readingSubtitle = context.l10n.readingPosition(
+      surah.name,
+      context.currentLanguage == AppLanguage.arabic
+          ? ArabicSearchNormalizer.toArabicDigits(pos.page)
+          : pos.page,
+    );
 
     final padH = isVeryCompact ? 12.0 : 16.0;
     final padV = isVeryCompact ? 7.0 : (isCompact ? 9.5 : 13.0);
@@ -873,7 +877,7 @@ class _QuranHeroCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                'استئناف القراءة',
+                                context.l10n.resumeReading,
                                 style: TextStyle(
                                   fontSize: resumeSize,
                                   fontWeight: FontWeight.bold,
@@ -1240,7 +1244,7 @@ class _IstighfarTasbeehCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                'الورد اليومي',
+                                l10n.dailyPortion,
                                 style: TextStyle(
                                   fontSize: isVeryCompact ? 9.5 : 10.5,
                                   fontWeight: FontWeight.bold,
@@ -1400,7 +1404,7 @@ class _BooksHeroCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                'مكتبة المتدبر',
+                                l10n.tadbeerLibrary,
                                 style: TextStyle(
                                   fontSize: isVeryCompact ? 9.5 : 10.5,
                                   fontWeight: FontWeight.bold,

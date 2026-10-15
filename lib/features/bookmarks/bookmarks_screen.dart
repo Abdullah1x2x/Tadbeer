@@ -41,7 +41,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -265,9 +265,14 @@ class _BookmarkTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'سورة $surahName · الآية ${ArabicSearchNormalizer.toArabicDigits(item.ayahNumber)}',
+                        context.l10n.ayahReference(
+                          surahName,
+                          context.currentLanguage == AppLanguage.arabic
+                              ? ArabicSearchNormalizer.toArabicDigits(item.ayahNumber)
+                              : item.ayahNumber,
+                        ),
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                           color: isDark
@@ -276,7 +281,11 @@ class _BookmarkTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'ص ${ArabicSearchNormalizer.toArabicDigits(item.page)}',
+                        context.l10n.pageAbbr(
+                          context.currentLanguage == AppLanguage.arabic
+                              ? ArabicSearchNormalizer.toArabicDigits(item.page)
+                              : item.page,
+                        ),
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -291,6 +300,7 @@ class _BookmarkTile extends StatelessWidget {
                       '﴿ $ayahText ﴾',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
+                      textDirection: TextDirection.rtl,
                       style: TextStyle(
                         fontFamily: 'AmiriQuran',
                         fontSize: 14,
@@ -308,19 +318,19 @@ class _BookmarkTile extends StatelessWidget {
                 if (val == 'delete') onDelete();
               },
               itemBuilder: (_) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'delete',
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.delete_outline,
                         size: 18,
                         color: Colors.redAccent,
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
-                        'إزالة الحفظ',
-                        style: TextStyle(color: Colors.redAccent),
+                        context.l10n.removeBookmark,
+                        style: const TextStyle(color: Colors.redAccent),
                       ),
                     ],
                   ),

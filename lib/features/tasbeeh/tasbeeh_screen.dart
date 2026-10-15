@@ -429,7 +429,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         : 1.0;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,

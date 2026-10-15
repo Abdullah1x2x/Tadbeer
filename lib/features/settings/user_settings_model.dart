@@ -92,6 +92,25 @@ enum QuranFontFamilyOption {
     }
   }
 
+  /// الاسم المعروض باللغة الإنجليزية لعائلة الخط.
+  String get labelEnglish {
+    switch (this) {
+      case QuranFontFamilyOption.scheherazade:
+        return 'Scheherazade New (Recommended)';
+      case QuranFontFamilyOption.notoNaskh:
+        return 'Noto Naskh Arabic';
+      case QuranFontFamilyOption.harmattan:
+        return 'Harmattan Quranic';
+      case QuranFontFamilyOption.lateef:
+        return 'Lateef Quranic';
+      case QuranFontFamilyOption.amiriQuran:
+        return 'Amiri Quranic';
+    }
+  }
+
+  /// يعيد اسم عائلة الخط المناسب بناءً على لغة التطبيق.
+  String getLabel(bool isArabic) => isArabic ? labelArabic : labelEnglish;
+
   /// الوصف التوضيحي لمزايا عائلة الخط باللغة العربية.
   String get subtitleArabic {
     switch (this) {
@@ -107,6 +126,26 @@ enum QuranFontFamilyOption {
         return 'الخط الكلاسيكي المستوحى من مصحف بولاق الأميري';
     }
   }
+
+  /// الوصف التوضيحي لمزايا عائلة الخط باللغة الإنجليزية.
+  String get subtitleEnglish {
+    switch (this) {
+      case QuranFontFamilyOption.scheherazade:
+        return 'Complete Uthmanic script with precise diacritics and pause marks';
+      case QuranFontFamilyOption.notoNaskh:
+        return 'Ultra-clear Naskh typeface designed for extended comfortable reading';
+      case QuranFontFamilyOption.harmattan:
+        return 'Spacious vertical metrics ideal for stacked Quranic annotations';
+      case QuranFontFamilyOption.lateef:
+        return 'Graceful, light Naskh style with harmonious spacing';
+      case QuranFontFamilyOption.amiriQuran:
+        return 'Classical typeface inspired by the historic Bulaq Amiri Mushaf';
+    }
+  }
+
+  /// يعيد الوصف التوضيحي للخط بناءً على لغة التطبيق.
+  String getSubtitle(bool isArabic) =>
+      isArabic ? subtitleArabic : subtitleEnglish;
 }
 
 /// نموذج إعدادات المستخدم المحفوظة محلياً (المظهر، اللغة، الخطوط، الترحيب).

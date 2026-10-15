@@ -50,9 +50,14 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
 
     if (mounted) {
       Navigator.pop(context);
+      final l10n = context.l10n;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('تمت إضافة الآية إلى رابط «$linkTitle»'),
+          content: Text(
+            l10n.isArabic
+                ? 'تمت إضافة الآية إلى رابط «$linkTitle»'
+                : 'Verse added to link "$linkTitle"',
+          ),
           backgroundColor: Theme.of(context).colorScheme.primary,
           behavior: SnackBarBehavior.floating,
         ),
@@ -76,7 +81,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
     final surah = QuranRepository.instance.getSurah(widget.ayah.surahNumber);
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: ListenableBuilder(
         listenable: UserDataStore.instance,
         builder: (context, _) {
@@ -157,7 +162,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      'سورة ${surah.name} · الآية ${widget.ayah.ayahNumber}',
+                      l10n.ayahReference(surah.name, widget.ayah.ayahNumber),
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 14,
@@ -191,9 +196,11 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    subtitle: const Text(
-                      'إنشاء رابط جديد وربط هذه الآية به مباشرة',
-                      style: TextStyle(fontSize: 11),
+                    subtitle: Text(
+                      l10n.isArabic
+                          ? 'إنشاء رابط جديد وربط هذه الآية به مباشرة'
+                          : 'Create a new link and add this verse directly',
+                      style: const TextStyle(fontSize: 11),
                     ),
                     onTap: _createNewLinkAndAdd,
                   ),
@@ -256,7 +263,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                               ),
                             ),
                             subtitle: Text(
-                              '${link.verses.length} آيات مرتبطة${link.description != null ? ' · ${link.description}' : ''}',
+                              '${l10n.linkedAyahsCount(link.verses.length)}${link.description != null ? ' · ${link.description}' : ''}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -268,7 +275,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                             ),
                             trailing: isAlreadyLinked
                                 ? Text(
-                                    'مضافة بالفعل',
+                                    l10n.isArabic ? 'مضافة بالفعل' : 'Already added',
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: Theme.of(context)
@@ -276,7 +283,12 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                           .primary,
                                     ),
                                   )
-                                : const Icon(Icons.arrow_back_ios_new_rounded, size: 14),
+                                : Icon(
+                                    context.currentLanguage.direction == TextDirection.rtl
+                                        ? Icons.arrow_back_ios_new_rounded
+                                        : Icons.arrow_forward_ios_rounded,
+                                    size: 14,
+                                  ),
                             onTap: isAlreadyLinked
                                 ? null
                                 : () => _addVerseToLink(link.id, link.title),

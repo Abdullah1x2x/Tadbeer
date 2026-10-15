@@ -126,8 +126,12 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
 
     // أجهز اسم السورة ورقم الآية حتى أعرضهما تحت النص.
     final verseRef = (currentSurah != null && currentAyah != null)
-        ? 'سورة ${currentSurah.name} · الآية '
-              '${ArabicSearchNormalizer.toArabicDigits(currentAyah.ayahNumber)}'
+        ? l10n.ayahReference(
+            currentSurah.name,
+            context.currentLanguage == AppLanguage.arabic
+                ? ArabicSearchNormalizer.toArabicDigits(currentAyah.ayahNumber)
+                : currentAyah.ayahNumber,
+          )
         : l10n.tadbeerVerseRef;
 
     return Directionality(
@@ -334,7 +338,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
                                   elevation: 0,
                                 ),
                                 child: Text(
-                                  'متابعة',
+                                  l10n.continueLabel,
                                   style: TextStyle(
                                     fontSize: buttonFontSize,
                                     fontWeight: FontWeight.bold,
@@ -378,7 +382,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
                                       const SizedBox(width: 4),
                                       Flexible(
                                         child: Text(
-                                          'لا تظهر لي هذه النافذة مرة أخرى',
+                                          l10n.doNotShowAgain,
                                           style: TextStyle(
                                             fontSize: isVeryCompact ? 12.5 : 13.5,
                                             color: isDark

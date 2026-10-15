@@ -7,6 +7,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'book_model.dart';
 
@@ -193,8 +194,9 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (ctx) {
+        final l10n = ctx.l10n;
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: ctx.currentLanguage.direction,
           child: SafeArea(
             child: SizedBox(
               height: MediaQuery.of(ctx).size.height * 0.72,
@@ -217,7 +219,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'فهرس: ${widget.book.title}',
+                        l10n.bookIndexPrefix(widget.book.title),
                         style: const TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 16,
@@ -382,11 +384,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -405,7 +408,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
             ),
             if (widget.book.isPdf && _totalPdfPages > 0)
               Text(
-                'صفحة ${_currentPdfPage + 1} من $_totalPdfPages',
+                l10n.pageOfTotal(_currentPdfPage + 1, _totalPdfPages),
                 style: TextStyle(
                   fontSize: 11,
                   color: isDark
@@ -431,19 +434,19 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         actions: [
           if (widget.book.hasAttachedFile)
             IconButton(
-              tooltip: 'مشاركة الملف',
+              tooltip: l10n.shareFile,
               icon: const Icon(Icons.share_rounded),
               onPressed: _shareOrOpenFile,
             ),
           if (widget.book.chapters.length > 1)
             IconButton(
-              tooltip: 'فهرس المباحث',
+              tooltip: l10n.tableOfContents,
               icon: const Icon(Icons.list_alt_rounded),
               onPressed: _showChapterListSheet,
             ),
           if (widget.book.chapters.isNotEmpty || _loadedFileContent != null)
             IconButton(
-              tooltip: 'نسخ المحتوى',
+              tooltip: l10n.copyContent,
               icon: const Icon(Icons.copy_rounded),
               onPressed: _copyChapterContent,
             ),
@@ -506,9 +509,9 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
             children: [
               CircularProgressIndicator(color: primaryColor),
               const SizedBox(height: 16),
-              const Text(
-                'جاري تجهيز وعرض الملزمة...',
-                style: TextStyle(fontFamily: 'Amiri', fontSize: 15),
+              Text(
+                context.l10n.preparingDocument,
+                style: const TextStyle(fontFamily: 'Amiri', fontSize: 15),
               ),
             ],
           ),
@@ -537,7 +540,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 FilledButton.icon(
                   onPressed: _loadPdf,
                   icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('إعادة المحاولة'),
+                  label: Text(context.l10n.retry),
                 ),
               ],
             ),
@@ -618,7 +621,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                       ),
                     ),
                     child: Text(
-                      'صفحة ${_currentPdfPage + 1} من $_totalPdfPages',
+                      context.l10n.pageOfTotal(_currentPdfPage + 1, _totalPdfPages),
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 13,
@@ -720,9 +723,9 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                   ),
                 ),
                 icon: const Icon(Icons.open_in_new_rounded),
-                label: const Text(
-                  'فتح ومطالعة ملف PDF',
-                  style: TextStyle(
+                label: Text(
+                  context.l10n.openAndReadPdf,
+                  style: const TextStyle(
                     fontFamily: 'Amiri',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -740,7 +743,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                   ),
                 ),
                 icon: const Icon(Icons.share_rounded),
-                label: const Text('مشاركة الملف'),
+                label: Text(context.l10n.shareFile),
                 onPressed: _shareOrOpenFile,
               ),
             ],
@@ -779,7 +782,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'المبحث ${_currentChapterIndex + 1} من $totalChapters',
+                  context.l10n.sectionOfTotal(_currentChapterIndex + 1, totalChapters),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -791,7 +794,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ),
               const Spacer(),
               IconButton(
-                tooltip: 'تصغير الخط',
+                tooltip: context.l10n.decreaseFontSize,
                 icon: const Icon(Icons.text_decrease_rounded, size: 20),
                 onPressed: _fontSize > 14
                     ? () => setState(() => _fontSize -= 1.5)
@@ -802,7 +805,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
               ),
               IconButton(
-                tooltip: 'تكبير الخط',
+                tooltip: context.l10n.increaseFontSize,
                 icon: const Icon(Icons.text_increase_rounded, size: 20),
                 onPressed: _fontSize < 28
                     ? () => setState(() => _fontSize += 1.5)
@@ -882,12 +885,16 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                         if (_currentChapterIndex > 0)
                           Expanded(
                             child: OutlinedButton.icon(
-                              icon: const Icon(Icons.chevron_right_rounded,
-                                  size: 18),
+                              icon: Icon(
+                                context.currentLanguage.direction == TextDirection.rtl
+                                    ? Icons.chevron_right_rounded
+                                    : Icons.chevron_left_rounded,
+                                size: 18,
+                              ),
                               label: Text(
                                 widget.book.id == 'sahifah_sajjadiyah'
-                                    ? 'الدعاء السابق'
-                                    : 'المبحث السابق',
+                                    ? context.l10n.previousDua
+                                    : context.l10n.previousSection,
                               ),
                               onPressed: () =>
                                   _changeChapter(_currentChapterIndex - 1),
@@ -903,15 +910,17 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                                 backgroundColor: isDark
                                     ? AppColors.darkAccentGold
                                     : AppColors.oliveDark,
-                                foregroundColor:
-                                    isDark ? Colors.black : Colors.white,
                               ),
-                              icon: const Icon(Icons.chevron_left_rounded,
-                                  size: 18),
+                              icon: Icon(
+                                context.currentLanguage.direction == TextDirection.rtl
+                                    ? Icons.chevron_left_rounded
+                                    : Icons.chevron_right_rounded,
+                                size: 18,
+                              ),
                               label: Text(
                                 widget.book.id == 'sahifah_sajjadiyah'
-                                    ? 'الدعاء التالي'
-                                    : 'المبحث التالي',
+                                    ? context.l10n.nextDua
+                                    : context.l10n.nextSection,
                               ),
                               onPressed: () =>
                                   _changeChapter(_currentChapterIndex + 1),
@@ -1016,10 +1025,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'لا يتوفر محتوى نصي لهذه الملزمة حالياً.',
+            Text(
+              context.l10n.noTextContentAvailable,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Amiri',
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

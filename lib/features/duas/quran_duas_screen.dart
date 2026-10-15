@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'quran_dua.dart';
@@ -71,10 +72,11 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
   /// يبني واجهة شاشة أدعية القرآن الكريم مع شريط البحث ورقاقات التصنيفات.
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor: isDark
             ? AppColors.darkBackground
@@ -85,9 +87,9 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
               : AppColors.lightSurface,
           elevation: 0,
           scrolledUnderElevation: 0.5,
-          title: const Text(
-            'أدعية من القرآن',
-            style: TextStyle(
+          title: Text(
+            l10n.quranDuasTitle,
+            style: const TextStyle(
               fontFamily: 'Amiri',
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -119,7 +121,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                           ),
                           child: TextField(
                             controller: _searchController,
-                            textDirection: TextDirection.rtl,
+                            textDirection: context.currentLanguage.direction,
                             style: TextStyle(
                               fontFamily: 'Amiri',
                               fontSize: 15,
@@ -128,7 +130,9 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                                   : AppColors.lightTextPrimary,
                             ),
                             decoration: InputDecoration(
-                              hintText: 'ابحث في أدعية القرآن الكريم...',
+                              hintText: l10n.isArabic
+                                  ? 'ابحث في أدعية القرآن الكريم...'
+                                  : 'Search Quranic supplications...',
                               hintStyle: TextStyle(
                                 fontFamily: 'Amiri',
                                 fontSize: 14,
@@ -180,7 +184,11 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          '${ArabicSearchNormalizer.toArabicDigits(_filteredDuas.length)} دعاء',
+                          l10n.duasCountBadge(
+                            l10n.isArabic
+                                ? ArabicSearchNormalizer.toArabicDigits(_filteredDuas.length)
+                                : _filteredDuas.length,
+                          ),
                           style: TextStyle(
                             fontFamily: 'Amiri',
                             fontSize: 13,
@@ -210,9 +218,11 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                       final category = QuranDuasRepository.categories[index];
                       final isSelected = _selectedCategory == category;
 
+                      final labelText = category == 'الكل' ? l10n.allDuasFilter : category;
+
                       return ChoiceChip(
                         label: Text(
-                          category,
+                          labelText,
                           style: TextStyle(
                             fontFamily: 'Amiri',
                             fontSize: 13,
@@ -269,7 +279,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'لا توجد أدعية مطابقة لبحثك',
+                      l10n.noDuasFound,
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 16,

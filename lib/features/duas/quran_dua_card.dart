@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/screens/quran_screen.dart';
@@ -28,6 +29,7 @@ class QuranDuaCard extends StatelessWidget {
   /// يبني واجهة بطاقة الدعاء القرآني مع التصنيف والنص وأزرار الإجراءات.
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -134,8 +136,8 @@ class QuranDuaCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'تنبيه: ${dua.alert}',
-                      textDirection: TextDirection.rtl,
+                      l10n.isArabic ? 'تنبيه: ${dua.alert}' : 'Note: ${dua.alert}',
+                      textDirection: l10n.isArabic ? TextDirection.rtl : TextDirection.ltr,
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 13,
@@ -222,7 +224,7 @@ class QuranDuaCard extends StatelessWidget {
           // 3. اسم السورة
           Center(
             child: Text(
-              'سورة ${dua.surahName}',
+              l10n.isArabic ? 'سورة ${dua.surahName}' : 'Surah ${dua.surahName}',
               style: TextStyle(
                 fontFamily: 'Amiri',
                 fontSize: 16,
@@ -239,9 +241,13 @@ class QuranDuaCard extends StatelessWidget {
           // 4. رقم الآية (SurahNumber : AyahDisplay)
           Center(
             child: Text(
-              dua.ayahDisplay.contains('–')
-                  ? 'الآيات ${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)}'
-                  : 'الآية ${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)}',
+              l10n.isArabic
+                  ? (dua.ayahDisplay.contains('–')
+                      ? 'الآيات ${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)}'
+                      : 'الآية ${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)}')
+                  : (dua.ayahDisplay.contains('–')
+                      ? 'Verses ${dua.ayahDisplay}'
+                      : 'Verse ${dua.ayahDisplay}'),
               style: TextStyle(
                 fontFamily: 'Amiri',
                 fontSize: 14,
@@ -281,7 +287,7 @@ class QuranDuaCard extends StatelessWidget {
                       : AppColors.lightPrimary,
                 ),
                 label: Text(
-                  'عرض الآية',
+                  l10n.viewAyah,
                   style: TextStyle(
                     fontFamily: 'Amiri',
                     fontSize: 14,
@@ -329,7 +335,7 @@ class QuranDuaCard extends StatelessWidget {
                           ? AppColors.darkSurface
                           : AppColors.lightSurface,
                       content: Text(
-                        'تم نسخ نص الدعاء بنجاح',
+                        l10n.duaCopiedSuccess,
                         style: TextStyle(
                           fontFamily: 'Amiri',
                           color: AppColors.textPrimary(context),
@@ -349,7 +355,7 @@ class QuranDuaCard extends StatelessWidget {
                       : AppColors.lightTextSecondary,
                 ),
                 label: Text(
-                  'نسخ',
+                  l10n.copy,
                   style: TextStyle(
                     fontFamily: 'Amiri',
                     fontSize: 14,

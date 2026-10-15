@@ -72,10 +72,13 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   Future<void> _saveNote() async {
     final content = _contentController.text.trim();
     if (content.isEmpty) {
+      final l10n = context.l10n;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'لا يمكن حفظ ملاحظة فارغة',
+            l10n.isArabic
+                ? 'لا يمكن حفظ ملاحظة فارغة'
+                : 'Cannot save an empty note',
             textAlign: TextAlign.center,
           ),
         ),
@@ -135,8 +138,16 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       await NotePdfExporter.exportAndShareNote(note);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('تعذر تصدير الملاحظة: $e')));
+        final l10n = context.l10n;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.isArabic
+                  ? 'تعذر تصدير الملاحظة: $e'
+                  : 'Failed to export note: $e',
+            ),
+          ),
+        );
       }
     }
   }
@@ -150,13 +161,17 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     final isAyahNote = existing?.isAyahNote == true;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
             existing == null
                 ? l10n.newFreeNote
-                : (isAyahNote ? 'تعديل تدبر الآية' : 'تعديل الملاحظة'),
+                : (isAyahNote
+                    ? (l10n.isArabic
+                        ? 'تعديل تدبر الآية'
+                        : 'Edit Ayah Reflection')
+                    : l10n.editNote),
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           actions: [
@@ -233,7 +248,12 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(existing.ayahNumber!)}',
+                                          l10n.ayahReference(
+                                            surah.name,
+                                            l10n.isArabic
+                                                ? ArabicSearchNormalizer.toArabicDigits(existing.ayahNumber!)
+                                                : existing.ayahNumber!,
+                                          ),
                                           style: TextStyle(
                                             fontFamily: 'Amiri',
                                             fontSize: 14,
@@ -244,7 +264,11 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                           ),
                                         ),
                                         Text(
-                                          'ص ${ArabicSearchNormalizer.toArabicDigits(existing.page ?? 1)}',
+                                          l10n.pageAbbr(
+                                            l10n.isArabic
+                                                ? ArabicSearchNormalizer.toArabicDigits(existing.page ?? 1)
+                                                : (existing.page ?? 1),
+                                          ),
                                           style: const TextStyle(
                                             fontFamily: 'Amiri',
                                             fontSize: 13,
@@ -280,14 +304,16 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                       // Note Title Field
                       TextField(
                         controller: _titleController,
-                        textDirection: TextDirection.rtl,
+                        textDirection: context.currentLanguage.direction,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                         decoration: InputDecoration(
                           hintText: isAyahNote
-                              ? 'عنوان التدبر (اختياري)...'
+                              ? (l10n.isArabic
+                                  ? 'عنوان التدبر (اختياري)...'
+                                  : 'Reflection title (optional)...')
                               : l10n.noteTitle,
                           hintStyle: TextStyle(
                             fontSize: 16,
@@ -316,7 +342,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                         controller: _contentController,
                         minLines: 12,
                         maxLines: null,
-                        textDirection: TextDirection.rtl,
+                        textDirection: context.currentLanguage.direction,
                         style: TextStyle(
                           fontSize: 16,
                           height: 1.65,
@@ -371,7 +397,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${ArabicSearchNormalizer.toArabicDigits(_wordCount)} كلمة · ${ArabicSearchNormalizer.toArabicDigits(_charCount)} حرف',
+                      l10n.isArabic
+                          ? '${ArabicSearchNormalizer.toArabicDigits(_wordCount)} كلمة · ${ArabicSearchNormalizer.toArabicDigits(_charCount)} حرف'
+                          : '$_wordCount words · $_charCount chars',
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark
@@ -380,7 +408,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                       ),
                     ),
                     Text(
-                      'حفظ محلي فوري وآمن',
+                      l10n.isArabic
+                          ? 'حفظ محلي فوري وآمن'
+                          : 'Instant & secure local save',
                       style: TextStyle(
                         fontSize: 11,
                         color: isDark

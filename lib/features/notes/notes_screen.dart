@@ -60,7 +60,7 @@ class _NotesScreenState extends State<NotesScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -73,7 +73,7 @@ class _NotesScreenState extends State<NotesScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.auto_stories_rounded),
-              tooltip: 'تصدير دفتر التدبر والخواطر',
+              tooltip: l10n.exportTadbeerJournal,
               onPressed: () => TadbeerJournalExporter.showExportDialog(context),
             ),
           ],
@@ -162,7 +162,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           Text(
                             _query.isEmpty
                                 ? l10n.noNotesYet
-                                : 'لا توجد نتائج مطابقة',
+                                : l10n.noSearchResults,
                             style: TextStyle(
                               fontFamily: 'Amiri',
                               fontSize: 16,
@@ -365,13 +365,13 @@ class _NoteCard extends StatelessWidget {
                   },
                   itemBuilder: (_) => [
                     if (!note.isAyahNote)
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit, size: 18),
-                            SizedBox(width: 8),
-                            Text('تعديل'),
+                            const Icon(Icons.edit, size: 18),
+                            const SizedBox(width: 8),
+                            Text(l10n.edit),
                           ],
                         ),
                       ),
@@ -433,9 +433,17 @@ class _NoteCard extends StatelessWidget {
                             note.surahNumber!,
                           );
                           return Text(
-                            'سورة ${surah.name} · آية ${ArabicSearchNormalizer.toArabicDigits(note.ayahNumber!)} · ص ${ArabicSearchNormalizer.toArabicDigits(note.page ?? 1)}',
-                            style: const TextStyle(
-                              fontFamily: 'Amiri',
+                            l10n.surahAyahPageReference(
+                              surah.name,
+                              context.currentLanguage == AppLanguage.arabic
+                                  ? ArabicSearchNormalizer.toArabicDigits(note.ayahNumber!)
+                                  : note.ayahNumber!,
+                              context.currentLanguage == AppLanguage.arabic
+                                  ? ArabicSearchNormalizer.toArabicDigits(note.page ?? 1)
+                                  : (note.page ?? 1),
+                            ),
+                            style: TextStyle(
+                              fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: AppColors.oliveDark,
@@ -447,6 +455,7 @@ class _NoteCard extends StatelessWidget {
                     ],
                     Text(
                       '﴿ ${note.ayahText} ﴾',
+                      textDirection: TextDirection.rtl,
                       style: TextStyle(
                         fontFamily: 'AmiriQuran',
                         fontSize: 15,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../app/localization.dart';
 import '../../../app/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../quran/data/quran_repository.dart';
@@ -63,8 +64,9 @@ class AyahLinkQrDialog {
     return showDialog(
       context: context,
       builder: (dialogCtx) {
+        final l10n = context.l10n;
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: context.currentLanguage.direction,
           child: AlertDialog(
             backgroundColor:
                 isDark ? AppColors.darkSurface : AppColors.lightSurface,
@@ -75,10 +77,12 @@ class AyahLinkQrDialog {
               children: [
                 Icon(Icons.qr_code_2_rounded, color: primary),
                 const SizedBox(width: 8),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'مشاركة رابط الآيات دون إنترنت',
-                    style: TextStyle(
+                    l10n.isArabic
+                        ? 'مشاركة رابط الآيات دون إنترنت'
+                        : 'Share Ayah Link Offline',
+                    style: const TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -103,7 +107,9 @@ class AyahLinkQrDialog {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'يتضمن ${ArabicSearchNormalizer.toArabicDigits(link.verses.length)} آيات مرتبطة',
+                    l10n.isArabic
+                        ? 'يتضمن ${ArabicSearchNormalizer.toArabicDigits(link.verses.length)} آيات مرتبطة'
+                        : 'Includes ${link.verses.length} linked verses',
                     style: TextStyle(
                       fontSize: 12,
                       color: isDark
@@ -138,7 +144,9 @@ class AyahLinkQrDialog {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.',
+                    l10n.isArabic
+                        ? 'يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.'
+                        : 'This code can be scanned from another Tadbeer device to import the link offline.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 11.5,
@@ -157,8 +165,10 @@ class AyahLinkQrDialog {
                   Clipboard.setData(ClipboardData(text: qrData));
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text(
-                        'تم نسخ بيانات الرابط إلى الحافظة',
+                      content: Text(
+                        l10n.isArabic
+                            ? 'تم نسخ بيانات الرابط إلى الحافظة'
+                            : 'Link data copied to clipboard',
                         textAlign: TextAlign.center,
                       ),
                       backgroundColor: primary,
@@ -167,7 +177,7 @@ class AyahLinkQrDialog {
                   );
                 },
                 icon: const Icon(Icons.copy_rounded, size: 16),
-                label: const Text('نسخ البيانات'),
+                label: Text(l10n.isArabic ? 'نسخ البيانات' : 'Copy Data'),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(dialogCtx),
@@ -175,7 +185,7 @@ class AyahLinkQrDialog {
                   backgroundColor: primary,
                   foregroundColor: Colors.white,
                 ),
-                child: const Text('إغلاق'),
+                child: Text(l10n.isArabic ? 'إغلاق' : 'Close'),
               ),
             ],
           ),
@@ -206,8 +216,9 @@ class AyahLinkQrDialog {
             final rawVerses =
                 isValid ? (decoded['ay'] as List? ?? const []) : const [];
 
+            final l10n = context.l10n;
             return Directionality(
-              textDirection: TextDirection.rtl,
+              textDirection: context.currentLanguage.direction,
               child: AlertDialog(
                 backgroundColor:
                     isDark ? AppColors.darkSurface : AppColors.lightSurface,
@@ -218,10 +229,12 @@ class AyahLinkQrDialog {
                   children: [
                     Icon(Icons.qr_code_scanner_rounded, color: primary),
                     const SizedBox(width: 8),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'استيراد رابط آيات',
-                        style: TextStyle(
+                        l10n.isArabic
+                            ? 'استيراد رابط آيات'
+                            : 'Import Ayah Link',
+                        style: const TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -235,22 +248,28 @@ class AyahLinkQrDialog {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
-                        'الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:',
-                        style: TextStyle(fontSize: 13),
+                      Text(
+                        l10n.isArabic
+                            ? 'الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:'
+                            : 'Paste the share code or link data below to import it into your links:',
+                        style: const TextStyle(fontSize: 13),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: textController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          hintText: 'الصق الرابط أو النص الممسوح هنا...',
+                          hintText: l10n.isArabic
+                              ? 'الصق الرابط أو النص الممسوح هنا...'
+                              : 'Paste link or scanned text here...',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.paste_rounded, size: 20),
-                            tooltip: 'لصق من الحافظة',
+                            tooltip: l10n.isArabic
+                                ? 'لصق من الحافظة'
+                                : 'Paste from clipboard',
                             onPressed: () async {
                               final data =
                                   await Clipboard.getData('text/plain');
@@ -279,7 +298,7 @@ class AyahLinkQrDialog {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'العنوان: $title',
+                                l10n.isArabic ? 'العنوان: $title' : 'Title: $title',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: primary,
@@ -288,7 +307,9 @@ class AyahLinkQrDialog {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'الآيات المتضمنة: ${ArabicSearchNormalizer.toArabicDigits(rawVerses.length)} آية',
+                                l10n.isArabic
+                                    ? 'الآيات المتضمنة: ${ArabicSearchNormalizer.toArabicDigits(rawVerses.length)} آية'
+                                    : 'Included verses: ${rawVerses.length} verses',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: isDark
@@ -306,7 +327,7 @@ class AyahLinkQrDialog {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(dialogCtx),
-                    child: const Text('إلغاء'),
+                    child: Text(l10n.cancel),
                   ),
                   ElevatedButton(
                     onPressed: !isValid
@@ -353,7 +374,7 @@ class AyahLinkQrDialog {
                       backgroundColor: primary,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('استيراد الآن'),
+                    child: Text(l10n.isArabic ? 'استيراد الآن' : 'Import Now'),
                   ),
                 ],
               ),

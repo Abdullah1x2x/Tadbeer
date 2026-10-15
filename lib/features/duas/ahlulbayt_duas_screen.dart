@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'ahlulbayt_dua_model.dart';
@@ -70,7 +71,9 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'تم نسخ ${dua.title} إلى الحافظة بنجاح',
+          context.l10n.isArabic
+              ? 'تم نسخ ${dua.title} إلى الحافظة بنجاح'
+              : '${dua.title} copied to clipboard',
           textAlign: TextAlign.center,
           style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
         ),
@@ -83,20 +86,21 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final filtered = _filteredDuas;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
-          title: const Text(
-            'أدعية أهل البيت عليهم السلام',
-            style: TextStyle(
+          title: Text(
+            l10n.ahlulbaytDuasScreenTitle,
+            style: const TextStyle(
               fontFamily: 'Amiri',
               fontWeight: FontWeight.bold,
             ),
@@ -122,7 +126,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                     onChanged: (val) => setState(() => _searchQuery = val),
                     style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: 'ابحث في أدعية أهل البيت والصحيفة السجادية...',
+                      hintText: l10n.searchAhlulbaytHint,
                       hintStyle: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 13,
@@ -165,10 +169,11 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                   itemBuilder: (context, index) {
                     final cat = _categories[index];
                     final isSelected = cat == _selectedCategory;
+                    final labelText = cat == 'الكل' ? l10n.allDuasFilter : cat;
 
                     return ChoiceChip(
                       label: Text(
-                        cat,
+                        labelText,
                         style: TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 12,
@@ -213,7 +218,9 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                 child: Row(
                   children: [
                     Text(
-                      '${ArabicSearchNormalizer.toArabicDigits(filtered.length)} دعاء مأثور',
+                      l10n.ahlulbaytDuasCountBadge(l10n.isArabic
+                          ? ArabicSearchNormalizer.toArabicDigits(filtered.length)
+                          : filtered.length),
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark
@@ -240,9 +247,9 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                                   : AppColors.lightTextSecondary,
                             ),
                             const SizedBox(height: 10),
-                            const Text(
-                              'لا توجد أدعية مطابقة للبحث',
-                              style: TextStyle(
+                            Text(
+                              l10n.noDuasFound,
+                              style: const TextStyle(
                                 fontFamily: 'Amiri',
                                 fontSize: 15,
                               ),
@@ -356,7 +363,7 @@ class _DuaCard extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'نسخ الدعاء',
+                  tooltip: context.l10n.copyDuaTooltip,
                   icon: const Icon(Icons.copy_rounded, size: 17),
                   visualDensity: VisualDensity.compact,
                   padding: EdgeInsets.zero,
@@ -365,7 +372,9 @@ class _DuaCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Icon(
-                  Icons.arrow_back_ios_new_rounded,
+                  context.currentLanguage.direction == TextDirection.rtl
+                      ? Icons.arrow_back_ios_new_rounded
+                      : Icons.arrow_forward_ios_rounded,
                   size: 14,
                   color: isDark
                       ? AppColors.darkTextSecondary
@@ -419,7 +428,7 @@ class _DuaCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  'نص كامل ومأثور',
+                  context.l10n.fullAuthenticText,
                   style: TextStyle(
                     fontSize: 11,
                     color: isDark

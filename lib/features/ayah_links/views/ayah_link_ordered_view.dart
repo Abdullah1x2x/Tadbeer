@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/localization.dart';
 import '../../../app/theme.dart';
 import '../../../core/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
@@ -40,13 +41,13 @@ class AyahLinkOrderedView extends StatelessWidget {
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.comsilkLight,
-        title: const Text('ملاحظة التدبر على الآية'),
+        title: Text(context.l10n.ayahReflectionNoteTitle),
         content: TextField(
           controller: controller,
           maxLines: 4,
           autofocus: true,
           decoration: InputDecoration(
-            hintText: 'اكتب تدبرك أو وجه الارتباط...',
+            hintText: context.l10n.ayahReflectionNoteHint,
             filled: true,
             fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -55,7 +56,7 @@ class AyahLinkOrderedView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
-            child: const Text('إلغاء'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
@@ -63,7 +64,7 @@ class AyahLinkOrderedView extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
             ),
-            child: const Text('حفظ'),
+            child: Text(context.l10n.save),
           ),
         ],
       ),
@@ -85,14 +86,14 @@ class AyahLinkOrderedView extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('إزالة الآية من الرابط'),
+        title: Text(context.l10n.removeAyahFromLinkTitle),
         content: Text(
-          'هل تريد إزالة الآية ${verse.ayahNumber} من سورة ${surah.name} من هذا الرابط؟',
+          context.l10n.removeAyahFromLinkConfirm(verse.ayahNumber, surah.name),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
-            child: const Text('إلغاء'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -100,7 +101,7 @@ class AyahLinkOrderedView extends StatelessWidget {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('إزالة'),
+            child: Text(context.l10n.isArabic ? 'إزالة' : 'Remove'),
           ),
         ],
       ),
@@ -122,7 +123,7 @@ class AyahLinkOrderedView extends StatelessWidget {
     final verses = link.verses;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         children: [
@@ -192,9 +193,9 @@ class AyahLinkOrderedView extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'لم تتم إضافة أي آيات لهذا الرابط بعد',
-                      style: TextStyle(
+                    Text(
+                      context.l10n.noAyahsAddedToLink,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
@@ -207,7 +208,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                         foregroundColor: Colors.white,
                       ),
                       icon: const Icon(Icons.add, size: 18),
-                      label: const Text('إضافة آية'),
+                      label: Text(context.l10n.addAyah),
                     ),
                   ],
                 ),
@@ -254,9 +255,11 @@ class AyahLinkOrderedView extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  ArabicSearchNormalizer.toArabicDigits(
-                                    index + 1,
-                                  ),
+                                  context.l10n.isArabic
+                                      ? ArabicSearchNormalizer.toArabicDigits(
+                                          index + 1,
+                                        )
+                                      : '${index + 1}',
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -269,7 +272,9 @@ class AyahLinkOrderedView extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}',
+                              context.l10n.isArabic
+                                  ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
+                                  : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
                               style: TextStyle(
                                 fontFamily: 'Amiri',
                                 fontSize: 14,
@@ -300,39 +305,39 @@ class AyahLinkOrderedView extends StatelessWidget {
                             }
                           },
                           itemBuilder: (ctx) => [
-                            const PopupMenuItem(
+                            PopupMenuItem(
                               value: 'quran',
                               child: Row(
                                 children: [
-                                  Icon(Icons.menu_book_rounded, size: 18),
-                                  SizedBox(width: 8),
-                                  Text('فتح في المصحف'),
+                                  const Icon(Icons.menu_book_rounded, size: 18),
+                                  const SizedBox(width: 8),
+                                  Text(context.l10n.openInQuran),
                                 ],
                               ),
                             ),
-                            const PopupMenuItem(
+                            PopupMenuItem(
                               value: 'note',
                               child: Row(
                                 children: [
-                                  Icon(Icons.edit_note_rounded, size: 18),
-                                  SizedBox(width: 8),
-                                  Text('تعديل الملاحظة'),
+                                  const Icon(Icons.edit_note_rounded, size: 18),
+                                  const SizedBox(width: 8),
+                                  Text(context.l10n.editVerseNote),
                                 ],
                               ),
                             ),
-                            const PopupMenuItem(
+                            PopupMenuItem(
                               value: 'delete',
                               child: Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.delete_outline,
                                     color: Colors.redAccent,
                                     size: 18,
                                   ),
-                                  SizedBox(width: 8),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    'إزالة من الرابط',
-                                    style: TextStyle(color: Colors.redAccent),
+                                    context.l10n.removeVerseFromLink,
+                                    style: const TextStyle(color: Colors.redAccent),
                                   ),
                                 ],
                               ),

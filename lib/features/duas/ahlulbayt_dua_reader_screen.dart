@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'ahlulbayt_dua_model.dart';
 
@@ -38,10 +39,10 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(
-          'تم نسخ نص الدعاء كاملاً إلى الحافظة',
+        content: Text(
+          context.l10n.fullDuaCopiedSuccess,
           textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -52,10 +53,11 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -72,17 +74,17 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
           centerTitle: true,
           actions: [
             IconButton(
-              tooltip: 'تصغير الخط',
+              tooltip: l10n.decreaseFontSize,
               icon: const Icon(Icons.text_decrease_rounded, size: 20),
               onPressed: _decreaseFontSize,
             ),
             IconButton(
-              tooltip: 'تكبير الخط',
+              tooltip: l10n.increaseFontSize,
               icon: const Icon(Icons.text_increase_rounded, size: 20),
               onPressed: _increaseFontSize,
             ),
             IconButton(
-              tooltip: 'نسخ الدعاء كاملاً',
+              tooltip: l10n.copyFullDua,
               icon: const Icon(Icons.copy_all_rounded, size: 20),
               onPressed: _copyAllText,
             ),
@@ -206,9 +208,9 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
               OutlinedButton.icon(
                 onPressed: _copyAllText,
                 icon: const Icon(Icons.copy_all_rounded, size: 18),
-                label: const Text(
-                  'نسخ نص الدعاء كاملاً',
-                  style: TextStyle(
+                label: Text(
+                  l10n.copyFullDua,
+                  style: const TextStyle(
                     fontFamily: 'Amiri',
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

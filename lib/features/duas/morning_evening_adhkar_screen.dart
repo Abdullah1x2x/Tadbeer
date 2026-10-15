@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'adhkar_model.dart';
@@ -67,10 +68,10 @@ class _MorningEveningAdhkarScreenState
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(
-          'تمت إعادة ضبط عدادات الأذكار',
+        content: Text(
+          context.l10n.adhkarCountersResetSuccess,
           textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -85,10 +86,10 @@ class _MorningEveningAdhkarScreenState
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(
-          'تم نسخ نص الذكر الشريف بنجاح',
+        content: Text(
+          context.l10n.dhikrCopiedSuccess,
           textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -99,20 +100,21 @@ class _MorningEveningAdhkarScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final adhkarList = AdhkarRepository.instance.getAdhkar(_currentCategory);
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
-          title: const Text(
-            'أذكار الصباح والمساء',
-            style: TextStyle(
+          title: Text(
+            l10n.morningEveningAdhkarTitle,
+            style: const TextStyle(
               fontFamily: 'Amiri',
               fontWeight: FontWeight.bold,
             ),
@@ -120,7 +122,7 @@ class _MorningEveningAdhkarScreenState
           centerTitle: true,
           actions: [
             IconButton(
-              tooltip: 'إعادة ضبط العدادات',
+              tooltip: l10n.resetCounters,
               icon: const Icon(Icons.restart_alt_rounded),
               onPressed: _resetAllCounts,
             ),
@@ -150,7 +152,7 @@ class _MorningEveningAdhkarScreenState
                     children: [
                       Expanded(
                         child: _TabButton(
-                          title: 'أذكار الصباح',
+                          title: l10n.morningAdhkar,
                           icon: Icons.wb_sunny_rounded,
                           count: AdhkarRepository.morningAdhkar.length,
                           isSelected:
@@ -164,7 +166,7 @@ class _MorningEveningAdhkarScreenState
                       const SizedBox(width: 6),
                       Expanded(
                         child: _TabButton(
-                          title: 'أذكار المساء',
+                          title: l10n.eveningAdhkar,
                           icon: Icons.nightlight_round,
                           count: AdhkarRepository.eveningAdhkar.length,
                           isSelected:
@@ -315,6 +317,7 @@ class _AdhkarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -352,7 +355,7 @@ class _AdhkarCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'ذكر ${ArabicSearchNormalizer.toArabicDigits(index + 1)}',
+                  l10n.dhikrIndex(l10n.isArabic ? ArabicSearchNormalizer.toArabicDigits(index + 1) : (index + 1)),
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -376,7 +379,7 @@ class _AdhkarCard extends StatelessWidget {
                 ),
               ),
               IconButton(
-                tooltip: 'نسخ نص الذكر',
+                tooltip: l10n.copyDhikr,
                 icon: const Icon(Icons.copy_rounded, size: 17),
                 visualDensity: VisualDensity.compact,
                 padding: EdgeInsets.zero,
@@ -426,10 +429,10 @@ class _AdhkarCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         isComplete
-                            ? 'اكتمل'
+                            ? l10n.completed
                             : (item.repeatCount > 1
-                                ? 'باقٍ ${ArabicSearchNormalizer.toArabicDigits(remaining)}'
-                                : 'مرة واحدة'),
+                                ? l10n.remainingCount(l10n.isArabic ? ArabicSearchNormalizer.toArabicDigits(remaining) : remaining)
+                                : l10n.once),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,

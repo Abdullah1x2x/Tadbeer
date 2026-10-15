@@ -188,7 +188,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 onChanged: _onSearchChanged,
                 decoration: InputDecoration(
                   hintText: _selectedProviderId != null
-                      ? 'ابحث في ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...'
+                      ? (l10n.isArabic
+                          ? 'ابحث في ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...'
+                          : 'Search in ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...')
                       : l10n.searchGlobalPlaceholder,
                   hintStyle: TextStyle(
                     fontFamily: 'Amiri',
@@ -388,8 +390,12 @@ class _SearchScreenState extends State<SearchScreen> {
                             Text(
                               _selectedProviderId != null && !hasQuery
                                   ? (_selectedProviderId == 'quran'
-                                      ? 'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)'
-                                      : 'لا توجد عناصر محفوظة في هذا القسم بعد')
+                                      ? (l10n.isArabic
+                                          ? 'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)'
+                                          : 'Type a word, surah name, or search by root (e.g. root:sbr)')
+                                      : (l10n.isArabic
+                                          ? 'لا توجد عناصر محفوظة في هذا القسم بعد'
+                                          : 'No saved items in this section yet'))
                                   : l10n.noSearchResults,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -517,9 +523,11 @@ class _SearchScreenState extends State<SearchScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            ArabicSearchNormalizer.toArabicDigits(count),
+            context.currentLanguage == AppLanguage.arabic
+                ? ArabicSearchNormalizer.toArabicDigits(count)
+                : count.toString(),
             style: TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
               fontSize: 12,
               fontWeight: FontWeight.bold,
               color: primary,
@@ -586,6 +594,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   item.snippet,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
+                  textDirection: isQuranAyah ? TextDirection.rtl : null,
                   style: TextStyle(
                     fontFamily: isQuranAyah ? 'AmiriQuran' : 'Amiri',
                     fontSize: isQuranAyah ? 16 : 13,

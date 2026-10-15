@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
@@ -78,12 +79,13 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
   /// يبني واجهة شاشة معاني كلمات القرآن مع أدوات البحث والتصفية وقائمة النتائج.
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final repo = QuranRepository.instance;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surahs = repo.surahs;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -92,9 +94,9 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
               isDark ? AppColors.darkSurface : AppColors.lightSurface,
           elevation: 0,
           scrolledUnderElevation: 0.5,
-          title: const Text(
-            'معاني كلمات القرآن',
-            style: TextStyle(
+          title: Text(
+            l10n.wordMeaningsScreenTitle,
+            style: const TextStyle(
               fontFamily: 'Amiri',
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -122,7 +124,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                   TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'ابحث عن كلمة قرآنية أو معناها...',
+                      hintText: l10n.searchWordMeaningsHint,
                       prefixIcon: const Icon(Icons.search_rounded, size: 20),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
@@ -182,20 +184,20 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                                 Icons.keyboard_arrow_down_rounded,
                                 size: 20,
                               ),
-                              hint: const Text('جميع السور (١١٤ سورة)'),
+                              hint: Text(l10n.allSurahsWithCount),
                               dropdownColor: isDark
                                   ? AppColors.darkSurface
                                   : AppColors.comsilkLight,
                               items: [
-                                const DropdownMenuItem<int?>(
+                                DropdownMenuItem<int?>(
                                   value: null,
-                                  child: Text('جميع السور (١١٤ سورة)'),
+                                  child: Text(l10n.allSurahsWithCount),
                                 ),
                                 ...surahs.map(
                                   (s) => DropdownMenuItem<int?>(
                                     value: s.number,
                                     child: Text(
-                                      '${ArabicSearchNormalizer.toArabicDigits(s.number)}. سورة ${s.name}',
+                                      '${context.currentLanguage == AppLanguage.arabic ? "${ArabicSearchNormalizer.toArabicDigits(s.number)}. " : "${s.number}. "}${l10n.surahTitle(s.name)}',
                                     ),
                                   ),
                                 ),
@@ -223,7 +225,11 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      'النتائج: ${ArabicSearchNormalizer.toArabicDigits(_displayedWords.length)} كلمة',
+                      l10n.wordSearchResultsCount(
+                        context.currentLanguage == AppLanguage.arabic
+                            ? ArabicSearchNormalizer.toArabicDigits(_displayedWords.length)
+                            : _displayedWords.length,
+                      ),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -245,7 +251,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                         _filterWords();
                       },
                       child: Text(
-                        'إعادة التعيين',
+                        l10n.resetToDefault,
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark
@@ -263,7 +269,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
             // Words List
             Expanded(
               child: _displayedWords.isEmpty
-                  ? _buildEmptyState(isDark)
+                  ? _buildEmptyState(context, isDark)
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -300,7 +306,8 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
   }
 
   /// يبني واجهة الحالة الفارغة عند عدم العثور على كلمات مطابقة للبحث أو التصفية.
-  Widget _buildEmptyState(bool isDark) {
+  Widget _buildEmptyState(BuildContext context, bool isDark) {
+    final l10n = context.l10n;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -314,7 +321,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
             ),
             const SizedBox(height: 14),
             Text(
-              'لا توجد كلمات مطابقة لبحثك',
+              l10n.noWordsFound,
               style: TextStyle(
                 fontFamily: 'Amiri',
                 fontSize: 17,
@@ -326,7 +333,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'جرب البحث بكلمة أخرى أو قم بإلغاء التصفية لتصفح جميع الكلمات.',
+              l10n.noWordsFoundSubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -349,8 +356,10 @@ void _showWordDetailsModal(
   String surahName,
   bool isDark,
 ) {
-  final ayahDigits = ArabicSearchNormalizer.toArabicDigits(item.ayah);
-  final pageDigits = ArabicSearchNormalizer.toArabicDigits(item.page);
+  final l10n = context.l10n;
+  final isArabic = context.currentLanguage == AppLanguage.arabic;
+  final ayahDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.ayah) : item.ayah;
+  final pageDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.page) : item.page;
 
   showModalBottomSheet(
     context: context,
@@ -360,7 +369,7 @@ void _showWordDetailsModal(
     ),
     builder: (ctx) {
       return Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: context.currentLanguage.direction,
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
@@ -373,6 +382,7 @@ void _showWordDetailsModal(
                     Expanded(
                       child: Text(
                         item.word,
+                        textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 22,
@@ -393,7 +403,7 @@ void _showWordDetailsModal(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        'سورة $surahName · آية $ayahDigits · ص $pageDigits',
+                        l10n.surahAyahPageReference(surahName, ayahDigits, pageDigits),
                         style: TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.bold,
@@ -407,7 +417,7 @@ void _showWordDetailsModal(
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  'المعنى اللغوي المعجمي:',
+                  l10n.lexicalMeaningTitle,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -419,6 +429,7 @@ void _showWordDetailsModal(
                 const SizedBox(height: 4),
                 Text(
                   item.meaning,
+                  textDirection: TextDirection.rtl,
                   style: TextStyle(
                     fontSize: 16,
                     height: 1.5,
@@ -457,7 +468,7 @@ void _showWordDetailsModal(
                     ),
                     if (item.sourceUrl != null)
                       Text(
-                        'توثيق معتمد',
+                        l10n.verifiedDocumentation,
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -495,8 +506,10 @@ class _WordCard extends StatelessWidget {
   /// يبني واجهة بطاقة الكلمة القرآنية ومعناها المعجمي.
   @override
   Widget build(BuildContext context) {
-    final ayahDigits = ArabicSearchNormalizer.toArabicDigits(item.ayah);
-    final pageDigits = ArabicSearchNormalizer.toArabicDigits(item.page);
+    final l10n = context.l10n;
+    final isArabic = context.currentLanguage == AppLanguage.arabic;
+    final ayahDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.ayah) : item.ayah;
+    final pageDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.page) : item.page;
 
     return InkWell(
       onTap: () => _showWordDetailsModal(context, item, surahName, isDark),
@@ -530,6 +543,7 @@ class _WordCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     item.word,
+                    textDirection: TextDirection.rtl,
                     style: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 19,
@@ -558,7 +572,7 @@ class _WordCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'سورة $surahName · آية $ayahDigits',
+                  l10n.ayahReference(surahName, ayahDigits),
                   style: TextStyle(
                     fontSize: 11,
                     color: isDark
@@ -595,7 +609,7 @@ class _WordCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'ص $pageDigits',
+                        l10n.pageAbbr(pageDigits),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -615,6 +629,7 @@ class _WordCard extends StatelessWidget {
           // Arabic Lexical Meaning
           Text(
             item.meaning,
+            textDirection: TextDirection.rtl,
             style: TextStyle(
               fontSize: 14.5,
               height: 1.5,
@@ -638,10 +653,11 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
   /// يبني واجهة شاشة المصادر المعتمدة وتفاصيل التوثيق والملكية الفكرية.
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -649,9 +665,9 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
           backgroundColor:
               isDark ? AppColors.darkSurface : AppColors.lightSurface,
           elevation: 0,
-          title: const Text(
-            'المصادر المعتمدة',
-            style: TextStyle(
+          title: Text(
+            l10n.approvedSourcesTitle,
+            style: const TextStyle(
               fontFamily: 'Amiri',
               fontSize: 20,
               fontWeight: FontWeight.bold,

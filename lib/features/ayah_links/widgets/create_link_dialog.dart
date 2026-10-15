@@ -102,7 +102,7 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     final isEditing = widget.existingLink != null;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: AlertDialog(
         backgroundColor: AppColors.background(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -115,7 +115,9 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
             ),
             const SizedBox(width: 8),
             Text(
-              isEditing ? 'تعديل رابط الآيات' : l10n.newAyahLink,
+              isEditing
+                  ? (l10n.isArabic ? 'تعديل رابط الآيات' : 'Edit Ayah Link')
+                  : l10n.newAyahLink,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ],
@@ -141,7 +143,9 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
                 ),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
-                    return 'يرجى إدخال عنوان الرابط';
+                    return l10n.isArabic
+                        ? 'يرجى إدخال عنوان الرابط'
+                        : 'Please enter a title';
                   }
                   return null;
                 },
@@ -188,7 +192,9 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
                     ),
                   )
                 : Text(
-                    isEditing ? l10n.save : 'إنشاء',
+                    isEditing
+                        ? l10n.save
+                        : (l10n.isArabic ? 'إنشاء' : 'Create'),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
           ),

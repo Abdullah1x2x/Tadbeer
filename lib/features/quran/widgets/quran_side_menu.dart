@@ -120,7 +120,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                 controller: _searchController,
                 onChanged: (val) => setState(() => _filter = val.trim()),
                 decoration: InputDecoration(
-                  hintText: 'بحث في السور...',
+                  hintText: l10n.searchSurahsHint,
                   hintStyle: TextStyle(
                     fontSize: 13,
                     color: isDark
@@ -225,7 +225,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                   ),
                 ),
                 Text(
-                  'مصحف وتدبّر بدون إنترنت',
+                  l10n.offlineQuranAndReflection,
                   style: TextStyle(
                     fontSize: 11,
                     color: isDark
@@ -304,7 +304,9 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               ),
             ),
             child: Text(
-              ArabicSearchNormalizer.toArabicDigits(surah.number),
+              context.currentLanguage == AppLanguage.arabic
+                  ? ArabicSearchNormalizer.toArabicDigits(surah.number)
+                  : surah.number.toString(),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
@@ -324,14 +326,18 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             ),
           ),
           subtitle: Text(
-            '${surah.isMeccan ? "مكية" : "مدنية"} · ${ArabicSearchNormalizer.toArabicDigits(surah.ayahCount)} آية',
+            '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(surah.ayahCount) : surah.ayahCount)}',
             style: TextStyle(
               fontSize: 11,
               color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
             ),
           ),
           trailing: Text(
-            'ص ${ArabicSearchNormalizer.toArabicDigits(surah.pageStart)}',
+            context.l10n.pageAbbr(
+              context.currentLanguage == AppLanguage.arabic
+                  ? ArabicSearchNormalizer.toArabicDigits(surah.pageStart)
+                  : surah.pageStart,
+            ),
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
@@ -394,7 +400,9 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               ),
             ),
             child: Text(
-              ArabicSearchNormalizer.toArabicDigits(juzNum),
+              context.currentLanguage == AppLanguage.arabic
+                  ? ArabicSearchNormalizer.toArabicDigits(juzNum)
+                  : juzNum.toString(),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
@@ -405,22 +413,36 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             ),
           ),
           title: Text(
-            'الجزء ${ArabicSearchNormalizer.toArabicDigits(juzNum)}',
+            context.l10n.juzAbbr(
+              context.currentLanguage == AppLanguage.arabic
+                  ? ArabicSearchNormalizer.toArabicDigits(juzNum)
+                  : juzNum,
+            ),
             style: TextStyle(
+              fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
               fontSize: 14,
               fontWeight: FontWeight.bold,
               color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
             ),
           ),
           subtitle: Text(
-            'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(firstAyah.ayahNumber)}',
+            context.l10n.ayahReference(
+              surah.name,
+              context.currentLanguage == AppLanguage.arabic
+                  ? ArabicSearchNormalizer.toArabicDigits(firstAyah.ayahNumber)
+                  : firstAyah.ayahNumber,
+            ),
             style: TextStyle(
               fontSize: 11,
               color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
             ),
           ),
           trailing: Text(
-            'ص ${ArabicSearchNormalizer.toArabicDigits(startPage.pageNumber)}',
+            context.l10n.pageAbbr(
+              context.currentLanguage == AppLanguage.arabic
+                  ? ArabicSearchNormalizer.toArabicDigits(startPage.pageNumber)
+                  : startPage.pageNumber,
+            ),
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,

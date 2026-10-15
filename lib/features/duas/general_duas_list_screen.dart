@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'sunnah_duas_repository.dart';
@@ -52,7 +53,9 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'تم نسخ ${item.title} إلى الحافظة بنجاح',
+          context.l10n.isArabic
+              ? 'تم نسخ ${item.title} إلى الحافظة بنجاح'
+              : '${item.title} copied to clipboard',
           textAlign: TextAlign.center,
           style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
         ),
@@ -65,12 +68,13 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final filtered = _filteredItems;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -104,7 +108,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                     onChanged: (val) => setState(() => _searchQuery = val),
                     style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: 'ابحث في ${widget.title}...',
+                      hintText: l10n.searchGeneralDuasHint(widget.title),
                       hintStyle: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 13,
@@ -142,7 +146,9 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                 child: Row(
                   children: [
                     Text(
-                      '${ArabicSearchNormalizer.toArabicDigits(filtered.length)} دعاء مبارك',
+                      l10n.generalDuasCountBadge(l10n.isArabic
+                          ? ArabicSearchNormalizer.toArabicDigits(filtered.length)
+                          : filtered.length),
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark
@@ -199,7 +205,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
-                                  'دعاء ${ArabicSearchNormalizer.toArabicDigits(index + 1)}',
+                                  l10n.duaIndex(l10n.isArabic ? ArabicSearchNormalizer.toArabicDigits(index + 1) : (index + 1)),
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
@@ -225,7 +231,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                                 ),
                               ),
                               IconButton(
-                                tooltip: 'نسخ نص الدعاء',
+                                tooltip: l10n.copyDuaTooltip,
                                 icon: const Icon(Icons.copy_rounded, size: 17),
                                 visualDensity: VisualDensity.compact,
                                 padding: EdgeInsets.zero,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/utils/arabic_search_normalizer.dart';
 import 'book_model.dart';
 import 'book_repository.dart';
 import 'book_section_screen.dart';
@@ -71,7 +72,7 @@ class _BooksScreenState extends State<BooksScreen> {
     final sections = _repo.sections;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor:
             isDark ? AppColors.darkBackground : AppColors.lightBackground,
@@ -203,11 +204,16 @@ class _SectionDirectoryCard extends StatelessWidget {
     return section.icon;
   }
 
-  String _formatCountLabel() {
+  String _formatCountLabel(BuildContext context) {
+    final count = context.currentLanguage == AppLanguage.arabic
+        ? ArabicSearchNormalizer.toArabicDigits(bookCount)
+        : bookCount.toString();
     if (section.countLabel != null && section.countLabel!.isNotEmpty) {
-      return '$bookCount ${section.countLabel}';
+      return '$count ${section.countLabel}';
     }
-    return '$bookCount كتاب/ملزمة';
+    return context.currentLanguage == AppLanguage.arabic
+        ? '$count كتاب/ملزمة'
+        : '$count books/booklets';
   }
 
   @override
@@ -268,8 +274,8 @@ class _SectionDirectoryCard extends StatelessWidget {
                           fontSize: 12,
                           height: 1.35,
                           color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                         ),
                       ),
                     ],
@@ -284,7 +290,7 @@ class _SectionDirectoryCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        _formatCountLabel(),
+                        _formatCountLabel(context),
                         style: TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 11.5,
@@ -323,7 +329,9 @@ class _SectionDirectoryCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Icon(
-                    Icons.chevron_left_rounded,
+                    context.currentLanguage.direction == TextDirection.rtl
+                        ? Icons.chevron_left_rounded
+                        : Icons.chevron_right_rounded,
                     size: 18,
                     color: isDark
                         ? AppColors.darkTextSecondary

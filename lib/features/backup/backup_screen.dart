@@ -68,7 +68,7 @@ class _BackupScreenState extends State<BackupScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              result.errorMessage ?? 'فشل إنشاء النسخة الاحتياطية',
+              result.errorMessage ?? context.l10n.backupCreateFailed,
             ),
           ),
         );
@@ -95,7 +95,7 @@ class _BackupScreenState extends State<BackupScreen> {
       final fileName = filePath.split('/').last;
 
       final savedUri = await FilePicker.saveFile(
-        dialogTitle: 'اختر موقع حفظ النسخة الاحتياطية',
+        dialogTitle: l10n.selectBackupLocation,
         fileName: fileName,
         bytes: bytes,
         type: FileType.any,
@@ -115,7 +115,7 @@ class _BackupScreenState extends State<BackupScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('خطأ أثناء حفظ الملف: $e')),
+          SnackBar(content: Text(l10n.errorSavingFile(e))),
         );
       }
     } finally {
@@ -270,9 +270,9 @@ class _BackupScreenState extends State<BackupScreen> {
           backgroundColor: isDark
               ? AppColors.darkBackground
               : AppColors.comsilkLight,
-          title: const Text(
-            'فشلت الاستعادة',
-            style: TextStyle(
+          title: Text(
+            l10n.restoreFailed,
+            style: const TextStyle(
               fontFamily: 'Amiri',
               fontWeight: FontWeight.bold,
               color: Colors.redAccent,
@@ -303,7 +303,7 @@ class _BackupScreenState extends State<BackupScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -354,7 +354,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'اختر البيانات التي ترغب بتضمينها في النسخة المشفرة (.quranbackup):',
+                      l10n.exportBackupSubtitle,
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 13,
@@ -531,7 +531,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'استعادة البيانات من ملف .quranbackup محفوظ سابقًا. تُستبدل البيانات الحالية بالكامل بعد التحقق من سلامة التشفير وصحة الملف.',
+                      l10n.restoreBackupSubtitle,
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 13,

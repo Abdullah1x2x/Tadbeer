@@ -66,15 +66,20 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
 
   /// يعرض نافذة تأكيد لحذف رابط الآيات نهائياً ثم يعود للشاشة السابقة.
   Future<void> _confirmDelete(AyahLinkItem link) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('حذف رابط الآيات'),
-        content: Text('هل أنت متأكد من رغبتك في حذف رابط «${link.title}»؟'),
+        title: Text(l10n.deleteAyahLink),
+        content: Text(
+          l10n.isArabic
+              ? 'هل أنت متأكد من رغبتك في حذف رابط «${link.title}»؟'
+              : 'Are you sure you want to delete the link "${link.title}"?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
-            child: const Text('إلغاء'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -82,7 +87,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('حذف'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -94,7 +99,11 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('تم حذف رابط «${link.title}»'),
+            content: Text(
+              l10n.isArabic
+                  ? 'تم حذف رابط «${link.title}»'
+                  : 'Link "${link.title}" deleted',
+            ),
             backgroundColor: Theme.of(context).colorScheme.primary,
             behavior: SnackBarBehavior.floating,
           ),
@@ -110,7 +119,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: ListenableBuilder(
         listenable: UserDataStore.instance,
         builder: (context, _) {
@@ -118,7 +127,13 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
           if (link == null) {
             return Scaffold(
               appBar: AppBar(),
-              body: const Center(child: Text('الرابط غير موجود أو تم حذفه')),
+              body: Center(
+                child: Text(
+                  l10n.isArabic
+                      ? 'الرابط غير موجود أو تم حذفه'
+                      : 'Link not found or has been deleted',
+                ),
+              ),
             );
           }
 
@@ -135,7 +150,9 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.qr_code_2_rounded),
-                  tooltip: 'مشاركة عبر رمز الاستجابة السريعة (QR)',
+                  tooltip: l10n.isArabic
+                      ? 'مشاركة عبر رمز الاستجابة السريعة (QR)'
+                      : 'Share via QR Code',
                   onPressed: () =>
                       AyahLinkQrDialog.showShareDialog(context, link),
                 ),
@@ -167,29 +184,29 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                           ],
                         ),
                       ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'edit',
                       child: Row(
                         children: [
-                          Icon(Icons.edit_outlined, size: 18),
-                          SizedBox(width: 8),
-                          Text('تعديل العنوان والوصف'),
+                          const Icon(Icons.edit_outlined, size: 18),
+                          const SizedBox(width: 8),
+                          Text(l10n.editTitleAndDescription),
                         ],
                       ),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'delete',
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.delete_outline,
                             color: Colors.redAccent,
                             size: 18,
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
-                            'حذف الرابط',
-                            style: TextStyle(color: Colors.redAccent),
+                            l10n.deleteAyahLink,
+                            style: const TextStyle(color: Colors.redAccent),
                           ),
                         ],
                       ),

@@ -173,10 +173,15 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                   children: [
                     Flexible(
                       child: Text(
-                        'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(widget.ayah.ayahNumber)}',
+                        context.l10n.ayahReference(
+                          surah.name,
+                          context.currentLanguage == AppLanguage.arabic
+                              ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.ayahNumber)
+                              : widget.ayah.ayahNumber,
+                        ),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: isDark
@@ -187,9 +192,9 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'ص ${ArabicSearchNormalizer.toArabicDigits(widget.ayah.page)} · ج ${ArabicSearchNormalizer.toArabicDigits(widget.ayah.juz)}',
+                      '${context.l10n.pageAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.page) : widget.ayah.page)} · ${context.l10n.juzAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.juz) : widget.ayah.juz)}',
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
                         fontSize: 13,
                         color: isDark
                             ? AppColors.nightSubtitle
@@ -421,7 +426,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       Expanded(
                         child: _ActionButton(
                           icon: Icons.spa_rounded,
-                          label: 'وقفة تدبر',
+                          label: l10n.tadbeerPause,
                           hasActiveIndicator:
                               storage.getTadbeer(
                                 widget.ayah.surahNumber,
@@ -439,7 +444,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       Expanded(
                         child: _ActionButton(
                           icon: Icons.hub_rounded,
-                          label: 'رابط آيات',
+                          label: l10n.ayahLink,
                           onTap: () {
                             Navigator.of(context).pop();
                             AyahLinkPickerDialog.show(context, widget.ayah);

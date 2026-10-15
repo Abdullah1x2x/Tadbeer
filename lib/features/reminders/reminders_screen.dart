@@ -151,7 +151,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
 
                   // Alert Type Selector (إشعار vs تنبيه كالمنبه)
                   Text(
-                    'طريقة التنبيه:',
+                    l10n.alertType,
                     style: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 14,
@@ -165,8 +165,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       Expanded(
                         child: _AlertTypeOptionCard(
                           icon: Icons.notifications_none_rounded,
-                          title: 'إشعار',
-                          subtitle: 'إشعار عادي في الشريط',
+                          title: l10n.notificationAlert,
+                          subtitle: l10n.notificationSubtitle,
                           selected: alertType == ReminderAlertType.notification,
                           isDark: isDark,
                           onTap: () => setDialogState(
@@ -178,8 +178,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       Expanded(
                         child: _AlertTypeOptionCard(
                           icon: Icons.alarm_rounded,
-                          title: 'منبه',
-                          subtitle: 'رنين مستمر كالمنبه',
+                          title: l10n.alarmAlert,
+                          subtitle: l10n.alarmSubtitle,
                           selected: alertType == ReminderAlertType.alarm,
                           isDark: isDark,
                           onTap: () => setDialogState(
@@ -193,7 +193,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
 
                   // Repeat Mode Radio
                   Text(
-                    'نوع التكرار:',
+                    l10n.repeatMode,
                     style: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 14,
@@ -249,49 +249,49 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       children: [
                         _DayChip(
                           day: 6,
-                          label: 'سبت',
+                          label: l10n.daySat,
                           selected: selectedDays.contains(6),
                           onToggle: () =>
                               _toggleDay(setDialogState, selectedDays, 6),
                         ),
                         _DayChip(
                           day: 7,
-                          label: 'أحد',
+                          label: l10n.daySun,
                           selected: selectedDays.contains(7),
                           onToggle: () =>
                               _toggleDay(setDialogState, selectedDays, 7),
                         ),
                         _DayChip(
                           day: 1,
-                          label: 'إثنين',
+                          label: l10n.dayMon,
                           selected: selectedDays.contains(1),
                           onToggle: () =>
                               _toggleDay(setDialogState, selectedDays, 1),
                         ),
                         _DayChip(
                           day: 2,
-                          label: 'ثلاثاء',
+                          label: l10n.dayTue,
                           selected: selectedDays.contains(2),
                           onToggle: () =>
                               _toggleDay(setDialogState, selectedDays, 2),
                         ),
                         _DayChip(
                           day: 3,
-                          label: 'أربعاء',
+                          label: l10n.dayWed,
                           selected: selectedDays.contains(3),
                           onToggle: () =>
                               _toggleDay(setDialogState, selectedDays, 3),
                         ),
                         _DayChip(
                           day: 4,
-                          label: 'خميس',
+                          label: l10n.dayThu,
                           selected: selectedDays.contains(4),
                           onToggle: () =>
                               _toggleDay(setDialogState, selectedDays, 4),
                         ),
                         _DayChip(
                           day: 5,
-                          label: 'جمعة',
+                          label: l10n.dayFri,
                           selected: selectedDays.contains(5),
                           onToggle: () =>
                               _toggleDay(setDialogState, selectedDays, 5),
@@ -333,12 +333,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   if (dialogCtx.mounted) Navigator.pop(dialogCtx);
                   if (mounted) {
                     final modeLabel = alertType == ReminderAlertType.alarm
-                        ? 'كمنبه'
-                        : 'كإشعار';
+                        ? l10n.alarmAlert
+                        : l10n.notificationAlert;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'تم حفظ وجدولة التنبيه ($modeLabel) بنجاح',
+                          l10n.reminderScheduledSuccess(modeLabel),
                           style: const TextStyle(fontFamily: 'Amiri'),
                         ),
                         duration: const Duration(seconds: 2),
@@ -382,15 +382,16 @@ class _RemindersScreenState extends State<RemindersScreen> {
       alertType: alertType,
     );
     if (!mounted) return;
+    final l10n = context.l10n;
     final isAlarm = alertType == ReminderAlertType.alarm;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           sent
               ? (isAlarm
-                    ? 'تم إطلاق منبه تجريبي الآن — تفقد الإشعارات لإيقافه'
-                    : 'تم إرسال إشعار تجريبي الآن — تفقد شريط الإشعارات')
-              : 'تعذر إرسال التنبيه، يرجى التأكد من تفعيل أذونات الإشعارات في إعدادات الجهاز',
+                    ? l10n.testAlarmSentSuccess
+                    : l10n.testNotificationSentSuccess)
+              : l10n.testAlertPermissionError,
           style: const TextStyle(fontFamily: 'Amiri'),
         ),
         duration: const Duration(seconds: 3),
@@ -405,7 +406,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -417,21 +418,21 @@ class _RemindersScreenState extends State<RemindersScreen> {
           ),
           actions: [
             PopupMenuButton<ReminderAlertType>(
-              tooltip: 'تجربة الإشعار أو المنبه الآن',
+              tooltip: l10n.testAlertTooltip,
               icon: const Icon(Icons.notifications_active_outlined),
               onSelected: _sendTestAlert,
-              itemBuilder: (_) => const [
+              itemBuilder: (_) => [
                 PopupMenuItem(
                   value: ReminderAlertType.notification,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.notifications_none_rounded, size: 20),
-                      SizedBox(width: 8),
+                      const Icon(Icons.notifications_none_rounded, size: 20),
+                      const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          'تجربة إشعار الآن',
-                          style: TextStyle(fontFamily: 'Amiri'),
+                          l10n.testNotificationNow,
+                          style: const TextStyle(fontFamily: 'Amiri'),
                         ),
                       ),
                     ],
@@ -442,12 +443,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.alarm_rounded, size: 20),
-                      SizedBox(width: 8),
+                      const Icon(Icons.alarm_rounded, size: 20),
+                      const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          'تجربة منبه الآن',
-                          style: TextStyle(fontFamily: 'Amiri'),
+                          l10n.testAlarmNow,
+                          style: const TextStyle(fontFamily: 'Amiri'),
                         ),
                       ),
                     ],
@@ -739,23 +740,24 @@ class _ReminderCard extends StatelessWidget {
   /// يبني واجهة بطاقة التذكير وأزرار التحكم به.
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     String repeatSubtitle;
     switch (reminder.repeatMode) {
       case ReminderRepeatMode.daily:
-        repeatSubtitle = 'يوميًا';
+        repeatSubtitle = l10n.repeatDaily;
         break;
       case ReminderRepeatMode.weekdays:
-        repeatSubtitle = 'أيام محددة';
+        repeatSubtitle = l10n.specificDays;
         break;
       case ReminderRepeatMode.once:
-        repeatSubtitle = 'مرة واحدة';
+        repeatSubtitle = l10n.repeatOnce;
         break;
     }
 
     final isAlarm = reminder.alertType == ReminderAlertType.alarm;
-    final alertTypeLabel = isAlarm ? 'منبه' : 'إشعار';
+    final alertTypeLabel = isAlarm ? l10n.alarmAlert : l10n.notificationAlert;
     final alertTypeIcon = isAlarm
         ? Icons.alarm_on_rounded
         : Icons.notifications_none_rounded;
@@ -839,27 +841,27 @@ class _ReminderCard extends StatelessWidget {
               if (val == 'delete') onDelete();
             },
             itemBuilder: (_) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'edit',
                 child: Row(
                   children: [
-                    Icon(Icons.edit_outlined, size: 18),
-                    SizedBox(width: 8),
-                    Text('تعديل'),
+                    const Icon(Icons.edit_outlined, size: 18),
+                    const SizedBox(width: 8),
+                    Text(l10n.edit),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'delete',
                 child: Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.delete_outline,
                       size: 18,
                       color: Colors.redAccent,
                     ),
-                    SizedBox(width: 8),
-                    Text('حذف', style: TextStyle(color: Colors.redAccent)),
+                    const SizedBox(width: 8),
+                    Text(l10n.delete, style: const TextStyle(color: Colors.redAccent)),
                   ],
                 ),
               ),

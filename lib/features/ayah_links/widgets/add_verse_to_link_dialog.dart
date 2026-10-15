@@ -120,7 +120,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     final ayah = _currentAyah;
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: AlertDialog(
         backgroundColor: AppColors.background(context),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -150,7 +150,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                     flex: 3,
                     child: InputDecorator(
                       decoration: InputDecoration(
-                        labelText: 'السورة',
+                        labelText: l10n.isArabic ? 'السورة' : 'Surah',
                         filled: true,
                         fillColor: AppColors.surface(context),
                         border: OutlineInputBorder(
@@ -196,7 +196,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                     flex: 2,
                     child: InputDecorator(
                       decoration: InputDecoration(
-                        labelText: 'الآية',
+                        labelText: l10n.isArabic ? 'الآية' : 'Verse',
                         filled: true,
                         fillColor: AppColors.surface(context),
                         border: OutlineInputBorder(
@@ -222,7 +222,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                                 return DropdownMenuItem<int>(
                                   value: n,
                                   child: Text(
-                                    ArabicSearchNormalizer.toArabicDigits(n),
+                                    l10n.isArabic
+                                        ? ArabicSearchNormalizer.toArabicDigits(n)
+                                        : '$n',
                                   ),
                                 );
                               }).toList(),
@@ -265,7 +267,15 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'سورة ${_currentSurah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)} · ص ${ArabicSearchNormalizer.toArabicDigits(ayah.page)}',
+                        l10n.surahAyahPageReference(
+                          _currentSurah.name,
+                          l10n.isArabic
+                              ? ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)
+                              : ayah.ayahNumber,
+                          l10n.isArabic
+                              ? ArabicSearchNormalizer.toArabicDigits(ayah.page)
+                              : ayah.page,
+                        ),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 11,
@@ -279,10 +289,12 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 ),
                 if (_isAlreadyAdded) ...[
                   const SizedBox(height: 8),
-                  const Text(
-                    'هذه الآية مضافة بالفعل لهذا الرابط',
+                  Text(
+                    l10n.isArabic
+                        ? 'هذه الآية مضافة بالفعل لهذا الرابط'
+                        : 'This verse is already added to this link',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12, color: Colors.orange),
+                    style: const TextStyle(fontSize: 12, color: Colors.orange),
                   ),
                 ],
                 const SizedBox(height: 14),
@@ -293,8 +305,12 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 controller: _noteController,
                 maxLines: 2,
                 decoration: InputDecoration(
-                  labelText: 'ملاحظتك على هذه الآية في هذا الرابط (اختيارية)',
-                  hintText: 'سجل ما لفت نظرك في ربط هذه الآية...',
+                  labelText: l10n.isArabic
+                      ? 'ملاحظتك على هذه الآية في هذا الرابط (اختيارية)'
+                      : 'Your note on this verse (optional)',
+                  hintText: l10n.isArabic
+                      ? 'سجل ما لفت نظرك في ربط هذه الآية...'
+                      : 'Record your thoughts on linking this verse...',
                   filled: true,
                   fillColor: AppColors.surface(context),
                   border: OutlineInputBorder(
@@ -329,9 +345,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                       color: Colors.white,
                     ),
                   )
-                : const Text(
-                    'إضافة إلى الرابط',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                : Text(
+                    l10n.isArabic ? 'إضافة إلى الرابط' : 'Add to Link',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
           ),
         ],

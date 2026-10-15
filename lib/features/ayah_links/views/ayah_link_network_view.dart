@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../app/localization.dart';
 import '../../../app/theme.dart';
 import '../../../core/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
@@ -341,7 +342,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
       backgroundColor: Colors.transparent,
       builder: (bottomSheetCtx) {
         return Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: context.currentLanguage.direction,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
@@ -378,7 +379,9 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}',
+                        context.l10n.isArabic
+                            ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
+                            : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
                         style: const TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 16,
@@ -387,7 +390,9 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         ),
                       ),
                       Text(
-                        'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}',
+                        context.l10n.isArabic
+                            ? 'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}'
+                            : 'p. ${verse.page}',
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -441,17 +446,17 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Row(
+                              Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.sticky_note_2_outlined,
                                     size: 16,
                                     color: AppColors.olive,
                                   ),
-                                  SizedBox(width: 6),
+                                  const SizedBox(width: 6),
                                   Text(
-                                    'ملاحظة التدبر:',
-                                    style: TextStyle(
+                                    context.l10n.reflectionNoteColon,
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.olive,
@@ -506,9 +511,9 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                             ),
                           ),
                           icon: const Icon(Icons.menu_book_rounded, size: 18),
-                          label: const Text(
-                            'فتح في المصحف',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          label: Text(
+                            context.l10n.openInQuran,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -517,7 +522,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                       // Edit note button
                       IconButton.filledTonal(
                         icon: const Icon(Icons.edit_note_rounded, size: 20),
-                        tooltip: 'ملاحظة التدبر',
+                        tooltip: context.l10n.reflectionNote,
                         onPressed: () {
                           Navigator.pop(bottomSheetCtx);
                           _showEditNoteDialog(verse);
@@ -532,7 +537,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                           size: 20,
                           color: Colors.redAccent,
                         ),
-                        tooltip: 'إزالة من الرابط',
+                        tooltip: context.l10n.removeVerseFromLink,
                         onPressed: () {
                           Navigator.pop(bottomSheetCtx);
                           _confirmRemoveVerse(verse);
@@ -560,13 +565,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.comsilkLight,
-        title: const Text('ملاحظة التدبر على الآية'),
+        title: Text(context.l10n.ayahReflectionNoteTitle),
         content: TextField(
           controller: controller,
           maxLines: 4,
           autofocus: true,
           decoration: InputDecoration(
-            hintText: 'اكتب تدبرك أو الرابط الذي لاحظته...',
+            hintText: context.l10n.ayahReflectionNoteHint,
             filled: true,
             fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -575,7 +580,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
-            child: const Text('إلغاء'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
@@ -583,7 +588,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               backgroundColor: AppColors.olive,
               foregroundColor: Colors.white,
             ),
-            child: const Text('حفظ'),
+            child: Text(context.l10n.save),
           ),
         ],
       ),
@@ -605,14 +610,14 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('إزالة الآية من الرابط'),
+        title: Text(context.l10n.removeAyahFromLinkTitle),
         content: Text(
-          'هل تريد إزالة الآية ${verse.ayahNumber} من سورة ${surah.name} من هذا الرابط؟',
+          context.l10n.removeAyahFromLinkConfirm(verse.ayahNumber, surah.name),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
-            child: const Text('إلغاء'),
+            child: Text(context.l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -620,7 +625,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('إزالة'),
+            child: Text(context.l10n.isArabic ? 'إزالة' : 'Remove'),
           ),
         ],
       ),
@@ -748,13 +753,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     color: AppColors.olive,
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'لم تتم إضافة أي آيات لهذا الرابط بعد',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    context.l10n.noAyahsAddedToLink,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'أضف الآيات التي لاحظت ارتباطها لبناء خريطتك التدبرية',
+                    context.l10n.addAyahsToBuildMap,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 13,
@@ -774,7 +779,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                       ),
                     ),
                     icon: const Icon(Icons.add, size: 18),
-                    label: const Text('إضافة آية الآن'),
+                    label: Text(context.l10n.addAyah),
                   ),
                 ],
               ),
@@ -917,7 +922,9 @@ class _CenterThemeNode extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              '$versesCount آيات مرتبطة',
+              context.l10n.isArabic
+                  ? '$versesCount آيات مرتبطة'
+                  : '$versesCount linked verses',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
@@ -999,7 +1006,9 @@ class _VerseCanvasNode extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '${surah.name} · ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}',
+                    context.l10n.isArabic
+                        ? '${surah.name} · ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
+                        : '${surah.name} · ${verse.ayahNumber}',
                     style: const TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 13,
@@ -1050,7 +1059,7 @@ class _VerseCanvasNode extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    'ملاحظتي',
+                    context.l10n.isArabic ? 'ملاحظتي' : 'My note',
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.bold,
