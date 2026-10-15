@@ -253,12 +253,10 @@ class _QuranPageViewState extends State<QuranPageView> {
                       color: isDark ? AppColors.darkSurface : null,
                     ),
                     child: CustomPaint(
-                      painter: isOpeningPage
-                          ? OpeningMushafFramePainter(isDark: isDark)
-                          : MushafPageFramePainter(isDark: isDark),
+                      painter: MushafPageFramePainter(isDark: isDark),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isOpeningPage ? 14.0 : 10.0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0,
                           vertical: 7.0,
                         ),
                         child: SingleChildScrollView(
@@ -491,7 +489,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يبني محتوى الصفحتين الافتتاحيتين (الفاتحة وأول البقرة) بتصميم مؤطر ومتمركز.
+  /// يبني محتوى الصفحتين الافتتاحيتين (الفاتحة وأول البقرة) بتصميم متمركز متناسق مع إطار المصحف.
   Widget _buildOpeningPageContent({
     required BuildContext context,
     required List<_SurahPageBlock> blocks,
@@ -499,49 +497,33 @@ class _QuranPageViewState extends State<QuranPageView> {
     required bool isDark,
     required UserDataStore storage,
   }) {
-    final goldColor = isDark
-        ? AppColors.darkAccentGold
-        : AppColors.lightAccentGold;
-
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: goldColor.withValues(alpha: 0.7),
-            width: 1.5,
-          ),
-          borderRadius: BorderRadius.circular(8),
-          color: (isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurface)
-              .withValues(alpha: 0.35),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final block in blocks) ...[
-              if (block.isStartOfSurah) ...[
-                SurahHeaderBanner(
-                  surah: QuranRepository.instance.getSurah(block.surahNumber),
-                ),
-                const SizedBox(height: 4),
-                if (block.surahNumber != 1 && block.surahNumber != 9) ...[
-                  const BismillahBanner(),
-                  const SizedBox(height: 6),
-                ],
-              ],
-              _buildAyahsParagraph(
-                context: context,
-                ayahs: block.ayahs,
-                fontSize: fontSize,
-                isDark: isDark,
-                storage: storage,
-                isCentered: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final block in blocks) ...[
+            if (block.isStartOfSurah) ...[
+              SurahHeaderBanner(
+                surah: QuranRepository.instance.getSurah(block.surahNumber),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
+              if (block.surahNumber != 1 && block.surahNumber != 9) ...[
+                const BismillahBanner(),
+                const SizedBox(height: 6),
+              ],
             ],
+            _buildAyahsParagraph(
+              context: context,
+              ayahs: block.ayahs,
+              fontSize: fontSize,
+              isDark: isDark,
+              storage: storage,
+              isCentered: true,
+            ),
+            const SizedBox(height: 8),
           ],
-        ),
+        ],
       ),
     );
   }
