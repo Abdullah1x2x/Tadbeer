@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'search_providers.dart';
+import 'built_in_search_providers.dart';
 
 /// عنصر يمثل نتيجة بحث مفردة من أي قسم قابل للبحث في التطبيق.
 ///

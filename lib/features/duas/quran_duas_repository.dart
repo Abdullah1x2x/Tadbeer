@@ -1,6 +1,6 @@
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_repository.dart';
-import 'quran_dua.dart';
+import 'quran_dua_model.dart';
 
 /// سجل بيانات خام داخلي يحدد دعاءً قرآنياً موثقاً في الفهرس.
 ///

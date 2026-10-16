@@ -86,7 +86,7 @@ lib/
 │   ├── bookmarks/                    # Reading bookmarks (model, repo, screen - 3 files)
 │   ├── duas/                         # Comprehensive Duas & Adhkar module (13 files)
 │   │   ├── duas_screen.dart          # Organized main hub for all duas & adhkar sections
-│   │   ├── quran_dua.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # 88 Quranic Duas
+│   │   ├── quran_dua_model.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # 88 Quranic Duas
 │   │   ├── adhkar_model.dart, adhkar_repository.dart, morning_evening_adhkar_screen.dart # Morning & Evening Adhkar
 │   │   ├── ahlulbayt_dua_model.dart, ahlulbayt_duas_repository.dart # Ahlulbayt & Sahifah Sajjadiyah repo
 │   │   ├── ahlulbayt_duas_screen.dart, ahlulbayt_dua_reader_screen.dart # Ahlulbayt duas browser & reader

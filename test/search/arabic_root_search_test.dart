@@ -7,7 +7,7 @@ import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/core/utils/arabic_root_search_helper.dart';
 import 'package:tadbeer/core/utils/arabic_search_normalizer.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
-import 'package:tadbeer/features/search/search_providers.dart';
+import 'package:tadbeer/features/search/built_in_search_providers.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

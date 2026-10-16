@@ -86,7 +86,7 @@ lib/
 │   ├── bookmarks/                    # الفواصل المرجعية (النموذج، المستودع، الشاشة - 3 ملفات)
 │   ├── duas/                         # قسم الأدعية والأذكار الشامل (13 ملفاً)
 │   │   ├── duas_screen.dart          # الموزع الرئيسي المنظم لأقسام الأدعية والأذكار
-│   │   ├── quran_dua.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # الأدعية القرآنية الـ 88
+│   │   ├── quran_dua_model.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # الأدعية القرآنية الـ 88
 │   │   ├── adhkar_model.dart, adhkar_repository.dart, morning_evening_adhkar_screen.dart # أذكار الصباح والمساء التفاعلية
 │   │   ├── ahlulbayt_dua_model.dart, ahlulbayt_duas_repository.dart # مستودع ونماذج أدعية أهل البيت والصحيفة السجادية
 │   │   ├── ahlulbayt_duas_screen.dart, ahlulbayt_dua_reader_screen.dart # شاشة استعراض وقارئ أدعية أهل البيت

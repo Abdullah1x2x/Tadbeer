@@ -5,7 +5,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/screens/quran_screen.dart';
-import 'quran_dua.dart';
+import 'quran_dua_model.dart';
 
 /// بطاقة عرض الدعاء القرآني الموثق مع أزرار النسخ والانتقال المباشر للمصحف.
 ///

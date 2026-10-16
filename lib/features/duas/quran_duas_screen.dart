@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import 'quran_dua.dart';
+import 'quran_dua_model.dart';
 import 'quran_dua_card.dart';
 import 'quran_duas_repository.dart';
 
