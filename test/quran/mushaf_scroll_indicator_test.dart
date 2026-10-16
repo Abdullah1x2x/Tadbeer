@@ -24,7 +24,7 @@ void main() {
   });
 
   testWidgets(
-    'QuranPageView renders RawScrollbar and scroll indicators when content overflows',
+    'QuranPageView renders scroll indicators and keeps hint arrow visible until reaching bottom',
     (tester) async {
       final page = QuranRepository.instance.getPage(100);
 
@@ -46,13 +46,33 @@ void main() {
       // Verify RawScrollbar is present
       expect(find.byType(RawScrollbar), findsOneWidget);
 
-      // Verify the chevron down icon indicator is displayed
+      final scrollable = tester.widget<SingleChildScrollView>(find.byType(SingleChildScrollView));
+      final controller = scrollable.controller!;
+
+      // 1. Initially at top: chevron down icon is visible
       final chevronFinder = find.byIcon(Icons.keyboard_arrow_down_rounded);
       expect(chevronFinder, findsOneWidget);
 
-      // Tap on chevron to trigger smooth scroll
-      await tester.tap(chevronFinder);
+      // 2. Scroll partway down (not reaching the bottom yet)
+      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -60));
       await tester.pumpAndSettle();
+
+      // Verify chevron down icon REMAINS visible because there is still content below
+      expect(chevronFinder, findsOneWidget);
+
+      // 3. Jump all the way to the bottom
+      controller.jumpTo(controller.position.maxScrollExtent);
+      await tester.pumpAndSettle();
+
+      // When reaching the bottom, chevron indicator is hidden
+      expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsNothing);
+
+      // 4. Scroll back up to the top
+      controller.jumpTo(0.0);
+      await tester.pumpAndSettle();
+
+      // Verify chevron reappears when scrolled back up
+      expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsOneWidget);
 
       // Reset surface size
       await tester.binding.setSurfaceSize(null);

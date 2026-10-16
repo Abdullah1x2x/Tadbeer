@@ -186,17 +186,15 @@ class _QuranPageViewState extends State<QuranPageView> {
     final offset = position.pixels;
 
     final canScroll = maxScroll > 3.0;
-    final atBottom = offset >= (maxScroll - 6.0);
-    final hasScrolled = offset > 8.0;
+    final atBottom = offset >= (maxScroll - 4.0);
 
-    final showGradient = canScroll && !atBottom;
-    final showHint = canScroll && !hasScrolled && !atBottom;
+    final showIndicators = canScroll && !atBottom;
 
-    if (_showBottomGradient.value != showGradient) {
-      _showBottomGradient.value = showGradient;
+    if (_showBottomGradient.value != showIndicators) {
+      _showBottomGradient.value = showIndicators;
     }
-    if (_showScrollHint.value != showHint) {
-      _showScrollHint.value = showHint;
+    if (_showScrollHint.value != showIndicators) {
+      _showScrollHint.value = showIndicators;
     }
   }
 
