@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
+import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/quran/data/quran_models.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
@@ -151,5 +152,35 @@ void main() {
       expect(longPressedAyah?.id, 1);
       expect(find.byType(QuranPageView), findsOneWidget);
     });
+
+    testWidgets('SurahHeaderBanner adapts styling and colors between Light and Dark mode', (tester) async {
+      final repo = QuranRepository.instance;
+      final surah1 = repo.getSurah(1);
+
+      // 1. Light Mode
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(),
+          home: Scaffold(body: SurahHeaderBanner(surah: surah1)),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final lightTitleText = tester.widget<Text>(find.text('سُورَةُ ${surah1.name}'));
+      expect(lightTitleText.style?.color, equals(AppColors.mushafQuranText));
+
+      // 2. Dark Mode
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.dark(),
+          home: Scaffold(body: SurahHeaderBanner(surah: surah1)),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final darkTitleText = tester.widget<Text>(find.text('سُورَةُ ${surah1.name}'));
+      expect(darkTitleText.style?.color, equals(AppColors.darkTextPrimary));
+    });
   });
 }
+

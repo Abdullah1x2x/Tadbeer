@@ -30,8 +30,12 @@ class SurahHeaderBanner extends StatelessWidget {
     final goldColor = isDark
         ? AppColors.darkAccentGold
         : AppColors.lightAccentGold;
-    final titleColor = AppColors.mushafQuranText;
-    final metaColor = AppColors.lightTextSecondary;
+    final titleColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.mushafQuranText;
+    final metaColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 2),
@@ -168,7 +172,7 @@ class _SurahSealPainter extends CustomPainter {
 
     // Background fill
     final bgPaint = Paint()
-      ..color = AppColors.mushafBackground
+      ..color = isDark ? AppColors.darkBackground : AppColors.mushafBackground
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, radius - 0.5, bgPaint);
 
@@ -224,15 +228,22 @@ class _SurahFramePainter extends CustomPainter {
     final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(2.5));
 
     // 1. Serene paper background tint matching authentic Madinah Mushaf parchment
+    final fillColors = isDark
+        ? [
+            AppColors.darkBackground,
+            AppColors.darkSurface,
+            AppColors.darkBackground,
+          ]
+        : [
+            AppColors.mushafBackground,
+            AppColors.lightSurface,
+            AppColors.mushafBackground,
+          ];
     final fillPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          AppColors.mushafBackground,
-          AppColors.lightSurface,
-          AppColors.mushafBackground,
-        ],
+        colors: fillColors,
       ).createShader(rect);
     canvas.drawRRect(rrect, fillPaint);
 
