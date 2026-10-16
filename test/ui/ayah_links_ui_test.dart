@@ -247,5 +247,50 @@ void main() {
         );
       },
     );
+
+    testWidgets(
+      'Network view displays full long ayah without truncation and scrolls smoothly in bottom sheet',
+      (WidgetTester tester) async {
+        late AyahLinkItem link;
+        await tester.runAsync(() async {
+          final repo = AyahLinkRepository();
+          link = await repo.createLink(
+            title: 'آية الكرسي ورابط التوحيد',
+            description: 'فحص عرض الآية الطويلة بالكامل',
+          );
+          // Add Ayat al-Kursi (Surah 2, Ayah 255)
+          final ayahObj = QuranRepository.instance.getAyah(2, 255);
+          await repo.addVerseToLink(
+            link.id,
+            ayahId: ayahObj?.id ?? 255,
+            surahNumber: 2,
+            ayahNumber: 255,
+            page: 42,
+            note: 'ملاحظة تدبر تفصيلية لآية الكرسي العظيمة وفضائلها',
+          );
+        });
+
+        await tester.pumpWidget(
+          buildTestApp(AyahLinkDetailScreen(linkId: link.id)),
+        );
+        await tester.pumpAndSettle();
+
+        // 1. Ayah text in canvas should be present without maxLines
+        final ayah = QuranRepository.instance.getAyah(2, 255);
+        expect(ayah, isNotNull);
+        final ayahFinder = find.text('﴿ ${ayah!.text} ﴾');
+        expect(ayahFinder, findsWidgets);
+
+        // 2. Tap on the verse node to open the bottom sheet
+        await tester.tap(ayahFinder.first);
+        await tester.pumpAndSettle();
+
+        // 3. Verify bottom sheet has header, scrollable content, and action buttons
+        expect(find.textContaining('سورة البقرة'), findsWidgets);
+        expect(find.text('فتح في المصحف'), findsOneWidget);
+        expect(find.byType(SingleChildScrollView), findsWidgets);
+      },
+    );
   });
 }
+

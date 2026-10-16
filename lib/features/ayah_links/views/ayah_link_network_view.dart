@@ -357,131 +357,147 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               ),
             ),
             child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Handle
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-
-                  // Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        context.l10n.isArabic
-                            ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
-                            : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
-                        style: const TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.olive,
-                        ),
-                      ),
-                      Text(
-                        context.l10n.isArabic
-                            ? 'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}'
-                            : 'p. ${verse.page}',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.olive,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Full Verse Text
-                  if (ayah != null)
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkBackground
-                            : AppColors.comsilk,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        '﴿ ${ayah.text} ﴾',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'AmiriQuran',
-                          fontSize: 18,
-                          height: 1.8,
-                          color: isDark
-                              ? AppColors.nightQuranText
-                              : AppColors.dayQuranText,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.85,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Handle
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ),
-                  const SizedBox(height: 12),
 
-                  // Reflection note (if any, from link, note or tadbeer)
-                  () {
-                    final effectiveNote = verse.getEffectiveNote();
-                    if (effectiveNote != null && effectiveNote.isNotEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 14),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColors.olive.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: AppColors.olive.withValues(alpha: 0.3),
-                            ),
+                    // Header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          context.l10n.isArabic
+                              ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
+                              : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
+                          style: const TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.olive,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.sticky_note_2_outlined,
-                                    size: 16,
-                                    color: AppColors.olive,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    context.l10n.reflectionNoteColon,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.olive,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                effectiveNote,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  height: 1.5,
+                        ),
+                        Text(
+                          context.l10n.isArabic
+                              ? 'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}'
+                              : 'p. ${verse.page}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.olive,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Scrollable content for Verse & Reflection Note
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Full Verse Text
+                            if (ayah != null)
+                              Container(
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
                                   color: isDark
-                                      ? AppColors.nightSubtitle
-                                      : AppColors.daySubtitle,
+                                      ? AppColors.darkBackground
+                                      : AppColors.comsilk,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  '﴿ ${ayah.text} ﴾',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'AmiriQuran',
+                                    fontSize: 18,
+                                    height: 1.8,
+                                    color: isDark
+                                        ? AppColors.nightQuranText
+                                        : AppColors.dayQuranText,
+                                  ),
                                 ),
                               ),
-                            ],
-                          ),
+                            const SizedBox(height: 12),
+
+                            // Reflection note (if any, from link, note or tadbeer)
+                            () {
+                              final effectiveNote = verse.getEffectiveNote();
+                              if (effectiveNote != null && effectiveNote.isNotEmpty) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 14),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.olive.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: AppColors.olive.withValues(alpha: 0.3),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.sticky_note_2_outlined,
+                                              size: 16,
+                                              color: AppColors.olive,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              context.l10n.reflectionNoteColon,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.olive,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          effectiveNote,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            height: 1.5,
+                                            color: isDark
+                                                ? AppColors.nightSubtitle
+                                                : AppColors.daySubtitle,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            }(),
+                          ],
                         ),
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  }(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
 
                   // Action Buttons Row
                   Row(
@@ -549,9 +565,10 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               ),
             ),
           ),
-        );
-      },
-    );
+        ),
+      );
+    },
+  );
   }
 
   /// يفتح نافذة حوار لتعديل ملاحظة التدبر الخاصة بآية داخل الرابط.
@@ -1028,12 +1045,10 @@ class _VerseCanvasNode extends StatelessWidget {
             ),
             const SizedBox(height: 6),
 
-            // Verse snippet
+            // Full verse text
             if (ayah != null)
               Text(
                 '﴿ ${ayah.text} ﴾',
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'AmiriQuran',
