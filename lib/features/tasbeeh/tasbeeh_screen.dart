@@ -1129,73 +1129,74 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                 ),
               ),
 
-              // 3. شريط الفضيلة ذو الارتفاع الثابت (34 بكسل)
-              SizedBox(
-                height: 34,
-                child: dhikr.virtue.isNotEmpty
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkBackground
-                                  .withValues(alpha: 0.6)
-                              : AppColors.comsilk,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.auto_awesome_rounded,
-                              size: 13,
-                              color: isDark
-                                  ? AppColors.darkAccentGold
-                                  : AppColors.oliveDark,
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                dhikr.virtue,
-                                textAlign: TextAlign.center,
-                                textDirection: TextDirection.rtl,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.lightTextSecondary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.swipe_rounded,
-                            size: 13,
-                            color: (isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary)
-                                .withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            context.l10n.swipeOrTapToChange,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: (isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.lightTextSecondary)
-                                  .withValues(alpha: 0.7),
-                            ),
-                          ),
-                        ],
+              // 3. شريط الفضيلة أو التوجيه (يظهر النص كاملاً بدون قص وبانسيابية تامة)
+              if (dhikr.virtue.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkBackground
+                            .withValues(alpha: 0.6)
+                        : AppColors.comsilk,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.auto_awesome_rounded,
+                        size: 13,
+                        color: isDark
+                            ? AppColors.darkAccentGold
+                            : AppColors.oliveDark,
                       ),
-              ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          dhikr.virtue,
+                          textAlign: TextAlign.center,
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(
+                            fontSize: 11,
+                            height: 1.35,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                SizedBox(
+                  height: 28,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.swipe_rounded,
+                        size: 13,
+                        color: (isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary)
+                            .withValues(alpha: 0.7),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        context.l10n.swipeOrTapToChange,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: (isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary)
+                              .withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
