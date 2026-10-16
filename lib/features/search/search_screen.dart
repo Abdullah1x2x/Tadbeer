@@ -544,7 +544,10 @@ class _SearchScreenState extends State<SearchScreen> {
     SearchResultItem item,
     bool isDark,
   ) {
-    final isQuranAyah = item.providerId == 'quran';
+    final isQuranAyah = item.providerId == 'quran' ||
+        item.providerId == 'bookmarks' ||
+        item.providerId == 'highlights' ||
+        item.providerId == 'duas';
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
@@ -592,8 +595,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(height: 8),
                 Text(
                   item.snippet,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                  maxLines: isQuranAyah ? null : 4,
+                  overflow: isQuranAyah ? null : TextOverflow.ellipsis,
                   textDirection: isQuranAyah ? TextDirection.rtl : null,
                   style: TextStyle(
                     fontFamily: isQuranAyah ? 'AmiriQuran' : 'Amiri',

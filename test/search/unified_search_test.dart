@@ -499,5 +499,30 @@ void main() {
       );
       expect(notesChip.selected, isTrue);
     });
+
+    testWidgets('SearchScreen renders full Quran ayah snippet without maxLines truncation', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const SearchScreen()));
+      await tester.pumpAndSettle();
+
+      final textFieldFinder = find.byType(TextField);
+      await tester.enterText(textFieldFinder, 'بعوضة');
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pumpAndSettle();
+
+      // Find Surah Al-Baqarah Ayah 26
+      expect(find.textContaining('سورة البقرة · الآية ٢٦'), findsOneWidget);
+
+      // Verify the ayah snippet Text widget has no maxLines truncation constraint
+      final ayah = QuranRepository.instance.getAyah(2, 26);
+      expect(ayah, isNotNull);
+      final snippetFinder = find.text('﴿ ${ayah!.text} ﴾');
+      expect(snippetFinder, findsOneWidget);
+
+      final textWidget = tester.widget<Text>(snippetFinder);
+      expect(textWidget.maxLines, isNull);
+    });
   });
 }
+
