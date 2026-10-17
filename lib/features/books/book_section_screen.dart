@@ -293,6 +293,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                             book: book,
                             isDark: isDark,
                             primaryColor: primaryColor,
+                            sectionColor: widget.section.color,
                             index: index + 1,
                             onTap: () {
                               HapticFeedback.lightImpact();
@@ -387,6 +388,7 @@ class _SectionBookCard extends StatelessWidget {
   final BookModel book;
   final bool isDark;
   final Color primaryColor;
+  final Color? sectionColor;
   final int index;
   final VoidCallback onTap;
 
@@ -394,6 +396,7 @@ class _SectionBookCard extends StatelessWidget {
     required this.book,
     required this.isDark,
     required this.primaryColor,
+    this.sectionColor,
     required this.index,
     required this.onTap,
   });
@@ -427,10 +430,10 @@ class _SectionBookCard extends StatelessWidget {
     if (book.badgeColor != null) {
       return book.badgeColor!;
     }
-    if (book.isPdf) {
-      return Colors.redAccent;
+    if (sectionColor != null) {
+      return sectionColor!;
     }
-    return primaryColor;
+    return isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
   }
 
   IconData _getBookIcon() {

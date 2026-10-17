@@ -648,22 +648,28 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: 88,
-                height: 88,
-                decoration: BoxDecoration(
-                  color: Colors.redAccent.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.redAccent.withValues(alpha: 0.3),
-                    width: 2,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.picture_as_pdf_rounded,
-                  color: Colors.redAccent,
-                  size: 46,
-                ),
+              Builder(
+                builder: (context) {
+                  final pdfAccentColor = widget.book.badgeColor ??
+                      (isDark ? AppColors.darkAccentGold : AppColors.olive);
+                  return Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      color: pdfAccentColor.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: pdfAccentColor.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.picture_as_pdf_rounded,
+                      color: pdfAccentColor,
+                      size: 46,
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 18),
               Text(
