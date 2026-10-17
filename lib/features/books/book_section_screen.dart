@@ -62,16 +62,24 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
       list = list.where((b) {
         if (_selectedMalazemSeries ==
             'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
-          return b.subtitle.contains('آل عمران');
+          return b.subtitle.contains('آل عمران') && !b.subtitle.contains('رمضان');
         }
         if (_selectedMalazemSeries ==
             'سلسلة هدي القرآن: مدارسة سورة المائدة') {
-          return b.subtitle.contains('المائدة');
+          return b.subtitle.contains('المائدة') && !b.subtitle.contains('رمضان');
+        }
+        if (_selectedMalazemSeries ==
+            'سلسلة هدي القرآن: مدارسة سورة الصف') {
+          return b.subtitle.contains('الصف') || b.title.contains('الصف');
+        }
+        if (_selectedMalazemSeries == 'فهرس وتوثيق الملازم') {
+          return b.subtitle.contains('فهرس') || b.title.contains('فهرس');
         }
         if (_selectedMalazemSeries == 'المحاضرات الكبرى والمناسبات') {
-          return b.subtitle.contains('المحاضرات') ||
-              b.subtitle.contains('دروس من هدي القرآن الكريم') ||
-              b.subtitle.contains('فهرس');
+          return (b.subtitle.contains('المحاضرات') ||
+                  b.subtitle.contains('دروس من هدي القرآن الكريم')) &&
+              !b.subtitle.contains('فهرس') &&
+              !b.title.contains('فهرس');
         }
         return b.subtitle.contains(_selectedMalazemSeries);
       }).toList();

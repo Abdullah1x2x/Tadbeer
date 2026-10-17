@@ -541,9 +541,16 @@ void main() {
       expect(curatedBookSections[2].name, 'ملازم هدي القرآن الكريم');
 
       final malazemSec = curatedBookSections[2];
-      expect(malazemSec.books.length, 86);
+      expect(malazemSec.books.length, 91);
       expect(malazemSec.books.every((b) => b.author == 'السيد حسين بدر الدين الحوثي'), isTrue);
       expect(malazemSec.books.every((b) => b.assetPath != null && b.assetPath!.startsWith('assets/books/malazem/')), isTrue);
+      expect(malazemSec.books.any((b) => b.title.contains('سورة الصف — الدرس الأول')), isTrue);
+      expect(malazemSec.books.any((b) => b.title.contains('سورة الصف — الدرس الثاني')), isTrue);
+      expect(malazemSec.books.any((b) => b.title.contains('وعده ووعيده — الدرس التاسع')), isTrue);
+      expect(malazemSec.books.any((b) => b.title.contains('مسؤولية أهل البيت')), isTrue);
+      expect(malazemSec.books.any((b) => b.title.contains('الثقافة القرآنية')), isTrue);
+      final saff1 = malazemSec.books.firstWhere((b) => b.title.contains('سورة الصف — الدرس الأول'));
+      expect(saff1.chapters.length, 4);
 
       final ahlulbaytSec = curatedBookSections[0];
       expect(ahlulbaytSec.books.length, 4);
