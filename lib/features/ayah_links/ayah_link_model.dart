@@ -174,6 +174,73 @@ class AyahLinkRelationship {
   }
 }
 
+/// يمثل بطاقة ملاحظة أو تدبر حر مستقل مضاف داخل رابط الآيات.
+///
+/// An independent reflection note card within an Ayah Link.
+class AyahLinkNote {
+  /// المعرف الفريد لبطاقة الملاحظة.
+  final String id;
+
+  /// عنوان اختياري للملاحظة أو الفكرة التدبرية.
+  final String? title;
+
+  /// نص الملاحظة أو التدبر بالكامل.
+  final String content;
+
+  /// تاريخ إنشاء الملاحظة.
+  final DateTime createdAt;
+
+  /// تاريخ آخر تعديل للملاحظة.
+  final DateTime updatedAt;
+
+  /// ينشئ كائن بطاقة ملاحظة تدبرية جديدة.
+  const AyahLinkNote({
+    required this.id,
+    this.title,
+    required this.content,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  /// المفتاح المرجعي للعقدة على لوحة الشبكة.
+  String get noteKey => 'note_$id';
+
+  /// تحويل بطاقة الملاحظة إلى خريطة JSON.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    if (title != null && title!.isNotEmpty) 'title': title,
+    'content': content,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+  };
+
+  /// إنشاء بطاقة ملاحظة من خريطة JSON.
+  factory AyahLinkNote.fromJson(Map<String, dynamic> json) {
+    return AyahLinkNote(
+      id: json['id'] as String,
+      title: json['title'] as String?,
+      content: json['content'] as String? ?? '',
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
+    );
+  }
+
+  /// إنشاء نسخة محدثة من بطاقة الملاحظة.
+  AyahLinkNote copyWith({
+    String? title,
+    String? content,
+    DateTime? updatedAt,
+  }) {
+    return AyahLinkNote(
+      id: id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+}
+
 /// يمثل كيان رابط الآيات التدبري بما يشمل العنوان والوصف والآيات ومواضع العقد.
 ///
 /// Represents an Ayah Link (روابط الآيات) collection entity.
@@ -192,6 +259,9 @@ class AyahLinkItem {
 
   /// قائمة الآيات القرآنية المنضمة لهذا الرابط.
   final List<AyahLinkVerse> verses;
+
+  /// قائمة كروت الملاحظات والتدبرات الحرة التابعة لهذا الرابط.
+  final List<AyahLinkNote> notes;
 
   /// خريطة مواضع العقد على لوحة الشبكة التفاعلية.
   final Map<String, LinkNodePosition> positions;
@@ -226,6 +296,7 @@ class AyahLinkItem {
     required this.title,
     this.description,
     this.verses = const [],
+    this.notes = const [],
     this.positions = const {},
     this.relationships = const [],
     this.isManualLayout = false,
@@ -250,6 +321,8 @@ class AyahLinkItem {
     if (description != null && description!.isNotEmpty)
       'description': description,
     'verses': verses.map((v) => v.toJson()).toList(),
+    if (notes.isNotEmpty)
+      'notes': notes.map((n) => n.toJson()).toList(),
     'positions': positions.map((k, v) => MapEntry(k, v.toJson())),
     if (relationships.isNotEmpty)
       'relationships': relationships.map((r) => r.toJson()).toList(),
@@ -269,6 +342,14 @@ class AyahLinkItem {
       final raw = json['verses'] as List;
       for (final v in raw) {
         versesList.add(AyahLinkVerse.fromJson(v as Map<String, dynamic>));
+      }
+    }
+
+    final notesList = <AyahLinkNote>[];
+    if (json.containsKey('notes')) {
+      final raw = json['notes'] as List;
+      for (final n in raw) {
+        notesList.add(AyahLinkNote.fromJson(n as Map<String, dynamic>));
       }
     }
 
@@ -297,6 +378,7 @@ class AyahLinkItem {
       title: json['title'] as String,
       description: json['description'] as String?,
       verses: versesList,
+      notes: notesList,
       positions: positionsMap,
       relationships: relationshipsList,
       isManualLayout: json['isManualLayout'] as bool? ?? false,
@@ -314,6 +396,7 @@ class AyahLinkItem {
     String? title,
     String? description,
     List<AyahLinkVerse>? verses,
+    List<AyahLinkNote>? notes,
     Map<String, LinkNodePosition>? positions,
     List<AyahLinkRelationship>? relationships,
     bool? isManualLayout,
@@ -328,6 +411,7 @@ class AyahLinkItem {
       title: title ?? this.title,
       description: description ?? this.description,
       verses: verses ?? this.verses,
+      notes: notes ?? this.notes,
       positions: positions ?? this.positions,
       relationships: relationships ?? this.relationships,
       isManualLayout: isManualLayout ?? this.isManualLayout,

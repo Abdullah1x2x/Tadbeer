@@ -132,7 +132,9 @@ class QuranDuasRepository {
         categoryFilter == null ||
         categoryFilter.isEmpty ||
         categoryFilter == 'الكل';
-    final ayahNumQuery = int.tryParse(trimmed);
+    final ayahNumQuery = int.tryParse(
+      ArabicSearchNormalizer.toEnglishDigits(trimmed),
+    );
 
     return all.where((dua) {
       // 1. Category Filter Check

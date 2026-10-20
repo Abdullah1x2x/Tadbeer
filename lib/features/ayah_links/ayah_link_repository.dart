@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:uuid/uuid.dart';
 
 import '../../core/storage/user_data_store.dart';
@@ -101,6 +103,84 @@ class AyahLinkRepository {
     String? note,
   ) async {
     await _store.updateVerseNote(linkId, surahNumber, ayahNumber, note);
+  }
+
+  /// يضيف بطاقة ملاحظة تدبرية جديدة إلى الرابط.
+  Future<AyahLinkNote> addNoteToLink(
+    String linkId, {
+    required String content,
+    String? title,
+  }) async {
+    final now = DateTime.now();
+    final note = AyahLinkNote(
+      id: const Uuid().v4(),
+      title: title?.trim().isEmpty == true ? null : title?.trim(),
+      content: content.trim(),
+      createdAt: now,
+      updatedAt: now,
+    );
+
+    final link = getLink(linkId);
+    if (link != null) {
+      final updatedNotes = [...link.notes, note];
+      final updatedPositions = Map<String, LinkNodePosition>.from(link.positions);
+      if (!updatedPositions.containsKey(note.noteKey)) {
+        final count = link.verses.length + updatedNotes.length;
+        final angle = (2 * math.pi * (count % 8)) / 8;
+        final radius = 330.0 + ((count % 3) * 60.0);
+        final dx = 1500.0 + (radius * math.cos(angle));
+        final dy = 1500.0 + (radius * math.sin(angle));
+        updatedPositions[note.noteKey] = LinkNodePosition(dx: dx, dy: dy);
+      }
+      final updatedLink = link.copyWith(
+        notes: updatedNotes,
+        positions: updatedPositions,
+        updatedAt: now,
+      );
+      await updateLink(updatedLink);
+    }
+    return note;
+  }
+
+  /// يحدّث محتوى أو عنوان بطاقة ملاحظة داخل الرابط.
+  Future<void> updateNoteInLink(
+    String linkId,
+    String noteId, {
+    required String content,
+    String? title,
+  }) async {
+    final link = getLink(linkId);
+    if (link != null) {
+      final updatedNotes = link.notes.map((n) {
+        if (n.id == noteId) {
+          return n.copyWith(
+            content: content.trim(),
+            title: title?.trim().isEmpty == true ? null : title?.trim(),
+            updatedAt: DateTime.now(),
+          );
+        }
+        return n;
+      }).toList();
+      await updateLink(link.copyWith(
+        notes: updatedNotes,
+        updatedAt: DateTime.now(),
+      ));
+    }
+  }
+
+  /// يحذف بطاقة ملاحظة من الرابط.
+  Future<void> deleteNoteFromLink(String linkId, String noteId) async {
+    final link = getLink(linkId);
+    if (link != null) {
+      final updatedNotes = link.notes.where((n) => n.id != noteId).toList();
+      final updatedPositions = Map<String, LinkNodePosition>.from(link.positions)
+        ..remove('note_$noteId');
+      await updateLink(link.copyWith(
+        notes: updatedNotes,
+        positions: updatedPositions,
+        updatedAt: DateTime.now(),
+      ));
+    }
   }
 
   /// يحدّث إحداثيات مواضع العقد في لوحة الشبكة وحالة الترتيب اليدوي.

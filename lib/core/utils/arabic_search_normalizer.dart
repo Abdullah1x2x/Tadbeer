@@ -94,4 +94,18 @@ class ArabicSearchNormalizer {
 
   /// Converts an integer to Arabic-Indic digits (e.g. 1 -> ١).
   static String toArabicDigits(int number) => formatDigits(number);
+
+  /// Converts Arabic-Indic digits (٠-٩) and Persian digits (۰-۹) into ASCII digits (0-9).
+  static String toEnglishDigits(String input) {
+    if (input.isEmpty) return input;
+    var result = input;
+    const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    for (int i = 0; i < 10; i++) {
+      result = result.replaceAll(arabicDigits[i], '$i');
+      result = result.replaceAll(persianDigits[i], '$i');
+    }
+    return result;
+  }
 }
+

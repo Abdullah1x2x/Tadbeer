@@ -239,7 +239,10 @@ class _QuranScreenState extends State<QuranScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              final val = int.tryParse(controller.text.trim());
+              final raw = ArabicSearchNormalizer.toEnglishDigits(
+                controller.text.trim(),
+              );
+              final val = int.tryParse(raw);
               if (val != null && val >= 1 && val <= 604) {
                 Navigator.pop(dialogCtx);
                 _jumpToMushafPage(val);

@@ -336,5 +336,40 @@ void main() {
       expect(verseMap.containsKey('text'), isFalse);
       expect(verseMap.containsKey('ayahText'), isFalse);
     });
+
+    test('16: Add, update and delete independent Note Cards in Ayah Link', () async {
+      final link = await repo.createLink(title: 'رابط مع كروت الملاحظات');
+      expect(link.notes, isEmpty);
+
+      // 1. Add Note Card
+      final note = await repo.addNoteToLink(
+        link.id,
+        title: 'فكرة تدبرية أولى',
+        content: 'نص الملاحظة التدبرية المستقلة',
+      );
+      var updated = repo.getLink(link.id)!;
+      expect(updated.notes.length, equals(1));
+      expect(updated.notes.first.id, equals(note.id));
+      expect(updated.notes.first.title, equals('فكرة تدبرية أولى'));
+      expect(updated.notes.first.content, equals('نص الملاحظة التدبرية المستقلة'));
+      expect(updated.positions.containsKey(note.noteKey), isTrue);
+
+      // 2. Update Note Card
+      await repo.updateNoteInLink(
+        link.id,
+        note.id,
+        title: 'عنوان معدل',
+        content: 'محتوى معدل بالكامل',
+      );
+      updated = repo.getLink(link.id)!;
+      expect(updated.notes.first.title, equals('عنوان معدل'));
+      expect(updated.notes.first.content, equals('محتوى معدل بالكامل'));
+
+      // 3. Delete Note Card
+      await repo.deleteNoteFromLink(link.id, note.id);
+      updated = repo.getLink(link.id)!;
+      expect(updated.notes, isEmpty);
+      expect(updated.positions.containsKey(note.noteKey), isFalse);
+    });
   });
 }

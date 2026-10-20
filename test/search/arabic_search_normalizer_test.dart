@@ -45,6 +45,14 @@ void main() {
       );
     });
 
+    test('Arabic-Indic and Persian Digits Conversion to English ASCII', () {
+      expect(ArabicSearchNormalizer.toEnglishDigits('١'), equals('1'));
+      expect(ArabicSearchNormalizer.toEnglishDigits('١١٤'), equals('114'));
+      expect(ArabicSearchNormalizer.toEnglishDigits('٦٢٣٦'), equals('6236'));
+      expect(ArabicSearchNormalizer.toEnglishDigits('۱۲۳'), equals('123'));
+      expect(ArabicSearchNormalizer.toEnglishDigits('صفحة ١٥٠'), equals('صفحة 150'));
+    });
+
     test('Real Quran Verse Search Matching (Ayat Al-Kursi)', () {
       final file = File('assets/quran/quran_data.json');
       final content = file.readAsStringSync();

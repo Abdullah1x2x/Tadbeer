@@ -335,7 +335,7 @@ void main() {
         await tester.tap(addNoteFab);
         await tester.pumpAndSettle();
 
-        expect(find.text('ملاحظة وتدبر الرابط'), findsOneWidget);
+        expect(find.text('إضافة كرت ملاحظة'), findsOneWidget);
         await tester.enterText(
           find.byType(TextField).last,
           'هذا نص ملاحظة تدبر الرابط بالكامل يوضح الرابط الوثيق بين الآيات',
@@ -358,6 +358,42 @@ void main() {
           ),
           findsOneWidget,
         );
+      },
+    );
+
+    testWidgets(
+      'Note Card renders in Ordered View with full content and actions',
+      (WidgetTester tester) async {
+        late AyahLinkItem link;
+        await tester.runAsync(() async {
+          final repo = AyahLinkRepository();
+          link = await repo.createLink(
+            title: 'رابط التدبر المتقدم',
+          );
+          await repo.addNoteToLink(
+            link.id,
+            title: 'عنوان الكرت التدبري',
+            content:
+                'نص كرت الملاحظة التدبرية بالكامل دون أي اختصار أو اقتطاع نهائياً.',
+          );
+          await repo.updateViewState(link.id, viewMode: 'ordered');
+        });
+
+        await tester.pumpWidget(
+          buildTestApp(AyahLinkDetailScreen(linkId: link.id)),
+        );
+        await tester.pumpAndSettle();
+
+        // Verify note card title and full text in ordered view
+        expect(find.text('عنوان الكرت التدبري'), findsOneWidget);
+        expect(
+          find.text(
+            'نص كرت الملاحظة التدبرية بالكامل دون أي اختصار أو اقتطاع نهائياً.',
+          ),
+          findsOneWidget,
+        );
+        // 2 more_vert icons: 1 in AppBar for Link options, 1 in Note Card for Note actions
+        expect(find.byIcon(Icons.more_vert), findsNWidgets(2));
       },
     );
   });

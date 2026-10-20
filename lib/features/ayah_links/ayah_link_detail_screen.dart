@@ -59,13 +59,14 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
     );
   }
 
-  /// يفتح نافذة حوار لإضافة أو تعديل الملاحظة والتدبر الخاص برابط الآيات.
+  /// يفتح نافذة حوار لإضافة كرت ملاحظة تدبرية جديد إلى رابط الآيات.
   Future<void> _openAddNote(AyahLinkItem link) async {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final controller = TextEditingController(text: link.description ?? '');
+    final titleController = TextEditingController();
+    final contentController = TextEditingController();
 
-    final updatedNote = await showDialog<String>(
+    final result = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
         backgroundColor: isDark
@@ -84,7 +85,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                l10n.isArabic ? 'ملاحظة وتدبر الرابط' : 'Link Reflection Note',
+                l10n.isArabic ? 'إضافة كرت ملاحظة' : 'Add Note Card',
                 style: const TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: 18,
@@ -94,58 +95,89 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
             ),
           ],
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.isArabic
-                  ? 'سجّل ملاحظتك أو الرابط التدبري الذي يجمع هذه الآيات:'
-                  : 'Record your reflection or the theme connecting these verses:',
-              style: TextStyle(
-                fontSize: 13,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              minLines: 3,
-              maxLines: 8,
-              autofocus: true,
-              style: const TextStyle(fontSize: 14, height: 1.5),
-              decoration: InputDecoration(
-                hintText: l10n.isArabic
-                    ? 'اكتب تدبرك أو ملاحظتك هنا...'
-                    : 'Write your reflection or note here...',
-                filled: true,
-                fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 1.5,
-                  ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.isArabic
+                    ? 'سجّل ملاحظتك أو تدبرك ككرت مستقل في هذا الرابط:'
+                    : 'Record your reflection as an independent card in this link:',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 12),
+              TextField(
+                controller: titleController,
+                style: const TextStyle(fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: l10n.isArabic
+                      ? 'عنوان الملاحظة (اختياري)'
+                      : 'Note title (optional)',
+                  filled: true,
+                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: contentController,
+                minLines: 3,
+                maxLines: 8,
+                autofocus: true,
+                style: const TextStyle(fontSize: 14, height: 1.5),
+                decoration: InputDecoration(
+                  hintText: l10n.isArabic
+                      ? 'اكتب تدبرك أو ملاحظتك هنا...'
+                      : 'Write your reflection or note here...',
+                  filled: true,
+                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogCtx),
+            onPressed: () => Navigator.pop(dialogCtx, false),
             child: Text(l10n.cancel),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
+            onPressed: () {
+              if (contentController.text.trim().isNotEmpty) {
+                Navigator.pop(dialogCtx, true);
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
@@ -156,18 +188,21 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
       ),
     );
 
-    if (updatedNote != null && mounted) {
-      final newDesc = updatedNote.isEmpty ? null : updatedNote;
-      await _repo.updateLink(link.copyWith(description: newDesc));
+    if (result == true && mounted) {
+      final content = contentController.text.trim();
+      final title = titleController.text.trim();
+      await _repo.addNoteToLink(
+        link.id,
+        content: content,
+        title: title.isEmpty ? null : title,
+      );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               l10n.isArabic
-                  ? (newDesc != null
-                      ? 'تم حفظ ملاحظة الرابط بنجاح'
-                      : 'تمت إزالة ملاحظة الرابط')
-                  : 'Link note updated successfully',
+                  ? 'تمت إضافة كرت الملاحظة بنجاح'
+                  : 'Note card added successfully',
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
             behavior: SnackBarBehavior.floating,
