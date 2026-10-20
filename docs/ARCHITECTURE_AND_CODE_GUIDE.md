@@ -13,6 +13,7 @@
 6. [شبكة روابط الآيات والرياضيات التحويلية (Ayah Links Canvas & Radial Trigonometry)](#6-شبكة-روابط-الآيات-والرياضيات-التحويلية-ayah-links-canvas--radial-trigonometry)
 7. [الرسم المتجهي البرمجي وزخارف المصحف (Vector Painting with CustomPainter)](#7-الرسم-المتجهي-البرمجي-وزخارف-المصحف-vector-painting-with-custompainter)
 8. [نظام الألوان وإمكانية الوصول (Color Harmony & Accessibility)](#8-نظام-الألوان-وإمكانية-الوصول-color-harmony--accessibility)
+9. [دليل الإعدادات والتهيئات البرمجية الحساسة (Critical Settings Directory)](#9-دليل-الإعدادات-والتهيئات-البرمجية-الحساسة-critical-settings-directory)
 
 ---
 
@@ -179,4 +180,24 @@ $$y = y_{\text{center}} + r \cdot \sin(\theta)$$
 
 ---
 
+## 9. دليل الإعدادات والتهيئات البرمجية الحساسة (Critical Settings Directory)
+
+يسرد هذا الجدول أهم الإعدادات والبارامترات الحساسة في التطبيق وأماكنها الدقيقة وكيفية تخصيصها:
+
+| الإعداد البرمجي | الملف المخصص | السطر التقريبي | القيمة الافتراضية / الحالية | الأثر والتخصيص |
+| :--- | :--- | :--- | :--- | :--- |
+| **مهلة الضغط المطول على الآية** | [`lib/features/quran/screens/quran_page_view.dart`](../lib/features/quran/screens/quran_page_view.dart) | السطر `248` و `42` | `1100ms` (1.1 ثانية) | تحدد مدة استمرار الإصبع على الآية لفتح قائمة خيارات الآية (`AyahActionSheet`). لتقليل المدة وتسريع الفتح تُعدل مثلاً إلى `500ms`. |
+| **حجم خط المصحف المرجعي** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطر `25` | `18.5pt` (medium) | الحجم القياسي الذي يعيد إنتاج تخطيط مصحف المدينة النبوية (604 صفحات) بدقة متطابقة. |
+| **الحد الأدنى والأقصى لخط المصحف** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطور `170-176` | `16.0pt` إلى `32.0pt` | يحدد النطاق الآمن المسموح للمستخدم بتكبير الخط عبره دون الإخلال بتناسق الصفحة. |
+| **حجم خط كروت شبكة روابط الآيات** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطر `220` | `18.0pt` | مقياس خط الآيات في الكانفاس، وتستخدمه خوارزمية `_computeAutoLayoutPositions` تلقائياً لتوسيع قطر الدوائر وتفادي تصادم الكروت. |
+| **أبعاد كانفاس روابط الآيات** | [`lib/features/ayah_links/views/ayah_link_network_view.dart`](../lib/features/ayah_links/views/ayah_link_network_view.dart) | السطر `49` | `3000.0 × 3000.0` | المساحة التفاعلية الافتراضية الكاملة، ومركزها يقع عند النقطة `(1500.0, 1500.0)`. |
+| **حدود تكبير/تصغير الكانفاس** | [`lib/features/ayah_links/views/ayah_link_network_view.dart`](../lib/features/ayah_links/views/ayah_link_network_view.dart) | السطور `288-290` | `minScale: 0.35`, `maxScale: 2.5` | يحدد مدى مرونة التقريب والابتعاد باللمس المتعدد (Pinch-to-zoom). |
+| **مدة حركة انتقال الكاميرا** | [`lib/features/ayah_links/views/ayah_link_network_view.dart`](../lib/features/ayah_links/views/ayah_link_network_view.dart) | السطر `68` | `380ms` | سرعة انزلاق المنظور وتركيز الكاميرا على العقدة المحددة بنعومة. |
+| **معادلة إيقاع السبحة التلقائية** | [`lib/features/tasbeeh/tasbeeh_model.dart`](../lib/features/tasbeeh/tasbeeh_model.dart) | السطور `63-66` | `800ms + (words * 320ms)` | وتيرة العد الذكي المقيدة بين `1.2` ثانية و `7.0` ثوانٍ بحسب طول النص. |
+| **أهداف عداد التسبيح الافتراضية** | [`lib/features/tasbeeh/tasbeeh_model.dart`](../lib/features/tasbeeh/tasbeeh_model.dart) | السطر `51` | `33` عَدّة | الأهداف المأثورة المعتمدة (`33`, `70`, `100`). |
+| **إخفاء مقدمة التدبر نهائياً** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطر `185` | `false` | خيار مستديم يحفظ تفضيل المستخدم بعدم إظهار شاشة الترحيب بالتدبر مجدداً لسرعة الدخول. |
+
+---
+
 > ✨ **تنبيه:** عند تطوير أي ميزة جديدة، احرص على مراجعة هذا الدليل والالتزام بمبدأ فصل المحتوى، واستخدام معايير التوثيق بالـ `///` ليبقى الكود صرحاً هندسياً سهلاً وممتعاً لكل من يطوره.
+

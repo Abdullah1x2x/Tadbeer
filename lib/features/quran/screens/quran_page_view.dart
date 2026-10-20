@@ -34,6 +34,10 @@ class AyahGestureRecognizer extends LongPressGestureRecognizer {
   VoidCallback? onTap;
 
   /// ينشئ متعرف إيماءات مخصص للتفاعل مع الآية القرآنية.
+  ///
+  /// 🎓 [ملاحظة تعليمية - القيمة الافتراضية لمهلة الضغط المطول]:
+  /// - تُحدد المهلة الزمنية للضغط المطول (1100 ميلي ثانية = 1.1 ثانية) قبل إطلاق قائمة الخيارات.
+  /// - لتقليل المدة وتسريع فتح الخيارات، يمكن خفض القيمة هنا (مثلاً 500ms أو 600ms).
   AyahGestureRecognizer({
     this.onPointerDown,
     this.onPointerUpEarly,
@@ -235,6 +239,12 @@ class _QuranPageViewState extends State<QuranPageView> {
     }
 
     final recognizer = AyahGestureRecognizer(
+      // 🎓 [ملاحظة تعليمية - مكان تحديد مدة الضغط على الآية في المصحف]:
+      // هذا هو السطر المحدد لمهلة الضغط المطول (Long-Press Duration) في مصحف تدبير:
+      // - القيمة الحالية: 1100 ميلي ثانية (1.1 ثانية) لضمان عدم الفتح العرضي أثناء التلاوة والتمرير.
+      // - لتقليل مدة الضغط المطول وتسريع استجابة قائمة خيارات الآية، يمكن تعديل هذه القيمة مباشرة
+      //   (مثلاً: const Duration(milliseconds: 500) لنصف ثانية).
+      // - ملاحظة: رمز/رقم الآية المرفق بجانبها يستجيب للنقر السريع المباشر (Tap) دون انتظار.
       duration: const Duration(milliseconds: 1100),
       onPointerDown: () {
         widget.onAyahHighlight?.call(ayah);
