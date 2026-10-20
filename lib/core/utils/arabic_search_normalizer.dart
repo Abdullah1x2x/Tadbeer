@@ -95,7 +95,12 @@ class ArabicSearchNormalizer {
   /// Converts an integer to Arabic-Indic digits (e.g. 1 -> ١).
   static String toArabicDigits(int number) => formatDigits(number);
 
-  /// Converts Arabic-Indic digits (٠-٩) and Persian digits (۰-۹) into ASCII digits (0-9).
+  /// يحول الأرقام العربية-المشرقية (٠-٩) والأرقام الفارسية (۰-۹) إلى أرقام لاتينية قياسية (0-9).
+  ///
+  /// 🎓 [ملاحظة تعليمية - تجربة المستخدم للمدخلات الرقمية العربية]:
+  /// في لوحات المفاتيح العربية، تُدخل الأرقام كرموز يونيكود خاصة (مثل `\u0660` حتى `\u0669` أو الفارسية `\u06F0` حتى `\u06FF`).
+  /// دوال التحويل القياسية في لغات البرمجة مثل `int.tryParse()` تفشل فوراً وتعيد `null` مع هذه المحارف لأنها تتوقع أرقام ASCII فقط (0-9).
+  /// هذه الدالة تضمن تجربة مستخدم خالية من العوائق عند إدخال أرقام الصفحات أو أرقام الآيات من أي لوحة مفاتيح.
   static String toEnglishDigits(String input) {
     if (input.isEmpty) return input;
     var result = input;

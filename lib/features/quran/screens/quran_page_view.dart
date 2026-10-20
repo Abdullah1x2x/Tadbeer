@@ -12,12 +12,22 @@ import '../widgets/ayah_action_sheet.dart';
 import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
 
-/// Gesture recognizer specifically designed for inline Quranic Ayahs.
+/// متعرف إيماءات متقدم مخصص للآيات القرآنية المدمجة في النص العثماني.
 ///
-/// Subclasses [LongPressGestureRecognizer] so that Flutter's semantics / accessibility
-/// engine recognizes it natively, while simultaneously supporting both quick taps
-/// and sustained 700ms long-presses without gesture conflicts.
-/// متعرف إيماءات مخصص للآيات القرآنية المدمجة يدعم النقر السريع والضغط المطول معاً.
+/// 🎓 [ملاحظة تعليمية - هندسة الإيماءات في فلاتر]:
+/// 1. **لماذا تم وراثة LongPressGestureRecognizer بدلاً من GestureDetector؟**
+///    - في المصحف الشريف، تُعرض الآيات كنصوص متصلة داخل `RichText` عبر `TextSpan`.
+///      لا يمكن وضع عناصر ويدجت مثل `GestureDetector` داخل `TextSpan`، بل يجب استخدام `GestureRecognizer`.
+///    - يحتوي المصحف على `PageView` للتمرير الأفقي بين الصفحات (604 صفحات). إذا استُخدم متعرفان منفصلان
+///      للنقر والضغط المطول، يحدث تنازع في "ساحة الإيماءات" (Gesture Arena)، مما يسبب تأخيراً لمسياً
+///      أو إعاقة لتمرير الصفحة.
+/// 2. **آلية عمل الحل (Disambiguation Algorithm):**
+///    - عند لمس الشاشة (`PointerDownEvent`): يتم إطلاق `onPointerDown` لتظليل خلفية الآية فوراً لمنح المستخدم تغذية راجعة بصرية سريعة.
+///    - إذا رُفع الإصبع قبل انقضاء المهلة (`PointerUpEvent` دون تجاوز الموعد `_longPressFired == false`):
+///      يُلغى التظليل ويتم قبول الإيماءة كـ `onTap` (نقر سريع).
+///    - إذا استمر الضغط حتى انقضاء الموعد (`didExceedDeadline`):
+///      تصبح `_longPressFired = true` ويتم إطلاق `onLongPress` لفتح قائمة خيارات الآية (`AyahActionSheet`).
+///    - إذا تحركت اليد للتمرير: تلغي ساحة فلاتر الإيماءة عبر `PointerCancelEvent` فيتم مسح التظليل بسلاسة دون اعتراض التمرير.
 class AyahGestureRecognizer extends LongPressGestureRecognizer {
   VoidCallback? onPointerDown;
   VoidCallback? onPointerUpEarly;

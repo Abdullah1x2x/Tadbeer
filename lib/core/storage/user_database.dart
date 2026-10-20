@@ -16,20 +16,19 @@ import '../../features/quran/data/quran_models.dart';
 import '../../features/reminders/reminder_model.dart';
 import '../../features/settings/user_settings_model.dart';
 
-/// SQLite Database Manager for all user-generated data in Tadbeer.
+/// مدير قاعدة بيانات SQLite المركزية لكافة بيانات وتفاعلات المستخدم في «تَدْبِير».
 ///
-/// NOTE:
-/// Strictly stores only user-generated data:
-/// - Notes
-/// - Bookmarks
-/// - Highlights
-/// - Reading Position
-/// - Tadbeer Answers
-/// - Verse Links
-/// - Reminders
-/// - Settings
-///
-/// Neither the Quran dataset nor the Mushaf Layout is stored in this database.
+/// 🎓 [ملاحظة تعليمية - هندسة البيانات وتصميم قواعد البيانات في فلاتر]:
+/// 1. **مبدأ الفصل المعماري الصارم (Immutable Scripture vs Mutable User Data):**
+///    - تخزن قاعدة البيانات هذه بيانات المستخدم الشخصية فقط (الملاحظات، الفواصل، الإشارات المرجعية، روابط الآيات، التظليلات، الإعدادات).
+///    - النص القرآني وكتب التراث معزولة تماماً في أصول ثابتة غير قابلة للتعديل (`assets/`)، مما يضمن:
+///      أ) حماية قدسية وصحة النص القرآني من أي تلف أو تعديل برمجي عرضي.
+///      ب) خفة حجم ملف النسخ الاحتياطي واستعادة البيانات (`tadbeer_user_data.db`) وسرعة تصديرها وتشفيرها.
+/// 2. **التكامل العلائقي وحماية المعاملات (Relational Integrity & ACID Transactions):**
+///    - تستخدم الجداول مفاتيح أساسية وأجنبية وفهارس مسرعة (`CREATE INDEX IF NOT EXISTS`) على حقول الاستعلام المتكررة (`ayah_key`, `link_id`).
+///    - تعتمد العمليات التراكمية (مثل إضافة رابط مع آياته وملاحظاته) على المعاملات التزامنية (`db.transaction`) لضمان التنفيذ الذري الكامل أو التراجع التام في حال حدوث أي خطأ.
+/// 3. **التشغيل الموحد عبر المنصات (Desktop FFI & Mobile Native):**
+///    - تستخدم بيئة سطح المكتب (Linux, Windows, macOS) واختبارات الوحدة محرك `sqflite_common_ffi`، بينما تعمل بيئات الهواتف المحمولة على المحرك الأصيل لنظام التشغيل تلقائياً.
 class UserDatabase {
   static final UserDatabase instance = UserDatabase._internal();
   UserDatabase._internal();
