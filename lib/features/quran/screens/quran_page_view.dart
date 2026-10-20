@@ -12,32 +12,16 @@ import '../widgets/ayah_action_sheet.dart';
 import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
 
-/// متعرف إيماءات متقدم مخصص للآيات القرآنية المدمجة في النص العثماني.
+/// متعرف إيماءات مخصص للآيات القرآنية المدمجة داخل TextSpan.
 ///
-/// 🎓 [ملاحظة تعليمية - هندسة الإيماءات في فلاتر]:
-/// 1. **لماذا تم وراثة LongPressGestureRecognizer بدلاً من GestureDetector؟**
-///    - في المصحف الشريف، تُعرض الآيات كنصوص متصلة داخل `RichText` عبر `TextSpan`.
-///      لا يمكن وضع عناصر ويدجت مثل `GestureDetector` داخل `TextSpan`، بل يجب استخدام `GestureRecognizer`.
-///    - يحتوي المصحف على `PageView` للتمرير الأفقي بين الصفحات (604 صفحات). إذا استُخدم متعرفان منفصلان
-///      للنقر والضغط المطول، يحدث تنازع في "ساحة الإيماءات" (Gesture Arena)، مما يسبب تأخيراً لمسياً
-///      أو إعاقة لتمرير الصفحة.
-/// 2. **آلية عمل الحل (Disambiguation Algorithm):**
-///    - عند لمس الشاشة (`PointerDownEvent`): يتم إطلاق `onPointerDown` لتظليل خلفية الآية فوراً لمنح المستخدم تغذية راجعة بصرية سريعة.
-///    - إذا رُفع الإصبع قبل انقضاء المهلة (`PointerUpEvent` دون تجاوز الموعد `_longPressFired == false`):
-///      يُلغى التظليل ويتم قبول الإيماءة كـ `onTap` (نقر سريع).
-///    - إذا استمر الضغط حتى انقضاء الموعد (`didExceedDeadline`):
-///      تصبح `_longPressFired = true` ويتم إطلاق `onLongPress` لفتح قائمة خيارات الآية (`AyahActionSheet`).
-///    - إذا تحركت اليد للتمرير: تلغي ساحة فلاتر الإيماءة عبر `PointerCancelEvent` فيتم مسح التظليل بسلاسة دون اعتراض التمرير.
+/// يرث LongPressGestureRecognizer لدمج النقر السريع مع الضغط المطول،
+/// ومنع أي تعارض مع حركة تمرير صفحات المصحف في PageView.
 class AyahGestureRecognizer extends LongPressGestureRecognizer {
   VoidCallback? onPointerDown;
   VoidCallback? onPointerUpEarly;
   VoidCallback? onTap;
 
-  /// ينشئ متعرف إيماءات مخصص للتفاعل مع الآية القرآنية.
-  ///
-  /// 🎓 [ملاحظة تعليمية - القيمة الافتراضية لمهلة الضغط المطول]:
-  /// - تُحدد المهلة الزمنية للضغط المطول (1100 ميلي ثانية = 1.1 ثانية) قبل إطلاق قائمة الخيارات.
-  /// - لتقليل المدة وتسريع فتح الخيارات، يمكن خفض القيمة هنا (مثلاً 500ms أو 600ms).
+  /// المهلة الافتراضية للضغط المطول (1100ms).
   AyahGestureRecognizer({
     this.onPointerDown,
     this.onPointerUpEarly,
@@ -239,13 +223,8 @@ class _QuranPageViewState extends State<QuranPageView> {
     }
 
     final recognizer = AyahGestureRecognizer(
-      // 🎓 [ملاحظة تعليمية - مكان تحديد مدة الضغط على الآية في المصحف]:
-      // هذا هو السطر المحدد لمهلة الضغط المطول (Long-Press Duration) في مصحف تدبير:
-      // - القيمة الحالية: 1100 ميلي ثانية (1.1 ثانية) لضمان عدم الفتح العرضي أثناء التلاوة والتمرير.
-      // - لتقليل مدة الضغط المطول وتسريع استجابة قائمة خيارات الآية، يمكن تعديل هذه القيمة مباشرة
-      //   (مثلاً: const Duration(milliseconds: 500) لنصف ثانية).
-      // - ملاحظة: رمز/رقم الآية المرفق بجانبها يستجيب للنقر السريع المباشر (Tap) دون انتظار.
-      duration: const Duration(milliseconds: 1100),
+      // مدة الضغط المطول لإظهار خيارات الآية (النقر المباشر على رقم الآية يفتحها فوراً).
+      duration: const Duration(milliseconds: 500),
       onPointerDown: () {
         widget.onAyahHighlight?.call(ayah);
       },
