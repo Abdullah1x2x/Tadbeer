@@ -585,7 +585,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         title: Text(context.l10n.ayahReflectionNoteTitle),
         content: TextField(
           controller: controller,
-          maxLines: 4,
+          minLines: 3,
+          maxLines: 8,
           autofocus: true,
           decoration: InputDecoration(
             hintText: context.l10n.ayahReflectionNoteHint,
@@ -949,6 +950,30 @@ class _CenterThemeNode extends StatelessWidget {
               ),
             ),
           ),
+          if (description != null && description!.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: isDark ? 0.12 : 0.08),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                description!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11.5,
+                  height: 1.45,
+                  color: isDark
+                      ? AppColors.nightSubtitle
+                      : AppColors.daySubtitle,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -1086,11 +1111,9 @@ class _VerseCanvasNode extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 effectiveNote,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 11,
-                  height: 1.4,
+                  height: 1.45,
                   color: isDark
                       ? AppColors.nightSubtitle
                       : AppColors.daySubtitle,

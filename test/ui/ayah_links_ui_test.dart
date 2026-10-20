@@ -220,9 +220,13 @@ void main() {
         expect(find.byTooltip('يمين'), findsNothing);
         expect(find.byTooltip('يسار'), findsNothing);
 
-        // 2. Exactly the two required buttons exist: Add Verse and Center
+        // 2. Exactly the required buttons exist: Add Verse, Add Note, and Center
         expect(
           find.widgetWithText(FloatingActionButton, 'إضافة آية'),
+          findsOneWidget,
+        );
+        expect(
+          find.widgetWithText(FloatingActionButton, 'إضافة ملاحظة'),
           findsOneWidget,
         );
         final centerButton = find.byTooltip('العودة إلى الوسط');
@@ -233,7 +237,7 @@ void main() {
         await tester.tap(centerButton);
         await tester.pumpAndSettle();
 
-        // 4. Switching to Ordered view hides the Center button, Add Verse remains
+        // 4. Switching to Ordered view hides the Center button, Add Verse and Add Note remain
         await tester.runAsync(() async {
           await tester.tap(find.text('مرتب'));
           await Future.delayed(const Duration(milliseconds: 100));
@@ -243,6 +247,10 @@ void main() {
         expect(find.byTooltip('العودة إلى الوسط'), findsNothing);
         expect(
           find.widgetWithText(FloatingActionButton, 'إضافة آية'),
+          findsOneWidget,
+        );
+        expect(
+          find.widgetWithText(FloatingActionButton, 'إضافة ملاحظة'),
           findsOneWidget,
         );
       },
@@ -289,6 +297,67 @@ void main() {
         expect(find.textContaining('سورة البقرة'), findsWidgets);
         expect(find.text('فتح في المصحف'), findsOneWidget);
         expect(find.byType(SingleChildScrollView), findsWidgets);
+      },
+    );
+
+    testWidgets(
+      'Add Note button opens reflection note dialog, updates note and displays full note without truncation',
+      (WidgetTester tester) async {
+        late AyahLinkItem link;
+        await tester.runAsync(() async {
+          final repo = AyahLinkRepository();
+          link = await repo.createLink(
+            title: 'رابط التدبر والاختبار',
+          );
+          final ayahObj = QuranRepository.instance.getAyah(1, 1);
+          await repo.addVerseToLink(
+            link.id,
+            ayahId: ayahObj?.id ?? 1,
+            surahNumber: 1,
+            ayahNumber: 1,
+            page: 1,
+            note:
+                'ملاحظة تدبرية طويلة جداً على الآية الأولى تمتد لعدة أسطر للتأكد من ظهورها كاملة على العقدة دون أي اقتطاع أو علامات حذف نهائياً.',
+          );
+        });
+
+        await tester.pumpWidget(
+          buildTestApp(AyahLinkDetailScreen(linkId: link.id)),
+        );
+        await tester.pumpAndSettle();
+
+        // 1. Verify 'إضافة ملاحظة' FAB exists next to 'إضافة آية'
+        final addNoteFab =
+            find.widgetWithText(FloatingActionButton, 'إضافة ملاحظة');
+        expect(addNoteFab, findsOneWidget);
+
+        // 2. Tap 'إضافة ملاحظة' and write link reflection note
+        await tester.tap(addNoteFab);
+        await tester.pumpAndSettle();
+
+        expect(find.text('ملاحظة وتدبر الرابط'), findsOneWidget);
+        await tester.enterText(
+          find.byType(TextField).last,
+          'هذا نص ملاحظة تدبر الرابط بالكامل يوضح الرابط الوثيق بين الآيات',
+        );
+        await tester.tap(find.text('حفظ'));
+        await tester.pumpAndSettle();
+
+        // 3. Verify the updated link description appears in full on the canvas
+        expect(
+          find.text(
+            'هذا نص ملاحظة تدبر الرابط بالكامل يوضح الرابط الوثيق بين الآيات',
+          ),
+          findsOneWidget,
+        );
+
+        // 4. Verify verse note on canvas node is also rendered completely
+        expect(
+          find.text(
+            'ملاحظة تدبرية طويلة جداً على الآية الأولى تمتد لعدة أسطر للتأكد من ظهورها كاملة على العقدة دون أي اقتطاع أو علامات حذف نهائياً.',
+          ),
+          findsOneWidget,
+        );
       },
     );
   });

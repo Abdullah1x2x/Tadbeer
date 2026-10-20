@@ -59,6 +59,124 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
     );
   }
 
+  /// يفتح نافذة حوار لإضافة أو تعديل الملاحظة والتدبر الخاص برابط الآيات.
+  Future<void> _openAddNote(AyahLinkItem link) async {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final controller = TextEditingController(text: link.description ?? '');
+
+    final updatedNote = await showDialog<String>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.comsilkLight,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(
+              Icons.edit_note_rounded,
+              color: Theme.of(context).colorScheme.primary,
+              size: 26,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                l10n.isArabic ? 'ملاحظة وتدبر الرابط' : 'Link Reflection Note',
+                style: const TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.isArabic
+                  ? 'سجّل ملاحظتك أو الرابط التدبري الذي يجمع هذه الآيات:'
+                  : 'Record your reflection or the theme connecting these verses:',
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              minLines: 3,
+              maxLines: 8,
+              autofocus: true,
+              style: const TextStyle(fontSize: 14, height: 1.5),
+              decoration: InputDecoration(
+                hintText: l10n.isArabic
+                    ? 'اكتب تدبرك أو ملاحظتك هنا...'
+                    : 'Write your reflection or note here...',
+                filled: true,
+                fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogCtx, controller.text.trim()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+
+    if (updatedNote != null && mounted) {
+      final newDesc = updatedNote.isEmpty ? null : updatedNote;
+      await _repo.updateLink(link.copyWith(description: newDesc));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.isArabic
+                  ? (newDesc != null
+                      ? 'تم حفظ ملاحظة الرابط بنجاح'
+                      : 'تمت إزالة ملاحظة الرابط')
+                  : 'Link note updated successfully',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
   /// يفتح نافذة حوار لتعديل عنوان ووصف رابط الآيات الحالي.
   Future<void> _editLink(AyahLinkItem link) async {
     await CreateLinkDialog.show(context, existingLink: link);
@@ -279,6 +397,31 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                   foregroundColor: Colors.white,
                   icon: const Icon(Icons.add),
                   label: Text(l10n.addVerse),
+                ),
+                const SizedBox(width: 8),
+                FloatingActionButton.extended(
+                  heroTag: 'add_note_fab',
+                  onPressed: () => _openAddNote(link),
+                  backgroundColor: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.comsilkLight,
+                  foregroundColor: isDark
+                      ? AppColors.darkAccentGold
+                      : AppColors.olive,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: isDark
+                          ? AppColors.darkAccentGold.withValues(alpha: 0.5)
+                          : AppColors.olive.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  icon: const Icon(Icons.edit_note_rounded),
+                  label: Text(
+                    l10n.isArabic ? 'إضافة ملاحظة' : 'Add Note',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 if (_activeViewMode == 'network') ...[
                   const SizedBox(width: 8),

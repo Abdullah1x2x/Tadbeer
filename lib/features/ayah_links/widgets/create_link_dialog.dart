@@ -153,7 +153,8 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
               const SizedBox(height: 14),
               TextFormField(
                 controller: _descController,
-                maxLines: 3,
+                minLines: 3,
+                maxLines: 8,
                 decoration: InputDecoration(
                   labelText: l10n.linkDescription,
                   hintText: l10n.linkDescriptionHint,

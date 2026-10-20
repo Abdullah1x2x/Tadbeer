@@ -303,7 +303,8 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               // Note field
               TextField(
                 controller: _noteController,
-                maxLines: 2,
+                minLines: 2,
+                maxLines: 6,
                 decoration: InputDecoration(
                   labelText: l10n.isArabic
                       ? 'ملاحظتك على هذه الآية في هذا الرابط (اختيارية)'

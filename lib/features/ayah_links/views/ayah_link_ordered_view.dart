@@ -44,7 +44,8 @@ class AyahLinkOrderedView extends StatelessWidget {
         title: Text(context.l10n.ayahReflectionNoteTitle),
         content: TextField(
           controller: controller,
-          maxLines: 4,
+          minLines: 3,
+          maxLines: 8,
           autofocus: true,
           decoration: InputDecoration(
             hintText: context.l10n.ayahReflectionNoteHint,

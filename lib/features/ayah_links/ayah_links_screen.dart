@@ -580,8 +580,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                       const SizedBox(height: 10),
                                       Text(
                                         link.description!,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontSize: 13,
                                           height: 1.5,
