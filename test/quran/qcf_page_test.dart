@@ -16,6 +16,16 @@ import 'package:tadbeer/features/settings/user_settings_model.dart';
 void main() {
   late Directory tempDir;
 
+  // Loaded in real time before any test: a page preloads its neighbours'
+  // fonts, which under a test's fake time would start and never finish.
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await QcfLayout.instance.init();
+    for (var page = 1; page <= 4; page++) {
+      await QcfFonts.instance.ensurePage(page);
+    }
+  });
+
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_qcf_page_');
     await UserDataStore.instance.init(File('${tempDir.path}/data.json'));
@@ -29,12 +39,13 @@ void main() {
   Future<void> pumpPage(
     WidgetTester tester, {
     required Size size,
+    int page = 3,
     double? fontSize,
     ValueChanged<Ayah>? onTap,
   }) async {
     await tester.runAsync(() async {
       await QcfLayout.instance.init();
-      await QcfFonts.instance.ensurePage(3);
+      await QcfFonts.instance.ensurePage(page);
     });
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -44,7 +55,7 @@ void main() {
         theme: AppTheme.lightTheme,
         home: Scaffold(
           body: QuranPageView(
-            pageNumber: 3,
+            pageNumber: page,
             fontSize: fontSize,
             onAyahTap: onTap,
           ),
@@ -54,15 +65,55 @@ void main() {
     await tester.pump();
   }
 
-  /// Whether [span] or any span inside it uses the page's Mushaf font.
-  bool usesMushafFont(InlineSpan span) =>
-      span.style?.fontFamily == QcfFonts.familyFor(3) ||
-      (span is TextSpan && (span.children ?? const []).any(usesMushafFont));
+  /// The span that sets [page]'s Mushaf font, if [span] contains it.
+  TextSpan? mushafSpan(InlineSpan span, int page) {
+    if (span is! TextSpan) return null;
+    if (span.style?.fontFamily == QcfFonts.familyFor(page)) return span;
+    for (final child in span.children ?? const <InlineSpan>[]) {
+      final found = mushafSpan(child, page);
+      if (found != null) return found;
+    }
+    return null;
+  }
 
   /// Paragraphs drawn with the page's Mushaf font.
-  Iterable<RenderParagraph> mushafLines(WidgetTester tester) => tester
-      .renderObjectList<RenderParagraph>(find.byType(RichText))
-      .where((p) => usesMushafFont(p.text));
+  Iterable<RenderParagraph> mushafLines(WidgetTester tester, {int page = 3}) =>
+      tester
+          .renderObjectList<RenderParagraph>(find.byType(RichText))
+          .where((p) => mushafSpan(p.text, page) != null);
+
+  /// Font size of [page]'s lines as laid out.
+  double mushafFontSize(WidgetTester tester, int page) => mushafSpan(
+    mushafLines(tester, page: page).first.text,
+    page,
+  )!.style!.fontSize!;
+
+  // Median word height per unit of font size, measured from the glyphs.
+  const wordHeight = {1: 0.889, 2: 0.834, 3: 1.036};
+
+  for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
+    testWidgets(
+      'the opening pages read as large as the rest (${size.width.toInt()} wide)',
+      (tester) async {
+        await pumpPage(tester, size: size);
+        final ordinary = mushafFontSize(tester, 3) * wordHeight[3]!;
+        for (final page in [1, 2]) {
+          await pumpPage(tester, size: size, page: page);
+          final letters = mushafFontSize(tester, page) * wordHeight[page]!;
+          expect(
+            letters / ordinary,
+            inInclusiveRange(0.9, 1.1),
+            reason: 'page $page',
+          );
+          for (final line in mushafLines(tester, page: page)) {
+            expect(line.didExceedMaxLines, isFalse);
+            expect(line.size.width, lessThanOrEqualTo(size.width * 0.9));
+          }
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
     testWidgets('the printed page fits a ${size.width.toInt()} wide screen', (
