@@ -9,6 +9,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/ayah_links_screen.dart';
 import '../books/books_screen.dart';
+import '../daily/ayah_of_day_card.dart';
 import '../duas/duas_screen.dart';
 import '../journey/journey_summary_card.dart';
 
@@ -116,6 +117,10 @@ class HomeScreen extends StatelessWidget {
                           isVeryCompact: isVeryCompact,
                         ),
                         SizedBox(height: spaceSearchToHero),
+
+                        // آية اليوم مع سؤال تدبر
+                        const AyahOfTheDayCard(),
+                        SizedBox(height: spaceHeroToCore),
 
                         // 1. Featured Quran Hero Card
                         _QuranHeroCard(

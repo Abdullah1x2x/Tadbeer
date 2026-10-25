@@ -203,6 +203,8 @@ void main() {
       expect(duasCard, findsWidgets);
       expect(find.byIcon(FlutterIslamicIcons.prayer), findsWidgets);
 
+      await tester.ensureVisible(duasCard.first);
+      await tester.pumpAndSettle();
       await tester.tap(duasCard.first);
       await tester.pumpAndSettle();
 
