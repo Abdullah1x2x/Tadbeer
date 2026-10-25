@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Khatma ring: a faint track and a gold arc starting at the top. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
-        <shape>
-            <corners android:radius="3dp" />
+        <shape
+            android:innerRadiusRatio="2.7"
+            android:shape="ring"
+            android:thicknessRatio="11"
+            android:useLevel="false">
             <solid android:color="#33FFFFFF" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
-        <clip>
-            <shape>
-                <corners android:radius="3dp" />
-                <solid android:color="#C9A35A" />
+        <rotate
+            android:fromDegrees="270"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            android:toDegrees="270">
+            <shape
+                android:innerRadiusRatio="2.7"
+                android:shape="ring"
+                android:thicknessRatio="11"
+                android:useLevel="true">
+                <solid android:color="#E2C27A" />
             </shape>
-        </clip>
+        </rotate>
     </item>
 </layer-list>

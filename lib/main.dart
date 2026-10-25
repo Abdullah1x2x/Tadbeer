@@ -11,6 +11,7 @@ import 'features/duas/morning_evening_adhkar_screen.dart';
 import 'features/journey/portion_reminder.dart';
 import 'features/tasbeeh/tasbeeh_model.dart';
 import 'features/widgets/home_widget_sync.dart';
+import 'features/widgets/widget_links.dart';
 
 /// Registers bundled non-Dart asset licenses (Quranic text, Word Meanings dataset,
 /// and SIL OFL 1.1 fonts) into Flutter's [LicenseRegistry] so they appear in
@@ -88,18 +89,8 @@ void main() async {
     onTapped: (payload) {
       if (payload == 'adhkar_morning' || payload == 'adhkar_evening') {
         // Open the matching adhkar from the Duas tab.
-        final navigator = appNavigatorKey.currentState;
+        final navigator = MainShell.showFromOutside(ShellTab.duas);
         if (navigator == null) return;
-        navigator.popUntil((route) => route.isFirst);
-        if (MainShell.isMounted) {
-          MainShell.requestedTab.value = ShellTab.duas;
-        } else {
-          navigator.pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => const MainShell(initialTab: ShellTab.duas),
-            ),
-          );
-        }
         navigator.push(
           MaterialPageRoute(
             builder: (_) => MorningEveningAdhkarScreen(
@@ -114,18 +105,7 @@ void main() async {
       if (payload == 'quran_resume') {
         // Open the Mushaf tab at the reading (khatma) position rather than a
         // separate reader; skip the intro when launched from the reminder.
-        final navigator = appNavigatorKey.currentState;
-        if (navigator == null) return;
-        navigator.popUntil((route) => route.isFirst);
-        if (MainShell.isMounted) {
-          MainShell.requestedTab.value = ShellTab.quran;
-        } else {
-          navigator.pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => const MainShell(initialTab: ShellTab.quran),
-            ),
-          );
-        }
+        MainShell.showFromOutside(ShellTab.quran);
       }
     },
   );
@@ -141,4 +121,6 @@ void main() async {
       UserDataStore.instance.markActiveDay();
 
   runApp(const TadbeerApp());
+  // Buttons on the home-screen widget open the matching screen.
+  WidgetsBinding.instance.addPostFrameCallback((_) => WidgetLinks.attach());
 }

@@ -5,4 +5,5 @@
     <string name="widget_sample_title">آية اليوم</string>
     <string name="widget_sample_ayah">أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ</string>
     <string name="widget_sample_ref">سورة الرعد · الآية ٢٨</string>
+    <string name="widget_sample_reflect">تدبّرها</string>
 </resources>
