@@ -60,6 +60,22 @@ class UserDataStore extends ChangeNotifier {
   /// رحلة القراءة: خطة الختمة وسجل الصفحات اليومية.
   ReadingJourney get journey => _journey;
 
+  /// Small JSON state of other features (guided paths, memorization...),
+  /// keyed by feature, stored in `app_state` and included in backups.
+  final Map<String, Map<String, dynamic>> _featureState = {};
+
+  /// حالة ميزة محفوظة بمفتاحها (فارغة إن لم تُحفظ بعد).
+  Map<String, dynamic> featureState(String key) =>
+      Map<String, dynamic>.from(_featureState[key] ?? const {});
+
+  /// يحفظ حالة ميزة ويبلغ المستمعين.
+  Future<void> saveFeatureState(String key, Map<String, dynamic> value) async {
+    _featureState[key] = value;
+    notifyListeners();
+    await UserDatabase.instance.saveAppState(key, value);
+    await saveToDisk();
+  }
+
   /// قائمة جميع الملاحظات والخواطر غير القابلة للتعديل المباشر.
   List<NoteItem> get notes => List.unmodifiable(_notes);
 
@@ -98,6 +114,7 @@ class UserDataStore extends ChangeNotifier {
       _dataFile = testFile;
       _readingPosition = ReadingPosition.defaultPosition();
       _journey = const ReadingJourney();
+      _featureState.clear();
       _notes.clear();
       _bookmarks.clear();
       _bookmarkLookup.clear();
@@ -123,10 +140,14 @@ class UserDataStore extends ChangeNotifier {
       final savedPos = await userDb.loadReadingPosition();
       if (savedPos != null) _readingPosition = savedPos;
 
-      final savedJourney = await userDb.loadAppState(_journeyKey);
+      final appState = await userDb.loadAllAppState();
+      final savedJourney = appState.remove(_journeyKey);
       if (savedJourney != null) {
         _journey = ReadingJourney.fromJson(savedJourney);
       }
+      _featureState
+        ..clear()
+        ..addAll(appState);
 
       final dbNotes = await userDb.loadNotes();
       if (dbNotes.isNotEmpty) {
@@ -289,6 +310,14 @@ class UserDataStore extends ChangeNotifier {
           .toList();
     }
 
+    Map<String, Map<String, dynamic>>? newFeatureState;
+    if (data['featureState'] is Map) {
+      newFeatureState = {
+        for (final e in (data['featureState'] as Map).entries)
+          e.key as String: Map<String, dynamic>.from(e.value as Map),
+      };
+    }
+
     ReadingJourney? newJourney;
     if (data['readingJourney'] is Map) {
       newJourney = ReadingJourney.fromJson(
@@ -306,6 +335,11 @@ class UserDataStore extends ChangeNotifier {
     // ---- Everything parsed successfully: apply present sections only ----
     if (newPosition != null) _readingPosition = newPosition;
     if (newJourney != null) _journey = newJourney;
+    if (newFeatureState != null) {
+      _featureState
+        ..clear()
+        ..addAll(newFeatureState);
+    }
 
     if (newNotes != null) {
       _notes
@@ -364,6 +398,9 @@ class UserDataStore extends ChangeNotifier {
     final userDb = UserDatabase.instance;
     if (!userDb.isOpen) return false;
     await userDb.saveAppState(_journeyKey, _journey.toJson());
+    for (final e in _featureState.entries) {
+      await userDb.saveAppState(e.key, e.value);
+    }
     return userDb.replaceAllUserData(
       readingPosition: _readingPosition,
       notes: _notes,
@@ -386,6 +423,7 @@ class UserDataStore extends ChangeNotifier {
         'exportedAt': DateTime.now().toIso8601String(),
         'readingPosition': _readingPosition.toJson(),
         'readingJourney': _journey.toJson(),
+        'featureState': _featureState,
         'notes': _notes.map((n) => n.toJson()).toList(),
         'bookmarks': _bookmarks.map((b) => b.toJson()).toList(),
         'highlights': _highlights.map((h) => h.toJson()).toList(),
@@ -948,6 +986,7 @@ class UserDataStore extends ChangeNotifier {
   Future<void> resetAllData() async {
     _readingPosition = ReadingPosition.defaultPosition();
     _journey = const ReadingJourney();
+    _featureState.clear();
     _notes.clear();
     _bookmarks.clear();
     _bookmarkLookup.clear();
@@ -1085,6 +1124,11 @@ class UserDataStore extends ChangeNotifier {
       'exportedAt': DateTime.now().toIso8601String(),
       'readingPosition': _readingPosition.toJson(),
       'readingJourney': _journey.toJson(),
+      // A copy, so the snapshot stays intact if the live state changes.
+      'featureState': {
+        for (final e in _featureState.entries)
+          e.key: Map<String, dynamic>.from(e.value),
+      },
       if (notes) 'notes': _notes.map((n) => n.toJson()).toList(),
       if (bookmarks) 'bookmarks': _bookmarks.map((b) => b.toJson()).toList(),
       if (highlights) 'highlights': _highlights.map((h) => h.toJson()).toList(),
