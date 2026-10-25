@@ -157,6 +157,15 @@ class AppStrings {
   String get ayahOfTheDay => isArabic ? 'آية اليوم' : 'Verse of the day';
   String get reflectOnIt => isArabic ? 'تدبّرها' : 'Reflect';
 
+  // Reading vs viewing
+  String get continueReadingFromHere =>
+      isArabic ? 'أكمل القراءة من هنا' : 'Continue reading from here';
+  String readingPositionMoved(int page) => isArabic
+      ? 'أصبحت صفحة ${_n(page)} موضع قراءتك'
+      : 'Page $page is now your reading position';
+  String pageCounted(int page) =>
+      isArabic ? 'احتُسبت صفحة ${_n(page)}' : 'Page $page counted';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

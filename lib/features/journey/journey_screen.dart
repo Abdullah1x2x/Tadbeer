@@ -344,7 +344,10 @@ class _TodayPortionCard extends StatelessWidget {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => QuranScreen(initialPage: plan.nextUnreadPage),
+                  builder: (_) => QuranScreen(
+                    initialPage: plan.nextUnreadPage,
+                    readingMode: true,
+                  ),
                 ),
               ),
               icon: const Icon(Icons.menu_book_rounded),

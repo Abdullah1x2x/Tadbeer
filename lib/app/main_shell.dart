@@ -80,7 +80,10 @@ class _MainShellState extends State<MainShell>
       case ShellTab.home:
         return const HomeScreen();
       case ShellTab.quran:
-        return QuranScreen(controlsVisible: _quranControlsVisible);
+        return QuranScreen(
+          controlsVisible: _quranControlsVisible,
+          readingMode: true,
+        );
       case ShellTab.tasbeeh:
         return const TasbeehScreen();
       case ShellTab.duas:
