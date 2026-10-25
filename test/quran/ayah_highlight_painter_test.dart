@@ -8,6 +8,7 @@ import 'package:tadbeer/features/notes/note_model.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
+import 'package:tadbeer/features/settings/user_settings_model.dart';
 
 List<Rect> mergeTextBoxes(List<TextBox> boxes, double maxWidth) {
   if (boxes.isEmpty) return const [];
@@ -62,6 +63,8 @@ void main() {
     tempDir = await Directory.systemTemp.createTemp('hl_test_');
     final dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
+    // These tests cover the flowing text view, not the Madinah pages.
+    await UserDataStore.instance.setMushafStyle(MushafStyle.text);
     await QuranRepository.instance.init();
   });
 

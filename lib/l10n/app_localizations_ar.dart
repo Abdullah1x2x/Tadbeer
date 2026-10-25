@@ -1526,4 +1526,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adhkarSetCompleted => 'أتممت الأذكار، واحتُسب يومك في رحلتك';
+
+  @override
+  String get mushafStyleTitle => 'طريقة عرض المصحف';
+
+  @override
+  String get mushafStyleMadinah => 'مصحف المدينة';
+
+  @override
+  String get mushafStyleText => 'نص متدفق';
+
+  @override
+  String get qcfAttribution => 'خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف';
 }

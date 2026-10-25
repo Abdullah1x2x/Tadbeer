@@ -444,5 +444,9 @@
   "smartPaceSeconds": "Pace {seconds}s",
   "portionLeftTitle": "{pages} pages left in today’s portion",
   "portionLeftBody": "Continue your khatma where you left off",
-  "adhkarSetCompleted": "Adhkar complete — today counts toward your streak"
+  "adhkarSetCompleted": "Adhkar complete — today counts toward your streak",
+  "mushafStyleTitle": "Mushaf view",
+  "mushafStyleMadinah": "Madinah Mushaf",
+  "mushafStyleText": "Flowing text",
+  "qcfAttribution": "Mushaf font: King Fahd Glorious Quran Printing Complex"
 }

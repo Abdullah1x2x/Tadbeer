@@ -1531,4 +1531,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get adhkarSetCompleted =>
       'Adhkar complete — today counts toward your streak';
+
+  @override
+  String get mushafStyleTitle => 'Mushaf view';
+
+  @override
+  String get mushafStyleMadinah => 'Madinah Mushaf';
+
+  @override
+  String get mushafStyleText => 'Flowing text';
+
+  @override
+  String get qcfAttribution =>
+      'Mushaf font: King Fahd Glorious Quran Printing Complex';
 }

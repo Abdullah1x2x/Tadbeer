@@ -177,6 +177,10 @@ class AppStrings {
   String portionLeftTitle(int pages) => _l.portionLeftTitle(digits(pages));
   String get portionLeftBody => _l.portionLeftBody;
   String get adhkarSetCompleted => _l.adhkarSetCompleted;
+  String get mushafStyleTitle => _l.mushafStyleTitle;
+  String get mushafStyleMadinah => _l.mushafStyleMadinah;
+  String get mushafStyleText => _l.mushafStyleText;
+  String get qcfAttribution => _l.qcfAttribution;
 
   String get reflectedToday => _l.reflectedToday;
 
@@ -520,6 +524,7 @@ class AppStrings {
         '• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n'
         '• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n'
         '• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n'
+        '• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n'
         '• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.'
       : '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n'
         '• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n'
@@ -527,6 +532,7 @@ class AppStrings {
         '• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n'
         '• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n'
         '• Application License: 100% free and open-source project licensed under the MIT License.\n'
+        '• Madinah Mushaf script: page fonts (QCF) by the King Fahd Glorious Quran Printing Complex, with line layout from Quran.com data.\n'
         '• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
   String get openSourceLicenses => _l.openSourceLicenses;
   /// زر استعراض ميثاق وسياسة الخصوصية والأمان.

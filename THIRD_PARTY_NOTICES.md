@@ -47,6 +47,9 @@ All Mushaf and interface typography fonts are licensed under the **[SIL Open Fon
 | **Lateef** (`Lateef-Regular.ttf`) | [SIL International](https://software.sil.org/lateef/) | `4.400` | SIL OFL-1.1 | Retain copyright notice and license text; respect Reserved Font Names (`Lateef`, `SIL`). |
 | **Amiri Quran** (`AmiriQuran-Regular.ttf`) | [Dr. Khaled Hosny / Alif Type](https://github.com/aliftype/amiri) | `1.003` | SIL OFL-1.1 | Retain copyright notice and license text. |
 | **Amiri** (`Amiri-Regular.ttf`, `Amiri-Bold.ttf`) | [Dr. Khaled Hosny / Alif Type](https://github.com/aliftype/amiri) | `1.002` | SIL OFL-1.1 | Retain copyright notice and license text. |
+| **IBM Plex Sans Arabic** (`IBMPlexSansArabic-*.ttf`) | [IBM](https://github.com/IBM/plex) | `1.x` | SIL OFL-1.1 | Retain copyright notice and license text (`IBMPlexSansArabic-OFL.txt`). |
+| **Phosphor Icons** (`phosphor_flutter`) | [Phosphor Icons](https://phosphoricons.com/) | `2.1.0` | MIT | Include MIT license text and copyright notice. |
+| **Madinah Mushaf QCF v1** (`assets/fonts/qcf/p1.ttf` … `p604.ttf`) | [King Fahd Glorious Quran Printing Complex](https://qurancomplex.gov.sa/) | v1 (1405 H print) | Free non-commercial distribution by the Complex | Bundled unaltered; attribution shown in Settings and About. |
 | **Material Icons** (`MaterialIcons-Regular.otf`) | [Google LLC](https://github.com/google/material-design-icons) | Flutter SDK | Apache-2.0 | Include license text and Google LLC copyright notice (bundled via Flutter). |
 | **Islamic Icons** (`IslamicIcons.ttf`) | [Ramazan Erbasaran](https://pub.dev/packages/flutter_islamic_icons) | `1.0.2` | BSD-2-Clause | Include BSD-2-Clause license text and copyright notice. |
 

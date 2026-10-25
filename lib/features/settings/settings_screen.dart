@@ -226,6 +226,51 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        // Madinah pages first; flowing text is the
+                        // alternative that needs no download.
+                        Row(
+                          children: [
+                            Icon(
+                              AppIcons.bookOpenText,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.mushafStyleTitle,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        SegmentedButton<MushafStyle>(
+                          segments: [
+                            ButtonSegment(
+                              value: MushafStyle.madinah,
+                              label: Text(l10n.mushafStyleMadinah),
+                            ),
+                            ButtonSegment(
+                              value: MushafStyle.text,
+                              label: Text(l10n.mushafStyleText),
+                            ),
+                          ],
+                          selected: {settings.mushafStyle},
+                          showSelectedIcon: false,
+                          onSelectionChanged: (v) =>
+                              UserDataStore.instance.setMushafStyle(v.first),
+                        ),
+                        if (settings.mushafStyle == MushafStyle.madinah) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.qcfAttribution,
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              color: AppColors.textSecondary(context),
+                            ),
+                          ),
+                        ],
+                        const Divider(height: 28),
                         Row(
                           children: [
                             Icon(
