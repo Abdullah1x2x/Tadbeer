@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/journey/reading_journey.dart';
+import 'package:tadbeer/features/quran/data/quran_repository.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   final monday = DateTime(2026, 10, 19, 9);
 
   group('ReadingJourney', () {
@@ -40,23 +42,44 @@ void main() {
       );
       final read = j.recordPage(1, monday).recordPage(2, monday);
       expect(read.plan!.progress, closeTo(2 / 604, 1e-9));
-      expect(read.plan!.nextUnreadPage, 3);
+      expect(read.plan!.currentPage, 3);
     });
 
-    test('continues after the last page read, not from page 1', () {
-      // Started reading mid-Mushaf (e.g. from the saved position).
-      var j = const ReadingJourney().startPlan(30, monday);
+    test('only the page the khatma points at moves it forward', () {
+      var j = const ReadingJourney().startPlan(30, monday, startPage: 192);
+      expect(j.plan!.currentPage, 192);
+
+      // Browsing another page counts for today but not for the khatma.
+      j = j.recordPage(50, monday);
+      expect(j.pagesOn(monday), 1);
+      expect(j.plan!.currentPage, 192);
+      expect(j.plan!.advanced, 0);
+
       j = j.recordPage(192, monday).recordPage(193, monday);
-      expect(j.plan!.nextUnreadPage, 194);
+      expect(j.plan!.currentPage, 194);
+      expect(j.plan!.advanced, 2);
+    });
 
-      // Re-reading an earlier page moves on past what was already read.
-      j = j.recordPage(193, monday);
-      expect(j.plan!.nextUnreadPage, 194);
-
-      // At the end of the Mushaf it wraps around to the first unread page.
+    test('wraps from the last page back to the first', () {
+      var j = const ReadingJourney().startPlan(30, monday, startPage: 604);
       j = j.recordPage(604, monday);
-      expect(j.plan!.nextUnreadPage, 1);
-      expect(ReadingJourney.fromJson(j.toJson()).plan!.nextUnreadPage, 1);
+      expect(j.plan!.currentPage, 1);
+    });
+
+    test('moving the position by hand counts the pages before it', () {
+      final j = const ReadingJourney()
+          .startPlan(30, monday, startPage: 100)
+          .moveKhatmaTo(150);
+      expect(j.plan!.currentPage, 150);
+      expect(j.plan!.advanced, 50);
+    });
+
+    test('marking the portion done advances by a day of pages', () {
+      final j = const ReadingJourney()
+          .startPlan(30, monday)
+          .completePortion(monday);
+      expect(j.plan!.currentPage, 22);
+      expect(j.pagesOn(monday), 21);
     });
 
     test('reading every page completes the khatma', () {
@@ -66,6 +89,26 @@ void main() {
       }
       expect(j.plan, isNull);
       expect(j.completedKhatmas, 1);
+    });
+
+    test('reflection or memorization days keep the streak', () {
+      var j = const ReadingJourney().recordPage(1, monday);
+      j = j.markActive(monday.add(const Duration(days: 1)));
+      expect(j.streak(monday.add(const Duration(days: 1))), 2);
+    });
+
+    test('migrates an older scattered-pages plan', () {
+      final old = {
+        'plan': {
+          'startDate': '2026-10-19',
+          'days': 30,
+          'readPages': [1, 192, 193],
+          'lastPage': 193,
+        },
+      };
+      final plan = ReadingJourney.fromJson(old).plan!;
+      expect(plan.currentPage, 194);
+      expect(plan.advanced, 3);
     });
 
     test('round-trips through JSON', () {
@@ -93,6 +136,7 @@ void main() {
       final store = UserDataStore.instance;
       final dbPath = '${tempDir.path}/user.db';
       await store.init(File('${tempDir.path}/data.json'), dbPath);
+      await QuranRepository.instance.init();
 
       await store.startKhatma(30);
       await store.recordPageRead(1);
@@ -102,13 +146,13 @@ void main() {
 
       // Reopening the same database restores the journey.
       await store.init(File('${tempDir.path}/data.json'), dbPath);
-      expect(store.journey.plan?.readPages, {1, 2});
+      expect(store.journey.plan?.currentPage, 3);
 
       // A backup brings it back after a reset.
       await store.resetAllData();
       expect(store.journey.plan, isNull);
       await store.replaceAllUserData(backup);
-      expect(store.journey.plan?.readPages, {1, 2});
+      expect(store.journey.plan?.currentPage, 3);
     });
   });
 }

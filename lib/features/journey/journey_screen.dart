@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/storage/user_data_store.dart';
+import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/screens/quran_screen.dart';
 import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
@@ -48,6 +49,33 @@ class JourneyScreen extends StatelessWidget {
                 else ...[
                   _KhatmaProgressCard(plan: plan, now: now),
                   const SizedBox(height: 12),
+                  // The user read elsewhere (e.g. moved their reading place):
+                  // offer to bring the khatma along instead of guessing.
+                  if (UserDataStore.instance.readingPosition.page !=
+                      plan.currentPage)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.sync_alt_rounded,
+                            color: AppColors.accentGold(context),
+                          ),
+                          title: Text(
+                            l10n.khatmaElsewhere(
+                              UserDataStore.instance.readingPosition.page,
+                            ),
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          trailing: TextButton(
+                            onPressed: () => UserDataStore.instance.moveKhatmaTo(
+                              UserDataStore.instance.readingPosition.page,
+                            ),
+                            child: Text(l10n.moveKhatmaHere),
+                          ),
+                        ),
+                      ),
+                    ),
                   _TodayPortionCard(plan: plan, journey: journey, now: now),
                 ],
                 const SizedBox(height: 12),
@@ -76,6 +104,7 @@ class _StartKhatmaCard extends StatefulWidget {
 class _StartKhatmaCardState extends State<_StartKhatmaCard> {
   static const _options = [7, 15, 30, 60, 90];
   int _days = 30;
+  bool _fromCurrent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +157,38 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
               style: TextStyle(color: gold, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 18),
+            SegmentedButton<bool>(
+              segments: [
+                ButtonSegment(
+                  value: false,
+                  label: Text(l10n.fromMushafStart),
+                ),
+                ButtonSegment(
+                  value: true,
+                  label: Text(
+                    l10n.fromMyPosition(
+                      UserDataStore.instance.readingPosition.page,
+                    ),
+                  ),
+                ),
+              ],
+              selected: {_fromCurrent},
+              showSelectedIcon: false,
+              onSelectionChanged: (v) {
+                HapticFeedback.selectionClick();
+                setState(() => _fromCurrent = v.first);
+              },
+            ),
+            const SizedBox(height: 14),
             FilledButton.icon(
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                UserDataStore.instance.startKhatma(_days);
+                UserDataStore.instance.startKhatma(
+                  _days,
+                  startPage: _fromCurrent
+                      ? UserDataStore.instance.readingPosition.page
+                      : 1,
+                );
               },
               icon: const Icon(Icons.play_arrow_rounded),
               label: Text(l10n.startKhatma),
@@ -180,12 +237,46 @@ class _KhatmaProgressCard extends StatelessWidget {
     if (ok == true) await UserDataStore.instance.cancelKhatma();
   }
 
+  Future<void> _askMoveTo(BuildContext context) async {
+    final l10n = context.l10n;
+    final controller = TextEditingController(text: '${plan.currentPage}');
+    final page = await showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.setKhatmaPosition),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(labelText: l10n.pageNumberLabel),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(
+              ctx,
+              int.tryParse(
+                ArabicSearchNormalizer.toEnglishDigits(controller.text.trim()),
+              ),
+            ),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+    if (page != null && page >= 1 && page <= mushafPageCount) {
+      await UserDataStore.instance.moveKhatmaTo(page);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final gold = AppColors.accentGold(context);
-    final read = plan.readPages.length;
-    final diff = read - plan.expectedPagesBefore(now);
+    final diff = plan.advanced - plan.expectedPagesBefore(now);
     final (statusText, statusColor) = diff >= 0
         ? (l10n.onTrack, AppColors.statusSuccess)
         : (l10n.behindBy(-diff), AppColors.statusWarning);
@@ -209,6 +300,14 @@ class _KhatmaProgressCard extends StatelessWidget {
                 PopupMenuButton<void>(
                   tooltip: l10n.options,
                   itemBuilder: (_) => [
+                    PopupMenuItem(
+                      onTap: UserDataStore.instance.completeTodayPortion,
+                      child: Text(l10n.markPortionDone),
+                    ),
+                    PopupMenuItem(
+                      onTap: () => _askMoveTo(context),
+                      child: Text(l10n.setKhatmaPosition),
+                    ),
                     PopupMenuItem(
                       onTap: () => _confirmCancel(context),
                       child: Text(l10n.cancelKhatma),
@@ -242,8 +341,9 @@ class _KhatmaProgressCard extends StatelessWidget {
                             color: AppColors.textPrimary(context),
                           ),
                         ),
+                        // Same page as the "continue" button below.
                         Text(
-                          l10n.pagesOfMushaf(read),
+                          l10n.reachedPage(plan.currentPage),
                           style: TextStyle(
                             color: AppColors.textSecondary(context),
                           ),
@@ -345,7 +445,7 @@ class _TodayPortionCard extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => QuranScreen(
-                    initialPage: plan.nextUnreadPage,
+                    initialPage: plan.currentPage,
                     readingMode: true,
                   ),
                 ),
@@ -354,7 +454,7 @@ class _TodayPortionCard extends StatelessWidget {
               label: Text(
                 done
                     ? l10n.keepReading
-                    : l10n.continueFromPage(plan.nextUnreadPage),
+                    : l10n.continueFromPage(plan.currentPage),
               ),
             ),
           ],
@@ -374,28 +474,46 @@ class _StatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Row(
+    final reflections = UserDataStore.instance.tadbeerItems
+        .where(
+          (t) =>
+              !t.isEmpty &&
+              t.updatedAt.year == now.year &&
+              t.updatedAt.month == now.month,
+        )
+        .length;
+    Widget pair(Widget a, Widget b) => Row(
       children: [
-        Expanded(
-          child: _StatTile(
+        Expanded(child: a),
+        const SizedBox(width: 10),
+        Expanded(child: b),
+      ],
+    );
+    return Column(
+      children: [
+        pair(
+          _StatTile(
             icon: Icons.local_fire_department_rounded,
             color: const Color(0xFFE07A3F),
             value: l10n.digits(journey.streak(now)),
             label: l10n.streakDays,
           ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _StatTile(
+          _StatTile(
             icon: Icons.auto_stories_rounded,
             color: AppColors.accentGold(context),
             value: l10n.digits(journey.totalPages),
             label: l10n.totalPagesRead,
           ),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _StatTile(
+        const SizedBox(height: 10),
+        pair(
+          _StatTile(
+            icon: Icons.spa_rounded,
+            color: AppColors.statusSuccess,
+            value: l10n.digits(reflections),
+            label: l10n.reflectionsThisMonth,
+          ),
+          _StatTile(
             icon: Icons.workspace_premium_rounded,
             color: AppColors.primary(context),
             value: l10n.digits(journey.completedKhatmas),
