@@ -142,8 +142,9 @@ class _ScaleOnPressState extends State<ScaleOnPress> {
       onPointerCancel: (_) => _setPressed(false),
       child: AnimatedScale(
         scale: _isPressed ? widget.pressedScale : 1.0,
-        duration: widget.duration,
-        curve: AppMotion.emphasized,
+        // Press in quickly, then spring back with a slight overshoot.
+        duration: _isPressed ? widget.duration : AppMotion.normal,
+        curve: _isPressed ? AppMotion.emphasized : Curves.easeOutBack,
         child: widget.child,
       ),
     );

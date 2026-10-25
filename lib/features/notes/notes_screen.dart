@@ -132,6 +132,7 @@ class _NotesScreenState extends State<NotesScreen> {
                     ),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
+                            tooltip: context.l10n.clearText,
                             icon: const Icon(Icons.clear, size: 20),
                             onPressed: () {
                               _searchController.clear();

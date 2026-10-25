@@ -18,7 +18,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_64.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '18 يناير 2002م',
+    badgeText: '١٨ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_68',
@@ -28,7 +28,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_68.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '19 يناير 2002م',
+    badgeText: '١٩ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_67',
@@ -38,7 +38,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_67.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '20 يناير 2002م',
+    badgeText: '٢٠ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_70',
@@ -48,7 +48,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_70.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '21 يناير 2002م',
+    badgeText: '٢١ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_69',
@@ -58,7 +58,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_69.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '22 يناير 2002م',
+    badgeText: '٢٢ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_65',
@@ -68,7 +68,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_65.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '23 يناير 2002م',
+    badgeText: '٢٣ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_66',
@@ -78,7 +78,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_66.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '25 يناير 2002م',
+    badgeText: '٢٥ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_63',
@@ -88,7 +88,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_63.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '26 يناير 2002م',
+    badgeText: '٢٦ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_89',
@@ -98,7 +98,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_89.pdf',
     estimatedMinutes: 30,
     icon: Icons.auto_stories_rounded,
-    badgeText: '28 يناير 2002م • موثقة',
+    badgeText: '٢٨ يناير ٢٠٠٢م • موثقة',
     chapters: const [
       BookChapter(
         title: 'المبحث الأول: القرآن الكريم وميدان المعرفة الإلهية',
@@ -130,7 +130,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_76.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '29 يناير 2002م',
+    badgeText: '٢٩ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_73',
@@ -140,7 +140,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_73.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '30 يناير 2002م',
+    badgeText: '٣٠ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_72',
@@ -150,7 +150,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_72.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '4 فبراير 2002م',
+    badgeText: '٤ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_71',
@@ -160,7 +160,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_71.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '5 فبراير 2002م',
+    badgeText: '٥ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_75',
@@ -170,7 +170,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_75.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '6 فبراير 2002م',
+    badgeText: '٦ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_74',
@@ -180,7 +180,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_74.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '8 فبراير 2002م',
+    badgeText: '٨ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_45',
@@ -190,7 +190,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_45.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '8 يناير 2002م',
+    badgeText: '٨ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_47',
@@ -200,7 +200,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_47.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '9 يناير 2002م',
+    badgeText: '٩ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_46',
@@ -210,7 +210,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_46.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '11 يناير 2002م',
+    badgeText: '١١ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_48',
@@ -220,7 +220,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_48.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '12 يناير 2002م',
+    badgeText: '١٢ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_41',
@@ -230,7 +230,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_41.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '13 يناير 2002م',
+    badgeText: '١٣ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_43',
@@ -240,7 +240,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_43.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '14 يناير 2002م',
+    badgeText: '١٤ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_42',
@@ -250,7 +250,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_42.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '15 يناير 2002م',
+    badgeText: '١٥ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_44',
@@ -260,7 +260,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_44.pdf',
     estimatedMinutes: 25,
     icon: Icons.auto_stories_rounded,
-    badgeText: '16 يناير 2002م',
+    badgeText: '١٦ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_87',
@@ -270,7 +270,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_87.pdf',
     estimatedMinutes: 35,
     icon: Icons.auto_stories_rounded,
-    badgeText: '20 مايو 2004م • أواخر الدروس',
+    badgeText: '٢٠ مايو ٢٠٠٤م • أواخر الدروس',
     chapters: const [
       BookChapter(
         title: 'المبحث الأول: هداية القرآن وعظمته المطلقة',
@@ -289,7 +289,8 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
       ),
       BookChapter(
         title: 'المبحث الرابع: المحبة الإلهية للصف المرصوص والتنظيم الإيماني',
-        summary: 'أصل قوة الأمة في تماسكها وانسجام أفرادها ووحدة قيادتها ومسارها',
+        summary:
+            'أصل قوة الأمة في تماسكها وانسجام أفرادها ووحدة قيادتها ومسارها',
         content: '• يقول الله عز وجل: ﴿إِنَّ اللَّهَ يُحِبُّ الَّذِينَ يُقَاتِلُونَ فِي سَبِيلِهِ صَفّاً كَأَنَّهُم بُنْيَانٌ مَّرْصُوصٌ﴾.\n\n• الله سبحانه يحب النظام والوحدة والتماسك؛ فالصف المرصوص هو القوة الرادعة التي تهابها أمم الباطل والمستكبرون.\n\n• الفوضى والأنانية والتنازع الداخلي عوامل هدم تمكن الأعداء من مقدرات الأمة؛ لذا كان توحيد الصف والانسجام القيادي فريضة إيمانية ومطلباً وجودياً.',
       ),
     ],
@@ -302,7 +303,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_88.pdf',
     estimatedMinutes: 35,
     icon: Icons.auto_stories_rounded,
-    badgeText: '27 مايو 2004م • أواخر الدروس',
+    badgeText: '٢٧ مايو ٢٠٠٤م • أواخر الدروس',
     chapters: const [
       BookChapter(
         title: 'المبحث الأول: التجارة الرابحة والنجاة الأبدية',
@@ -334,7 +335,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_57.pdf',
     estimatedMinutes: 25,
     icon: Icons.menu_book_rounded,
-    badgeText: '28 مايو 2003م',
+    badgeText: '٢٨ مايو ٢٠٠٣م',
   ),
   BookConfig(
     id: 'malzamah_55',
@@ -344,7 +345,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_55.pdf',
     estimatedMinutes: 25,
     icon: Icons.menu_book_rounded,
-    badgeText: '29 مايو 2003م',
+    badgeText: '٢٩ مايو ٢٠٠٣م',
   ),
   BookConfig(
     id: 'malzamah_58',
@@ -354,7 +355,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_58.pdf',
     estimatedMinutes: 25,
     icon: Icons.menu_book_rounded,
-    badgeText: '30 مايو 2003م',
+    badgeText: '٣٠ مايو ٢٠٠٣م',
   ),
   BookConfig(
     id: 'malzamah_59',
@@ -364,7 +365,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_59.pdf',
     estimatedMinutes: 25,
     icon: Icons.menu_book_rounded,
-    badgeText: '31 مايو 2003م',
+    badgeText: '٣١ مايو ٢٠٠٣م',
   ),
   BookConfig(
     id: 'malzamah_56',
@@ -374,7 +375,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_56.pdf',
     estimatedMinutes: 25,
     icon: Icons.menu_book_rounded,
-    badgeText: '1 يونيو 2003م',
+    badgeText: '١ يونيو ٢٠٠٣م',
   ),
   BookConfig(
     id: 'malzamah_60',
@@ -384,7 +385,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_60.pdf',
     estimatedMinutes: 25,
     icon: Icons.menu_book_rounded,
-    badgeText: '2 يونيو 2003م',
+    badgeText: '٢ يونيو ٢٠٠٣م',
   ),
   BookConfig(
     id: 'malzamah_19',
@@ -394,7 +395,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_19.pdf',
     estimatedMinutes: 25,
     icon: Icons.menu_book_rounded,
-    badgeText: '3 يونيو 2003م • ختام السلسلة',
+    badgeText: '٣ يونيو ٢٠٠٣م • ختام السلسلة',
   ),
   BookConfig(
     id: 'malzamah_07',
@@ -404,7 +405,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_07.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '3 رمضان 1423هـ',
+    badgeText: '٣ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_17',
@@ -414,7 +415,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_17.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '4 رمضان 1423هـ',
+    badgeText: '٤ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_14',
@@ -424,7 +425,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_14.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '5 رمضان 1423هـ',
+    badgeText: '٥ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_23',
@@ -434,7 +435,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_23.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '6 رمضان 1423هـ',
+    badgeText: '٦ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_20',
@@ -444,7 +445,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_20.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '7 رمضان 1423هـ',
+    badgeText: '٧ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_10',
@@ -454,7 +455,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_10.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '8 رمضان 1423هـ',
+    badgeText: '٨ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_24',
@@ -464,7 +465,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_24.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '10 رمضان 1423هـ',
+    badgeText: '١٠ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_12',
@@ -474,7 +475,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_12.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '11 رمضان 1423هـ',
+    badgeText: '١١ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_11',
@@ -484,7 +485,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_11.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '12 رمضان 1423هـ',
+    badgeText: '١٢ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_06',
@@ -494,7 +495,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_06.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '13 رمضان 1423هـ',
+    badgeText: '١٣ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_15',
@@ -504,7 +505,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_15.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '14 رمضان 1423هـ',
+    badgeText: '١٤ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_21',
@@ -514,7 +515,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_21.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '16 رمضان 1423هـ',
+    badgeText: '١٦ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_18',
@@ -524,7 +525,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_18.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '17 رمضان 1423هـ',
+    badgeText: '١٧ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_08',
@@ -534,7 +535,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_08.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '18 رمضان 1423هـ',
+    badgeText: '١٨ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_25',
@@ -544,7 +545,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_25.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '20 رمضان 1423هـ',
+    badgeText: '٢٠ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_28',
@@ -554,7 +555,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_28.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '21 رمضان 1423هـ',
+    badgeText: '٢١ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_16',
@@ -564,7 +565,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_16.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '24 رمضان 1423هـ',
+    badgeText: '٢٤ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_13',
@@ -574,7 +575,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_13.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '25 رمضان 1423هـ',
+    badgeText: '٢٥ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_22',
@@ -584,7 +585,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_22.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '26 رمضان 1423هـ',
+    badgeText: '٢٦ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_09',
@@ -594,7 +595,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_09.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '28 رمضان 1423هـ',
+    badgeText: '٢٨ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_05',
@@ -604,7 +605,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_05.pdf',
     estimatedMinutes: 25,
     icon: Icons.nights_stay_rounded,
-    badgeText: '29 رمضان 1423هـ',
+    badgeText: '٢٩ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_49',
@@ -614,7 +615,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_49.pdf',
     estimatedMinutes: 25,
     icon: Icons.favorite_rounded,
-    badgeText: '1 فبراير 2002م',
+    badgeText: '١ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_50',
@@ -624,7 +625,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_50.pdf',
     estimatedMinutes: 25,
     icon: Icons.favorite_rounded,
-    badgeText: '2 فبراير 2002م',
+    badgeText: '٢ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_77',
@@ -634,7 +635,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_77.pdf',
     estimatedMinutes: 25,
     icon: Icons.spa_rounded,
-    badgeText: '9 فبراير 2002م',
+    badgeText: '٩ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_78',
@@ -654,7 +655,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_54.pdf',
     estimatedMinutes: 25,
     icon: Icons.spa_rounded,
-    badgeText: '26 يوليو 2002م',
+    badgeText: '٢٦ يوليو ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_85',
@@ -664,7 +665,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_85.pdf',
     estimatedMinutes: 25,
     icon: Icons.spa_rounded,
-    badgeText: '1423هـ',
+    badgeText: '١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_27',
@@ -674,7 +675,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_27.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: '17 يناير 2002م • انطلاقة الشعار',
+    badgeText: '١٧ يناير ٢٠٠٢م • انطلاقة الشعار',
   ),
   BookConfig(
     id: 'malzamah_01',
@@ -684,7 +685,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_01.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '24 يناير 2002م',
+    badgeText: '٢٤ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_30',
@@ -694,7 +695,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_30.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '31 يناير 2002م',
+    badgeText: '٣١ يناير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_36',
@@ -704,7 +705,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_36.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: '3 فبراير 2002م',
+    badgeText: '٣ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_53',
@@ -714,7 +715,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_53.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '7 فبراير 2002م',
+    badgeText: '٧ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_84',
@@ -724,7 +725,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_84.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '10 فبراير 2002م',
+    badgeText: '١٠ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_81',
@@ -734,7 +735,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_81.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '11 فبراير 2002م',
+    badgeText: '١١ فبراير ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_03',
@@ -744,7 +745,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_03.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: '8 مارس 2002م',
+    badgeText: '٨ مارس ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_90',
@@ -754,7 +755,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_90.pdf',
     estimatedMinutes: 35,
     icon: Icons.campaign_rounded,
-    badgeText: '21 ذو الحجة 1422هـ • موثقة',
+    badgeText: '٢١ ذو الحجة ١٤٢٢هـ • موثقة',
     chapters: const [
       BookChapter(
         title: 'المبحث الأول: اقتران الثقلين: القرآن والعترة الطاهرة',
@@ -762,7 +763,8 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
         content: '• حديث الثقلين المتواتر يؤكد اقتران كتاب الله بعترة نبيه الطاهرة إلى يوم القيامة، وأن النجاة من الضلال لا تكون إلا بالتمسك بهما معاً.\n\n• الاصطفاء الإلهي لأهل البيت ليس تشريفاً عائلياً مجرداً، بل هو تكليف ثقيل ومسؤولية عظمى لحراسة معالم الدين من التحريف والبدع.\n\n• أعلام أهل البيت يمثلون القدوة الحية في فهم القرآن وتطبيقه في أحلك الظروف.',
       ),
       BookChapter(
-        title: 'المبحث الثاني: سيرة أئمة الهدى في مقارعة الظلم ونصرة المستضعفين',
+        title:
+            'المبحث الثاني: سيرة أئمة الهدى في مقارعة الظلم ونصرة المستضعفين',
         summary: 'استعراض النهج الرسالي لأعلام العترة في البذل والتضحية ومقارعة الاستبداد',
         content: '• التاريخ يشهد أن أئمة أهل البيت من الإمام علي والحسن والحسين وزيد والهادي وغيرهم كانوا دائماً في طليعة المضحين والمجاهدين لرفع الظلم عن الأمة.\n\n• لم يكن في سيرتهم قعود أو مداهنة للظالمين، بل كانت حياتهم جهاداً مستمراً لإقامة العدل وحماية المستضعفين من طغيان الجبابرة.\n\n• التأسي بسيرتهم يعني التحرك الإيجابي وحمل هم الأمة في كل زمان ومكان.',
       ),
@@ -786,7 +788,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_61.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '9 مارس 2002م',
+    badgeText: '٩ مارس ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_37',
@@ -796,7 +798,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_37.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '16 مارس 2002م',
+    badgeText: '١٦ مارس ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_38',
@@ -806,7 +808,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_38.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: 'ذو الحجة 1422هـ',
+    badgeText: 'ذو الحجة ١٤٢٢هـ',
   ),
   BookConfig(
     id: 'malzamah_39',
@@ -816,7 +818,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_39.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: '23 مارس 2002م',
+    badgeText: '٢٣ مارس ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_91',
@@ -826,7 +828,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_91.pdf',
     estimatedMinutes: 35,
     icon: Icons.campaign_rounded,
-    badgeText: '4 أغسطس 2002م • موثقة',
+    badgeText: '٤ أغسطس ٢٠٠٢م • موثقة',
     chapters: const [
       BookChapter(
         title: 'المبحث الأول: تشخيص أزمة الأمة — أزمة ثقافة ووعي',
@@ -858,7 +860,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_04.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '2 سبتمبر 2002م',
+    badgeText: '٢ سبتمبر ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_80',
@@ -868,7 +870,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_80.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '2 سبتمبر 2002م',
+    badgeText: '٢ سبتمبر ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_33',
@@ -878,7 +880,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_33.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '10 رمضان 1423هـ',
+    badgeText: '١٠ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_26',
@@ -888,7 +890,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_26.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: '11 رمضان 1423هـ',
+    badgeText: '١١ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_40',
@@ -898,7 +900,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_40.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '19 رمضان 1423هـ',
+    badgeText: '١٩ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_86',
@@ -908,7 +910,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_86.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: '28 رمضان 1422هـ',
+    badgeText: '٢٨ رمضان ١٤٢٢هـ',
   ),
   BookConfig(
     id: 'malzamah_52',
@@ -918,7 +920,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_52.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: '21 ديسمبر 2002م',
+    badgeText: '٢١ ديسمبر ٢٠٠٢م',
   ),
   BookConfig(
     id: 'malzamah_34',
@@ -928,7 +930,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_34.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '18 ذو الحجة 1422هـ',
+    badgeText: '١٨ ذو الحجة ١٤٢٢هـ',
   ),
   BookConfig(
     id: 'malzamah_35',
@@ -938,7 +940,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_35.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '18 ذي الحجة 1423هـ',
+    badgeText: '١٨ ذي الحجة ١٤٢٣هـ',
   ),
   BookConfig(
     id: 'malzamah_02',
@@ -958,7 +960,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_29.pdf',
     estimatedMinutes: 25,
     icon: Icons.campaign_rounded,
-    badgeText: '1422هـ',
+    badgeText: '١٤٢٢هـ',
   ),
   BookConfig(
     id: 'malzamah_79',
@@ -1008,7 +1010,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     assetPath: 'assets/books/malazem/m_32.pdf',
     estimatedMinutes: 30,
     icon: Icons.campaign_rounded,
-    badgeText: 'الجمعة 29 أغسطس 2003م',
+    badgeText: 'الجمعة ٢٩ أغسطس ٢٠٠٣م',
   ),
   BookConfig(
     id: 'malzamah_62',

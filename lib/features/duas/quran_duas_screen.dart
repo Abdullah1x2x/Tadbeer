@@ -149,6 +149,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                               ),
                               suffixIcon: _searchController.text.isNotEmpty
                                   ? IconButton(
+                                      tooltip: context.l10n.clearText,
                                       icon: const Icon(Icons.clear, size: 18),
                                       onPressed: () {
                                         _searchController.clear();
@@ -186,7 +187,9 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                         child: Text(
                           l10n.duasCountBadge(
                             l10n.isArabic
-                                ? ArabicSearchNormalizer.toArabicDigits(_filteredDuas.length)
+                                ? ArabicSearchNormalizer.toArabicDigits(
+                                    _filteredDuas.length,
+                                  )
                                 : _filteredDuas.length,
                           ),
                           style: TextStyle(
@@ -218,7 +221,9 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                       final category = QuranDuasRepository.categories[index];
                       final isSelected = _selectedCategory == category;
 
-                      final labelText = category == 'الكل' ? l10n.allDuasFilter : category;
+                      final labelText = category == 'الكل'
+                          ? l10n.allDuasFilter
+                          : category;
 
                       return ChoiceChip(
                         label: Text(

@@ -2,24 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
+import '../../app/main_shell.dart';
 import '../../app/theme.dart';
 import '../../core/design_system/design_system.dart';
-import '../../core/motion/app_motion.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/ayah_links_screen.dart';
-import '../backup/backup_screen.dart';
-import '../bookmarks/bookmarks_screen.dart';
 import '../books/books_screen.dart';
 import '../duas/duas_screen.dart';
 
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
-import '../highlights/highlights_screen.dart';
 import '../notes/notes_screen.dart';
 import '../quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
-import '../reminders/reminders_screen.dart';
 import '../search/search_provider.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
@@ -76,12 +72,6 @@ class HomeScreen extends StatelessWidget {
               final spaceHeroToCore = isVeryCompact
                   ? 8.0
                   : (isCompact ? 10.0 : 14.0);
-              final spaceCoreToSection = isVeryCompact
-                  ? 8.0
-                  : (isCompact ? 12.0 : 18.0);
-              final spaceSectionToSecondary = isVeryCompact
-                  ? 6.0
-                  : (isCompact ? 10.0 : 14.0);
 
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -129,6 +119,9 @@ class HomeScreen extends StatelessWidget {
                         // 1. Featured Quran Hero Card
                         _QuranHeroCard(
                           onTap: () {
+                            if (MainShell.selectTab(context, ShellTab.quran)) {
+                              return;
+                            }
                             final pos = UserDataStore.instance.readingPosition;
                             Navigator.push(
                               context,
@@ -146,6 +139,9 @@ class HomeScreen extends StatelessWidget {
                         // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)
                         _IstighfarTasbeehCard(
                           onTap: () {
+                            if (MainShell.selectTab(context, ShellTab.tasbeeh)) {
+                              return;
+                            }
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -178,25 +174,6 @@ class HomeScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceCoreToSection),
-
-                        // Secondary Tools Section Header ("أدوات إضافية")
-                        _buildSectionHeader(
-                          context,
-                          isDark,
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceSectionToSecondary),
-
-                        // Secondary Tools (المحفوظات، المميزة، التذكيرات، النسخ الاحتياطي)
-                        _buildSecondaryToolsGrid(
-                          context,
-                          l10n,
-                          isDark,
                           isCompact: isCompact,
                           isVeryCompact: isVeryCompact,
                         ),
@@ -249,10 +226,11 @@ class HomeScreen extends StatelessWidget {
     required bool isCompact,
     required bool isVeryCompact,
   }) {
-    final titleSize = isVeryCompact ? 28.0 : (isCompact ? 32.0 : 38.0);
-    final taglineSize = isVeryCompact ? 11.5 : (isCompact ? 12.5 : 13.5);
-    final archW = isVeryCompact ? 130.0 : (isCompact ? 150.0 : 180.0);
-    final archH = isVeryCompact ? 46.0 : (isCompact ? 56.0 : 70.0);
+    // Kept modest so the main cards appear without scrolling.
+    final titleSize = isVeryCompact ? 25.0 : (isCompact ? 28.0 : 32.0);
+    final taglineSize = isVeryCompact ? 12.0 : (isCompact ? 12.5 : 13.5);
+    final archW = isVeryCompact ? 110.0 : (isCompact ? 128.0 : 150.0);
+    final archH = isVeryCompact ? 40.0 : (isCompact ? 48.0 : 58.0);
     final iconLeafSize = isVeryCompact ? 12.0 : (isCompact ? 13.5 : 15.0);
 
     return Column(
@@ -501,38 +479,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني فاصل القسم الخاص بالأدوات الإضافية.
-  Widget _buildSectionHeader(
-    BuildContext context,
-    bool isDark, {
-    required bool isCompact,
-    required bool isVeryCompact,
-  }) {
-    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textColor = isDark
-        ? AppColors.darkTextSecondary
-        : AppColors.lightTextSecondary;
-    final fontSize = isVeryCompact ? 11.5 : (isCompact ? 12.0 : 13.0);
-
-    return Row(
-      children: [
-        Expanded(
-          child: Divider(color: borderColor, thickness: 1, endIndent: 12),
-        ),
-        Text(
-          context.l10n.additionalTools,
-          style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold,
-            color: textColor,
-            letterSpacing: 0.3,
-          ),
-        ),
-        Expanded(child: Divider(color: borderColor, thickness: 1, indent: 12)),
-      ],
-    );
-  }
-
   /// يبني شبكة البطاقات الأربع الأساسية (الأدعية، معاني الكلمات، الملاحظات، روابط الآيات).
   Widget _buildCoreFeaturesGrid(
     BuildContext context,
@@ -558,6 +504,7 @@ class HomeScreen extends StatelessWidget {
                 isCompact: isCompact,
                 isVeryCompact: isVeryCompact,
                 onTap: () {
+                  if (MainShell.selectTab(context, ShellTab.duas)) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const DuasScreen()),
@@ -634,75 +581,6 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-
-  /// يبني صف الأدوات المساندة (المحفوظات، المميزة، التذكيرات، النسخ الاحتياطي).
-  Widget _buildSecondaryToolsGrid(
-    BuildContext context,
-    AppStrings l10n,
-    bool isDark, {
-    required bool isCompact,
-    required bool isVeryCompact,
-  }) {
-    final tools = [
-      _SecondaryToolItem(
-        icon: Icons.bookmark_rounded,
-        label: l10n.bookmarks,
-        isCompact: isCompact,
-        isVeryCompact: isVeryCompact,
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const BookmarksScreen()),
-        ),
-      ),
-      _SecondaryToolItem(
-        icon: Icons.highlight_rounded,
-        label: l10n.highlights,
-        isCompact: isCompact,
-        isVeryCompact: isVeryCompact,
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const HighlightsScreen()),
-        ),
-      ),
-      _SecondaryToolItem(
-        icon: Icons.alarm_rounded,
-        label: l10n.reminders,
-        isCompact: isCompact,
-        isVeryCompact: isVeryCompact,
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const RemindersScreen()),
-        ),
-      ),
-      _SecondaryToolItem(
-        icon: Icons.backup_rounded,
-        label: l10n.backup,
-        isCompact: isCompact,
-        isVeryCompact: isVeryCompact,
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const BackupScreen()),
-        ),
-      ),
-    ];
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth >= 320) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: tools.map((t) => Expanded(child: t)).toList(),
-          );
-        }
-        return Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 12,
-          runSpacing: 10,
-          children: tools.map((t) => SizedBox(width: 58, child: t)).toList(),
-        );
-      },
     );
   }
 }
@@ -945,107 +823,6 @@ class _GridFeatureCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// عنصر أداة ثانوية يظهر في الشريط السفلي للشاشة الرئيسية بتصميم مستقبلي.
-class _SecondaryToolItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final bool isCompact;
-  final bool isVeryCompact;
-
-  /// ينشئ عنصر أداة ثانوية.
-  const _SecondaryToolItem({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.isCompact = false,
-    this.isVeryCompact = false,
-  });
-
-  /// يبني واجهة زر الأداة الثانوية مع التسمية النصية أسفله.
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final btnDim = isVeryCompact ? 38.0 : (isCompact ? 42.0 : 46.0);
-    final iconDim = isVeryCompact ? 17.0 : (isCompact ? 19.0 : 21.0);
-    final gap = isVeryCompact ? 3.0 : 5.0;
-    final labelSize = isVeryCompact ? 10.0 : (isCompact ? 10.5 : 11.0);
-    final accent = isDark ? AppColors.darkAccentGold : AppColors.lightPrimary;
-
-    return ScaleOnPress(
-      pressedScale: 0.94,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-          splashColor: accent.withValues(alpha: 0.15),
-          hoverColor: accent.withValues(alpha: 0.08),
-          focusColor: accent.withValues(alpha: 0.12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: btnDim,
-                  height: btnDim,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkSurface
-                        : AppColors.lightSurface,
-                    borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-                    border: Border.all(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                      width: AppTokens.borderRegular,
-                    ),
-                    boxShadow: isDark
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ]
-                        : [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.03),
-                              blurRadius: 4,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                  ),
-                  child: Center(
-                    child: Icon(icon, size: iconDim, color: accent),
-                  ),
-                ),
-                SizedBox(height: gap),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontSize: labelSize,
-                      fontWeight: FontWeight.w600,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

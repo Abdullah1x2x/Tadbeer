@@ -79,7 +79,12 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
             color: Colors.transparent,
             child: widget.isExpanded
                 ? _buildExpandedContent(
-                    context, repo, meanings, pageDigits, isDark)
+                    context,
+                    repo,
+                    meanings,
+                    pageDigits,
+                    isDark,
+                  )
                 : _buildCollapsedBar(context, meanings, isDark),
           ),
         ),
@@ -93,8 +98,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     List<QuranWordMeaning> meanings,
     bool isDark,
   ) {
-    final countDigits =
-        ArabicSearchNormalizer.toArabicDigits(meanings.length);
+    final countDigits = ArabicSearchNormalizer.toArabicDigits(meanings.length);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -131,7 +135,9 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   Icon(
                     Icons.keyboard_arrow_up_rounded,
                     size: 20,
-                    color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
+                    color: isDark
+                        ? AppColors.nightSubtitle
+                        : AppColors.oliveDark,
                   ),
                 ],
               ),
@@ -222,14 +228,15 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: (isDark ? AppColors.olive : AppColors.oliveLight)
-                              .withValues(alpha: 0.2),
+                          color:
+                              (isDark ? AppColors.olive : AppColors.oliveLight)
+                                  .withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
                           '${ArabicSearchNormalizer.toArabicDigits(meanings.length)} كلمات',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: isDark
                                 ? AppColors.oliveLight
@@ -244,7 +251,10 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   icon: const Icon(Icons.close_rounded, size: 22),
                   tooltip: 'إغلاق اللوحة',
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
                   onPressed: widget.onClose,
                 ),
               ],
@@ -270,10 +280,11 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                     separatorBuilder: (_, index) => Divider(
                       height: 16,
                       thickness: 0.5,
-                      color: (isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder)
-                          .withValues(alpha: 0.4),
+                      color:
+                          (isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder)
+                              .withValues(alpha: 0.4),
                     ),
                     itemBuilder: (context, index) {
                       final item = meanings[index];
@@ -358,8 +369,9 @@ void _showWordDetailsModal(
                           fontFamily: 'Amiri',
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? AppColors.oliveLight : AppColors.olive,
+                          color: isDark
+                              ? AppColors.oliveLight
+                              : AppColors.olive,
                         ),
                       ),
                     ),
@@ -376,7 +388,7 @@ void _showWordDetailsModal(
                       child: Text(
                         'سورة $surahName · آية $ayahDigits · ص $pageDigits',
                         style: TextStyle(
-                          fontSize: 11.5,
+                          fontSize: 12.0,
                           fontWeight: FontWeight.bold,
                           color: isDark
                               ? AppColors.oliveLight
@@ -440,7 +452,7 @@ void _showWordDetailsModal(
                       Text(
                         'توثيق معتمد',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: isDark
                               ? AppColors.oliveLight
@@ -505,7 +517,7 @@ class _WordMeaningTile extends StatelessWidget {
                 Text(
                   'سورة $surahName · آية $ayahDigits',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: isDark
                         ? AppColors.nightSubtitle
                         : AppColors.daySubtitle,

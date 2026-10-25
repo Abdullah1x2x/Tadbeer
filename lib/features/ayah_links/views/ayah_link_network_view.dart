@@ -466,20 +466,26 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                             // Reflection note (if any, from link, note or tadbeer)
                             () {
                               final effectiveNote = verse.getEffectiveNote();
-                              if (effectiveNote != null && effectiveNote.isNotEmpty) {
+                              if (effectiveNote != null &&
+                                  effectiveNote.isNotEmpty) {
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 14),
                                   child: Container(
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: AppColors.olive.withValues(alpha: 0.1),
+                                      color: AppColors.olive.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
-                                        color: AppColors.olive.withValues(alpha: 0.3),
+                                        color: AppColors.olive.withValues(
+                                          alpha: 0.3,
+                                        ),
                                       ),
                                     ),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
@@ -523,76 +529,78 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     ),
                     const SizedBox(height: 12),
 
-                  // Action Buttons Row
-                  Row(
-                    children: [
-                      // Open in Mushaf
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.pop(bottomSheetCtx);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => QuranScreen(
-                                  initialPage: verse.page,
-                                  targetSurahNumber: verse.surahNumber,
-                                  targetAyahNumber: verse.ayahNumber,
+                    // Action Buttons Row
+                    Row(
+                      children: [
+                        // Open in Mushaf
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(bottomSheetCtx);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => QuranScreen(
+                                    initialPage: verse.page,
+                                    targetSurahNumber: verse.surahNumber,
+                                    targetAyahNumber: verse.ayahNumber,
+                                  ),
                                 ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.olive,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.olive,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            icon: const Icon(Icons.menu_book_rounded, size: 18),
+                            label: Text(
+                              context.l10n.openInQuran,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                          icon: const Icon(Icons.menu_book_rounded, size: 18),
-                          label: Text(
-                            context.l10n.openInQuran,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+
+                        // Edit note button
+                        IconButton.filledTonal(
+                          icon: const Icon(Icons.edit_note_rounded, size: 20),
+                          tooltip: context.l10n.reflectionNote,
+                          onPressed: () {
+                            Navigator.pop(bottomSheetCtx);
+                            _showEditNoteDialog(verse);
+                          },
+                        ),
+                        const SizedBox(width: 6),
+
+                        // Remove verse from link button
+                        IconButton.filledTonal(
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            size: 20,
+                            color: Colors.redAccent,
                           ),
+                          tooltip: context.l10n.removeVerseFromLink,
+                          onPressed: () {
+                            Navigator.pop(bottomSheetCtx);
+                            _confirmRemoveVerse(verse);
+                          },
                         ),
-                      ),
-                      const SizedBox(width: 8),
-
-                      // Edit note button
-                      IconButton.filledTonal(
-                        icon: const Icon(Icons.edit_note_rounded, size: 20),
-                        tooltip: context.l10n.reflectionNote,
-                        onPressed: () {
-                          Navigator.pop(bottomSheetCtx);
-                          _showEditNoteDialog(verse);
-                        },
-                      ),
-                      const SizedBox(width: 6),
-
-                      // Remove verse from link button
-                      IconButton.filledTonal(
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          size: 20,
-                          color: Colors.redAccent,
-                        ),
-                        tooltip: context.l10n.removeVerseFromLink,
-                        onPressed: () {
-                          Navigator.pop(bottomSheetCtx);
-                          _confirmRemoveVerse(verse);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
   }
 
   /// يفتح نافذة حوار لتعديل ملاحظة التدبر الخاصة بآية داخل الرابط.
@@ -776,8 +784,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                             hasTitle
                                 ? note.title!.trim()
                                 : (context.l10n.isArabic
-                                    ? 'كرت ملاحظة تدبرية'
-                                    : 'Reflection Note Card'),
+                                      ? 'كرت ملاحظة تدبرية'
+                                      : 'Reflection Note Card'),
                             style: TextStyle(
                               fontFamily: 'Amiri',
                               fontSize: 16,
@@ -834,8 +842,9 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                                         ? 'تم نسخ نص الملاحظة إلى الحافظة'
                                         : 'Note copied to clipboard',
                                   ),
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .primary,
                                   behavior: SnackBarBehavior.floating,
                                 ),
                               );
@@ -843,18 +852,14 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.olive,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             icon: const Icon(Icons.copy_rounded, size: 18),
                             label: Text(
-                              context.l10n.isArabic
-                                  ? 'نسخ النص'
-                                  : 'Copy Text',
+                              context.l10n.isArabic ? 'نسخ النص' : 'Copy Text',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -915,9 +920,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.comsilkLight,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           context.l10n.isArabic ? 'تعديل كرت الملاحظة' : 'Edit Note Card',
           style: const TextStyle(
@@ -937,9 +940,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                       ? 'عنوان الملاحظة (اختياري)'
                       : 'Title (optional)',
                   filled: true,
-                  fillColor: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.comsilk,
+                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -955,9 +956,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                       ? 'نص الملاحظة...'
                       : 'Note content...',
                   filled: true,
-                  fillColor: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.comsilk,
+                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -1038,10 +1037,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
   void _persistManualPositions() {
     final map = <String, LinkNodePosition>{};
     for (final entry in _positions.entries) {
-      map[entry.key] = LinkNodePosition(
-        dx: entry.value.dx,
-        dy: entry.value.dy,
-      );
+      map[entry.key] = LinkNodePosition(dx: entry.value.dx, dy: entry.value.dy);
     }
     _repo.updatePositions(widget.link.id, map, true);
   }
@@ -1172,7 +1168,10 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   const SizedBox(height: 12),
                   Text(
                     context.l10n.noAyahsAddedToLink,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -1338,10 +1337,10 @@ class _CenterThemeNode extends StatelessWidget {
             ),
             child: Text(
               context.l10n.isArabic
-                  ? '$versesCount آيات مرتبطة'
+                  ? '${ArabicSearchNormalizer.convertDigits('$versesCount')} آيات مرتبطة'
                   : '$versesCount linked verses',
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.primary,
               ),
@@ -1352,9 +1351,7 @@ class _CenterThemeNode extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
+                color: Theme.of(context).colorScheme.primary
                     .withValues(alpha: isDark ? 0.12 : 0.08),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -1362,7 +1359,7 @@ class _CenterThemeNode extends StatelessWidget {
                 description!,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 11.5,
+                  fontSize: 12.0,
                   height: 1.45,
                   color: isDark
                       ? AppColors.nightSubtitle
@@ -1498,7 +1495,7 @@ class _VerseCanvasNode extends StatelessWidget {
                   Text(
                     context.l10n.isArabic ? 'ملاحظتي' : 'My note',
                     style: TextStyle(
-                      fontSize: 10.5,
+                      fontSize: 12.0,
                       fontWeight: FontWeight.bold,
                       color: isDark ? AppColors.oliveSoft : AppColors.olive,
                     ),
@@ -1509,7 +1506,7 @@ class _VerseCanvasNode extends StatelessWidget {
               Text(
                 effectiveNote,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 12,
                   height: 1.45,
                   color: isDark
                       ? AppColors.nightSubtitle
@@ -1588,8 +1585,8 @@ class _NoteCanvasNode extends StatelessWidget {
                     hasTitle
                         ? note.title!.trim()
                         : (context.l10n.isArabic
-                            ? 'كرت ملاحظة تدبرية'
-                            : 'Reflection Note'),
+                              ? 'كرت ملاحظة تدبرية'
+                              : 'Reflection Note'),
                     style: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 13,
@@ -1611,9 +1608,7 @@ class _NoteCanvasNode extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 height: 1.5,
-                color: isDark
-                    ? AppColors.nightSubtitle
-                    : AppColors.daySubtitle,
+                color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
               ),
             ),
           ],

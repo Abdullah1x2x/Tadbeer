@@ -475,7 +475,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                             ? 'حفظ محلي فوري وآمن'
                             : 'Instant & secure local save',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           color: isDark
                               ? AppColors.nightSubtitle
                               : AppColors.daySubtitle,

@@ -366,7 +366,9 @@ class _BackupScreenState extends State<BackupScreen> {
                     const SizedBox(height: 8),
                     CheckboxListTile(
                       dense: true,
-                      activeColor: AppColors.olive,
+                      // Keep each checkbox right beside its label.
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.notes,
                         style: const TextStyle(fontFamily: 'Amiri'),
@@ -377,7 +379,9 @@ class _BackupScreenState extends State<BackupScreen> {
                     ),
                     CheckboxListTile(
                       dense: true,
-                      activeColor: AppColors.olive,
+                      // Keep each checkbox right beside its label.
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.bookmarks,
                         style: const TextStyle(fontFamily: 'Amiri'),
@@ -388,7 +392,9 @@ class _BackupScreenState extends State<BackupScreen> {
                     ),
                     CheckboxListTile(
                       dense: true,
-                      activeColor: AppColors.olive,
+                      // Keep each checkbox right beside its label.
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.highlights,
                         style: const TextStyle(fontFamily: 'Amiri'),
@@ -399,7 +405,9 @@ class _BackupScreenState extends State<BackupScreen> {
                     ),
                     CheckboxListTile(
                       dense: true,
-                      activeColor: AppColors.olive,
+                      // Keep each checkbox right beside its label.
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.reminders,
                         style: const TextStyle(fontFamily: 'Amiri'),
@@ -410,7 +418,9 @@ class _BackupScreenState extends State<BackupScreen> {
                     ),
                     CheckboxListTile(
                       dense: true,
-                      activeColor: AppColors.olive,
+                      // Keep each checkbox right beside its label.
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.settings,
                         style: const TextStyle(fontFamily: 'Amiri'),

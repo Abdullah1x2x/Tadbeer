@@ -30,7 +30,8 @@ class DuasScreen extends StatelessWidget {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final totalQuranDuas = QuranDuasRepository.instance.getDuas().length;
-    final totalAdhkar = AdhkarRepository.morningAdhkar.length +
+    final totalAdhkar =
+        AdhkarRepository.morningAdhkar.length +
         AdhkarRepository.eveningAdhkar.length;
     final totalAhlulbaytDuas = AhlulbaytDuasRepository.defaultDuas.length;
     final totalSunnahDuas = SunnahDuasRepository.sunnahDuas.length;
@@ -41,12 +42,13 @@ class DuasScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
-          leading: const BackButton(),
-          backgroundColor:
-              isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          backgroundColor: isDark
+              ? AppColors.darkSurface
+              : AppColors.lightSurface,
           elevation: 0,
           scrolledUnderElevation: 0.5,
           title: Text(
@@ -64,178 +66,189 @@ class DuasScreen extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-            // الآية القرآنية في فضل الدعاء
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              // الآية القرآنية في فضل الدعاء
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
                   ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    '﴿ وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ ﴾',
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'AmiriQuran',
-                      fontSize: 18,
-                      height: 1.8,
-                      color: isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.lightPrimary,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.2 : 0.03,
+                      ),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n.ayahReference(
-                      isArabic ? 'غافر' : 'Ghafir',
-                      isArabic ? '٦٠' : '60',
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      '﴿ وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ ﴾',
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'AmiriQuran',
+                        fontSize: 18,
+                        height: 1.8,
+                        color: isDark
+                            ? AppColors.darkAccentGold
+                            : AppColors.lightPrimary,
+                      ),
                     ),
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
+                    const SizedBox(height: 6),
+                    Text(
+                      l10n.ayahReference(
+                        isArabic ? 'غافر' : 'Ghafir',
+                        isArabic ? '٦٠' : '60',
+                      ),
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 12,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 18),
+              const SizedBox(height: 18),
 
-            // القسم 1: أدعية من القرآن الكريم
-            _DuaCategoryCard(
-              icon: FlutterIslamicIcons.quran,
-              title: l10n.quranDuasTitle,
-              subtitle: l10n.quranDuasSubtitle,
-              countBadge: l10n.duasCountBadge(
-                isArabic
-                    ? ArabicSearchNormalizer.toArabicDigits(totalQuranDuas)
-                    : totalQuranDuas,
+              // القسم 1: أدعية من القرآن الكريم
+              _DuaCategoryCard(
+                icon: FlutterIslamicIcons.quran,
+                title: l10n.quranDuasTitle,
+                subtitle: l10n.quranDuasSubtitle,
+                countBadge: l10n.duasCountBadge(
+                  isArabic
+                      ? ArabicSearchNormalizer.toArabicDigits(totalQuranDuas)
+                      : totalQuranDuas,
+                ),
+                isQuran: true,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const QuranDuasScreen()),
+                  );
+                },
               ),
-              isQuran: true,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const QuranDuasScreen()),
-                );
-              },
-            ),
 
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-            // القسم 2: أذكار الصباح والمساء
-            _DuaCategoryCard(
-              icon: Icons.wb_sunny_outlined,
-              title: l10n.morningEveningAdhkarTitle,
-              subtitle: l10n.morningEveningAdhkarSubtitle,
-              countBadge: l10n.adhkarCountBadge(
-                isArabic
-                    ? ArabicSearchNormalizer.toArabicDigits(totalAdhkar)
-                    : totalAdhkar,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const MorningEveningAdhkarScreen(),
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // القسم 3: أدعية مأثورة عن أهل البيت
-            _DuaCategoryCard(
-              icon: FlutterIslamicIcons.prayer,
-              title: l10n.ahlulbaytDuasTitle,
-              subtitle: l10n.ahlulbaytDuasSubtitle,
-              countBadge: l10n.duasCountBadge(
-                isArabic
-                    ? ArabicSearchNormalizer.toArabicDigits(totalAhlulbaytDuas)
-                    : totalAhlulbaytDuas,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AhlulbaytDuasScreen(),
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // القسم 4: أدعية من السنة النبوية
-            _DuaCategoryCard(
-              icon: Icons.auto_awesome_outlined,
-              title: l10n.sunnahDuasTitle,
-              subtitle: l10n.sunnahDuasSubtitle,
-              countBadge: l10n.duasCountBadge(
-                isArabic
-                    ? ArabicSearchNormalizer.toArabicDigits(totalSunnahDuas)
-                    : totalSunnahDuas,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => GeneralDuasListScreen(
-                      title: l10n.sunnahDuasTitle,
-                      items: SunnahDuasRepository.sunnahDuas,
+              // القسم 2: أذكار الصباح والمساء
+              _DuaCategoryCard(
+                icon: Icons.wb_sunny_outlined,
+                title: l10n.morningEveningAdhkarTitle,
+                subtitle: l10n.morningEveningAdhkarSubtitle,
+                countBadge: l10n.adhkarCountBadge(
+                  isArabic
+                      ? ArabicSearchNormalizer.toArabicDigits(totalAdhkar)
+                      : totalAdhkar,
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MorningEveningAdhkarScreen(),
                     ),
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // القسم 5: جوامع الدعاء والرجاء
-            _DuaCategoryCard(
-              icon: Icons.favorite_border_rounded,
-              title: l10n.jawamiDuasTitle,
-              subtitle: l10n.jawamiDuasSubtitle,
-              countBadge: l10n.duasCountBadge(
-                isArabic
-                    ? ArabicSearchNormalizer.toArabicDigits(totalJawamiDuas)
-                    : totalJawamiDuas,
+                  );
+                },
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => GeneralDuasListScreen(
-                      title: l10n.jawamiDuasTitle,
-                      items: SunnahDuasRepository.jawamiDuas,
-                    ),
-                  ),
-                );
-              },
-            ),
 
-            const SizedBox(height: 16),
-          ],
+              const SizedBox(height: 12),
+
+              // القسم 3: أدعية مأثورة عن أهل البيت
+              _DuaCategoryCard(
+                icon: FlutterIslamicIcons.prayer,
+                title: l10n.ahlulbaytDuasTitle,
+                subtitle: l10n.ahlulbaytDuasSubtitle,
+                countBadge: l10n.duasCountBadge(
+                  isArabic
+                      ? ArabicSearchNormalizer.toArabicDigits(
+                          totalAhlulbaytDuas,
+                        )
+                      : totalAhlulbaytDuas,
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AhlulbaytDuasScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              // القسم 4: أدعية من السنة النبوية
+              _DuaCategoryCard(
+                icon: Icons.auto_awesome_outlined,
+                title: l10n.sunnahDuasTitle,
+                subtitle: l10n.sunnahDuasSubtitle,
+                countBadge: l10n.duasCountBadge(
+                  isArabic
+                      ? ArabicSearchNormalizer.toArabicDigits(totalSunnahDuas)
+                      : totalSunnahDuas,
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GeneralDuasListScreen(
+                        title: l10n.sunnahDuasTitle,
+                        items: SunnahDuasRepository.sunnahDuas,
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 12),
+
+              // القسم 5: جوامع الدعاء والرجاء
+              _DuaCategoryCard(
+                icon: Icons.favorite_border_rounded,
+                title: l10n.jawamiDuasTitle,
+                subtitle: l10n.jawamiDuasSubtitle,
+                countBadge: l10n.duasCountBadge(
+                  isArabic
+                      ? ArabicSearchNormalizer.toArabicDigits(totalJawamiDuas)
+                      : totalJawamiDuas,
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => GeneralDuasListScreen(
+                        title: l10n.jawamiDuasTitle,
+                        items: SunnahDuasRepository.jawamiDuas,
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 /// بطاقة عرض قسم فرعي من أقسام الأدعية مع الأيقونة وشارة العدد.
@@ -261,13 +274,15 @@ class _DuaCategoryCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // الألوان الموحدة للأقسام الاعتيادية لضمان تطابق المقاس واللون
-    final standardBorderColor =
-        isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final standardBorderColor = isDark
+        ? AppColors.darkBorder
+        : AppColors.lightBorder;
     final standardIconBg = isDark
         ? AppColors.darkPrimary.withValues(alpha: 0.25)
         : AppColors.lightPrimary.withValues(alpha: 0.08);
-    final standardIconColor =
-        isDark ? AppColors.darkTextPrimary : AppColors.lightPrimary;
+    final standardIconColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightPrimary;
     final standardBadgeBg = isDark
         ? Colors.white.withValues(alpha: 0.06)
         : Colors.black.withValues(alpha: 0.04);
@@ -279,20 +294,24 @@ class _DuaCategoryCard extends StatelessWidget {
         : AppColors.lightTextSecondary.withValues(alpha: 0.5);
 
     // الألوان والسمات المميزة لزر أدعية القرآن الكريم
-    final quranBorderColor =
-        isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
+    final quranBorderColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.lightAccentGold;
     final quranIconBg = isDark
         ? AppColors.darkAccentGold.withValues(alpha: 0.22)
         : AppColors.lightAccentGold.withValues(alpha: 0.22);
-    final quranIconColor =
-        isDark ? AppColors.darkAccentGold : AppColors.oliveDark;
+    final quranIconColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.oliveDark;
     final quranBadgeBg = isDark
         ? AppColors.darkAccentGold.withValues(alpha: 0.2)
         : AppColors.lightAccentGold.withValues(alpha: 0.25);
-    final quranBadgeTextColor =
-        isDark ? AppColors.darkAccentGold : AppColors.oliveDark;
-    final quranArrowColor =
-        isDark ? AppColors.darkAccentGold : AppColors.lightPrimary;
+    final quranBadgeTextColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.oliveDark;
+    final quranArrowColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.lightPrimary;
 
     return Material(
       color: Colors.transparent,
@@ -305,22 +324,17 @@ class _DuaCategoryCard extends StatelessWidget {
             vertical: isQuran ? 16 : 14,
           ),
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-            gradient: isQuran
-                ? LinearGradient(
-                    colors: isDark
-                        ? [
-                            AppColors.darkSurface,
-                            AppColors.darkPrimary.withValues(alpha: 0.35),
-                          ]
-                        : [
-                            AppColors.lightSurface,
-                            AppColors.lightPrimary.withValues(alpha: 0.06),
-                          ],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
+            // The featured Quran card gets a warm gold wash rather than a
+            // tinted gradient, so it reads as highlighted, not as selected.
+            color: isQuran
+                ? Color.alphaBlend(
+                    (isDark
+                            ? AppColors.darkAccentGold
+                            : AppColors.lightAccentGold)
+                        .withValues(alpha: isDark ? 0.08 : 0.07),
+                    isDark ? AppColors.darkSurface : AppColors.lightSurface,
                   )
-                : null,
+                : (isDark ? AppColors.darkSurface : AppColors.lightSurface),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isQuran ? quranBorderColor : standardBorderColor,
@@ -330,9 +344,9 @@ class _DuaCategoryCard extends StatelessWidget {
               BoxShadow(
                 color: isQuran
                     ? (isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.lightPrimary)
-                        .withValues(alpha: isDark ? 0.18 : 0.08)
+                              ? AppColors.darkAccentGold
+                              : AppColors.lightPrimary)
+                          .withValues(alpha: isDark ? 0.18 : 0.08)
                     : Colors.black.withValues(alpha: isDark ? 0.15 : 0.02),
                 blurRadius: isQuran ? 10 : 6,
                 offset: const Offset(0, 2),
@@ -382,11 +396,11 @@ class _DuaCategoryCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: isQuran
                                   ? (isDark
-                                      ? AppColors.darkAccentGold
-                                      : AppColors.lightPrimary)
+                                        ? AppColors.darkAccentGold
+                                        : AppColors.lightPrimary)
                                   : (isDark
-                                      ? AppColors.darkTextPrimary
-                                      : AppColors.lightTextPrimary),
+                                        ? AppColors.darkTextPrimary
+                                        : AppColors.lightTextPrimary),
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -411,7 +425,7 @@ class _DuaCategoryCard extends StatelessWidget {
                             countBadge,
                             style: TextStyle(
                               fontFamily: 'Amiri',
-                              fontSize: 11,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: isQuran
                                   ? quranBadgeTextColor

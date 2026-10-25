@@ -26,13 +26,15 @@ class SurahHeaderBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = MushafPalette.of(
+      isDark: isDark,
+      tone: UserDataStore.instance.settings.mushafPaperTone,
+    );
 
     final goldColor = isDark
         ? AppColors.darkAccentGold
         : AppColors.lightAccentGold;
-    final titleColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.mushafQuranText;
+    final titleColor = palette.text;
     final metaColor = isDark
         ? AppColors.darkTextSecondary
         : AppColors.lightTextSecondary;
@@ -40,7 +42,7 @@ class SurahHeaderBanner extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 2),
       child: CustomPaint(
-        painter: _SurahFramePainter(isDark: isDark),
+        painter: _SurahFramePainter(isDark: isDark, palette: palette),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: FittedBox(
@@ -50,89 +52,89 @@ class SurahHeaderBanner extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-              // Surah Revelation Type & Ayah Count (seamlessly integrated into the band)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${surah.isMeccan ? "مكية" : "مدنية"} · ${ArabicSearchNormalizer.toArabicDigits(surah.ayahCount)} آيات',
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: metaColor,
-                      height: 1.2,
+                // Surah Revelation Type & Ayah Count (seamlessly integrated into the band)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${surah.isMeccan ? "مكية" : "مدنية"} · ${ArabicSearchNormalizer.toArabicDigits(surah.ayahCount)} آيات',
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: metaColor,
+                        height: 1.2,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
 
-              // Central Surah Title with fine decorative rules and subtle Islamic diamond motifs
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildFlankRule(goldColor, isLeft: false),
-                  const SizedBox(width: 3),
-                  Text(
-                    '❖',
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 7.5,
-                      color: goldColor.withValues(alpha: 0.8),
+                // Central Surah Title with fine decorative rules and subtle Islamic diamond motifs
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _buildFlankRule(goldColor, isLeft: false),
+                    const SizedBox(width: 3),
+                    Text(
+                      '❖',
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 7.5,
+                        color: goldColor.withValues(alpha: 0.8),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'سُورَةُ ${surah.name}',
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: titleColor,
-                      height: 1.25,
+                    const SizedBox(width: 4),
+                    Text(
+                      'سُورَةُ ${surah.name}',
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: titleColor,
+                        height: 1.25,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '❖',
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 7.5,
-                      color: goldColor.withValues(alpha: 0.8),
+                    const SizedBox(width: 4),
+                    Text(
+                      '❖',
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 7.5,
+                        color: goldColor.withValues(alpha: 0.8),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 3),
-                  _buildFlankRule(goldColor, isLeft: true),
-                ],
-              ),
+                    const SizedBox(width: 3),
+                    _buildFlankRule(goldColor, isLeft: true),
+                  ],
+                ),
 
-              // Surah Number inside an authentic miniature seal medallion (خاتم السورة)
-              CustomPaint(
-                painter: _SurahSealPainter(isDark: isDark),
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  alignment: Alignment.center,
-                  child: Text(
-                    ArabicSearchNormalizer.toArabicDigits(surah.number),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: goldColor,
-                      height: 1.15,
+                // Surah Number inside an authentic miniature seal medallion (خاتم السورة)
+                CustomPaint(
+                  painter: _SurahSealPainter(isDark: isDark, palette: palette),
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    alignment: Alignment.center,
+                    child: Text(
+                      ArabicSearchNormalizer.toArabicDigits(surah.number),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: goldColor,
+                        height: 1.15,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
   }
 
   /// يبني الخط الزخرفي الجانبي المتدرج المحيط باسم السورة.
@@ -155,9 +157,10 @@ class SurahHeaderBanner extends StatelessWidget {
 /// رسام مخصص يرسم خاتم السورة الدائري المصغر الذي يضم رقم السورة.
 class _SurahSealPainter extends CustomPainter {
   final bool isDark;
+  final MushafPalette palette;
 
   /// ينشئ رسام خاتم السورة الدائري.
-  const _SurahSealPainter({required this.isDark});
+  const _SurahSealPainter({required this.isDark, required this.palette});
 
   /// يرسم دوائر ونقاط خاتم السورة الزخرفية على لوحة الرسم.
   @override
@@ -172,7 +175,7 @@ class _SurahSealPainter extends CustomPainter {
 
     // Background fill
     final bgPaint = Paint()
-      ..color = isDark ? AppColors.darkBackground : AppColors.mushafBackground
+      ..color = palette.outer
       ..style = PaintingStyle.fill;
     canvas.drawCircle(center, radius - 0.5, bgPaint);
 
@@ -205,16 +208,17 @@ class _SurahSealPainter extends CustomPainter {
   /// يحدد ما إذا كان يلزم إعادة رسم الخاتم عند تغير الوضع الليلي أو النهاري.
   @override
   bool shouldRepaint(covariant _SurahSealPainter oldDelegate) =>
-      oldDelegate.isDark != isDark;
+      oldDelegate.isDark != isDark || oldDelegate.palette != palette;
 }
 
 /// Custom painter rendering the authentic Madinah Mushaf cartouche frame.
 /// رسام مخصص يرسم الإطار الزخرفي الذهبي المزدوج لترويسة السورة.
 class _SurahFramePainter extends CustomPainter {
   final bool isDark;
+  final MushafPalette palette;
 
   /// ينشئ رسام إطار ترويسة السورة.
-  const _SurahFramePainter({required this.isDark});
+  const _SurahFramePainter({required this.isDark, required this.palette});
 
   /// يرسم خلفية الترويسة والإطار الذهبي المزدوج والزخارف الجانبية والركنية.
   @override
@@ -228,17 +232,7 @@ class _SurahFramePainter extends CustomPainter {
     final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(2.5));
 
     // 1. Serene paper background tint matching authentic Madinah Mushaf parchment
-    final fillColors = isDark
-        ? [
-            AppColors.darkBackground,
-            AppColors.darkSurface,
-            AppColors.darkBackground,
-          ]
-        : [
-            AppColors.mushafBackground,
-            AppColors.lightSurface,
-            AppColors.mushafBackground,
-          ];
+    final fillColors = [palette.outer, palette.band, palette.outer];
     final fillPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
@@ -379,7 +373,7 @@ class _SurahFramePainter extends CustomPainter {
   /// يحدد ما إذا كان يلزم إعادة رسم الإطار عند تغير الوضع الليلي أو النهاري.
   @override
   bool shouldRepaint(covariant _SurahFramePainter oldDelegate) {
-    return oldDelegate.isDark != isDark;
+    return oldDelegate.isDark != isDark || oldDelegate.palette != palette;
   }
 }
 
@@ -403,7 +397,10 @@ class BismillahBanner extends StatelessWidget {
           style: TextStyle(
             fontFamily: fontFamily,
             fontSize: 17,
-            color: isDark ? AppColors.darkTextPrimary : AppColors.mushafQuranText,
+            color: MushafPalette.of(
+              isDark: isDark,
+              tone: UserDataStore.instance.settings.mushafPaperTone,
+            ).text,
           ),
         ),
       ),

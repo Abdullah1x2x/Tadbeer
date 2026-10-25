@@ -176,12 +176,17 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         context.l10n.ayahReference(
                           surah.name,
                           context.currentLanguage == AppLanguage.arabic
-                              ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.ayahNumber)
+                              ? ArabicSearchNormalizer.toArabicDigits(
+                                  widget.ayah.ayahNumber,
+                                )
                               : widget.ayah.ayahNumber,
                         ),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
+                          fontFamily:
+                              context.currentLanguage == AppLanguage.arabic
+                              ? 'Amiri'
+                              : null,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: isDark
@@ -194,7 +199,10 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                     Text(
                       '${context.l10n.pageAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.page) : widget.ayah.page)} · ${context.l10n.juzAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.juz) : widget.ayah.juz)}',
                       style: TextStyle(
-                        fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
+                        fontFamily:
+                            context.currentLanguage == AppLanguage.arabic
+                            ? 'Amiri'
+                            : null,
                         fontSize: 13,
                         color: isDark
                             ? AppColors.nightSubtitle
@@ -427,6 +435,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         child: _ActionButton(
                           icon: Icons.spa_rounded,
                           label: l10n.tadbeerPause,
+                          isPrimary: true,
                           hasActiveIndicator:
                               storage.getTadbeer(
                                 widget.ayah.surahNumber,
@@ -538,6 +547,9 @@ class _ActionButton extends StatelessWidget {
   final Color? iconColor;
   final bool hasActiveIndicator;
 
+  /// الإجراء الرئيسي (وقفة التدبر) يُبرز بدائرة ذهبية ممتلئة.
+  final bool isPrimary;
+
   /// ينشئ زر إجراء لنافذة إجراءات الآية.
   const _ActionButton({
     required this.icon,
@@ -545,15 +557,23 @@ class _ActionButton extends StatelessWidget {
     required this.onTap,
     this.iconColor,
     this.hasActiveIndicator = false,
+    this.isPrimary = false,
   });
 
   /// يبني واجهة زر الإجراء مع الأيقونة والنص ونقطة التنبيه عند التفعيل.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final color =
-        iconColor ??
-        (isDark ? AppColors.darkTextPrimary : AppColors.lightPrimaryDark);
+    final gold = AppColors.accentGold(context);
+    final color = isPrimary
+        ? (isDark ? AppColors.darkBackground : Colors.white)
+        : iconColor ??
+              (isDark ? AppColors.darkTextPrimary : AppColors.lightPrimaryDark);
+    final circleColor = isPrimary
+        ? gold
+        : Theme.of(context).colorScheme.primary.withValues(
+            alpha: isDark ? 0.18 : 0.08,
+          );
 
     return InkWell(
       onTap: onTap,
@@ -569,17 +589,31 @@ class _ActionButton extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Icon(icon, size: 22, color: color),
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: circleColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 24, color: color),
+                ),
                 if (hasActiveIndicator)
                   Positioned(
-                    top: -2,
-                    right: -2,
+                    top: 0,
+                    right: 0,
                     child: Container(
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: gold,
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkSurfaceElevated
+                              : Colors.white,
+                          width: 1.5,
+                        ),
                       ),
                     ),
                   ),
@@ -594,9 +628,11 @@ class _ActionButton extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: isDark
+                  fontSize: 13,
+                  fontWeight: isPrimary ? FontWeight.bold : FontWeight.w600,
+                  color: isPrimary
+                      ? gold
+                      : isDark
                       ? AppColors.nightQuranText
                       : AppColors.dayQuranText,
                 ),

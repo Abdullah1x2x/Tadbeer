@@ -76,8 +76,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   /// بدء أو إعادة ضبط مؤقت العد التلقائي بحسب الوتيرة الحالية.
   void _startAutoCountTimer() {
     _autoCountTimer?.cancel();
-    final duration =
-        Duration(milliseconds: (_currentPaceSeconds * 1000).round());
+    final duration = Duration(
+      milliseconds: (_currentPaceSeconds * 1000).round(),
+    );
     _autoCountTimer = Timer.periodic(duration, (_) {
       if (!mounted) return;
       _handleTap();
@@ -113,8 +114,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   void _speedUpPace() {
     HapticFeedback.selectionClick();
     setState(() {
-      _paceOffsetSeconds =
-          double.parse((_paceOffsetSeconds - 0.2).toStringAsFixed(1));
+      _paceOffsetSeconds = double.parse(
+        (_paceOffsetSeconds - 0.2).toStringAsFixed(1),
+      );
       if (_isAutoCounting) {
         _startAutoCountTimer();
       }
@@ -125,8 +127,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   void _slowDownPace() {
     HapticFeedback.selectionClick();
     setState(() {
-      _paceOffsetSeconds =
-          double.parse((_paceOffsetSeconds + 0.2).toStringAsFixed(1));
+      _paceOffsetSeconds = double.parse(
+        (_paceOffsetSeconds + 0.2).toStringAsFixed(1),
+      );
       if (_isAutoCounting) {
         _startAutoCountTimer();
       }
@@ -200,7 +203,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       } else {
@@ -217,7 +222,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -254,13 +261,18 @@ class _TasbeehScreenState extends State<TasbeehScreen>
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
         return AlertDialog(
-          backgroundColor:
-              isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          backgroundColor: isDark
+              ? AppColors.darkSurface
+              : AppColors.lightSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
           title: Text(
             l10n.resetCycleCounterTitle,
-            style: const TextStyle(fontFamily: 'Amiri', fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontFamily: 'Amiri',
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: Text(
             l10n.resetCycleCounterConfirm,
@@ -315,7 +327,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             final filtered = allDhikrs.where((item) {
               final matchesSection =
                   sheetSection == null || item.section == sheetSection;
-              final matchesQuery = sheetSearchQuery.isEmpty ||
+              final matchesQuery =
+                  sheetSearchQuery.isEmpty ||
                   item.arabicText.contains(sheetSearchQuery) ||
                   item.virtue.contains(sheetSearchQuery);
               return matchesSection && matchesQuery;
@@ -329,8 +342,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
               builder: (context, scrollController) {
                 return SafeArea(
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -349,12 +364,15 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            Icon(Icons.format_list_bulleted_rounded,
-                                color: primaryColor, size: 20),
+                            Icon(
+                              Icons.format_list_bulleted_rounded,
+                              color: primaryColor,
+                              size: 20,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                '${context.l10n.tasbeehAndIstighfarFormulas} (${allDhikrs.length})',
+                                '${context.l10n.tasbeehAndIstighfarFormulas} (${context.l10n.digits(allDhikrs.length)})',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontFamily: 'Amiri',
@@ -385,8 +403,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             children: [
                               _SheetSectionTab(
                                 title:
-                                    '${context.l10n.istighfar} (${TasbeehDhikr.istighfarDhikrs.length})',
-                                isSelected: sheetSection == DhikrSection.istighfar,
+                                    '${context.l10n.istighfar} (${context.l10n.digits(TasbeehDhikr.istighfarDhikrs.length)})',
+                                isSelected:
+                                    sheetSection == DhikrSection.istighfar,
                                 isDark: isDark,
                                 primaryColor: primaryColor,
                                 onTap: () {
@@ -397,8 +416,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                               ),
                               _SheetSectionTab(
                                 title:
-                                    '${context.l10n.tasbeeh} (${TasbeehDhikr.tasbeehDhikrs.length})',
-                                isSelected: sheetSection == DhikrSection.tasbeeh,
+                                    '${context.l10n.tasbeeh} (${context.l10n.digits(TasbeehDhikr.tasbeehDhikrs.length)})',
+                                isSelected:
+                                    sheetSection == DhikrSection.tasbeeh,
                                 isDark: isDark,
                                 primaryColor: primaryColor,
                                 onTap: () {
@@ -408,7 +428,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                 },
                               ),
                               _SheetSectionTab(
-                                title: '${context.l10n.allCategories} (${allDhikrs.length})',
+                                title:
+                                    '${context.l10n.allCategories} (${context.l10n.digits(allDhikrs.length)})',
                                 isSelected: sheetSection == null,
                                 isDark: isDark,
                                 primaryColor: primaryColor,
@@ -432,10 +453,14 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           },
                           decoration: InputDecoration(
                             hintText: context.l10n.searchDhikrHint,
-                            prefixIcon:
-                                const Icon(Icons.search_rounded, size: 20),
+                            prefixIcon: const Icon(
+                              Icons.search_rounded,
+                              size: 20,
+                            ),
                             contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
@@ -467,7 +492,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                     return ListTile(
                                       contentPadding:
                                           const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 4),
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
                                       title: Text(
                                         item.arabicText,
                                         maxLines: 2,
@@ -481,8 +508,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                           color: isSelected
                                               ? primaryColor
                                               : (isDark
-                                                  ? AppColors.darkTextPrimary
-                                                  : AppColors.lightTextPrimary),
+                                                    ? AppColors.darkTextPrimary
+                                                    : AppColors
+                                                          .lightTextPrimary),
                                         ),
                                       ),
                                       subtitle: Text(
@@ -495,8 +523,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                         ),
                                       ),
                                       trailing: isSelected
-                                          ? Icon(Icons.check_circle_rounded,
-                                              color: primaryColor)
+                                          ? Icon(
+                                              Icons.check_circle_rounded,
+                                              color: primaryColor,
+                                            )
                                           : null,
                                       onTap: () {
                                         _repo.setActiveDhikr(item);
@@ -536,10 +566,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
-          leading: const BackButton(),
           title: Text(
             l10n.tasbeehAndIstighfar,
             style: const TextStyle(
@@ -549,6 +579,11 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           ),
           centerTitle: true,
           actions: [
+            IconButton(
+              tooltip: l10n.countSettings,
+              icon: const Icon(Icons.tune_rounded),
+              onPressed: () => _showCountSettingsSheet(isDark, primaryColor),
+            ),
             IconButton(
               tooltip: l10n.browseAllFormulas,
               icon: const Icon(Icons.format_list_bulleted_rounded),
@@ -562,175 +597,183 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           ],
         ),
         body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isCompact = constraints.maxHeight < 680;
-            final circleSize = isCompact ? 175.0 : 215.0;
-            // تثبيت صارم لارتفاع مربع عرض الذكر لمنع أي قفز أو تغير في حجمه
-            final cardHeight = isCompact ? 180.0 : 205.0;
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isCompact = constraints.maxHeight < 680;
+              // The counter is the screen's main action, so it gets the most room.
+              final circleSize = isCompact ? 205.0 : 250.0;
+              // تثبيت صارم لارتفاع مربع عرض الذكر لمنع أي قفز أو تغير في حجمه
+              final cardHeight = isCompact ? 180.0 : 205.0;
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: isCompact ? 14 : 18,
-                vertical: isCompact ? 8 : 12,
-              ),
-              physics: const BouncingScrollPhysics(),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 540),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // 1. مفتاح التبديل المباشر بين الاستغفار والتسبيح (بدون مبالغة)
-                      _buildSectionSwitcher(isDark, primaryColor),
-                      const SizedBox(height: 12),
+              return SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isCompact ? 14 : 18,
+                  vertical: isCompact ? 8 : 12,
+                ),
+                physics: const BouncingScrollPhysics(),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 540),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // 1. مفتاح التبديل المباشر بين الاستغفار والتسبيح (بدون مبالغة)
+                        _buildSectionSwitcher(isDark, primaryColor),
+                        const SizedBox(height: 12),
 
-                      // 2. مربع عرض الذكر ذو الحجم الثابت تماماً
-                      _buildFixedDhikrCard(
-                        dhikr,
-                        isDark,
-                        primaryColor,
-                        cardHeight,
-                      ),
-                      SizedBox(height: isCompact ? 14 : 18),
+                        // 2. مربع عرض الذكر ذو الحجم الثابت تماماً
+                        _buildFixedDhikrCard(
+                          dhikr,
+                          isDark,
+                          primaryColor,
+                          cardHeight,
+                        ),
+                        SizedBox(height: isCompact ? 14 : 18),
 
-                      // 3. الدائرة التفاعلية للتسبيح والعدّ
-                      Center(
-                        child: ScaleTransition(
-                          scale: _scaleAnimation,
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: _handleTap,
-                            onLongPress: _toggleAutoCount,
-                            child: Container(
-                              width: circleSize,
-                              height: circleSize,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: isDark
-                                    ? AppColors.darkSurface
-                                    : AppColors.comsilk,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: (isDark
-                                            ? AppColors.darkAccentGold
-                                            : AppColors.olive)
-                                        .withValues(alpha: 0.12),
-                                    blurRadius: 26,
-                                    spreadRadius: 2,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                                border: Border.all(
+                        // 3. الدائرة التفاعلية للتسبيح والعدّ
+                        Center(
+                          child: ScaleTransition(
+                            scale: _scaleAnimation,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: _handleTap,
+                              onLongPress: _toggleAutoCount,
+                              child: Container(
+                                width: circleSize,
+                                height: circleSize,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
                                   color: isDark
-                                      ? AppColors.darkBorder
-                                      : AppColors.lightBorder,
-                                  width: 1.5,
+                                      ? AppColors.darkSurface
+                                      : AppColors.comsilk,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          (isDark
+                                                  ? AppColors.darkAccentGold
+                                                  : AppColors.olive)
+                                              .withValues(alpha: 0.12),
+                                      blurRadius: 26,
+                                      spreadRadius: 2,
+                                      offset: const Offset(0, 8),
+                                    ),
+                                  ],
+                                  border: Border.all(
+                                    color: isDark
+                                        ? AppColors.darkBorder
+                                        : AppColors.lightBorder,
+                                    width: 1.5,
+                                  ),
                                 ),
-                              ),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // مؤشر التقدم الدائري
-                                  SizedBox(
-                                    width: circleSize - 16,
-                                    height: circleSize - 16,
-                                    child: CircularProgressIndicator(
-                                      value: progress,
-                                      strokeWidth: 6,
-                                      backgroundColor: isDark
-                                          ? AppColors.darkBorder
-                                          .withValues(alpha: 0.3)
-                                          : AppColors.lightBorder
-                                          .withValues(alpha: 0.5),
-                                      valueColor:
-                                          AlwaysStoppedAnimation<Color>(
-                                        isDark
-                                            ? AppColors.darkAccentGold
-                                            : primaryColor,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    // مؤشر التقدم الدائري
+                                    SizedBox(
+                                      width: circleSize - 16,
+                                      height: circleSize - 16,
+                                      child: CircularProgressIndicator(
+                                        value: progress,
+                                        strokeWidth: 6,
+                                        backgroundColor: isDark
+                                            ? AppColors.darkBorder.withValues(
+                                                alpha: 0.3,
+                                              )
+                                            : AppColors.lightBorder.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              isDark
+                                                  ? AppColors.darkAccentGold
+                                                  : primaryColor,
+                                            ),
                                       ),
                                     ),
-                                  ),
-                                  // الرقم والهدف ورسالة النقر
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        '${_repo.currentCount}',
-                                        style: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: isCompact ? 46 : 56,
-                                          fontWeight: FontWeight.bold,
-                                          color: isDark
-                                              ? AppColors.darkTextPrimary
-                                              : AppColors.lightPrimary,
-                                          height: 1.0,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        _repo.targetCount > 0
-                                            ? l10n.targetCount(_repo.targetCount)
-                                            : l10n.freeCount,
-                                        style: TextStyle(
-                                          fontSize: isCompact ? 13 : 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: isDark
-                                              ? AppColors.darkTextSecondary
-                                              : AppColors.lightTextSecondary,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 3),
-                                        decoration: BoxDecoration(
-                                          color: primaryColor
-                                              .withValues(alpha: 0.1),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          l10n.tapAnywhereToCount,
+                                    // الرقم والهدف ورسالة النقر
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          context.l10n.digits(
+                                            _repo.currentCount,
+                                          ),
                                           style: TextStyle(
-                                            fontSize: 11,
-                                            color: primaryColor,
-                                            fontWeight: FontWeight.w500,
+                                            fontFamily: 'Amiri',
+                                            fontSize: isCompact ? 46 : 56,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDark
+                                                ? AppColors.darkTextPrimary
+                                                : AppColors.lightPrimary,
+                                            height: 1.0,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          _repo.targetCount > 0
+                                              ? l10n.targetCount(
+                                                  _repo.targetCount,
+                                                )
+                                              : l10n.freeCount,
+                                          style: TextStyle(
+                                            fontSize: isCompact ? 13 : 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: isDark
+                                                ? AppColors.darkTextSecondary
+                                                : AppColors.lightTextSecondary,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 3,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: primaryColor.withValues(
+                                              alpha: 0.1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            l10n.tapAnywhereToCount,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: isCompact ? 10 : 14),
+                        SizedBox(height: isCompact ? 10 : 14),
 
-                      // 4. شريط كبسولة العدّ التلقائي الهادئ والتحكم بالوتيرة
-                      _buildAutoCountBar(isDark, primaryColor),
-                      SizedBox(height: isCompact ? 10 : 14),
+                        // 4. شريط كبسولة العدّ التلقائي الهادئ والتحكم بالوتيرة
+                        _buildAutoCountBar(isDark, primaryColor),
+                        SizedBox(height: isCompact ? 10 : 14),
 
-                      // 5. بطاقة ضبط الهدف + مفتاح التبديل التلقائي
-                      _buildControlsCard(isDark, primaryColor),
-                      const SizedBox(height: 12),
-
-                      // 6. شريط الإحصائيات (اليوم والإجمالي)
-                      _buildStatsRow(isDark, primaryColor),
-                      const SizedBox(height: 16),
-                    ],
+                        // 6. شريط الإحصائيات (اليوم والإجمالي)
+                        _buildStatsRow(isDark, primaryColor),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   /// شريط كبسولة العدّ التلقائي الهادئ مع التحكم بالوتيرة الزمنية.
   Widget _buildAutoCountBar(bool isDark, Color primaryColor) {
@@ -769,8 +812,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
               borderRadius: BorderRadius.circular(18),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: _isAutoCounting
                       ? activeColor
@@ -945,8 +990,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     final double textFontSize = textLength > 120
         ? 15.5
         : textLength > 60
-            ? 17.5
-            : 21.0;
+        ? 17.5
+        : 21.0;
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
@@ -985,18 +1030,21 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
-                        color: (isDark
-                                ? AppColors.darkAccentGold
-                                : AppColors.olive)
-                            .withValues(alpha: 0.15),
+                        color:
+                            (isDark
+                                    ? AppColors.darkAccentGold
+                                    : AppColors.olive)
+                                .withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         dhikr.category,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: isDark
                               ? AppColors.darkAccentGold
@@ -1011,7 +1059,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           color: isDark
                               ? AppColors.darkTextSecondary
                               : AppColors.lightTextSecondary,
@@ -1023,8 +1071,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       icon: const Icon(Icons.copy_rounded, size: 16),
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
-                      constraints:
-                          const BoxConstraints(minWidth: 32, minHeight: 28),
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 28,
+                      ),
                       onPressed: () => _copyDhikrText(dhikr.arabicText),
                     ),
                     const SizedBox(width: 2),
@@ -1033,21 +1083,26 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       borderRadius: BorderRadius.circular(6),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 2),
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               context.l10n.allFormulasCount(pool.length),
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 12,
                                 color: primaryColor,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(width: 2),
-                            Icon(Icons.keyboard_arrow_down_rounded,
-                                size: 16, color: primaryColor),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 16,
+                              color: primaryColor,
+                            ),
                           ],
                         ),
                       ),
@@ -1132,11 +1187,12 @@ class _TasbeehScreenState extends State<TasbeehScreen>
               if (dhikr.virtue.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5),
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? AppColors.darkBackground
-                            .withValues(alpha: 0.6)
+                        ? AppColors.darkBackground.withValues(alpha: 0.6)
                         : AppColors.comsilk,
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -1157,7 +1213,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           textAlign: TextAlign.center,
                           textDirection: TextDirection.rtl,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             height: 1.35,
                             color: isDark
                                 ? AppColors.darkTextSecondary
@@ -1177,20 +1233,22 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       Icon(
                         Icons.swipe_rounded,
                         size: 13,
-                        color: (isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary)
-                            .withValues(alpha: 0.7),
+                        color:
+                            (isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary)
+                                .withValues(alpha: 0.7),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         context.l10n.swipeOrTapToChange,
                         style: TextStyle(
-                          fontSize: 11,
-                          color: (isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary)
-                              .withValues(alpha: 0.7),
+                          fontSize: 12,
+                          color:
+                              (isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary)
+                                  .withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -1204,6 +1262,39 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   }
 
   /// بطاقة ضبط الهدف المطلوب وتفعيل التبديل التلقائي.
+  /// يفتح لوحة سفلية لضبط الهدف والتبديل التلقائي، بعيداً عن شاشة العدّ.
+  void _showCountSettingsSheet(bool isDark, Color primaryColor) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => ListenableBuilder(
+        listenable: _repo,
+        builder: (sheetContext, _) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  context.l10n.countSettings,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: 'Amiri',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                _buildControlsCard(isDark, primaryColor),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildControlsCard(bool isDark, Color primaryColor) {
     const targets = [33, 100, 0];
     final current = _repo.targetCount;
@@ -1241,15 +1332,17 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       decoration: BoxDecoration(
                         color: isSelected
                             ? (isDark
-                                ? AppColors.darkAccentGold.withValues(alpha: 0.2)
-                                : primaryColor.withValues(alpha: 0.12))
+                                  ? AppColors.darkAccentGold.withValues(
+                                      alpha: 0.2,
+                                    )
+                                  : primaryColor.withValues(alpha: 0.12))
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: isSelected
                               ? (isDark
-                                  ? AppColors.darkAccentGold
-                                  : primaryColor)
+                                    ? AppColors.darkAccentGold
+                                    : primaryColor)
                               : Colors.transparent,
                           width: 1.2,
                         ),
@@ -1260,15 +1353,16 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         style: TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 14,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           color: isSelected
                               ? (isDark
-                                  ? AppColors.darkAccentGold
-                                  : primaryColor)
+                                    ? AppColors.darkAccentGold
+                                    : primaryColor)
                               : (isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary),
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary),
                         ),
                       ),
                     ),
@@ -1297,11 +1391,11 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                     size: 18,
                     color: _repo.autoAdvanceEnabled
                         ? (isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.oliveDark)
+                              ? AppColors.darkAccentGold
+                              : AppColors.oliveDark)
                         : (isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary),
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -1404,13 +1498,13 @@ class _SectionTab extends StatelessWidget {
               color: isSelected
                   ? (isDark ? Colors.black : Colors.white)
                   : (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary),
             ),
             const SizedBox(width: 6),
             Flexible(
               child: Text(
-                '$title ($count)',
+                '$title (${context.l10n.digits(count)})',
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'Amiri',
@@ -1419,8 +1513,8 @@ class _SectionTab extends StatelessWidget {
                   color: isSelected
                       ? (isDark ? Colors.black : Colors.white)
                       : (isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary),
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary),
                 ),
               ),
             ),
@@ -1458,9 +1552,7 @@ class _SheetSectionTab extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 6),
           decoration: BoxDecoration(
             color: isSelected
-                ? (isDark
-                    ? AppColors.darkAccentGold
-                    : AppColors.oliveDark)
+                ? (isDark ? AppColors.darkAccentGold : AppColors.oliveDark)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
           ),
@@ -1473,8 +1565,8 @@ class _SheetSectionTab extends StatelessWidget {
               color: isSelected
                   ? (isDark ? Colors.black : Colors.white)
                   : (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary),
             ),
           ),
         ),
@@ -1513,9 +1605,7 @@ class _StatCard extends StatelessWidget {
           Icon(
             icon,
             size: 18,
-            color: isDark
-                ? AppColors.darkAccentGold
-                : AppColors.oliveDark,
+            color: isDark ? AppColors.darkAccentGold : AppColors.oliveDark,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -1525,7 +1615,7 @@ class _StatCard extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.lightTextSecondary,
@@ -1533,7 +1623,7 @@ class _StatCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  '$count',
+                  context.l10n.digits(count),
                   style: TextStyle(
                     fontFamily: 'Amiri',
                     fontSize: 16,

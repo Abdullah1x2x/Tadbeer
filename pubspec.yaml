@@ -48,6 +48,7 @@ dependencies:
   qr_flutter: ^4.1.0
   flutter_islamic_icons: ^1.0.2
   flutter_pdfview: ^1.4.5
+  cupertino_icons: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -70,7 +71,7 @@ flutter_launcher_icons:
   image_path: "assets/icons/app_icon.png"
   min_sdk_android: 21
 
-  adaptive_icon_background: "#3C4A30"
+  adaptive_icon_background: "assets/icons/app_icon_background.png"
   adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
 
   web:

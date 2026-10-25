@@ -111,9 +111,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   /// يعيد بيانات الآية المختارة حالياً.
   Ayah? get _currentAyah => QuranRepository.instance.getAyah(
-        _selectedSurahNumber,
-        _selectedAyahNumber,
-      );
+    _selectedSurahNumber,
+    _selectedAyahNumber,
+  );
 
   /// يتحقق مما إذا كانت الآية المختارة مضافة مسبقاً في هذا الرابط.
   bool get _isAlreadyAdded {
@@ -158,14 +158,19 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                     final normFilter = ArabicSearchNormalizer.normalize(filter);
                     final normName = ArabicSearchNormalizer.normalize(s.name);
                     final numberStr = '${s.number}';
-                    return normName.contains(normFilter) || numberStr.contains(filter);
+                    return normName.contains(normFilter) ||
+                        numberStr.contains(filter);
                   }).toList();
 
             return Container(
               height: MediaQuery.of(context).size.height * 0.75,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkBackground : AppColors.comsilkLight,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                color: isDark
+                    ? AppColors.darkBackground
+                    : AppColors.comsilkLight,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
               ),
               child: SafeArea(
                 child: Column(
@@ -192,10 +197,14 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                           fillColor: AppColors.surface(context),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: AppColors.border(context)),
+                            borderSide: BorderSide(
+                              color: AppColors.border(context),
+                            ),
                           ),
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
                         ),
                         onChanged: (val) => setPickerState(() => filter = val),
                       ),
@@ -205,7 +214,8 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                         itemCount: filteredSurahs.length,
                         separatorBuilder: (_, _) => Divider(
                           height: 1,
-                          color: AppColors.border(context).withValues(alpha: 0.4),
+                          color: AppColors.border(context)
+                              .withValues(alpha: 0.4),
                         ),
                         itemBuilder: (_, idx) {
                           final s = filteredSurahs[idx];
@@ -219,13 +229,17 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                                 color: isSelected
                                     ? Theme.of(context).colorScheme.primary
                                     : (isDark
-                                        ? Colors.white10
-                                        : Colors.black.withValues(alpha: 0.05)),
+                                          ? Colors.white10
+                                          : Colors.black.withValues(
+                                              alpha: 0.05,
+                                            )),
                                 shape: BoxShape.circle,
                               ),
                               child: Text(
                                 l10n.isArabic
-                                    ? ArabicSearchNormalizer.toArabicDigits(s.number)
+                                    ? ArabicSearchNormalizer.toArabicDigits(
+                                        s.number,
+                                      )
                                     : '${s.number}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -237,7 +251,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                             title: Text(
                               l10n.surahTitle(s.name),
                               style: TextStyle(
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                                 color: isSelected
                                     ? Theme.of(context).colorScheme.primary
                                     : null,
@@ -245,11 +261,15 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                             ),
                             subtitle: Text(
                               '${s.isMeccan ? l10n.meccan : l10n.medinan} · ${l10n.ayahCount(s.ayahCount)}',
-                              style: const TextStyle(fontSize: 11),
+                              style: const TextStyle(fontSize: 12),
                             ),
                             trailing: isSelected
-                                ? Icon(Icons.check_circle_rounded,
-                                    color: Theme.of(context).colorScheme.primary)
+                                ? Icon(
+                                    Icons.check_circle_rounded,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                  )
                                 : null,
                             onTap: () {
                               setState(() {
@@ -335,23 +355,47 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 // 3. المحتوى المتغير حسب الوضع المختار
                 Flexible(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 8,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         if (_currentMode == _AddVerseMode.search)
-                          _buildSearchSection(context, l10n, isDark, primaryColor)
+                          _buildSearchSection(
+                            context,
+                            l10n,
+                            isDark,
+                            primaryColor,
+                          )
                         else if (_currentMode == _AddVerseMode.manual)
-                          _buildManualSection(context, l10n, isDark, primaryColor)
+                          _buildManualSection(
+                            context,
+                            l10n,
+                            isDark,
+                            primaryColor,
+                          )
                         else
-                          _buildSavedSection(context, l10n, isDark, primaryColor),
+                          _buildSavedSection(
+                            context,
+                            l10n,
+                            isDark,
+                            primaryColor,
+                          ),
 
                         const SizedBox(height: 12),
 
                         // 4. بطاقة معاينة الآية المختارة
                         if (ayah != null)
-                          _buildSelectedAyahCard(context, ayah, l10n, isDark, primaryColor),
+                          _buildSelectedAyahCard(
+                            context,
+                            ayah,
+                            l10n,
+                            isDark,
+                            primaryColor,
+                          ),
 
                         const SizedBox(height: 14),
 
@@ -372,7 +416,11 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, AppStrings l10n, Color primaryColor) {
+  Widget _buildHeader(
+    BuildContext context,
+    AppStrings l10n,
+    Color primaryColor,
+  ) {
     return Column(
       children: [
         const SizedBox(height: 8),
@@ -404,7 +452,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               Expanded(
                 child: Text(
                   l10n.isArabic ? 'إضافة آية إلى الرابط' : 'Add Verse to Link',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
                 ),
               ),
               IconButton(
@@ -430,7 +481,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : Colors.black.withValues(alpha: 0.05),
+          color: isDark
+              ? AppColors.darkSurface
+              : Colors.black.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(3),
@@ -534,11 +587,18 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 : 'Type surah and verse (e.g. Baqarah 255) or text...',
             hintStyle: TextStyle(
               fontSize: 13,
-              color: isDark ? AppColors.nightSubtitle : AppColors.lightTextSecondary,
+              color: isDark
+                  ? AppColors.nightSubtitle
+                  : AppColors.lightTextSecondary,
             ),
-            prefixIcon: Icon(Icons.search_rounded, color: primaryColor, size: 20),
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: primaryColor,
+              size: 20,
+            ),
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
+                    tooltip: context.l10n.clearText,
                     icon: const Icon(Icons.clear_rounded, size: 18),
                     onPressed: () {
                       _searchController.clear();
@@ -552,7 +612,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: AppColors.border(context)),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
           ),
         ),
         if (_searchResults.isNotEmpty) ...[
@@ -574,11 +637,13 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               ),
               itemBuilder: (_, idx) {
                 final ayahItem = _searchResults[idx];
-                final isSelected = ayahItem.surahNumber == _selectedSurahNumber &&
+                final isSelected =
+                    ayahItem.surahNumber == _selectedSurahNumber &&
                     ayahItem.ayahNumber == _selectedAyahNumber;
                 final isAlready = widget.existingAyahIds.contains(ayahItem.id);
-                final surahName =
-                    QuranRepository.instance.getSurah(ayahItem.surahNumber).name;
+                final surahName = QuranRepository.instance
+                    .getSurah(ayahItem.surahNumber)
+                    .name;
 
                 return ListTile(
                   dense: true,
@@ -586,7 +651,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   title: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(6),
@@ -594,7 +662,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                         child: Text(
                           '$surahName : ${ayahItem.ayahNumber}',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: primaryColor,
                           ),
@@ -604,7 +672,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                       if (isAlready)
                         Text(
                           l10n.isArabic ? '(مضافة بالفعل)' : '(Already added)',
-                          style: const TextStyle(fontSize: 10.5, color: Colors.orange),
+                          style: const TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.orange,
+                          ),
                         ),
                     ],
                   ),
@@ -612,10 +683,17 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                     ayahItem.text,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontFamily: 'AmiriQuran', fontSize: 13),
+                    style: const TextStyle(
+                      fontFamily: 'AmiriQuran',
+                      fontSize: 13,
+                    ),
                   ),
                   trailing: isSelected
-                      ? Icon(Icons.check_circle_rounded, color: primaryColor, size: 18)
+                      ? Icon(
+                          Icons.check_circle_rounded,
+                          color: primaryColor,
+                          size: 18,
+                        )
                       : null,
                   onTap: () => _selectAyah(ayahItem, updateSearchText: false),
                 );
@@ -641,7 +719,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   Widget _buildQuickChip(String label, int surah, int ayah) {
     return ActionChip(
-      label: Text(label, style: const TextStyle(fontSize: 11)),
+      label: Text(label, style: const TextStyle(fontSize: 12)),
       padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       onPressed: () {
@@ -673,7 +751,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 onTap: _showSurahPickerModal,
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.surface(context),
                     borderRadius: BorderRadius.circular(12),
@@ -681,7 +762,11 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.menu_book_rounded, color: primaryColor, size: 18),
+                      Icon(
+                        Icons.menu_book_rounded,
+                        color: primaryColor,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Column(
@@ -692,7 +777,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                                   ? 'السورة (انقر للاختيار)'
                                   : 'Surah (tap to pick)',
                               style: TextStyle(
-                                fontSize: 10.5,
+                                fontSize: 12.0,
                                 color: isDark
                                     ? AppColors.nightSubtitle
                                     : AppColors.lightTextSecondary,
@@ -701,7 +786,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                             Text(
                               '${surah.number}. ${l10n.surahTitle(surah.name)}',
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 13.5),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13.5,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
@@ -732,7 +819,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                           ? 'رقم الآية (1-${surah.ayahCount})'
                           : 'Verse (1-${surah.ayahCount})',
                       style: TextStyle(
-                        fontSize: 10.5,
+                        fontSize: 12.0,
                         color: isDark
                             ? AppColors.nightSubtitle
                             : AppColors.lightTextSecondary,
@@ -742,11 +829,16 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.remove_circle_outline_rounded,
-                              size: 20),
+                          tooltip: context.l10n.decrease,
+                          icon: const Icon(
+                            Icons.remove_circle_outline_rounded,
+                            size: 20,
+                          ),
                           padding: EdgeInsets.zero,
-                          constraints:
-                              const BoxConstraints(minWidth: 28, minHeight: 28),
+                          constraints: const BoxConstraints(
+                            minWidth: 28,
+                            minHeight: 28,
+                          ),
                           onPressed: _selectedAyahNumber > 1
                               ? () {
                                   setState(() {
@@ -764,7 +856,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.number,
                             style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                             decoration: const InputDecoration(
                               isDense: true,
                               border: InputBorder.none,
@@ -772,7 +866,8 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                             ),
                             onChanged: (val) {
                               final parsed = int.tryParse(
-                                  ArabicSearchNormalizer.toEnglishDigits(val));
+                                ArabicSearchNormalizer.toEnglishDigits(val),
+                              );
                               if (parsed != null &&
                                   parsed >= 1 &&
                                   parsed <= surah.ayahCount) {
@@ -782,11 +877,16 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.add_circle_outline_rounded,
-                              size: 20),
+                          tooltip: context.l10n.increase,
+                          icon: const Icon(
+                            Icons.add_circle_outline_rounded,
+                            size: 20,
+                          ),
                           padding: EdgeInsets.zero,
-                          constraints:
-                              const BoxConstraints(minWidth: 28, minHeight: 28),
+                          constraints: const BoxConstraints(
+                            minWidth: 28,
+                            minHeight: 28,
+                          ),
                           onPressed: _selectedAyahNumber < surah.ayahCount
                               ? () {
                                   setState(() {
@@ -847,8 +947,11 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
         ),
         child: Column(
           children: [
-            Icon(Icons.bookmarks_outlined,
-                size: 36, color: Colors.grey.withValues(alpha: 0.6)),
+            Icon(
+              Icons.bookmarks_outlined,
+              size: 36,
+              color: Colors.grey.withValues(alpha: 0.6),
+            ),
             const SizedBox(height: 8),
             Text(
               l10n.isArabic
@@ -863,9 +966,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   : 'Bookmark or highlight verses while reading to see them here.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 11.5,
-                color:
-                    isDark ? AppColors.nightSubtitle : AppColors.lightTextSecondary,
+                fontSize: 12.0,
+                color: isDark
+                    ? AppColors.nightSubtitle
+                    : AppColors.lightTextSecondary,
               ),
             ),
           ],
@@ -890,11 +994,13 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
         ),
         itemBuilder: (_, idx) {
           final a = savedAyahs[idx];
-          final isSelected = a.surahNumber == _selectedSurahNumber &&
+          final isSelected =
+              a.surahNumber == _selectedSurahNumber &&
               a.ayahNumber == _selectedAyahNumber;
           final isAlready = widget.existingAyahIds.contains(a.id);
-          final surahName =
-              QuranRepository.instance.getSurah(a.surahNumber).name;
+          final surahName = QuranRepository.instance
+              .getSurah(a.surahNumber)
+              .name;
 
           return ListTile(
             dense: true,
@@ -913,7 +1019,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   const SizedBox(width: 8),
                   Text(
                     l10n.isArabic ? '(مضافة بالفعل)' : '(Already added)',
-                    style: const TextStyle(fontSize: 10.5, color: Colors.orange),
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.orange,
+                    ),
                   ),
                 ],
               ],
@@ -925,7 +1034,11 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               style: const TextStyle(fontFamily: 'AmiriQuran', fontSize: 13),
             ),
             trailing: isSelected
-                ? Icon(Icons.check_circle_rounded, color: primaryColor, size: 18)
+                ? Icon(
+                    Icons.check_circle_rounded,
+                    color: primaryColor,
+                    size: 18,
+                  )
                 : null,
             onTap: () => _selectAyah(a, updateSearchText: true),
           );
@@ -976,7 +1089,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                         : ayah.page,
                   ),
                   style: TextStyle(
-                    fontSize: 11.5,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                     color: primaryColor,
                   ),
@@ -984,7 +1097,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               ),
               if (_isAlreadyAdded)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.orange.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),
@@ -992,15 +1108,19 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.warning_amber_rounded,
-                          size: 13, color: Colors.orange),
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        size: 13,
+                        color: Colors.orange,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         l10n.isArabic ? 'مضافة مسبقاً' : 'Already in link',
                         style: const TextStyle(
-                            fontSize: 10.5,
-                            color: Colors.orange,
-                            fontWeight: FontWeight.bold),
+                          fontSize: 12.0,
+                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -1042,8 +1162,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: AppColors.border(context)),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
       ),
     );
   }
@@ -1068,8 +1190,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               onPressed: () => Navigator.pop(context),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               child: Text(l10n.cancel),
             ),
@@ -1097,8 +1220,9 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
           ),

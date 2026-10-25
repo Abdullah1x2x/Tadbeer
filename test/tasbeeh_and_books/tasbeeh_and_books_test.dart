@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tadbeer/core/design_system/design_system.dart';
 import 'package:tadbeer/app/app.dart';
 import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
@@ -225,8 +226,12 @@ void main() {
       await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
       await tester.pumpAndSettle();
 
+      // Target chips live in the "count settings" sheet.
+      await tester.tap(find.byTooltip('ضبط العدّ'));
+      await tester.pumpAndSettle();
+
       // Tap 33 target
-      final target33 = find.text('33 مرة');
+      final target33 = find.text('٣٣ مرة');
       expect(target33, findsOneWidget);
       await tester.ensureVisible(target33);
       await tester.tap(target33);
@@ -242,7 +247,7 @@ void main() {
       expect(repo.targetCount, 0);
 
       // Tap 100 target
-      final target100 = find.text('100 مرة');
+      final target100 = find.text('١٠٠ مرة');
       expect(target100, findsOneWidget);
       await tester.ensureVisible(target100);
       await tester.tap(target100);
@@ -267,7 +272,11 @@ void main() {
     testWidgets(
       'TasbeehScreen AppBar has BackButton on right, actions on left, and dhikr text centered',
       (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
+        // The back arrow appears when the screen is pushed (not as a tab).
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        tester
+            .state<NavigatorState>(find.byType(Navigator))
+            .push(MaterialPageRoute(builder: (_) => const TasbeehScreen()));
         await tester.pumpAndSettle();
 
         final backButtonFinder = find.byType(BackButton);
@@ -629,10 +638,12 @@ void main() {
       await tester.tap(find.text('استغفار وتسبيح'));
       await tester.pumpAndSettle();
 
+      // The card switches to the Istighfar tab.
       expect(find.byType(TasbeehScreen), findsOneWidget);
+      expect(find.byType(FloatingNavBar), findsOneWidget);
 
-      // Pop back to HomeScreen
-      await tester.pageBack();
+      // Back to Home through the bottom bar
+      await tester.tap(find.byTooltip('الرئيسية'));
       await tester.pumpAndSettle();
       expect(find.byType(HomeScreen), findsOneWidget);
 

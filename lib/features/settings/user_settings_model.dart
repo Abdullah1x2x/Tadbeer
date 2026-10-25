@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../app/theme.dart';
+
 /// خيارات حجم خط المصحف الثلاثة القياسية (صغير، متوسط، كبير).
 ///
 /// Exactly three Quran font-size options as required by Tadbeer typography specifications:
@@ -190,6 +192,9 @@ class UserSettings {
   /// حجم خط عرض الآيات في شاشة روابط الآيات (الافتراضي 18.0pt).
   final double ayahLinkFontSize;
 
+  /// لون ورق المصحف المختار (كلاسيكي أو سيبيا).
+  final MushafPaperTone mushafPaperTone;
+
   /// اسم عائلة خط المصحف المختارة للاستخدام المباشر في الأنماط النصية.
   String get quranFontFamilyName => quranFontFamily.fontFamily;
 
@@ -203,6 +208,7 @@ class UserSettings {
     this.quranFontFamily = QuranFontFamilyOption.scheherazade,
     this.quranFontSize = defaultQuranFontSize,
     this.ayahLinkFontSize = 18.0,
+    this.mushafPaperTone = MushafPaperTone.classic,
   }) : hideTadbeerIntroPermanently =
            hideTadabburIntroPermanently ?? hideTadbeerIntroPermanently;
 
@@ -216,6 +222,7 @@ class UserSettings {
     'quranFontFamily': quranFontFamily.name,
     'quranFontSize': quranFontSize,
     'ayahLinkFontSize': ayahLinkFontSize,
+    'mushafPaperTone': mushafPaperTone.name,
   };
 
   /// ينشئ كائن إعدادات المستخدم من خريطة بيانات JSON المحفوظة.
@@ -270,6 +277,10 @@ class UserSettings {
       quranFontFamily: familyOpt,
       quranFontSize: quranSize,
       ayahLinkFontSize: (json['ayahLinkFontSize'] as num?)?.toDouble() ?? 18.0,
+      mushafPaperTone: MushafPaperTone.values.firstWhere(
+        (e) => e.name == json['mushafPaperTone'],
+        orElse: () => MushafPaperTone.classic,
+      ),
     );
   }
 
@@ -283,6 +294,7 @@ class UserSettings {
     QuranFontFamilyOption? quranFontFamily,
     double? quranFontSize,
     double? ayahLinkFontSize,
+    MushafPaperTone? mushafPaperTone,
   }) {
     final newQuranFontSize = quranFontSize != null
         ? quranFontSize.clamp(minQuranFontSize, maxQuranFontSize)
@@ -299,6 +311,7 @@ class UserSettings {
       quranFontFamily: quranFontFamily ?? this.quranFontFamily,
       quranFontSize: newQuranFontSize,
       ayahLinkFontSize: ayahLinkFontSize ?? this.ayahLinkFontSize,
+      mushafPaperTone: mushafPaperTone ?? this.mushafPaperTone,
     );
   }
 }

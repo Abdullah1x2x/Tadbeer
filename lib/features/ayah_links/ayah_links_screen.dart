@@ -142,6 +142,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                         ),
                       ),
                       IconButton(
+                        tooltip: context.l10n.close,
                         icon: const Icon(Icons.close_rounded, size: 20),
                         onPressed: () => Navigator.pop(sheetCtx),
                       ),
@@ -197,7 +198,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                     child: Text(
                                       pathway.category,
                                       style: TextStyle(
-                                        fontSize: 10.5,
+                                        fontSize: 12.0,
                                         fontWeight: FontWeight.bold,
                                         color: primary,
                                       ),
@@ -223,11 +224,13 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                   Text(
                                     context.l10n.linkedAyahsCount(
                                       context.l10n.isArabic
-                                          ? ArabicSearchNormalizer.toArabicDigits(pathway.verses.length)
+                                          ? ArabicSearchNormalizer.toArabicDigits(
+                                              pathway.verses.length,
+                                            )
                                           : pathway.verses.length,
                                     ),
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 12,
                                       color: isDark
                                           ? AppColors.nightSubtitle
                                           : AppColors.daySubtitle,
@@ -237,19 +240,18 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                     onPressed: () async {
                                       Navigator.pop(sheetCtx);
                                       final imported =
-                                          await CuratedPathwaysRegistry
-                                              .importPathway(
-                                        pathway,
-                                        repo: _repo,
-                                      );
+                                          await CuratedPathwaysRegistry.importPathway(
+                                            pathway,
+                                            repo: _repo,
+                                          );
                                       if (mounted) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
                                                 AyahLinkDetailScreen(
-                                              linkId: imported.id,
-                                            ),
+                                                  linkId: imported.id,
+                                                ),
                                           ),
                                         );
                                       }
@@ -262,8 +264,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                         vertical: 6,
                                       ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
                                     icon: const Icon(Icons.add, size: 16),
@@ -340,6 +341,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                       prefixIcon: Icon(Icons.search, color: primary),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
+                              tooltip: context.l10n.clearText,
                               icon: const Icon(Icons.clear, size: 18),
                               onPressed: () {
                                 _searchController.clear();
@@ -510,7 +512,9 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                               Text(
                                                 l10n.linkedAyahsCount(
                                                   l10n.isArabic
-                                                      ? ArabicSearchNormalizer.toArabicDigits(link.verses.length)
+                                                      ? ArabicSearchNormalizer.toArabicDigits(
+                                                          link.verses.length,
+                                                        )
                                                       : link.verses.length,
                                                 ),
                                                 style: TextStyle(
@@ -546,7 +550,9 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                                     size: 18,
                                                   ),
                                                   const SizedBox(width: 8),
-                                                  Text(l10n.editTitleAndDescription),
+                                                  Text(
+                                                    l10n.editTitleAndDescription,
+                                                  ),
                                                 ],
                                               ),
                                             ),
@@ -617,7 +623,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                             child: Text(
                                               s.name,
                                               style: TextStyle(
-                                                fontSize: 11,
+                                                fontSize: 12,
                                                 color: Theme.of(context)
                                                     .colorScheme
                                                     .primary,

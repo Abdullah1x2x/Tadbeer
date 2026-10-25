@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/design_system.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/quran/data/quran_repository.dart';
@@ -57,27 +58,19 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
             final allHighlights = UserDataStore.instance.highlights;
 
             if (allHighlights.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.palette_outlined,
-                      size: 64,
-                      color: AppColors.border(context),
+              return EmptyState(
+                icon: Icons.format_paint_outlined,
+                title: l10n.noHighlightsYet,
+                hint: l10n.highlightsEmptyHint,
+                actionLabel: l10n.openMushaf,
+                actionIcon: Icons.menu_book_rounded,
+                onAction: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => QuranScreen(
+                      initialPage: UserDataStore.instance.readingPosition.page,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.noHighlightsYet,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 16,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               );
             }
@@ -113,7 +106,8 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                   ),
                   child: TextField(
                     controller: _searchController,
-                    onChanged: (val) => setState(() => _searchQuery = val.trim()),
+                    onChanged: (val) =>
+                        setState(() => _searchQuery = val.trim()),
                     decoration: InputDecoration(
                       hintText: l10n.searchHighlightsHint,
                       hintStyle: TextStyle(
@@ -129,6 +123,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                       ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
+                              tooltip: context.l10n.clearText,
                               icon: const Icon(Icons.clear, size: 20),
                               onPressed: () {
                                 _searchController.clear();
@@ -137,8 +132,9 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                             )
                           : null,
                       filled: true,
-                      fillColor:
-                          isDark ? AppColors.darkSurface : AppColors.comsilk,
+                      fillColor: isDark
+                          ? AppColors.darkSurface
+                          : AppColors.comsilk,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -178,9 +174,9 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                             );
                             final color =
                                 AppColors.highlightColors[item.colorIndex.clamp(
-                              0,
-                              AppColors.highlightColors.length - 1,
-                            )];
+                                  0,
+                                  AppColors.highlightColors.length - 1,
+                                )];
 
                             return InkWell(
                               onTap: () {
@@ -219,8 +215,9 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                         color: color,
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                          color: AppColors.oliveDark
-                                              .withValues(alpha: 0.4),
+                                          color: AppColors.oliveDark.withValues(
+                                            alpha: 0.4,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -237,24 +234,35 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                               Text(
                                                 context.l10n.ayahReference(
                                                   surah.name,
-                                                  context.currentLanguage == AppLanguage.arabic
-                                                      ? ArabicSearchNormalizer.toArabicDigits(item.ayahNumber)
+                                                  context.currentLanguage ==
+                                                          AppLanguage.arabic
+                                                      ? ArabicSearchNormalizer.toArabicDigits(
+                                                          item.ayahNumber,
+                                                        )
                                                       : item.ayahNumber,
                                                 ),
                                                 style: TextStyle(
-                                                  fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
+                                                  fontFamily:
+                                                      context.currentLanguage ==
+                                                          AppLanguage.arabic
+                                                      ? 'Amiri'
+                                                      : null,
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                   color: isDark
-                                                      ? AppColors.darkTextPrimary
+                                                      ? AppColors
+                                                            .darkTextPrimary
                                                       : AppColors
-                                                          .lightPrimaryDark,
+                                                            .lightPrimaryDark,
                                                 ),
                                               ),
                                               Text(
                                                 context.l10n.pageAbbr(
-                                                  context.currentLanguage == AppLanguage.arabic
-                                                      ? ArabicSearchNormalizer.toArabicDigits(item.page)
+                                                  context.currentLanguage ==
+                                                          AppLanguage.arabic
+                                                      ? ArabicSearchNormalizer.toArabicDigits(
+                                                          item.page,
+                                                        )
                                                       : item.page,
                                                 ),
                                                 style: TextStyle(
@@ -282,7 +290,8 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                                 '﴿ ${ayah.text} ﴾',
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
-                                                textDirection: TextDirection.rtl,
+                                                textDirection:
+                                                    TextDirection.rtl,
                                                 style: TextStyle(
                                                   fontFamily: 'AmiriQuran',
                                                   fontSize: 14,
@@ -303,10 +312,11 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                       tooltip: l10n.removeHighlight,
                                       onSelected: (val) {
                                         if (val == 'delete') {
-                                          UserDataStore.instance.removeHighlight(
-                                            item.surahNumber,
-                                            item.ayahNumber,
-                                          );
+                                          UserDataStore.instance
+                                              .removeHighlight(
+                                                item.surahNumber,
+                                                item.ayahNumber,
+                                              );
                                         }
                                       },
                                       itemBuilder: (ctx) => [

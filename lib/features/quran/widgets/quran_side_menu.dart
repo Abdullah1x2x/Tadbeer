@@ -5,6 +5,7 @@ import '../../../app/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_repository.dart';
 import '../../settings/settings_screen.dart';
+
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 /// Side drawer menu providing direct jump navigation across Surahs and Juzs,
@@ -134,6 +135,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                   ),
                   suffixIcon: _filter.isNotEmpty
                       ? IconButton(
+                          tooltip: context.l10n.clearText,
                           icon: const Icon(Icons.clear, size: 16),
                           onPressed: () {
                             _searchController.clear();
@@ -227,7 +229,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                 Text(
                   l10n.offlineQuranAndReflection,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: isDark
                         ? AppColors.nightSubtitle
                         : AppColors.daySubtitle,
@@ -328,7 +330,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
           subtitle: Text(
             '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(surah.ayahCount) : surah.ayahCount)}',
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 12,
               color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
             ),
           ),
@@ -419,7 +421,9 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                   : juzNum,
             ),
             style: TextStyle(
-              fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
+              fontFamily: context.currentLanguage == AppLanguage.arabic
+                  ? 'Amiri'
+                  : null,
               fontSize: 14,
               fontWeight: FontWeight.bold,
               color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
@@ -433,7 +437,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                   : firstAyah.ayahNumber,
             ),
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 12,
               color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
             ),
           ),

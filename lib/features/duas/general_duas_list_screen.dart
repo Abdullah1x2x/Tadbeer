@@ -45,9 +45,9 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
   }
 
   void _copyDua(GeneralDuaItem item) {
-    Clipboard.setData(ClipboardData(
-      text: '${item.title}\n\n${item.text}\n\n— ${item.source}',
-    ));
+    Clipboard.setData(
+      ClipboardData(text: '${item.title}\n\n${item.text}\n\n— ${item.source}'),
+    );
     HapticFeedback.selectionClick();
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -76,8 +76,9 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
@@ -97,10 +98,14 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightSurface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
                     ),
                   ),
                   child: TextField(
@@ -119,12 +124,11 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                       prefixIcon: Icon(
                         Icons.search_rounded,
                         size: 20,
-                        color: isDark
-                            ? AppColors.darkAccentGold
-                            : primaryColor,
+                        color: isDark ? AppColors.darkAccentGold : primaryColor,
                       ),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
+                              tooltip: context.l10n.clearText,
                               icon: const Icon(Icons.clear_rounded, size: 18),
                               onPressed: () {
                                 _searchController.clear();
@@ -133,8 +137,10 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                             )
                           : null,
                       border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -142,13 +148,20 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
 
               // عدد الأدعية
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 child: Row(
                   children: [
                     Text(
-                      l10n.generalDuasCountBadge(l10n.isArabic
-                          ? ArabicSearchNormalizer.toArabicDigits(filtered.length)
-                          : filtered.length),
+                      l10n.generalDuasCountBadge(
+                        l10n.isArabic
+                            ? ArabicSearchNormalizer.toArabicDigits(
+                                filtered.length,
+                              )
+                            : filtered.length,
+                      ),
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark
@@ -183,7 +196,9 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                            color: Colors.black.withValues(
+                              alpha: isDark ? 0.2 : 0.03,
+                            ),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -196,18 +211,27 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                             children: [
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
+                                  horizontal: 8,
+                                  vertical: 3,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: (isDark
-                                          ? AppColors.darkAccentGold
-                                          : AppColors.olive)
-                                      .withValues(alpha: 0.12),
+                                  color:
+                                      (isDark
+                                              ? AppColors.darkAccentGold
+                                              : AppColors.olive)
+                                          .withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
-                                  l10n.duaIndex(l10n.isArabic ? ArabicSearchNormalizer.toArabicDigits(index + 1) : (index + 1)),
+                                  l10n.duaIndex(
+                                    l10n.isArabic
+                                        ? ArabicSearchNormalizer.toArabicDigits(
+                                            index + 1,
+                                          )
+                                        : (index + 1),
+                                  ),
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: isDark
                                         ? AppColors.darkAccentGold
@@ -236,7 +260,9 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                                 visualDensity: VisualDensity.compact,
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(
-                                    minWidth: 32, minHeight: 32),
+                                  minWidth: 32,
+                                  minHeight: 32,
+                                ),
                                 onPressed: () => _copyDua(item),
                               ),
                             ],
@@ -262,7 +288,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                               Text(
                                 item.occasion,
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   color: isDark
                                       ? AppColors.darkAccentGold
                                       : primaryColor,
@@ -272,7 +298,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                               Text(
                                 item.source,
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   color: isDark
                                       ? AppColors.darkTextSecondary
                                       : AppColors.lightTextSecondary,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
 import '../motion/app_motion.dart';
@@ -84,7 +85,12 @@ class FuturisticButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: isLoading ? null : onPressed,
+          onTap: isLoading || onPressed == null
+              ? null
+              : () {
+                  HapticFeedback.selectionClick();
+                  onPressed!();
+                },
           borderRadius: BorderRadius.circular(AppTokens.radiusMd),
           splashColor: (isSecondary ? primaryColor : Colors.white).withValues(
             alpha: 0.15,
@@ -100,14 +106,19 @@ class FuturisticButton extends StatelessWidget {
                 ),
             decoration: BoxDecoration(
               color: bg,
+              gradient: !isSecondary && color == null
+                  ? AppColors.heroGradient(isDark)
+                  : null,
               borderRadius: BorderRadius.circular(AppTokens.radiusMd),
               border: border,
-              boxShadow: !isSecondary && isDark
+              boxShadow: !isSecondary
                   ? [
                       BoxShadow(
-                        color: primaryColor.withValues(alpha: 0.25),
-                        blurRadius: 12,
-                        offset: const Offset(0, 3),
+                        color: primaryColor.withValues(
+                          alpha: isDark ? 0.30 : 0.28,
+                        ),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
                       ),
                     ]
                   : null,
@@ -211,7 +222,12 @@ class FuturisticIconButton extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: isEnabled ? onTap : null,
+            onTap: isEnabled
+                ? () {
+                    HapticFeedback.selectionClick();
+                    onTap();
+                  }
+                : null,
             borderRadius: BorderRadius.circular(AppTokens.radiusMd),
             splashColor: primary.withValues(alpha: 0.14),
             hoverColor: primary.withValues(alpha: 0.08),

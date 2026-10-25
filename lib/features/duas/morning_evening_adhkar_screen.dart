@@ -107,8 +107,9 @@ class _MorningEveningAdhkarScreenState
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
@@ -132,8 +133,10 @@ class _MorningEveningAdhkarScreenState
             children: [
               // مفتاح التبديل بين الصباح والمساء
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 child: Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
@@ -158,8 +161,7 @@ class _MorningEveningAdhkarScreenState
                               _currentCategory == AdhkarCategory.morning,
                           isDark: isDark,
                           primaryColor: primaryColor,
-                          onTap: () =>
-                              _switchCategory(AdhkarCategory.morning),
+                          onTap: () => _switchCategory(AdhkarCategory.morning),
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -172,8 +174,7 @@ class _MorningEveningAdhkarScreenState
                               _currentCategory == AdhkarCategory.evening,
                           isDark: isDark,
                           primaryColor: primaryColor,
-                          onTap: () =>
-                              _switchCategory(AdhkarCategory.evening),
+                          onTap: () => _switchCategory(AdhkarCategory.evening),
                         ),
                       ),
                     ],
@@ -238,8 +239,7 @@ class _TabButton extends StatelessWidget {
     final activeBg = isDark
         ? AppColors.darkAccentGold.withValues(alpha: 0.18)
         : primaryColor.withValues(alpha: 0.12);
-    final activeTextColor =
-        isDark ? AppColors.darkAccentGold : primaryColor;
+    final activeTextColor = isDark ? AppColors.darkAccentGold : primaryColor;
 
     return InkWell(
       onTap: onTap,
@@ -268,8 +268,8 @@ class _TabButton extends StatelessWidget {
               color: isSelected
                   ? activeTextColor
                   : (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary),
             ),
             const SizedBox(width: 6),
             Text(
@@ -277,13 +277,12 @@ class _TabButton extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Amiri',
                 fontSize: 14,
-                fontWeight:
-                    isSelected ? FontWeight.bold : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
                     ? activeTextColor
                     : (isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary),
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary),
               ),
             ),
           ],
@@ -325,8 +324,8 @@ class _AdhkarCard extends StatelessWidget {
         border: Border.all(
           color: isComplete
               ? (isDark
-                  ? AppColors.darkAccentGold.withValues(alpha: 0.4)
-                  : primaryColor.withValues(alpha: 0.35))
+                    ? AppColors.darkAccentGold.withValues(alpha: 0.4)
+                    : primaryColor.withValues(alpha: 0.35))
               : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
         ),
         boxShadow: [
@@ -344,19 +343,20 @@ class _AdhkarCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.olive)
+                  color: (isDark ? AppColors.darkAccentGold : AppColors.olive)
                       .withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  l10n.dhikrIndex(l10n.isArabic ? ArabicSearchNormalizer.toArabicDigits(index + 1) : (index + 1)),
+                  l10n.dhikrIndex(
+                    l10n.isArabic
+                        ? ArabicSearchNormalizer.toArabicDigits(index + 1)
+                        : (index + 1),
+                  ),
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: isDark
                         ? AppColors.darkAccentGold
@@ -369,7 +369,7 @@ class _AdhkarCard extends StatelessWidget {
                 child: Text(
                   item.source,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.lightTextSecondary,
@@ -382,8 +382,7 @@ class _AdhkarCard extends StatelessWidget {
                 icon: const Icon(Icons.copy_rounded, size: 17),
                 visualDensity: VisualDensity.compact,
                 padding: EdgeInsets.zero,
-                constraints:
-                    const BoxConstraints(minWidth: 32, minHeight: 32),
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                 onPressed: onCopy,
               ),
               const SizedBox(width: 4),
@@ -394,19 +393,23 @@ class _AdhkarCard extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5),
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: isComplete
                         ? (isDark
-                            ? AppColors.darkAccentGold.withValues(alpha: 0.2)
-                            : Colors.green.withValues(alpha: 0.15))
+                              ? AppColors.darkAccentGold.withValues(alpha: 0.2)
+                              : AppColors.lightAccentGold.withValues(
+                                  alpha: 0.15,
+                                ))
                         : primaryColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isComplete
                           ? (isDark
-                              ? AppColors.darkAccentGold
-                              : Colors.green)
+                                ? AppColors.darkAccentGold
+                                : AppColors.lightAccentGold)
                           : primaryColor,
                       width: 1,
                     ),
@@ -421,8 +424,8 @@ class _AdhkarCard extends StatelessWidget {
                         size: 14,
                         color: isComplete
                             ? (isDark
-                                ? AppColors.darkAccentGold
-                                : Colors.green.shade800)
+                                  ? AppColors.darkAccentGold
+                                  : AppColors.lightAccentGold)
                             : primaryColor,
                       ),
                       const SizedBox(width: 4),
@@ -430,15 +433,21 @@ class _AdhkarCard extends StatelessWidget {
                         isComplete
                             ? l10n.completed
                             : (item.repeatCount > 1
-                                ? l10n.remainingCount(l10n.isArabic ? ArabicSearchNormalizer.toArabicDigits(remaining) : remaining)
-                                : l10n.once),
+                                  ? l10n.remainingCount(
+                                      l10n.isArabic
+                                          ? ArabicSearchNormalizer.toArabicDigits(
+                                              remaining,
+                                            )
+                                          : remaining,
+                                    )
+                                  : l10n.once),
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: isComplete
                               ? (isDark
-                                  ? AppColors.darkAccentGold
-                                  : Colors.green.shade800)
+                                    ? AppColors.darkAccentGold
+                                    : AppColors.lightAccentGold)
                               : primaryColor,
                         ),
                       ),
@@ -469,8 +478,7 @@ class _AdhkarCard extends StatelessWidget {
           if (item.virtue.isNotEmpty) ...[
             const SizedBox(height: 12),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: isDark
                     ? AppColors.darkBackground.withValues(alpha: 0.5)
@@ -491,7 +499,7 @@ class _AdhkarCard extends StatelessWidget {
                     child: Text(
                       item.virtue,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         height: 1.35,
                         color: isDark
                             ? AppColors.darkTextSecondary
