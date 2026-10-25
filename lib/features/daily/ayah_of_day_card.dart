@@ -118,14 +118,46 @@ class AyahOfTheDayCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  AyahOfTheDay.questionForDay(now),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: gold,
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w600,
-                  ),
+                // Shows a check once today's verse has been reflected on.
+                ListenableBuilder(
+                  listenable: UserDataStore.instance,
+                  builder: (context, _) {
+                    final done =
+                        UserDataStore.instance.getTadbeer(
+                          ayah.surahNumber,
+                          ayah.ayahNumber,
+                        ) !=
+                        null;
+                    return done
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.check_circle_rounded,
+                                color: gold,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                l10n.reflectedToday,
+                                style: const TextStyle(
+                                  color: gold,
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            AyahOfTheDay.questionForDay(now),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: gold,
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                  },
                 ),
                 const SizedBox(height: 6),
                 // Wraps on narrow phones instead of overflowing.

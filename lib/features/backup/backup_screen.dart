@@ -35,6 +35,7 @@ class _BackupScreenState extends State<BackupScreen> {
   bool _includeHighlights = true;
   bool _includeSettings = true;
   bool _includeReminders = true;
+  bool _includeJourney = true;
   final TextEditingController _passwordController = TextEditingController();
   bool _isProcessing = false;
 
@@ -61,6 +62,7 @@ class _BackupScreenState extends State<BackupScreen> {
       highlights: _includeHighlights,
       settings: _includeSettings,
       reminders: _includeReminders,
+      journey: _includeJourney,
     );
 
     if (!result.success) {
@@ -428,6 +430,18 @@ class _BackupScreenState extends State<BackupScreen> {
                       value: _includeSettings,
                       onChanged: (val) =>
                           setState(() => _includeSettings = val ?? true),
+                    ),
+                    CheckboxListTile(
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
+                      title: Text(
+                        l10n.journeyBackupSection,
+                        style: const TextStyle(fontFamily: 'Amiri'),
+                      ),
+                      value: _includeJourney,
+                      onChanged: (val) =>
+                          setState(() => _includeJourney = val ?? true),
                     ),
                     const SizedBox(height: 12),
                     TextField(

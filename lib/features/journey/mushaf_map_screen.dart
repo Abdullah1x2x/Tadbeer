@@ -5,6 +5,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/storage/user_data_store.dart';
+import '../memorization/memorization_model.dart';
 import '../quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import 'reading_journey.dart';
@@ -19,6 +20,9 @@ enum PageActivity {
 
   /// فيها آية محفوظة أو مميزة.
   marked,
+
+  /// فيها آية في الحفظ.
+  memorizing,
 
   /// فيها وقفة تدبر أو ملاحظة.
   reflected,
@@ -56,6 +60,11 @@ List<PageActivity> computePageActivity(UserDataStore store) {
             ? pageOf(n.surahNumber!, n.ayahNumber!)
             : null);
     if (p != null) raise(p, PageActivity.reflected);
+  }
+  for (final key in HifzStore.all().keys) {
+    final parts = key.split(':');
+    final p = pageOf(int.parse(parts[0]), int.parse(parts[1]));
+    if (p != null) raise(p, PageActivity.memorizing);
   }
   for (final t in store.tadbeerItems) {
     if (t.isEmpty) continue;
@@ -111,6 +120,8 @@ class _MapTab extends StatelessWidget {
             .withValues(alpha: isDark ? 0.55 : 0.4);
       case PageActivity.marked:
         return AppColors.primary(context);
+      case PageActivity.memorizing:
+        return AppColors.statusSuccess;
       case PageActivity.reflected:
         return AppColors.accentGold(context);
     }

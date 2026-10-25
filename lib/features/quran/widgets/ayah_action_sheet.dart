@@ -9,6 +9,7 @@ import '../../notes/note_model.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
+import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
 
@@ -209,6 +210,37 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                             ? AppColors.nightSubtitle
                             : AppColors.daySubtitle,
                       ),
+                    ),
+                    // Add or remove this verse from memorization review.
+                    Builder(
+                      builder: (context) {
+                        final inHifz = HifzStore.contains(
+                          widget.ayah.surahNumber,
+                          widget.ayah.ayahNumber,
+                        );
+                        return IconButton(
+                          tooltip: inHifz
+                              ? context.l10n.removeFromMemorization
+                              : context.l10n.addToMemorization,
+                          visualDensity: VisualDensity.compact,
+                          icon: Icon(
+                            inHifz
+                                ? Icons.psychology_rounded
+                                : Icons.psychology_outlined,
+                            color: inHifz
+                                ? AppColors.accentGold(context)
+                                : null,
+                          ),
+                          onPressed: () async {
+                            HapticFeedback.selectionClick();
+                            await HifzStore.toggle(
+                              widget.ayah.surahNumber,
+                              widget.ayah.ayahNumber,
+                            );
+                            if (mounted) setState(() {});
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),

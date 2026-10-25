@@ -139,6 +139,7 @@ class SearchRegistry {
     register(const HighlightsSearchProvider());
     register(const AyahLinksSearchProvider());
     register(const DuasSearchProvider());
+    register(const PathwaysSearchProvider());
     register(const RemindersSearchProvider());
     register(const WordMeaningsSearchProvider());
   }

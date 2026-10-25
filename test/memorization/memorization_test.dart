@@ -64,6 +64,19 @@ void main() {
       ]);
     });
 
+    test('toggling adds a verse due today, then removes it', () async {
+      await HifzStore.toggle(2, 255, now: day0);
+      expect(HifzStore.contains(2, 255), isTrue);
+      expect(HifzStore.dueToday(now: day0), [(2, 255)]);
+      await HifzStore.toggle(2, 255, now: day0);
+      expect(HifzStore.contains(2, 255), isFalse);
+    });
+
+    test('memorizing a verse keeps the day streak', () async {
+      await HifzStore.grade(1, 1, remembered: true, now: day0);
+      expect(UserDataStore.instance.journey.streak(day0), 1);
+    });
+
     testWidgets('a session reveals a verse and records the grade', (
       tester,
     ) async {
