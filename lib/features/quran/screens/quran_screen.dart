@@ -25,12 +25,18 @@ class QuranScreen extends StatefulWidget {
   final int? targetSurahNumber;
   final int? targetAyahNumber;
 
+  /// When the reader is hosted as a tab, it mirrors its controls visibility
+  /// here so the shell can hide the bottom bar while reading. Null when the
+  /// reader is pushed as a standalone page.
+  final ValueNotifier<bool>? controlsVisible;
+
   /// ينشئ شاشة قراءة المصحف الشريف مع إمكانية تحديد الصفحة أو الآية المستهدفة.
   const QuranScreen({
     super.key,
     this.initialPage,
     this.targetSurahNumber,
     this.targetAyahNumber,
+    this.controlsVisible,
   });
 
   /// ينشئ الحالة التفاعلية لشاشة قراءة المصحف.
@@ -72,6 +78,15 @@ class _QuranScreenState extends State<QuranScreen> {
     _currentPageIndex = startPage - 1;
     _pageController = PageController(initialPage: _currentPageIndex);
 
+    if (widget.controlsVisible != null) {
+      // As a tab, start with the controls (and the bottom bar) visible so the
+      // reader can see how to leave, and follow position changes made by
+      // readers opened elsewhere (e.g. from a bookmark).
+      _showTopBar = true;
+      widget.controlsVisible!.value = true;
+      UserDataStore.instance.addListener(_syncToSavedPosition);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _persistCurrentPagePosition(startPage);
@@ -82,9 +97,20 @@ class _QuranScreenState extends State<QuranScreen> {
   /// يحرر المؤقت ومتحكم الصفحات عند إغلاق الشاشة.
   @override
   void dispose() {
+    if (widget.controlsVisible != null) {
+      UserDataStore.instance.removeListener(_syncToSavedPosition);
+    }
     _suppressTimer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  /// Jumps the tab reader to the saved position when another reader moved it.
+  void _syncToSavedPosition() {
+    final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
+    if (page - 1 != _currentPageIndex && _pageController.hasClients) {
+      _pageController.jumpToPage(page - 1);
+    }
   }
 
   /// يحدث رقم الصفحة الحالية عند تقليب الصفحات ويحفظ موضع القراءة الجديد.
@@ -363,9 +389,10 @@ class _QuranScreenState extends State<QuranScreen> {
                         vertical: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkSurfaceVariant
-                            : AppColors.mushafBackground,
+                        color: MushafPalette.of(
+                          isDark: isDark,
+                          tone: settings.mushafPaperTone,
+                        ).outer,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: isDark
@@ -381,9 +408,10 @@ class _QuranScreenState extends State<QuranScreen> {
                         style: TextStyle(
                           fontFamily: settings.quranFontFamilyName,
                           fontSize: currentSize,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.mushafQuranText,
+                          color: MushafPalette.of(
+                            isDark: isDark,
+                            tone: settings.mushafPaperTone,
+                          ).text,
                         ),
                       ),
                     ),
@@ -431,6 +459,7 @@ class _QuranScreenState extends State<QuranScreen> {
     setState(() {
       _showTopBar = !_showTopBar;
     });
+    widget.controlsVisible?.value = _showTopBar;
   }
 
   /// يبني الشريط العلوي العائم الذي يضم القائمة الجانبية والبحث ومعاني الكلمات وحجم الخط بتصميم مستقبلي.

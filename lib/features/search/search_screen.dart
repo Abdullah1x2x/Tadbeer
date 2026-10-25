@@ -217,6 +217,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     prefixIcon: Icon(Icons.search_rounded, color: primaryColor),
                     suffixIcon: _controller.text.isNotEmpty
                         ? IconButton(
+                            tooltip: context.l10n.clearText,
                             icon: const Icon(Icons.clear, size: 20),
                             onPressed: () {
                               _controller.clear();
@@ -235,15 +236,12 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
 
-            // Filter Chips Carousel
-            SizedBox(
-              height: 50,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
+            // Filter chips wrap onto a second line instead of being clipped
+            // off the screen edge.
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+              child: Wrap(
+                runSpacing: 8,
                 children: [
                   // "الكل" Filter Chip
                   Padding(

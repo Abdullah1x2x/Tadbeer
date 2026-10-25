@@ -24,11 +24,13 @@ class AyahLinkQrDialog {
       if (link.description != null && link.description!.isNotEmpty)
         'd': link.description,
       'ay': link.verses
-          .map((v) => {
-                's': v.surahNumber,
-                'a': v.ayahNumber,
-                if (v.note != null && v.note!.isNotEmpty) 'n': v.note,
-              })
+          .map(
+            (v) => {
+              's': v.surahNumber,
+              'a': v.ayahNumber,
+              if (v.note != null && v.note!.isNotEmpty) 'n': v.note,
+            },
+          )
           .toList(),
     };
     return 'tadbeer://link?data=${base64Url.encode(utf8.encode(jsonEncode(payload)))}';
@@ -53,10 +55,7 @@ class AyahLinkQrDialog {
   }
 
   /// يعرض نافذة رمز QR لمشاركة الرابط دون إنترنت.
-  static Future<void> showShareDialog(
-    BuildContext context,
-    AyahLinkItem link,
-  ) {
+  static Future<void> showShareDialog(BuildContext context, AyahLinkItem link) {
     final qrData = encodeLink(link);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).colorScheme.primary;
@@ -68,8 +67,9 @@ class AyahLinkQrDialog {
         return Directionality(
           textDirection: context.currentLanguage.direction,
           child: AlertDialog(
-            backgroundColor:
-                isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            backgroundColor: isDark
+                ? AppColors.darkSurface
+                : AppColors.lightSurface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -149,7 +149,7 @@ class AyahLinkQrDialog {
                         : 'This code can be scanned from another Tadbeer device to import the link offline.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 11.5,
+                      fontSize: 12.0,
                       height: 1.4,
                       color: isDark
                           ? AppColors.nightSubtitle
@@ -213,15 +213,17 @@ class AyahLinkQrDialog {
             final decoded = AyahLinkQrDialog.decodeLink(textController.text);
             final isValid = decoded != null && decoded.containsKey('t');
             final title = isValid ? decoded['t'] as String : '';
-            final rawVerses =
-                isValid ? (decoded['ay'] as List? ?? const []) : const [];
+            final rawVerses = isValid
+                ? (decoded['ay'] as List? ?? const [])
+                : const [];
 
             final l10n = context.l10n;
             return Directionality(
               textDirection: context.currentLanguage.direction,
               child: AlertDialog(
-                backgroundColor:
-                    isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                backgroundColor: isDark
+                    ? AppColors.darkSurface
+                    : AppColors.lightSurface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -271,8 +273,9 @@ class AyahLinkQrDialog {
                                 ? 'لصق من الحافظة'
                                 : 'Paste from clipboard',
                             onPressed: () async {
-                              final data =
-                                  await Clipboard.getData('text/plain');
+                              final data = await Clipboard.getData(
+                                'text/plain',
+                              );
                               if (data?.text != null) {
                                 textController.text = data!.text!;
                                 setState(() {});
@@ -298,7 +301,9 @@ class AyahLinkQrDialog {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                l10n.isArabic ? 'العنوان: $title' : 'Title: $title',
+                                l10n.isArabic
+                                    ? 'العنوان: $title'
+                                    : 'Title: $title',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: primary,
@@ -344,8 +349,7 @@ class AyahLinkQrDialog {
                               final surahNum = map['s'] as int;
                               final ayahNum = map['a'] as int;
                               final note = map['n'] as String?;
-                              final ayah =
-                                  quranRepo.getAyah(surahNum, ayahNum);
+                              final ayah = quranRepo.getAyah(surahNum, ayahNum);
                               if (ayah != null) {
                                 await linkRepo.addVerseToLink(
                                   created.id,
@@ -363,9 +367,8 @@ class AyahLinkQrDialog {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => AyahLinkDetailScreen(
-                                    linkId: created.id,
-                                  ),
+                                  builder: (_) =>
+                                      AyahLinkDetailScreen(linkId: created.id),
                                 ),
                               );
                             }

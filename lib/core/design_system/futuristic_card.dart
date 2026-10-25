@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../app/theme.dart';
 import '../motion/app_motion.dart';
@@ -49,7 +50,7 @@ class FuturisticCard extends StatefulWidget {
     this.backgroundColor,
     this.borderRadius,
     this.padding,
-    this.pressedScale = 0.985,
+    this.pressedScale = 0.97,
     this.isSelected = false,
     this.showTopAccentGlow = false,
   });
@@ -144,7 +145,12 @@ class _FuturisticCardState extends State<FuturisticCard> {
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: widget.onTap,
+                  onTap: widget.onTap == null
+                      ? null
+                      : () {
+                          HapticFeedback.selectionClick();
+                          widget.onTap!();
+                        },
                   onLongPress: widget.onLongPress,
                   onHover: (hovered) => setState(() => _isHovered = hovered),
                   onFocusChange: (focused) =>

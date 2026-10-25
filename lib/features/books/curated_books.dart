@@ -209,11 +209,10 @@ final List<BookSectionConfig> curatedBookSections = [
   // 3. قسم ملازم هدي القرآن الكريم (91 ملزمة موثقة كاملة)
   BookSectionConfig(
     name: 'ملازم هدي القرآن الكريم',
-    description:
-        'سلسلة ملازم ودروس ومحاضرات السيد حسين بدر الدين الحوثي من هدي القرآن الكريم (91 ملزمة موثقة كاملة)',
+    description: 'سلسلة ملازم ودروس ومحاضرات السيد حسين بدر الدين الحوثي من هدي القرآن الكريم (٩١ ملزمة موثقة كاملة)',
     icon: Icons.auto_stories_rounded,
     color: const Color(0xFFC59B27),
-    countLabel: '91 ملزمة موثقة • PDF وفصول تفاعلية',
+    countLabel: '٩١ ملزمة موثقة • PDF وفصول تفاعلية',
     seriesFilterList: const [
       'الكل',
       'سلسلة معرفة الله',

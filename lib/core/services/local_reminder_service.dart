@@ -287,7 +287,7 @@ class LocalReminderService {
 
   /// Explicitly requests notification and exact alarm permissions across
   /// Android 13+/14+, iOS, macOS, and Web.
-  Future<bool> requestPermissions({bool forAlarm = false}) async {
+  Future<bool> requestPermissions() async {
     if (_isRunningInFlutterTest) return true;
     try {
       final androidImplementation = _notificationsPlugin
@@ -304,11 +304,8 @@ class LocalReminderService {
           if (canExact == false) {
             await androidImplementation.requestExactAlarmsPermission();
           }
-          if (forAlarm) {
-            await androidImplementation.requestFullScreenIntentPermission();
-          }
         } catch (e) {
-          debugPrint('Exact alarm / full screen permission check note: $e');
+          debugPrint('Exact alarm permission check note: $e');
         }
         final enabled = await androidImplementation.areNotificationsEnabled();
         return enabled ?? granted ?? false;
@@ -374,7 +371,6 @@ class LocalReminderService {
         audioAttributesUsage: AudioAttributesUsage.alarm,
         enableVibration: true,
         vibrationPattern: _alarmVibrationPattern,
-        fullScreenIntent: true,
         additionalFlags: _insistentAlarmFlags,
         autoCancel: true,
         ongoing: false,
@@ -493,7 +489,7 @@ class LocalReminderService {
     String? body,
   }) async {
     final isAlarm = alertType == ReminderAlertType.alarm;
-    final hasPermission = await requestPermissions(forAlarm: isAlarm);
+    final hasPermission = await requestPermissions();
     if (!hasPermission) {
       debugPrint('Notification permission was not granted.');
     }
@@ -640,9 +636,7 @@ class LocalReminderService {
     }
 
     if (requestPermissionIfNeeded) {
-      await requestPermissions(
-        forAlarm: reminder.alertType == ReminderAlertType.alarm,
-      );
+      await requestPermissions();
     }
 
     await cancelReminder(reminder);
@@ -662,16 +656,34 @@ class LocalReminderService {
       final now = tz.TZDateTime.now(tz.local);
 
       if (reminder.repeatMode == ReminderRepeatMode.once) {
-        var scheduledDate = tz.TZDateTime(
-          tz.local,
-          now.year,
-          now.month,
-          now.day,
-          reminder.hour,
-          reminder.minute,
-        );
-        if (!scheduledDate.isAfter(now)) {
-          scheduledDate = scheduledDate.add(const Duration(days: 1));
+        // A one-time reminder whose scheduled moment already passed has
+        // fired: disable it instead of rescheduling it for tomorrow.
+        if (reminder.hasOnceReminderFired()) {
+          await _markOnceReminderFired(reminder);
+          return;
+        }
+
+        tz.TZDateTime scheduledDate;
+        final existingTarget = reminder.scheduledFor;
+        if (existingTarget != null) {
+          // Keep the originally scheduled moment (e.g. on app restart sync).
+          scheduledDate = tz.TZDateTime.from(existingTarget, tz.local);
+        } else {
+          scheduledDate = tz.TZDateTime(
+            tz.local,
+            now.year,
+            now.month,
+            now.day,
+            reminder.hour,
+            reminder.minute,
+          );
+          if (!scheduledDate.isAfter(now)) {
+            scheduledDate = scheduledDate.add(const Duration(days: 1));
+          }
+          // Persist the exact target so later syncs can tell it has fired.
+          await UserDataStore.instance.putReminder(
+            reminder.copyWith(scheduledFor: scheduledDate.toLocal()),
+          );
         }
 
         await _zonedScheduleSafe(
@@ -731,6 +743,23 @@ class LocalReminderService {
       }
     } catch (e) {
       debugPrint('Error scheduling reminder: $e');
+    }
+  }
+
+  /// تعطيل تنبيه "مرة واحدة" بعد أن رنّ، وإلغاء أي إشعار متبقٍّ له.
+  Future<void> _markOnceReminderFired(ReminderItem reminder) async {
+    await cancelReminder(reminder);
+    final latest = UserDataStore.instance.reminders
+        .where((r) => r.id == reminder.id)
+        .firstOrNull;
+    // Only disable if the stored reminder still targets the same moment
+    // (the user may have edited it in the meantime).
+    if (latest != null &&
+        latest.isEnabled &&
+        latest.scheduledFor == reminder.scheduledFor) {
+      await UserDataStore.instance.putReminder(
+        latest.copyWith(isEnabled: false),
+      );
     }
   }
 

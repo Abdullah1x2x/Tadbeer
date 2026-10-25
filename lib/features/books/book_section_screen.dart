@@ -13,10 +13,7 @@ import 'book_repository.dart';
 class BookSectionScreen extends StatefulWidget {
   final BookSection section;
 
-  const BookSectionScreen({
-    super.key,
-    required this.section,
-  });
+  const BookSectionScreen({super.key, required this.section});
 
   @override
   State<BookSectionScreen> createState() => _BookSectionScreenState();
@@ -28,7 +25,6 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
 
   String _selectedMalazemSeries = 'الكل';
   String _searchQuery = '';
-
 
   @override
   void initState() {
@@ -62,14 +58,14 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
       list = list.where((b) {
         if (_selectedMalazemSeries ==
             'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
-          return b.subtitle.contains('آل عمران') && !b.subtitle.contains('رمضان');
+          return b.subtitle.contains('آل عمران') &&
+              !b.subtitle.contains('رمضان');
         }
-        if (_selectedMalazemSeries ==
-            'سلسلة هدي القرآن: مدارسة سورة المائدة') {
-          return b.subtitle.contains('المائدة') && !b.subtitle.contains('رمضان');
+        if (_selectedMalazemSeries == 'سلسلة هدي القرآن: مدارسة سورة المائدة') {
+          return b.subtitle.contains('المائدة') &&
+              !b.subtitle.contains('رمضان');
         }
-        if (_selectedMalazemSeries ==
-            'سلسلة هدي القرآن: مدارسة سورة الصف') {
+        if (_selectedMalazemSeries == 'سلسلة هدي القرآن: مدارسة سورة الصف') {
           return b.subtitle.contains('الصف') || b.title.contains('الصف');
         }
         if (_selectedMalazemSeries == 'فهرس وتوثيق الملازم') {
@@ -92,8 +88,9 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
       final normTitle = ArabicSearchNormalizer.normalize(b.title);
       final normSubtitle = ArabicSearchNormalizer.normalize(b.subtitle);
       final normAuthor = ArabicSearchNormalizer.normalize(b.author);
-      final normFileName =
-          b.fileName != null ? ArabicSearchNormalizer.normalize(b.fileName!) : '';
+      final normFileName = b.fileName != null
+          ? ArabicSearchNormalizer.normalize(b.fileName!)
+          : '';
 
       if (normTitle.contains(normQuery) ||
           normSubtitle.contains(normQuery) ||
@@ -115,7 +112,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
 
   String _formatSeriesLabel(String series, List<BookModel> allBooks) {
     if (series == 'الكل') {
-      return '${context.l10n.allCategories} (${allBooks.length})';
+      return '${context.l10n.allCategories} (${context.l10n.digits(allBooks.length)})';
     }
     final count = allBooks.where((b) {
       if (series == 'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
@@ -135,7 +132,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
     var cleanName = series
         .replaceAll('سلسلة هدي القرآن: مدارسة ', '')
         .replaceAll('سلسلة ', '');
-    return '$cleanName ($count)';
+    return '$cleanName (${context.l10n.digits(count)})';
   }
 
   String _getSectionTitle(BuildContext context) {
@@ -165,8 +162,9 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
@@ -187,12 +185,14 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                 child: Container(
                   decoration: BoxDecoration(
-                    color:
-                        isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightSurface,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color:
-                          isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
                     ),
                   ),
                   child: TextField(
@@ -208,6 +208,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                       ),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
+                              tooltip: context.l10n.clearText,
                               icon: const Icon(Icons.clear_rounded, size: 18),
                               onPressed: () {
                                 _searchController.clear();
@@ -232,8 +233,9 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
               // شرائح السلاسل (تظهر للأقسام التي تحدد سلاسل تصنيفية)
               if (_hasSeriesFilter && allBooks.isNotEmpty)
                 Container(
-                  color: (widget.section.color ?? primaryColor)
-                      .withValues(alpha: 0.05),
+                  color: (widget.section.color ?? primaryColor).withValues(
+                    alpha: 0.05,
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -257,10 +259,11 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                               color: isSelected
                                   ? (isDark ? Colors.black : Colors.white)
                                   : (isDark
-                                      ? AppColors.darkTextPrimary
-                                      : AppColors.lightTextPrimary),
+                                        ? AppColors.darkTextPrimary
+                                        : AppColors.lightTextPrimary),
                             ),
-                            selectedColor: widget.section.color ??
+                            selectedColor:
+                                widget.section.color ??
                                 (isDark
                                     ? AppColors.darkAccentGold
                                     : AppColors.oliveDark),
@@ -300,8 +303,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) =>
-                                      BookReaderScreen(book: book),
+                                  builder: (_) => BookReaderScreen(book: book),
                                 ),
                               );
                             },
@@ -347,11 +349,11 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
               Text(
                 hasSearch
                     ? (context.l10n.isArabic
-                        ? 'لا توجد نتائج مطابقة لبحثك'
-                        : 'No results match your search')
+                          ? 'لا توجد نتائج مطابقة لبحثك'
+                          : 'No results match your search')
                     : (context.l10n.isArabic
-                        ? 'هذا القسم فارغ حالياً'
-                        : 'This section is currently empty'),
+                          ? 'هذا القسم فارغ حالياً'
+                          : 'This section is currently empty'),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontFamily: 'Amiri',
@@ -363,11 +365,11 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
               Text(
                 hasSearch
                     ? (context.l10n.isArabic
-                        ? 'جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.'
-                        : 'Try searching with another word or choose a different category.')
+                          ? 'جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.'
+                          : 'Try searching with another word or choose a different category.')
                     : (context.l10n.isArabic
-                        ? 'لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.'
-                        : 'No pamphlets or books have been added to this section yet.'),
+                          ? 'لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.'
+                          : 'No pamphlets or books have been added to this section yet.'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.5,
@@ -498,7 +500,7 @@ class _SectionBookCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11.5,
+                        fontSize: 12.0,
                         height: 1.35,
                         color: isDark
                             ? AppColors.darkTextSecondary
@@ -518,7 +520,9 @@ class _SectionBookCard extends StatelessWidget {
                           vertical: 2.5,
                         ),
                         decoration: BoxDecoration(
-                          color: badgeColor.withValues(alpha: isDark ? 0.2 : 0.1),
+                          color: badgeColor.withValues(
+                            alpha: isDark ? 0.2 : 0.1,
+                          ),
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
                             color: badgeColor.withValues(alpha: 0.35),
@@ -528,7 +532,7 @@ class _SectionBookCard extends StatelessWidget {
                         child: Text(
                           countLabel,
                           style: TextStyle(
-                            fontSize: 10.5,
+                            fontSize: 12.0,
                             fontWeight: FontWeight.bold,
                             color: badgeColor,
                           ),
@@ -540,7 +544,7 @@ class _SectionBookCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             color: isDark
                                 ? AppColors.darkTextSecondary
                                 : AppColors.lightTextSecondary,
@@ -569,18 +573,13 @@ class _SectionBookCard extends StatelessWidget {
                     ),
                   ),
                   child: Center(
-                    child: Icon(
-                      iconData,
-                      color: badgeColor,
-                      size: 22,
-                    ),
+                    child: Icon(iconData, color: badgeColor, size: 22),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Icon(
-                  context.currentLanguage.direction == TextDirection.rtl
-                      ? Icons.chevron_left_rounded
-                      : Icons.chevron_right_rounded,
+                  // Mirrors with text direction, so it points left in Arabic.
+                  Icons.chevron_right_rounded,
                   size: 18,
                   color: isDark
                       ? AppColors.darkTextSecondary

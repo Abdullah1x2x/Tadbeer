@@ -139,6 +139,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                           ],
                         ),
                         IconButton(
+                          tooltip: context.l10n.close,
                           icon: const Icon(Icons.close, size: 20),
                           onPressed: () => Navigator.pop(context),
                         ),
@@ -200,7 +201,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                       l10n.isArabic
                           ? 'إنشاء رابط جديد وربط هذه الآية به مباشرة'
                           : 'Create a new link and add this verse directly',
-                      style: const TextStyle(fontSize: 11),
+                      style: const TextStyle(fontSize: 12),
                     ),
                     onTap: _createNewLinkAndAdd,
                   ),
@@ -275,16 +276,19 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                             ),
                             trailing: isAlreadyLinked
                                 ? Text(
-                                    l10n.isArabic ? 'مضافة بالفعل' : 'Already added',
+                                    l10n.isArabic
+                                        ? 'مضافة بالفعل'
+                                        : 'Already added',
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 12,
                                       color: Theme.of(context)
                                           .colorScheme
                                           .primary,
                                     ),
                                   )
                                 : Icon(
-                                    context.currentLanguage.direction == TextDirection.rtl
+                                    context.currentLanguage.direction ==
+                                            TextDirection.rtl
                                         ? Icons.arrow_back_ios_new_rounded
                                         : Icons.arrow_forward_ios_rounded,
                                     size: 14,

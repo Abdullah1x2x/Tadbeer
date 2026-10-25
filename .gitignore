@@ -132,3 +132,4 @@ app.*.map.json
 /assets/quran/word_meanings_excluded.json
 /tool/manual_reviews.json
 /tool/__pycache__/
+tadbeer-upload.jks

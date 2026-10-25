@@ -70,15 +70,11 @@ class SettingsScreen extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
+                                color: Theme.of(context).colorScheme.primary
                                     .withValues(alpha: isDark ? 0.22 : 0.10),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
+                                  color: Theme.of(context).colorScheme.primary
                                       .withValues(alpha: 0.3),
                                   width: 0.8,
                                 ),
@@ -90,7 +86,7 @@ class SettingsScreen extends StatelessWidget {
                                   context.currentLanguage == AppLanguage.arabic,
                                 ),
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
@@ -104,8 +100,8 @@ class SettingsScreen extends StatelessWidget {
                             Expanded(
                               child: _buildThemeOptionButton(
                                 context: context,
-                                mode: ThemeMode.light,
-                                currentMode: settings.themeMode,
+                                isSelected:
+                                    settings.themeMode == ThemeMode.light,
                                 label: l10n.light,
                                 icon: Icons.light_mode_rounded,
                                 isDark: isDark,
@@ -122,8 +118,8 @@ class SettingsScreen extends StatelessWidget {
                             Expanded(
                               child: _buildThemeOptionButton(
                                 context: context,
-                                mode: ThemeMode.dark,
-                                currentMode: settings.themeMode,
+                                isSelected:
+                                    settings.themeMode == ThemeMode.dark,
                                 label: l10n.dark,
                                 icon: Icons.dark_mode_rounded,
                                 isDark: isDark,
@@ -140,9 +136,10 @@ class SettingsScreen extends StatelessWidget {
                             Expanded(
                               child: _buildThemeOptionButton(
                                 context: context,
-                                mode: ThemeMode.system,
-                                currentMode: settings.themeMode,
-                                label: context.currentLanguage ==
+                                isSelected:
+                                    settings.themeMode == ThemeMode.system,
+                                label:
+                                    context.currentLanguage ==
                                         AppLanguage.arabic
                                     ? 'تلقائي'
                                     : 'System',
@@ -179,7 +176,7 @@ class SettingsScreen extends StatelessWidget {
                                   context.currentLanguage == AppLanguage.arabic,
                                 ),
                                 style: TextStyle(
-                                  fontSize: 11.5,
+                                  fontSize: 12.0,
                                   height: 1.5,
                                   color: isDark
                                       ? AppColors.nightSubtitle
@@ -218,101 +215,52 @@ class SettingsScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        for (final fontOpt in QuranFontFamilyOption.values) ...[
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 6),
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(10),
-                              onTap: () {
-                                UserDataStore.instance.setQuranFontFamily(
-                                  fontOpt,
-                                );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: settings.quranFontFamily == fontOpt
-                                      ? Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withValues(
-                                              alpha: isDark ? 0.22 : 0.10,
-                                            )
-                                      : (isDark
-                                            ? AppColors.darkSurface
-                                            : AppColors.lightBackground),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: settings.quranFontFamily == fontOpt
-                                        ? Theme.of(context).colorScheme.primary
-                                        : (isDark
-                                              ? AppColors.darkBorder
-                                              : AppColors.lightBorder),
-                                    width: settings.quranFontFamily == fontOpt
-                                        ? 1.4
-                                        : 0.8,
+                        // A compact dropdown replaces the five large cards;
+                        // the live preview below shows the chosen font.
+                        DropdownButtonFormField<QuranFontFamilyOption>(
+                          // Re-created when the setting changes elsewhere
+                          // (e.g. after restoring a backup).
+                          key: ValueKey(settings.quranFontFamily),
+                          initialValue: settings.quranFontFamily,
+                          isExpanded: true,
+                          borderRadius: BorderRadius.circular(16),
+                          items: [
+                            for (final fontOpt in QuranFontFamilyOption.values)
+                              DropdownMenuItem(
+                                value: fontOpt,
+                                child: Text(
+                                  fontOpt.getLabel(
+                                    context.currentLanguage ==
+                                        AppLanguage.arabic,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
                                   ),
                                 ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      settings.quranFontFamily == fontOpt
-                                          ? Icons.radio_button_checked_rounded
-                                          : Icons.radio_button_off_rounded,
-                                      size: 20,
-                                      color: settings.quranFontFamily == fontOpt
-                                          ? Theme.of(
-                                              context,
-                                            ).colorScheme.primary
-                                          : (isDark
-                                                ? AppColors.nightSubtitle
-                                                : AppColors.daySubtitle),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            fontOpt.getLabel(
-                                              context.currentLanguage ==
-                                                  AppLanguage.arabic,
-                                            ),
-                                            style: TextStyle(
-                                              fontWeight:
-                                                  settings.quranFontFamily ==
-                                                      fontOpt
-                                                  ? FontWeight.bold
-                                                  : FontWeight.w600,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            fontOpt.getSubtitle(
-                                              context.currentLanguage ==
-                                                  AppLanguage.arabic,
-                                            ),
-                                            style: TextStyle(
-                                              fontSize: 11.5,
-                                              color: isDark
-                                                  ? AppColors.nightSubtitle
-                                                  : AppColors.daySubtitle,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ),
+                          ],
+                          onChanged: (fontOpt) {
+                            if (fontOpt == null) return;
+                            HapticFeedback.selectionClick();
+                            UserDataStore.instance.setQuranFontFamily(fontOpt);
+                          },
+                        ),
+                        const SizedBox(height: 6),
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 6),
+                          child: Text(
+                            settings.quranFontFamily.getSubtitle(
+                              context.currentLanguage == AppLanguage.arabic,
+                            ),
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              height: 1.5,
+                              color: AppColors.textSecondary(context),
                             ),
                           ),
-                        ],
+                        ),
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 8),
                           child: Divider(height: 1),
@@ -344,7 +292,11 @@ class SettingsScreen extends StatelessWidget {
                                     : settings.quranFontSize.round(),
                               ),
                               style: TextStyle(
-                                fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
+                                fontFamily:
+                                    context.currentLanguage ==
+                                        AppLanguage.arabic
+                                    ? 'Amiri'
+                                    : null,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.primary,
@@ -364,15 +316,67 @@ class SettingsScreen extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.auto_stories_outlined,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.mushafPaperTone,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            for (final (index, tone, label, icon) in [
+                              (
+                                0,
+                                MushafPaperTone.classic,
+                                l10n.paperClassic,
+                                Icons.description_outlined,
+                              ),
+                              (
+                                1,
+                                MushafPaperTone.sepia,
+                                l10n.paperSepia,
+                                Icons.local_cafe_outlined,
+                              ),
+                            ]) ...[
+                              if (index > 0) const SizedBox(width: 8),
+                              Expanded(
+                                child: _buildThemeOptionButton(
+                                  context: context,
+                                  isSelected: settings.mushafPaperTone == tone,
+                                  label: label,
+                                  icon: icon,
+                                  isDark: isDark,
+                                  onSelect: () {
+                                    UserDataStore.instance.updateSettings(
+                                      settings.copyWith(mushafPaperTone: tone),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 14,
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? AppColors.darkSurfaceVariant
-                                : AppColors.mushafBackground,
+                            color: MushafPalette.of(
+                              isDark: isDark,
+                              tone: settings.mushafPaperTone,
+                            ).outer,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: isDark
@@ -389,9 +393,10 @@ class SettingsScreen extends StatelessWidget {
                               fontFamily: settings.quranFontFamilyName,
                               fontSize: settings.quranFontSize,
                               height: 1.85,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.mushafQuranText,
+                              color: MushafPalette.of(
+                                isDark: isDark,
+                                tone: settings.mushafPaperTone,
+                              ).text,
                             ),
                           ),
                         ),
@@ -407,13 +412,18 @@ class SettingsScreen extends StatelessWidget {
                                       settings.quranFontSize ==
                                           UserSettings.defaultQuranFontSize
                                       ? null
-                                      : () => UserDataStore.instance.setQuranFontSize(
-                                          UserSettings.defaultQuranFontSize,
-                                        ),
-                                  icon: const Icon(Icons.refresh_rounded, size: 16),
+                                      : () => UserDataStore.instance
+                                            .setQuranFontSize(
+                                              UserSettings.defaultQuranFontSize,
+                                            ),
+                                  icon: const Icon(
+                                    Icons.refresh_rounded,
+                                    size: 16,
+                                  ),
                                   label: Text(
                                     l10n.resetToDefaultWithVal(
-                                      context.currentLanguage == AppLanguage.arabic
+                                      context.currentLanguage ==
+                                              AppLanguage.arabic
                                           ? '٢٠'
                                           : '20',
                                     ),
@@ -681,8 +691,10 @@ class SettingsScreen extends StatelessWidget {
                               child: OutlinedButton.icon(
                                 onPressed: () =>
                                     _showPrivacyPolicyDialog(context),
-                                icon: const Icon(Icons.shield_outlined,
-                                    size: 17),
+                                icon: const Icon(
+                                  Icons.shield_outlined,
+                                  size: 17,
+                                ),
                                 label: Text(
                                   l10n.privacyPolicy,
                                   style: const TextStyle(fontSize: 12),
@@ -706,8 +718,10 @@ class SettingsScreen extends StatelessWidget {
                                         'Books & Malazem: Authentic Public Domain & Heritage Works',
                                   );
                                 },
-                                icon: const Icon(Icons.policy_outlined,
-                                    size: 17),
+                                icon: const Icon(
+                                  Icons.policy_outlined,
+                                  size: 17,
+                                ),
                                 label: Text(
                                   l10n.openSourceLicenses,
                                   style: const TextStyle(fontSize: 12),
@@ -737,7 +751,11 @@ class SettingsScreen extends StatelessWidget {
       builder: (dialogCtx) => AlertDialog(
         title: Row(
           children: [
-            const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 24),
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: Colors.redAccent,
+              size: 24,
+            ),
             const SizedBox(width: 8),
             Text(l10n.resetData),
           ],
@@ -806,17 +824,15 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// يبني زراً تفاعلياً لأحد خيارات سمة المظهر (فاتح / داكن / تلقائي).
+  /// يبني زراً تفاعلياً لأحد خيارات المظهر (السمة أو لون ورق المصحف).
   Widget _buildThemeOptionButton({
     required BuildContext context,
-    required ThemeMode mode,
-    required ThemeMode currentMode,
+    required bool isSelected,
     required String label,
     required IconData icon,
     required bool isDark,
     required VoidCallback onSelect,
   }) {
-    final isSelected = currentMode == mode;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Semantics(
@@ -838,15 +854,13 @@ class SettingsScreen extends StatelessWidget {
               color: isSelected
                   ? primaryColor.withValues(alpha: isDark ? 0.24 : 0.12)
                   : (isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightBackground),
+                        ? AppColors.darkSurface
+                        : AppColors.lightBackground),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected
                     ? primaryColor
-                    : (isDark
-                        ? AppColors.darkBorder
-                        : AppColors.lightBorder),
+                    : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
                 width: isSelected ? 1.8 : 0.9,
               ),
               boxShadow: isSelected
@@ -870,8 +884,8 @@ class SettingsScreen extends StatelessWidget {
                   color: isSelected
                       ? primaryColor
                       : (isDark
-                          ? AppColors.nightSubtitle
-                          : AppColors.daySubtitle),
+                            ? AppColors.nightSubtitle
+                            : AppColors.daySubtitle),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -881,13 +895,12 @@ class SettingsScreen extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.w600,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                     color: isSelected
                         ? primaryColor
                         : (isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary),
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -909,11 +922,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   /// إرجاع التسمية التوضيحية للسمة المفعّلة حالياً مع توضيح حالة مظهر الجهاز عند تفعيل الوضع التلقائي.
-  String _getActiveThemeLabel(
-    ThemeMode mode,
-    bool isDark,
-    bool isArabic,
-  ) {
+  String _getActiveThemeLabel(ThemeMode mode, bool isDark, bool isArabic) {
     switch (mode) {
       case ThemeMode.light:
         return isArabic ? 'فاتح' : 'Light';
@@ -928,19 +937,15 @@ class SettingsScreen extends StatelessWidget {
   }
 
   /// إرجاع النص الإرشادي التوضيحي لمزايا السمة المحددة.
-  String _getThemeExplanation(
-    ThemeMode mode,
-    bool isDark,
-    bool isArabic,
-  ) {
+  String _getThemeExplanation(ThemeMode mode, bool isDark, bool isArabic) {
     if (mode == ThemeMode.light) {
       return isArabic
-          ? 'الوضع النهاري: ألوان ورقية مستوحاة من ورق المصحف الشريف لقراءة نهارية مريحة وواضحة.'
-          : 'Light Mode: Calm parchment tones inspired by the Medina Mushaf for comfortable daytime reading.';
+          ? 'الوضع النهاري: خلفية ورقية هادئة مع لمسات كحلية وذهبية لقراءة نهارية مريحة وواضحة.'
+          : 'Light Mode: Calm paper tones with navy and gold accents for comfortable daytime reading.';
     } else if (mode == ThemeMode.dark) {
       return isArabic
-          ? 'الوضع الليلي: ألوان داكنة زمردية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.'
-          : 'Dark Mode: Subdued, deep forest tones engineered to minimize eye fatigue during extended nighttime reading.';
+          ? 'الوضع الليلي: ألوان كحلية ليلية مع لمسات ذهبية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.'
+          : 'Dark Mode: Deep night-navy tones with gold accents, engineered to minimize eye fatigue during extended nighttime reading.';
     } else {
       final current = isDark
           ? (isArabic ? 'داكن' : 'Dark')
@@ -974,8 +979,10 @@ class SettingsScreen extends StatelessWidget {
           builder: (context, scrollController) {
             return SafeArea(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -1000,8 +1007,11 @@ class SettingsScreen extends StatelessWidget {
                             color: primaryColor.withValues(alpha: 0.15),
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(Icons.shield_rounded,
-                              color: primaryColor, size: 22),
+                          child: Icon(
+                            Icons.shield_rounded,
+                            color: primaryColor,
+                            size: 22,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -1019,7 +1029,7 @@ class SettingsScreen extends StatelessWidget {
                               Text(
                                 context.l10n.privacyPolicySubtitle,
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   color: isDark
                                       ? AppColors.darkTextSecondary
                                       : AppColors.lightTextSecondary,

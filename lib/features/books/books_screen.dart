@@ -16,10 +16,7 @@ export 'book_section_screen.dart';
 class BooksScreen extends StatefulWidget {
   final String? initialSection;
 
-  const BooksScreen({
-    super.key,
-    this.initialSection,
-  });
+  const BooksScreen({super.key, this.initialSection});
 
   @override
   State<BooksScreen> createState() => _BooksScreenState();
@@ -39,9 +36,9 @@ class _BooksScreenState extends State<BooksScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final matchingSection = _repo.sections.cast<BookSection?>().firstWhere(
-              (s) => s?.name == widget.initialSection,
-              orElse: () => null,
-            );
+          (s) => s?.name == widget.initialSection,
+          orElse: () => null,
+        );
         if (matchingSection != null) {
           Navigator.push(
             context,
@@ -74,8 +71,9 @@ class _BooksScreenState extends State<BooksScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
@@ -98,8 +96,9 @@ class _BooksScreenState extends State<BooksScreen> {
                   separatorBuilder: (_, _) => const SizedBox(height: 14),
                   itemBuilder: (context, index) {
                     final section = sections[index];
-                    final bookCount =
-                        _repo.getBooksBySection(section.name).length;
+                    final bookCount = _repo
+                        .getBooksBySection(section.name)
+                        .length;
                     return _SectionDirectoryCard(
                       section: section,
                       bookCount: bookCount,
@@ -110,8 +109,7 @@ class _BooksScreenState extends State<BooksScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) =>
-                                BookSectionScreen(section: section),
+                            builder: (_) => BookSectionScreen(section: section),
                           ),
                         );
                       },
@@ -289,7 +287,25 @@ class _SectionDirectoryCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 1. تفاصيل القسم واسمه (على اليمين)
+              // 1. أيقونة القسم في بداية البطاقة
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: badgeColor.withValues(alpha: isDark ? 0.18 : 0.12),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: badgeColor.withValues(alpha: 0.35),
+                    width: 1.2,
+                  ),
+                ),
+                child: Center(
+                  child: Icon(iconData, color: badgeColor, size: 26),
+                ),
+              ),
+              const SizedBox(width: 14),
+
+              // 2. تفاصيل القسم واسمه
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,8 +333,8 @@ class _SectionDirectoryCard extends StatelessWidget {
                           fontSize: 12,
                           height: 1.35,
                           color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
                         ),
                       ),
                     ],
@@ -329,14 +345,16 @@ class _SectionDirectoryCard extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: badgeColor.withValues(alpha: isDark ? 0.15 : 0.09),
+                        color: badgeColor.withValues(
+                          alpha: isDark ? 0.15 : 0.09,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         _formatCountLabel(context),
                         style: TextStyle(
                           fontFamily: 'Amiri',
-                          fontSize: 11.5,
+                          fontSize: 12.0,
                           fontWeight: FontWeight.bold,
                           color: badgeColor,
                         ),
@@ -345,42 +363,14 @@ class _SectionDirectoryCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 8),
 
-              // 2. أيقونة القسم وسهم الدخول (على اليسار)
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    decoration: BoxDecoration(
-                      color: badgeColor.withValues(alpha: isDark ? 0.18 : 0.12),
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: badgeColor.withValues(alpha: 0.35),
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        iconData,
-                        color: badgeColor,
-                        size: 26,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Icon(
-                    context.currentLanguage.direction == TextDirection.rtl
-                        ? Icons.chevron_left_rounded
-                        : Icons.chevron_right_rounded,
-                    size: 18,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                ],
+              // 3. سهم الدخول في طرف البطاقة (ينعكس تلقائياً مع اتجاه اللغة)
+              Icon(
+                Icons.chevron_right_rounded,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
               ),
             ],
           ),

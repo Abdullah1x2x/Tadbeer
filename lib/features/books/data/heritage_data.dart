@@ -27,7 +27,7 @@ const nahjAlBalaghaBook = BookConfig(
   estimatedMinutes: 50,
   icon: Icons.auto_stories_rounded,
   badgeText: 'كبرى الخطب والرسائل والحكم',
-  badgeColor: Color(0xFF2E6F4D),
+  badgeColor: Color(0xFF2C4F7C),
   chapters: [
     BookChapter(
       title: 'الخطبة الأولى: في ابتداء خلق السماء والأرض، وخلق آدم',
@@ -70,7 +70,8 @@ const nahjAlBalaghaBook = BookConfig(
     ),
     BookChapter(
       title: 'الخطبة الشقشقية (الخطبة الثالثة)',
-      summary: 'البيان التاريخي الصادق في مسار الخلافة والأمة والصبر على المكاره',
+      summary:
+          'البيان التاريخي الصادق في مسار الخلافة والأمة والصبر على المكاره',
       content: '''أَمَا وَاللَّهِ لَقَدْ تَقَمَّصَهَا فُلاَنٌ وَإِنَّهُ لَيَعْلَمُ أَنَّ مَحَلِّي مِنْهَا مَحَلُّ الْقُطْبِ مِنَ الرَّحَى. يَنْحَدِرُ عَنِّي السَّيْلُ وَلاَ يَرْقَى إِلَيَّ الطَّيْرُ. فَسَدَلْتُ دُونَهَا ثَوْباً وَطَوَيْتُ عَنْهَا كَشْحاً. وَطَفِقْتُ أَرْتَئِي بَيْنَ أَنْ أَصُولَ بِيَدٍ جَذَّاءَ أَوْ أَصْبِرَ عَلَى طِخْيَةٍ عَمْيَاءَ يَهْرَمُ فِيهَا الْكَبِيرُ. وَيَشِيبُ فِيهَا الصَّغِيرُ. وَيَكْدَحُ فِيهاَ مُؤْمِنٌ حَتَّى يَلْقى رَبَّهُ فَرَأَيْتُ أَنَّ الصَّبْرَ عَلَى هَاتَا أَحْجَى فَصَبَرْتُ وَفِي الْعَيْنِ قَذًى. وَفِي الْحَلْقِ شَجاً أَرَى تُرَاثِي نَهْباً حَتَّى مَضَى الأَوَّلُ لِسَبِيلِهِ فَأَدْلَى بِهَا إِلَى فُلاَنٍ بَعْدَهُ 
 
 (ثُمَّ تَمَثَّلَ بِقَوْلِ الأَعْشَى):
@@ -202,21 +203,20 @@ const nahjAlBalaghaBook = BookConfig(
 • وَقَالَ عَلَيْهِ السَّلَامُ: أَشْرَفُ الْغِنَى تَرْكُ الْمُنَى.
 • وَقَالَ عَلَيْهِ السَّلَامُ: مَنْ أَصْلَحَ مَا بَيْنَهُ وَبَيْنَ اللَّهِ، أَصْلَحَ اللَّهُ مَا بَيْنَهُ وَبَيْنَ النَّاسِ، وَمَنْ أَصْلَحَ أَمْرَ آخِرَتِهِ، أَصْلَحَ اللَّهُ لَهُ أَمْرَ دُنْيَاهُ، وَمَنْ كَانَ لَهُ مِنْ نَفْسِهِ وَاعِظٌ، كَانَ عَلَيْهِ مِنَ اللَّهِ حَافِظٌ.''',
     ),
-],
+  ],
 );
 
 /// كتاب رسالة الحقوق الكاملة للإمام علي بن الحسين زين العابدين عليه السلام.
 const risalatAlHuquqBook = BookConfig(
   id: 'heritage_risalat_al_huquq',
   title: 'رسالة الحقوق',
-  subtitle:
-      'المنظومة الأخلاقية والإنسانية الكاملة في حقوق الله والنفس والجوارح والناس',
+  subtitle: 'المنظومة الأخلاقية والإنسانية الكاملة في حقوق الله والنفس والجوارح والناس',
   author: 'الإمام علي بن الحسين (زين العابدين) عليه السلام',
   assetPath: null,
   estimatedMinutes: 35,
   icon: Icons.balance_rounded,
   badgeText: 'رسالة الحقوق (٥٠ حقاً)',
-  badgeColor: Color(0xFF2E6F4D),
+  badgeColor: Color(0xFF2C4F7C),
   chapters: [
     BookChapter(
       title: 'مقدمة الرسالة وبيان أقسام الحقوق',
@@ -339,7 +339,7 @@ const risalatAlHuquqBook = BookConfig(
 
 فَهَذِهِ خَمْسُونَ حَقّاً مُحِيطَةً بِكَ لَا تَخْرُجُ مِنْهَا فِي حَالٍ مِنَ الْأَحْوَالِ، يَجِبُ عَلَيْكَ رِعَايَتُهَا وَالْعَمَلُ فِي تَأْدِيَتِهَا، وَاللَّهُ الْمُسْتَعَانُ وَعَلَيْهِ التُّكْلَانُ.''',
     ),
-],
+  ],
 );
 
 /// كتاب تحف العقول عن آل الرسول للحراني.
@@ -347,12 +347,13 @@ const tuhafAlUqulBook = BookConfig(
   id: 'heritage_tuhaf_al_uqul',
   title: 'تحف العقول عن آل الرسول',
   subtitle: 'جامع مواعظ ووصايا وحكم النبي الأكرم وأئمة أهل البيت عليهم السلام',
-  author: 'أبي محمد الحسن بن علي بن الحسين بن شعبة الحراني (القرن الرابع الهجري)',
+  author:
+      'أبي محمد الحسن بن علي بن الحسين بن شعبة الحراني (القرن الرابع الهجري)',
   assetPath: null,
   estimatedMinutes: 45,
   icon: Icons.auto_stories_rounded,
   badgeText: 'جامع مواعظ ووصايا المعصومين',
-  badgeColor: Color(0xFF2E6F4D),
+  badgeColor: Color(0xFF2C4F7C),
   chapters: [
     BookChapter(
       title: 'مواعظ وحكم النبي محمد صلى الله عليه وآله',
@@ -396,11 +397,10 @@ const tuhafAlUqulBook = BookConfig(
 /// قسم تراث وأدعية أهل البيت (عليهم السلام) - يضم أمهات الكتب الكاملة دون قيود نشر.
 const ahlulbaytHeritageSection = BookSectionConfig(
   name: 'تراث وأدعية أهل البيت (عليهم السلام)',
-  description:
-      'أشرف كتب ومناجاة وأدعية أئمة الهدى ومختارات البلاغة والتربية الإيمانية الكاملة',
+  description: 'أشرف كتب ومناجاة وأدعية أئمة الهدى ومختارات البلاغة والتربية الإيمانية الكاملة',
   icon: Icons.mosque_rounded,
-  color: Color(0xFF2E6F4D),
-  countLabel: 'أمهات كتب كاملة • 54 دعاء و50 حقاً',
+  color: Color(0xFF2C4F7C),
+  countLabel: 'أمهات كتب كاملة • ٥٤ دعاء و٥٠ حقاً',
   books: [
     sahifahSajjadiyahBook,
     nahjAlBalaghaBook,
@@ -412,9 +412,10 @@ const ahlulbaytHeritageSection = BookSectionConfig(
 /// قسم علوم وتدبر القرآن الكريم.
 const quranSciencesSection = BookSectionConfig(
   name: 'علوم وتدبر القرآن الكريم',
-  description: 'أمهات كتب آداب التلاوة وقواعد التدبر الإيماني وأخلاق حملة القرآن',
+  description:
+      'أمهات كتب آداب التلاوة وقواعد التدبر الإيماني وأخلاق حملة القرآن',
   icon: Icons.menu_book_rounded,
-  color: Color(0xFF2C7A7B),
+  color: Color(0xFF3A6EA5),
   countLabel: 'كتب تدبرية وتفسيرية',
   books: [
     BookConfig(
@@ -457,8 +458,7 @@ const quranSciencesSection = BookSectionConfig(
     BookConfig(
       id: 'heritage_qawaid_tadabbur_quran',
       title: 'قواعد وأصول في تدبر القرآن الكريم',
-      subtitle:
-          'المنهج العلمي والروحي لفهم كلام رب العالمين واستلهام هدايته',
+      subtitle: 'المنهج العلمي والروحي لفهم كلام رب العالمين واستلهام هدايته',
       author: 'دراسة جامعة محققة من أصول التفسير والتدبر',
       assetPath: 'assets/books/qawaid_tadabbur_quran.pdf',
       estimatedMinutes: 25,

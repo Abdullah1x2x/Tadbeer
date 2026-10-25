@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../core/storage/user_data_store.dart';
-import '../features/home/home_screen.dart';
+import '../core/storage/user_database.dart';
+import 'main_shell.dart';
 import '../features/tadbeer/tadbeer_intro_screen.dart';
 import 'localization.dart';
 import 'theme.dart';
 
 /// مفتاح التنقل العام للتطبيق لفتح الشاشات عند النقر على الإشعارات أو المنبهات.
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
+
+/// مفتاح عرض الرسائل العامة (مثل فشل حفظ البيانات) من أي مكان في التطبيق.
+final GlobalKey<ScaffoldMessengerState> appScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 /// Root application widget for Tadbeer.
 ///
@@ -34,6 +39,48 @@ class _TadbeerAppState extends State<TadbeerApp> {
     _currentLanguage = AppLanguage.fromCode(savedCode);
     _initialHideIntro =
         UserDataStore.instance.settings.hideTadbeerIntroPermanently;
+    UserDatabase.instance.lastIssue.addListener(_scheduleDatabaseIssue);
+    // Issues that happened during startup (before this widget existed).
+    if (UserDatabase.instance.lastIssue.value != null) {
+      _scheduleDatabaseIssue();
+    }
+  }
+
+  /// يؤجل عرض الرسالة إلى ما بعد الإطار الحالي لتجنب أي تعارض مع البناء.
+  void _scheduleDatabaseIssue() {
+    if (UserDatabase.instance.lastIssue.value == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _onDatabaseIssue();
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
+  @override
+  void dispose() {
+    UserDatabase.instance.lastIssue.removeListener(_scheduleDatabaseIssue);
+    super.dispose();
+  }
+
+  /// يُظهر للمستخدم رسالة واضحة عند فشل حفظ البيانات أو قراءتها بدلاً من الصمت.
+  void _onDatabaseIssue() {
+    final issue = UserDatabase.instance.lastIssue.value;
+    final messenger = appScaffoldMessengerKey.currentState;
+    if (issue == null || messenger == null) return;
+    final strings = AppStrings(_currentLanguage);
+    final message = switch (issue.kind) {
+      UserDatabaseIssueKind.writeFailed => strings.dataSaveFailed,
+      UserDatabaseIssueKind.readFailed => strings.dataLoadFailed,
+      UserDatabaseIssueKind.corruptRowsSkipped => strings.corruptItemsSkipped,
+    };
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message, style: const TextStyle(fontFamily: 'Amiri')),
+          duration: const Duration(seconds: 6),
+        ),
+      );
+    UserDatabase.instance.lastIssue.value = null;
   }
 
   /// تحديث لغة واجهة التطبيق عند تغييرها من قِبل المستخدم.
@@ -57,6 +104,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
           onLanguageChanged: _onLanguageChanged,
           child: MaterialApp(
             navigatorKey: appNavigatorKey,
+            scaffoldMessengerKey: appScaffoldMessengerKey,
             title: 'تَدْبِير · Tadbeer',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
@@ -70,7 +118,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
               );
             },
             home: _initialHideIntro
-                ? const HomeScreen()
+                ? const MainShell()
                 : const TadbeerIntroScreen(),
           ),
         );

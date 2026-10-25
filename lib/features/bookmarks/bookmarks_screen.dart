@@ -59,27 +59,19 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
             final allBookmarks = UserDataStore.instance.bookmarks;
 
             if (allBookmarks.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.bookmark_border,
-                      size: 64,
-                      color: AppColors.border(context),
+              return EmptyState(
+                icon: Icons.bookmark_border_rounded,
+                title: l10n.noBookmarksYet,
+                hint: l10n.bookmarksEmptyHint,
+                actionLabel: l10n.openMushaf,
+                actionIcon: Icons.menu_book_rounded,
+                onAction: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => QuranScreen(
+                      initialPage: UserDataStore.instance.readingPosition.page,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.noBookmarksYet,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 16,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               );
             }
@@ -142,6 +134,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                         ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
+                                tooltip: context.l10n.clearText,
                                 icon: const Icon(Icons.clear_rounded, size: 20),
                                 onPressed: () {
                                   _searchController.clear();

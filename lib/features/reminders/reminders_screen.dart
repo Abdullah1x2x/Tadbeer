@@ -478,28 +478,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
             final allReminders = UserDataStore.instance.reminders;
 
             if (allReminders.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.alarm,
-                      size: 64,
-                      color: AppColors.border(context),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.noRemindersYet,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 16,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
-                      ),
-                    ),
-                  ],
-                ),
+              return EmptyState(
+                icon: Icons.alarm_rounded,
+                title: l10n.noRemindersYet,
+                hint: l10n.remindersEmptyHint,
               );
             }
 
@@ -549,6 +531,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
+                                tooltip: context.l10n.clearText,
                                 icon: const Icon(Icons.clear_rounded, size: 20),
                                 onPressed: () {
                                   _searchController.clear();
@@ -688,7 +671,7 @@ class _AlertTypeOptionCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Amiri',
-                fontSize: 11,
+                fontSize: 12,
                 color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
               ),
             ),

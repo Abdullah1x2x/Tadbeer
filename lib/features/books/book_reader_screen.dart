@@ -81,10 +81,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         final file = File('${tempDir.path}/$fileName');
         if (!await file.exists()) {
           final byteData = await rootBundle.load(path);
-          await file.writeAsBytes(byteData.buffer.asUint8List(
-            byteData.offsetInBytes,
-            byteData.lengthInBytes,
-          ));
+          await file.writeAsBytes(
+            byteData.buffer.asUint8List(
+              byteData.offsetInBytes,
+              byteData.lengthInBytes,
+            ),
+          );
         }
         if (mounted) {
           setState(() {
@@ -201,100 +203,109 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
             child: SizedBox(
               height: MediaQuery.of(ctx).size.height * 0.72,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: Column(
                   children: [
                     Container(
                       width: 36,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(Icons.list_alt_rounded, color: primaryColor, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.bookIndexPrefix(widget.book.title),
-                        style: const TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.list_alt_rounded,
+                          color: primaryColor,
+                          size: 20,
                         ),
-                        overflow: TextOverflow.ellipsis,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            l10n.bookIndexPrefix(widget.book.title),
+                            style: const TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: widget.book.chapters.length,
+                        separatorBuilder: (_, _) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final chap = widget.book.chapters[index];
+                          final isCurrent = index == _currentChapterIndex;
+
+                          return ListTile(
+                            leading: CircleAvatar(
+                              radius: 14,
+                              backgroundColor: isCurrent
+                                  ? primaryColor
+                                  : (isDark
+                                        ? AppColors.darkBorder
+                                        : AppColors.lightBorder),
+                              child: Text(
+                                '${index + 1}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: isCurrent
+                                      ? Colors.white
+                                      : (isDark
+                                            ? AppColors.darkTextPrimary
+                                            : AppColors.lightTextPrimary),
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              chap.title,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 15,
+                                fontWeight: isCurrent
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isCurrent ? primaryColor : null,
+                              ),
+                            ),
+                            subtitle: chap.summary.isNotEmpty
+                                ? Text(
+                                    chap.summary,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontSize: 12),
+                                  )
+                                : null,
+                            onTap: () {
+                              Navigator.pop(ctx);
+                              _changeChapter(index);
+                            },
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: widget.book.chapters.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (context, index) {
-                      final chap = widget.book.chapters[index];
-                      final isCurrent = index == _currentChapterIndex;
-
-                      return ListTile(
-                        leading: CircleAvatar(
-                          radius: 14,
-                          backgroundColor: isCurrent
-                              ? primaryColor
-                              : (isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder),
-                          child: Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isCurrent
-                                  ? Colors.white
-                                  : (isDark
-                                      ? AppColors.darkTextPrimary
-                                      : AppColors.lightTextPrimary),
-                            ),
-                          ),
-                        ),
-                        title: Text(
-                          chap.title,
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 15,
-                            fontWeight: isCurrent
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: isCurrent ? primaryColor : null,
-                          ),
-                        ),
-                        subtitle: chap.summary.isNotEmpty
-                            ? Text(
-                                chap.summary,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12),
-                              )
-                            : null,
-                        onTap: () {
-                          Navigator.pop(ctx);
-                          _changeChapter(index);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
-  },
-);
   }
 
   void _copyChapterContent() {
@@ -332,8 +343,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
     try {
       File? fileToShare;
-      final safeTitle =
-          widget.book.title.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+      final safeTitle = widget.book.title.replaceAll(
+        RegExp(r'[\\/:*?"<>|]'),
+        '_',
+      );
       final ext = path.contains('.') ? path.split('.').last : 'pdf';
       final targetFileName = '$safeTitle.$ext';
 
@@ -341,10 +354,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         final byteData = await rootBundle.load(path);
         final tempDir = await getTemporaryDirectory();
         final tempFile = File('${tempDir.path}/$targetFileName');
-        await tempFile.writeAsBytes(byteData.buffer.asUint8List(
-          byteData.offsetInBytes,
-          byteData.lengthInBytes,
-        ));
+        await tempFile.writeAsBytes(
+          byteData.buffer.asUint8List(
+            byteData.offsetInBytes,
+            byteData.lengthInBytes,
+          ),
+        );
         fileToShare = tempFile;
       } else {
         final file = File(path);
@@ -391,73 +406,72 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
-        title: Column(
-          children: [
-            Text(
-              widget.book.title,
-              style: const TextStyle(
-                fontFamily: 'Amiri',
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+          title: Column(
+            children: [
+              Text(
+                widget.book.title,
+                style: const TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
-            ),
-            if (widget.book.isPdf && _totalPdfPages > 0)
-              Text(
-                l10n.pageOfTotal(_currentPdfPage + 1, _totalPdfPages),
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+              if (widget.book.isPdf && _totalPdfPages > 0)
+                Text(
+                  l10n.pageOfTotal(_currentPdfPage + 1, _totalPdfPages),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                )
+              else if (widget.book.author.isNotEmpty)
+                Text(
+                  widget.book.author,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
-              )
-            else if (widget.book.author.isNotEmpty)
-              Text(
-                widget.book.author,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
-                ),
-                overflow: TextOverflow.ellipsis,
+            ],
+          ),
+          centerTitle: true,
+          actions: [
+            if (widget.book.hasAttachedFile)
+              IconButton(
+                tooltip: l10n.shareFile,
+                icon: const Icon(Icons.share_rounded),
+                onPressed: _shareOrOpenFile,
+              ),
+            if (widget.book.chapters.length > 1)
+              IconButton(
+                tooltip: l10n.tableOfContents,
+                icon: const Icon(Icons.list_alt_rounded),
+                onPressed: _showChapterListSheet,
+              ),
+            if (widget.book.chapters.isNotEmpty || _loadedFileContent != null)
+              IconButton(
+                tooltip: l10n.copyContent,
+                icon: const Icon(Icons.copy_rounded),
+                onPressed: _copyChapterContent,
               ),
           ],
         ),
-        centerTitle: true,
-        actions: [
-          if (widget.book.hasAttachedFile)
-            IconButton(
-              tooltip: l10n.shareFile,
-              icon: const Icon(Icons.share_rounded),
-              onPressed: _shareOrOpenFile,
-            ),
-          if (widget.book.chapters.length > 1)
-            IconButton(
-              tooltip: l10n.tableOfContents,
-              icon: const Icon(Icons.list_alt_rounded),
-              onPressed: _showChapterListSheet,
-            ),
-          if (widget.book.chapters.isNotEmpty || _loadedFileContent != null)
-            IconButton(
-              tooltip: l10n.copyContent,
-              icon: const Icon(Icons.copy_rounded),
-              onPressed: _copyChapterContent,
-            ),
-        ],
+        body: SafeArea(child: _buildBody(isDark, primaryColor)),
       ),
-      body: SafeArea(
-        child: _buildBody(isDark, primaryColor),
-      ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildBody(bool isDark, Color primaryColor) {
     // 1. إذا كان الكتاب مبنياً على فصول ومباحث نصية (استعراض القراءة المباشرة)
@@ -600,11 +614,14 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 left: 0,
                 child: Center(
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
-                      color: (isDark ? Colors.black : Colors.white)
-                          .withValues(alpha: 0.82),
+                      color: (isDark ? Colors.black : Colors.white).withValues(
+                        alpha: 0.82,
+                      ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
@@ -614,14 +631,18 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                         ),
                       ],
                       border: Border.all(
-                        color: (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder)
-                            .withValues(alpha: 0.6),
+                        color:
+                            (isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder)
+                                .withValues(alpha: 0.6),
                       ),
                     ),
                     child: Text(
-                      context.l10n.pageOfTotal(_currentPdfPage + 1, _totalPdfPages),
+                      context.l10n.pageOfTotal(
+                        _currentPdfPage + 1,
+                        _totalPdfPages,
+                      ),
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 13,
@@ -650,7 +671,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
             children: [
               Builder(
                 builder: (context) {
-                  final pdfAccentColor = widget.book.badgeColor ??
+                  final pdfAccentColor =
+                      widget.book.badgeColor ??
                       (isDark ? AppColors.darkAccentGold : AppColors.olive);
                   return Container(
                     width: 88,
@@ -696,12 +718,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ],
               const SizedBox(height: 12),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.olive)
+                  color: (isDark ? AppColors.darkAccentGold : AppColors.olive)
                       .withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -719,11 +741,14 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               const SizedBox(height: 28),
               FilledButton.icon(
                 style: FilledButton.styleFrom(
-                  backgroundColor:
-                      isDark ? AppColors.darkAccentGold : AppColors.oliveDark,
+                  backgroundColor: isDark
+                      ? AppColors.darkAccentGold
+                      : AppColors.oliveDark,
                   foregroundColor: isDark ? Colors.black : Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 14,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -742,8 +767,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -779,16 +806,20 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
-                  color: (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.olive)
+                  color: (isDark ? AppColors.darkAccentGold : AppColors.olive)
                       .withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  context.l10n.sectionOfTotal(_currentChapterIndex + 1, totalChapters),
+                  context.l10n.sectionOfTotal(
+                    _currentChapterIndex + 1,
+                    totalChapters,
+                  ),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -808,7 +839,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ),
               Text(
                 '${_fontSize.toInt()}',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
               ),
               IconButton(
                 tooltip: context.l10n.increaseFontSize,
@@ -892,7 +926,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                           Expanded(
                             child: OutlinedButton.icon(
                               icon: Icon(
-                                context.currentLanguage.direction == TextDirection.rtl
+                                context.currentLanguage.direction ==
+                                        TextDirection.rtl
                                     ? Icons.chevron_right_rounded
                                     : Icons.chevron_left_rounded,
                                 size: 18,
@@ -918,7 +953,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                                     : AppColors.oliveDark,
                               ),
                               icon: Icon(
-                                context.currentLanguage.direction == TextDirection.rtl
+                                context.currentLanguage.direction ==
+                                        TextDirection.rtl
                                     ? Icons.chevron_left_rounded
                                     : Icons.chevron_right_rounded,
                                 size: 18,
@@ -968,7 +1004,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
             children: [
               Text(
                 widget.book.fileName ?? context.l10n.textFile,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const Spacer(),
               IconButton(
@@ -980,7 +1019,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ),
               Text(
                 '${_fontSize.toInt()}',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
               ),
               IconButton(
                 tooltip: context.l10n.increaseFontSize,

@@ -81,7 +81,8 @@ class MarginStampData {
       }
 
       // للتحقق من عدم تكرار إضافة نفس الربع على الصفحة
-      if (!isQuarterStart || stamps.any((s) => s.type != MarginStampType.sajdah)) {
+      if (!isQuarterStart ||
+          stamps.any((s) => s.type != MarginStampType.sajdah)) {
         continue;
       }
 
@@ -146,25 +147,32 @@ class MarginStampMedallion extends StatelessWidget {
   /// ما إذا كان الوضع الليلي مفعلاً.
   final bool isDark;
 
+  /// ألوان ورق المصحف الحالية.
+  final MushafPalette palette;
+
   /// ينشئ ودجت قنديل الهامش.
   const MarginStampMedallion({
     super.key,
     required this.stamp,
     required this.isDark,
+    required this.palette,
   });
 
   @override
   Widget build(BuildContext context) {
-    final goldColor =
-        isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
-    final primaryColor =
-        isDark ? AppColors.darkTextPrimary : AppColors.lightPrimary;
+    final goldColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.lightAccentGold;
+    final primaryColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightPrimary;
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
       child: CustomPaint(
         painter: _MarginMedallionPainter(
           isDark: isDark,
+          palette: palette,
           isSajdah: stamp.type == MarginStampType.sajdah,
         ),
         child: Padding(
@@ -191,24 +199,26 @@ class MarginStampMedallion extends StatelessWidget {
 /// رسام قنديل الهامش البيضاوي/المفصص المذهب.
 class _MarginMedallionPainter extends CustomPainter {
   final bool isDark;
+  final MushafPalette palette;
   final bool isSajdah;
 
   const _MarginMedallionPainter({
     required this.isDark,
+    required this.palette,
     required this.isSajdah,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final goldColor =
-        isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
+    final goldColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.lightAccentGold;
     final rect = Offset.zero & size;
     final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(12.0));
 
     // خلفية القنديل
     final bgPaint = Paint()
-      ..color = (isDark ? AppColors.darkSurface : AppColors.mushafBackground)
-          .withValues(alpha: 0.95)
+      ..color = palette.page.withValues(alpha: 0.95)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(rrect, bgPaint);
 
@@ -239,7 +249,9 @@ class _MarginMedallionPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _MarginMedallionPainter oldDelegate) {
-    return oldDelegate.isDark != isDark || oldDelegate.isSajdah != isSajdah;
+    return oldDelegate.isDark != isDark ||
+        oldDelegate.palette != palette ||
+        oldDelegate.isSajdah != isSajdah;
   }
 }
 
@@ -251,20 +263,29 @@ class MushafPageFramePainter extends CustomPainter {
   /// ما إذا كان الوضع الليلي مفعلاً.
   final bool isDark;
 
+  /// ألوان ورق المصحف الحالية.
+  final MushafPalette palette;
+
   /// ينشئ رسام إطار صفحة المصحف الشريف.
-  const MushafPageFramePainter({required this.isDark});
+  const MushafPageFramePainter({required this.isDark, required this.palette});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final goldColor =
-        isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
+    final goldColor = isDark
+        ? AppColors.darkAccentGold
+        : AppColors.lightAccentGold;
     final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
-    final outerRect = Rect.fromLTWH(0.5, 0.5, size.width - 1.0, size.height - 1.0);
+    final outerRect = Rect.fromLTWH(
+      0.5,
+      0.5,
+      size.width - 1.0,
+      size.height - 1.0,
+    );
 
     // 1. خلفية الورق الأصيلة (Mushaf Parchment Tint)
     final bgPaint = Paint()
-      ..color = isDark ? AppColors.darkSurface : AppColors.mushafBackground
+      ..color = palette.page
       ..style = PaintingStyle.fill;
     canvas.drawRect(outerRect, bgPaint);
 
@@ -283,17 +304,49 @@ class MushafPageFramePainter extends CustomPainter {
       ..strokeWidth = 0.75;
 
     // الزوايا الأربع
-    canvas.drawLine(const Offset(0.5, -finialLen), const Offset(0.5, 0.5), finialPaint);
-    canvas.drawLine(const Offset(-finialLen, 0.5), const Offset(0.5, 0.5), finialPaint);
+    canvas.drawLine(
+      const Offset(0.5, -finialLen),
+      const Offset(0.5, 0.5),
+      finialPaint,
+    );
+    canvas.drawLine(
+      const Offset(-finialLen, 0.5),
+      const Offset(0.5, 0.5),
+      finialPaint,
+    );
 
-    canvas.drawLine(Offset(size.width - 0.5, -finialLen), Offset(size.width - 0.5, 0.5), finialPaint);
-    canvas.drawLine(Offset(size.width + finialLen, 0.5), Offset(size.width - 0.5, 0.5), finialPaint);
+    canvas.drawLine(
+      Offset(size.width - 0.5, -finialLen),
+      Offset(size.width - 0.5, 0.5),
+      finialPaint,
+    );
+    canvas.drawLine(
+      Offset(size.width + finialLen, 0.5),
+      Offset(size.width - 0.5, 0.5),
+      finialPaint,
+    );
 
-    canvas.drawLine(Offset(0.5, size.height + finialLen), Offset(0.5, size.height - 0.5), finialPaint);
-    canvas.drawLine(Offset(-finialLen, size.height - 0.5), Offset(0.5, size.height - 0.5), finialPaint);
+    canvas.drawLine(
+      Offset(0.5, size.height + finialLen),
+      Offset(0.5, size.height - 0.5),
+      finialPaint,
+    );
+    canvas.drawLine(
+      Offset(-finialLen, size.height - 0.5),
+      Offset(0.5, size.height - 0.5),
+      finialPaint,
+    );
 
-    canvas.drawLine(Offset(size.width - 0.5, size.height + finialLen), Offset(size.width - 0.5, size.height - 0.5), finialPaint);
-    canvas.drawLine(Offset(size.width + finialLen, size.height - 0.5), Offset(size.width - 0.5, size.height - 0.5), finialPaint);
+    canvas.drawLine(
+      Offset(size.width - 0.5, size.height + finialLen),
+      Offset(size.width - 0.5, size.height - 0.5),
+      finialPaint,
+    );
+    canvas.drawLine(
+      Offset(size.width + finialLen, size.height - 0.5),
+      Offset(size.width - 0.5, size.height - 0.5),
+      finialPaint,
+    );
 
     // 3. الإطار المذهب الداخلي المزدوج (على بعد 4.0 بكسل من الخارجي)
     const marginInset = 4.0;
@@ -355,7 +408,6 @@ class MushafPageFramePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant MushafPageFramePainter oldDelegate) {
-    return oldDelegate.isDark != isDark;
+    return oldDelegate.isDark != isDark || oldDelegate.palette != palette;
   }
 }
-

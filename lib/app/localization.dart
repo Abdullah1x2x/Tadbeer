@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../core/utils/arabic_search_normalizer.dart';
+
 /// اللغات المدعومة في واجهة تطبيق تَدْبِير مع اتجاه النص المقابل لكل لغة.
 enum AppLanguage {
   arabic('ar', 'العربية', TextDirection.rtl),
@@ -27,6 +29,12 @@ class AppStrings {
 
   /// ما إذا كانت اللغة الحالية للتطبيق هي اللغة العربية.
   bool get isArabic => language == AppLanguage.arabic;
+
+  /// Renders numbers with Arabic-Indic digits in the Arabic UI.
+  String digits(Object? value) =>
+      isArabic ? ArabicSearchNormalizer.convertDigits('$value') : '$value';
+
+  String _n(Object? value) => ArabicSearchNormalizer.convertDigits('$value');
 
   // App Identity
   String get appName => isArabic ? 'تَدْبِير' : 'Tadbeer';
@@ -72,13 +80,13 @@ class AppStrings {
 
   // Quran Reader & Side Menu
   /// تنسيق نص رقم الصفحة الحالية في المصحف.
-  String pageNumber(int page) => isArabic ? 'صفحة $page' : 'Page $page';
+  String pageNumber(int page) => isArabic ? 'صفحة ${_n(page)}' : 'Page $page';
 
   /// تنسيق نص رقم الجزء الحالي في المصحف.
-  String juzNumber(int juz) => isArabic ? 'الجزء $juz' : 'Juz $juz';
+  String juzNumber(int juz) => isArabic ? 'الجزء ${_n(juz)}' : 'Juz $juz';
 
   /// تنسيق نص رقم الحزب الحالي في المصحف.
-  String hizbNumber(int hizb) => isArabic ? 'الحزب $hizb' : 'Hizb $hizb';
+  String hizbNumber(int hizb) => isArabic ? 'الحزب ${_n(hizb)}' : 'Hizb $hizb';
 
   String get surahs => isArabic ? 'السور' : 'Surahs';
   String get juzs => isArabic ? 'الأجزاء' : 'Juzs';
@@ -86,10 +94,13 @@ class AppStrings {
   String get go => isArabic ? 'انتقال' : 'Go';
   String get cancel => isArabic ? 'إلغاء' : 'Cancel';
   String get close => isArabic ? 'إغلاق' : 'Close';
+  String get clearText => isArabic ? 'مسح' : 'Clear';
+  String get decrease => isArabic ? 'إنقاص' : 'Decrease';
+  String get increase => isArabic ? 'زيادة' : 'Increase';
   String get sajdah => isArabic ? 'سجدة تلاوة' : 'Sajdah';
 
   /// تنسيق نص عدد آيات السورة.
-  String ayahCount(int count) => isArabic ? '$count آية' : '$count Verses';
+  String ayahCount(int count) => isArabic ? '${_n(count)} آية' : '$count Verses';
 
   // Ayah Action Modal
   String get addNote => isArabic ? 'ملاحظة' : 'Note';
@@ -125,6 +136,13 @@ class AppStrings {
       isArabic ? 'لا توجد آيات محفوظة بعد' : 'No bookmarks yet';
   String get noHighlightsYet =>
       isArabic ? 'لا توجد آيات مميزة بعد' : 'No highlights yet';
+  String get bookmarksEmptyHint => isArabic
+      ? 'اضغط مطولاً على أي آية في المصحف واختر «حفظ» لتجدها هنا.'
+      : 'Long-press any verse in the Mushaf and choose “Save” to find it here.';
+  String get highlightsEmptyHint => isArabic
+      ? 'اضغط مطولاً على أي آية في المصحف واختر «تمييز» لتلوينها.'
+      : 'Long-press any verse in the Mushaf and choose “Highlight” to color it.';
+  String get openMushaf => isArabic ? 'فتح المصحف' : 'Open the Mushaf';
 
   // Search
   String get searchGlobalPlaceholder =>
@@ -169,6 +187,9 @@ class AppStrings {
   String get selectDays => isArabic ? 'أيام التكرار' : 'Repeat Days';
   String get noRemindersYet =>
       isArabic ? 'لا توجد تنبيهات قراءة مضافة' : 'No reading reminders added';
+  String get remindersEmptyHint => isArabic
+      ? 'أضف تنبيهاً يذكّرك بوِردك اليومي من زر «إضافة تنبيه» في الأسفل.'
+      : 'Add a reminder for your daily reading with the “Add reminder” button below.';
 
   // Ayah Links (روابط الآيات)
   String get newAyahLink => isArabic ? 'إنشاء رابط آيات' : 'New Ayah Link';
@@ -196,7 +217,7 @@ class AppStrings {
       : 'Personal maps connecting verses explored during Tadbeer';
 
   /// تنسيق نص عدد الآيات المربوطة في الرابط.
-  String versesCount(int count) => isArabic ? '$count آيات' : '$count Verses';
+  String versesCount(int count) => isArabic ? '${_n(count)} آيات' : '$count Verses';
 
   // Backup & Restore
   String get exportBackup =>
@@ -222,9 +243,19 @@ class AppStrings {
   String get corruptBackupError => isArabic
       ? 'الملف غير صالح أو كلمة المرور غير صحيحة. تم إلغاء الاستعادة لحماية بياناتك.'
       : 'Invalid or corrupt backup file. Restore cancelled to protect your data.';
+  String get dataSaveFailed => isArabic
+      ? 'تعذّر حفظ بعض بياناتك على الجهاز. أعد المحاولة، وإن تكررت المشكلة فصدّر نسخة احتياطية.'
+      : 'Some of your data could not be saved on this device. Try again, and export a backup if it keeps happening.';
+  String get dataLoadFailed => isArabic
+      ? 'تعذّر قراءة بعض بياناتك المحفوظة. لم يُحذف شيء؛ صدّر نسخة احتياطية احتياطاً.'
+      : 'Some saved data could not be read. Nothing was deleted; consider exporting a backup.';
+  String get corruptItemsSkipped => isArabic
+      ? 'تم تخطي عناصر محفوظة تالفة ولم تُحذف من الجهاز.'
+      : 'Some damaged saved items were skipped (not deleted).';
+
   String get enterBackupPassword => isArabic
-      ? 'كلمة مرور التشفير (اختيارية)'
-      : 'Encryption Password (optional)';
+      ? 'كلمة مرور التشفير (بدونها يستطيع أي شخص فتح الملف)'
+      : 'Encryption password (without it, anyone can open the file)';
 
   // Settings
   String get appearance => isArabic ? 'المظهر' : 'Appearance';
@@ -234,6 +265,9 @@ class AppStrings {
   String get system => isArabic ? 'تلقائي (حسب النظام)' : 'System Default';
   String get languageTitle => isArabic ? 'اللغة' : 'Language';
   String get fontSize => isArabic ? 'حجم خط المصحف' : 'Quran Font Size';
+  String get mushafPaperTone => isArabic ? 'لون ورق المصحف' : 'Mushaf Paper';
+  String get paperClassic => isArabic ? 'كلاسيكي' : 'Classic';
+  String get paperSepia => isArabic ? 'سيبيا دافئ' : 'Warm Sepia';
   String get aboutContent => isArabic
       ? 'تدبير مشروع قرآني يهدف إلى تعزيز التدبّر في آيات الله، ومساعدة المسلم على التأمل في معاني القرآن الكريم، والتفكّر في هداياته، واستحضار أثر آياته في الحياة والعمل بها، لتكون علاقتنا بالقرآن قائمة على التدبّر والفهم والاهتداء، لا على التلاوة وحدها.'
       : 'Tadbeer is a Quranic project aimed at fostering contemplation of Allah\'s verses, helping reflect on the meanings of the Holy Quran, pondering its guidance, and living by its teachings—so our relationship with the Quran is grounded in contemplation, understanding, and guidance, not recitation alone.';
@@ -250,9 +284,9 @@ class AppStrings {
   String get quranDuasSubtitle =>
       isArabic ? 'أدعية الأنبياء والصالحين وخواتيم السور المأثورة في كتاب الله' : 'Duas of Prophets and the righteous in the Book of Allah';
   String duasCountBadge(dynamic count) =>
-      isArabic ? '$count دعاء' : '$count Duas';
+      isArabic ? '${_n(count)} دعاء' : '$count Duas';
   String adhkarCountBadge(dynamic count) =>
-      isArabic ? '$count ذكر' : '$count Adhkar';
+      isArabic ? '${_n(count)} ذكر' : '$count Adhkar';
   String get morningEveningAdhkarTitle =>
       isArabic ? 'أذكار الصباح والمساء' : 'Morning & Evening Adhkar';
   String get morningEveningAdhkarSubtitle =>
@@ -283,19 +317,19 @@ class AppStrings {
 
   // Common Quran Formats & References
   String readingPosition(String surahName, dynamic page) =>
-      isArabic ? 'سورة $surahName · صفحة $page' : 'Surah $surahName · Page $page';
+      isArabic ? 'سورة $surahName · صفحة ${_n(page)}' : 'Surah $surahName · Page $page';
   String ayahReference(String surahName, dynamic ayahNumber) =>
-      isArabic ? 'سورة $surahName · الآية $ayahNumber' : 'Surah $surahName · Verse $ayahNumber';
+      isArabic ? 'سورة $surahName · الآية ${_n(ayahNumber)}' : 'Surah $surahName · Verse $ayahNumber';
   String surahTitle(String surahName) =>
       isArabic ? 'سورة $surahName' : 'Surah $surahName';
   String ayahTitle(dynamic ayahNumber) =>
-      isArabic ? 'الآية $ayahNumber' : 'Verse $ayahNumber';
-  String pageAbbr(dynamic page) => isArabic ? 'ص $page' : 'p. $page';
-  String juzAbbr(dynamic juz) => isArabic ? 'ج $juz' : 'Juz $juz';
+      isArabic ? 'الآية ${_n(ayahNumber)}' : 'Verse $ayahNumber';
+  String pageAbbr(dynamic page) => isArabic ? 'ص ${_n(page)}' : 'p. $page';
+  String juzAbbr(dynamic juz) => isArabic ? 'ج ${_n(juz)}' : 'Juz $juz';
   String get meccan => isArabic ? 'مكية' : 'Meccan';
   String get medinan => isArabic ? 'مدنية' : 'Medinan';
   String ayahsCount(dynamic count) =>
-      isArabic ? '$count آية' : '$count verses';
+      isArabic ? '${_n(count)} آية' : '$count verses';
   String get searchSurahsHint =>
       isArabic ? 'بحث في السور...' : 'Search surahs...';
   String get searchWordMeaningsHint =>
@@ -303,7 +337,7 @@ class AppStrings {
   String get allSurahsWithCount =>
       isArabic ? 'جميع السور (١١٤ سورة)' : 'All Surahs (114 Surahs)';
   String wordSearchResultsCount(dynamic count) =>
-      isArabic ? 'النتائج: $count كلمة' : 'Results: $count words';
+      isArabic ? 'النتائج: ${_n(count)} كلمة' : 'Results: $count words';
   String get noWordsFound =>
       isArabic ? 'لا توجد كلمات مطابقة لبحثك' : 'No words match your search';
   String get noWordsFoundSubtitle =>
@@ -314,7 +348,7 @@ class AppStrings {
       isArabic ? 'توثيق معتمد' : 'Verified Source';
   String surahAyahPageReference(String surahName, dynamic ayahNumber, dynamic page) =>
       isArabic
-          ? 'سورة $surahName · آية $ayahNumber · ص $page'
+          ? 'سورة $surahName · آية ${_n(ayahNumber)} · ص ${_n(page)}'
           : 'Surah $surahName · Verse $ayahNumber · p. $page';
 
   // Actions & Common Dialogs
@@ -338,7 +372,7 @@ class AppStrings {
   String get tryAnotherAyahLinkSearch =>
       isArabic ? 'جرّب البحث بكلمة أخرى أو اسم سورة' : 'Try searching with another word or surah name';
   String linkedAyahsCount(dynamic count) =>
-      isArabic ? '$count آيات مرتبطة' : '$count linked verses';
+      isArabic ? '${_n(count)} آيات مرتبطة' : '$count linked verses';
   String get importPathway =>
       isArabic ? 'استيراد المسار' : 'Import Pathway';
   String get editTitleAndDescription =>
@@ -352,11 +386,11 @@ class AppStrings {
   String get quranFontFamily =>
       isArabic ? 'نوع خط المصحف' : 'Quran Font Family';
   String fontSizePoints(dynamic points) =>
-      isArabic ? '$points نقطة' : '$points pt';
+      isArabic ? '${_n(points)} نقطة' : '$points pt';
   String get resetToDefault =>
       isArabic ? 'إعادة للوضع الافتراضي' : 'Reset to Default';
   String resetToDefaultWithVal(dynamic val) =>
-      isArabic ? 'إعادة للوضع الافتراضي ($val)' : 'Reset to default ($val)';
+      isArabic ? 'إعادة للوضع الافتراضي (${_n(val)})' : 'Reset to default ($val)';
   String get applicationSection =>
       isArabic ? 'التطبيق' : 'Application';
   String get dataSection => isArabic ? 'البيانات' : 'Data';
@@ -475,11 +509,11 @@ class AppStrings {
   String get dhikrCopiedSuccess =>
       isArabic ? 'تم نسخ نص الذكر الشريف بنجاح' : 'Dhikr copied successfully';
   String dhikrIndex(dynamic index) =>
-      isArabic ? 'ذكر $index' : 'Dhikr $index';
+      isArabic ? 'ذكر ${_n(index)}' : 'Dhikr $index';
   String get copyDhikr => isArabic ? 'نسخ نص الذكر' : 'Copy Dhikr';
   String get completed => isArabic ? 'اكتمل' : 'Completed';
   String remainingCount(dynamic count) =>
-      isArabic ? 'باقٍ $count' : '$count remaining';
+      isArabic ? 'باقٍ ${_n(count)}' : '$count remaining';
   String get once => isArabic ? 'مرة واحدة' : 'Once';
 
   // Ahlulbayt & Hadith Duas
@@ -487,7 +521,7 @@ class AppStrings {
       ? 'ابحث في أدعية أهل البيت والصحيفة السجادية...'
       : 'Search Ahlulbayt supplications & Al-Sahifa...';
   String ahlulbaytDuasCountBadge(dynamic count) =>
-      isArabic ? '$count دعاء مأثور' : '$count supplications';
+      isArabic ? '${_n(count)} دعاء مأثور' : '$count supplications';
   String get ahlulbaytDuasScreenTitle =>
       isArabic ? 'أدعية أهل البيت عليهم السلام' : 'Supplications of Ahlulbayt';
   String get copyFullDua =>
@@ -504,9 +538,9 @@ class AppStrings {
   String searchGeneralDuasHint(String title) =>
       isArabic ? 'ابحث في $title...' : 'Search in $title...';
   String generalDuasCountBadge(dynamic count) =>
-      isArabic ? '$count دعاء مبارك' : '$count supplications';
+      isArabic ? '${_n(count)} دعاء مبارك' : '$count supplications';
   String duaIndex(dynamic index) =>
-      isArabic ? 'دعاء $index' : 'Dua $index';
+      isArabic ? 'دعاء ${_n(index)}' : 'Dua $index';
   String get copyDuaTooltip =>
       isArabic ? 'نسخ نص الدعاء' : 'Copy supplication text';
 
@@ -516,9 +550,9 @@ class AppStrings {
   String bookIndexPrefix(String title) =>
       isArabic ? 'فهرس: $title' : 'Index: $title';
   String pageOfTotal(dynamic page, dynamic total) =>
-      isArabic ? 'صفحة $page من $total' : 'Page $page of $total';
+      isArabic ? 'صفحة ${_n(page)} من ${_n(total)}' : 'Page $page of $total';
   String sectionOfTotal(dynamic section, dynamic total) =>
-      isArabic ? 'المبحث $section من $total' : 'Section $section of $total';
+      isArabic ? 'المبحث ${_n(section)} من ${_n(total)}' : 'Section $section of $total';
   String get previousSection =>
       isArabic ? 'المبحث السابق' : 'Previous Section';
   String get nextSection =>
@@ -546,7 +580,7 @@ class AppStrings {
   String get verifiedPamphletPdf =>
       isArabic ? 'ملزمة موثقة • PDF' : 'Verified Booklet • PDF';
   String fullSectionsCount(dynamic count) =>
-      isArabic ? '$count مباحث كاملة' : '$count Full Sections';
+      isArabic ? '${_n(count)} مباحث كاملة' : '$count Full Sections';
   String get directTextReading =>
       isArabic ? 'قراءة نصية مباشرة' : 'Direct Text Reading';
   String get textCopied =>
@@ -576,7 +610,7 @@ class AppStrings {
   String get removeAyahFromLinkTitle =>
       isArabic ? 'إزالة الآية من الرابط' : 'Remove Ayah from Link';
   String removeAyahFromLinkConfirm(dynamic ayah, dynamic surah) => isArabic
-      ? 'هل تريد إزالة الآية $ayah من سورة $surah من هذا الرابط؟'
+      ? 'هل تريد إزالة الآية ${_n(ayah)} من سورة ${_n(surah)} من هذا الرابط؟'
       : 'Do you want to remove Ayah $ayah of Surah $surah from this link?';
   String get reflectionNote =>
       isArabic ? 'ملاحظة التدبر' : 'Reflection Note';
@@ -615,12 +649,13 @@ class AppStrings {
   String get tapAnywhereToCount =>
       isArabic ? 'انقر في أي مكان للعدّ' : 'Tap anywhere to count';
   String targetCount(dynamic target) =>
-      isArabic ? 'الهدف: $target' : 'Target: $target';
+      isArabic ? 'الهدف: ${_n(target)}' : 'Target: $target';
   String get freeCount => isArabic ? 'عدّ حر' : 'Free count';
+  String get countSettings => isArabic ? 'ضبط العدّ' : 'Count settings';
   String get freeCountOpen =>
       isArabic ? 'عدّ حر (مفتوح)' : 'Free count (open)';
   String countTimes(dynamic count) =>
-      isArabic ? '$count مرة' : '$count times';
+      isArabic ? '${_n(count)} مرة' : '$count times';
   String get autoAdvanceUponCompletion => isArabic
       ? 'التبديل التلقائي عند اكتمال الورد'
       : 'Auto-advance upon completion';
@@ -629,19 +664,19 @@ class AppStrings {
   String get lifetimeTotalCount =>
       isArabic ? 'المجموع الكلي المحفوظ' : 'Total Lifetime Count';
   String formulaXOfY(dynamic current, dynamic total) =>
-      isArabic ? 'صيغة $current من $total' : 'Formula $current of $total';
+      isArabic ? 'صيغة ${_n(current)} من ${_n(total)}' : 'Formula $current of $total';
   String allFormulasCount(dynamic total) =>
-      isArabic ? 'كل الصيغ ($total)' : 'All formulas ($total)';
+      isArabic ? 'كل الصيغ (${_n(total)})' : 'All formulas ($total)';
   String get copyDhikrTooltip =>
       isArabic ? 'نسخ نص الذكر' : 'Copy dhikr';
   String get dhikrCopied => isArabic
       ? 'تم نسخ نص الذكر إلى الحافظة بنجاح.'
       : 'Dhikr copied to clipboard successfully.';
   String targetReachedAuto(dynamic target) => isArabic
-      ? 'ما شاء الله! أتممت الورد ($target). تم الانتقال تلقائياً إلى الذكر التالي.'
+      ? 'ما شاء الله! أتممت الورد (${_n(target)}). تم الانتقال تلقائياً إلى الذكر التالي.'
       : 'MashaAllah! Target completed ($target). Auto-advanced to next dhikr.';
   String targetReached(dynamic target) => isArabic
-      ? 'ما شاء الله! أتممت الورد المستهدف ($target) بنجاح.'
+      ? 'ما شاء الله! أتممت الورد المستهدف (${_n(target)}) بنجاح.'
       : 'MashaAllah! Target ($target) completed successfully.';
   String get tasbeehAndIstighfarFormulas =>
       isArabic ? 'صيغ الاستغفار والتسبيح' : 'Tasbeeh & Istighfar Formulas';
@@ -659,7 +694,7 @@ class AppStrings {
   String get stopAutoCount => isArabic ? 'إيقاف' : 'Pause';
   /// عرض مدة الإيقاع الزمني المحسوب لكل عَدّة بالثواني.
   String smartPaceSeconds(dynamic seconds) =>
-      isArabic ? 'إيقاع $seconds ث' : 'Pace ${seconds}s';
+      isArabic ? 'إيقاع ${_n(seconds)} ث' : 'Pace ${seconds}s';
   /// تلميح تسريع وتيرة العد التلقائي.
   String get decreasePace => isArabic ? 'تسريع الوتيرة' : 'Faster pace';
   /// تلميح إبطاء وتيرة العد التلقائي وتدبر الذكر.

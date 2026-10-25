@@ -10,7 +10,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/quran/data/quran_models.dart';
 import '../../features/quran/data/quran_repository.dart';
-import '../home/home_screen.dart';
+import '../../app/main_shell.dart';
 
 /// شاشة الترحيب التي تظهر عند تشغيل التطبيق.
 ///
@@ -86,7 +86,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
 
     // بعد الضغط على متابعة أنتقل إلى الصفحة الرئيسية.
     navigator.pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      MaterialPageRoute(builder: (_) => const MainShell()),
     );
   }
 
@@ -152,25 +152,49 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
               final isVeryCompact = h < 640;
 
               // مقاسات واستجابات متكيفة بحسب حجم الشاشة
-              final horizontalPadding = isVeryCompact ? 16.0 : (isCompact ? 20.0 : 28.0);
-              final verticalPadding = isVeryCompact ? 10.0 : (isCompact ? 14.0 : 22.0);
+              final horizontalPadding = isVeryCompact
+                  ? 16.0
+                  : (isCompact ? 20.0 : 28.0);
+              final verticalPadding = isVeryCompact
+                  ? 10.0
+                  : (isCompact ? 14.0 : 22.0);
               final logoSize = isVeryCompact ? 54.0 : (isCompact ? 64.0 : 74.0);
-              final spaceAfterLogo = isVeryCompact ? 8.0 : (isCompact ? 12.0 : 16.0);
-              final appTitleSize = isVeryCompact ? 26.0 : (isCompact ? 28.0 : 32.0);
+              final spaceAfterLogo = isVeryCompact
+                  ? 8.0
+                  : (isCompact ? 12.0 : 16.0);
+              final appTitleSize = isVeryCompact
+                  ? 26.0
+                  : (isCompact ? 28.0 : 32.0);
               final taglineSize = isVeryCompact ? 12.0 : 13.0;
-              final spaceBeforeVerse = isVeryCompact ? 12.0 : (isCompact ? 16.0 : 22.0);
+              final spaceBeforeVerse = isVeryCompact
+                  ? 12.0
+                  : (isCompact ? 16.0 : 22.0);
 
-              final verseCardPaddingH = isVeryCompact ? 16.0 : (isCompact ? 20.0 : 24.0);
-              final verseCardPaddingV = isVeryCompact ? 12.0 : (isCompact ? 16.0 : 20.0);
-              final verseFontSize = isVeryCompact ? 17.0 : (isCompact ? 19.0 : 21.0);
+              final verseCardPaddingH = isVeryCompact
+                  ? 16.0
+                  : (isCompact ? 20.0 : 24.0);
+              final verseCardPaddingV = isVeryCompact
+                  ? 12.0
+                  : (isCompact ? 16.0 : 20.0);
+              final verseFontSize = isVeryCompact
+                  ? 17.0
+                  : (isCompact ? 19.0 : 21.0);
               final verseHeight = isVeryCompact ? 1.75 : 1.9;
               final verseRefSize = isVeryCompact ? 11.5 : 12.5;
-              final spaceAfterVerse = isVeryCompact ? 10.0 : (isCompact ? 14.0 : 18.0);
+              final spaceAfterVerse = isVeryCompact
+                  ? 10.0
+                  : (isCompact ? 14.0 : 18.0);
 
-              final messageFontSize = isVeryCompact ? 12.0 : (isCompact ? 12.8 : 13.5);
+              final messageFontSize = isVeryCompact
+                  ? 12.0
+                  : (isCompact ? 12.8 : 13.5);
               final messageHeight = isVeryCompact ? 1.5 : 1.6;
-              final spaceBeforeButton = isVeryCompact ? 12.0 : (isCompact ? 16.0 : 22.0);
-              final buttonPaddingV = isVeryCompact ? 10.0 : (isCompact ? 12.0 : 13.5);
+              final spaceBeforeButton = isVeryCompact
+                  ? 12.0
+                  : (isCompact ? 16.0 : 22.0);
+              final buttonPaddingV = isVeryCompact
+                  ? 10.0
+                  : (isCompact ? 12.0 : 13.5);
               final buttonFontSize = isVeryCompact ? 15.0 : 16.0;
 
               return SingleChildScrollView(
@@ -190,221 +214,229 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                              // شعار التطبيق (اللوقو)
-                              Center(
-                                child: Container(
-                                  width: logoSize,
-                                  height: logoSize,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(logoSize * 0.28),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.olive.withValues(alpha: 0.22),
-                                        blurRadius: 14,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      color: isDark
-                                          ? AppColors.darkSurfaceVariant
-                                          : AppColors.olive.withValues(alpha: 0.35),
-                                      width: 1.5,
+                          // شعار التطبيق (اللوقو)
+                          Center(
+                            child: Container(
+                              width: logoSize,
+                              height: logoSize,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  logoSize * 0.28,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.olive.withValues(
+                                      alpha: 0.22,
                                     ),
+                                    blurRadius: 14,
+                                    offset: const Offset(0, 4),
                                   ),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Image.asset(
-                                    'assets/icons/app_logo.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: spaceAfterLogo),
-
-                              // اسم التطبيق
-                              Text(
-                                l10n.appName,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Amiri',
-                                  fontSize: appTitleSize,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.15,
-                                  color: isDark ? AppColors.comsilk : AppColors.oliveDark,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-
-                              // الوصف القصير تحت اسم التطبيق
-                              Text(
-                                l10n.appTagline,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: taglineSize,
+                                ],
+                                border: Border.all(
                                   color: isDark
-                                      ? AppColors.nightSubtitle
-                                      : AppColors.daySubtitle,
+                                      ? AppColors.darkSurfaceVariant
+                                      : AppColors.olive.withValues(alpha: 0.35),
+                                  width: 1.5,
                                 ),
                               ),
-                              SizedBox(height: spaceBeforeVerse),
+                              clipBehavior: Clip.antiAlias,
+                              child: Image.asset(
+                                'assets/icons/app_logo.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: spaceAfterLogo),
 
-                              // صندوق الآية
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: verseCardPaddingH,
-                                  vertical: verseCardPaddingV,
+                          // اسم التطبيق
+                          Text(
+                            l10n.appName,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: appTitleSize,
+                              fontWeight: FontWeight.bold,
+                              height: 1.15,
+                              color: isDark
+                                  ? AppColors.comsilk
+                                  : AppColors.oliveDark,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+
+                          // الوصف القصير تحت اسم التطبيق
+                          Text(
+                            l10n.appTagline,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: taglineSize,
+                              color: isDark
+                                  ? AppColors.nightSubtitle
+                                  : AppColors.daySubtitle,
+                            ),
+                          ),
+                          SizedBox(height: spaceBeforeVerse),
+
+                          // صندوق الآية
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: verseCardPaddingH,
+                              vertical: verseCardPaddingV,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? AppColors.darkSurface
+                                  : AppColors.comsilk,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isDark
+                                    ? AppColors.darkSurfaceVariant
+                                    : AppColors.lightBorder,
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 14,
+                                  offset: const Offset(0, 3),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: isDark
-                                      ? AppColors.darkSurface
-                                      : AppColors.comsilk,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                // نص الآية
+                                Text(
+                                  '﴿ $verseText ﴾',
+                                  textAlign: TextAlign.center,
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(
+                                    fontFamily: 'ScheherazadeNew',
+                                    fontSize: verseFontSize,
+                                    height: verseHeight,
                                     color: isDark
-                                        ? AppColors.darkSurfaceVariant
-                                        : AppColors.lightBorder,
-                                    width: 1.5,
+                                        ? AppColors.nightQuranText
+                                        : AppColors.dayQuranText,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.05),
-                                      blurRadius: 14,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
                                 ),
-                                child: Column(
-                                  children: [
-                                    // نص الآية
-                                    Text(
-                                      '﴿ $verseText ﴾',
-                                      textAlign: TextAlign.center,
-                                      textDirection: TextDirection.rtl,
+                                SizedBox(height: isVeryCompact ? 6 : 10),
+                                // مرجع الآية
+                                Text(
+                                  verseRef,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: verseRefSize,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark
+                                        ? AppColors.oliveSoft
+                                        : AppColors.olive,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: spaceAfterVerse),
+
+                          // الرسالة التوضيحية عن فكرة التدبر
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isVeryCompact ? 6.0 : 12.0,
+                            ),
+                            child: Text(
+                              l10n.tadbeerMessage,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: messageFontSize,
+                                height: messageHeight,
+                                color: isDark
+                                    ? AppColors.nightSubtitle
+                                    : AppColors.daySubtitle,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: spaceBeforeButton),
+
+                          // زر متابعة
+                          ElevatedButton(
+                            onPressed: _handleContinue,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.olive,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                vertical: buttonPaddingV,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              l10n.continueLabel,
+                              style: TextStyle(
+                                fontSize: buttonFontSize,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+
+                          // خيار عدم إظهار الشاشة مرة أخرى
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _doNotShowAgain = !_doNotShowAgain;
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 4,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Checkbox(
+                                    value: _doNotShowAgain,
+                                    activeColor: AppColors.olive,
+                                    visualDensity: isVeryCompact
+                                        ? VisualDensity.compact
+                                        : VisualDensity.standard,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _doNotShowAgain = val ?? false;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      l10n.doNotShowAgain,
                                       style: TextStyle(
-                                        fontFamily: 'ScheherazadeNew',
-                                        fontSize: verseFontSize,
-                                        height: verseHeight,
+                                        fontSize: isVeryCompact ? 12.5 : 13.5,
                                         color: isDark
                                             ? AppColors.nightQuranText
                                             : AppColors.dayQuranText,
                                       ),
                                     ),
-                                    SizedBox(height: isVeryCompact ? 6 : 10),
-                                    // مرجع الآية
-                                    Text(
-                                      verseRef,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: verseRefSize,
-                                        fontWeight: FontWeight.bold,
-                                        color: isDark
-                                            ? AppColors.oliveSoft
-                                            : AppColors.olive,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: spaceAfterVerse),
-
-                              // الرسالة التوضيحية عن فكرة التدبر
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: isVeryCompact ? 6.0 : 12.0,
-                                ),
-                                child: Text(
-                                  l10n.tadbeerMessage,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: messageFontSize,
-                                    height: messageHeight,
-                                    color: isDark
-                                        ? AppColors.nightSubtitle
-                                        : AppColors.daySubtitle,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: spaceBeforeButton),
-
-                              // زر متابعة
-                              ElevatedButton(
-                                onPressed: _handleContinue,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.olive,
-                                  foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(vertical: buttonPaddingV),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: Text(
-                                  l10n.continueLabel,
-                                  style: TextStyle(
-                                    fontSize: buttonFontSize,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-
-                              // خيار عدم إظهار الشاشة مرة أخرى
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _doNotShowAgain = !_doNotShowAgain;
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(8),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 2,
-                                    horizontal: 4,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Checkbox(
-                                        value: _doNotShowAgain,
-                                        activeColor: AppColors.olive,
-                                        visualDensity: isVeryCompact
-                                            ? VisualDensity.compact
-                                            : VisualDensity.standard,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        onChanged: (val) {
-                                          setState(() {
-                                            _doNotShowAgain = val ?? false;
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Flexible(
-                                        child: Text(
-                                          l10n.doNotShowAgain,
-                                          style: TextStyle(
-                                            fontSize: isVeryCompact ? 12.5 : 13.5,
-                                            color: isDark
-                                                ? AppColors.nightQuranText
-                                                : AppColors.dayQuranText,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
+                ),
+              );
+            },
           ),
-        );
-      }
-    }
+        ),
+      ),
+    );
+  }
+}

@@ -32,9 +32,12 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
   }
 
   void _copyAllText() {
-    Clipboard.setData(ClipboardData(
-      text: '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.fullText}\n\n— تطبيق تَدْبِير',
-    ));
+    Clipboard.setData(
+      ClipboardData(
+        text:
+            '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.fullText}\n\n— تطبيق تَدْبِير',
+      ),
+    );
     HapticFeedback.selectionClick();
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -59,8 +62,9 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
@@ -99,10 +103,14 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
                   ),
                 ),
                 child: Column(
@@ -112,18 +120,21 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
-                            color: (isDark
-                                    ? AppColors.darkAccentGold
-                                    : AppColors.olive)
-                                .withValues(alpha: 0.15),
+                            color:
+                                (isDark
+                                        ? AppColors.darkAccentGold
+                                        : AppColors.olive)
+                                    .withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             widget.dua.category,
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: isDark
                                   ? AppColors.darkAccentGold
@@ -136,7 +147,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                           child: Text(
                             widget.dua.attributedTo,
                             style: TextStyle(
-                              fontSize: 11.5,
+                              fontSize: 12.0,
                               color: isDark
                                   ? AppColors.darkTextSecondary
                                   : AppColors.lightTextSecondary,
@@ -167,7 +178,9 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
               // النص الشريف للدعاء كاملاً قطعة واحدة متصلة
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 18, vertical: 20),
+                  horizontal: 18,
+                  vertical: 20,
+                ),
                 decoration: BoxDecoration(
                   color: isDark
                       ? AppColors.darkSurface
@@ -180,8 +193,9 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black
-                          .withValues(alpha: isDark ? 0.2 : 0.03),
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.2 : 0.03,
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),

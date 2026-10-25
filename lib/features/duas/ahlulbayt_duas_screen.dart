@@ -38,9 +38,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     var list = AhlulbaytDuasRepository.defaultDuas;
 
     if (_selectedCategory != 'الكل') {
-      list = list
-          .where((d) => d.category.contains(_selectedCategory))
-          .toList();
+      list = list.where((d) => d.category.contains(_selectedCategory)).toList();
     }
 
     if (_searchQuery.trim().isEmpty) {
@@ -62,9 +60,12 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
   }
 
   void _copyDua(AhlulbaytDua dua) {
-    Clipboard.setData(ClipboardData(
-      text: '${dua.title}\n(${dua.attributedTo})\n\n${dua.fullText}\n\n— تطبيق تَدْبِير',
-    ));
+    Clipboard.setData(
+      ClipboardData(
+        text:
+            '${dua.title}\n(${dua.attributedTo})\n\n${dua.fullText}\n\n— تطبيق تَدْبِير',
+      ),
+    );
     HapticFeedback.selectionClick();
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -93,8 +94,9 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
@@ -114,10 +116,14 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightSurface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
                     ),
                   ),
                   child: TextField(
@@ -136,12 +142,11 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                       prefixIcon: Icon(
                         Icons.search_rounded,
                         size: 20,
-                        color: isDark
-                            ? AppColors.darkAccentGold
-                            : primaryColor,
+                        color: isDark ? AppColors.darkAccentGold : primaryColor,
                       ),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
+                              tooltip: context.l10n.clearText,
                               icon: const Icon(Icons.clear_rounded, size: 18),
                               onPressed: () {
                                 _searchController.clear();
@@ -150,8 +155,10 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                             )
                           : null,
                       border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -176,27 +183,29 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                         style: TextStyle(
                           fontFamily: 'Amiri',
                           fontSize: 12,
-                          fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           color: isSelected
                               ? (isDark ? Colors.black : Colors.white)
                               : (isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary),
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary),
                         ),
                       ),
                       selected: isSelected,
                       selectedColor: isDark
                           ? AppColors.darkAccentGold
                           : primaryColor,
-                      backgroundColor:
-                          isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                      backgroundColor: isDark
+                          ? AppColors.darkSurface
+                          : AppColors.lightSurface,
                       side: BorderSide(
                         color: isSelected
                             ? Colors.transparent
                             : (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder),
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder),
                       ),
                       onSelected: (selected) {
                         if (selected) {
@@ -213,13 +222,20 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
 
               // عدد النتائج
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 child: Row(
                   children: [
                     Text(
-                      l10n.ahlulbaytDuasCountBadge(l10n.isArabic
-                          ? ArabicSearchNormalizer.toArabicDigits(filtered.length)
-                          : filtered.length),
+                      l10n.ahlulbaytDuasCountBadge(
+                        l10n.isArabic
+                            ? ArabicSearchNormalizer.toArabicDigits(
+                                filtered.length,
+                              )
+                            : filtered.length,
+                      ),
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark
@@ -351,7 +367,7 @@ class _DuaCard extends StatelessWidget {
                       Text(
                         dua.attributedTo,
                         style: TextStyle(
-                          fontSize: 11.5,
+                          fontSize: 12.0,
                           color: isDark
                               ? AppColors.darkAccentGold
                               : primaryColor,
@@ -366,7 +382,10 @@ class _DuaCard extends StatelessWidget {
                   icon: const Icon(Icons.copy_rounded, size: 17),
                   visualDensity: VisualDensity.compact,
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
                   onPressed: onCopy,
                 ),
                 const SizedBox(width: 4),
@@ -405,19 +424,19 @@ class _DuaCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
-                    color: (isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.olive)
+                    color: (isDark ? AppColors.darkAccentGold : AppColors.olive)
                         .withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     dua.category,
                     style: TextStyle(
-                      fontSize: 10.5,
+                      fontSize: 12.0,
                       fontWeight: FontWeight.bold,
                       color: isDark
                           ? AppColors.darkAccentGold
@@ -429,7 +448,7 @@ class _DuaCard extends StatelessWidget {
                 Text(
                   context.l10n.fullAuthenticText,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.lightTextSecondary,

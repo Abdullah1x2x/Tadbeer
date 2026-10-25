@@ -297,13 +297,17 @@ class _QuranPageViewState extends State<QuranPageView> {
         final storage = UserDataStore.instance;
         final effectiveFontSize =
             widget.fontSize ?? storage.settings.quranFontSize;
+        final palette = MushafPalette.of(
+          isDark: isDark,
+          tone: storage.settings.mushafPaperTone,
+        );
 
         final isOpeningPage = pageNumber <= 2;
         final firstSurahNumber = quranPage.surahNumbers.isNotEmpty
             ? quranPage.surahNumbers.first
             : (quranPage.ayahs.isNotEmpty
-                ? quranPage.ayahs.first.surahNumber
-                : 1);
+                  ? quranPage.ayahs.first.surahNumber
+                  : 1);
         final surah = repo.getSurah(firstSurahNumber);
         final surahBlocks = _groupAyahsBySurah(quranPage.ayahs);
 
@@ -312,17 +316,20 @@ class _QuranPageViewState extends State<QuranPageView> {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
-            color: isDark ? AppColors.darkBackground : AppColors.mushafBackground,
+            color: palette.outer,
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurface : null,
+                      color: isDark ? palette.page : null,
                     ),
                     child: CustomPaint(
-                      painter: MushafPageFramePainter(isDark: isDark),
+                      painter: MushafPageFramePainter(
+                        isDark: isDark,
+                        palette: palette,
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10.0,
@@ -341,10 +348,11 @@ class _QuranPageViewState extends State<QuranPageView> {
                               },
                               child: RawScrollbar(
                                 controller: _scrollController,
-                                thumbColor: (isDark
-                                        ? AppColors.darkAccentGold
-                                        : AppColors.lightAccentGold)
-                                    .withValues(alpha: 0.65),
+                                thumbColor:
+                                    (isDark
+                                            ? AppColors.darkAccentGold
+                                            : AppColors.lightAccentGold)
+                                        .withValues(alpha: 0.65),
                                 radius: const Radius.circular(3),
                                 thickness: 2.5,
                                 padding: const EdgeInsetsDirectional.only(
@@ -376,6 +384,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                                               surah: surah,
                                               juzNumber: quranPage.juzNumber,
                                               isDark: isDark,
+                                              palette: palette,
                                               marginStamps: marginStamps,
                                             )
                                           else
@@ -430,17 +439,16 @@ class _QuranPageViewState extends State<QuranPageView> {
                               child: ValueListenableBuilder<bool>(
                                 valueListenable: _showBottomGradient,
                                 builder: (context, show, _) {
-                                  final pageBg = isDark
-                                      ? AppColors.darkSurface
-                                      : AppColors.mushafBackground;
+                                  final pageBg = palette.page;
                                   return IgnorePointer(
                                     child: TweenAnimationBuilder<double>(
                                       tween: Tween<double>(
                                         begin: 0.0,
                                         end: show ? 1.0 : 0.0,
                                       ),
-                                      duration:
-                                          const Duration(milliseconds: 250),
+                                      duration: const Duration(
+                                        milliseconds: 250,
+                                      ),
                                       builder: (context, opacity, child) {
                                         if (opacity <= 0.001) {
                                           return const SizedBox.shrink();
@@ -485,8 +493,9 @@ class _QuranPageViewState extends State<QuranPageView> {
                                         begin: 0.0,
                                         end: show ? 1.0 : 0.0,
                                       ),
-                                      duration:
-                                          const Duration(milliseconds: 250),
+                                      duration: const Duration(
+                                        milliseconds: 250,
+                                      ),
                                       builder: (context, opacity, child) {
                                         if (opacity <= 0.001) {
                                           return const SizedBox.shrink();
@@ -506,26 +515,29 @@ class _QuranPageViewState extends State<QuranPageView> {
                                               vertical: 1.5,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: (isDark
-                                                      ? AppColors.darkSurface
-                                                      : AppColors
-                                                          .mushafBackground)
-                                                  .withValues(alpha: 0.92),
+                                              color: palette.page.withValues(
+                                                alpha: 0.92,
+                                              ),
                                               borderRadius:
                                                   BorderRadius.circular(16),
                                               border: Border.all(
-                                                color: (isDark
-                                                        ? AppColors.darkAccentGold
-                                                        : AppColors
-                                                            .lightAccentGold)
-                                                    .withValues(alpha: 0.5),
+                                                color:
+                                                    (isDark
+                                                            ? AppColors
+                                                                  .darkAccentGold
+                                                            : AppColors
+                                                                  .lightAccentGold)
+                                                        .withValues(alpha: 0.5),
                                                 width: 0.8,
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black.withValues(
-                                                    alpha: isDark ? 0.35 : 0.08,
-                                                  ),
+                                                  color: Colors.black
+                                                      .withValues(
+                                                        alpha: isDark
+                                                            ? 0.35
+                                                            : 0.08,
+                                                      ),
                                                   blurRadius: 4,
                                                   offset: const Offset(0, 1),
                                                 ),
@@ -566,6 +578,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     required Surah surah,
     required int juzNumber,
     required bool isDark,
+    required MushafPalette palette,
     List<MarginStampData> marginStamps = const [],
   }) {
     final goldColor = isDark
@@ -605,7 +618,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: 'Amiri',
-                      fontSize: 12.5,
+                      fontSize: 13.5,
                       fontWeight: FontWeight.bold,
                       color: headerColor,
                       height: 1.2,
@@ -624,6 +637,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                     (stamp) => MarginStampMedallion(
                       stamp: stamp,
                       isDark: isDark,
+                      palette: palette,
                     ),
                   )
                   .toList(),
@@ -641,7 +655,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontFamily: 'Amiri',
-                      fontSize: 12.5,
+                      fontSize: 13.5,
                       fontWeight: FontWeight.bold,
                       color: headerColor,
                       height: 1.2,
@@ -692,10 +706,9 @@ class _QuranPageViewState extends State<QuranPageView> {
               color: goldColor.withValues(alpha: isDark ? 0.45 : 0.55),
               width: 0.7,
             ),
-            color: (isDark
-                    ? AppColors.darkSurfaceVariant
-                    : AppColors.lightSurface)
-                .withValues(alpha: 0.35),
+            color:
+                (isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurface)
+                    .withValues(alpha: 0.35),
           ),
           child: Text(
             ArabicSearchNormalizer.toArabicDigits(pageNumber),
@@ -813,9 +826,10 @@ class _QuranPageViewState extends State<QuranPageView> {
     required UserDataStore storage,
     required bool isCentered,
   }) {
-    final textColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.mushafQuranText;
+    final textColor = MushafPalette.of(
+      isDark: isDark,
+      tone: storage.settings.mushafPaperTone,
+    ).text;
     final goldColor = isDark
         ? AppColors.darkAccentGold
         : AppColors.lightAccentGold;
@@ -858,10 +872,7 @@ class _QuranPageViewState extends State<QuranPageView> {
         TextSpan(
           text: ayahText,
           recognizer: recognizer,
-          style: TextStyle(
-            color: textColor,
-            backgroundColor: highlightColor,
-          ),
+          style: TextStyle(color: textColor, backgroundColor: highlightColor),
         ),
       );
       spanChildren.add(
@@ -875,9 +886,7 @@ class _QuranPageViewState extends State<QuranPageView> {
             height: 1.95,
             backgroundColor: highlightColor,
             color: isSelected
-                ? (isDark
-                    ? const Color(0xFFDFCA94)
-                    : const Color(0xFF7A5C1E))
+                ? (isDark ? const Color(0xFFDFCA94) : const Color(0xFF7A5C1E))
                 : goldColor,
           ),
         ),
@@ -918,10 +927,11 @@ class _QuranPageViewState extends State<QuranPageView> {
                           : AppColors.lightPrimary.withValues(alpha: 0.09),
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(
-                        color: (isDark
-                                ? AppColors.darkAccentGold
-                                : AppColors.lightAccentGold)
-                            .withValues(alpha: isDark ? 0.45 : 0.55),
+                        color:
+                            (isDark
+                                    ? AppColors.darkAccentGold
+                                    : AppColors.lightAccentGold)
+                                .withValues(alpha: isDark ? 0.45 : 0.55),
                         width: 0.8,
                       ),
                     ),
@@ -961,11 +971,7 @@ class _QuranPageViewState extends State<QuranPageView> {
         );
       }
 
-      spanChildren.add(
-        const TextSpan(
-          text: trailingSpace,
-        ),
-      );
+      spanChildren.add(const TextSpan(text: trailingSpace));
     }
 
     final rootSpan = TextSpan(
