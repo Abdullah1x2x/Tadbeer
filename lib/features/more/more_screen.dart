@@ -7,6 +7,7 @@ import '../ayah_links/ayah_links_screen.dart';
 import '../backup/backup_screen.dart';
 import '../bookmarks/bookmarks_screen.dart';
 import '../books/books_screen.dart';
+import '../group_khatma/group_khatma_screen.dart';
 import '../highlights/highlights_screen.dart';
 import '../journey/journey_screen.dart';
 import '../journey/mushaf_map_screen.dart';
@@ -56,6 +57,11 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.route_rounded,
                   label: l10n.guidedPathways,
                   onTap: () => open(const GuidedPathwaysScreen()),
+                ),
+                _Tile(
+                  icon: Icons.groups_rounded,
+                  label: l10n.groupKhatma,
+                  onTap: () => open(const GroupKhatmaScreen()),
                 ),
                 _Tile(
                   icon: Icons.psychology_rounded,
