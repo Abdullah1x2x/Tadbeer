@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
+import 'adhkar_reminders.dart';
 import 'adhkar_repository.dart';
 
 /// شاشة أذكار الصباح والمساء المأثورة بتصميم هادئ ومريح مع عداد تفاعلي لكل ذكر.
@@ -121,6 +122,11 @@ class _MorningEveningAdhkarScreenState
           ),
           centerTitle: true,
           actions: [
+            IconButton(
+              tooltip: l10n.adhkarReminders,
+              icon: const Icon(Icons.notifications_active_outlined),
+              onPressed: () => AdhkarReminders.showSettingsSheet(context),
+            ),
             IconButton(
               tooltip: l10n.resetCounters,
               icon: const Icon(Icons.restart_alt_rounded),

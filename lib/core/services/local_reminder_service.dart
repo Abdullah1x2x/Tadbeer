@@ -647,8 +647,12 @@ class LocalReminderService {
     final title = reminder.title.trim().isNotEmpty
         ? reminder.title.trim()
         : 'ورد القرآن الكريم';
-    const body = 'حان وقت تلاوة وتدبّر القرآن الكريم';
-    const payload = 'quran_resume';
+    // Adhkar reminders open the adhkar instead of the Mushaf.
+    final isAdhkar = reminder.id.startsWith('adhkar_');
+    final body = isAdhkar
+        ? 'حان وقت الأذكار، ذكّر قلبك بالله'
+        : 'حان وقت تلاوة وتدبّر القرآن الكريم';
+    final payload = isAdhkar ? reminder.id : 'quran_resume';
 
     final baseId = _baseNotificationId(reminder.id);
 
