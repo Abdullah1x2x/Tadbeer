@@ -174,6 +174,8 @@ class AppStrings {
   String portionReminderTitle(int pages) =>
       _l.portionReminderTitle(digits(pages));
   String get portionReminderSet => _l.portionReminderSet;
+  String portionLeftTitle(int pages) => _l.portionLeftTitle(digits(pages));
+  String get portionLeftBody => _l.portionLeftBody;
 
   String get reflectedToday => _l.reflectedToday;
 

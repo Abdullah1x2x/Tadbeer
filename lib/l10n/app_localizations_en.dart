@@ -1519,4 +1519,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String smartPaceSeconds(String seconds) {
     return 'Pace ${seconds}s';
   }
+
+  @override
+  String portionLeftTitle(String pages) {
+    return '$pages pages left in today’s portion';
+  }
+
+  @override
+  String get portionLeftBody => 'Continue your khatma where you left off';
 }

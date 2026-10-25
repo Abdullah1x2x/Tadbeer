@@ -2753,6 +2753,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إيقاع {seconds} ث'**
   String smartPaceSeconds(String seconds);
+
+  /// No description provided for @portionLeftTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'بقي من وردك اليوم {pages} صفحة'**
+  String portionLeftTitle(String pages);
+
+  /// No description provided for @portionLeftBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أكمل ختمتك من حيث توقفت'**
+  String get portionLeftBody;
 }
 
 class _AppLocalizationsDelegate

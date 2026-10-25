@@ -1515,4 +1515,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String smartPaceSeconds(String seconds) {
     return 'إيقاع $seconds ث';
   }
+
+  @override
+  String portionLeftTitle(String pages) {
+    return 'بقي من وردك اليوم $pages صفحة';
+  }
+
+  @override
+  String get portionLeftBody => 'أكمل ختمتك من حيث توقفت';
 }

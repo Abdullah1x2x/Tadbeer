@@ -16,6 +16,7 @@ import 'reading_journey.dart';
 import 'weekly_goals.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
+import 'portion_reminder.dart';
 
 /// شاشة «رحلتي مع القرآن»: خطة الختمة، ورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
@@ -118,9 +119,6 @@ class _StartKhatmaCard extends StatefulWidget {
 }
 
 class _StartKhatmaCardState extends State<_StartKhatmaCard> {
-  /// Fixed id so a new khatma updates the same reminder instead of adding.
-  static const _reminderId = 'khatma_daily_portion';
-
   /// Offers a daily reminder for the portion right after starting.
   Future<void> _offerPortionReminder(BuildContext context) async {
     final l10n = context.l10n;
@@ -132,7 +130,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
     if (time == null) return;
     final pages = (mushafPageCount / _days).ceil();
     final reminder = ReminderItem(
-      id: _reminderId,
+      id: portionReminderId,
       title: l10n.portionReminderTitle(pages),
       hour: time.hour,
       minute: time.minute,

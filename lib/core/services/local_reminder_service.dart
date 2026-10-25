@@ -7,6 +7,8 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../app/localization.dart';
+import '../../features/journey/portion_reminder.dart';
 import '../../features/reminders/reminder_model.dart';
 import '../storage/user_data_store.dart';
 
@@ -265,15 +267,32 @@ class LocalReminderService {
         shouldFire = days.contains(now.weekday);
       }
 
+      var title = reminder.title.trim().isNotEmpty
+          ? reminder.title.trim()
+          : 'ورد القرآن الكريم';
+      var body = 'حان وقت تلاوة وتدبّر القرآن الكريم';
+      if (reminder.id == portionReminderId) {
+        // Pages left today, or nothing once today's portion is read.
+        final store = UserDataStore.instance;
+        final journey = store.journey;
+        final plan = journey.plan;
+        final left = plan == null || plan.isComplete
+            ? 0
+            : plan.pagesPerDay - journey.pagesOn(now);
+        shouldFire = shouldFire && left > 0;
+        final strings = AppStrings(
+          AppLanguage.fromCode(store.settings.languageCode),
+        );
+        title = strings.portionLeftTitle(left);
+        body = strings.portionLeftBody;
+      }
+
       if (shouldFire) {
         _lastTriggeredMinuteKey = minuteKey;
-        final title = reminder.title.trim().isNotEmpty
-            ? reminder.title.trim()
-            : 'ورد القرآن الكريم';
         await showImmediateNotification(
           id: _baseNotificationId(reminder.id),
           title: title,
-          body: 'حان وقت تلاوة وتدبّر القرآن الكريم',
+          body: body,
           alertType: reminder.alertType,
           payload: 'quran_resume',
         );
@@ -522,7 +541,17 @@ class LocalReminderService {
         await _notificationsPlugin.cancel(id: baseId + i);
       } catch (_) {}
     }
+    if (reminder.id == portionReminderId) {
+      for (int i = 0; i < portionReminderDays; i++) {
+        try {
+          await _notificationsPlugin.cancel(id: _portionBaseId + i);
+        } catch (_) {}
+      }
+    }
   }
+
+  /// Ids of the khatma portion notices, above every hashed reminder id.
+  static const int _portionBaseId = 100000000;
 
   /// Cancels all scheduled notifications across the app.
   Future<void> cancelAll() async {
@@ -644,6 +673,11 @@ class LocalReminderService {
     final details = _buildNotificationDetails(reminder.alertType);
     final scheduleMode = await _resolveAndroidScheduleMode(reminder.alertType);
 
+    if (reminder.id == portionReminderId) {
+      await _schedulePortion(reminder, details, scheduleMode);
+      return;
+    }
+
     final title = reminder.title.trim().isNotEmpty
         ? reminder.title.trim()
         : 'ورد القرآن الكريم';
@@ -747,6 +781,35 @@ class LocalReminderService {
       }
     } catch (e) {
       debugPrint('Error scheduling reminder: $e');
+    }
+  }
+
+  /// ورد الختمة: إشعار لكل يوم يذكر الصفحات المتبقية من ورده.
+  Future<void> _schedulePortion(
+    ReminderItem reminder,
+    NotificationDetails details,
+    AndroidScheduleMode scheduleMode,
+  ) async {
+    final store = UserDataStore.instance;
+    final strings = AppStrings(
+      AppLanguage.fromCode(store.settings.languageCode),
+    );
+    final notices = portionNotices(
+      store.journey,
+      DateTime.now(),
+      hour: reminder.hour,
+      minute: reminder.minute,
+    );
+    for (var i = 0; i < notices.length; i++) {
+      await _zonedScheduleSafe(
+        id: _portionBaseId + i,
+        title: strings.portionLeftTitle(notices[i].pages),
+        body: strings.portionLeftBody,
+        scheduledDate: tz.TZDateTime.from(notices[i].at, tz.local),
+        details: details,
+        preferredMode: scheduleMode,
+        payload: 'quran_resume',
+      );
     }
   }
 
