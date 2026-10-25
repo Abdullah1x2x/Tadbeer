@@ -43,6 +43,22 @@ void main() {
       expect(read.plan!.nextUnreadPage, 3);
     });
 
+    test('continues after the last page read, not from page 1', () {
+      // Started reading mid-Mushaf (e.g. from the saved position).
+      var j = const ReadingJourney().startPlan(30, monday);
+      j = j.recordPage(192, monday).recordPage(193, monday);
+      expect(j.plan!.nextUnreadPage, 194);
+
+      // Re-reading an earlier page moves on past what was already read.
+      j = j.recordPage(193, monday);
+      expect(j.plan!.nextUnreadPage, 194);
+
+      // At the end of the Mushaf it wraps around to the first unread page.
+      j = j.recordPage(604, monday);
+      expect(j.plan!.nextUnreadPage, 1);
+      expect(ReadingJourney.fromJson(j.toJson()).plan!.nextUnreadPage, 1);
+    });
+
     test('reading every page completes the khatma', () {
       var j = const ReadingJourney().startPlan(7, monday);
       for (var p = 1; p <= mushafPageCount; p++) {
