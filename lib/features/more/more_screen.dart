@@ -10,6 +10,7 @@ import '../books/books_screen.dart';
 import '../highlights/highlights_screen.dart';
 import '../journey/journey_screen.dart';
 import '../journey/mushaf_map_screen.dart';
+import '../memorization/memorization_screen.dart';
 import '../notes/notes_screen.dart';
 import '../pathways/guided_pathways_screen.dart';
 import '../reminders/reminders_screen.dart';
@@ -55,6 +56,11 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.route_rounded,
                   label: l10n.guidedPathways,
                   onTap: () => open(const GuidedPathwaysScreen()),
+                ),
+                _Tile(
+                  icon: Icons.psychology_rounded,
+                  label: l10n.memorization,
+                  onTap: () => open(const MemorizationScreen()),
                 ),
                 _Tile(
                   icon: Icons.edit_note_rounded,
