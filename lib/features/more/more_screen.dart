@@ -9,6 +9,7 @@ import '../bookmarks/bookmarks_screen.dart';
 import '../books/books_screen.dart';
 import '../highlights/highlights_screen.dart';
 import '../journey/journey_screen.dart';
+import '../journey/mushaf_map_screen.dart';
 import '../notes/notes_screen.dart';
 import '../reminders/reminders_screen.dart';
 import '../search/search_screen.dart';
@@ -43,6 +44,11 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.insights_rounded,
                   label: l10n.myJourney,
                   onTap: () => open(const JourneyScreen()),
+                ),
+                _Tile(
+                  icon: Icons.grid_on_rounded,
+                  label: l10n.mushafMap,
+                  onTap: () => open(const MushafMapScreen()),
                 ),
                 _Tile(
                   icon: Icons.edit_note_rounded,
