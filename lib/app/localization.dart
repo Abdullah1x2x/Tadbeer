@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/utils/arabic_search_normalizer.dart';
+import '../l10n/app_localizations.dart';
 
 /// اللغات المدعومة في واجهة تطبيق تَدْبِير مع اتجاه النص المقابل لكل لغة.
 enum AppLanguage {
@@ -27,6 +28,15 @@ class AppStrings {
   final AppLanguage language;
   const AppStrings(this.language);
 
+  // Translations are generated from lib/l10n/app_ar.arb and app_en.arb.
+  static final AppLocalizations _ar = lookupAppLocalizations(
+    const Locale('ar'),
+  );
+  static final AppLocalizations _en = lookupAppLocalizations(
+    const Locale('en'),
+  );
+  AppLocalizations get _l => language == AppLanguage.arabic ? _ar : _en;
+
   /// ما إذا كانت اللغة الحالية للتطبيق هي اللغة العربية.
   bool get isArabic => language == AppLanguage.arabic;
 
@@ -37,184 +47,151 @@ class AppStrings {
   String _n(Object? value) => ArabicSearchNormalizer.convertDigits('$value');
 
   // App Identity
-  String get appName => isArabic ? 'تَدْبِير' : 'Tadbeer';
-  String get appTagline =>
-      isArabic ? 'قراءة وتدبّر القرآن الكريم' : 'Quran Reading & Reflection';
+  String get appName => _l.appName;
+  String get appTagline => _l.appTagline;
 
   // Navigation / Main Sections
-  String get home => isArabic ? 'الرئيسية' : 'Home';
-  String get quran => isArabic ? 'المصحف' : 'Quran';
-  String get notes => isArabic ? 'الملاحظات' : 'Notes';
-  String get bookmarks => isArabic ? 'المحفوظات' : 'Bookmarks';
-  String get highlights => isArabic ? 'المميزة' : 'Highlights';
-  String get search => isArabic ? 'البحث' : 'Search';
-  String get settings => isArabic ? 'الإعدادات' : 'Settings';
-  String get reminders => isArabic ? 'التنبيهات' : 'Reminders';
-  String get ayahLinks => isArabic ? 'روابط الآيات' : 'Ayah Links';
-  String get backup => isArabic ? 'النسخ الاحتياطي' : 'Backup & Restore';
-  String get duas => isArabic ? 'الأدعية' : 'Duas';
-  String get quranDuas => isArabic ? 'أدعية من القرآن' : 'Duas from the Quran';
-  String get tasbeehAndIstighfar =>
-      isArabic ? 'استغفار وتسبيح' : 'Istighfar & Tasbeeh';
-  String get tasbeehSubtitle => isArabic
-      ? 'سبحة إلكترونية وأوراد الاستغفار والتسبيح'
-      : 'Digital Tasbeeh & Istighfar Counter';
-  String get booksAndBooklets => isArabic ? 'كتب وملازم' : 'Books & Booklets';
-  String get booksSubtitle => isArabic
-      ? 'مكتبة الملازم التدبرية ومختصرات علوم القرآن'
-      : 'Tadbeer Library & Study Booklets';
-  String get about => isArabic ? 'عن تَدْبِير' : 'About Tadbeer';
-  String get more => isArabic ? 'المزيد' : 'More';
+  String get home => _l.home;
+  String get quran => _l.quran;
+  String get notes => _l.notes;
+  String get bookmarks => _l.bookmarks;
+  String get highlights => _l.highlights;
+  String get search => _l.search;
+  String get settings => _l.settings;
+  String get reminders => _l.reminders;
+  String get ayahLinks => _l.ayahLinks;
+  String get backup => _l.backup;
+  String get duas => _l.duas;
+  String get quranDuas => _l.quranDuas;
+  String get tasbeehAndIstighfar => _l.tasbeehAndIstighfar;
+  String get tasbeehSubtitle => _l.tasbeehSubtitle;
+  String get booksAndBooklets => _l.booksAndBooklets;
+  String get booksSubtitle => _l.booksSubtitle;
+  String get about => _l.about;
+  String get more => _l.more;
 
   // Tadbeer Intro
   String get tadbeerVerse =>
       'أَفَلَا يَتَدَبَّرُونَ الْقُرْآنَ أَمْ عَلَىٰ قُلُوبٍ أَقْفَالُهَا';
-  String get tadbeerVerseRef =>
-      isArabic ? 'سورة محمد · آية ٢٤' : 'Surah Muhammad · Verse 24';
+  String get tadbeerVerseRef => _l.tadbeerVerseRef;
 
-  String get tadbeerMessage => isArabic
-      ? 'عِش مع القرآن، وتأمّل آياته، وتدبّر معانيها، واربط بين الآيات، ودوّن خواطرك، واستلهم هدايته.'
-      : 'Engage with the Quran, reflect on its verses, contemplate their meanings, connect related verses, record your thoughts, and draw inspiration from its guidance.';
+  String get tadbeerMessage => _l.tadbeerMessage;
 
   String get tadabburVerse => tadbeerVerse;
 
   // Quran Reader & Side Menu
   /// تنسيق نص رقم الصفحة الحالية في المصحف.
-  String pageNumber(int page) => isArabic ? 'صفحة ${_n(page)}' : 'Page $page';
+  String pageNumber(int page) =>
+      _l.pageNumber(digits(page));
 
   /// تنسيق نص رقم الجزء الحالي في المصحف.
-  String juzNumber(int juz) => isArabic ? 'الجزء ${_n(juz)}' : 'Juz $juz';
+  String juzNumber(int juz) =>
+      _l.juzNumber(digits(juz));
 
   /// تنسيق نص رقم الحزب الحالي في المصحف.
-  String hizbNumber(int hizb) => isArabic ? 'الحزب ${_n(hizb)}' : 'Hizb $hizb';
+  String hizbNumber(int hizb) =>
+      _l.hizbNumber(digits(hizb));
 
-  String get surahs => isArabic ? 'السور' : 'Surahs';
-  String get juzs => isArabic ? 'الأجزاء' : 'Juzs';
-  String get jumpToPage => isArabic ? 'الانتقال إلى صفحة' : 'Jump to Page';
-  String get go => isArabic ? 'انتقال' : 'Go';
-  String get cancel => isArabic ? 'إلغاء' : 'Cancel';
-  String get options => isArabic ? 'خيارات' : 'Options';
+  String get surahs => _l.surahs;
+  String get juzs => _l.juzs;
+  String get jumpToPage => _l.jumpToPage;
+  String get go => _l.go;
+  String get cancel => _l.cancel;
+  String get options => _l.options;
 
   // Mushaf map & reflection log
-  String get mushafMap => isArabic ? 'خريطة المصحف' : 'Mushaf map';
-  String get mapTab => isArabic ? 'الخريطة' : 'Map';
-  String get reflectionLog => isArabic ? 'سجل التدبر' : 'Reflection log';
-  String pagesTouched(int n) => isArabic
-      ? 'صفحات لك فيها أثر: ${_n(n)} من ٦٠٤'
-      : 'Pages you have touched: $n of 604';
+  String get mushafMap => _l.mushafMap;
+  String get mapTab => _l.mapTab;
+  String get reflectionLog => _l.reflectionLog;
+  String pagesTouched(int n) =>
+      _l.pagesTouched(digits(n));
 
   /// Legend label for [PageActivity] by index.
   String activityLabel(int i) => isArabic
       ? const ['لم تُقرأ', 'مقروءة', 'محفوظة أو مميزة', 'في الحفظ', 'فيها تدبر'][i]
       : const ['Not read', 'Read', 'Saved or highlighted', 'Memorizing', 'Reflected'][i];
-  String get noReflectionsYet =>
-      isArabic ? 'لا توجد وقفات تدبر بعد' : 'No reflections yet';
-  String get reflectionsEmptyHint => isArabic
-      ? 'اضغط مطولاً على آية واختر «وقفة تدبر» لتبدأ سجلك.'
-      : 'Long-press a verse and choose “Reflection” to start your log.';
+  String get noReflectionsYet => _l.noReflectionsYet;
+  String get reflectionsEmptyHint => _l.reflectionsEmptyHint;
   String shortDate(DateTime d) =>
       isArabic ? _n('${d.day}/${d.month}/${d.year}') : '${d.day}/${d.month}/${d.year}';
 
   // Guided pathways
-  String get guidedPathways => isArabic ? 'مسارات التدبر' : 'Guided pathways';
-  String get guidedPathwaysHint => isArabic
-      ? 'رحلات قصيرة: آية كل يوم مع إضاءة وسؤال تدبر. أتمّ اليوم ليُفتح التالي.'
-      : 'Short journeys: one verse a day with an insight and a question. Finish a day to unlock the next.';
+  String get guidedPathways => _l.guidedPathways;
+  String get guidedPathwaysHint => _l.guidedPathwaysHint;
   String daysOfTotal(int a, int b) =>
-      isArabic ? '${_n(a)} / ${_n(b)} أيام' : '$a / $b days';
-  String dayN(int n) => isArabic ? 'اليوم ${_n(n)}' : 'Day $n';
-  String get completeDay => isArabic ? 'أتممت اليوم' : 'Day done';
-  String get pathwayUnlockHint => isArabic
-      ? 'أتمّ يوم اليوم ليُفتح الذي بعده'
-      : 'Finish today to unlock the next day';
-  String get pathwayComplete =>
-      isArabic ? 'أتممت المسار، بارك الله فيك' : 'Pathway complete!';
+      _l.daysOfTotal(digits(a), digits(b));
+  String dayN(int n) =>
+      _l.dayN(digits(n));
+  String get completeDay => _l.completeDay;
+  String get pathwayUnlockHint => _l.pathwayUnlockHint;
+  String get pathwayComplete => _l.pathwayComplete;
 
   // Memorization (الحفظ)
-  String get memorization => isArabic ? 'الحفظ والمراجعة' : 'Memorization';
+  String get memorization => _l.memorization;
   String versesMemorized(int n) =>
-      isArabic ? 'آيات محفوظة: ${_n(n)}' : 'Verses memorized: $n';
-  String get memorizationHint => isArabic
-      ? 'اختر سورة: تظهر الآية مخفية إلا كلمتها الأولى، استحضرها ثم اكشفها وقيّم نفسك. نعيد عليك ما تحتاجه في الوقت المناسب.'
-      : 'Pick a surah: each verse is hidden except its first word. Recall it, reveal, and rate yourself; we bring it back at the right time.';
+      _l.versesMemorized(digits(n));
+  String get memorizationHint => _l.memorizationHint;
   String reviewToday(int n) =>
-      isArabic ? 'مراجعة اليوم (${_n(n)})' : 'Review today ($n)';
-  String get nothingDueToday =>
-      isArabic ? 'لا مراجعة مستحقة اليوم' : 'Nothing due today';
-  String get chooseSurahToMemorize =>
-      isArabic ? 'اختر سورة للحفظ' : 'Choose a surah to memorize';
+      _l.reviewToday(digits(n));
+  String get nothingDueToday => _l.nothingDueToday;
+  String get chooseSurahToMemorize => _l.chooseSurahToMemorize;
   String versesOfTotal(int a, int b) =>
-      isArabic ? '${_n(a)} / ${_n(b)}' : '$a / $b';
-  String get tapToReveal => isArabic ? 'اضغط لكشف الآية' : 'Tap to reveal';
-  String get needsReview => isArabic ? 'أحتاج مراجعة' : 'Needs review';
-  String get mastered => isArabic ? 'أتقنتها' : 'Mastered';
-  String get sessionDone => isArabic ? 'أحسنت! انتهت الجلسة' : 'Session done!';
-  String sessionSummary(int a, int b) => isArabic
-      ? 'أتقنت ${_n(a)} من ${_n(b)} آية. سنعيد عليك الباقي غداً.'
-      : 'You mastered $a of $b verses. The rest will come back tomorrow.';
+      _l.versesOfTotal(digits(a), digits(b));
+  String get tapToReveal => _l.tapToReveal;
+  String get needsReview => _l.needsReview;
+  String get mastered => _l.mastered;
+  String get sessionDone => _l.sessionDone;
+  String sessionSummary(int a, int b) =>
+      _l.sessionSummary(digits(a), digits(b));
 
   // Ayah of the day
-  String get ayahOfTheDay => isArabic ? 'آية اليوم' : 'Verse of the day';
-  String get reflectOnIt => isArabic ? 'تدبّرها' : 'Reflect';
+  String get ayahOfTheDay => _l.ayahOfTheDay;
+  String get reflectOnIt => _l.reflectOnIt;
 
   // Reading vs viewing
-  String get continueReadingFromHere =>
-      isArabic ? 'أكمل القراءة من هنا' : 'Continue reading from here';
-  String readingPositionMoved(int page) => isArabic
-      ? 'أصبحت صفحة ${_n(page)} موضع قراءتك'
-      : 'Page $page is now your reading position';
+  String get continueReadingFromHere => _l.continueReadingFromHere;
+  String readingPositionMoved(int page) =>
+      _l.readingPositionMoved(digits(page));
   String pageCounted(int page) =>
-      isArabic ? 'احتُسبت صفحة ${_n(page)}' : 'Page $page counted';
+      _l.pageCounted(digits(page));
 
   // Sequential khatma
-  String get fromMushafStart => isArabic ? 'من أول المصحف' : 'From the start';
+  String get fromMushafStart => _l.fromMushafStart;
   String fromMyPosition(int page) =>
-      isArabic ? 'من موضعي (ص ${_n(page)})' : 'From my place (p. $page)';
+      _l.fromMyPosition(digits(page));
   String reachedPage(int page) =>
-      isArabic ? 'وصلت إلى صفحة ${_n(page)}' : 'Reached page $page';
-  String get setKhatmaPosition =>
-      isArabic ? 'تعديل موضعي في الختمة' : 'Set my khatma position';
-  String get pageNumberLabel => isArabic ? 'رقم الصفحة' : 'Page number';
-  String get markPortionDone =>
-      isArabic ? 'أتممت ورد اليوم' : 'Mark today’s portion done';
-  String khatmaElsewhere(int page) => isArabic
-      ? 'موضع قراءتك صفحة ${_n(page)}؛ انقل الختمة إليه؟'
-      : 'Your reading position is page $page. Move the khatma there?';
-  String get moveKhatmaHere => isArabic ? 'انقل الختمة' : 'Move khatma';
+      _l.reachedPage(digits(page));
+  String get setKhatmaPosition => _l.setKhatmaPosition;
+  String get pageNumberLabel => _l.pageNumberLabel;
+  String get markPortionDone => _l.markPortionDone;
+  String khatmaElsewhere(int page) =>
+      _l.khatmaElsewhere(digits(page));
+  String get moveKhatmaHere => _l.moveKhatmaHere;
 
-  String get reflectionsThisMonth =>
-      isArabic ? 'تدبرات هذا الشهر' : 'Reflections this month';
+  String get reflectionsThisMonth => _l.reflectionsThisMonth;
 
-  String get portionReminderPrompt =>
-      isArabic ? 'متى نذكّرك بوردك يومياً؟' : 'When should we remind you daily?';
+  String get portionReminderPrompt => _l.portionReminderPrompt;
   String portionReminderTitle(int pages) =>
-      isArabic ? 'ورد الختمة: ${_n(pages)} صفحة' : 'Khatma portion: $pages pages';
-  String get portionReminderSet =>
-      isArabic ? 'سنذكّرك بوردك كل يوم' : 'We’ll remind you every day';
+      _l.portionReminderTitle(digits(pages));
+  String get portionReminderSet => _l.portionReminderSet;
 
-  String get reflectedToday =>
-      isArabic ? 'تدبّرتها اليوم، بارك الله فيك' : 'Reflected on today';
+  String get reflectedToday => _l.reflectedToday;
 
-  String get addToMemorization => isArabic ? 'أضف للحفظ' : 'Add to memorization';
-  String get removeFromMemorization =>
-      isArabic ? 'إزالة من الحفظ' : 'Remove from memorization';
+  String get addToMemorization => _l.addToMemorization;
+  String get removeFromMemorization => _l.removeFromMemorization;
 
-  String get journeyBackupSection => isArabic
-      ? 'الختمة والإحصاءات والحفظ والمسارات'
-      : 'Khatma, stats, memorization and pathways';
+  String get journeyBackupSection => _l.journeyBackupSection;
 
-  String get dailyJourney => isArabic ? 'رحلة يومية' : 'Daily journey';
+  String get dailyJourney => _l.dailyJourney;
 
-  String get adhkarReminders => isArabic ? 'تذكير الأذكار' : 'Adhkar reminders';
-  String get morningAdhkarReminder =>
-      isArabic ? 'أذكار الصباح' : 'Morning adhkar';
-  String get eveningAdhkarReminder =>
-      isArabic ? 'أذكار المساء' : 'Evening adhkar';
+  String get adhkarReminders => _l.adhkarReminders;
+  String get morningAdhkarReminder => _l.morningAdhkarReminder;
+  String get eveningAdhkarReminder => _l.eveningAdhkarReminder;
 
-  String get monthlyReport => isArabic ? 'تقرير الشهر' : 'Monthly report';
-  String get activeDaysLabel => isArabic ? 'يوم نشاط' : 'Active days';
-  String get reflectionsLabel => isArabic ? 'وقفة تدبر' : 'Reflections';
-  String get memorizedLabel => isArabic ? 'آية محفوظة' : 'Verses memorized';
+  String get monthlyReport => _l.monthlyReport;
+  String get activeDaysLabel => _l.activeDaysLabel;
+  String get reflectionsLabel => _l.reflectionsLabel;
+  String get memorizedLabel => _l.memorizedLabel;
   String monthTitle(int month, int year) {
     const ar = [
       'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
@@ -230,426 +207,301 @@ class AppStrings {
   }
 
   // Group khatma
-  String get groupKhatma => isArabic ? 'ختمة جماعية' : 'Group khatma';
-  String get groupKhatmaHint => isArabic
-      ? 'وزّع الأجزاء الثلاثين على العائلة أو الأصدقاء، وشارك الرمز معهم. كل شخص يلصق الرمز ويختار اسمه ويتابع أجزاءه، دون إنترنت.'
-      : 'Split the 30 juz among family or friends and share the code. Each person pastes it, picks their name and tracks their juz, offline.';
-  String get createGroupKhatma =>
-      isArabic ? 'إنشاء ختمة جماعية' : 'Create a group khatma';
-  String get groupKhatmaTitle =>
-      isArabic ? 'اسم الختمة' : 'Khatma name';
-  String get participantNames =>
-      isArabic ? 'أسماء المشاركين' : 'Participants';
-  String get oneNamePerLine => isArabic ? 'اسم في كل سطر' : 'One name per line';
-  String get distributeJuz => isArabic ? 'وزّع الأجزاء' : 'Distribute juz';
-  String get joinWithCode => isArabic ? 'الانضمام برمز' : 'Join with a code';
-  String get pasteGroupCode =>
-      isArabic ? 'الصق رمز الختمة' : 'Paste the khatma code';
-  String get invalidGroupCode =>
-      isArabic ? 'الرمز غير صحيح' : 'This code is not valid';
-  String get join => isArabic ? 'انضم' : 'Join';
-  String get whoAreYou => isArabic ? 'اختر اسمك' : 'Pick your name';
+  String get groupKhatma => _l.groupKhatma;
+  String get groupKhatmaHint => _l.groupKhatmaHint;
+  String get createGroupKhatma => _l.createGroupKhatma;
+  String get groupKhatmaTitle => _l.groupKhatmaTitle;
+  String get participantNames => _l.participantNames;
+  String get oneNamePerLine => _l.oneNamePerLine;
+  String get distributeJuz => _l.distributeJuz;
+  String get joinWithCode => _l.joinWithCode;
+  String get pasteGroupCode => _l.pasteGroupCode;
+  String get invalidGroupCode => _l.invalidGroupCode;
+  String get join => _l.join;
+  String get whoAreYou => _l.whoAreYou;
   String juzList(List<int> juz) =>
       isArabic ? 'الأجزاء: ${juz.map(_n).join('، ')}' : 'Juz: ${juz.join(', ')}';
-  String juzLabel(int juz) => isArabic ? 'الجزء ${_n(juz)}' : 'Juz $juz';
+  String juzLabel(int juz) =>
+      _l.juzLabel(digits(juz));
   String myJuzTitle(String name) =>
-      isArabic ? 'أجزاء $name' : '$name’s juz';
-  String get readJuz => isArabic ? 'اقرأ الجزء' : 'Read juz';
-  String get everyonesJuz => isArabic ? 'توزيع الجميع' : 'Everyone’s juz';
-  String get showQr => isArabic ? 'عرض رمز QR' : 'Show QR code';
-  String get leaveGroupKhatma =>
-      isArabic ? 'مغادرة الختمة' : 'Leave khatma';
-  String get groupCodeIntro => isArabic
-      ? 'للانضمام: افتح تدبير ← المزيد ← ختمة جماعية، والصق هذا الرمز:'
-      : 'To join: open Tadbeer → More → Group khatma and paste this code:';
+      _l.myJuzTitle(name);
+  String get readJuz => _l.readJuz;
+  String get everyonesJuz => _l.everyonesJuz;
+  String get showQr => _l.showQr;
+  String get leaveGroupKhatma => _l.leaveGroupKhatma;
+  String get groupCodeIntro => _l.groupCodeIntro;
 
-  String get continueWhereYouLeft =>
-      isArabic ? 'أكمل من حيث توقفت' : 'Continue where you left off';
-  String get adhkarKind => isArabic ? 'الأذكار' : 'Adhkar';
-  String chapterN(int n) => isArabic ? 'الفصل ${_n(n)}' : 'Chapter $n';
+  String get continueWhereYouLeft => _l.continueWhereYouLeft;
+  String get adhkarKind => _l.adhkarKind;
+  String chapterN(int n) =>
+      _l.chapterN(digits(n));
 
-  String get weeklyGoals => isArabic ? 'أهداف الأسبوع' : 'Weekly goals';
-  String get editGoals => isArabic ? 'تعديل الأهداف' : 'Edit goals';
-  String get pagesGoal => isArabic ? 'صفحات' : 'Pages';
-  String get reflectionsGoal => isArabic ? 'وقفات تدبر' : 'Reflections';
+  String get weeklyGoals => _l.weeklyGoals;
+  String get editGoals => _l.editGoals;
+  String get pagesGoal => _l.pagesGoal;
+  String get reflectionsGoal => _l.reflectionsGoal;
 
   // Focus mode (وضع التأمل)
-  String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
-  String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';
-  String get breatheIn => isArabic ? 'شهيق…' : 'Breathe in…';
-  String get breatheOut => isArabic ? 'زفير…' : 'Breathe out…';
-  String get swipeForNextAyah =>
-      isArabic ? 'اسحب للآية التالية' : 'Swipe for the next verse';
+  String get focusMode => _l.focusMode;
+  String get breathe => _l.breathe;
+  String get breatheIn => _l.breatheIn;
+  String get breatheOut => _l.breatheOut;
+  String get swipeForNextAyah => _l.swipeForNextAyah;
 
   // Reading journey (الختمة والإحصاءات)
-  String get myJourney => isArabic ? 'رحلتي مع القرآن' : 'My Quran Journey';
-  String get startKhatmaTitle =>
-      isArabic ? 'ابدأ ختمتك' : 'Start your khatma';
-  String get startKhatmaHint => isArabic
-      ? 'اختر المدة، وسنقسّم المصحف إلى ورد يومي ونتابع تقدمك تلقائياً.'
-      : 'Pick a duration; we split the Mushaf into a daily portion and track your progress.';
-  String daysCount(int d) => isArabic ? '${_n(d)} يوماً' : '$d days';
+  String get myJourney => _l.myJourney;
+  String get startKhatmaTitle => _l.startKhatmaTitle;
+  String get startKhatmaHint => _l.startKhatmaHint;
+  String daysCount(int d) =>
+      _l.daysCount(digits(d));
   String pagesPerDayHint(int n) =>
-      isArabic ? 'وردك اليومي: ${_n(n)} صفحة' : 'Daily portion: $n pages';
-  String get startKhatma => isArabic ? 'ابدأ الختمة' : 'Start khatma';
+      _l.pagesPerDayHint(digits(n));
+  String get startKhatma => _l.startKhatma;
   String completedKhatmas(int n) =>
-      isArabic ? 'أتممت ${_n(n)} ختمة، بارك الله فيك' : 'Khatmas completed: $n';
-  String get cancelKhatma => isArabic ? 'إلغاء الختمة' : 'Cancel khatma';
-  String get cancelKhatmaConfirm => isArabic
-      ? 'سيُحذف تقدم هذه الختمة، ويبقى سجل قراءتك وإحصاءاتك.'
-      : 'This khatma’s progress will be removed; your reading history stays.';
-  String get onTrack => isArabic ? 'ملتزم بالخطة' : 'On track';
+      _l.completedKhatmas(digits(n));
+  String get cancelKhatma => _l.cancelKhatma;
+  String get cancelKhatmaConfirm => _l.cancelKhatmaConfirm;
+  String get onTrack => _l.onTrack;
   String behindBy(int n) =>
-      isArabic ? 'متأخر ${_n(n)} صفحة' : '$n pages behind';
+      _l.behindBy(digits(n));
   String khatmaInDays(int n) =>
-      isArabic ? 'ختمة في ${_n(n)} يوماً' : 'Khatma in $n days';
+      _l.khatmaInDays(digits(n));
   String pagesOfMushaf(int n) =>
-      isArabic ? '${_n(n)} من ٦٠٤ صفحة' : '$n of 604 pages';
+      _l.pagesOfMushaf(digits(n));
   String dayOfPlan(int d, int total) =>
-      isArabic ? 'اليوم ${_n(d)} من ${_n(total)}' : 'Day $d of $total';
-  String get todayPortion => isArabic ? 'ورد اليوم' : 'Today’s portion';
+      _l.dayOfPlan(digits(d), digits(total));
+  String get todayPortion => _l.todayPortion;
   String pagesOfTarget(int a, int b) =>
-      isArabic ? '${_n(a)} / ${_n(b)} صفحة' : '$a / $b pages';
-  String get keepReading => isArabic ? 'واصل القراءة' : 'Keep reading';
+      _l.pagesOfTarget(digits(a), digits(b));
+  String get keepReading => _l.keepReading;
   String continueFromPage(int p) =>
-      isArabic ? 'أكمل من صفحة ${_n(p)}' : 'Continue from page $p';
-  String get streakDays => isArabic ? 'أيام متتالية' : 'Day streak';
-  String get totalPagesRead => isArabic ? 'صفحة مقروءة' : 'Pages read';
-  String get khatmasLabel => isArabic ? 'ختمات' : 'Khatmas';
-  String get lastSevenDays => isArabic ? 'آخر ٧ أيام' : 'Last 7 days';
+      _l.continueFromPage(digits(p));
+  String get streakDays => _l.streakDays;
+  String get totalPagesRead => _l.totalPagesRead;
+  String get khatmasLabel => _l.khatmasLabel;
+  String get lastSevenDays => _l.lastSevenDays;
 
   /// اسم مختصر ليوم الأسبوع ([DateTime.weekday]: ١ = الإثنين).
   String weekdayShort(int weekday) => isArabic
       ? const ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'][weekday - 1]
       : const ['M', 'T', 'W', 'T', 'F', 'S', 'S'][weekday - 1];
-  String get close => isArabic ? 'إغلاق' : 'Close';
-  String get clearText => isArabic ? 'مسح' : 'Clear';
-  String get decrease => isArabic ? 'إنقاص' : 'Decrease';
-  String get increase => isArabic ? 'زيادة' : 'Increase';
-  String get sajdah => isArabic ? 'سجدة تلاوة' : 'Sajdah';
+  String get close => _l.close;
+  String get clearText => _l.clearText;
+  String get decrease => _l.decrease;
+  String get increase => _l.increase;
+  String get sajdah => _l.sajdah;
 
   /// تنسيق نص عدد آيات السورة.
-  String ayahCount(int count) => isArabic ? '${_n(count)} آية' : '$count Verses';
+  String ayahCount(int count) =>
+      _l.ayahCount(digits(count));
 
   // Ayah Action Modal
-  String get addNote => isArabic ? 'ملاحظة' : 'Note';
-  String get saveBookmark => isArabic ? 'حفظ' : 'Bookmark';
-  String get removeBookmark => isArabic ? 'إزالة الحفظ' : 'Remove Bookmark';
-  String get highlight => isArabic ? 'تمييز' : 'Highlight';
-  String get removeHighlight => isArabic ? 'إزالة التمييز' : 'Remove Highlight';
-  String get copy => isArabic ? 'نسخ' : 'Copy';
-  String get share => isArabic ? 'مشاركة' : 'Share';
-  String get shareAsImage =>
-      isArabic ? 'مشاركة الآية كبطاقة' : 'Share verse as a card';
-  String get shareImage => isArabic ? 'مشاركة الصورة' : 'Share image';
-  String get cardSquare => isArabic ? 'منشور' : 'Post';
-  String get cardStory => isArabic ? 'قصة' : 'Story';
-  String get cardNight => isArabic ? 'كحلي' : 'Night';
-  String get cardPaper => isArabic ? 'ورقي' : 'Paper';
-  String get copiedToClipboard =>
-      isArabic ? 'تم نسخ الآية إلى الحافظة' : 'Ayah copied to clipboard';
+  String get addNote => _l.addNote;
+  String get saveBookmark => _l.saveBookmark;
+  String get removeBookmark => _l.removeBookmark;
+  String get highlight => _l.highlight;
+  String get removeHighlight => _l.removeHighlight;
+  String get copy => _l.copy;
+  String get share => _l.share;
+  String get shareAsImage => _l.shareAsImage;
+  String get shareImage => _l.shareImage;
+  String get cardSquare => _l.cardSquare;
+  String get cardStory => _l.cardStory;
+  String get cardNight => _l.cardNight;
+  String get cardPaper => _l.cardPaper;
+  String get copiedToClipboard => _l.copiedToClipboard;
 
   // Notes
-  String get newNote => isArabic ? 'ملاحظة جديدة' : 'New Note';
-  String get newFreeNote => isArabic ? 'ملاحظة حرة' : 'Free Note';
-  String get noteTitle => isArabic ? 'عنوان الملاحظة' : 'Note Title';
-  String get noteContent => isArabic
-      ? 'اكتب تدبرك أو ملاحظتك هنا...'
-      : 'Write your reflection or note here...';
-  String get save => isArabic ? 'حفظ' : 'Save';
-  String get delete => isArabic ? 'حذف' : 'Delete';
-  String get deleteConfirmTitle => isArabic ? 'تأكيد الحذف' : 'Confirm Delete';
-  String get deleteConfirmMessage => isArabic
-      ? 'هل أنت متأكد من رغبتك في الحذف؟ لا يمكن التراجع عن هذا الإجراء.'
-      : 'Are you sure you want to delete this item? This action cannot be undone.';
-  String get exportPdf => isArabic ? 'تصدير PDF' : 'Export PDF';
-  String get noNotesYet => isArabic ? 'لا توجد ملاحظات بعد' : 'No notes yet';
-  String get freeNoteLabel => isArabic ? 'ملاحظة حرة' : 'Free Note';
-  String get ayahNoteLabel => isArabic ? 'تدبر آية' : 'Ayah Reflection';
-  String get goToAyah => isArabic ? 'الذهاب إلى الآية' : 'Go to Ayah';
+  String get newNote => _l.newNote;
+  String get newFreeNote => _l.newFreeNote;
+  String get noteTitle => _l.noteTitle;
+  String get noteContent => _l.noteContent;
+  String get save => _l.save;
+  String get delete => _l.delete;
+  String get deleteConfirmTitle => _l.deleteConfirmTitle;
+  String get deleteConfirmMessage => _l.deleteConfirmMessage;
+  String get exportPdf => _l.exportPdf;
+  String get noNotesYet => _l.noNotesYet;
+  String get freeNoteLabel => _l.freeNoteLabel;
+  String get ayahNoteLabel => _l.ayahNoteLabel;
+  String get goToAyah => _l.goToAyah;
 
   // Bookmarks & Highlights
-  String get noBookmarksYet =>
-      isArabic ? 'لا توجد آيات محفوظة بعد' : 'No bookmarks yet';
-  String get noHighlightsYet =>
-      isArabic ? 'لا توجد آيات مميزة بعد' : 'No highlights yet';
-  String get bookmarksEmptyHint => isArabic
-      ? 'اضغط مطولاً على أي آية في المصحف واختر «حفظ» لتجدها هنا.'
-      : 'Long-press any verse in the Mushaf and choose “Save” to find it here.';
-  String get highlightsEmptyHint => isArabic
-      ? 'اضغط مطولاً على أي آية في المصحف واختر «تمييز» لتلوينها.'
-      : 'Long-press any verse in the Mushaf and choose “Highlight” to color it.';
-  String get openMushaf => isArabic ? 'فتح المصحف' : 'Open the Mushaf';
+  String get noBookmarksYet => _l.noBookmarksYet;
+  String get noHighlightsYet => _l.noHighlightsYet;
+  String get bookmarksEmptyHint => _l.bookmarksEmptyHint;
+  String get highlightsEmptyHint => _l.highlightsEmptyHint;
+  String get openMushaf => _l.openMushaf;
 
   // Search
-  String get searchGlobalPlaceholder =>
-      isArabic
-          ? 'ابحث في القرآن، الملاحظات، التدبر، والمزيد...'
-          : 'Search Quran, notes, reflections, and more...';
-  String get searchAll => isArabic ? 'الكل' : 'All';
-  String get searchBookmarksHint =>
-      isArabic ? 'ابحث في الآيات المحفوظة...' : 'Search bookmarks...';
-  String get searchHighlightsHint =>
-      isArabic ? 'ابحث في الآيات المميزة...' : 'Search highlights...';
-  String get searchRemindersHint =>
-      isArabic ? 'ابحث في التنبيهات...' : 'Search reminders...';
-  String get searchNotesHint =>
-      isArabic ? 'ابحث في الملاحظات...' : 'Search notes...';
-  String get tadbeerSectionTitle => isArabic ? 'التدبر' : 'Tadbeer';
-  String get wordMeanings => isArabic ? 'معاني الكلمات' : 'Word Meanings';
-  String get wordMeaningsScreenTitle =>
-      isArabic ? 'معاني كلمات القرآن' : 'Quran Word Meanings';
-  String get approvedSourcesTitle =>
-      isArabic ? 'المصادر المعتمدة' : 'Approved Sources';
-  String get searchInAllSections =>
-      isArabic ? 'البحث في جميع الأقسام' : 'Search in All Sections';
-  String get filterSearchTitle =>
-      isArabic ? 'تصفية نطاق البحث' : 'Filter Search Scope';
-  String get selectSearchSection => isArabic
-      ? 'اختر القسم المطلوب للبحث فيه مباشرة'
-      : 'Select a section to search directly';
-  String get noSearchResults =>
-      isArabic ? 'لا توجد نتائج مطابقة' : 'No matching results found';
+  String get searchGlobalPlaceholder => _l.searchGlobalPlaceholder;
+  String get searchAll => _l.searchAll;
+  String get searchBookmarksHint => _l.searchBookmarksHint;
+  String get searchHighlightsHint => _l.searchHighlightsHint;
+  String get searchRemindersHint => _l.searchRemindersHint;
+  String get searchNotesHint => _l.searchNotesHint;
+  String get tadbeerSectionTitle => _l.tadbeerSectionTitle;
+  String get wordMeanings => _l.wordMeanings;
+  String get wordMeaningsScreenTitle => _l.wordMeaningsScreenTitle;
+  String get approvedSourcesTitle => _l.approvedSourcesTitle;
+  String get searchInAllSections => _l.searchInAllSections;
+  String get filterSearchTitle => _l.filterSearchTitle;
+  String get selectSearchSection => _l.selectSearchSection;
+  String get noSearchResults => _l.noSearchResults;
 
   // Reminders
-  String get addReminder => isArabic ? 'إضافة تنبيه' : 'Add Reminder';
-  String get editReminder => isArabic ? 'تعديل التنبيه' : 'Edit Reminder';
-  String get reminderTitle =>
-      isArabic ? 'عنوان التنبيه (اختياري)' : 'Reminder Title (optional)';
-  String get defaultReminderTitle =>
-      isArabic ? 'ورد القرآن الكريم' : 'Daily Quran Reading';
-  String get reminderTime => isArabic ? 'وقت التنبيه' : 'Time';
-  String get repeatDaily => isArabic ? 'تكرار يومي' : 'Repeat Daily';
-  String get repeatOnce => isArabic ? 'مرة واحدة' : 'Once';
-  String get selectDays => isArabic ? 'أيام التكرار' : 'Repeat Days';
-  String get noRemindersYet =>
-      isArabic ? 'لا توجد تنبيهات قراءة مضافة' : 'No reading reminders added';
-  String get remindersEmptyHint => isArabic
-      ? 'أضف تنبيهاً يذكّرك بوِردك اليومي من زر «إضافة تنبيه» في الأسفل.'
-      : 'Add a reminder for your daily reading with the “Add reminder” button below.';
+  String get addReminder => _l.addReminder;
+  String get editReminder => _l.editReminder;
+  String get reminderTitle => _l.reminderTitle;
+  String get defaultReminderTitle => _l.defaultReminderTitle;
+  String get reminderTime => _l.reminderTime;
+  String get repeatDaily => _l.repeatDaily;
+  String get repeatOnce => _l.repeatOnce;
+  String get selectDays => _l.selectDays;
+  String get noRemindersYet => _l.noRemindersYet;
+  String get remindersEmptyHint => _l.remindersEmptyHint;
 
   // Ayah Links (روابط الآيات)
-  String get newAyahLink => isArabic ? 'إنشاء رابط آيات' : 'New Ayah Link';
-  String get addToAyahLink =>
-      isArabic ? 'إضافة إلى رابط آيات' : 'Add to Ayah Links';
-  String get networkView => isArabic ? 'شبكة' : 'Network';
-  String get orderedView => isArabic ? 'مرتب' : 'Ordered';
-  String get autoLayout => isArabic ? 'إعادة الترتيب تلقائيًا' : 'Auto Layout';
-  String get linkTitle =>
-      isArabic ? 'عنوان الرابط / الفكرة' : 'Link Title / Theme';
-  String get linkTitleHint =>
-      isArabic ? 'مثال: الصبر عند الشدة' : 'e.g., Patience in Adversity';
-  String get linkDescription => isArabic
-      ? 'الملاحظة العامة / الفكرة (اختيارية)'
-      : 'General Note / Idea (optional)';
-  String get linkDescriptionHint => isArabic
-      ? 'سجل تأملك أو الفكرة التي تجمع هذه الآيات...'
-      : 'Record your reflection connecting these verses...';
-  String get addVerse => isArabic ? 'إضافة آية' : 'Add Verse';
-  String get resetToCenter => isArabic ? 'العودة إلى الوسط' : 'Center View';
-  String get noAyahLinksYet =>
-      isArabic ? 'لا توجد روابط آيات بعد' : 'No ayah links yet';
-  String get ayahLinksSubtitle => isArabic
-      ? 'خريطة شخصية لربط الآيات واستكشاف العلاقات التدبرية'
-      : 'Personal maps connecting verses explored during Tadbeer';
+  String get newAyahLink => _l.newAyahLink;
+  String get addToAyahLink => _l.addToAyahLink;
+  String get networkView => _l.networkView;
+  String get orderedView => _l.orderedView;
+  String get autoLayout => _l.autoLayout;
+  String get linkTitle => _l.linkTitle;
+  String get linkTitleHint => _l.linkTitleHint;
+  String get linkDescription => _l.linkDescription;
+  String get linkDescriptionHint => _l.linkDescriptionHint;
+  String get addVerse => _l.addVerse;
+  String get resetToCenter => _l.resetToCenter;
+  String get noAyahLinksYet => _l.noAyahLinksYet;
+  String get ayahLinksSubtitle => _l.ayahLinksSubtitle;
 
   /// تنسيق نص عدد الآيات المربوطة في الرابط.
-  String versesCount(int count) => isArabic ? '${_n(count)} آيات' : '$count Verses';
+  String versesCount(int count) =>
+      _l.versesCount(digits(count));
 
   // Backup & Restore
-  String get exportBackup =>
-      isArabic ? 'تصدير نسخة احتياطية' : 'Export Backup File';
-  String get restoreBackup =>
-      isArabic ? 'استعادة نسخة احتياطية' : 'Restore from Backup';
-  String get restoreWarningTitle =>
-      isArabic ? 'تنبيه هام قبل الاستعادة' : 'Important Restore Notice';
-  String get restoreWarningMessage => isArabic
-      ? 'استعادة النسخة الاحتياطية ستستبدل بياناتك الحالية بالكامل ولن تدمجها. هل ترغب بالاستمرار؟'
-      : 'Restoring a backup will completely replace your current user data. It will not merge. Do you want to proceed?';
-  String get confirmRestore =>
-      isArabic ? 'استبدال واستعادة' : 'Replace & Restore';
-  String get saveToDeviceFiles =>
-      isArabic ? 'حفظ في ملفات الجهاز' : 'Save to Device Files';
-  String get shareViaApps =>
-      isArabic ? 'مشاركة عبر التطبيقات' : 'Share via Apps';
-  String get backupSavedSuccess => isArabic
-      ? 'تم حفظ النسخة الاحتياطية في الملفات بنجاح'
-      : 'Backup saved to files successfully';
-  String get restoreSuccess =>
-      isArabic ? 'تمت استعادة البيانات بنجاح' : 'Data restored successfully';
-  String get corruptBackupError => isArabic
-      ? 'الملف غير صالح أو كلمة المرور غير صحيحة. تم إلغاء الاستعادة لحماية بياناتك.'
-      : 'Invalid or corrupt backup file. Restore cancelled to protect your data.';
-  String get dataSaveFailed => isArabic
-      ? 'تعذّر حفظ بعض بياناتك على الجهاز. أعد المحاولة، وإن تكررت المشكلة فصدّر نسخة احتياطية.'
-      : 'Some of your data could not be saved on this device. Try again, and export a backup if it keeps happening.';
-  String get dataLoadFailed => isArabic
-      ? 'تعذّر قراءة بعض بياناتك المحفوظة. لم يُحذف شيء؛ صدّر نسخة احتياطية احتياطاً.'
-      : 'Some saved data could not be read. Nothing was deleted; consider exporting a backup.';
-  String get corruptItemsSkipped => isArabic
-      ? 'تم تخطي عناصر محفوظة تالفة ولم تُحذف من الجهاز.'
-      : 'Some damaged saved items were skipped (not deleted).';
+  String get exportBackup => _l.exportBackup;
+  String get restoreBackup => _l.restoreBackup;
+  String get restoreWarningTitle => _l.restoreWarningTitle;
+  String get restoreWarningMessage => _l.restoreWarningMessage;
+  String get confirmRestore => _l.confirmRestore;
+  String get saveToDeviceFiles => _l.saveToDeviceFiles;
+  String get shareViaApps => _l.shareViaApps;
+  String get backupSavedSuccess => _l.backupSavedSuccess;
+  String get restoreSuccess => _l.restoreSuccess;
+  String get corruptBackupError => _l.corruptBackupError;
+  String get dataSaveFailed => _l.dataSaveFailed;
+  String get dataLoadFailed => _l.dataLoadFailed;
+  String get corruptItemsSkipped => _l.corruptItemsSkipped;
 
-  String get enterBackupPassword => isArabic
-      ? 'كلمة مرور التشفير (بدونها يستطيع أي شخص فتح الملف)'
-      : 'Encryption password (without it, anyone can open the file)';
+  String get enterBackupPassword => _l.enterBackupPassword;
 
   // Settings
-  String get appearance => isArabic ? 'المظهر' : 'Appearance';
-  String get themeMode => isArabic ? 'السمة' : 'Theme';
-  String get light => isArabic ? 'فاتح' : 'Light';
-  String get dark => isArabic ? 'داكن' : 'Dark';
-  String get system => isArabic ? 'تلقائي (حسب النظام)' : 'System Default';
-  String get languageTitle => isArabic ? 'اللغة' : 'Language';
-  String get fontSize => isArabic ? 'حجم خط المصحف' : 'Quran Font Size';
-  String get mushafPaperTone => isArabic ? 'لون ورق المصحف' : 'Mushaf Paper';
-  String get paperClassic => isArabic ? 'كلاسيكي' : 'Classic';
-  String get paperSepia => isArabic ? 'سيبيا دافئ' : 'Warm Sepia';
-  String get aboutContent => isArabic
-      ? 'تدبير مشروع قرآني يهدف إلى تعزيز التدبّر في آيات الله، ومساعدة المسلم على التأمل في معاني القرآن الكريم، والتفكّر في هداياته، واستحضار أثر آياته في الحياة والعمل بها، لتكون علاقتنا بالقرآن قائمة على التدبّر والفهم والاهتداء، لا على التلاوة وحدها.'
-      : 'Tadbeer is a Quranic project aimed at fostering contemplation of Allah\'s verses, helping reflect on the meanings of the Holy Quran, pondering its guidance, and living by its teachings—so our relationship with the Quran is grounded in contemplation, understanding, and guidance, not recitation alone.';
+  String get appearance => _l.appearance;
+  String get themeMode => _l.themeMode;
+  String get light => _l.light;
+  String get dark => _l.dark;
+  String get system => _l.system;
+  String get languageTitle => _l.languageTitle;
+  String get fontSize => _l.fontSize;
+  String get mushafPaperTone => _l.mushafPaperTone;
+  String get paperClassic => _l.paperClassic;
+  String get paperSepia => _l.paperSepia;
+  String get aboutContent => _l.aboutContent;
 
   // Home Screen Cards & Subtitles
-  String get resumeReading =>
-      isArabic ? 'استئناف القراءة' : 'Resume Reading';
-  String get additionalTools =>
-      isArabic ? 'أدوات إضافية' : 'Additional Tools';
-  String get quranAndSunnahDuas =>
-      isArabic ? 'أدعية الكتاب والسنة' : 'Quran & Sunnah Duas';
-  String get quranDuasTitle =>
-      isArabic ? 'أدعية من القرآن' : 'Quranic Duas';
-  String get quranDuasSubtitle =>
-      isArabic ? 'أدعية الأنبياء والصالحين وخواتيم السور المأثورة في كتاب الله' : 'Duas of Prophets and the righteous in the Book of Allah';
+  String get resumeReading => _l.resumeReading;
+  String get additionalTools => _l.additionalTools;
+  String get quranAndSunnahDuas => _l.quranAndSunnahDuas;
+  String get quranDuasTitle => _l.quranDuasTitle;
+  String get quranDuasSubtitle => _l.quranDuasSubtitle;
   String duasCountBadge(dynamic count) =>
-      isArabic ? '${_n(count)} دعاء' : '$count Duas';
+      _l.duasCountBadge(digits(count));
   String adhkarCountBadge(dynamic count) =>
-      isArabic ? '${_n(count)} ذكر' : '$count Adhkar';
-  String get morningEveningAdhkarTitle =>
-      isArabic ? 'أذكار الصباح والمساء' : 'Morning & Evening Adhkar';
-  String get morningEveningAdhkarSubtitle =>
-      isArabic ? 'أذكار اليوم والليلة وحصن المسلم مع عدادات تفاعلية' : 'Daily Adhkar & fortress of the Muslim with counters';
-  String get ahlulbaytDuasTitle =>
-      isArabic ? 'أدعية مأثورة عن أهل البيت' : 'Ahlulbayt Duas';
-  String get ahlulbaytDuasSubtitle =>
-      isArabic ? 'الصحيفة السجادية ومناجاة وأدعية الأئمة الأطهار' : 'Al-Sahifa al-Sajjadiyya and supplications of Ahlulbayt';
-  String get sunnahDuasTitle =>
-      isArabic ? 'أدعية من السنة النبوية' : 'Sunnah Duas';
-  String get sunnahDuasSubtitle =>
-      isArabic ? 'أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب' : 'Authentic prophetic supplications for ease and relief';
-  String get jawamiDuasTitle =>
-      isArabic ? 'جوامع الدعاء والرجاء' : 'Comprehensive Duas';
-  String get jawamiDuasSubtitle =>
-      isArabic ? 'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية' : 'Comprehensive prayers for goodness in this life and the hereafter';
-  String get wordsOfQuran =>
-      isArabic ? 'غريب ألفاظ القرآن' : 'Quran Vocabulary';
-  String get yourThoughtsAndReflections =>
-      isArabic ? 'خواطرك وتدبراتك' : 'Thoughts & Reflections';
-  String get connectionsAndThemes =>
-      isArabic ? 'الربط والعلاقات' : 'Connections & Themes';
-  String get dailyPortion => isArabic ? 'الورد اليومي' : 'Daily Portion';
-  String get tadbeerLibrary =>
-      isArabic ? 'مكتبة المتدبر' : 'Contemplative Library';
-  String get offlineQuranAndReflection =>
-      isArabic ? 'مصحف وتدبّر بدون إنترنت' : 'Offline Quran & Contemplation';
+      _l.adhkarCountBadge(digits(count));
+  String get morningEveningAdhkarTitle => _l.morningEveningAdhkarTitle;
+  String get morningEveningAdhkarSubtitle => _l.morningEveningAdhkarSubtitle;
+  String get ahlulbaytDuasTitle => _l.ahlulbaytDuasTitle;
+  String get ahlulbaytDuasSubtitle => _l.ahlulbaytDuasSubtitle;
+  String get sunnahDuasTitle => _l.sunnahDuasTitle;
+  String get sunnahDuasSubtitle => _l.sunnahDuasSubtitle;
+  String get jawamiDuasTitle => _l.jawamiDuasTitle;
+  String get jawamiDuasSubtitle => _l.jawamiDuasSubtitle;
+  String get wordsOfQuran => _l.wordsOfQuran;
+  String get yourThoughtsAndReflections => _l.yourThoughtsAndReflections;
+  String get connectionsAndThemes => _l.connectionsAndThemes;
+  String get dailyPortion => _l.dailyPortion;
+  String get tadbeerLibrary => _l.tadbeerLibrary;
+  String get offlineQuranAndReflection => _l.offlineQuranAndReflection;
 
   // Common Quran Formats & References
   String readingPosition(String surahName, dynamic page) =>
-      isArabic ? 'سورة $surahName · صفحة ${_n(page)}' : 'Surah $surahName · Page $page';
+      _l.readingPosition(surahName, digits(page));
   String ayahReference(String surahName, dynamic ayahNumber) =>
-      isArabic ? 'سورة $surahName · الآية ${_n(ayahNumber)}' : 'Surah $surahName · Verse $ayahNumber';
+      _l.ayahReference(surahName, digits(ayahNumber));
   String surahTitle(String surahName) =>
-      isArabic ? 'سورة $surahName' : 'Surah $surahName';
+      _l.surahTitle(surahName);
   String ayahTitle(dynamic ayahNumber) =>
-      isArabic ? 'الآية ${_n(ayahNumber)}' : 'Verse $ayahNumber';
-  String pageAbbr(dynamic page) => isArabic ? 'ص ${_n(page)}' : 'p. $page';
-  String juzAbbr(dynamic juz) => isArabic ? 'ج ${_n(juz)}' : 'Juz $juz';
-  String get meccan => isArabic ? 'مكية' : 'Meccan';
-  String get medinan => isArabic ? 'مدنية' : 'Medinan';
+      _l.ayahTitle(digits(ayahNumber));
+  String pageAbbr(dynamic page) =>
+      _l.pageAbbr(digits(page));
+  String juzAbbr(dynamic juz) =>
+      _l.juzAbbr(digits(juz));
+  String get meccan => _l.meccan;
+  String get medinan => _l.medinan;
   String ayahsCount(dynamic count) =>
-      isArabic ? '${_n(count)} آية' : '$count verses';
-  String get searchSurahsHint =>
-      isArabic ? 'بحث في السور...' : 'Search surahs...';
-  String get searchWordMeaningsHint =>
-      isArabic ? 'ابحث عن كلمة قرآنية أو معناها...' : 'Search Quranic word or meaning...';
-  String get allSurahsWithCount =>
-      isArabic ? 'جميع السور (١١٤ سورة)' : 'All Surahs (114 Surahs)';
+      _l.ayahsCount(digits(count));
+  String get searchSurahsHint => _l.searchSurahsHint;
+  String get searchWordMeaningsHint => _l.searchWordMeaningsHint;
+  String get allSurahsWithCount => _l.allSurahsWithCount;
   String wordSearchResultsCount(dynamic count) =>
-      isArabic ? 'النتائج: ${_n(count)} كلمة' : 'Results: $count words';
-  String get noWordsFound =>
-      isArabic ? 'لا توجد كلمات مطابقة لبحثك' : 'No words match your search';
-  String get noWordsFoundSubtitle =>
-      isArabic ? 'جرب البحث بكلمة أخرى أو قم بإلغاء التصفية لتصفح جميع الكلمات.' : 'Try searching for another word or clear filters to browse all words.';
-  String get lexicalMeaningTitle =>
-      isArabic ? 'المعنى اللغوي المعجمي:' : 'Lexical Meaning:';
-  String get verifiedDocumentation =>
-      isArabic ? 'توثيق معتمد' : 'Verified Source';
+      _l.wordSearchResultsCount(digits(count));
+  String get noWordsFound => _l.noWordsFound;
+  String get noWordsFoundSubtitle => _l.noWordsFoundSubtitle;
+  String get lexicalMeaningTitle => _l.lexicalMeaningTitle;
+  String get verifiedDocumentation => _l.verifiedDocumentation;
   String surahAyahPageReference(String surahName, dynamic ayahNumber, dynamic page) =>
-      isArabic
-          ? 'سورة $surahName · آية ${_n(ayahNumber)} · ص ${_n(page)}'
-          : 'Surah $surahName · Verse $ayahNumber · p. $page';
+      _l.surahAyahPageReference(surahName, digits(ayahNumber), digits(page));
 
   // Actions & Common Dialogs
-  String get edit => isArabic ? 'تعديل' : 'Edit';
-  String get editNote => isArabic ? 'تعديل الملاحظة' : 'Edit Note';
-  String get tadbeerPause => isArabic ? 'وقفة تدبر' : 'Tadbeer Pause';
-  String get ayahLink => isArabic ? 'رابط آيات' : 'Ayah Link';
-  String get exportTadbeerJournal =>
-      isArabic ? 'تصدير دفتر التدبر والخواطر' : 'Export Tadbeer Journal';
-  String get continueLabel => isArabic ? 'متابعة' : 'Continue';
-  String get doNotShowAgain =>
-      isArabic ? 'لا تظهر لي هذه النافذة مرة أخرى' : 'Do not show this intro again';
-  String get curatedPathways =>
-      isArabic ? 'المسارات التدبرية المقترحة' : 'Curated Pathways';
-  String get importFromQrCode =>
-      isArabic ? 'استيراد رابط آيات عبر الرمز' : 'Import Ayah Link via QR Code';
-  String get searchAyahLinksHint =>
-      isArabic ? 'ابحث في روابط الآيات أو السور...' : 'Search ayah links or surahs...';
-  String get noAyahLinkSearchResults =>
-      isArabic ? 'لا توجد نتائج مطابقة لبحثك' : 'No matching results found';
-  String get tryAnotherAyahLinkSearch =>
-      isArabic ? 'جرّب البحث بكلمة أخرى أو اسم سورة' : 'Try searching with another word or surah name';
+  String get edit => _l.edit;
+  String get editNote => _l.editNote;
+  String get tadbeerPause => _l.tadbeerPause;
+  String get ayahLink => _l.ayahLink;
+  String get exportTadbeerJournal => _l.exportTadbeerJournal;
+  String get continueLabel => _l.continueLabel;
+  String get doNotShowAgain => _l.doNotShowAgain;
+  String get curatedPathways => _l.curatedPathways;
+  String get importFromQrCode => _l.importFromQrCode;
+  String get searchAyahLinksHint => _l.searchAyahLinksHint;
+  String get noAyahLinkSearchResults => _l.noAyahLinkSearchResults;
+  String get tryAnotherAyahLinkSearch => _l.tryAnotherAyahLinkSearch;
   String linkedAyahsCount(dynamic count) =>
-      isArabic ? '${_n(count)} آيات مرتبطة' : '$count linked verses';
-  String get importPathway =>
-      isArabic ? 'استيراد المسار' : 'Import Pathway';
-  String get editTitleAndDescription =>
-      isArabic ? 'تعديل العنوان والوصف' : 'Edit Title & Description';
-  String get deleteAyahLink =>
-      isArabic ? 'حذف الرابط' : 'Delete Link';
+      _l.linkedAyahsCount(digits(count));
+  String get importPathway => _l.importPathway;
+  String get editTitleAndDescription => _l.editTitleAndDescription;
+  String get deleteAyahLink => _l.deleteAyahLink;
 
   // Settings & Data Management
-  String get typographyAndReading =>
-      isArabic ? 'الخط والقراءة' : 'Typography & Reading';
-  String get quranFontFamily =>
-      isArabic ? 'نوع خط المصحف' : 'Quran Font Family';
+  String get typographyAndReading => _l.typographyAndReading;
+  String get quranFontFamily => _l.quranFontFamily;
   String fontSizePoints(dynamic points) =>
-      isArabic ? '${_n(points)} نقطة' : '$points pt';
-  String get resetToDefault =>
-      isArabic ? 'إعادة للوضع الافتراضي' : 'Reset to Default';
+      _l.fontSizePoints(digits(points));
+  String get resetToDefault => _l.resetToDefault;
   String resetToDefaultWithVal(dynamic val) =>
-      isArabic ? 'إعادة للوضع الافتراضي (${_n(val)})' : 'Reset to default ($val)';
-  String get applicationSection =>
-      isArabic ? 'التطبيق' : 'Application';
-  String get dataSection => isArabic ? 'البيانات' : 'Data';
-  String get dailyRemindersSubtitle =>
-      isArabic ? 'تنبيهات الورد اليومي ومواعيد القراءة' : 'Daily reading reminders & schedules';
-  String get backupSubtitle =>
-      isArabic ? 'تصدير واستعادة ملفات مشفرة بدون اتصال' : 'Offline encrypted backup & restore';
-  String get resetData =>
-      isArabic ? 'إعادة تعيين البيانات' : 'Reset User Data';
-  String get resetDataSubtitle =>
-      isArabic ? 'حذف الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية' : 'Delete notes, bookmarks, highlights and reset app settings';
-  String get confirmReset =>
-      isArabic ? 'تأكيد إعادة التعيين' : 'Confirm Reset';
-  String get resetSuccess =>
-      isArabic ? 'تمت إعادة تعيين البيانات بنجاح' : 'Data reset successfully';
-  String get resetWarningMessage => isArabic
-      ? 'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.'
-      : 'Are you sure you want to delete all notes, bookmarks, and highlights, and restore default app settings? This cannot be undone unless you have a backup.';
-  String get versionInfo =>
-      isArabic ? 'الإصدار ١.٠.٠ · مجاني وبدون إعلانات أو إنترنت' : 'Version 1.0.0 · Free, ad-free & offline';
-  String get sourcesAndCredits =>
-      isArabic ? 'المصادر والتوثيق المعتمد:' : 'Sources & Documentation:';
+      _l.resetToDefaultWithVal(digits(val));
+  String get applicationSection => _l.applicationSection;
+  String get dataSection => _l.dataSection;
+  String get dailyRemindersSubtitle => _l.dailyRemindersSubtitle;
+  String get backupSubtitle => _l.backupSubtitle;
+  String get resetData => _l.resetData;
+  String get resetDataSubtitle => _l.resetDataSubtitle;
+  String get confirmReset => _l.confirmReset;
+  String get resetSuccess => _l.resetSuccess;
+  String get resetWarningMessage => _l.resetWarningMessage;
+  String get versionInfo => _l.versionInfo;
+  String get sourcesAndCredits => _l.sourcesAndCredits;
   /// تفاصيل المصادر وتراخيص المحتوى المعتمد في التطبيق.
   String get sourcesAndCreditsDetails => isArabic
       ? '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n'
@@ -666,284 +518,188 @@ class AppStrings {
         '• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n'
         '• Application License: 100% free and open-source project licensed under the MIT License.\n'
         '• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
-  String get openSourceLicenses =>
-      isArabic ? 'تراخيص المصادر المفتوحة' : 'Open Source Licenses';
+  String get openSourceLicenses => _l.openSourceLicenses;
   /// زر استعراض ميثاق وسياسة الخصوصية والأمان.
-  String get privacyPolicy =>
-      isArabic ? 'سياسة الخصوصية' : 'Privacy Policy';
+  String get privacyPolicy => _l.privacyPolicy;
   /// عنوان نافذة ميثاق الخصوصية والأمان.
-  String get privacyPolicyTitle =>
-      isArabic ? 'ميثاق الخصوصية والأمان' : 'Privacy & Security Charter';
+  String get privacyPolicyTitle => _l.privacyPolicyTitle;
   /// وصف موجز للخصوصية والأمان.
-  String get privacyPolicySubtitle => isArabic
-      ? 'التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)'
-      : 'Uncompromising privacy guarantee with zero servers or trackers (100% Offline)';
+  String get privacyPolicySubtitle => _l.privacyPolicySubtitle;
 
   // Reminders Configuration
-  String get alertType => isArabic ? 'طريقة التنبيه:' : 'Alert Type:';
-  String get notificationAlert => isArabic ? 'إشعار' : 'Notification';
-  String get notificationSubtitle =>
-      isArabic ? 'إشعار عادي في الشريط' : 'Standard status bar notification';
-  String get alarmAlert => isArabic ? 'منبه' : 'Alarm';
-  String get alarmSubtitle =>
-      isArabic ? 'رنين مستمر كالمنبه' : 'Continuous ring like an alarm';
-  String get repeatMode => isArabic ? 'نوع التكرار:' : 'Repeat Mode:';
-  String get daySat => isArabic ? 'سبت' : 'Sat';
-  String get daySun => isArabic ? 'أحد' : 'Sun';
-  String get dayMon => isArabic ? 'إثنين' : 'Mon';
-  String get dayTue => isArabic ? 'ثلاثاء' : 'Tue';
-  String get dayWed => isArabic ? 'أربعاء' : 'Wed';
-  String get dayThu => isArabic ? 'خميس' : 'Thu';
-  String get dayFri => isArabic ? 'جمعة' : 'Fri';
-  String get testAlertTooltip =>
-      isArabic ? 'تجربة الإشعار أو المنبه الآن' : 'Test notification or alarm now';
-  String get testNotificationNow =>
-      isArabic ? 'تجربة إشعار الآن' : 'Test notification now';
-  String get testAlarmNow =>
-      isArabic ? 'تجربة منبه الآن' : 'Test alarm now';
-  String get testAlarmSentSuccess =>
-      isArabic ? 'تم إطلاق منبه تجريبي الآن — تفقد الإشعارات لإيقافه' : 'Test alarm triggered — check notifications to stop';
-  String get testNotificationSentSuccess =>
-      isArabic ? 'تم إرسال إشعار تجريبي الآن — تفقد شريط الإشعارات' : 'Test notification sent — check status bar';
-  String get testAlertPermissionError =>
-      isArabic ? 'تعذر إرسال التنبيه، يرجى التأكد من تفعيل أذونات الإشعارات في إعدادات الجهاز' : 'Could not trigger alert. Please check notification permissions in device settings';
+  String get alertType => _l.alertType;
+  String get notificationAlert => _l.notificationAlert;
+  String get notificationSubtitle => _l.notificationSubtitle;
+  String get alarmAlert => _l.alarmAlert;
+  String get alarmSubtitle => _l.alarmSubtitle;
+  String get repeatMode => _l.repeatMode;
+  String get daySat => _l.daySat;
+  String get daySun => _l.daySun;
+  String get dayMon => _l.dayMon;
+  String get dayTue => _l.dayTue;
+  String get dayWed => _l.dayWed;
+  String get dayThu => _l.dayThu;
+  String get dayFri => _l.dayFri;
+  String get testAlertTooltip => _l.testAlertTooltip;
+  String get testNotificationNow => _l.testNotificationNow;
+  String get testAlarmNow => _l.testAlarmNow;
+  String get testAlarmSentSuccess => _l.testAlarmSentSuccess;
+  String get testNotificationSentSuccess => _l.testNotificationSentSuccess;
+  String get testAlertPermissionError => _l.testAlertPermissionError;
   String reminderScheduledSuccess(String mode) =>
-      isArabic ? 'تم حفظ وجدولة التنبيه ($mode) بنجاح' : 'Reminder scheduled successfully ($mode)';
-  String get specificDays => isArabic ? 'أيام محددة' : 'Specific days';
+      _l.reminderScheduledSuccess(mode);
+  String get specificDays => _l.specificDays;
 
   // Backup Configuration
-  String get exportBackupSubtitle => isArabic
-      ? 'اختر البيانات التي ترغب بتضمينها في النسخة المشفرة (.quranbackup):'
-      : 'Select data to include in the encrypted backup (.quranbackup):';
-  String get restoreBackupSubtitle => isArabic
-      ? 'استعادة البيانات من ملف .quranbackup محفوظ سابقًا. تُستبدل البيانات الحالية بالكامل بعد التحقق من سلامة التشفير وصحة الملف.'
-      : 'Restore data from a previously saved .quranbackup file. Current data will be completely replaced after verifying file integrity.';
-  String get restoreFailed =>
-      isArabic ? 'فشلت الاستعادة' : 'Restore Failed';
-  String get selectBackupLocation =>
-      isArabic ? 'اختر موقع حفظ النسخة الاحتياطية' : 'Select backup destination';
-  String get backupCreateFailed =>
-      isArabic ? 'فشل إنشاء النسخة الاحتياطية' : 'Failed to create backup';
+  String get exportBackupSubtitle => _l.exportBackupSubtitle;
+  String get restoreBackupSubtitle => _l.restoreBackupSubtitle;
+  String get restoreFailed => _l.restoreFailed;
+  String get selectBackupLocation => _l.selectBackupLocation;
+  String get backupCreateFailed => _l.backupCreateFailed;
   String errorSavingFile(dynamic err) =>
-      isArabic ? 'خطأ أثناء حفظ الملف: $err' : 'Error saving file: $err';
+      _l.errorSavingFile('$err');
 
   // Supplications & Adhkar
-  String get viewAyah => isArabic ? 'عرض الآية' : 'View Ayah';
-  String get duaCopiedSuccess =>
-      isArabic ? 'تم نسخ نص الدعاء بنجاح' : 'Supplication text copied successfully';
-  String get searchDuasHint => isArabic
-      ? 'ابحث في أدعية القرآن الكريم بالكلمة أو السورة...'
-      : 'Search Quranic supplications by word or Surah...';
-  String get noDuasFound =>
-      isArabic ? 'لا توجد أدعية مطابقة لبحثك' : 'No supplications match your search';
-  String get allDuasFilter => isArabic ? 'الكل' : 'All';
-  String get morningAdhkar => isArabic ? 'أذكار الصباح' : 'Morning Adhkar';
-  String get eveningAdhkar => isArabic ? 'أذكار المساء' : 'Evening Adhkar';
-  String get resetCounters =>
-      isArabic ? 'إعادة ضبط العدادات' : 'Reset Counters';
-  String get adhkarCountersResetSuccess =>
-      isArabic ? 'تمت إعادة ضبط عدادات الأذكار' : 'Adhkar counters have been reset';
-  String get dhikrCopiedSuccess =>
-      isArabic ? 'تم نسخ نص الذكر الشريف بنجاح' : 'Dhikr copied successfully';
+  String get viewAyah => _l.viewAyah;
+  String get duaCopiedSuccess => _l.duaCopiedSuccess;
+  String get searchDuasHint => _l.searchDuasHint;
+  String get noDuasFound => _l.noDuasFound;
+  String get allDuasFilter => _l.allDuasFilter;
+  String get morningAdhkar => _l.morningAdhkar;
+  String get eveningAdhkar => _l.eveningAdhkar;
+  String get resetCounters => _l.resetCounters;
+  String get adhkarCountersResetSuccess => _l.adhkarCountersResetSuccess;
+  String get dhikrCopiedSuccess => _l.dhikrCopiedSuccess;
   String dhikrIndex(dynamic index) =>
-      isArabic ? 'ذكر ${_n(index)}' : 'Dhikr $index';
-  String get copyDhikr => isArabic ? 'نسخ نص الذكر' : 'Copy Dhikr';
-  String get completed => isArabic ? 'اكتمل' : 'Completed';
+      _l.dhikrIndex(digits(index));
+  String get copyDhikr => _l.copyDhikr;
+  String get completed => _l.completed;
   String remainingCount(dynamic count) =>
-      isArabic ? 'باقٍ ${_n(count)}' : '$count remaining';
-  String get once => isArabic ? 'مرة واحدة' : 'Once';
+      _l.remainingCount(digits(count));
+  String get once => _l.once;
 
   // Ahlulbayt & Hadith Duas
-  String get searchAhlulbaytHint => isArabic
-      ? 'ابحث في أدعية أهل البيت والصحيفة السجادية...'
-      : 'Search Ahlulbayt supplications & Al-Sahifa...';
+  String get searchAhlulbaytHint => _l.searchAhlulbaytHint;
   String ahlulbaytDuasCountBadge(dynamic count) =>
-      isArabic ? '${_n(count)} دعاء مأثور' : '$count supplications';
-  String get ahlulbaytDuasScreenTitle =>
-      isArabic ? 'أدعية أهل البيت عليهم السلام' : 'Supplications of Ahlulbayt';
-  String get copyFullDua =>
-      isArabic ? 'نسخ الدعاء كاملاً' : 'Copy full supplication';
-  String get fullDuaCopiedSuccess => isArabic
-      ? 'تم نسخ نص الدعاء كاملاً إلى الحافظة'
-      : 'Full supplication text copied to clipboard';
-  String get decreaseFontSize =>
-      isArabic ? 'تصغير الخط' : 'Decrease font size';
-  String get increaseFontSize =>
-      isArabic ? 'تكبير الخط' : 'Increase font size';
-  String get fullAuthenticText =>
-      isArabic ? 'نص كامل ومأثور' : 'Full Authentic Text';
+      _l.ahlulbaytDuasCountBadge(digits(count));
+  String get ahlulbaytDuasScreenTitle => _l.ahlulbaytDuasScreenTitle;
+  String get copyFullDua => _l.copyFullDua;
+  String get fullDuaCopiedSuccess => _l.fullDuaCopiedSuccess;
+  String get decreaseFontSize => _l.decreaseFontSize;
+  String get increaseFontSize => _l.increaseFontSize;
+  String get fullAuthenticText => _l.fullAuthenticText;
   String searchGeneralDuasHint(String title) =>
-      isArabic ? 'ابحث في $title...' : 'Search in $title...';
+      _l.searchGeneralDuasHint(title);
   String generalDuasCountBadge(dynamic count) =>
-      isArabic ? '${_n(count)} دعاء مبارك' : '$count supplications';
+      _l.generalDuasCountBadge(digits(count));
   String duaIndex(dynamic index) =>
-      isArabic ? 'دعاء ${_n(index)}' : 'Dua $index';
-  String get copyDuaTooltip =>
-      isArabic ? 'نسخ نص الدعاء' : 'Copy supplication text';
+      _l.duaIndex(digits(index));
+  String get copyDuaTooltip => _l.copyDuaTooltip;
 
   // Books & Pamphlets Reader
-  String get tableOfContents =>
-      isArabic ? 'فهرس المباحث' : 'Table of Contents';
+  String get tableOfContents => _l.tableOfContents;
   String bookIndexPrefix(String title) =>
-      isArabic ? 'فهرس: $title' : 'Index: $title';
+      _l.bookIndexPrefix(title);
   String pageOfTotal(dynamic page, dynamic total) =>
-      isArabic ? 'صفحة ${_n(page)} من ${_n(total)}' : 'Page $page of $total';
+      _l.pageOfTotal(digits(page), digits(total));
   String sectionOfTotal(dynamic section, dynamic total) =>
-      isArabic ? 'المبحث ${_n(section)} من ${_n(total)}' : 'Section $section of $total';
-  String get previousSection =>
-      isArabic ? 'المبحث السابق' : 'Previous Section';
-  String get nextSection =>
-      isArabic ? 'المبحث التالي' : 'Next Section';
-  String get previousDua =>
-      isArabic ? 'الدعاء السابق' : 'Previous Dua';
-  String get nextDua =>
-      isArabic ? 'الدعاء التالي' : 'Next Dua';
-  String get shareFile =>
-      isArabic ? 'مشاركة الملف' : 'Share File';
-  String get copyContent =>
-      isArabic ? 'نسخ المحتوى' : 'Copy Content';
-  String get preparingDocument => isArabic
-      ? 'جاري تجهيز وعرض الملزمة...'
-      : 'Preparing and loading document...';
-  String get retry => isArabic ? 'إعادة المحاولة' : 'Retry';
-  String get openAndReadPdf =>
-      isArabic ? 'فتح ومطالعة ملف PDF' : 'Open & Read PDF';
-  String get noTextContentAvailable => isArabic
-      ? 'لا يتوفر محتوى نصي لهذه الملزمة حالياً.'
-      : 'No text content available for this publication currently.';
-  String searchSectionHint(String name) => isArabic
-      ? 'ابحث في محتويات وعناوين $name...'
-      : 'Search contents and titles of $name...';
-  String get verifiedPamphletPdf =>
-      isArabic ? 'ملزمة موثقة • PDF' : 'Verified Booklet • PDF';
+      _l.sectionOfTotal(digits(section), digits(total));
+  String get previousSection => _l.previousSection;
+  String get nextSection => _l.nextSection;
+  String get previousDua => _l.previousDua;
+  String get nextDua => _l.nextDua;
+  String get shareFile => _l.shareFile;
+  String get copyContent => _l.copyContent;
+  String get preparingDocument => _l.preparingDocument;
+  String get retry => _l.retry;
+  String get openAndReadPdf => _l.openAndReadPdf;
+  String get noTextContentAvailable => _l.noTextContentAvailable;
+  String searchSectionHint(String name) =>
+      _l.searchSectionHint(name);
+  String get verifiedPamphletPdf => _l.verifiedPamphletPdf;
   String fullSectionsCount(dynamic count) =>
-      isArabic ? '${_n(count)} مباحث كاملة' : '$count Full Sections';
-  String get directTextReading =>
-      isArabic ? 'قراءة نصية مباشرة' : 'Direct Text Reading';
-  String get textCopied =>
-      isArabic ? 'تم نسخ النص إلى الحافظة بنجاح.' : 'Text copied to clipboard successfully.';
-  String get fileNotFound =>
-      isArabic ? 'الملف غير موجود على الجهاز.' : 'File not found on device.';
-  String fileShareError(dynamic error) => isArabic
-      ? 'تعذر مشاركة أو فتح الملف: $error'
-      : 'Could not share or open file: $error';
-  String pdfReadError(dynamic error) => isArabic
-      ? 'تعذر قراءة ملف الـ PDF: $error'
-      : 'Could not read PDF file: $error';
-  String fileContentReadError(dynamic error) => isArabic
-      ? 'تعذر قراءة محتوى الملف: $error'
-      : 'Could not read file content: $error';
-  String get noTextContent =>
-      isArabic ? 'لا يوجد محتوى نصي.' : 'No text content available.';
-  String get textFile => isArabic ? 'ملف نصي' : 'Text File';
+      _l.fullSectionsCount(digits(count));
+  String get directTextReading => _l.directTextReading;
+  String get textCopied => _l.textCopied;
+  String get fileNotFound => _l.fileNotFound;
+  String fileShareError(dynamic error) =>
+      _l.fileShareError('$error');
+  String pdfReadError(dynamic error) =>
+      _l.pdfReadError('$error');
+  String fileContentReadError(dynamic error) =>
+      _l.fileContentReadError('$error');
+  String get noTextContent => _l.noTextContent;
+  String get textFile => _l.textFile;
 
   // Ayah Links Views
-  String get openInQuran =>
-      isArabic ? 'فتح في المصحف' : 'Open in Quran';
-  String get editVerseNote =>
-      isArabic ? 'تعديل الملاحظة' : 'Edit Note';
-  String get removeVerseFromLink =>
-      isArabic ? 'إزالة من الرابط' : 'Remove from Link';
-  String get removeAyahFromLinkTitle =>
-      isArabic ? 'إزالة الآية من الرابط' : 'Remove Ayah from Link';
-  String removeAyahFromLinkConfirm(dynamic ayah, dynamic surah) => isArabic
-      ? 'هل تريد إزالة الآية ${_n(ayah)} من سورة ${_n(surah)} من هذا الرابط؟'
-      : 'Do you want to remove Ayah $ayah of Surah $surah from this link?';
-  String get reflectionNote =>
-      isArabic ? 'ملاحظة التدبر' : 'Reflection Note';
-  String get reflectionNoteColon =>
-      isArabic ? 'ملاحظة التدبر:' : 'Reflection note:';
-  String get ayahReflectionNoteTitle =>
-      isArabic ? 'ملاحظة التدبر على الآية' : 'Ayah Reflection Note';
-  String get ayahReflectionNoteHint => isArabic
-      ? 'اكتب تدبرك أو الرابط الذي لاحظته...'
-      : 'Write your reflection or the connection you noted...';
-  String get noAyahsAddedToLink => isArabic
-      ? 'لم تتم إضافة أي آيات لهذا الرابط بعد'
-      : 'No verses have been added to this link yet';
-  String get addAyahsToBuildMap => isArabic
-      ? 'أضف الآيات التي لاحظت ارتباطها لبناء خريطتك التدبرية'
-      : 'Add connected verses to build your reflection map';
-  String get addAyah => isArabic ? 'إضافة آية' : 'Add Verse';
-  String get previous => isArabic ? 'السابق' : 'Previous';
-  String get next => isArabic ? 'التالي' : 'Next';
-  String get allCategories => isArabic ? 'الكل' : 'All';
+  String get openInQuran => _l.openInQuran;
+  String get editVerseNote => _l.editVerseNote;
+  String get removeVerseFromLink => _l.removeVerseFromLink;
+  String get removeAyahFromLinkTitle => _l.removeAyahFromLinkTitle;
+  String removeAyahFromLinkConfirm(dynamic ayah, dynamic surah) =>
+      _l.removeAyahFromLinkConfirm(digits(ayah), digits(surah));
+  String get reflectionNote => _l.reflectionNote;
+  String get reflectionNoteColon => _l.reflectionNoteColon;
+  String get ayahReflectionNoteTitle => _l.ayahReflectionNoteTitle;
+  String get ayahReflectionNoteHint => _l.ayahReflectionNoteHint;
+  String get noAyahsAddedToLink => _l.noAyahsAddedToLink;
+  String get addAyahsToBuildMap => _l.addAyahsToBuildMap;
+  String get addAyah => _l.addAyah;
+  String get previous => _l.previous;
+  String get next => _l.next;
+  String get allCategories => _l.allCategories;
 
   // Tasbeeh & Istighfar
-  String get istighfar => isArabic ? 'الاستغفار' : 'Istighfar';
-  String get tasbeeh => isArabic ? 'التسبيح' : 'Tasbeeh';
-  String get browseAllFormulas =>
-      isArabic ? 'استعراض كل الصيغ' : 'Browse All Formulas';
-  String get resetCycleCounter =>
-      isArabic ? 'تصفير عداد الدورة' : 'Reset Cycle Counter';
-  String get resetCycleCounterTitle =>
-      isArabic ? 'تصفير عداد الدورة؟' : 'Reset cycle counter?';
-  String get resetCycleCounterConfirm => isArabic
-      ? 'سيتم إعادة عداد الدورة الحالية إلى الصفر مع الحفاظ التام على مجموعك الإجمالي المحفوظ.'
-      : 'The current cycle count will be reset to zero while preserving your total saved count.';
-  String get resetCycleAction =>
-      isArabic ? 'تصفير الدورة' : 'Reset Cycle';
-  String get tapAnywhereToCount =>
-      isArabic ? 'انقر في أي مكان للعدّ' : 'Tap anywhere to count';
+  String get istighfar => _l.istighfar;
+  String get tasbeeh => _l.tasbeeh;
+  String get browseAllFormulas => _l.browseAllFormulas;
+  String get resetCycleCounter => _l.resetCycleCounter;
+  String get resetCycleCounterTitle => _l.resetCycleCounterTitle;
+  String get resetCycleCounterConfirm => _l.resetCycleCounterConfirm;
+  String get resetCycleAction => _l.resetCycleAction;
+  String get tapAnywhereToCount => _l.tapAnywhereToCount;
   String targetCount(dynamic target) =>
-      isArabic ? 'الهدف: ${_n(target)}' : 'Target: $target';
-  String get freeCount => isArabic ? 'عدّ حر' : 'Free count';
-  String get countSettings => isArabic ? 'ضبط العدّ' : 'Count settings';
-  String get freeCountOpen =>
-      isArabic ? 'عدّ حر (مفتوح)' : 'Free count (open)';
+      _l.targetCount(digits(target));
+  String get freeCount => _l.freeCount;
+  String get countSettings => _l.countSettings;
+  String get freeCountOpen => _l.freeCountOpen;
   String countTimes(dynamic count) =>
-      isArabic ? '${_n(count)} مرة' : '$count times';
-  String get autoAdvanceUponCompletion => isArabic
-      ? 'التبديل التلقائي عند اكتمال الورد'
-      : 'Auto-advance upon completion';
+      _l.countTimes(digits(count));
+  String get autoAdvanceUponCompletion => _l.autoAdvanceUponCompletion;
   String get todayCount =>
       isArabic ? 'استغفار وتسبيح اليوم' : "Today's Count";
-  String get lifetimeTotalCount =>
-      isArabic ? 'المجموع الكلي المحفوظ' : 'Total Lifetime Count';
+  String get lifetimeTotalCount => _l.lifetimeTotalCount;
   String formulaXOfY(dynamic current, dynamic total) =>
-      isArabic ? 'صيغة ${_n(current)} من ${_n(total)}' : 'Formula $current of $total';
+      _l.formulaXOfY(digits(current), digits(total));
   String allFormulasCount(dynamic total) =>
-      isArabic ? 'كل الصيغ (${_n(total)})' : 'All formulas ($total)';
-  String get copyDhikrTooltip =>
-      isArabic ? 'نسخ نص الذكر' : 'Copy dhikr';
-  String get dhikrCopied => isArabic
-      ? 'تم نسخ نص الذكر إلى الحافظة بنجاح.'
-      : 'Dhikr copied to clipboard successfully.';
-  String targetReachedAuto(dynamic target) => isArabic
-      ? 'ما شاء الله! أتممت الورد (${_n(target)}). تم الانتقال تلقائياً إلى الذكر التالي.'
-      : 'MashaAllah! Target completed ($target). Auto-advanced to next dhikr.';
-  String targetReached(dynamic target) => isArabic
-      ? 'ما شاء الله! أتممت الورد المستهدف (${_n(target)}) بنجاح.'
-      : 'MashaAllah! Target ($target) completed successfully.';
-  String get tasbeehAndIstighfarFormulas =>
-      isArabic ? 'صيغ الاستغفار والتسبيح' : 'Tasbeeh & Istighfar Formulas';
-  String get searchDhikrHint =>
-      isArabic ? 'ابحث في نصوص الأذكار...' : 'Search in dhikr texts...';
-  String get noMatchingFormulas =>
-      isArabic ? 'لا توجد صيغ مطابقة للبحث' : 'No matching formulas found';
-  String get swipeOrTapToChange =>
-      isArabic ? 'اسحب أفقياً أو انقر للتبديل' : 'Swipe horizontally or tap to cycle';
-  String get nextDhikr => isArabic ? 'الذكر التالي' : 'Next Dhikr';
-  String get previousDhikr => isArabic ? 'الذكر السابق' : 'Previous Dhikr';
+      _l.allFormulasCount(digits(total));
+  String get copyDhikrTooltip => _l.copyDhikrTooltip;
+  String get dhikrCopied => _l.dhikrCopied;
+  String targetReachedAuto(dynamic target) =>
+      _l.targetReachedAuto(digits(target));
+  String targetReached(dynamic target) =>
+      _l.targetReached(digits(target));
+  String get tasbeehAndIstighfarFormulas => _l.tasbeehAndIstighfarFormulas;
+  String get searchDhikrHint => _l.searchDhikrHint;
+  String get noMatchingFormulas => _l.noMatchingFormulas;
+  String get swipeOrTapToChange => _l.swipeOrTapToChange;
+  String get nextDhikr => _l.nextDhikr;
+  String get previousDhikr => _l.previousDhikr;
   /// زر تفعيل وضع العد التلقائي للسبحة.
-  String get autoCount => isArabic ? 'عدّ تلقائي' : 'Auto Count';
+  String get autoCount => _l.autoCount;
   /// زر إيقاف العد التلقائي المؤقت للسبحة.
-  String get stopAutoCount => isArabic ? 'إيقاف' : 'Pause';
+  String get stopAutoCount => _l.stopAutoCount;
   /// عرض مدة الإيقاع الزمني المحسوب لكل عَدّة بالثواني.
   String smartPaceSeconds(dynamic seconds) =>
-      isArabic ? 'إيقاع ${_n(seconds)} ث' : 'Pace ${seconds}s';
+      _l.smartPaceSeconds(digits(seconds));
   /// تلميح تسريع وتيرة العد التلقائي.
-  String get decreasePace => isArabic ? 'تسريع الوتيرة' : 'Faster pace';
+  String get decreasePace => _l.decreasePace;
   /// تلميح إبطاء وتيرة العد التلقائي وتدبر الذكر.
-  String get increasePace => isArabic ? 'إبطاء الوتيرة' : 'Slower pace';
+  String get increasePace => _l.increasePace;
 
   // Books
-  String get booksSectionEmpty => isArabic
-      ? 'قسم الكتب والملازم فارغ حالياً'
-      : 'Books & booklets section is currently empty';
-  String get booksSectionEmptyDescription => isArabic
-      ? 'لم تتم إضافة أي أقسام أو كتب في ملفات التطبيق حتى الآن.'
-      : 'No sections or books have been added yet.';
+  String get booksSectionEmpty => _l.booksSectionEmpty;
+  String get booksSectionEmptyDescription => _l.booksSectionEmptyDescription;
 }
 
 /// عنصر وراثة لتوفير إعدادات اللغة والنصوص المترجمة لجميع عناصر شجرة الواجهة.

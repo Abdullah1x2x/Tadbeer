@@ -6,6 +6,7 @@ import 'main_shell.dart';
 import '../features/tadbeer/tadbeer_intro_screen.dart';
 import 'localization.dart';
 import 'theme.dart';
+import '../l10n/app_localizations.dart';
 
 /// مفتاح التنقل العام للتطبيق لفتح الشاشات عند النقر على الإشعارات أو المنبهات.
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
@@ -111,6 +112,10 @@ class _TadbeerAppState extends State<TadbeerApp> {
             darkTheme: AppTheme.darkTheme,
             themeMode: settings.themeMode,
             locale: Locale(_currentLanguage.code),
+            // Arabic and English for the app strings and for Material's own
+            // widgets (time picker, dialogs, buttons).
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
               return Directionality(
                 textDirection: _currentLanguage.direction,
