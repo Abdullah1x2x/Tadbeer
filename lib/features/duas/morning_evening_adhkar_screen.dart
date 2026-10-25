@@ -7,6 +7,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'adhkar_reminders.dart';
 import 'adhkar_repository.dart';
 import '../continue/last_activity.dart';
+import '../../core/storage/user_data_store.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// شاشة أذكار الصباح والمساء المأثورة بتصميم هادئ ومريح مع عداد تفاعلي لكل ذكر.
@@ -66,8 +67,27 @@ class _MorningEveningAdhkarScreenState
       });
       if (currentDone + 1 == item.repeatCount) {
         HapticFeedback.mediumImpact();
+        _onItemCompleted();
       }
     }
+  }
+
+  /// Finishing the whole set counts the day toward the reading streak.
+  void _onItemCompleted() {
+    final items = AdhkarRepository.instance.getAdhkar(_currentCategory);
+    if (items.any((i) => _getRemainingCount(i) > 0)) return;
+    HapticFeedback.heavyImpact();
+    UserDataStore.instance.markActiveDay();
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            context.l10n.adhkarSetCompleted,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
   }
 
   void _resetAllCounts() {

@@ -176,6 +176,7 @@ class AppStrings {
   String get portionReminderSet => _l.portionReminderSet;
   String portionLeftTitle(int pages) => _l.portionLeftTitle(digits(pages));
   String get portionLeftBody => _l.portionLeftBody;
+  String get adhkarSetCompleted => _l.adhkarSetCompleted;
 
   String get reflectedToday => _l.reflectedToday;
 

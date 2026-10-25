@@ -1527,4 +1527,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get portionLeftBody => 'Continue your khatma where you left off';
+
+  @override
+  String get adhkarSetCompleted =>
+      'Adhkar complete — today counts toward your streak';
 }

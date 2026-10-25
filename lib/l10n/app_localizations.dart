@@ -2765,6 +2765,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أكمل ختمتك من حيث توقفت'**
   String get portionLeftBody;
+
+  /// No description provided for @adhkarSetCompleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'أتممت الأذكار، واحتُسب يومك في رحلتك'**
+  String get adhkarSetCompleted;
 }
 
 class _AppLocalizationsDelegate
