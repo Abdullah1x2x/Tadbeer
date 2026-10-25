@@ -13,6 +13,7 @@ import '../reminders/reminder_model.dart';
 import 'monthly_report.dart';
 import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
+import 'weekly_goals.dart';
 
 /// شاشة «رحلتي مع القرآن»: خطة الختمة، ورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
@@ -87,6 +88,8 @@ class JourneyScreen extends StatelessWidget {
                     ),
                   _TodayPortionCard(plan: plan, journey: journey, now: now),
                 ],
+                const SizedBox(height: 12),
+                WeeklyGoalsCard(now: now),
                 const SizedBox(height: 12),
                 _StatsRow(journey: journey, now: now),
                 const SizedBox(height: 12),

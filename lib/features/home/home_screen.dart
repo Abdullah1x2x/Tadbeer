@@ -9,6 +9,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/ayah_links_screen.dart';
 import '../books/books_screen.dart';
+import '../continue/continue_card.dart';
 import '../daily/ayah_of_day_card.dart';
 import '../duas/duas_screen.dart';
 import '../journey/journey_summary_card.dart';
@@ -147,6 +148,10 @@ class HomeScreen extends StatelessWidget {
 
                         // رحلة القراءة: الأيام المتتالية وورد اليوم
                         const JourneySummaryCard(),
+                        SizedBox(height: spaceHeroToCore),
+
+                        // آخر أذكار وكتاب وحفظ ومسار (يختفي إن لم يوجد)
+                        const ContinueCard(),
                         SizedBox(height: spaceHeroToCore),
 
                         // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)

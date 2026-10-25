@@ -8,6 +8,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_repository.dart';
 import 'memorization_model.dart';
+import '../continue/last_activity.dart';
 
 /// شاشة الحفظ: الإحصاءات، ومراجعة اليوم، واختيار سورة للحفظ.
 class MemorizationScreen extends StatelessWidget {
@@ -111,9 +112,17 @@ class MemorizationScreen extends StatelessWidget {
                       return Card(
                         margin: const EdgeInsets.only(bottom: 8),
                         child: ListTile(
-                          onTap: () => _startSession(context, [
-                            for (var a = 1; a <= surah.ayahCount; a++) (s, a),
-                          ]),
+                          onTap: () {
+                            LastActivityStore.record(
+                              ActivityKind.hifz,
+                              ref: '$s',
+                              title: surah.name,
+                            );
+                            _startSession(context, [
+                              for (var a = 1; a <= surah.ayahCount; a++)
+                                (s, a),
+                            ]);
+                          },
                           leading: CircleAvatar(
                             backgroundColor: gold.withValues(alpha: 0.14),
                             child: Text(

@@ -6,6 +6,7 @@ import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'adhkar_reminders.dart';
 import 'adhkar_repository.dart';
+import '../continue/last_activity.dart';
 
 /// شاشة أذكار الصباح والمساء المأثورة بتصميم هادئ ومريح مع عداد تفاعلي لكل ذكر.
 class MorningEveningAdhkarScreen extends StatefulWidget {
@@ -31,13 +32,21 @@ class _MorningEveningAdhkarScreenState
   void initState() {
     super.initState();
     _currentCategory = widget.initialCategory;
+    _recordActivity();
   }
+
+  void _recordActivity() => LastActivityStore.record(
+    ActivityKind.adhkar,
+    ref: _currentCategory.name,
+    title: _currentCategory.name,
+  );
 
   void _switchCategory(AdhkarCategory cat) {
     if (_currentCategory == cat) return;
     HapticFeedback.selectionClick();
     setState(() {
       _currentCategory = cat;
+      _recordActivity();
     });
   }
 

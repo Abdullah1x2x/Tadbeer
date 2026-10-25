@@ -263,6 +263,16 @@ class AppStrings {
       ? 'للانضمام: افتح تدبير ← المزيد ← ختمة جماعية، والصق هذا الرمز:'
       : 'To join: open Tadbeer → More → Group khatma and paste this code:';
 
+  String get continueWhereYouLeft =>
+      isArabic ? 'أكمل من حيث توقفت' : 'Continue where you left off';
+  String get adhkarKind => isArabic ? 'الأذكار' : 'Adhkar';
+  String chapterN(int n) => isArabic ? 'الفصل ${_n(n)}' : 'Chapter $n';
+
+  String get weeklyGoals => isArabic ? 'أهداف الأسبوع' : 'Weekly goals';
+  String get editGoals => isArabic ? 'تعديل الأهداف' : 'Edit goals';
+  String get pagesGoal => isArabic ? 'صفحات' : 'Pages';
+  String get reflectionsGoal => isArabic ? 'وقفات تدبر' : 'Reflections';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';
