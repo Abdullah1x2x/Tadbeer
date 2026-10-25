@@ -107,9 +107,12 @@ class ContinueCard extends StatelessWidget {
         return _Entry(
           icon: AppIcons.bookOpenTextFill,
           title: book.title,
-          subtitle: l10n.chapterN(a.position + 1),
-          open: () =>
-              BookReaderScreen(book: book, initialChapterIndex: a.position),
+          subtitle: book.isPdf
+              ? l10n.pageNumber(a.position + 1)
+              : l10n.chapterN(a.position + 1),
+          open: () => book.isPdf
+              ? BookReaderScreen(book: book, initialPdfPage: a.position)
+              : BookReaderScreen(book: book, initialChapterIndex: a.position),
         );
       case ActivityKind.hifz:
         final surah = int.tryParse(a.ref);
