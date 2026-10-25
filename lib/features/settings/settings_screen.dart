@@ -156,6 +156,32 @@ class SettingsScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 16),
+                        // Color theme: one swatch per palette.
+                        Text(
+                          l10n.appColorTheme,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 10,
+                          alignment: WrapAlignment.spaceBetween,
+                          children: [
+                            for (final t in AppColorTheme.values)
+                              _ColorThemeSwatch(
+                                theme: t,
+                                label: l10n.colorThemeName(t.index),
+                                selected: settings.colorTheme == t,
+                                onTap: () {
+                                  HapticFeedback.selectionClick();
+                                  UserDataStore.instance.updateSettings(
+                                    settings.copyWith(colorTheme: t),
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
                         const SizedBox(height: 14),
                         const Divider(height: 1),
                         const SizedBox(height: 12),
@@ -1198,6 +1224,85 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// دائرة معاينة لسمة ألوان: تدرّج لونها الأساسي مع لمسة ذهبية.
+class _ColorThemeSwatch extends StatelessWidget {
+  final AppColorTheme theme;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ColorThemeSwatch({
+    required this.theme,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final p = ThemePalette.of(theme);
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(30),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [p.heroLightStart, p.heroLightEnd],
+                ),
+                border: Border.all(
+                  color: selected ? p.lightAccentGold : Colors.transparent,
+                  width: 3,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: p.lightPrimary.withValues(alpha: 0.3),
+                    blurRadius: selected ? 10 : 4,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: selected
+                  ? const Icon(Icons.check_rounded, color: Colors.white)
+                  : Align(
+                      alignment: const Alignment(0.55, 0.55),
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: p.lightAccentGold,
+                        ),
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: selected ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

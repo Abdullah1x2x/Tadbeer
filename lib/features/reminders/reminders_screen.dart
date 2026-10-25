@@ -111,10 +111,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     tileColor: isDark
                         ? AppColors.darkSurface
                         : AppColors.comsilk,
-                    leading: const Icon(
-                      Icons.access_time,
-                      color: AppColors.olive,
-                    ),
+                    leading: Icon(Icons.access_time, color: AppColors.olive),
                     title: Text(
                       l10n.reminderTime,
                       style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
@@ -124,7 +121,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         selectedTime.hour,
                         selectedTime.minute,
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -525,7 +522,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                               ? AppColors.nightSubtitle
                               : AppColors.daySubtitle,
                         ),
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.search_rounded,
                           color: AppColors.cyberEmerald,
                         ),

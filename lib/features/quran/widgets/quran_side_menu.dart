@@ -128,7 +128,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                         ? AppColors.nightSubtitle
                         : AppColors.daySubtitle,
                   ),
-                  prefixIcon: const Icon(
+                  prefixIcon: Icon(
                     Icons.search,
                     size: 18,
                     color: AppColors.olive,
@@ -206,7 +206,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               color: AppColors.olive.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               FlutterIslamicIcons.quran2,
               color: AppColors.olive,
               size: 20,
@@ -340,7 +340,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                   ? ArabicSearchNormalizer.toArabicDigits(surah.pageStart)
                   : surah.pageStart,
             ),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
               color: AppColors.olive,
@@ -447,7 +447,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                   ? ArabicSearchNormalizer.toArabicDigits(startPage.pageNumber)
                   : startPage.pageNumber,
             ),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
               color: AppColors.olive,

@@ -410,7 +410,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                           context.l10n.isArabic
                               ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
                               : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Amiri',
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -421,7 +421,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                           context.l10n.isArabic
                               ? 'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}'
                               : 'p. ${verse.page}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
                             color: AppColors.olive,
@@ -489,7 +489,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                                       children: [
                                         Row(
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.sticky_note_2_outlined,
                                               size: 16,
                                               color: AppColors.olive,
@@ -497,7 +497,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                                             const SizedBox(width: 6),
                                             Text(
                                               context.l10n.reflectionNoteColon,
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
                                                 color: AppColors.olive,
@@ -1160,11 +1160,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.hub_outlined,
-                    size: 48,
-                    color: AppColors.olive,
-                  ),
+                  Icon(Icons.hub_outlined, size: 48, color: AppColors.olive),
                   const SizedBox(height: 12),
                   Text(
                     context.l10n.noAyahsAddedToLink,
@@ -1445,7 +1441,7 @@ class _VerseCanvasNode extends StatelessWidget {
                     context.l10n.isArabic
                         ? '${surah.name} · ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
                         : '${surah.name} · ${verse.ayahNumber}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -1455,7 +1451,7 @@ class _VerseCanvasNode extends StatelessWidget {
                   ),
                 ),
                 if (hasNote)
-                  const Icon(
+                  Icon(
                     Icons.sticky_note_2_outlined,
                     size: 14,
                     color: AppColors.olive,

@@ -394,7 +394,7 @@ class _NoteCard extends StatelessWidget {
                         value: 'pdf',
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.picture_as_pdf,
                               size: 18,
                               color: AppColors.olive,

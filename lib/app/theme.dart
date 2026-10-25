@@ -1,47 +1,350 @@
 import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
+/// سمات الألوان التي يختارها المستخدم (الكحلي هو الافتراضي).
+enum AppColorTheme {
+  /// كحلي
+  navy,
+
+  /// زمردي
+  emerald,
+
+  /// عنابي
+  burgundy,
+
+  /// بني خشبي
+  brown,
+
+  /// تركوازي
+  teal,
+}
+
+/// مجموعة ألوان سمة واحدة للوضعين الفاتح والداكن.
+class ThemePalette {
+  final Color lightBackground;
+  final Color lightSurface;
+  final Color lightPrimary;
+  final Color lightPrimaryDark;
+  final Color lightAccentGold;
+  final Color lightTextPrimary;
+  final Color lightTextSecondary;
+  final Color lightBorder;
+  final Color lightSelectedAyah;
+  final Color darkBackground;
+  final Color darkSurface;
+  final Color darkPrimary;
+  final Color darkPrimaryDark;
+  final Color darkAccentGold;
+  final Color darkTextPrimary;
+  final Color darkTextSecondary;
+  final Color darkBorder;
+  final Color darkSelectedAyah;
+  final Color cyberEmerald;
+  final Color electricGold;
+  final Color darkSurfaceElevated;
+  final Color lightSurfaceElevated;
+  final Color lightSurfaceLow;
+  final Color lightSurfaceHigh;
+  final Color lightSurfaceHighest;
+  final Color darkSurfaceLowest;
+  final Color darkSurfaceLow;
+  final Color darkSurfaceHighest;
+  final Color heroLightStart;
+  final Color heroLightEnd;
+  final Color heroDarkStart;
+  final Color heroDarkEnd;
+  final Color goldLight;
+  final Color goldDeep;
+
+  const ThemePalette({
+    required this.lightBackground,
+    required this.lightSurface,
+    required this.lightPrimary,
+    required this.lightPrimaryDark,
+    required this.lightAccentGold,
+    required this.lightTextPrimary,
+    required this.lightTextSecondary,
+    required this.lightBorder,
+    required this.lightSelectedAyah,
+    required this.darkBackground,
+    required this.darkSurface,
+    required this.darkPrimary,
+    required this.darkPrimaryDark,
+    required this.darkAccentGold,
+    required this.darkTextPrimary,
+    required this.darkTextSecondary,
+    required this.darkBorder,
+    required this.darkSelectedAyah,
+    required this.cyberEmerald,
+    required this.electricGold,
+    required this.darkSurfaceElevated,
+    required this.lightSurfaceElevated,
+    required this.lightSurfaceLow,
+    required this.lightSurfaceHigh,
+    required this.lightSurfaceHighest,
+    required this.darkSurfaceLowest,
+    required this.darkSurfaceLow,
+    required this.darkSurfaceHighest,
+    required this.heroLightStart,
+    required this.heroLightEnd,
+    required this.heroDarkStart,
+    required this.heroDarkEnd,
+    required this.goldLight,
+    required this.goldDeep,
+  });
+
+  static const ThemePalette navy = ThemePalette(
+    lightBackground: Color(0xFFF7F5F0),
+    lightSurface: Color(0xFFFFFFFF),
+    lightPrimary: Color(0xFF1E3A5F),
+    lightPrimaryDark: Color(0xFF132844),
+    lightAccentGold: Color(0xFFB8913C),
+    lightTextPrimary: Color(0xFF1A2233),
+    lightTextSecondary: Color(0xFF586379),
+    lightBorder: Color(0xFFE4E0D6),
+    lightSelectedAyah: Color(0x40C9A24B),
+    darkBackground: Color(0xFF0B1220),
+    darkSurface: Color(0xFF131C2E),
+    darkPrimary: Color(0xFF5B8BD0),
+    darkPrimaryDark: Color(0xFF1E3A5F),
+    darkAccentGold: Color(0xFFE3C06A),
+    darkTextPrimary: Color(0xFFE8ECF3),
+    darkTextSecondary: Color(0xFF9AA6BA),
+    darkBorder: Color(0xFF253149),
+    darkSelectedAyah: Color(0x4DE3C06A),
+    cyberEmerald: Color(0xFF7FB0F0),
+    electricGold: Color(0xFFE8C878),
+    darkSurfaceElevated: Color(0xFF1A2539),
+    lightSurfaceElevated: Color(0xFFFFFFFF),
+    lightSurfaceLow: Color(0xFFFBFAF7),
+    lightSurfaceHigh: Color(0xFFF0EDE5),
+    lightSurfaceHighest: Color(0xFFE8E4DA),
+    darkSurfaceLowest: Color(0xFF080D18),
+    darkSurfaceLow: Color(0xFF0F1726),
+    darkSurfaceHighest: Color(0xFF22304A),
+    heroLightStart: Color(0xFF26497A),
+    heroLightEnd: Color(0xFF132844),
+    heroDarkStart: Color(0xFF1E3A5F),
+    heroDarkEnd: Color(0xFF0F1D33),
+    goldLight: Color(0xFFE8C878),
+    goldDeep: Color(0xFFB8913C),
+  );
+
+  static const ThemePalette emerald = ThemePalette(
+    lightBackground: Color(0xFFF5F7F3),
+    lightSurface: Color(0xFFFFFFFF),
+    lightPrimary: Color(0xFF1E5B47),
+    lightPrimaryDark: Color(0xFF123D2F),
+    lightAccentGold: Color(0xFFB8913C),
+    lightTextPrimary: Color(0xFF17241D),
+    lightTextSecondary: Color(0xFF55665C),
+    lightBorder: Color(0xFFDFE5DD),
+    lightSelectedAyah: Color(0x40C9A24B),
+    darkBackground: Color(0xFF0A110D),
+    darkSurface: Color(0xFF121C16),
+    darkPrimary: Color(0xFF4FAF86),
+    darkPrimaryDark: Color(0xFF1E5B47),
+    darkAccentGold: Color(0xFFE3C06A),
+    darkTextPrimary: Color(0xFFE6EFE9),
+    darkTextSecondary: Color(0xFF98AA9F),
+    darkBorder: Color(0xFF223329),
+    darkSelectedAyah: Color(0x4DE3C06A),
+    cyberEmerald: Color(0xFF6FD3A4),
+    electricGold: Color(0xFFE8C878),
+    darkSurfaceElevated: Color(0xFF18251D),
+    lightSurfaceElevated: Color(0xFFFFFFFF),
+    lightSurfaceLow: Color(0xFFFAFBF8),
+    lightSurfaceHigh: Color(0xFFEDF1EA),
+    lightSurfaceHighest: Color(0xFFE4EAE1),
+    darkSurfaceLowest: Color(0xFF07100B),
+    darkSurfaceLow: Color(0xFF0E1812),
+    darkSurfaceHighest: Color(0xFF203127),
+    heroLightStart: Color(0xFF22684F),
+    heroLightEnd: Color(0xFF123D2F),
+    heroDarkStart: Color(0xFF1E5B47),
+    heroDarkEnd: Color(0xFF0E2A20),
+    goldLight: Color(0xFFE8C878),
+    goldDeep: Color(0xFFB8913C),
+  );
+
+  static const ThemePalette burgundy = ThemePalette(
+    lightBackground: Color(0xFFFAF6F1),
+    lightSurface: Color(0xFFFFFFFF),
+    lightPrimary: Color(0xFF7A2E3B),
+    lightPrimaryDark: Color(0xFF561F29),
+    lightAccentGold: Color(0xFFB07A3C),
+    lightTextPrimary: Color(0xFF2A1A1D),
+    lightTextSecondary: Color(0xFF6E5A5E),
+    lightBorder: Color(0xFFEADFDA),
+    lightSelectedAyah: Color(0x40D09A60),
+    darkBackground: Color(0xFF160E10),
+    darkSurface: Color(0xFF22171A),
+    darkPrimary: Color(0xFFD27A88),
+    darkPrimaryDark: Color(0xFF7A2E3B),
+    darkAccentGold: Color(0xFFDDB06A),
+    darkTextPrimary: Color(0xFFF1E6E8),
+    darkTextSecondary: Color(0xFFB49EA3),
+    darkBorder: Color(0xFF3A272C),
+    darkSelectedAyah: Color(0x4DDDB06A),
+    cyberEmerald: Color(0xFFF0A1AE),
+    electricGold: Color(0xFFE7B77A),
+    darkSurfaceElevated: Color(0xFF2A1D21),
+    lightSurfaceElevated: Color(0xFFFFFFFF),
+    lightSurfaceLow: Color(0xFFFCFAF7),
+    lightSurfaceHigh: Color(0xFFF3ECE6),
+    lightSurfaceHighest: Color(0xFFEBE2DA),
+    darkSurfaceLowest: Color(0xFF100A0C),
+    darkSurfaceLow: Color(0xFF1B1215),
+    darkSurfaceHighest: Color(0xFF36262B),
+    heroLightStart: Color(0xFF8E3747),
+    heroLightEnd: Color(0xFF561F29),
+    heroDarkStart: Color(0xFF6A2633),
+    heroDarkEnd: Color(0xFF2E1218),
+    goldLight: Color(0xFFE7B77A),
+    goldDeep: Color(0xFFB07A3C),
+  );
+
+  static const ThemePalette brown = ThemePalette(
+    lightBackground: Color(0xFFF8F3EA),
+    lightSurface: Color(0xFFFFFDF8),
+    lightPrimary: Color(0xFF6B4E32),
+    lightPrimaryDark: Color(0xFF4A3522),
+    lightAccentGold: Color(0xFFB8863B),
+    lightTextPrimary: Color(0xFF2B2118),
+    lightTextSecondary: Color(0xFF6D6052),
+    lightBorder: Color(0xFFE6DCCB),
+    lightSelectedAyah: Color(0x40C9A24B),
+    darkBackground: Color(0xFF14100B),
+    darkSurface: Color(0xFF1F1912),
+    darkPrimary: Color(0xFFC79A6B),
+    darkPrimaryDark: Color(0xFF6B4E32),
+    darkAccentGold: Color(0xFFE0B56A),
+    darkTextPrimary: Color(0xFFEFE6DA),
+    darkTextSecondary: Color(0xFFAFA08D),
+    darkBorder: Color(0xFF352B20),
+    darkSelectedAyah: Color(0x4DE0B56A),
+    cyberEmerald: Color(0xFFE2B98A),
+    electricGold: Color(0xFFE6C07F),
+    darkSurfaceElevated: Color(0xFF271F17),
+    lightSurfaceElevated: Color(0xFFFFFFFF),
+    lightSurfaceLow: Color(0xFFFBF8F1),
+    lightSurfaceHigh: Color(0xFFF1EADD),
+    lightSurfaceHighest: Color(0xFFE8DFCE),
+    darkSurfaceLowest: Color(0xFF0F0C08),
+    darkSurfaceLow: Color(0xFF191410),
+    darkSurfaceHighest: Color(0xFF33291F),
+    heroLightStart: Color(0xFF7D5C3C),
+    heroLightEnd: Color(0xFF4A3522),
+    heroDarkStart: Color(0xFF5E442C),
+    heroDarkEnd: Color(0xFF261B12),
+    goldLight: Color(0xFFE6C07F),
+    goldDeep: Color(0xFFB8863B),
+  );
+
+  static const ThemePalette teal = ThemePalette(
+    lightBackground: Color(0xFFF3F7F7),
+    lightSurface: Color(0xFFFFFFFF),
+    lightPrimary: Color(0xFF115E67),
+    lightPrimaryDark: Color(0xFF0B4248),
+    lightAccentGold: Color(0xFFB58E45),
+    lightTextPrimary: Color(0xFF132427),
+    lightTextSecondary: Color(0xFF54686B),
+    lightBorder: Color(0xFFDCE6E6),
+    lightSelectedAyah: Color(0x40C9A24B),
+    darkBackground: Color(0xFF0B1416),
+    darkSurface: Color(0xFF132022),
+    darkPrimary: Color(0xFF4FB3B6),
+    darkPrimaryDark: Color(0xFF115E67),
+    darkAccentGold: Color(0xFFE3C07A),
+    darkTextPrimary: Color(0xFFE3EEEF),
+    darkTextSecondary: Color(0xFF98AEB0),
+    darkBorder: Color(0xFF213335),
+    darkSelectedAyah: Color(0x4DE3C07A),
+    cyberEmerald: Color(0xFF6FD6D6),
+    electricGold: Color(0xFFE8CB8A),
+    darkSurfaceElevated: Color(0xFF192A2D),
+    lightSurfaceElevated: Color(0xFFFFFFFF),
+    lightSurfaceLow: Color(0xFFF9FBFB),
+    lightSurfaceHigh: Color(0xFFEAF1F1),
+    lightSurfaceHighest: Color(0xFFE1EAEA),
+    darkSurfaceLowest: Color(0xFF081012),
+    darkSurfaceLow: Color(0xFF0F1A1C),
+    darkSurfaceHighest: Color(0xFF22383B),
+    heroLightStart: Color(0xFF16737D),
+    heroLightEnd: Color(0xFF0B4248),
+    heroDarkStart: Color(0xFF115E67),
+    heroDarkEnd: Color(0xFF08282C),
+    goldLight: Color(0xFFE8CB8A),
+    goldDeep: Color(0xFFB58E45),
+  );
+
+  /// مجموعة الألوان المقابلة للسمة.
+  static ThemePalette of(AppColorTheme theme) {
+    switch (theme) {
+      case AppColorTheme.navy:
+        return navy;
+      case AppColorTheme.emerald:
+        return emerald;
+      case AppColorTheme.burgundy:
+        return burgundy;
+      case AppColorTheme.brown:
+        return brown;
+      case AppColorTheme.teal:
+        return teal;
+    }
+  }
+}
+
 /// Central color system for Tadbeer (تَدْبِير).
 ///
-/// Night navy and burnished gold: a deep, dignified base for long reading
-/// sessions, with gold reserved for highlights and interactive emphasis.
+/// The colors come from the selected [AppColorTheme] (night navy and
+/// burnished gold by default). Names stay the same across themes, so every
+/// screen follows the user's choice; call [use] to switch.
 class AppColors {
   AppColors._();
 
-  // ---------------------------------------------------------------------------
-  // ☀️ LIGHT MODE PALETTE
-  // ---------------------------------------------------------------------------
-  static const Color lightBackground = Color(0xFFF7F5F0);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightPrimary = Color(0xFF1E3A5F);
-  static const Color lightPrimaryDark = Color(0xFF132844);
-  static const Color lightAccentGold = Color(0xFFB8913C);
-  static const Color lightTextPrimary = Color(0xFF1A2233);
-  static const Color lightTextSecondary = Color(0xFF586379);
-  static const Color lightBorder = Color(0xFFE4E0D6);
-  static const Color lightSelectedAyah = Color(0x40C9A24B);
+  static ThemePalette _p = ThemePalette.navy;
+  static AppColorTheme _theme = AppColorTheme.navy;
 
-  // ---------------------------------------------------------------------------
-  // 🌙 DARK MODE PALETTE
-  // ---------------------------------------------------------------------------
-  static const Color darkBackground = Color(0xFF0B1220);
-  static const Color darkSurface = Color(0xFF131C2E);
-  static const Color darkPrimary = Color(0xFF5B8BD0);
-  static const Color darkPrimaryDark = Color(0xFF1E3A5F);
-  static const Color darkAccentGold = Color(0xFFE3C06A);
-  static const Color darkTextPrimary = Color(0xFFE8ECF3);
-  static const Color darkTextSecondary = Color(0xFF9AA6BA);
-  static const Color darkBorder = Color(0xFF253149);
-  static const Color darkSelectedAyah = Color(0x4DE3C06A);
+  /// السمة الحالية.
+  static AppColorTheme get theme => _theme;
 
-  // ---------------------------------------------------------------------------
-  // ⚡ DIGITAL ACCENTS & ELEVATIONS
-  // ---------------------------------------------------------------------------
-  // Bright sky blue and luminous gold for active states and highlights.
-  static const Color cyberEmerald = Color(0xFF7FB0F0);
-  static const Color electricGold = Color(0xFFE8C878);
-  static const Color darkSurfaceElevated = Color(0xFF1A2539);
-  static const Color lightSurfaceElevated = Color(0xFFFFFFFF);
+  /// يبدّل مجموعة الألوان؛ يعيد true إذا تغيّرت.
+  static bool use(AppColorTheme theme) {
+    if (theme == _theme) return false;
+    _theme = theme;
+    _p = ThemePalette.of(theme);
+    return true;
+  }
+
+  static Color get lightBackground => _p.lightBackground;
+  static Color get lightSurface => _p.lightSurface;
+  static Color get lightPrimary => _p.lightPrimary;
+  static Color get lightPrimaryDark => _p.lightPrimaryDark;
+  static Color get lightAccentGold => _p.lightAccentGold;
+  static Color get lightTextPrimary => _p.lightTextPrimary;
+  static Color get lightTextSecondary => _p.lightTextSecondary;
+  static Color get lightBorder => _p.lightBorder;
+  static Color get lightSelectedAyah => _p.lightSelectedAyah;
+  static Color get darkBackground => _p.darkBackground;
+  static Color get darkSurface => _p.darkSurface;
+  static Color get darkPrimary => _p.darkPrimary;
+  static Color get darkPrimaryDark => _p.darkPrimaryDark;
+  static Color get darkAccentGold => _p.darkAccentGold;
+  static Color get darkTextPrimary => _p.darkTextPrimary;
+  static Color get darkTextSecondary => _p.darkTextSecondary;
+  static Color get darkBorder => _p.darkBorder;
+  static Color get darkSelectedAyah => _p.darkSelectedAyah;
+  static Color get cyberEmerald => _p.cyberEmerald;
+  static Color get electricGold => _p.electricGold;
+  static Color get darkSurfaceElevated => _p.darkSurfaceElevated;
+  static Color get lightSurfaceElevated => _p.lightSurfaceElevated;
+  static Color get lightSurfaceLow => _p.lightSurfaceLow;
+  static Color get lightSurfaceHigh => _p.lightSurfaceHigh;
+  static Color get lightSurfaceHighest => _p.lightSurfaceHighest;
+  static Color get darkSurfaceLowest => _p.darkSurfaceLowest;
+  static Color get darkSurfaceLow => _p.darkSurfaceLow;
+  static Color get darkSurfaceHighest => _p.darkSurfaceHighest;
 
   // Status tones, mid-luminance so they read on both light and dark.
   static const Color statusSuccess = Color(0xFF3F9A72);
@@ -50,58 +353,48 @@ class AppColors {
   static const Color statusInfo = Color(0xFF4F86C6);
 
   // ---------------------------------------------------------------------------
-  // 🧱 TONAL SURFACE LAYERS (lowest → highest)
-  // ---------------------------------------------------------------------------
-  static const Color lightSurfaceLow = Color(0xFFFBFAF7);
-  static const Color lightSurfaceHigh = Color(0xFFF0EDE5);
-  static const Color lightSurfaceHighest = Color(0xFFE8E4DA);
-  static const Color darkSurfaceLowest = Color(0xFF080D18);
-  static const Color darkSurfaceLow = Color(0xFF0F1726);
-  static const Color darkSurfaceHighest = Color(0xFF22304A);
-
-  // ---------------------------------------------------------------------------
   // 📖 MUSHAF PAGE (classic paper tone in light mode)
   // ---------------------------------------------------------------------------
   static const Color mushafBackground = Color(0xFFF8F4EA);
-  static const Color mushafQuranText = Color(0xFF1A2233);
+  static Color get mushafQuranText => _p.lightTextPrimary;
 
   // ---------------------------------------------------------------------------
   // 🌅 SIGNATURE GRADIENTS
   // ---------------------------------------------------------------------------
-  /// تدرج الهوية الكحلي المستخدم في الرؤوس والأزرار البارزة.
+  /// تدرج الهوية المستخدم في الرؤوس والأزرار البارزة.
   static LinearGradient heroGradient(bool isDark) => LinearGradient(
     begin: AlignmentDirectional.topStart,
     end: AlignmentDirectional.bottomEnd,
     colors: isDark
-        ? const [Color(0xFF1E3A5F), Color(0xFF0F1D33)]
-        : const [Color(0xFF26497A), Color(0xFF132844)],
+        ? [_p.heroDarkStart, _p.heroDarkEnd]
+        : [_p.heroLightStart, _p.heroLightEnd],
   );
 
   /// تدرج ذهبي للعناصر المميزة والشارات.
-  static const LinearGradient goldGradient = LinearGradient(
+  static LinearGradient get goldGradient => LinearGradient(
     begin: AlignmentDirectional.topStart,
     end: AlignmentDirectional.bottomEnd,
-    colors: [Color(0xFFE8C878), Color(0xFFB8913C)],
+    colors: [_p.goldLight, _p.goldDeep],
   );
 
   // ---------------------------------------------------------------------------
   // BACKWARD-COMPATIBILITY ALIASES
-  // (Maintained so existing call-sites seamlessly map to the authoritative palette)
+  // (Maintained so existing call-sites seamlessly map to the current palette)
   // ---------------------------------------------------------------------------
-  static const Color olive = lightPrimary;
-  static const Color oliveDark = lightPrimaryDark;
-  static const Color oliveSoft = darkPrimary;
-  static const Color oliveLight = darkPrimary;
+  static Color get olive => lightPrimary;
+  static Color get oliveDark => lightPrimaryDark;
+  static Color get oliveSoft => darkPrimary;
+  static Color get oliveLight => darkPrimary;
 
-  static const Color comsilkLight = lightBackground;
-  static const Color comsilk = lightSurfaceHigh;
+  static Color get comsilkLight => lightBackground;
+  static Color get comsilk => lightSurfaceHigh;
 
-  static const Color darkSurfaceVariant = darkBorder;
+  static Color get darkSurfaceVariant => darkBorder;
 
-  static const Color dayQuranText = lightTextPrimary;
-  static const Color nightQuranText = darkTextPrimary;
-  static const Color daySubtitle = lightTextSecondary;
-  static const Color nightSubtitle = darkTextSecondary;
+  static Color get dayQuranText => lightTextPrimary;
+  static Color get nightQuranText => darkTextPrimary;
+  static Color get daySubtitle => lightTextSecondary;
+  static Color get nightSubtitle => darkTextSecondary;
 
   // ---------------------------------------------------------------------------
   // AYAH HIGHLIGHT PALETTE
@@ -206,14 +499,14 @@ class MushafPalette {
     required this.text,
   });
 
-  static const MushafPalette classicLight = MushafPalette._(
+  static final MushafPalette classicLight = MushafPalette._(
     outer: AppColors.mushafBackground,
     page: AppColors.mushafBackground,
     band: AppColors.lightSurface,
     text: AppColors.mushafQuranText,
   );
 
-  static const MushafPalette classicDark = MushafPalette._(
+  static final MushafPalette classicDark = MushafPalette._(
     outer: AppColors.darkBackground,
     page: AppColors.darkSurface,
     band: AppColors.darkSurface,
@@ -296,7 +589,9 @@ class AppTheme {
         : AppColors.lightSurfaceElevated;
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
     final gold = isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
-    final text = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final text = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
     final subtext = isDark
         ? AppColors.darkTextSecondary
         : AppColors.lightTextSecondary;
@@ -400,9 +695,7 @@ class AppTheme {
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(cardRadius),
-          side: isDark
-              ? BorderSide(color: border, width: 1)
-              : BorderSide.none,
+          side: isDark ? BorderSide(color: border, width: 1) : BorderSide.none,
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -507,9 +800,7 @@ class AppTheme {
         foregroundColor: isDark ? AppColors.darkBackground : Colors.white,
         elevation: 4,
         highlightElevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -549,14 +840,11 @@ class AppTheme {
       ),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected)
-              ? Colors.white
-              : subtext,
+          (states) =>
+              states.contains(WidgetState.selected) ? Colors.white : subtext,
         ),
         trackColor: WidgetStateProperty.resolveWith(
-          (states) => states.contains(WidgetState.selected)
-              ? gold
-              : border,
+          (states) => states.contains(WidgetState.selected) ? gold : border,
         ),
         trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
         thumbIcon: WidgetStateProperty.resolveWith(
@@ -617,14 +905,17 @@ class AppTheme {
           ),
         ),
         labelTextStyle: WidgetStateProperty.resolveWith(
-          (states) => label(
-            12,
-            weight: states.contains(WidgetState.selected)
-                ? FontWeight.bold
-                : FontWeight.w600,
-          ).copyWith(
-            color: states.contains(WidgetState.selected) ? primary : subtext,
-          ),
+          (states) =>
+              label(
+                12,
+                weight: states.contains(WidgetState.selected)
+                    ? FontWeight.bold
+                    : FontWeight.w600,
+              ).copyWith(
+                color: states.contains(WidgetState.selected)
+                    ? primary
+                    : subtext,
+              ),
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -642,7 +933,8 @@ class AppTheme {
                 : Colors.transparent,
           ),
           foregroundColor: WidgetStateProperty.resolveWith(
-            (states) => states.contains(WidgetState.selected) ? onPrimary : text,
+            (states) =>
+                states.contains(WidgetState.selected) ? onPrimary : text,
           ),
           side: WidgetStateProperty.all(BorderSide(color: border)),
           shape: WidgetStateProperty.all(controlShape),
@@ -678,9 +970,10 @@ class AppTheme {
           color: isDark ? AppColors.darkSurfaceHighest : AppColors.lightPrimary,
           borderRadius: BorderRadius.circular(10),
         ),
-        textStyle: label(12, weight: FontWeight.w600).copyWith(
-          color: Colors.white,
-        ),
+        textStyle: label(
+          12,
+          weight: FontWeight.w600,
+        ).copyWith(color: Colors.white),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

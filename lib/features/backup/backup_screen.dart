@@ -335,7 +335,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     children: [
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.upload_file_outlined,
                           color: AppColors.olive,
                           size: 24,
@@ -534,7 +534,7 @@ class _BackupScreenState extends State<BackupScreen> {
                   children: [
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.download_for_offline_outlined,
                           color: AppColors.olive,
                           size: 24,
@@ -571,7 +571,7 @@ class _BackupScreenState extends State<BackupScreen> {
                         foregroundColor: isDark
                             ? AppColors.comsilk
                             : AppColors.oliveDark,
-                        side: const BorderSide(
+                        side: BorderSide(
                           color: AppColors.olive,
                           width: 1.5,
                         ),

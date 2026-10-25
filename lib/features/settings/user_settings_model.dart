@@ -195,6 +195,9 @@ class UserSettings {
   /// لون ورق المصحف المختار (كلاسيكي أو سيبيا).
   final MushafPaperTone mushafPaperTone;
 
+  /// سمة الألوان المختارة (الكحلي افتراضياً).
+  final AppColorTheme colorTheme;
+
   /// اسم عائلة خط المصحف المختارة للاستخدام المباشر في الأنماط النصية.
   String get quranFontFamilyName => quranFontFamily.fontFamily;
 
@@ -209,6 +212,7 @@ class UserSettings {
     this.quranFontSize = defaultQuranFontSize,
     this.ayahLinkFontSize = 18.0,
     this.mushafPaperTone = MushafPaperTone.classic,
+    this.colorTheme = AppColorTheme.navy,
   }) : hideTadbeerIntroPermanently =
            hideTadabburIntroPermanently ?? hideTadbeerIntroPermanently;
 
@@ -223,6 +227,7 @@ class UserSettings {
     'quranFontSize': quranFontSize,
     'ayahLinkFontSize': ayahLinkFontSize,
     'mushafPaperTone': mushafPaperTone.name,
+    'colorTheme': colorTheme.name,
   };
 
   /// ينشئ كائن إعدادات المستخدم من خريطة بيانات JSON المحفوظة.
@@ -277,6 +282,10 @@ class UserSettings {
       quranFontFamily: familyOpt,
       quranFontSize: quranSize,
       ayahLinkFontSize: (json['ayahLinkFontSize'] as num?)?.toDouble() ?? 18.0,
+      colorTheme: AppColorTheme.values.firstWhere(
+        (e) => e.name == json['colorTheme'],
+        orElse: () => AppColorTheme.navy,
+      ),
       mushafPaperTone: MushafPaperTone.values.firstWhere(
         (e) => e.name == json['mushafPaperTone'],
         orElse: () => MushafPaperTone.classic,
@@ -295,6 +304,7 @@ class UserSettings {
     double? quranFontSize,
     double? ayahLinkFontSize,
     MushafPaperTone? mushafPaperTone,
+    AppColorTheme? colorTheme,
   }) {
     final newQuranFontSize = quranFontSize != null
         ? quranFontSize.clamp(minQuranFontSize, maxQuranFontSize)
@@ -312,6 +322,7 @@ class UserSettings {
       quranFontSize: newQuranFontSize,
       ayahLinkFontSize: ayahLinkFontSize ?? this.ayahLinkFontSize,
       mushafPaperTone: mushafPaperTone ?? this.mushafPaperTone,
+      colorTheme: colorTheme ?? this.colorTheme,
     );
   }
 }

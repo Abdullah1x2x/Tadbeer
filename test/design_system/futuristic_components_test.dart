@@ -7,7 +7,7 @@ void main() {
   group('FuturisticBadge Tests', () {
     testWidgets('renders label and custom color', (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
             body: Center(
               child: FuturisticBadge(
