@@ -117,10 +117,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                             ? AppColors.nightSubtitle
                             : AppColors.daySubtitle,
                       ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: AppColors.olive,
-                      ),
+                      prefixIcon: Icon(Icons.search, color: AppColors.olive),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
                               tooltip: context.l10n.clearText,

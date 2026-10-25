@@ -84,6 +84,16 @@ class _TadbeerAppState extends State<TadbeerApp> {
     UserDatabase.instance.lastIssue.value = null;
   }
 
+  /// Marks every element dirty so the next frame rebuilds all widgets.
+  void _rebuildAll(BuildContext context) {
+    void mark(Element element) {
+      element.markNeedsBuild();
+      element.visitChildren(mark);
+    }
+
+    (context as Element).visitChildren(mark);
+  }
+
   /// تحديث لغة واجهة التطبيق عند تغييرها من قِبل المستخدم.
   void _onLanguageChanged(AppLanguage newLang) {
     setState(() {
@@ -98,6 +108,13 @@ class _TadbeerAppState extends State<TadbeerApp> {
       listenable: UserDataStore.instance.settingsNotifier,
       builder: (context, _) {
         final settings = UserDataStore.instance.settingsNotifier.value;
+        // A new color theme changes values that widgets read directly from
+        // AppColors, so rebuild the whole tree once (state is kept).
+        if (AppColors.use(settings.colorTheme)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _rebuildAll(this.context);
+          });
+        }
 
         return AppLocalizationScope(
           currentLanguage: _currentLanguage,

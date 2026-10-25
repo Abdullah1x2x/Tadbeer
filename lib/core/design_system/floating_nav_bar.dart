@@ -171,7 +171,7 @@ class _NavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Dark navy reads best on the gold pill in both themes.
-    const onGold = AppColors.lightPrimaryDark;
+    final onGold = AppColors.lightPrimaryDark;
     final idle = AppColors.textSecondary(context);
     final color = selected ? onGold : idle;
 
@@ -224,7 +224,7 @@ class _NavButton extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontFamily: AppTheme.appFontFamily,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,

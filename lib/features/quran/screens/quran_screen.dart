@@ -1074,7 +1074,7 @@ class _QuranScreenState extends State<QuranScreen> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.check_circle_rounded,
                                   color: AppColors.electricGold,
                                   size: 18,

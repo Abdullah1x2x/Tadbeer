@@ -128,7 +128,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                               ? AppColors.nightSubtitle
                               : AppColors.daySubtitle,
                         ),
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.search_rounded,
                           color: AppColors.cyberEmerald,
                         ),
@@ -275,7 +275,7 @@ class _BookmarkTile extends StatelessWidget {
                 width: AppTokens.borderHairline,
               ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.bookmark_rounded,
               color: AppColors.cyberEmerald,
               size: 20,

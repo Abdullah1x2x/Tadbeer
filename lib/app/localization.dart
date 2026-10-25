@@ -241,6 +241,13 @@ class AppStrings {
   String get pagesGoal => _l.pagesGoal;
   String get reflectionsGoal => _l.reflectionsGoal;
 
+  String get appColorTheme => isArabic ? 'لون التطبيق' : 'App color';
+
+  /// Name of [AppColorTheme] by index.
+  String colorThemeName(int i) => isArabic
+      ? const ['كحلي', 'زمردي', 'عنابي', 'بني خشبي', 'تركوازي'][i]
+      : const ['Navy', 'Emerald', 'Burgundy', 'Brown', 'Teal'][i];
+
   // Focus mode (وضع التأمل)
   String get focusMode => _l.focusMode;
   String get breathe => _l.breathe;

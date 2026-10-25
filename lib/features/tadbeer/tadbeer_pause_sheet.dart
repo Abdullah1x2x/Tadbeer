@@ -197,7 +197,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                             color: AppColors.olive.withValues(alpha: 0.15),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.spa_outlined,
                             size: 18,
                             color: AppColors.olive,
@@ -299,7 +299,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                       l10n.isArabic
                           ? 'السؤال ${ArabicSearchNormalizer.toArabicDigits(questionNumber)} من ٤'
                           : 'Question $questionNumber of 4',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: AppColors.olive,
