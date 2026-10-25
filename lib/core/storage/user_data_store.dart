@@ -1153,6 +1153,7 @@ class UserDataStore extends ChangeNotifier {
     bool ayahLinks = true,
     bool tadbeer = true,
     bool? tadabbur,
+    bool journey = true,
   }) {
     final includeTadbeer = tadabbur ?? tadbeer;
     return {
@@ -1160,11 +1161,13 @@ class UserDataStore extends ChangeNotifier {
       'schemaVersion': currentSchemaVersion,
       'exportedAt': DateTime.now().toIso8601String(),
       'readingPosition': _readingPosition.toJson(),
-      'readingJourney': _journey.toJson(),
-      // A copy, so the snapshot stays intact if the live state changes.
-      'featureState': {
-        for (final e in _featureState.entries)
-          e.key: Map<String, dynamic>.from(e.value),
+      if (journey) ...{
+        'readingJourney': _journey.toJson(),
+        // A copy, so the snapshot stays intact if the live state changes.
+        'featureState': {
+          for (final e in _featureState.entries)
+            e.key: Map<String, dynamic>.from(e.value),
+        },
       },
       if (notes) 'notes': _notes.map((n) => n.toJson()).toList(),
       if (bookmarks) 'bookmarks': _bookmarks.map((b) => b.toJson()).toList(),

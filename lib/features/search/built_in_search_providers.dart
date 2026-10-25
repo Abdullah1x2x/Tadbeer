@@ -6,6 +6,8 @@ import '../../core/utils/arabic_root_search_helper.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/ayah_links/ayah_link_detail_screen.dart';
 import '../../features/ayah_links/ayah_link_repository.dart';
+import '../../features/ayah_links/curated_pathways.dart';
+import '../../features/pathways/guided_pathways_screen.dart';
 import '../../features/books/book_reader_screen.dart';
 import '../../features/books/book_repository.dart';
 import '../../features/duas/quran_duas_repository.dart';
@@ -764,3 +766,53 @@ class BooksSearchProvider implements SearchProvider {
   }
 }
 
+
+/// مزود البحث في مسارات التدبر الموجّهة (العنوان والوصف وإضاءات الآيات).
+///
+/// Search provider for the guided reflection pathways.
+class PathwaysSearchProvider implements SearchProvider {
+  /// ينشئ مزود البحث في المسارات.
+  const PathwaysSearchProvider();
+
+  @override
+  String get id => 'pathways';
+
+  @override
+  String getSectionTitle(BuildContext context) => context.l10n.guidedPathways;
+
+  @override
+  IconData get icon => Icons.route_rounded;
+
+  @override
+  Future<List<SearchResultItem>> search(
+    String query,
+    BuildContext context,
+  ) async {
+    final q = ArabicSearchNormalizer.normalize(query);
+    if (q.isEmpty) return const [];
+    bool matches(String text) =>
+        ArabicSearchNormalizer.normalize(text).contains(q);
+
+    return [
+      for (final p in CuratedPathwaysRegistry.pathways)
+        if (matches(p.title) ||
+            matches(p.description) ||
+            p.verses.any((v) => matches(v.note)))
+          SearchResultItem(
+            id: 'pathway_${p.id}',
+            providerId: id,
+            sectionTitle: getSectionTitle(context),
+            title: p.title,
+            snippet: p.description,
+            badge: p.category,
+            icon: icon,
+            onTap: (ctx) => Navigator.push(
+              ctx,
+              MaterialPageRoute(
+                builder: (_) => PathwayJourneyScreen(pathway: p),
+              ),
+            ),
+          ),
+    ];
+  }
+}

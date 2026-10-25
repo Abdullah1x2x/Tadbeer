@@ -78,6 +78,25 @@ class HifzStore {
         .then((_) => UserDataStore.instance.markActiveDay(now: at));
   }
 
+  /// هل الآية مضافة للحفظ.
+  static bool contains(int surah, int ayah) => card(surah, ayah) != null;
+
+  /// يضيف الآية للحفظ (مستحقة اليوم) أو يزيلها إن كانت مضافة.
+  static Future<void> toggle(int surah, int ayah, {DateTime? now}) {
+    final at = now ?? DateTime.now();
+    final state = UserDataStore.instance.featureState(_key);
+    final id = _id(surah, ayah);
+    if (state.containsKey(id)) {
+      state.remove(id);
+    } else {
+      state[id] = HifzCard(
+        box: 0,
+        due: DateTime(at.year, at.month, at.day),
+      ).toJson();
+    }
+    return UserDataStore.instance.saveFeatureState(_key, state);
+  }
+
   /// الآيات المستحقة للمراجعة اليوم، مرتبة حسب المصحف.
   static List<(int, int)> dueToday({DateTime? now}) {
     final at = now ?? DateTime.now();

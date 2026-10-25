@@ -8,6 +8,7 @@ import '../../../core/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
+import '../../memorization/memorization_model.dart';
 import '../widgets/ayah_action_sheet.dart';
 import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
@@ -836,6 +837,8 @@ class _QuranPageViewState extends State<QuranPageView> {
     final fontFamily = storage.settings.quranFontFamilyName;
 
     final spanChildren = <InlineSpan>[];
+    // Read once per page; checked for every verse below.
+    final memorized = HifzStore.all().keys.toSet();
 
     for (final ayah in ayahs) {
       final isSelected = widget.selectedAyah?.id == ayah.id;
@@ -847,7 +850,25 @@ class _QuranPageViewState extends State<QuranPageView> {
       final hasNote = storage
           .getNotesForAyah(ayah.surahNumber, ayah.ayahNumber)
           .isNotEmpty;
-      final hasIndicators = isBookmarked || hasNote;
+      final reflection = storage.getTadbeer(ayah.surahNumber, ayah.ayahNumber);
+      final hasReflection = reflection != null && !reflection.isEmpty;
+      final inHifz = memorized.contains(
+        '${ayah.surahNumber}:${ayah.ayahNumber}',
+      );
+      final markerColor = isDark
+          ? AppColors.darkAccentGold
+          : AppColors.lightAccentGold;
+      final markers = <(IconData, Color)>[
+        if (isBookmarked)
+          (
+            Icons.bookmark_rounded,
+            isDark ? AppColors.darkAccentGold : AppColors.lightPrimary,
+          ),
+        if (hasNote) (Icons.edit_note_rounded, markerColor),
+        if (hasReflection) (Icons.spa_rounded, markerColor),
+        if (inHifz) (Icons.psychology_rounded, AppColors.statusSuccess),
+      ];
+      final hasIndicators = markers.isNotEmpty;
 
       final ayahText = _formatAyahText(ayah.text);
       final rosetteText =
@@ -894,7 +915,7 @@ class _QuranPageViewState extends State<QuranPageView> {
 
       if (hasIndicators) {
         final iconSize = (fontSize * 0.62).clamp(13.0, 20.0);
-        final iconCount = (isBookmarked ? 1 : 0) + (hasNote ? 1 : 0);
+        final iconCount = markers.length;
         final badgeWidth =
             4.0 + 12.0 + (iconCount * iconSize) + (iconCount > 1 ? 4.0 : 0.0);
         final badgeHeight = (iconSize + 6.0).clamp(18.0, 26.0);
@@ -941,24 +962,14 @@ class _QuranPageViewState extends State<QuranPageView> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (isBookmarked)
+                            for (var i = 0; i < markers.length; i++) ...[
+                              if (i > 0) const SizedBox(width: 3.0),
                               Icon(
-                                Icons.bookmark_rounded,
+                                markers[i].$1,
                                 size: iconSize,
-                                color: isDark
-                                    ? AppColors.darkAccentGold
-                                    : AppColors.lightPrimary,
+                                color: markers[i].$2,
                               ),
-                            if (isBookmarked && hasNote)
-                              const SizedBox(width: 3.0),
-                            if (hasNote)
-                              Icon(
-                                Icons.edit_note_rounded,
-                                size: iconSize,
-                                color: isDark
-                                    ? AppColors.darkAccentGold
-                                    : AppColors.lightAccentGold,
-                              ),
+                            ],
                           ],
                         ),
                       ),

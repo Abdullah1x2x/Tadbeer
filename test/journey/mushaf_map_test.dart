@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/journey/mushaf_map_screen.dart';
+import 'package:tadbeer/features/memorization/memorization_model.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 
 void main() {
@@ -27,7 +28,11 @@ void main() {
     // Al-Baqarah 2 is on page 2: saving it upgrades that page.
     await store.toggleBookmark(QuranRepository.instance.getAyah(2, 2)!);
 
+    // A verse in memorization on page 5 shows the memorization layer.
+    await HifzStore.toggle(2, 25);
+
     final levels = computePageActivity(store);
+    expect(levels[4], PageActivity.memorizing);
     expect(levels[0], PageActivity.none);
     expect(levels[1], PageActivity.marked);
     expect(levels[2], PageActivity.read);

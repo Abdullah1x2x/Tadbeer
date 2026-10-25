@@ -338,7 +338,21 @@ class _DayCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: ayah == null
                         ? null
-                        : () => TadbeerPauseSheet.show(context, ayah),
+                        : () async {
+                            await TadbeerPauseSheet.show(context, ayah);
+                            // Saving a reflection on today's verse completes
+                            // the day, so the reader doesn't tap twice.
+                            final saved = UserDataStore.instance.getTadbeer(
+                              ayah.surahNumber,
+                              ayah.ayahNumber,
+                            );
+                            if (saved != null && !saved.isEmpty) {
+                              await GuidedPathwayProgress.completeDay(
+                                pathwayId,
+                                day,
+                              );
+                            }
+                          },
                     icon: const Icon(Icons.spa_rounded),
                     label: Text(l10n.tadbeerPause),
                   ),

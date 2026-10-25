@@ -105,8 +105,8 @@ class AppStrings {
 
   /// Legend label for [PageActivity] by index.
   String activityLabel(int i) => isArabic
-      ? const ['لم تُقرأ', 'مقروءة', 'محفوظة أو مميزة', 'فيها تدبر'][i]
-      : const ['Not read', 'Read', 'Saved or highlighted', 'Reflected'][i];
+      ? const ['لم تُقرأ', 'مقروءة', 'محفوظة أو مميزة', 'في الحفظ', 'فيها تدبر'][i]
+      : const ['Not read', 'Read', 'Saved or highlighted', 'Memorizing', 'Reflected'][i];
   String get noReflectionsYet =>
       isArabic ? 'لا توجد وقفات تدبر بعد' : 'No reflections yet';
   String get reflectionsEmptyHint => isArabic
@@ -191,6 +191,19 @@ class AppStrings {
       isArabic ? 'ورد الختمة: ${_n(pages)} صفحة' : 'Khatma portion: $pages pages';
   String get portionReminderSet =>
       isArabic ? 'سنذكّرك بوردك كل يوم' : 'We’ll remind you every day';
+
+  String get reflectedToday =>
+      isArabic ? 'تدبّرتها اليوم، بارك الله فيك' : 'Reflected on today';
+
+  String get addToMemorization => isArabic ? 'أضف للحفظ' : 'Add to memorization';
+  String get removeFromMemorization =>
+      isArabic ? 'إزالة من الحفظ' : 'Remove from memorization';
+
+  String get journeyBackupSection => isArabic
+      ? 'الختمة والإحصاءات والحفظ والمسارات'
+      : 'Khatma, stats, memorization and pathways';
+
+  String get dailyJourney => isArabic ? 'رحلة يومية' : 'Daily journey';
 
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';

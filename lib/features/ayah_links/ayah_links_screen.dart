@@ -8,6 +8,7 @@ import '../../features/ayah_links/ayah_link_model.dart';
 import '../../features/ayah_links/ayah_link_repository.dart';
 import '../../features/quran/data/quran_repository.dart';
 import 'ayah_link_detail_screen.dart';
+import '../pathways/guided_pathways_screen.dart';
 import 'curated_pathways.dart';
 import 'widgets/ayah_link_qr_dialog.dart';
 import 'widgets/create_link_dialog.dart';
@@ -217,9 +218,12 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              // Wraps on narrow phones now that it holds
+                              // two actions.
+                              Wrap(
+                                alignment: WrapAlignment.spaceBetween,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 6,
                                 children: [
                                   Text(
                                     context.l10n.linkedAyahsCount(
@@ -234,6 +238,25 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                       color: isDark
                                           ? AppColors.nightSubtitle
                                           : AppColors.daySubtitle,
+                                    ),
+                                  ),
+                                  // The same pathway as a day-by-day journey.
+                                  TextButton.icon(
+                                    onPressed: () {
+                                      Navigator.pop(sheetCtx);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => PathwayJourneyScreen(
+                                            pathway: pathway,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.route_rounded, size: 16),
+                                    label: Text(
+                                      context.l10n.dailyJourney,
+                                      style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
                                   ElevatedButton.icon(
