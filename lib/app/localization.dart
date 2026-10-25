@@ -130,6 +130,29 @@ class AppStrings {
   String get pathwayComplete =>
       isArabic ? 'أتممت المسار، بارك الله فيك' : 'Pathway complete!';
 
+  // Memorization (الحفظ)
+  String get memorization => isArabic ? 'الحفظ والمراجعة' : 'Memorization';
+  String versesMemorized(int n) =>
+      isArabic ? 'آيات محفوظة: ${_n(n)}' : 'Verses memorized: $n';
+  String get memorizationHint => isArabic
+      ? 'اختر سورة: تظهر الآية مخفية إلا كلمتها الأولى، استحضرها ثم اكشفها وقيّم نفسك. نعيد عليك ما تحتاجه في الوقت المناسب.'
+      : 'Pick a surah: each verse is hidden except its first word. Recall it, reveal, and rate yourself; we bring it back at the right time.';
+  String reviewToday(int n) =>
+      isArabic ? 'مراجعة اليوم (${_n(n)})' : 'Review today ($n)';
+  String get nothingDueToday =>
+      isArabic ? 'لا مراجعة مستحقة اليوم' : 'Nothing due today';
+  String get chooseSurahToMemorize =>
+      isArabic ? 'اختر سورة للحفظ' : 'Choose a surah to memorize';
+  String versesOfTotal(int a, int b) =>
+      isArabic ? '${_n(a)} / ${_n(b)}' : '$a / $b';
+  String get tapToReveal => isArabic ? 'اضغط لكشف الآية' : 'Tap to reveal';
+  String get needsReview => isArabic ? 'أحتاج مراجعة' : 'Needs review';
+  String get mastered => isArabic ? 'أتقنتها' : 'Mastered';
+  String get sessionDone => isArabic ? 'أحسنت! انتهت الجلسة' : 'Session done!';
+  String sessionSummary(int a, int b) => isArabic
+      ? 'أتقنت ${_n(a)} من ${_n(b)} آية. سنعيد عليك الباقي غداً.'
+      : 'You mastered $a of $b verses. The rest will come back tomorrow.';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';
