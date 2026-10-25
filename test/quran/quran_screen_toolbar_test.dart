@@ -11,6 +11,7 @@ import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
 import 'package:tadbeer/features/quran/widgets/quran_side_menu.dart';
 import 'package:tadbeer/features/search/search_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -108,10 +109,10 @@ void main() {
         await tester.pumpAndSettle();
 
         // Top bar buttons
-        final menuFinder = find.byIcon(Icons.menu);
-        final searchFinder = find.byIcon(Icons.search);
+        final menuFinder = find.byIcon(AppIcons.list);
+        final searchFinder = find.byIcon(AppIcons.magnifyingGlass);
         final meaningsTopFinder = find.byTooltip('معاني كلمات الصفحة');
-        final fontSizeFinder = find.byIcon(Icons.format_size_rounded);
+        final fontSizeFinder = find.byIcon(AppIcons.textAa);
 
         expect(menuFinder, findsOneWidget);
         expect(searchFinder, findsOneWidget);
@@ -130,9 +131,9 @@ void main() {
         expect(sliderFinder, findsOneWidget);
 
         // Verify obsolete items are NOT in toolbar
-        expect(find.byIcon(Icons.more_vert), findsNothing);
-        expect(find.byIcon(Icons.arrow_back), findsNothing);
-        expect(find.byIcon(Icons.arrow_forward), findsNothing);
+        expect(find.byIcon(AppIcons.dotsThreeVertical), findsNothing);
+        expect(find.byIcon(AppIcons.arrowLeft), findsNothing);
+        expect(find.byIcon(AppIcons.arrowRight), findsNothing);
 
         // Test ☰ opens Drawer
         await tester.tap(menuFinder);

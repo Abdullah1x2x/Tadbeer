@@ -9,6 +9,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_repository.dart';
 import 'memorization_model.dart';
 import '../continue/last_activity.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة الحفظ: الإحصاءات، ومراجعة اليوم، واختيار سورة للحفظ.
 class MemorizationScreen extends StatelessWidget {
@@ -50,7 +51,7 @@ class MemorizationScreen extends StatelessWidget {
                         Row(
                           children: [
                             Icon(
-                              Icons.psychology_rounded,
+                              AppIcons.brainFill,
                               color: gold,
                               size: 30,
                             ),
@@ -79,7 +80,7 @@ class MemorizationScreen extends StatelessWidget {
                           onPressed: due.isEmpty
                               ? null
                               : () => _startSession(context, due),
-                          icon: const Icon(Icons.replay_rounded),
+                          icon: const Icon(AppIcons.arrowCounterClockwise),
                           label: Text(
                             due.isEmpty
                                 ? l10n.nothingDueToday
@@ -217,11 +218,11 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
         ),
         body: _finished
             ? EmptyState(
-                icon: Icons.emoji_events_rounded,
+                icon: AppIcons.trophy,
                 title: l10n.sessionDone,
                 hint: l10n.sessionSummary(_remembered, widget.verses.length),
                 actionLabel: l10n.close,
-                actionIcon: Icons.check_rounded,
+                actionIcon: AppIcons.check,
                 onAction: () => Navigator.pop(context),
               )
             : _buildCard(context, l10n, gold),
@@ -327,7 +328,7 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: _revealed ? () => _grade(false) : null,
-                    icon: const Icon(Icons.refresh_rounded),
+                    icon: const Icon(AppIcons.arrowClockwise),
                     label: Text(l10n.needsReview),
                   ),
                 ),
@@ -335,7 +336,7 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
                 Expanded(
                   child: FilledButton.icon(
                     onPressed: _revealed ? () => _grade(true) : null,
-                    icon: const Icon(Icons.check_rounded),
+                    icon: const Icon(AppIcons.check),
                     label: Text(l10n.mastered),
                   ),
                 ),

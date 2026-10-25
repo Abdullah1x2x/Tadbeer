@@ -7,6 +7,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'adhkar_reminders.dart';
 import 'adhkar_repository.dart';
 import '../continue/last_activity.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة أذكار الصباح والمساء المأثورة بتصميم هادئ ومريح مع عداد تفاعلي لكل ذكر.
 class MorningEveningAdhkarScreen extends StatefulWidget {
@@ -133,12 +134,12 @@ class _MorningEveningAdhkarScreenState
           actions: [
             IconButton(
               tooltip: l10n.adhkarReminders,
-              icon: const Icon(Icons.notifications_active_outlined),
+              icon: const Icon(AppIcons.bellRinging),
               onPressed: () => AdhkarReminders.showSettingsSheet(context),
             ),
             IconButton(
               tooltip: l10n.resetCounters,
-              icon: const Icon(Icons.restart_alt_rounded),
+              icon: const Icon(AppIcons.arrowCounterClockwise),
               onPressed: _resetAllCounts,
             ),
           ],
@@ -170,7 +171,7 @@ class _MorningEveningAdhkarScreenState
                       Expanded(
                         child: _TabButton(
                           title: l10n.morningAdhkar,
-                          icon: Icons.wb_sunny_rounded,
+                          icon: AppIcons.sunFill,
                           count: AdhkarRepository.morningAdhkar.length,
                           isSelected:
                               _currentCategory == AdhkarCategory.morning,
@@ -183,7 +184,7 @@ class _MorningEveningAdhkarScreenState
                       Expanded(
                         child: _TabButton(
                           title: l10n.eveningAdhkar,
-                          icon: Icons.nightlight_round,
+                          icon: AppIcons.moon,
                           count: AdhkarRepository.eveningAdhkar.length,
                           isSelected:
                               _currentCategory == AdhkarCategory.evening,
@@ -394,7 +395,7 @@ class _AdhkarCard extends StatelessWidget {
               ),
               IconButton(
                 tooltip: l10n.copyDhikr,
-                icon: const Icon(Icons.copy_rounded, size: 17),
+                icon: const Icon(AppIcons.copy, size: 17),
                 visualDensity: VisualDensity.compact,
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -434,8 +435,8 @@ class _AdhkarCard extends StatelessWidget {
                     children: [
                       Icon(
                         isComplete
-                            ? Icons.check_circle_rounded
-                            : Icons.touch_app_rounded,
+                            ? AppIcons.checkCircleFill
+                            : AppIcons.handTap,
                         size: 14,
                         color: isComplete
                             ? (isDark
@@ -503,7 +504,7 @@ class _AdhkarCard extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.auto_awesome_rounded,
+                    AppIcons.sparkleFill,
                     size: 13,
                     color: isDark
                         ? AppColors.darkAccentGold

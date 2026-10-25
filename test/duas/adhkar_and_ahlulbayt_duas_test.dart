@@ -9,6 +9,7 @@ import 'package:tadbeer/features/duas/duas_screen.dart';
 import 'package:tadbeer/features/duas/general_duas_list_screen.dart';
 import 'package:tadbeer/features/duas/morning_evening_adhkar_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 Widget buildTestWidget(Widget child) {
   return AppLocalizationScope(
@@ -184,7 +185,7 @@ void main() {
       expect(find.textContaining('دعاء مكارم الأخلاق'), findsNothing);
 
       // Clear search
-      final clearBtn = find.byIcon(Icons.clear_rounded);
+      final clearBtn = find.byIcon(AppIcons.x);
       await tester.tap(clearBtn);
       await tester.pumpAndSettle();
 

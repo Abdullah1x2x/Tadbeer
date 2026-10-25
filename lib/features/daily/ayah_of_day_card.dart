@@ -10,6 +10,7 @@ import '../quran/data/quran_repository.dart';
 import '../share/ayah_share_sheet.dart';
 import '../tadbeer/tadbeer_model.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// اختيار آية اليوم: ثابتة طوال اليوم وتتغير يومياً، من آيات متوسطة الطول.
 class AyahOfTheDay {
@@ -79,7 +80,7 @@ class AyahOfTheDayCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.wb_sunny_rounded, color: gold, size: 18),
+                    const Icon(AppIcons.sunFill, color: gold, size: 18),
                     const SizedBox(width: 6),
                     Text(
                       l10n.ayahOfTheDay,
@@ -133,7 +134,7 @@ class AyahOfTheDayCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                Icons.check_circle_rounded,
+                                AppIcons.checkCircleFill,
                                 color: gold,
                                 size: 16,
                               ),
@@ -165,17 +166,17 @@ class AyahOfTheDayCard extends StatelessWidget {
                   alignment: WrapAlignment.center,
                   children: [
                     _Action(
-                      icon: Icons.spa_rounded,
+                      icon: AppIcons.flowerLotusFill,
                       label: l10n.reflectOnIt,
                       onTap: () => TadbeerPauseSheet.show(context, ayah),
                     ),
                     _Action(
-                      icon: Icons.ios_share_rounded,
+                      icon: AppIcons.export,
                       label: l10n.share,
                       onTap: () => AyahShareSheet.show(context, ayah),
                     ),
                     _Action(
-                      icon: Icons.self_improvement_rounded,
+                      icon: AppIcons.personSimpleTaiChi,
                       label: l10n.focusMode,
                       onTap: () => FocusModeScreen.open(context, ayah),
                     ),

@@ -11,6 +11,7 @@ import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/quran/widgets/word_meanings_panel.dart';
 import 'package:tadbeer/features/word_meanings/data/custom_word_meanings.dart';
 import 'package:tadbeer/features/word_meanings/word_meanings_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -240,7 +241,7 @@ void main() {
                     onPressed: () {
                       setState(() => currentPage = 2);
                     },
-                    child: const Icon(Icons.arrow_forward),
+                    child: const Icon(AppIcons.arrowRight),
                   ),
                 );
               },

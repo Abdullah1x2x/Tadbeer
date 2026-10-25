@@ -6,6 +6,7 @@ import '../../core/services/local_reminder_service.dart';
 import '../../core/storage/user_data_store.dart';
 import '../reminders/reminder_model.dart';
 import 'adhkar_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// تذكيرات أذكار الصباح والمساء: تنبيه يومي يفتح الأذكار مباشرة.
 class AdhkarReminders {
@@ -133,8 +134,8 @@ class _ReminderRow extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       secondary: Icon(
         category == AdhkarCategory.morning
-            ? Icons.wb_sunny_rounded
-            : Icons.nights_stay_rounded,
+            ? AppIcons.sunFill
+            : AppIcons.moonStars,
       ),
       title: Text(title),
       subtitle: time == null

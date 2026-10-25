@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// فصل أو مبحث ضمن الملزمة أو الكتاب التدبري.
 class BookChapter {
@@ -44,7 +45,7 @@ class BookSection {
     required this.id,
     required this.name,
     this.description = '',
-    this.icon = Icons.folder_special_rounded,
+    this.icon = AppIcons.folderStar,
     this.color,
     this.countLabel,
     this.seriesFilterList = const [],
@@ -67,7 +68,7 @@ class BookSection {
         id: json['id'] as String? ?? '',
         name: json['name'] as String? ?? '',
         description: json['description'] as String? ?? '',
-        icon: Icons.folder_special_rounded,
+        icon: AppIcons.folderStar,
         color: json['color'] != null ? Color(json['color'] as int) : null,
         countLabel: json['countLabel'] as String?,
         seriesFilterList: (json['seriesFilterList'] as List<dynamic>?)
@@ -104,7 +105,7 @@ class BookModel {
     this.subtitle = '',
     this.author = '',
     required this.category,
-    this.icon = Icons.menu_book_rounded,
+    this.icon = AppIcons.bookOpenFill,
     this.estimatedMinutes = 10,
     this.filePath,
     this.fileName,
@@ -169,7 +170,7 @@ class BookModel {
         subtitle: json['subtitle'] as String? ?? '',
         author: json['author'] as String? ?? '',
         category: json['category'] as String? ?? '',
-        icon: Icons.menu_book_rounded,
+        icon: AppIcons.bookOpenFill,
         estimatedMinutes: json['estimatedMinutes'] as int? ?? 10,
         filePath: json['filePath'] as String?,
         fileName: json['fileName'] as String?,

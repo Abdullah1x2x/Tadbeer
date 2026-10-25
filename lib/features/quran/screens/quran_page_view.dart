@@ -12,6 +12,7 @@ import '../../memorization/memorization_model.dart';
 import '../widgets/ayah_action_sheet.dart';
 import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// متعرف إيماءات مخصص للآيات القرآنية المدمجة داخل TextSpan.
 ///
@@ -545,7 +546,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                                               ],
                                             ),
                                             child: Icon(
-                                              Icons.keyboard_arrow_down_rounded,
+                                              AppIcons.caretDown,
                                               size: 16,
                                               color: isDark
                                                   ? AppColors.darkAccentGold
@@ -861,12 +862,12 @@ class _QuranPageViewState extends State<QuranPageView> {
       final markers = <(IconData, Color)>[
         if (isBookmarked)
           (
-            Icons.bookmark_rounded,
+            AppIcons.bookmarkSimpleFill,
             isDark ? AppColors.darkAccentGold : AppColors.lightPrimary,
           ),
-        if (hasNote) (Icons.edit_note_rounded, markerColor),
-        if (hasReflection) (Icons.spa_rounded, markerColor),
-        if (inHifz) (Icons.psychology_rounded, AppColors.statusSuccess),
+        if (hasNote) (AppIcons.notePencil, markerColor),
+        if (hasReflection) (AppIcons.flowerLotusFill, markerColor),
+        if (inHifz) (AppIcons.brainFill, AppColors.statusSuccess),
       ];
       final hasIndicators = markers.isNotEmpty;
 

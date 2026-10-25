@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 
 import '../curated_books.dart';
+import '../../../core/design_system/app_icons.dart';
 
 // =============================================================================
 // 📚 ملازم هدي القرآن الكريم — السيد حسين بدر الدين الحوثي (91 ملزمة موثقة)
@@ -17,7 +17,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_64.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١٨ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -27,7 +27,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_68.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١٩ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -37,7 +37,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_67.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٠ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -47,7 +47,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_70.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢١ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -57,7 +57,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_69.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٢ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -67,7 +67,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_65.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٣ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -77,7 +77,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_66.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٥ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -87,7 +87,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_63.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٦ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -97,7 +97,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_89.pdf',
     estimatedMinutes: 30,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٨ يناير ٢٠٠٢م • موثقة',
     chapters: const [
       BookChapter(
@@ -129,7 +129,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_76.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٩ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -139,7 +139,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_73.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٣٠ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -149,7 +149,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_72.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٤ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -159,7 +159,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_71.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٥ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -169,7 +169,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_75.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٦ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -179,7 +179,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_74.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٨ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -189,7 +189,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_45.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٨ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -199,7 +199,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_47.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٩ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -209,7 +209,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_46.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١١ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -219,7 +219,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_48.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١٢ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -229,7 +229,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_41.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١٣ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -239,7 +239,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_43.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١٤ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -249,7 +249,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_42.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١٥ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -259,7 +259,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_44.pdf',
     estimatedMinutes: 25,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '١٦ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -269,7 +269,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_87.pdf',
     estimatedMinutes: 35,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٠ مايو ٢٠٠٤م • أواخر الدروس',
     chapters: const [
       BookChapter(
@@ -302,7 +302,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_88.pdf',
     estimatedMinutes: 35,
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     badgeText: '٢٧ مايو ٢٠٠٤م • أواخر الدروس',
     chapters: const [
       BookChapter(
@@ -334,7 +334,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_57.pdf',
     estimatedMinutes: 25,
-    icon: Icons.menu_book_rounded,
+    icon: AppIcons.bookOpenFill,
     badgeText: '٢٨ مايو ٢٠٠٣م',
   ),
   BookConfig(
@@ -344,7 +344,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_55.pdf',
     estimatedMinutes: 25,
-    icon: Icons.menu_book_rounded,
+    icon: AppIcons.bookOpenFill,
     badgeText: '٢٩ مايو ٢٠٠٣م',
   ),
   BookConfig(
@@ -354,7 +354,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_58.pdf',
     estimatedMinutes: 25,
-    icon: Icons.menu_book_rounded,
+    icon: AppIcons.bookOpenFill,
     badgeText: '٣٠ مايو ٢٠٠٣م',
   ),
   BookConfig(
@@ -364,7 +364,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_59.pdf',
     estimatedMinutes: 25,
-    icon: Icons.menu_book_rounded,
+    icon: AppIcons.bookOpenFill,
     badgeText: '٣١ مايو ٢٠٠٣م',
   ),
   BookConfig(
@@ -374,7 +374,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_56.pdf',
     estimatedMinutes: 25,
-    icon: Icons.menu_book_rounded,
+    icon: AppIcons.bookOpenFill,
     badgeText: '١ يونيو ٢٠٠٣م',
   ),
   BookConfig(
@@ -384,7 +384,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_60.pdf',
     estimatedMinutes: 25,
-    icon: Icons.menu_book_rounded,
+    icon: AppIcons.bookOpenFill,
     badgeText: '٢ يونيو ٢٠٠٣م',
   ),
   BookConfig(
@@ -394,7 +394,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_19.pdf',
     estimatedMinutes: 25,
-    icon: Icons.menu_book_rounded,
+    icon: AppIcons.bookOpenFill,
     badgeText: '٣ يونيو ٢٠٠٣م • ختام السلسلة',
   ),
   BookConfig(
@@ -404,7 +404,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_07.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٣ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -414,7 +414,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_17.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٤ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -424,7 +424,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_14.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٥ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -434,7 +434,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_23.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٦ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -444,7 +444,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_20.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٧ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -454,7 +454,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_10.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٨ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -464,7 +464,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_24.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١٠ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -474,7 +474,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_12.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١١ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -484,7 +484,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_11.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١٢ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -494,7 +494,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_06.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١٣ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -504,7 +504,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_15.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١٤ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -514,7 +514,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_21.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١٦ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -524,7 +524,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_18.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١٧ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -534,7 +534,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_08.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '١٨ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -544,7 +544,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_25.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٢٠ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -554,7 +554,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_28.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٢١ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -564,7 +564,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_16.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٢٤ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -574,7 +574,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_13.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٢٥ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -584,7 +584,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_22.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٢٦ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -594,7 +594,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_09.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٢٨ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -604,7 +604,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_05.pdf',
     estimatedMinutes: 25,
-    icon: Icons.nights_stay_rounded,
+    icon: AppIcons.moonStars,
     badgeText: '٢٩ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -614,7 +614,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_49.pdf',
     estimatedMinutes: 25,
-    icon: Icons.favorite_rounded,
+    icon: AppIcons.heartFill,
     badgeText: '١ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -624,7 +624,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_50.pdf',
     estimatedMinutes: 25,
-    icon: Icons.favorite_rounded,
+    icon: AppIcons.heartFill,
     badgeText: '٢ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -634,7 +634,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_77.pdf',
     estimatedMinutes: 25,
-    icon: Icons.spa_rounded,
+    icon: AppIcons.flowerLotusFill,
     badgeText: '٩ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -644,7 +644,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_78.pdf',
     estimatedMinutes: 25,
-    icon: Icons.spa_rounded,
+    icon: AppIcons.flowerLotusFill,
     badgeText: 'في رحاب الصلاة على الآل',
   ),
   BookConfig(
@@ -654,7 +654,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_54.pdf',
     estimatedMinutes: 25,
-    icon: Icons.spa_rounded,
+    icon: AppIcons.flowerLotusFill,
     badgeText: '٢٦ يوليو ٢٠٠٢م',
   ),
   BookConfig(
@@ -664,7 +664,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_85.pdf',
     estimatedMinutes: 25,
-    icon: Icons.spa_rounded,
+    icon: AppIcons.flowerLotusFill,
     badgeText: '١٤٢٣هـ',
   ),
   BookConfig(
@@ -674,7 +674,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_27.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٧ يناير ٢٠٠٢م • انطلاقة الشعار',
   ),
   BookConfig(
@@ -684,7 +684,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_01.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٢٤ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -694,7 +694,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_30.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٣١ يناير ٢٠٠٢م',
   ),
   BookConfig(
@@ -704,7 +704,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_36.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٣ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -714,7 +714,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_53.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٧ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -724,7 +724,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_84.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٠ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -734,7 +734,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_81.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١١ فبراير ٢٠٠٢م',
   ),
   BookConfig(
@@ -744,7 +744,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_03.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٨ مارس ٢٠٠٢م',
   ),
   BookConfig(
@@ -754,7 +754,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_90.pdf',
     estimatedMinutes: 35,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٢١ ذو الحجة ١٤٢٢هـ • موثقة',
     chapters: const [
       BookChapter(
@@ -787,7 +787,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_61.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٩ مارس ٢٠٠٢م',
   ),
   BookConfig(
@@ -797,7 +797,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_37.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٦ مارس ٢٠٠٢م',
   ),
   BookConfig(
@@ -807,7 +807,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_38.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'ذو الحجة ١٤٢٢هـ',
   ),
   BookConfig(
@@ -817,7 +817,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_39.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٢٣ مارس ٢٠٠٢م',
   ),
   BookConfig(
@@ -827,7 +827,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_91.pdf',
     estimatedMinutes: 35,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٤ أغسطس ٢٠٠٢م • موثقة',
     chapters: const [
       BookChapter(
@@ -859,7 +859,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_04.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٢ سبتمبر ٢٠٠٢م',
   ),
   BookConfig(
@@ -869,7 +869,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_80.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٢ سبتمبر ٢٠٠٢م',
   ),
   BookConfig(
@@ -879,7 +879,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_33.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٠ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -889,7 +889,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_26.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١١ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -899,7 +899,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_40.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٩ رمضان ١٤٢٣هـ',
   ),
   BookConfig(
@@ -909,7 +909,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_86.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٢٨ رمضان ١٤٢٢هـ',
   ),
   BookConfig(
@@ -919,7 +919,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_52.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '٢١ ديسمبر ٢٠٠٢م',
   ),
   BookConfig(
@@ -929,7 +929,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_34.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٨ ذو الحجة ١٤٢٢هـ',
   ),
   BookConfig(
@@ -939,7 +939,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_35.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٨ ذي الحجة ١٤٢٣هـ',
   ),
   BookConfig(
@@ -949,7 +949,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_02.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'في رحاب الاستقامة والثبات',
   ),
   BookConfig(
@@ -959,7 +959,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_29.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: '١٤٢٢هـ',
   ),
   BookConfig(
@@ -969,7 +969,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_79.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'رؤية قرآنية فارقة',
   ),
   BookConfig(
@@ -979,7 +979,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_51.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'في رحاب هداية الله',
   ),
   BookConfig(
@@ -989,7 +989,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_31.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'رص الصفوف وتآلف القلوب',
   ),
   BookConfig(
@@ -999,7 +999,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_83.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'في ظلال المسارعة بالخيرات',
   ),
   BookConfig(
@@ -1009,7 +1009,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_32.pdf',
     estimatedMinutes: 30,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'الجمعة ٢٩ أغسطس ٢٠٠٣م',
   ),
   BookConfig(
@@ -1019,7 +1019,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_62.pdf',
     estimatedMinutes: 25,
-    icon: Icons.campaign_rounded,
+    icon: AppIcons.megaphone,
     badgeText: 'مسؤولية البلاغ والتبيين',
   ),
   BookConfig(
@@ -1029,7 +1029,7 @@ final List<BookConfig> malazemSayyedHusseinBooks = [
     author: 'السيد حسين بدر الدين الحوثي',
     assetPath: 'assets/books/malazem/m_82.pdf',
     estimatedMinutes: 10,
-    icon: Icons.format_list_numbered_rounded,
+    icon: AppIcons.listNumbers,
     badgeText: 'التوثيق الجامع للملازم',
   ),
 ];

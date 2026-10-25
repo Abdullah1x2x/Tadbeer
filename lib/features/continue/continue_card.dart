@@ -12,6 +12,7 @@ import '../memorization/memorization_screen.dart';
 import '../pathways/guided_pathways_screen.dart';
 import '../quran/data/quran_repository.dart';
 import 'last_activity.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// بطاقة «أكمل من حيث توقفت»: آخر أذكار وكتاب وحفظ ومسار في مكان واحد.
 class ContinueCard extends StatelessWidget {
@@ -66,7 +67,7 @@ class ContinueCard extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     subtitle: Text(e.subtitle),
-                    trailing: const Icon(Icons.chevron_right_rounded),
+                    trailing: const Icon(AppIcons.caretRight),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => e.open()),
@@ -87,7 +88,7 @@ class ContinueCard extends StatelessWidget {
       case ActivityKind.adhkar:
         final morning = a.ref == AdhkarCategory.morning.name;
         return _Entry(
-          icon: morning ? Icons.wb_sunny_rounded : Icons.nights_stay_rounded,
+          icon: morning ? AppIcons.sunFill : AppIcons.moonStars,
           title: morning
               ? l10n.morningAdhkarReminder
               : l10n.eveningAdhkarReminder,
@@ -104,7 +105,7 @@ class ContinueCard extends StatelessWidget {
             .firstOrNull;
         if (book == null) return null;
         return _Entry(
-          icon: Icons.auto_stories_rounded,
+          icon: AppIcons.bookOpenTextFill,
           title: book.title,
           subtitle: l10n.chapterN(a.position + 1),
           open: () =>
@@ -115,7 +116,7 @@ class ContinueCard extends StatelessWidget {
         if (surah == null) return null;
         final s = QuranRepository.instance.getSurah(surah);
         return _Entry(
-          icon: Icons.psychology_rounded,
+          icon: AppIcons.brainFill,
           title: s.name,
           subtitle: l10n.memorization,
           open: () => HifzSessionScreen(
@@ -128,7 +129,7 @@ class ContinueCard extends StatelessWidget {
             .firstOrNull;
         if (p == null) return null;
         return _Entry(
-          icon: Icons.route_rounded,
+          icon: AppIcons.path,
           title: p.title,
           subtitle: l10n.guidedPathways,
           open: () => PathwayJourneyScreen(pathway: p),

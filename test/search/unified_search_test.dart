@@ -17,6 +17,7 @@ import 'package:tadbeer/features/reminders/reminder_model.dart';
 import 'package:tadbeer/features/reminders/reminders_screen.dart';
 import 'package:tadbeer/features/search/search_provider.dart';
 import 'package:tadbeer/features/search/search_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 class _CustomTestSearchProvider implements SearchProvider {
   final bool shouldThrow;
@@ -30,7 +31,7 @@ class _CustomTestSearchProvider implements SearchProvider {
   String getSectionTitle(BuildContext context) => 'قسم تجريبي مخصص';
 
   @override
-  IconData get icon => Icons.extension_rounded;
+  IconData get icon => AppIcons.puzzlePiece;
 
   @override
   Future<List<SearchResultItem>> search(
@@ -391,7 +392,7 @@ void main() {
       expect(find.byType(Card), findsWidgets);
 
       // Clear search via clear icon
-      final clearIconFinder = find.byIcon(Icons.clear);
+      final clearIconFinder = find.byIcon(AppIcons.x);
       expect(clearIconFinder, findsOneWidget);
       await tester.tap(clearIconFinder);
       await tester.pumpAndSettle();
@@ -492,7 +493,7 @@ void main() {
       await tester.pumpWidget(buildTestWidget(const HomeScreen()));
       await tester.pumpAndSettle();
 
-      final tuneIconFinder = find.byIcon(Icons.tune_rounded);
+      final tuneIconFinder = find.byIcon(AppIcons.slidersHorizontal);
       expect(tuneIconFinder, findsOneWidget);
 
       await tester.tap(tuneIconFinder);

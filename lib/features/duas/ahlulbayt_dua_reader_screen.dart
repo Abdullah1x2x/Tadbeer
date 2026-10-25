@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'ahlulbayt_duas_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة قراءة وتدبر الدعاء المأثور بنصوص واضحة وإمكانية ضبط حجم الخط ونسخ المقاطع.
 class AhlulbaytDuaReaderScreen extends StatefulWidget {
@@ -79,17 +80,17 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
           actions: [
             IconButton(
               tooltip: l10n.decreaseFontSize,
-              icon: const Icon(Icons.text_decrease_rounded, size: 20),
+              icon: const Icon(AppIcons.minus, size: 20),
               onPressed: _decreaseFontSize,
             ),
             IconButton(
               tooltip: l10n.increaseFontSize,
-              icon: const Icon(Icons.text_increase_rounded, size: 20),
+              icon: const Icon(AppIcons.plus, size: 20),
               onPressed: _increaseFontSize,
             ),
             IconButton(
               tooltip: l10n.copyFullDua,
-              icon: const Icon(Icons.copy_all_rounded, size: 20),
+              icon: const Icon(AppIcons.copy, size: 20),
               onPressed: _copyAllText,
             ),
           ],
@@ -221,7 +222,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
               // زر نسخ الدعاء كاملاً في الأسفل
               OutlinedButton.icon(
                 onPressed: _copyAllText,
-                icon: const Icon(Icons.copy_all_rounded, size: 18),
+                icon: const Icon(AppIcons.copy, size: 18),
                 label: Text(
                   l10n.copyFullDua,
                   style: const TextStyle(

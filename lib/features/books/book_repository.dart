@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'curated_books.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// مستودع إدارة حالة وتخزين أقسام وملازم وكتب المكتبة التدبرية محلياً.
 class BookRepository extends ChangeNotifier {
@@ -197,7 +198,7 @@ class BookRepository extends ChangeNotifier {
       id: _uuid.v4(),
       name: cleanName,
       description: description.trim(),
-      icon: icon ?? Icons.folder_special_rounded,
+      icon: icon ?? AppIcons.folderStar,
       createdAt: DateTime.now(),
     );
 

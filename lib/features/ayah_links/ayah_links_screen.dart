@@ -12,6 +12,7 @@ import '../pathways/guided_pathways_screen.dart';
 import 'curated_pathways.dart';
 import 'widgets/ayah_link_qr_dialog.dart';
 import 'widgets/create_link_dialog.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// الشاشة الرئيسية لإدارة وعرض روابط الآيات التدبرية الخاصة بالمستخدم.
 ///
@@ -131,7 +132,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.explore_rounded, color: primary),
+                      Icon(AppIcons.compassFill, color: primary),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -144,7 +145,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                       ),
                       IconButton(
                         tooltip: context.l10n.close,
-                        icon: const Icon(Icons.close_rounded, size: 20),
+                        icon: const Icon(AppIcons.x, size: 20),
                         onPressed: () => Navigator.pop(sheetCtx),
                       ),
                     ],
@@ -253,7 +254,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                         ),
                                       );
                                     },
-                                    icon: const Icon(Icons.route_rounded, size: 16),
+                                    icon: const Icon(AppIcons.path, size: 16),
                                     label: Text(
                                       context.l10n.dailyJourney,
                                       style: const TextStyle(fontSize: 12),
@@ -290,7 +291,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
-                                    icon: const Icon(Icons.add, size: 16),
+                                    icon: const Icon(AppIcons.plus, size: 16),
                                     label: Text(
                                       context.l10n.importPathway,
                                       style: const TextStyle(
@@ -333,12 +334,12 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.explore_outlined),
+              icon: const Icon(AppIcons.compass),
               tooltip: l10n.curatedPathways,
               onPressed: _showCuratedPathwaysSheet,
             ),
             IconButton(
-              icon: const Icon(Icons.qr_code_scanner_rounded),
+              icon: const Icon(AppIcons.scan),
               tooltip: l10n.importFromQrCode,
               onPressed: _importFromQr,
             ),
@@ -361,11 +362,11 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
                       hintText: l10n.searchAyahLinksHint,
-                      prefixIcon: Icon(Icons.search, color: primary),
+                      prefixIcon: Icon(AppIcons.magnifyingGlass, color: primary),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               tooltip: context.l10n.clearText,
-                              icon: const Icon(Icons.clear, size: 18),
+                              icon: const Icon(AppIcons.x, size: 18),
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() => _searchQuery = '');
@@ -413,7 +414,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                     shape: BoxShape.circle,
                                   ),
                                   child: Icon(
-                                    Icons.hub_outlined,
+                                    AppIcons.graph,
                                     size: 36,
                                     color: primary,
                                   ),
@@ -505,7 +506,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                             shape: BoxShape.circle,
                                           ),
                                           child: Icon(
-                                            Icons.hub_outlined,
+                                            AppIcons.graph,
                                             size: 18,
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -553,7 +554,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                         ),
                                         PopupMenuButton<String>(
                                           icon: const Icon(
-                                            Icons.more_vert,
+                                            AppIcons.dotsThreeVertical,
                                             size: 20,
                                           ),
                                           onSelected: (val) {
@@ -569,7 +570,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                               child: Row(
                                                 children: [
                                                   const Icon(
-                                                    Icons.edit_outlined,
+                                                    AppIcons.pencilSimple,
                                                     size: 18,
                                                   ),
                                                   const SizedBox(width: 8),
@@ -584,7 +585,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                               child: Row(
                                                 children: [
                                                   const Icon(
-                                                    Icons.delete_outline,
+                                                    AppIcons.trash,
                                                     color: Colors.redAccent,
                                                     size: 18,
                                                   ),
@@ -671,7 +672,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
           onPressed: _createLink,
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
-          icon: const Icon(Icons.add),
+          icon: const Icon(AppIcons.plus),
           label: Text(l10n.newAyahLink),
         ),
       ),

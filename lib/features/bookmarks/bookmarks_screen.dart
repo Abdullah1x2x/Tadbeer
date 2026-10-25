@@ -8,6 +8,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/bookmarks/bookmark_model.dart';
 import '../../features/quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة عرض قائمة الإشارات المرجعية للانتقال السريع إلى مواضع الآيات في المصحف.
 ///
@@ -60,11 +61,11 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
 
             if (allBookmarks.isEmpty) {
               return EmptyState(
-                icon: Icons.bookmark_border_rounded,
+                icon: AppIcons.bookmarkSimple,
                 title: l10n.noBookmarksYet,
                 hint: l10n.bookmarksEmptyHint,
                 actionLabel: l10n.openMushaf,
-                actionIcon: Icons.menu_book_rounded,
+                actionIcon: AppIcons.bookOpenFill,
                 onAction: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -129,13 +130,13 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                               : AppColors.daySubtitle,
                         ),
                         prefixIcon: Icon(
-                          Icons.search_rounded,
+                          AppIcons.magnifyingGlass,
                           color: AppColors.cyberEmerald,
                         ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
                                 tooltip: context.l10n.clearText,
-                                icon: const Icon(Icons.clear_rounded, size: 20),
+                                icon: const Icon(AppIcons.x, size: 20),
                                 onPressed: () {
                                   _searchController.clear();
                                   setState(() => _searchQuery = '');
@@ -276,7 +277,7 @@ class _BookmarkTile extends StatelessWidget {
               ),
             ),
             child: Icon(
-              Icons.bookmark_rounded,
+              AppIcons.bookmarkSimpleFill,
               color: AppColors.cyberEmerald,
               size: 20,
             ),
@@ -338,7 +339,7 @@ class _BookmarkTile extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, size: 20),
+            icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
             onSelected: (val) {
               if (val == 'delete') onDelete();
             },
@@ -348,7 +349,7 @@ class _BookmarkTile extends StatelessWidget {
                 child: Row(
                   children: [
                     const Icon(
-                      Icons.delete_outline,
+                      AppIcons.trash,
                       size: 18,
                       color: Colors.redAccent,
                     ),

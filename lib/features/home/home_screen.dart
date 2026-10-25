@@ -24,6 +24,7 @@ import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import '../tasbeeh/tasbeeh_screen.dart';
 import '../word_meanings/word_meanings_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// الشاشة الرئيسية لتطبيق تدبير وتضم لوحة الوصول السريع للمصحف وأدوات التدبر.
 ///
@@ -221,7 +222,7 @@ class HomeScreen extends StatelessWidget {
       children: [
         // Settings Button with squircle futuristic styling
         FuturisticIconButton(
-          icon: Icons.settings_outlined,
+          icon: AppIcons.gear,
           tooltip: l10n.settings,
           size: isVeryCompact ? 36 : (isCompact ? 40 : 44),
           iconSize: isVeryCompact ? 18 : (isCompact ? 19 : 20),
@@ -290,7 +291,7 @@ class HomeScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Icon(
-                      Icons.eco_rounded,
+                      AppIcons.leaf,
                       size: iconLeafSize,
                       color:
                           (isDark
@@ -346,7 +347,7 @@ class HomeScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
         child: Row(
           children: [
-            Icon(Icons.search_rounded, color: primaryColor, size: iconSize),
+            Icon(AppIcons.magnifyingGlass, color: primaryColor, size: iconSize),
             SizedBox(width: isVeryCompact ? 8 : 12),
             Expanded(
               child: Text(
@@ -372,7 +373,7 @@ class HomeScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(AppTokens.spaceXxs),
                     child: Icon(
-                      Icons.tune_rounded,
+                      AppIcons.slidersHorizontal,
                       size: isVeryCompact ? 18 : 20,
                       color: primaryColor.withValues(alpha: 0.85),
                     ),
@@ -424,7 +425,7 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      Icon(Icons.tune_rounded, color: primaryColor, size: 20),
+                      Icon(AppIcons.slidersHorizontal, color: primaryColor, size: 20),
                       const SizedBox(width: 8),
                       Text(
                         l10n.filterSearchTitle,
@@ -456,7 +457,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       ActionChip(
                         avatar: const Icon(
-                          Icons.travel_explore_rounded,
+                          AppIcons.globe,
                           size: 16,
                         ),
                         label: Text(l10n.searchAll),
@@ -533,7 +534,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(width: gap),
             Expanded(
               child: _GridFeatureCard(
-                icon: Icons.library_books_rounded,
+                icon: AppIcons.books,
                 title: l10n.wordMeanings,
                 subtitle: l10n.wordsOfQuran,
                 accentColor: AppColors.primary(context),
@@ -558,7 +559,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             Expanded(
               child: _GridFeatureCard(
-                icon: Icons.edit_note_rounded,
+                icon: AppIcons.notePencil,
                 title: l10n.notes,
                 subtitle: l10n.yourThoughtsAndReflections,
                 accentColor: isDark
@@ -580,7 +581,7 @@ class HomeScreen extends StatelessWidget {
             SizedBox(width: gap),
             Expanded(
               child: _GridFeatureCard(
-                icon: Icons.hub_rounded,
+                icon: AppIcons.graphFill,
                 title: l10n.ayahLinks,
                 subtitle: l10n.connectionsAndThemes,
                 accentColor: AppColors.accentGold(context),
@@ -726,7 +727,7 @@ class _QuranHeroCard extends StatelessWidget {
 
           // Navigation Chevron
           Icon(
-            Icons.arrow_back_ios_new_rounded,
+            AppIcons.caretLeft,
             size: isVeryCompact ? 12 : 14,
             color: goldAccent.withValues(alpha: 0.85),
           ),
@@ -960,7 +961,7 @@ class _IstighfarTasbeehCard extends StatelessWidget {
 
           // Navigation Chevron
           Icon(
-            Icons.arrow_back_ios_new_rounded,
+            AppIcons.caretLeft,
             size: isVeryCompact ? 12 : 14,
             color: emeraldAccent.withValues(alpha: 0.8),
           ),
@@ -1026,7 +1027,7 @@ class _BooksHeroCard extends StatelessWidget {
                   : null,
             ),
             child: Icon(
-              Icons.auto_stories_rounded,
+              AppIcons.bookOpenTextFill,
               color: primaryColor,
               size: iconDim,
             ),
@@ -1083,7 +1084,7 @@ class _BooksHeroCard extends StatelessWidget {
 
           // Navigation Chevron
           Icon(
-            Icons.arrow_back_ios_new_rounded,
+            AppIcons.caretLeft,
             size: isVeryCompact ? 12 : 14,
             color:
                 (isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold)

@@ -6,6 +6,7 @@ import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'ahlulbayt_dua_reader_screen.dart';
 import 'ahlulbayt_duas_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة استعراض وبحث أدعية أهل البيت (عليهم السلام) والصحيفة السجادية.
 class AhlulbaytDuasScreen extends StatefulWidget {
@@ -140,14 +141,14 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                             : AppColors.lightTextSecondary,
                       ),
                       prefixIcon: Icon(
-                        Icons.search_rounded,
+                        AppIcons.magnifyingGlass,
                         size: 20,
                         color: isDark ? AppColors.darkAccentGold : primaryColor,
                       ),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               tooltip: context.l10n.clearText,
-                              icon: const Icon(Icons.clear_rounded, size: 18),
+                              icon: const Icon(AppIcons.x, size: 18),
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() => _searchQuery = '');
@@ -255,7 +256,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.search_off_rounded,
+                              AppIcons.magnifyingGlassMinus,
                               size: 48,
                               color: isDark
                                   ? AppColors.darkTextSecondary
@@ -379,7 +380,7 @@ class _DuaCard extends StatelessWidget {
                 ),
                 IconButton(
                   tooltip: context.l10n.copyDuaTooltip,
-                  icon: const Icon(Icons.copy_rounded, size: 17),
+                  icon: const Icon(AppIcons.copy, size: 17),
                   visualDensity: VisualDensity.compact,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
@@ -390,9 +391,7 @@ class _DuaCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Icon(
-                  context.currentLanguage.direction == TextDirection.rtl
-                      ? Icons.arrow_back_ios_new_rounded
-                      : Icons.arrow_forward_ios_rounded,
+                  AppIcons.caretRight,
                   size: 14,
                   color: isDark
                       ? AppColors.darkTextSecondary

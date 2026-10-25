@@ -8,6 +8,7 @@ import '../../app/theme.dart';
 import '../../core/storage/user_data_store.dart';
 import '../quran/screens/quran_screen.dart';
 import 'group_khatma.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة الختمة الجماعية: إنشاء وتوزيع الأجزاء، أو الانضمام برمز.
 class GroupKhatmaScreen extends StatelessWidget {
@@ -131,7 +132,7 @@ class _SetupViewState extends State<_SetupView> {
                 const SizedBox(height: 12),
                 FilledButton.icon(
                   onPressed: _create,
-                  icon: const Icon(Icons.groups_rounded),
+                  icon: const Icon(AppIcons.usersThree),
                   label: Text(l10n.distributeJuz),
                 ),
               ],
@@ -165,7 +166,7 @@ class _SetupViewState extends State<_SetupView> {
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
                   onPressed: _join,
-                  icon: const Icon(Icons.login_rounded),
+                  icon: const Icon(AppIcons.signIn),
                   label: Text(l10n.join),
                 ),
               ],
@@ -203,7 +204,7 @@ class _PickNameView extends StatelessWidget {
           Card(
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
-              leading: const Icon(Icons.person_rounded),
+              leading: const Icon(AppIcons.user),
               title: Text(khatma.names[i]),
               subtitle: Text(l10n.juzList(khatma.juzOf(i))),
               onTap: () => GroupKhatmaStore.save(khatma.copyWith(me: i)),
@@ -301,18 +302,18 @@ class _KhatmaView extends StatelessWidget {
             ),
             IconButton(
               tooltip: l10n.showQr,
-              icon: const Icon(Icons.qr_code_2_rounded),
+              icon: const Icon(AppIcons.qrCode),
               onPressed: () => _showQr(context),
             ),
             IconButton(
               tooltip: l10n.share,
-              icon: const Icon(Icons.ios_share_rounded),
+              icon: const Icon(AppIcons.export),
               onPressed: () =>
                   SharePlus.instance.share(ShareParams(text: _shareText(l10n))),
             ),
             IconButton(
               tooltip: l10n.leaveGroupKhatma,
-              icon: const Icon(Icons.logout_rounded),
+              icon: const Icon(AppIcons.signOut),
               onPressed: () => _confirmLeave(context),
             ),
           ],
@@ -326,7 +327,7 @@ class _KhatmaView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.person_rounded, color: gold),
+                    Icon(AppIcons.user, color: gold),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -355,7 +356,7 @@ class _KhatmaView extends StatelessWidget {
                     title: Text(l10n.juzLabel(juz)),
                     secondary: IconButton(
                       tooltip: l10n.readJuz,
-                      icon: const Icon(Icons.menu_book_rounded),
+                      icon: const Icon(AppIcons.bookOpenFill),
                       // Viewing mode: group reading never moves the
                       // personal reading position or khatma.
                       onPressed: () => Navigator.push(

@@ -12,6 +12,7 @@ import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
 import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// Modal action sheet for interacting with an individual Ayah.
 ///
@@ -225,8 +226,8 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                           visualDensity: VisualDensity.compact,
                           icon: Icon(
                             inHifz
-                                ? Icons.psychology_rounded
-                                : Icons.psychology_outlined,
+                                ? AppIcons.brainFill
+                                : AppIcons.brain,
                             color: inHifz
                                 ? AppColors.accentGold(context)
                                 : null,
@@ -353,7 +354,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            icon: const Icon(Icons.check, size: 16),
+                            icon: const Icon(AppIcons.check, size: 16),
                             label: Text(
                               l10n.save,
                               style: const TextStyle(
@@ -415,7 +416,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                                   ),
                                   child: isSelected
                                       ? Icon(
-                                          Icons.check,
+                                          AppIcons.check,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .primary,
@@ -439,7 +440,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                             if (context.mounted) Navigator.of(context).pop();
                           },
                           icon: const Icon(
-                            Icons.delete_outline,
+                            AppIcons.trash,
                             size: 18,
                             color: Colors.redAccent,
                           ),
@@ -466,7 +467,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       // Tadbeer Pause action
                       Expanded(
                         child: _ActionButton(
-                          icon: Icons.spa_rounded,
+                          icon: AppIcons.flowerLotusFill,
                           label: l10n.tadbeerPause,
                           isPrimary: true,
                           hasActiveIndicator:
@@ -485,7 +486,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       // Ayah Links action
                       Expanded(
                         child: _ActionButton(
-                          icon: Icons.hub_rounded,
+                          icon: AppIcons.graphFill,
                           label: l10n.ayahLink,
                           onTap: () {
                             Navigator.of(context).pop();
@@ -497,7 +498,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       // Note action
                       Expanded(
                         child: _ActionButton(
-                          icon: Icons.edit_note_rounded,
+                          icon: AppIcons.notePencil,
                           label: l10n.addNote,
                           onTap: () => setState(() => _isNoteEditorOpen = true),
                           hasActiveIndicator: _existingNoteId != null,
@@ -508,8 +509,8 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       Expanded(
                         child: _ActionButton(
                           icon: isBookmarked
-                              ? Icons.bookmark_rounded
-                              : Icons.bookmark_border_rounded,
+                              ? AppIcons.bookmarkSimpleFill
+                              : AppIcons.bookmarkSimple,
                           label: isBookmarked
                               ? l10n.removeBookmark
                               : l10n.saveBookmark,
@@ -526,7 +527,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       // Highlight action
                       Expanded(
                         child: _ActionButton(
-                          icon: Icons.highlight_rounded,
+                          icon: AppIcons.highlighterCircle,
                           label: l10n.highlight,
                           iconColor: currentHighlight != null
                               ? AppColors.highlightColors[currentHighlight
@@ -540,7 +541,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       // Share as designed image card
                       Expanded(
                         child: _ActionButton(
-                          icon: Icons.ios_share_rounded,
+                          icon: AppIcons.export,
                           label: l10n.share,
                           onTap: () {
                             final ayah = widget.ayah;
@@ -553,7 +554,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       // Copy action
                       Expanded(
                         child: _ActionButton(
-                          icon: Icons.content_copy_rounded,
+                          icon: AppIcons.copy,
                           label: l10n.copy,
                           onTap: () {
                             final shareText =

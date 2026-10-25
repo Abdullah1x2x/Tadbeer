@@ -9,6 +9,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../core/utils/note_pdf_exporter.dart';
 import '../../features/notes/note_model.dart';
 import '../../features/quran/data/quran_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة محرر الملاحظات والخواطر التدبرية بملء الشاشة.
 ///
@@ -251,7 +252,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 4),
                   child: FuturisticIconButton(
-                    icon: Icons.picture_as_pdf_outlined,
+                    icon: AppIcons.filePdf,
                     tooltip: l10n.exportPdf,
                     size: 38,
                     iconSize: 20,
@@ -263,7 +264,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 child: FuturisticButton(
                   onPressed: _isSaving ? null : _saveNote,
                   isLoading: _isSaving,
-                  icon: Icons.check,
+                  icon: AppIcons.check,
                   label: l10n.save,
                   color: AppColors.primary(context),
                   padding: const EdgeInsets.symmetric(

@@ -6,6 +6,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// الشاشة الرئيسية المستقلة لقسم «معاني كلمات القرآن».
 ///
@@ -129,11 +130,14 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: l10n.searchWordMeaningsHint,
-                      prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                      prefixIcon: const Icon(
+                        AppIcons.magnifyingGlass,
+                        size: 20,
+                      ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
                               tooltip: context.l10n.clearText,
-                              icon: const Icon(Icons.clear_rounded, size: 18),
+                              icon: const Icon(AppIcons.x, size: 18),
                               onPressed: () {
                                 _searchController.clear();
                               },
@@ -177,10 +181,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                             child: DropdownButton<int?>(
                               value: _selectedSurah,
                               isExpanded: true,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                size: 20,
-                              ),
+                              icon: const Icon(AppIcons.caretDown, size: 20),
                               hint: Text(l10n.allSurahsWithCount),
                               dropdownColor: isDark
                                   ? AppColors.darkSurface
@@ -315,7 +316,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.search_off_rounded,
+              AppIcons.magnifyingGlassMinus,
               size: 48,
               color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
             ),
@@ -458,7 +459,7 @@ void _showWordDetailsModal(
                 Row(
                   children: [
                     Icon(
-                      Icons.menu_book_rounded,
+                      AppIcons.bookOpenFill,
                       size: 16,
                       color: isDark ? AppColors.oliveLight : AppColors.olive,
                     ),
@@ -614,7 +615,7 @@ class _WordCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.menu_book_rounded,
+                          AppIcons.bookOpenFill,
                           size: 13,
                           color: isDark
                               ? AppColors.oliveLight
@@ -708,7 +709,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.verified_outlined,
+                    AppIcons.sealCheck,
                     color: isDark ? AppColors.oliveLight : AppColors.olive,
                     size: 24,
                   ),
@@ -786,7 +787,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        Icons.gavel_rounded,
+                        AppIcons.gavel,
                         size: 20,
                         color: isDark
                             ? AppColors.darkPrimary

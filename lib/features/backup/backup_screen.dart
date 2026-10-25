@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/services/backup_crypto_service.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة إنشاء واستعادة النسخ الاحتياطية المشفرة لبيانات المستخدم.
 ///
@@ -177,7 +178,7 @@ class _BackupScreenState extends State<BackupScreen> {
             : AppColors.comsilkLight,
         title: Row(
           children: [
-            const Icon(Icons.warning_amber_rounded, color: Colors.orangeAccent),
+            const Icon(AppIcons.warning, color: Colors.orangeAccent),
             const SizedBox(width: 8),
             Text(
               l10n.restoreWarningTitle,
@@ -336,7 +337,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     Row(
                       children: [
                         Icon(
-                          Icons.upload_file_outlined,
+                          AppIcons.uploadSimple,
                           color: AppColors.olive,
                           size: 24,
                         ),
@@ -479,7 +480,7 @@ class _BackupScreenState extends State<BackupScreen> {
                                 strokeWidth: 2,
                               ),
                             )
-                          : const Icon(Icons.save_alt_rounded),
+                          : const Icon(AppIcons.downloadSimple),
                       label: Text(
                         l10n.saveToDeviceFiles,
                         style: const TextStyle(
@@ -504,7 +505,7 @@ class _BackupScreenState extends State<BackupScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: const Icon(Icons.share_outlined, size: 20),
+                      icon: const Icon(AppIcons.shareNetwork, size: 20),
                       label: Text(
                         l10n.shareViaApps,
                         style: const TextStyle(
@@ -535,7 +536,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     Row(
                       children: [
                         Icon(
-                          Icons.download_for_offline_outlined,
+                          AppIcons.cloudArrowDown,
                           color: AppColors.olive,
                           size: 24,
                         ),
@@ -580,7 +581,7 @@ class _BackupScreenState extends State<BackupScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: const Icon(Icons.folder_open),
+                      icon: const Icon(AppIcons.folderOpen),
                       label: Text(
                         l10n.restoreBackup,
                         style: const TextStyle(

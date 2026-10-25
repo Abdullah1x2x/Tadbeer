@@ -7,6 +7,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
 import 'tadbeer_model.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// نافذة سفلية تفاعلية لـ "وقفة تدبر" موجهة بأربعة أسئلة متدرجة حول الآية.
 ///
@@ -198,7 +199,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            Icons.spa_outlined,
+                            AppIcons.flowerLotus,
                             size: 18,
                             color: AppColors.olive,
                           ),
@@ -218,7 +219,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                       ],
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, size: 20),
+                      icon: const Icon(AppIcons.x, size: 20),
                       onPressed: () => Navigator.pop(context),
                       tooltip: l10n.close,
                     ),
@@ -418,9 +419,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                           ),
                         ),
                         icon: Icon(
-                          context.currentLanguage.direction == TextDirection.rtl
-                              ? Icons.arrow_forward
-                              : Icons.arrow_back,
+                          AppIcons.arrowLeft,
                           size: 16,
                         ),
                         label: Text(l10n.previous),
@@ -443,10 +442,8 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         icon: Icon(
                           _currentQuestionIndex <
                                   TadbeerItem.questions.length - 1
-                              ? (context.currentLanguage.direction == TextDirection.rtl
-                                  ? Icons.arrow_back
-                                  : Icons.arrow_forward)
-                              : Icons.check,
+                              ? AppIcons.arrowRight
+                              : AppIcons.check,
                           size: 16,
                         ),
                         label: Text(
@@ -467,7 +464,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                   Center(
                     child: TextButton.icon(
                       onPressed: _saveAndClose,
-                      icon: const Icon(Icons.save_outlined, size: 16),
+                      icon: const Icon(AppIcons.floppyDisk, size: 16),
                       label: Text(
                         l10n.isArabic
                             ? 'حفظ ما كتبت الآن وإنهاء'

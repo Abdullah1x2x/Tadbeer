@@ -9,6 +9,7 @@ import '../../core/services/local_reminder_service.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/reminders/reminder_model.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة إدارة التذكيرات والمنبهات المحلية لقراءة الورد القرآني.
 ///
@@ -111,7 +112,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     tileColor: isDark
                         ? AppColors.darkSurface
                         : AppColors.comsilk,
-                    leading: Icon(Icons.access_time, color: AppColors.olive),
+                    leading: Icon(AppIcons.clock, color: AppColors.olive),
                     title: Text(
                       l10n.reminderTime,
                       style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
@@ -162,7 +163,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     children: [
                       Expanded(
                         child: _AlertTypeOptionCard(
-                          icon: Icons.notifications_none_rounded,
+                          icon: AppIcons.bell,
                           title: l10n.notificationAlert,
                           subtitle: l10n.notificationSubtitle,
                           selected: alertType == ReminderAlertType.notification,
@@ -175,7 +176,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: _AlertTypeOptionCard(
-                          icon: Icons.alarm_rounded,
+                          icon: AppIcons.alarmFill,
                           title: l10n.alarmAlert,
                           subtitle: l10n.alarmSubtitle,
                           selected: alertType == ReminderAlertType.alarm,
@@ -417,7 +418,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
           actions: [
             PopupMenuButton<ReminderAlertType>(
               tooltip: l10n.testAlertTooltip,
-              icon: const Icon(Icons.notifications_active_outlined),
+              icon: const Icon(AppIcons.bellRinging),
               onSelected: _sendTestAlert,
               itemBuilder: (_) => [
                 PopupMenuItem(
@@ -425,7 +426,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.notifications_none_rounded, size: 20),
+                      const Icon(AppIcons.bell, size: 20),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
@@ -441,7 +442,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.alarm_rounded, size: 20),
+                      const Icon(AppIcons.alarmFill, size: 20),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
@@ -460,7 +461,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
           onPressed: () => _openReminderDialog(),
           backgroundColor: AppColors.olive,
           foregroundColor: Colors.white,
-          icon: const Icon(Icons.alarm_add),
+          icon: const Icon(AppIcons.alarm),
           label: Text(
             l10n.addReminder,
             style: const TextStyle(
@@ -476,7 +477,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
 
             if (allReminders.isEmpty) {
               return EmptyState(
-                icon: Icons.alarm_rounded,
+                icon: AppIcons.alarmFill,
                 title: l10n.noRemindersYet,
                 hint: l10n.remindersEmptyHint,
               );
@@ -523,13 +524,13 @@ class _RemindersScreenState extends State<RemindersScreen> {
                               : AppColors.daySubtitle,
                         ),
                         prefixIcon: Icon(
-                          Icons.search_rounded,
+                          AppIcons.magnifyingGlass,
                           color: AppColors.cyberEmerald,
                         ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? IconButton(
                                 tooltip: context.l10n.clearText,
-                                icon: const Icon(Icons.clear_rounded, size: 20),
+                                icon: const Icon(AppIcons.x, size: 20),
                                 onPressed: () {
                                   _searchController.clear();
                                   setState(() => _searchQuery = '');
@@ -747,8 +748,8 @@ class _ReminderCard extends StatelessWidget {
     final isAlarm = reminder.alertType == ReminderAlertType.alarm;
     final alertTypeLabel = isAlarm ? l10n.alarmAlert : l10n.notificationAlert;
     final alertTypeIcon = isAlarm
-        ? Icons.alarm_on_rounded
-        : Icons.notifications_none_rounded;
+        ? AppIcons.alarm
+        : AppIcons.bell;
     final accent = reminder.isEnabled
         ? AppColors.cyberEmerald
         : AppColors.olive.withValues(alpha: 0.5);
@@ -832,7 +833,7 @@ class _ReminderCard extends StatelessWidget {
 
           // Secondary Actions (⋮)
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, size: 20),
+            icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
             onSelected: (val) {
               if (val == 'edit') onEdit();
               if (val == 'delete') onDelete();
@@ -842,7 +843,7 @@ class _ReminderCard extends StatelessWidget {
                 value: 'edit',
                 child: Row(
                   children: [
-                    const Icon(Icons.edit_outlined, size: 18),
+                    const Icon(AppIcons.pencilSimple, size: 18),
                     const SizedBox(width: 8),
                     Text(l10n.edit),
                   ],
@@ -853,7 +854,7 @@ class _ReminderCard extends StatelessWidget {
                 child: Row(
                   children: [
                     const Icon(
-                      Icons.delete_outline,
+                      AppIcons.trash,
                       size: 18,
                       color: Colors.redAccent,
                     ),

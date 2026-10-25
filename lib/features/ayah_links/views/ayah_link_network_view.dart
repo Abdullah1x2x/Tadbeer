@@ -11,6 +11,7 @@ import '../ayah_link_model.dart';
 import '../ayah_link_repository.dart';
 import '../../quran/data/quran_repository.dart';
 import '../../quran/screens/quran_screen.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// واجهة عرض الشبكة التفاعلية لرابط الآيات مع عقدة المحور المركزية وعقد الآيات المحيطة.
 ///
@@ -490,7 +491,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                                         Row(
                                           children: [
                                             Icon(
-                                              Icons.sticky_note_2_outlined,
+                                              AppIcons.note,
                                               size: 16,
                                               color: AppColors.olive,
                                             ),
@@ -556,7 +557,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            icon: const Icon(Icons.menu_book_rounded, size: 18),
+                            icon: const Icon(AppIcons.bookOpenFill, size: 18),
                             label: Text(
                               context.l10n.openInQuran,
                               style: const TextStyle(
@@ -569,7 +570,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
                         // Edit note button
                         IconButton.filledTonal(
-                          icon: const Icon(Icons.edit_note_rounded, size: 20),
+                          icon: const Icon(AppIcons.notePencil, size: 20),
                           tooltip: context.l10n.reflectionNote,
                           onPressed: () {
                             Navigator.pop(bottomSheetCtx);
@@ -581,7 +582,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         // Remove verse from link button
                         IconButton.filledTonal(
                           icon: const Icon(
-                            Icons.delete_outline,
+                            AppIcons.trash,
                             size: 20,
                             color: Colors.redAccent,
                           ),
@@ -773,7 +774,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
-                            Icons.sticky_note_2_rounded,
+                            AppIcons.noteFill,
                             size: 20,
                             color: Theme.of(context).colorScheme.primary,
                           ),
@@ -857,7 +858,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            icon: const Icon(Icons.copy_rounded, size: 18),
+                            icon: const Icon(AppIcons.copy, size: 18),
                             label: Text(
                               context.l10n.isArabic ? 'نسخ النص' : 'Copy Text',
                               style: const TextStyle(
@@ -870,7 +871,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
                         // Edit Note Button
                         IconButton.filledTonal(
-                          icon: const Icon(Icons.edit_note_rounded, size: 20),
+                          icon: const Icon(AppIcons.notePencil, size: 20),
                           tooltip: context.l10n.isArabic
                               ? 'تعديل الملاحظة'
                               : 'Edit Note',
@@ -884,7 +885,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         // Delete Note Button
                         IconButton.filledTonal(
                           icon: const Icon(
-                            Icons.delete_outline,
+                            AppIcons.trash,
                             size: 20,
                             color: Colors.redAccent,
                           ),
@@ -1160,7 +1161,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.hub_outlined, size: 48, color: AppColors.olive),
+                  Icon(AppIcons.graph, size: 48, color: AppColors.olive),
                   const SizedBox(height: 12),
                   Text(
                     context.l10n.noAyahsAddedToLink,
@@ -1190,7 +1191,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    icon: const Icon(Icons.add, size: 18),
+                    icon: const Icon(AppIcons.plus, size: 18),
                     label: Text(context.l10n.addAyah),
                   ),
                 ],
@@ -1300,7 +1301,7 @@ class _CenterThemeNode extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.hub_rounded,
+                AppIcons.graphFill,
                 color: Theme.of(context).colorScheme.primary,
                 size: 20,
               ),
@@ -1451,11 +1452,7 @@ class _VerseCanvasNode extends StatelessWidget {
                   ),
                 ),
                 if (hasNote)
-                  Icon(
-                    Icons.sticky_note_2_outlined,
-                    size: 14,
-                    color: AppColors.olive,
-                  ),
+                  Icon(AppIcons.note, size: 14, color: AppColors.olive),
               ],
             ),
             const SizedBox(height: 6),
@@ -1483,7 +1480,7 @@ class _VerseCanvasNode extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    Icons.edit_note,
+                    AppIcons.notePencil,
                     size: 13,
                     color: isDark ? AppColors.oliveSoft : AppColors.olive,
                   ),
@@ -1571,7 +1568,7 @@ class _NoteCanvasNode extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.sticky_note_2_rounded,
+                  AppIcons.noteFill,
                   size: 15,
                   color: Theme.of(context).colorScheme.primary,
                 ),

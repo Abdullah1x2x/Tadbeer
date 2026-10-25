@@ -6,6 +6,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'quran_dua_model.dart';
 import 'quran_dua_card.dart';
 import 'quran_duas_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة عرض قائمة أدعية القرآن الكريم الموثقة مع البحث الفوري والتصفية الموضوعية.
 ///
@@ -141,7 +142,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                                     : AppColors.lightTextSecondary,
                               ),
                               prefixIcon: Icon(
-                                Icons.search_rounded,
+                                AppIcons.magnifyingGlass,
                                 size: 20,
                                 color: isDark
                                     ? AppColors.darkAccentGold
@@ -150,7 +151,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                               suffixIcon: _searchController.text.isNotEmpty
                                   ? IconButton(
                                       tooltip: context.l10n.clearText,
-                                      icon: const Icon(Icons.clear, size: 18),
+                                      icon: const Icon(AppIcons.x, size: 18),
                                       onPressed: () {
                                         _searchController.clear();
                                       },
@@ -276,7 +277,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.search_off_rounded,
+                      AppIcons.magnifyingGlassMinus,
                       size: 56,
                       color: isDark
                           ? AppColors.darkTextSecondary

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/features/backup/backup_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   Widget buildTestWidget(Widget child) {
@@ -40,14 +41,14 @@ void main() {
 
       // Verify the two export buttons: Save to Device Files and Share via Apps
       expect(find.text(l10n.saveToDeviceFiles), findsOneWidget);
-      expect(find.byIcon(Icons.save_alt_rounded), findsOneWidget);
+      expect(find.byIcon(AppIcons.downloadSimple), findsOneWidget);
 
       expect(find.text(l10n.shareViaApps), findsOneWidget);
-      expect(find.byIcon(Icons.share_outlined), findsOneWidget);
+      expect(find.byIcon(AppIcons.shareNetwork), findsOneWidget);
 
       // Verify Restore Section
       expect(find.text(l10n.restoreBackup), findsWidgets);
-      expect(find.byIcon(Icons.download_for_offline_outlined), findsOneWidget);
+      expect(find.byIcon(AppIcons.downloadSimple), findsOneWidget);
     });
 
     testWidgets('Toggling checkboxes updates selection state', (

@@ -7,6 +7,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة عرض الآيات المميزة بالألوان مع دعم البحث الفوري.
 ///
@@ -59,11 +60,11 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
 
             if (allHighlights.isEmpty) {
               return EmptyState(
-                icon: Icons.format_paint_outlined,
+                icon: AppIcons.paintBrush,
                 title: l10n.noHighlightsYet,
                 hint: l10n.highlightsEmptyHint,
                 actionLabel: l10n.openMushaf,
-                actionIcon: Icons.menu_book_rounded,
+                actionIcon: AppIcons.bookOpenFill,
                 onAction: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -117,11 +118,14 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                             ? AppColors.nightSubtitle
                             : AppColors.daySubtitle,
                       ),
-                      prefixIcon: Icon(Icons.search, color: AppColors.olive),
+                      prefixIcon: Icon(
+                        AppIcons.magnifyingGlass,
+                        color: AppColors.olive,
+                      ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
                               tooltip: context.l10n.clearText,
-                              icon: const Icon(Icons.clear, size: 20),
+                              icon: const Icon(AppIcons.x, size: 20),
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() => _searchQuery = '');
@@ -303,7 +307,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                     ),
                                     PopupMenuButton<String>(
                                       icon: const Icon(
-                                        Icons.more_vert,
+                                        AppIcons.dotsThreeVertical,
                                         size: 20,
                                       ),
                                       tooltip: l10n.removeHighlight,
@@ -322,7 +326,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                           child: Row(
                                             children: [
                                               const Icon(
-                                                Icons.delete_outline,
+                                                AppIcons.trash,
                                                 color: Colors.redAccent,
                                                 size: 20,
                                               ),

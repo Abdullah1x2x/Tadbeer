@@ -11,6 +11,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'book_model.dart';
 import '../continue/last_activity.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة قراءة واستعراض الملازم والكتب التدبرية (فصول، نصوص، أو مستندات PDF).
 class BookReaderScreen extends StatefulWidget {
@@ -233,7 +234,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                     Row(
                       children: [
                         Icon(
-                          Icons.list_alt_rounded,
+                          AppIcons.listBullets,
                           color: primaryColor,
                           size: 20,
                         ),
@@ -461,19 +462,19 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
             if (widget.book.hasAttachedFile)
               IconButton(
                 tooltip: l10n.shareFile,
-                icon: const Icon(Icons.share_rounded),
+                icon: const Icon(AppIcons.shareNetworkFill),
                 onPressed: _shareOrOpenFile,
               ),
             if (widget.book.chapters.length > 1)
               IconButton(
                 tooltip: l10n.tableOfContents,
-                icon: const Icon(Icons.list_alt_rounded),
+                icon: const Icon(AppIcons.listBullets),
                 onPressed: _showChapterListSheet,
               ),
             if (widget.book.chapters.isNotEmpty || _loadedFileContent != null)
               IconButton(
                 tooltip: l10n.copyContent,
-                icon: const Icon(Icons.copy_rounded),
+                icon: const Icon(AppIcons.copy),
                 onPressed: _copyChapterContent,
               ),
           ],
@@ -550,7 +551,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(
-                  Icons.error_outline_rounded,
+                  AppIcons.warningCircle,
                   color: Colors.redAccent,
                   size: 48,
                 ),
@@ -563,7 +564,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 const SizedBox(height: 20),
                 FilledButton.icon(
                   onPressed: _loadPdf,
-                  icon: const Icon(Icons.refresh_rounded),
+                  icon: const Icon(AppIcons.arrowClockwise),
                   label: Text(context.l10n.retry),
                 ),
               ],
@@ -696,7 +697,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                       ),
                     ),
                     child: Icon(
-                      Icons.picture_as_pdf_rounded,
+                      AppIcons.filePdfFill,
                       color: pdfAccentColor,
                       size: 46,
                     ),
@@ -763,7 +764,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                icon: const Icon(Icons.open_in_new_rounded),
+                icon: const Icon(AppIcons.arrowSquareOut),
                 label: Text(
                   context.l10n.openAndReadPdf,
                   style: const TextStyle(
@@ -785,7 +786,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                     borderRadius: BorderRadius.circular(14),
                   ),
                 ),
-                icon: const Icon(Icons.share_rounded),
+                icon: const Icon(AppIcons.shareNetworkFill),
                 label: Text(context.l10n.shareFile),
                 onPressed: _shareOrOpenFile,
               ),
@@ -842,7 +843,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               const Spacer(),
               IconButton(
                 tooltip: context.l10n.decreaseFontSize,
-                icon: const Icon(Icons.text_decrease_rounded, size: 20),
+                icon: const Icon(AppIcons.minus, size: 20),
                 onPressed: _fontSize > 14
                     ? () => setState(() => _fontSize -= 1.5)
                     : null,
@@ -856,7 +857,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ),
               IconButton(
                 tooltip: context.l10n.increaseFontSize,
-                icon: const Icon(Icons.text_increase_rounded, size: 20),
+                icon: const Icon(AppIcons.plus, size: 20),
                 onPressed: _fontSize < 28
                     ? () => setState(() => _fontSize += 1.5)
                     : null,
@@ -936,10 +937,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                           Expanded(
                             child: OutlinedButton.icon(
                               icon: Icon(
-                                context.currentLanguage.direction ==
-                                        TextDirection.rtl
-                                    ? Icons.chevron_right_rounded
-                                    : Icons.chevron_left_rounded,
+                                AppIcons.caretLeft,
                                 size: 18,
                               ),
                               label: Text(
@@ -963,10 +961,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                                     : AppColors.oliveDark,
                               ),
                               icon: Icon(
-                                context.currentLanguage.direction ==
-                                        TextDirection.rtl
-                                    ? Icons.chevron_left_rounded
-                                    : Icons.chevron_right_rounded,
+                                AppIcons.caretRight,
                                 size: 18,
                               ),
                               label: Text(
@@ -1022,7 +1017,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               const Spacer(),
               IconButton(
                 tooltip: context.l10n.decreaseFontSize,
-                icon: const Icon(Icons.text_decrease_rounded, size: 20),
+                icon: const Icon(AppIcons.minus, size: 20),
                 onPressed: _fontSize > 14
                     ? () => setState(() => _fontSize -= 1.5)
                     : null,
@@ -1036,7 +1031,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               ),
               IconButton(
                 tooltip: context.l10n.increaseFontSize,
-                icon: const Icon(Icons.text_increase_rounded, size: 20),
+                icon: const Icon(AppIcons.plus, size: 20),
                 onPressed: _fontSize < 28
                     ? () => setState(() => _fontSize += 1.5)
                     : null,
@@ -1078,7 +1073,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.menu_book_rounded,
+              AppIcons.bookOpenFill,
               size: 56,
               color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
             ),

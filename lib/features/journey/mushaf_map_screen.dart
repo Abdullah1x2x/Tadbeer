@@ -9,6 +9,7 @@ import '../memorization/memorization_model.dart';
 import '../quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import 'reading_journey.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// مستوى نشاط الصفحة في خريطة المصحف.
 enum PageActivity {
@@ -265,7 +266,7 @@ class _ReflectionLogTab extends StatelessWidget {
 
     if (entries.isEmpty) {
       return EmptyState(
-        icon: Icons.history_edu_rounded,
+        icon: AppIcons.scroll,
         title: l10n.noReflectionsYet,
         hint: l10n.reflectionsEmptyHint,
       );
@@ -337,8 +338,8 @@ class _ReflectionLogTab extends StatelessWidget {
                             children: [
                               Icon(
                                 e.isReflection
-                                    ? Icons.spa_rounded
-                                    : Icons.edit_note_rounded,
+                                    ? AppIcons.flowerLotusFill
+                                    : AppIcons.notePencil,
                                 size: 18,
                                 color: color,
                               ),

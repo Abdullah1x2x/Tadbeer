@@ -14,6 +14,7 @@ import 'monthly_report.dart';
 import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
 import 'weekly_goals.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة «رحلتي مع القرآن»: خطة الختمة، ورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
@@ -31,12 +32,12 @@ class JourneyScreen extends StatelessWidget {
           actions: [
             IconButton(
               tooltip: l10n.monthlyReport,
-              icon: const Icon(Icons.insights_rounded),
+              icon: const Icon(AppIcons.chartLineUp),
               onPressed: () => MonthlyReportSheet.show(context),
             ),
             IconButton(
               tooltip: l10n.mushafMap,
-              icon: const Icon(Icons.grid_on_rounded),
+              icon: const Icon(AppIcons.gridFour),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const MushafMapScreen()),
@@ -67,7 +68,7 @@ class JourneyScreen extends StatelessWidget {
                       child: Card(
                         child: ListTile(
                           leading: Icon(
-                            Icons.sync_alt_rounded,
+                            AppIcons.arrowsLeftRight,
                             color: AppColors.accentGold(context),
                           ),
                           title: Text(
@@ -161,7 +162,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(Icons.flag_rounded, size: 40, color: gold),
+            Icon(AppIcons.flag, size: 40, color: gold),
             const SizedBox(height: 10),
             Text(
               l10n.startKhatmaTitle,
@@ -233,7 +234,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
                 );
                 if (context.mounted) await _offerPortionReminder(context);
               },
-              icon: const Icon(Icons.play_arrow_rounded),
+              icon: const Icon(AppIcons.play),
               label: Text(l10n.startKhatma),
             ),
             if (widget.completed > 0) ...[
@@ -453,7 +454,7 @@ class _TodayPortionCard extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  done ? Icons.check_circle_rounded : Icons.today_rounded,
+                  done ? AppIcons.checkCircleFill : AppIcons.calendarCheck,
                   color: done ? AppColors.statusSuccess : gold,
                 ),
                 const SizedBox(width: 8),
@@ -493,7 +494,7 @@ class _TodayPortionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              icon: const Icon(Icons.menu_book_rounded),
+              icon: const Icon(AppIcons.bookOpenFill),
               label: Text(
                 done
                     ? l10n.keepReading
@@ -536,13 +537,13 @@ class _StatsRow extends StatelessWidget {
       children: [
         pair(
           _StatTile(
-            icon: Icons.local_fire_department_rounded,
+            icon: AppIcons.fire,
             color: const Color(0xFFE07A3F),
             value: l10n.digits(journey.streak(now)),
             label: l10n.streakDays,
           ),
           _StatTile(
-            icon: Icons.auto_stories_rounded,
+            icon: AppIcons.bookOpenTextFill,
             color: AppColors.accentGold(context),
             value: l10n.digits(journey.totalPages),
             label: l10n.totalPagesRead,
@@ -551,13 +552,13 @@ class _StatsRow extends StatelessWidget {
         const SizedBox(height: 10),
         pair(
           _StatTile(
-            icon: Icons.spa_rounded,
+            icon: AppIcons.flowerLotusFill,
             color: AppColors.statusSuccess,
             value: l10n.digits(reflections),
             label: l10n.reflectionsThisMonth,
           ),
           _StatTile(
-            icon: Icons.workspace_premium_rounded,
+            icon: AppIcons.medal,
             color: AppColors.primary(context),
             value: l10n.digits(journey.completedKhatmas),
             label: l10n.khatmasLabel,

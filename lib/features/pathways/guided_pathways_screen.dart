@@ -11,6 +11,7 @@ import '../quran/data/quran_repository.dart';
 import '../tadbeer/tadbeer_model.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../continue/last_activity.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// تقدم المسارات الموجّهة: الأيام المكتملة لكل مسار.
 class GuidedPathwayProgress {
@@ -100,11 +101,7 @@ class GuidedPathwaysScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                if (complete)
-                                  Icon(
-                                    Icons.workspace_premium_rounded,
-                                    color: gold,
-                                  ),
+                                if (complete) Icon(AppIcons.medal, color: gold),
                               ],
                             ),
                             const SizedBox(height: 4),
@@ -248,10 +245,10 @@ class _DayCard extends StatelessWidget {
                 : gold.withValues(alpha: state == _DayState.done ? 1 : 0.18),
           ),
           child: state == _DayState.done
-              ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
+              ? const Icon(AppIcons.check, color: Colors.white, size: 20)
               : state == _DayState.locked
               ? Icon(
-                  Icons.lock_rounded,
+                  AppIcons.lock,
                   size: 16,
                   color: AppColors.textSecondary(context),
                 )
@@ -319,7 +316,7 @@ class _DayCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lightbulb_outline_rounded, color: gold, size: 20),
+                  Icon(AppIcons.lightbulb, color: gold, size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -361,7 +358,7 @@ class _DayCard extends StatelessWidget {
                               );
                             }
                           },
-                    icon: const Icon(Icons.spa_rounded),
+                    icon: const Icon(AppIcons.flowerLotusFill),
                     label: Text(l10n.tadbeerPause),
                   ),
                 ),
@@ -372,7 +369,7 @@ class _DayCard extends StatelessWidget {
                       HapticFeedback.mediumImpact();
                       GuidedPathwayProgress.completeDay(pathwayId, day);
                     },
-                    icon: const Icon(Icons.check_rounded),
+                    icon: const Icon(AppIcons.check),
                     label: Text(l10n.completeDay),
                   ),
                 ),
@@ -417,7 +414,7 @@ class _CompletionBadge extends StatelessWidget {
                   ],
                 ),
                 child: const Icon(
-                  Icons.workspace_premium_rounded,
+                  AppIcons.medal,
                   color: Colors.white,
                   size: 40,
                 ),
