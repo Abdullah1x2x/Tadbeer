@@ -321,7 +321,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
           title: Text(
             surah.name,
             style: TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
@@ -422,7 +422,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             ),
             style: TextStyle(
               fontFamily: context.currentLanguage == AppLanguage.arabic
-                  ? 'Amiri'
+                  ? 'IBMPlexSansArabic'
                   : null,
               fontSize: 14,
               fontWeight: FontWeight.bold,

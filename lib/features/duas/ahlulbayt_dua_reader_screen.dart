@@ -45,7 +45,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
         content: Text(
           context.l10n.fullDuaCopiedSuccess,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -161,7 +161,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                     Text(
                       widget.dua.summary,
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         height: 1.45,
                         color: isDark
@@ -225,7 +225,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                 label: Text(
                   l10n.copyFullDua,
                   style: const TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),

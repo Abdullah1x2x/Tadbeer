@@ -180,7 +180,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                     child: Text(
                                       pathway.title,
                                       style: TextStyle(
-                                        fontFamily: 'Amiri',
+                                        fontFamily: 'IBMPlexSansArabic',
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: primary,

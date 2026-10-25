@@ -549,8 +549,11 @@ class MushafPalette {
 class AppTheme {
   AppTheme._();
 
-  /// الخط العربي الموحد لواجهة التطبيق بالكامل
+  /// خط العناوين والنصوص الكبيرة (عناوين الشاشات، والحوارات، والأدعية).
   static const String appFontFamily = 'Amiri';
+
+  /// خط الواجهة: الأزرار والقوائم والنصوص العادية.
+  static const String uiFontFamily = 'IBMPlexSansArabic';
 
   /// System-safe modern Arabic and Latin UI font fallbacks
   static const List<String> uiFontFallbacks = [
@@ -640,13 +643,13 @@ class AppTheme {
     final base = ThemeData(
       brightness: brightness,
       useMaterial3: true,
-      fontFamily: appFontFamily,
+      fontFamily: uiFontFamily,
       colorScheme: colorScheme,
     );
 
     TextStyle label(double size, {FontWeight weight = FontWeight.bold}) =>
         TextStyle(
-          fontFamily: appFontFamily,
+          fontFamily: uiFontFamily,
           fontFamilyFallback: uiFontFallbacks,
           fontWeight: weight,
           fontSize: size,
@@ -708,7 +711,9 @@ class AppTheme {
         centerTitle: true,
         iconTheme: IconThemeData(color: primary),
         actionsIconTheme: IconThemeData(color: primary),
-        titleTextStyle: label(20).copyWith(color: text),
+        titleTextStyle: label(
+          20,
+        ).copyWith(fontFamily: appFontFamily, color: text),
       ),
       drawerTheme: DrawerThemeData(
         backgroundColor: background,
@@ -724,7 +729,9 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 8,
         shadowColor: shadow,
-        titleTextStyle: label(19).copyWith(color: text),
+        titleTextStyle: label(
+          19,
+        ).copyWith(fontFamily: appFontFamily, color: text),
         contentTextStyle: label(
           14,
           weight: FontWeight.normal,
@@ -1042,48 +1049,48 @@ class AppTheme {
         fontSize: 19,
       ),
       titleMedium: TextStyle(
-        fontFamily: appFontFamily,
+        fontFamily: uiFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.w600,
         color: textColor,
         fontSize: 16,
       ),
       titleSmall: TextStyle(
-        fontFamily: appFontFamily,
+        fontFamily: uiFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.w600,
         color: subtitleColor,
         fontSize: 14,
       ),
       bodyLarge: TextStyle(
-        fontFamily: appFontFamily,
+        fontFamily: uiFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: textColor,
         fontSize: 15,
         height: 1.5,
       ),
       bodyMedium: TextStyle(
-        fontFamily: appFontFamily,
+        fontFamily: uiFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: textColor,
         fontSize: 14,
         height: 1.45,
       ),
       bodySmall: TextStyle(
-        fontFamily: appFontFamily,
+        fontFamily: uiFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: subtitleColor,
         fontSize: 12,
       ),
       labelLarge: TextStyle(
-        fontFamily: appFontFamily,
+        fontFamily: uiFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         fontWeight: FontWeight.bold,
         color: textColor,
         fontSize: 14,
       ),
       labelMedium: TextStyle(
-        fontFamily: appFontFamily,
+        fontFamily: uiFontFamily,
         fontFamilyFallback: uiFontFallbacks,
         color: subtitleColor,
         fontSize: 12,

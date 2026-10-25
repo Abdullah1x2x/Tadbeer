@@ -30,7 +30,7 @@ import '../word_meanings/word_meanings_screen.dart';
 /// Serene, elegant Islamic dashboard for Tadbeer (تَدْبِير).
 ///
 /// Features:
-/// - Distinctive Brand Header with 'Amiri' calligraphy and subtle spiritual arch
+/// - Distinctive Brand Header with 'IBMPlexSansArabic' calligraphy and subtle spiritual arch
 /// - Prominent Quran Hero Card with live reading resume status
 /// - 4 Core Contemplation & Quranic Grid Cards:
 ///   1. الأدعية (أدعية من الكتاب والسنة)
@@ -429,7 +429,7 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         l10n.filterSearchTitle,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: isDark

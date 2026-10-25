@@ -321,7 +321,7 @@ class SettingsScreen extends StatelessWidget {
                                 fontFamily:
                                     context.currentLanguage ==
                                         AppLanguage.arabic
-                                    ? 'Amiri'
+                                    ? 'IBMPlexSansArabic'
                                     : null,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -689,7 +689,7 @@ class SettingsScreen extends StatelessWidget {
                         Text(
                           l10n.sourcesAndCredits,
                           style: TextStyle(
-                            fontFamily: isArabic ? 'Amiri' : null,
+                            fontFamily: isArabic ? 'IBMPlexSansArabic' : null,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: isDark
@@ -1204,7 +1204,7 @@ class SettingsScreen extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),

@@ -77,7 +77,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(message, style: const TextStyle(fontFamily: 'Amiri')),
+          content: Text(message, style: const TextStyle(fontFamily: 'IBMPlexSansArabic')),
           duration: const Duration(seconds: 6),
         ),
       );

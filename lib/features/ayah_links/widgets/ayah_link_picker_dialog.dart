@@ -165,7 +165,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                     child: Text(
                       l10n.ayahReference(surah.name, widget.ayah.ayahNumber),
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,

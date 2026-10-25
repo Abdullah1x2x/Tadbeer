@@ -175,7 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
           title: Text(
             l10n.search,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -208,7 +208,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               : 'Search in ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...')
                         : l10n.searchGlobalPlaceholder,
                     hintStyle: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       color: isDark
                           ? AppColors.nightSubtitle
@@ -250,7 +250,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       label: Text(
                         l10n.searchAll,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 13,
                           fontWeight: _selectedProviderId == null
                               ? FontWeight.bold
@@ -303,7 +303,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         label: Text(
                           p.getSectionTitle(context),
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 13,
                             fontWeight: isSelected
                                 ? FontWeight.bold
@@ -379,7 +379,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   l10n.searchGlobalPlaceholder,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontFamily: 'Amiri',
+                                    fontFamily: 'IBMPlexSansArabic',
                                     fontSize: 15,
                                     color: isDark
                                         ? AppColors.nightSubtitle
@@ -432,7 +432,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       : l10n.noSearchResults,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontFamily: 'Amiri',
+                                    fontFamily: 'IBMPlexSansArabic',
                                     fontSize: 15,
                                     color: isDark
                                         ? AppColors.nightSubtitle
@@ -587,7 +587,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Text(
                     item.title,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14.5,
                       fontWeight: FontWeight.bold,
                       color: isDark

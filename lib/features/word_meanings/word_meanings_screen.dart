@@ -796,7 +796,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
                       Text(
                         'تحقيق الملكية الفكرية وتراخيص الاستخدام',
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: isDark

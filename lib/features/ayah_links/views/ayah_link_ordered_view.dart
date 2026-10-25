@@ -357,7 +357,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                         ? 'كروت الملاحظات والتدبرات (${ArabicSearchNormalizer.toArabicDigits(notes.length)})'
                         : 'Reflection Notes (${notes.length})',
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
@@ -394,7 +394,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                         ? 'الآيات المرتبطة (${ArabicSearchNormalizer.toArabicDigits(verses.length)})'
                         : 'Connected Verses (${verses.length})',
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
@@ -522,7 +522,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                                   ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
                                   : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
                               style: TextStyle(
-                                fontFamily: 'Amiri',
+                                fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.primary,
@@ -742,7 +742,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                           ? 'كرت ملاحظة تدبرية'
                           : 'Reflection Note Card'),
                   style: TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.primary,

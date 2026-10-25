@@ -318,7 +318,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                                   : existing.ayahNumber!,
                                             ),
                                             style: TextStyle(
-                                              fontFamily: 'Amiri',
+                                              fontFamily: 'IBMPlexSansArabic',
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                               color: isDark

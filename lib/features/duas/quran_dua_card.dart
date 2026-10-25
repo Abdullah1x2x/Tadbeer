@@ -68,7 +68,7 @@ class QuranDuaCard extends StatelessWidget {
                 child: Text(
                   dua.category,
                   style: TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: isDark
@@ -83,7 +83,7 @@ class QuranDuaCard extends StatelessWidget {
               Text(
                 '#${ArabicSearchNormalizer.toArabicDigits(dua.id)}',
                 style: TextStyle(
-                  fontFamily: 'Amiri',
+                  fontFamily: 'IBMPlexSansArabic',
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: isDark
@@ -100,7 +100,7 @@ class QuranDuaCard extends StatelessWidget {
               dua.title,
               textDirection: TextDirection.rtl,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: isDark
@@ -139,7 +139,7 @@ class QuranDuaCard extends StatelessWidget {
                       l10n.isArabic ? 'تنبيه: ${dua.alert}' : 'Note: ${dua.alert}',
                       textDirection: l10n.isArabic ? TextDirection.rtl : TextDirection.ltr,
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         color: isDark
                             ? AppColors.darkTextPrimary
@@ -226,7 +226,7 @@ class QuranDuaCard extends StatelessWidget {
             child: Text(
               l10n.isArabic ? 'سورة ${dua.surahName}' : 'Surah ${dua.surahName}',
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: isDark
@@ -249,7 +249,7 @@ class QuranDuaCard extends StatelessWidget {
                       ? 'Verses ${dua.ayahDisplay}'
                       : 'Verse ${dua.ayahDisplay}'),
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: isDark
@@ -289,7 +289,7 @@ class QuranDuaCard extends StatelessWidget {
                 label: Text(
                   l10n.viewAyah,
                   style: TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: isDark
@@ -337,7 +337,7 @@ class QuranDuaCard extends StatelessWidget {
                       content: Text(
                         l10n.duaCopiedSuccess,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           color: AppColors.textPrimary(context),
                           fontWeight: FontWeight.bold,
                         ),
@@ -357,7 +357,7 @@ class QuranDuaCard extends StatelessWidget {
                 label: Text(
                   l10n.copy,
                   style: TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 14,
                     color: isDark
                         ? AppColors.darkTextSecondary

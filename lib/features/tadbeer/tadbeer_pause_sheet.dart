@@ -346,7 +346,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                   child: Text(
                     currentQuestion,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       height: 1.4,

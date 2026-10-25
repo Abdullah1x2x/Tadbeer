@@ -67,7 +67,7 @@ class _NotesScreenState extends State<NotesScreen> {
           title: Text(
             l10n.notes,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -92,7 +92,7 @@ class _NotesScreenState extends State<NotesScreen> {
           label: Text(
             l10n.newFreeNote,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -120,7 +120,7 @@ class _NotesScreenState extends State<NotesScreen> {
                   decoration: InputDecoration(
                     hintText: l10n.searchNotesHint,
                     hintStyle: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       color: isDark
                           ? AppColors.nightSubtitle
@@ -187,7 +187,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                 ? l10n.noNotesYet
                                 : l10n.noSearchResults,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 16,
                               color: isDark
                                   ? AppColors.nightSubtitle
@@ -253,7 +253,7 @@ class _NotesScreenState extends State<NotesScreen> {
           SnackBar(
             content: Text(
               'تعذر تصدير الملاحظة إلى PDF: $e',
-              style: const TextStyle(fontFamily: 'Amiri'),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
           ),
         );
@@ -275,20 +275,20 @@ class _NotesScreenState extends State<NotesScreen> {
         title: Text(
           l10n.deleteConfirmTitle,
           style: const TextStyle(
-            fontFamily: 'Amiri',
+            fontFamily: 'IBMPlexSansArabic',
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
           l10n.deleteConfirmMessage,
-          style: const TextStyle(fontFamily: 'Amiri'),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(fontFamily: 'Amiri'),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
           ),
           ElevatedButton(
@@ -300,7 +300,7 @@ class _NotesScreenState extends State<NotesScreen> {
             child: Text(
               l10n.delete,
               style: const TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -469,7 +469,7 @@ class _NoteCard extends StatelessWidget {
                           style: TextStyle(
                             fontFamily:
                                 context.currentLanguage == AppLanguage.arabic
-                                ? 'Amiri'
+                                ? 'IBMPlexSansArabic'
                                 : null,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -506,7 +506,7 @@ class _NoteCard extends StatelessWidget {
             Text(
               note.title!,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: isDark
@@ -521,7 +521,7 @@ class _NoteCard extends StatelessWidget {
           Text(
             note.content,
             style: TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontSize: 14,
               height: 1.5,
               color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
@@ -537,7 +537,7 @@ class _NoteCard extends StatelessWidget {
               child: Text(
                 l10n.goToAyah,
                 style: TextStyle(
-                  fontFamily: 'Amiri',
+                  fontFamily: 'IBMPlexSansArabic',
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: accent,

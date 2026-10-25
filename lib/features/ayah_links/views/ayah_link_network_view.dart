@@ -411,7 +411,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                               ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
                               : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: AppColors.olive,
@@ -787,7 +787,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                                       ? 'كرت ملاحظة تدبرية'
                                       : 'Reflection Note Card'),
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Theme.of(context).colorScheme.primary,
@@ -1312,7 +1312,7 @@ class _CenterThemeNode extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: isDark
@@ -1442,7 +1442,7 @@ class _VerseCanvasNode extends StatelessWidget {
                         ? '${surah.name} · ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
                         : '${surah.name} · ${verse.ayahNumber}',
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: AppColors.olive,
@@ -1584,7 +1584,7 @@ class _NoteCanvasNode extends StatelessWidget {
                               ? 'كرت ملاحظة تدبرية'
                               : 'Reflection Note'),
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,

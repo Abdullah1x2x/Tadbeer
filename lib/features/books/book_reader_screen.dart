@@ -242,7 +242,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                           child: Text(
                             l10n.bookIndexPrefix(widget.book.title),
                             style: const TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -284,7 +284,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                             title: Text(
                               chap.title,
                               style: TextStyle(
-                                fontFamily: 'Amiri',
+                                fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 15,
                                 fontWeight: isCurrent
                                     ? FontWeight.bold
@@ -338,7 +338,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         content: Text(
           context.l10n.textCopied,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'Amiri'),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -426,7 +426,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               Text(
                 widget.book.title,
                 style: const TextStyle(
-                  fontFamily: 'Amiri',
+                  fontFamily: 'IBMPlexSansArabic',
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -535,7 +535,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               const SizedBox(height: 16),
               Text(
                 context.l10n.preparingDocument,
-                style: const TextStyle(fontFamily: 'Amiri', fontSize: 15),
+                style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 15),
               ),
             ],
           ),
@@ -654,7 +654,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                         _totalPdfPages,
                       ),
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: isDark
@@ -767,7 +767,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 label: Text(
                   context.l10n.openAndReadPdf,
                   style: const TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),

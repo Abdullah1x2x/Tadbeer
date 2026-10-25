@@ -80,7 +80,7 @@ class _MorningEveningAdhkarScreenState
         content: Text(
           context.l10n.adhkarCountersResetSuccess,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -98,7 +98,7 @@ class _MorningEveningAdhkarScreenState
         content: Text(
           context.l10n.dhikrCopiedSuccess,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -125,7 +125,7 @@ class _MorningEveningAdhkarScreenState
           title: Text(
             l10n.morningEveningAdhkarTitle,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -290,7 +290,7 @@ class _TabButton extends StatelessWidget {
             Text(
               '$title (${ArabicSearchNormalizer.toArabicDigits(count)})',
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected

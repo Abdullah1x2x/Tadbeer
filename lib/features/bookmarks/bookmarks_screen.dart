@@ -48,7 +48,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
           title: Text(
             l10n.bookmarks,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -122,7 +122,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       decoration: InputDecoration(
                         hintText: l10n.searchBookmarksHint,
                         hintStyle: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 14,
                           color: isDark
                               ? AppColors.nightSubtitle
@@ -159,7 +159,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                           child: Text(
                             l10n.noSearchResults,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 15,
                               color: isDark
                                   ? AppColors.nightSubtitle
@@ -301,7 +301,7 @@ class _BookmarkTile extends StatelessWidget {
                       style: TextStyle(
                         fontFamily:
                             context.currentLanguage == AppLanguage.arabic
-                            ? 'Amiri'
+                            ? 'IBMPlexSansArabic'
                             : null,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,

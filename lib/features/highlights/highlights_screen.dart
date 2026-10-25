@@ -47,7 +47,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
           title: Text(
             l10n.highlights,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -111,7 +111,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                     decoration: InputDecoration(
                       hintText: l10n.searchHighlightsHint,
                       hintStyle: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 14,
                         color: isDark
                             ? AppColors.nightSubtitle
@@ -147,7 +147,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                           child: Text(
                             l10n.noSearchResults,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 15,
                               color: isDark
                                   ? AppColors.nightSubtitle
@@ -242,7 +242,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                                   fontFamily:
                                                       context.currentLanguage ==
                                                           AppLanguage.arabic
-                                                      ? 'Amiri'
+                                                      ? 'IBMPlexSansArabic'
                                                       : null,
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,

@@ -108,7 +108,7 @@ class _BackupScreenState extends State<BackupScreen> {
           SnackBar(
             content: Text(
               l10n.backupSavedSuccess,
-              style: const TextStyle(fontFamily: 'Amiri'),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
             backgroundColor: AppColors.olive,
           ),
@@ -182,7 +182,7 @@ class _BackupScreenState extends State<BackupScreen> {
             Text(
               l10n.restoreWarningTitle,
               style: const TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -195,7 +195,7 @@ class _BackupScreenState extends State<BackupScreen> {
             Text(
               l10n.restoreWarningMessage,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,
                 color: isDark
                     ? AppColors.nightQuranText
@@ -208,7 +208,7 @@ class _BackupScreenState extends State<BackupScreen> {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: l10n.enterBackupPassword,
-                labelStyle: const TextStyle(fontFamily: 'Amiri'),
+                labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                 filled: true,
                 fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                 border: OutlineInputBorder(
@@ -223,7 +223,7 @@ class _BackupScreenState extends State<BackupScreen> {
             onPressed: () => Navigator.pop(dialogCtx, false),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(fontFamily: 'Amiri'),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
           ),
           ElevatedButton(
@@ -235,7 +235,7 @@ class _BackupScreenState extends State<BackupScreen> {
             child: Text(
               l10n.confirmRestore,
               style: const TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -260,7 +260,7 @@ class _BackupScreenState extends State<BackupScreen> {
         SnackBar(
           content: Text(
             l10n.restoreSuccess,
-            style: const TextStyle(fontFamily: 'Amiri'),
+            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
           ),
           backgroundColor: AppColors.olive,
         ),
@@ -275,21 +275,21 @@ class _BackupScreenState extends State<BackupScreen> {
           title: Text(
             l10n.restoreFailed,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
               color: Colors.redAccent,
             ),
           ),
           content: Text(
             result.errorMessage ?? l10n.corruptBackupError,
-            style: const TextStyle(fontFamily: 'Amiri'),
+            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: Text(
                 l10n.close,
-                style: const TextStyle(fontFamily: 'Amiri'),
+                style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
               ),
             ),
           ],
@@ -311,7 +311,7 @@ class _BackupScreenState extends State<BackupScreen> {
           title: Text(
             l10n.backup,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -358,7 +358,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     Text(
                       l10n.exportBackupSubtitle,
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         color: isDark
                             ? AppColors.nightSubtitle
@@ -373,7 +373,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.notes,
-                        style: const TextStyle(fontFamily: 'Amiri'),
+                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                       ),
                       value: _includeNotes,
                       onChanged: (val) =>
@@ -386,7 +386,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.bookmarks,
-                        style: const TextStyle(fontFamily: 'Amiri'),
+                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                       ),
                       value: _includeBookmarks,
                       onChanged: (val) =>
@@ -399,7 +399,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.highlights,
-                        style: const TextStyle(fontFamily: 'Amiri'),
+                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                       ),
                       value: _includeHighlights,
                       onChanged: (val) =>
@@ -412,7 +412,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.reminders,
-                        style: const TextStyle(fontFamily: 'Amiri'),
+                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                       ),
                       value: _includeReminders,
                       onChanged: (val) =>
@@ -425,7 +425,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.settings,
-                        style: const TextStyle(fontFamily: 'Amiri'),
+                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                       ),
                       value: _includeSettings,
                       onChanged: (val) =>
@@ -437,7 +437,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       contentPadding: const EdgeInsetsDirectional.only(start: 4),
                       title: Text(
                         l10n.journeyBackupSection,
-                        style: const TextStyle(fontFamily: 'Amiri'),
+                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                       ),
                       value: _includeJourney,
                       onChanged: (val) =>
@@ -449,7 +449,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: l10n.enterBackupPassword,
-                        labelStyle: const TextStyle(fontFamily: 'Amiri'),
+                        labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                         filled: true,
                         fillColor: isDark
                             ? AppColors.darkBackground
@@ -483,7 +483,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       label: Text(
                         l10n.saveToDeviceFiles,
                         style: const TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -508,7 +508,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       label: Text(
                         l10n.shareViaApps,
                         style: const TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),
@@ -557,7 +557,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     Text(
                       l10n.restoreBackupSubtitle,
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         color: isDark
                             ? AppColors.nightSubtitle
@@ -584,7 +584,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       label: Text(
                         l10n.restoreBackup,
                         style: const TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
