@@ -132,6 +132,7 @@ class SearchRegistry {
   /// Registers the standard built-in search providers for Tadbeer.
   void registerDefaults() {
     register(const QuranSearchProvider());
+    register(const BooksSearchProvider());
     register(const NotesSearchProvider());
     register(const TadbeerSearchProvider());
     register(const BookmarksSearchProvider());

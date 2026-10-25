@@ -6,6 +6,8 @@ import '../../core/utils/arabic_root_search_helper.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/ayah_links/ayah_link_detail_screen.dart';
 import '../../features/ayah_links/ayah_link_repository.dart';
+import '../../features/books/book_reader_screen.dart';
+import '../../features/books/book_repository.dart';
 import '../../features/duas/quran_duas_repository.dart';
 import '../../features/notes/note_editor_screen.dart';
 import '../../features/quran/data/quran_repository.dart';
@@ -634,3 +636,131 @@ class WordMeaningsSearchProvider implements SearchProvider {
     }).toList();
   }
 }
+
+/// مزود البحث في مكتبة الملازم والكتب التدبرية.
+///
+/// Search provider for curated and personal books, booklets, and pamphlets.
+class BooksSearchProvider implements SearchProvider {
+  /// ينشئ مزود البحث في الملازم والكتب.
+  const BooksSearchProvider();
+
+  /// المعرّف الفريد لمزود بحث الكتب والملازم.
+  @override
+  String get id => 'books';
+
+  /// يعيد عنوان قسم الملازم والكتب.
+  @override
+  String getSectionTitle(BuildContext context) =>
+      context.l10n.isArabic ? 'الملازم والكتب' : 'Books & Booklets';
+
+  /// أيقونة قسم الكتب والملازم.
+  @override
+  IconData get icon => Icons.auto_stories_rounded;
+
+  /// يبحث في عناوين الملازم، وأسماء السلاسل، والمؤلفين، والفصول، والوصف مع دعم البحث المرن وتعدد الكلمات.
+  @override
+  Future<List<SearchResultItem>> search(
+    String query,
+    BuildContext context,
+  ) async {
+    final sectionTitle = getSectionTitle(context);
+    final repo = BookRepository.instance;
+    if (!repo.isInitialized) {
+      await repo.init();
+    }
+
+    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
+    if (normalizedQuery.isEmpty) return const [];
+
+    final tokens = normalizedQuery.split(' ').where((w) => w.isNotEmpty).toList();
+    if (tokens.isEmpty) return const [];
+
+    final results = <SearchResultItem>[];
+
+    for (final book in repo.books) {
+      final titleNorm = ArabicSearchNormalizer.normalize(book.title);
+      final subtitleNorm = ArabicSearchNormalizer.normalize(book.subtitle);
+      final authorNorm = ArabicSearchNormalizer.normalize(book.author);
+      final categoryNorm = ArabicSearchNormalizer.normalize(book.category);
+      final badgeNorm = ArabicSearchNormalizer.normalize(book.badgeText ?? '');
+
+      bool match = false;
+
+      // ١. المطابقة المباشرة في البيانات الأساسية للملزمة
+      if (titleNorm.contains(normalizedQuery) ||
+          subtitleNorm.contains(normalizedQuery) ||
+          authorNorm.contains(normalizedQuery) ||
+          categoryNorm.contains(normalizedQuery) ||
+          badgeNorm.contains(normalizedQuery)) {
+        match = true;
+      } else if (tokens.length > 1) {
+        // ٢. مطابقة الكلمات المتعددة عبر حقول الملزمة مع مرونة السوابق
+        final combined = '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
+        match = tokens.every((token) {
+          if (combined.contains(token)) return true;
+          if (token.startsWith('ال') && token.length >= 4) {
+            return combined.contains(token.substring(2));
+          }
+          return false;
+        });
+      } else if (tokens.length == 1 && tokens.first.startsWith('ال') && tokens.first.length >= 4) {
+        // كلمة مفردة بمرونة "ال" التعريف
+        final withoutAl = tokens.first.substring(2);
+        final combined = '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
+        if (combined.contains(withoutAl)) {
+          match = true;
+        }
+      }
+
+      // ٣. فحص عناوين الفصول إن وجدت
+      if (!match && book.chapters.isNotEmpty) {
+        for (final ch in book.chapters) {
+          final chTitleNorm = ArabicSearchNormalizer.normalize(ch.title);
+          if (chTitleNorm.contains(normalizedQuery)) {
+            match = true;
+            break;
+          }
+          if (tokens.length > 1 && tokens.every((t) => chTitleNorm.contains(t))) {
+            match = true;
+            break;
+          }
+        }
+      }
+
+      if (match) {
+        final snippet = book.subtitle.isNotEmpty
+            ? book.subtitle
+            : (book.author.isNotEmpty
+                ? 'المؤلف: ${book.author}'
+                : (book.badgeText != null && book.badgeText!.isNotEmpty
+                    ? book.badgeText!
+                    : book.category));
+
+        final badge = book.isPdf ? 'ملزمة PDF' : 'كتاب نصي';
+
+        results.add(
+          SearchResultItem(
+            id: 'book_${book.id}',
+            providerId: id,
+            sectionTitle: sectionTitle,
+            title: book.title,
+            snippet: snippet,
+            badge: badge,
+            icon: icon,
+            onTap: (ctx) {
+              Navigator.push(
+                ctx,
+                MaterialPageRoute(
+                  builder: (_) => BookReaderScreen(book: book),
+                ),
+              );
+            },
+          ),
+        );
+      }
+    }
+
+    return results;
+  }
+}
+

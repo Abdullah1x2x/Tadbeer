@@ -396,6 +396,58 @@ void main() {
         expect(find.byIcon(Icons.more_vert), findsNWidgets(2));
       },
     );
+
+    testWidgets(
+      'AddVerseToLinkDialog bottom sheet renders tabs, supports search and manual selection',
+      (WidgetTester tester) async {
+        late AyahLinkItem link;
+        await tester.runAsync(() async {
+          final repo = AyahLinkRepository();
+          link = await repo.createLink(
+            title: 'رابط تدبري لاختبار إضافة الآيات',
+          );
+        });
+
+        await tester.pumpWidget(
+          buildTestApp(AyahLinkDetailScreen(linkId: link.id)),
+        );
+        await tester.pumpAndSettle();
+
+        // 1. Tap Add Ayah button
+        final addAyahBtn =
+            find.widgetWithText(FloatingActionButton, 'إضافة آية');
+        expect(addAyahBtn, findsOneWidget);
+        await tester.tap(addAyahBtn);
+        await tester.pumpAndSettle();
+
+        // 2. Bottom Sheet should appear with Title and 3 mode tabs
+        expect(find.text('إضافة آية إلى الرابط'), findsOneWidget);
+        expect(find.text('بحث فوري'), findsOneWidget);
+        expect(find.text('تحديد يدوي'), findsOneWidget);
+        expect(find.text('محفوظاتي'), findsOneWidget);
+
+        // 3. Switch to Manual Picker
+        await tester.tap(find.text('تحديد يدوي'));
+        await tester.pumpAndSettle();
+
+        // Verify Surah selection card and Ayah stepper are visible
+        expect(find.textContaining('السورة'), findsOneWidget);
+        expect(find.textContaining('رقم الآية'), findsOneWidget);
+
+        // 4. Verify preview card and submit button are displayed
+        expect(find.text('إضافة إلى الرابط'), findsOneWidget);
+
+        // 5. Submit adding the verse
+        await tester.runAsync(() async {
+          await tester.tap(find.widgetWithText(ElevatedButton, 'إضافة إلى الرابط'));
+          await Future.delayed(const Duration(milliseconds: 150));
+        });
+        await tester.pumpAndSettle();
+
+        // Dialog closes and verse is added to the link
+        expect(find.text('إضافة آية إلى الرابط'), findsNothing);
+      },
+    );
   });
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/design_system.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/bookmarks/bookmark_model.dart';
@@ -112,37 +113,47 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (val) => setState(() => _searchQuery = val.trim()),
-                    decoration: InputDecoration(
-                      hintText: l10n.searchBookmarksHint,
-                      hintStyle: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 14,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                      borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                      border: Border.all(
+                        color: AppColors.border(context),
+                        width: AppTokens.borderHairline,
                       ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: AppColors.olive,
-                      ),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear, size: 20),
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() => _searchQuery = '');
-                              },
-                            )
-                          : null,
-                      filled: true,
-                      fillColor:
-                          isDark ? AppColors.darkSurface : AppColors.comsilk,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+                      boxShadow: AppTokens.cardShadow(isDark: isDark),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (val) =>
+                          setState(() => _searchQuery = val.trim()),
+                      decoration: InputDecoration(
+                        hintText: l10n.searchBookmarksHint,
+                        hintStyle: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 14,
+                          color: isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search_rounded,
+                          color: AppColors.cyberEmerald,
+                        ),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded, size: 20),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                              )
+                            : null,
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -194,8 +205,28 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                   ),
                                 );
                               },
-                              onDelete: () => UserDataStore.instance
-                                  .removeBookmark(item.id),
+                              onDelete: () {
+                                UserDataStore.instance.removeBookmark(item.id);
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      l10n.isArabic
+                                          ? 'تم حذف الفاصلة المرجعية'
+                                          : 'Bookmark removed',
+                                    ),
+                                    action: SnackBarAction(
+                                      label: l10n.isArabic ? 'تراجع' : 'Undo',
+                                      onPressed: () {
+                                        UserDataStore.instance.putBookmark(
+                                          item,
+                                        );
+                                      },
+                                    ),
+                                    duration: const Duration(seconds: 4),
+                                  ),
+                                );
+                              },
                             );
                           },
                         ),
@@ -231,114 +262,114 @@ class _BookmarkTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return InkWell(
+    return FuturisticCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isDark
-                ? AppColors.darkSurfaceVariant
-                : AppColors.lightBorder,
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Icon(
-                Icons.bookmark,
-                color: Theme.of(context).colorScheme.primary,
-                size: 22,
+      accentColor: AppColors.cyberEmerald,
+      padding: const EdgeInsets.all(14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: AppColors.cyberEmerald.withValues(
+                alpha: isDark ? 0.15 : 0.10,
+              ),
+              borderRadius: BorderRadius.circular(AppTokens.radiusSm),
+              border: Border.all(
+                color: AppColors.cyberEmerald.withValues(alpha: 0.3),
+                width: AppTokens.borderHairline,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        context.l10n.ayahReference(
-                          surahName,
-                          context.currentLanguage == AppLanguage.arabic
-                              ? ArabicSearchNormalizer.toArabicDigits(item.ayahNumber)
-                              : item.ayahNumber,
-                        ),
-                        style: TextStyle(
-                          fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.comsilk
-                              : AppColors.oliveDark,
-                        ),
-                      ),
-                      Text(
-                        context.l10n.pageAbbr(
-                          context.currentLanguage == AppLanguage.arabic
-                              ? ArabicSearchNormalizer.toArabicDigits(item.page)
-                              : item.page,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.olive,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  if (ayahText.isNotEmpty)
+            child: const Icon(
+              Icons.bookmark_rounded,
+              color: AppColors.cyberEmerald,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     Text(
-                      '﴿ $ayahText ﴾',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textDirection: TextDirection.rtl,
+                      context.l10n.ayahReference(
+                        surahName,
+                        context.currentLanguage == AppLanguage.arabic
+                            ? ArabicSearchNormalizer.toArabicDigits(
+                                item.ayahNumber,
+                              )
+                            : item.ayahNumber,
+                      ),
                       style: TextStyle(
-                        fontFamily: 'AmiriQuran',
-                        fontSize: 14,
-                        color: isDark
-                            ? AppColors.nightQuranText
-                            : AppColors.dayQuranText,
+                        fontFamily:
+                            context.currentLanguage == AppLanguage.arabic
+                            ? 'Amiri'
+                            : null,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? AppColors.comsilk : AppColors.oliveDark,
                       ),
                     ),
-                ],
-              ),
-            ),
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert, size: 20),
-              onSelected: (val) {
-                if (val == 'delete') onDelete();
-              },
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.delete_outline,
-                        size: 18,
-                        color: Colors.redAccent,
+                    FuturisticBadge(
+                      label: context.l10n.pageAbbr(
+                        context.currentLanguage == AppLanguage.arabic
+                            ? ArabicSearchNormalizer.toArabicDigits(item.page)
+                            : item.page,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        context.l10n.removeBookmark,
-                        style: const TextStyle(color: Colors.redAccent),
-                      ),
-                    ],
-                  ),
+                      color: AppColors.cyberEmerald,
+                      isCompact: true,
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 6),
+                if (ayahText.isNotEmpty)
+                  Text(
+                    '﴿ $ayahText ﴾',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textDirection: TextDirection.rtl,
+                    style: TextStyle(
+                      fontFamily: 'AmiriQuran',
+                      fontSize: 14,
+                      color: isDark
+                          ? AppColors.nightQuranText
+                          : AppColors.dayQuranText,
+                    ),
+                  ),
               ],
             ),
-          ],
-        ),
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, size: 20),
+            onSelected: (val) {
+              if (val == 'delete') onDelete();
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.delete_outline,
+                      size: 18,
+                      color: Colors.redAccent,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      context.l10n.removeBookmark,
+                      style: const TextStyle(color: Colors.redAccent),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

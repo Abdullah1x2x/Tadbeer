@@ -19,7 +19,9 @@ void main() {
   late File dataFile;
 
   setUpAll(() async {
-    tempDir = await Directory.systemTemp.createTemp('tadbeer_word_meanings_test_');
+    tempDir = await Directory.systemTemp.createTemp(
+      'tadbeer_word_meanings_test_',
+    );
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
     await QuranRepository.instance.init();
@@ -54,7 +56,11 @@ void main() {
       // Assert that every entry is strictly a single Quranic word without compound spaces
       for (final item in list) {
         final w = (item as Map<String, dynamic>)['word'] as String;
-        expect(w.trim().split(' ').length, equals(1), reason: 'Word "$w" must be a single word');
+        expect(
+          w.trim().split(' ').length,
+          equals(1),
+          reason: 'Word "$w" must be a single word',
+        );
       }
 
       final first = list.first as Map<String, dynamic>;
@@ -64,16 +70,25 @@ void main() {
       expect(first['meaning'], isNotEmpty);
       final firstModel = QuranWordMeaning.fromJson(first);
       expect(firstModel.sourceName, contains('المعجم الوسيط'));
-      expect(firstModel.sourceUrl, equals('https://www.arabicacademy.gov.eg/ar/'));
+      expect(
+        firstModel.sourceUrl,
+        equals('https://www.arabicacademy.gov.eg/ar/'),
+      );
 
       // Check specific user-requested verified examples
-      final abb = list.firstWhere((e) => e['word'] == 'أَبًّا' || e['word'] == 'أَبّ');
+      final abb = list.firstWhere(
+        (e) => e['word'] == 'أَبًّا' || e['word'] == 'أَبّ',
+      );
       expect(abb['meaning'], equals('الكلأ والمرعى'));
 
-      final deez = list.firstWhere((e) => (e['word'] as String).contains('ضِيزَى'));
+      final deez = list.firstWhere(
+        (e) => (e['word'] as String).contains('ضِيزَى'),
+      );
       expect(deez['meaning'], equals('جائرة، غير عادلة'));
 
-      final sarmad = list.firstWhere((e) => (e['word'] as String).contains('سَرْمَدًا'));
+      final sarmad = list.firstWhere(
+        (e) => (e['word'] as String).contains('سَرْمَدًا'),
+      );
       expect(sarmad['meaning'], equals('دائمًا لا ينقطع'));
     });
 
@@ -197,109 +212,124 @@ void main() {
   });
 
   group('UI & Screen Flow Tests (7, 9, 10)', () {
-    testWidgets('7. تحديث لوحة المعاني عند تغيير صفحة المصحف: panel updates for current page', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(800, 1200));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+    testWidgets(
+      '7. تحديث لوحة المعاني عند تغيير صفحة المصحف: panel updates for current page',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(800, 1200));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      int currentPage = 1;
-      bool isExpanded = true;
+        int currentPage = 1;
+        bool isExpanded = true;
 
-      await tester.pumpWidget(
-        buildTestWidget(
-          StatefulBuilder(
-            builder: (ctx, setState) {
-              return Scaffold(
-                body: WordMeaningsPanel(
-                  pageNumber: currentPage,
-                  isExpanded: isExpanded,
-                  onToggle: () {
-                    setState(() => isExpanded = !isExpanded);
-                  },
-                  onClose: () {
-                    setState(() => isExpanded = false);
-                  },
-                ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    setState(() => currentPage = 2);
-                  },
-                  child: const Icon(Icons.arrow_forward),
-                ),
-              );
-            },
+        await tester.pumpWidget(
+          buildTestWidget(
+            StatefulBuilder(
+              builder: (ctx, setState) {
+                return Scaffold(
+                  body: WordMeaningsPanel(
+                    pageNumber: currentPage,
+                    isExpanded: isExpanded,
+                    onToggle: () {
+                      setState(() => isExpanded = !isExpanded);
+                    },
+                    onClose: () {
+                      setState(() => isExpanded = false);
+                    },
+                  ),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () {
+                      setState(() => currentPage = 2);
+                    },
+                    child: const Icon(Icons.arrow_forward),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      // On Page 1: Header shows "معاني كلمات صفحة ١"
-      expect(find.textContaining('صفحة ١'), findsOneWidget);
+        // On Page 1: Header shows "معاني كلمات صفحة ١"
+        expect(find.textContaining('صفحة ١'), findsOneWidget);
 
-      // Tap to switch to Page 2
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
+        // Tap to switch to Page 2
+        await tester.tap(find.byType(FloatingActionButton));
+        await tester.pumpAndSettle();
 
-      // On Page 2: Header updates automatically to "معاني كلمات صفحة ٢"
-      expect(find.textContaining('صفحة ٢'), findsOneWidget);
-    });
+        // On Page 2: Header updates automatically to "معاني كلمات صفحة ٢"
+        expect(find.textContaining('صفحة ٢'), findsOneWidget);
+      },
+    );
 
-    testWidgets('9. عدم ظهور اسم المرجع بجانب الكلمة: WordMeaningsPanel does NOT render source name', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(800, 1200));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+    testWidgets(
+      '9. عدم ظهور اسم المرجع بجانب الكلمة: WordMeaningsPanel does NOT render source name',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(800, 1200));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(
-        buildTestWidget(
-          WordMeaningsPanel(
-            pageNumber: 1,
-            isExpanded: true,
-            onToggle: () {},
-            onClose: () {},
+        await tester.pumpWidget(
+          buildTestWidget(
+            WordMeaningsPanel(
+              pageNumber: 1,
+              isExpanded: true,
+              onToggle: () {},
+              onClose: () {},
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+        await tester.pumpAndSettle();
 
-      // Verified word is displayed
-      expect(find.text('الصِّرَاطَ'), findsOneWidget);
+        // Verified word is displayed
+        expect(find.text('الصِّرَاطَ'), findsOneWidget);
 
-      // Source names must NEVER appear next to the word in the panel
-      expect(find.textContaining('المعجم الوسيط'), findsNothing);
-      expect(find.textContaining('معجم الدوحة'), findsNothing);
-      expect(find.textContaining('السراج'), findsNothing);
-    });
+        // Source names must NEVER appear next to the word in the panel
+        expect(find.textContaining('المعجم الوسيط'), findsNothing);
+        expect(find.textContaining('معجم الدوحة'), findsNothing);
+        expect(find.textContaining('السراج'), findsNothing);
+      },
+    );
 
-    testWidgets('10. ظهور المصادر في صفحة المصادر: WordMeaningsSourcesScreen displays lexicon sources and legal terms', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(800, 2400));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+    testWidgets(
+      '10. ظهور المصادر في صفحة المصادر: WordMeaningsSourcesScreen displays lexicon sources and legal terms',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(800, 2400));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(
-        buildTestWidget(const WordMeaningsSourcesScreen()),
-      );
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          buildTestWidget(const WordMeaningsSourcesScreen()),
+        );
+        await tester.pumpAndSettle();
 
-      // Title
-      expect(find.text('المصادر المعتمدة'), findsOneWidget);
+        // Title
+        expect(find.text('المصادر المعتمدة'), findsOneWidget);
 
-      // Primary source: Al-Mu'jam Al-Waseet
-      expect(find.text('المعجم الوسيط'), findsOneWidget);
-      expect(find.textContaining('مجمع اللغة العربية بالقاهرة'), findsWidgets);
-      expect(find.textContaining('arabicacademy.gov.eg'), findsWidgets);
+        // Primary source: Al-Mu'jam Al-Waseet
+        expect(find.text('المعجم الوسيط'), findsOneWidget);
+        expect(
+          find.textContaining('مجمع اللغة العربية بالقاهرة'),
+          findsWidgets,
+        );
+        expect(find.textContaining('arabicacademy.gov.eg'), findsWidgets);
 
-      // Verification source: Doha Historical Dictionary
-      expect(find.text('معجم الدوحة التاريخي للغة العربية'), findsOneWidget);
-      expect(find.textContaining('dohadictionary.org'), findsWidgets);
+        // Verification source: Doha Historical Dictionary
+        expect(find.text('معجم الدوحة التاريخي للغة العربية'), findsOneWidget);
+        expect(find.textContaining('dohadictionary.org'), findsWidgets);
 
-      // Legal & Licensing compliance card
-      expect(find.text('تحقيق الملكية الفكرية وتراخيص الاستخدام'), findsOneWidget);
-    });
+        // Legal & Licensing compliance card
+        expect(
+          find.text('تحقيق الملكية الفكرية وتراخيص الاستخدام'),
+          findsOneWidget,
+        );
+      },
+    );
 
-    testWidgets('WordMeaningsScreen renders and filters words smoothly', (tester) async {
+    testWidgets('WordMeaningsScreen renders and filters words smoothly', (
+      tester,
+    ) async {
       await tester.binding.setSurfaceSize(const Size(800, 1200));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(
-        buildTestWidget(const WordMeaningsScreen()),
-      );
+      await tester.pumpWidget(buildTestWidget(const WordMeaningsScreen()));
       await tester.pumpAndSettle();
 
       // Title is present, and Sources button is completely removed
@@ -313,25 +343,28 @@ void main() {
       expect(find.text('الصِّرَاطَ'), findsOneWidget);
     });
 
-    testWidgets('QuranScreen integrates WordMeaningsPanel and toggles it smoothly', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(800, 1200));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+    testWidgets(
+      'QuranScreen integrates WordMeaningsPanel and toggles it smoothly',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(800, 1200));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(
-        buildTestWidget(const QuranScreen(initialPage: 1)),
-      );
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          buildTestWidget(const QuranScreen(initialPage: 1)),
+        );
+        await tester.pumpAndSettle();
 
-      // Word meanings collapsed bar should be visible at bottom
-      expect(find.byType(WordMeaningsPanel), findsOneWidget);
+        // Word meanings collapsed bar should be visible at bottom
+        expect(find.byType(WordMeaningsPanel), findsOneWidget);
 
-      // Toggle top bar
-      await tester.tap(find.byType(QuranScreen));
-      await tester.pumpAndSettle();
+        // Toggle top bar
+        await tester.tap(find.byType(QuranScreen));
+        await tester.pumpAndSettle();
 
-      // Top bar word meanings button exists
-      expect(find.byTooltip('معاني كلمات الصفحة'), findsOneWidget);
-    });
+        // Top bar word meanings button exists
+        expect(find.byTooltip('معاني كلمات الصفحة'), findsOneWidget);
+      },
+    );
 
     test('CustomWordMeaningConfig converts to QuranWordMeaning correctly', () {
       const config = CustomWordMeaningConfig(

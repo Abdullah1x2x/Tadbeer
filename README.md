@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%5E3.4.0-0175C2.svg?logo=dart)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-212%20passed-success.svg)](test/)
+[![Tests](https://img.shields.io/badge/Tests-246%20passed-success.svg)](test/)
 [![Offline](https://img.shields.io/badge/Offline--First-100%25-blueviolet.svg)](#privacy--offline-first)
 [![Website](https://img.shields.io/badge/Website-GitHub%20Pages-informational.svg)](https://abdullah-alshami.github.io/Tadbeer/)
 
@@ -16,6 +16,11 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 ---
 
 ## ✨ Key Features
+
+### 💎 Futuristic Design & Motion System
+- **Advanced Digital Design System (`lib/core/design_system/`):** High-precision geometric `FuturisticCard` with layered depths and subdued borders, interactive `FuturisticButton`, status indicators (`FuturisticBadge`), and tactile `FuturisticIconButton`.
+- **Unified Motion Engine (`lib/core/motion/app_motion.dart`):** Consistent durations (`fast: 120ms`, `normal: 200ms`, `slow: 350ms`), calibrated curves (`easeOutCubic`, `easeInOutCubic`), and responsive `ScaleOnPress` micro-interactions.
+- **Accessibility & Reduced Motion:** Full compliance with `MediaQuery.disableAnimationsOf(context)` across all animated controls to provide instant transitions for motion-sensitive users.
 
 ### 📖 Holy Quran Reader
 - **Responsive Authentic Layout:** Digital reproduction of the Holy Quran featuring the verified Uthmani script from the Tanzil Project, Medinan layout, ornate Surah header banners, Bismillah headings, and authentic verse rosettes `﴿1﴾`.
@@ -46,6 +51,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 ### 🌿 Reflection & Study Tools
 - **Tadbeer Pause (وقفة تدبر):** Structured reflection worksheet anchored to individual verses with four foundational prompts: *What do I understand? What feeling does it evoke? What does it heal in me? What practical action will I take?*
 - **Thematic Verse Links (روابط الآيات):** Thematic cross-referencing system linking related ayahs across surahs, viewable in both interactive topological network and sequential ordered list views.
+- **Overhauled Ayah Link Picker:** Streamlined, responsive bottom sheet dialog for quickly searching, selecting, and attaching verses to thematic pathways with real-time validation.
 - **Curated Thematic Pathways (المسارات التدبرية المقترحة):** Built-in pathways across major Quranic themes (e.g., Divine Names in Surah Al-Hashr, Prophetic Duas in Surah Al-Anbiya, Personal & Societal Transformation) with one-tap import.
 - **Zero-Network QR Sharing:** Export and import Ayah Links offline via standard QR codes without cloud sync.
 - **Reflections Journal (PDF & Markdown Export):** Personal contemplative journaling per ayah or general reflection, with single-note PDF export and periodic reflection journal archiving (weekly, monthly, or full archive) complete with reflection statistics.
@@ -72,7 +78,8 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
   - *Sayyidah Fatimah al-Zahra's Dua* ("O Living, O Sustainer, by Your mercy I seek help...")
   - *Additional Revered Duas:* Dua al-Faraj, Dua al-Sabah of Imam Ali, Dua al-Ahd, Al-Munajat al-Sha'baniyyah, and Dua Yastasheer.
 - **Prophetic & Comprehensive Duas:** Curated authentic supplications for distress, grief, debts, and righteousness in this life and the hereafter.
-- **Unified Global Search:** Extensible `SearchRegistry` querying 9 domains concurrently with error isolation and interactive filter chips.
+- **Unified Global Search:** Extensible `SearchRegistry` querying 10 domains concurrently with error isolation and interactive filter chips.
+- **Phonetic-to-Standard Arabic Query Normalization:** Intelligent query normalizer in `ArabicSearchNormalizer` resolving common phonetic spellings (e.g. هازا -> هذا، ذالك -> ذلك، صلاه -> صلاة، رحمن -> رحمن) strictly within search inputs while preserving 100% untouched integrity of authentic Quranic text and classical heritage collections.
 - **Root & Morphological Search:** Instant root search via `جذر:XXX` syntax (e.g. `جذر:صبر` or `جذر:رحم`), matching across rich morphological variations across all 6,236 ayahs.
 - **Offline Reminders:** Local scheduled notifications (`flutter_local_notifications` + `flutter_timezone`) for daily Quran reading and reflection routines, operating completely on-device without internet access.
 
@@ -144,7 +151,7 @@ flutter run
 # Verify static analysis (0 warnings / 0 errors)
 dart analyze
 
-# Run all automated tests (212 tests, 24 test files, 100% passing)
+# Run all automated tests (246 tests, 26 test files, 100% passing)
 flutter test
 
 # Build production release packages
@@ -164,31 +171,37 @@ tadbeer/
 │   └── quran/
 │       ├── quran_data.json     # Verified Tanzil Uthmani text (2.0MB)
 │       └── word_meanings.json  # 6,465 verified lexical entries (1.1MB)
-├── lib/                        # Production Dart code (84 files)
+├── lib/                        # Production Dart code (81 cohesive files)
 │   ├── app/                    # App bootstrap, localization (ar/en), theme
 │   ├── core/
+│   │   ├── design_system/      # Futuristic design tokens & components (Cards, Buttons, Badges)
+│   │   ├── motion/             # Unified motion engine AppMotion & tactile ScaleOnPress
 │   │   ├── services/           # AES-256 crypto & local reminders
 │   │   ├── storage/            # SQLite database & reactive UserDataStore
-│   │   └── utils/              # Arabic root search & PDF export utilities
-│   ├── features/               # Feature domain modules:
-│   │   ├── ayah_links/         # Thematic verse links & network views
+│   │   └── utils/              # Phonetic search normalizer, root search, & PDF export
+│   ├── features/               # Feature domain modules (cohesive, consolidated models):
+│   │   ├── ayah_links/         # Thematic verse links, network views, & picker sheet
 │   │   ├── backup/             # Encrypted backup & restore screen
-│   │   ├── bookmarks/          # Bookmarks repository & screen
-│   │   ├── books/              # Curated booklets & study library
-│   │   ├── duas/               # 88 Quranic duas catalog
-│   │   ├── highlights/         # 4-color verse highlighting
+│   │   ├── bookmarks/          # Consolidated bookmark model/repository & screen
+│   │   ├── books/              # Curated booklets, Ahlulbayt heritage, & reader
+│   │   ├── duas/               # 88 Quranic duas, morning/evening adhkar, & Ahlulbayt duas
+│   │   ├── highlights/         # Consolidated highlight model/repository & screen
 │   │   ├── home/               # Dashboard & reading resume
-│   │   ├── notes/              # Reflection notes & PDF journal export
-│   │   ├── quran/              # Responsive Mushaf engine & page view
+│   │   ├── notes/              # Consolidated notes model/repository & PDF export
+│   │   ├── quran/              # Responsive Mushaf engine, page view, & meanings panel
 │   │   ├── reminders/          # Reading reminders scheduling
-│   │   ├── search/             # Unified search registry & providers
+│   │   ├── search/             # Unified search registry & 10 search providers
 │   │   ├── settings/           # Font family/size, theme, and about
 │   │   ├── tadbeer/            # Tadbeer pause worksheet & intro
-│   │   ├── tasbeeh/            # Digital counter & daily dhikr sanctuary
+│   │   ├── tasbeeh/            # Consolidated tasbeeh model/repository & sanctuary
 │   │   └── word_meanings/      # Word meanings explorer & sources
 │   └── main.dart               # Entrypoint & service initialization
-├── test/                       # Comprehensive test suite (216 tests, 24 files)
+├── test/                       # Comprehensive test suite (246 tests, 26 files, 100% passing)
+│   ├── design_system/          # Design system component tests (Cards, Buttons, Badges)
+│   ├── motion/                 # Motion engine & reduced-motion accessibility tests
+│   └── ...                     # Comprehensive unit & widget tests across all features
 ├── docs/                       # Technical documentation
+│   ├── ARCHITECTURE_AND_CODE_GUIDE.md # Comprehensive engineering & architectural guide
 │   └── CONTENT_GUIDE.md        # Content addition & extension manual for developers
 ├── DEVELOPMENT_GUIDE.md        # Technical developer & maintenance guide
 ├── DEVELOPMENT_GUIDE.ar.md     # Arabic technical developer guide

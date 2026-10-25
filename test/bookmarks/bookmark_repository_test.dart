@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/bookmarks/bookmark_repository.dart';
+import 'package:tadbeer/features/bookmarks/bookmark_model.dart';
 import 'package:tadbeer/features/quran/data/quran_models.dart';
 
 void main() {

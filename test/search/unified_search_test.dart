@@ -9,6 +9,7 @@ import 'package:tadbeer/features/bookmarks/bookmark_model.dart';
 import 'package:tadbeer/features/bookmarks/bookmarks_screen.dart';
 import 'package:tadbeer/features/highlights/highlight_model.dart';
 import 'package:tadbeer/features/highlights/highlights_screen.dart';
+import 'package:tadbeer/features/books/book_repository.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/notes/note_model.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
@@ -68,6 +69,7 @@ void main() {
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
     await QuranRepository.instance.init();
+    await BookRepository.instance.init(disableDisk: true);
   });
 
   tearDownAll(() async {
@@ -92,10 +94,11 @@ void main() {
   }
 
   group('SearchRegistry Architecture & Extensibility Tests', () {
-    test('Registry initializes with all 9 built-in providers', () {
+    test('Registry initializes with all 10 built-in providers', () {
       final registry = SearchRegistry.instance;
-      expect(registry.providers.length, equals(9));
+      expect(registry.providers.length, equals(10));
       expect(registry.getProvider('quran'), isNotNull);
+      expect(registry.getProvider('books'), isNotNull);
       expect(registry.getProvider('notes'), isNotNull);
       expect(registry.getProvider('tadbeer'), isNotNull);
       expect(registry.getProvider('bookmarks'), isNotNull);
@@ -112,11 +115,11 @@ void main() {
 
       registry.register(customProvider);
       expect(registry.getProvider('custom_test'), isNotNull);
-      expect(registry.providers.length, equals(10));
+      expect(registry.providers.length, equals(11));
 
       registry.unregister('custom_test');
       expect(registry.getProvider('custom_test'), isNull);
-      expect(registry.providers.length, equals(9));
+      expect(registry.providers.length, equals(10));
     });
 
     testWidgets('Extensible: Custom provider integrates seamlessly into searchAll', (
@@ -316,6 +319,48 @@ void main() {
       final results = await provider.search('سورة الكهف', context);
       expect(results.isNotEmpty, isTrue);
       expect(results.first.title, contains('سورة الكهف'));
+    });
+
+    testWidgets('BooksSearchProvider finds books and booklets by flexible title/keywords', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const SizedBox()));
+      final context = tester.element(find.byType(SizedBox));
+
+      final provider = SearchRegistry.instance.getProvider('books')!;
+      final results = await provider.search('معرفة الله', context);
+      expect(results.isNotEmpty, isTrue);
+      expect(results.first.providerId, equals('books'));
+
+      final resultsFlexible = await provider.search('الله معرفه', context);
+      expect(resultsFlexible.isNotEmpty, isTrue);
+    });
+
+    testWidgets('QuranSearchProvider supports direct verse references and multi-token matching', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const SizedBox()));
+      final context = tester.element(find.byType(SizedBox));
+
+      final provider = SearchRegistry.instance.getProvider('quran')!;
+
+      final directResults = await provider.search('البقرة 255', context);
+      expect(directResults.isNotEmpty, isTrue);
+      expect(directResults.first.surahNumber, equals(2));
+      expect(directResults.first.ayahNumber, equals(255));
+
+      final colonResults = await provider.search('2:255', context);
+      expect(colonResults.isNotEmpty, isTrue);
+      expect(colonResults.first.surahNumber, equals(2));
+      expect(colonResults.first.ayahNumber, equals(255));
+
+      final multiTokenResults = await provider.search('موسى فرعون', context);
+      expect(multiTokenResults.isNotEmpty, isTrue);
+
+      final surahResults = await provider.search('سورة الكهف', context);
+      expect(surahResults.isNotEmpty, isTrue);
+      expect(surahResults.first.surahNumber, equals(18));
+      expect(surahResults.first.ayahNumber, equals(1));
     });
   });
 

@@ -248,6 +248,16 @@ class AyahLinkRepository {
         }
       }
 
+      // Check attached reflection card notes
+      for (final n in link.notes) {
+        final normContent = ArabicSearchNormalizer.normalize(n.content);
+        if (normContent.contains(normalized)) return true;
+        if (n.title != null) {
+          final normNoteTitle = ArabicSearchNormalizer.normalize(n.title!);
+          if (normNoteTitle.contains(normalized)) return true;
+        }
+      }
+
       return false;
     }).toList();
   }

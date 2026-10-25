@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
-import 'ahlulbayt_dua_model.dart';
+import 'ahlulbayt_duas_repository.dart';
 
 /// شاشة قراءة وتدبر الدعاء المأثور بنصوص واضحة وإمكانية ضبط حجم الخط ونسخ المقاطع.
 class AhlulbaytDuaReaderScreen extends StatefulWidget {

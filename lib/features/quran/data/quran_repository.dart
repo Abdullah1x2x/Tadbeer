@@ -161,9 +161,13 @@ class QuranRepository {
     return _ayahsByKey['$surahNumber:$ayahNumber'];
   }
 
-  /// Instant offline Arabic search across all 6,236 ayahs using pre-normalized cache.
-  /// Automatically detects root queries (e.g. `جذر:صبر` or `جذر صبر`) and executes morphological search.
-  /// يبحث فورياً بدون إنترنت في جميع آيات القرآن الكريم مع دعم البحث النصي والبحث بالجذر اللغوي.
+  /// بحث فوري وذكي في جميع آيات القرآن الكريم (٦٢٣٦ آية) بدون إنترنت.
+  ///
+  /// المزايا المعمارية للبحث القرآني:
+  /// ١. التعرف المباشر على مراجع السور والآيات (مثل: "البقرة 255" أو "2:255" أو "آية الكرسي" أو "سورة الكهف").
+  /// ٢. دعم البحث بالجذر اللغوي الصرفي (مثل: "جذر:صبر").
+  /// ٣. ترتيب النتائج بذكاء: المطابقة المتصلة التامة أولاً، تليها الآيات المشتملة على كل كلمات البحث حتى لو كانت متفرقة.
+  /// ٤. مرونة السوابق (أل التعريف والواو والفاء) لتسهيل كتابة الكلمات دون اشتراط المطابقة الحرفية الصارمة.
   List<Ayah> searchAyahs(String query, {int limit = 50}) {
     if (!_isLoaded || query.trim().isEmpty) return const [];
 
@@ -172,17 +176,154 @@ class QuranRepository {
       return searchAyahsByRoot(root, limit: limit);
     }
 
+    final cleanQuery = ArabicSearchNormalizer.toEnglishDigits(query.trim());
+    final directAyah = _tryParseDirectAyahReference(cleanQuery);
+
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
-    if (normalizedQuery.isEmpty) return const [];
+    if (normalizedQuery.isEmpty) {
+      return directAyah != null ? [directAyah] : const [];
+    }
 
     final results = <Ayah>[];
+    final addedIds = <int>{};
+
+    // إضافة الآية المحددة مباشرة إذا تطابقت مع مرجع مباشر (مثل: البقرة 255 أو الكرسي)
+    if (directAyah != null) {
+      results.add(directAyah);
+      addedIds.add(directAyah.id);
+    }
+
+    // المرحلة الأولى: المطابقة المتصلة التامة لعبارة البحث
     for (int i = 0; i < _allAyahs.length; i++) {
       if (_normalizedAyahTexts[i].contains(normalizedQuery)) {
-        results.add(_allAyahs[i]);
-        if (results.length >= limit) break;
+        if (addedIds.add(_allAyahs[i].id)) {
+          results.add(_allAyahs[i]);
+          if (results.length >= limit) return results;
+        }
       }
     }
+
+    // المرحلة الثانية: المطابقة المرنة للكلمات المتعددة داخل نفس الآية
+    final tokens = normalizedQuery.split(' ').where((w) => w.isNotEmpty).toList();
+    if (tokens.length > 1) {
+      for (int i = 0; i < _allAyahs.length; i++) {
+        final ayahNorm = _normalizedAyahTexts[i];
+
+        bool allTokensMatch = true;
+        for (final token in tokens) {
+          if (ayahNorm.contains(token)) continue;
+
+          // مرونة السوابق: إذا بدأت الكلمة بـ "ال" وكانت ٤ أحرف فأكثر، نفحص وجودها بدون "ال"
+          if (token.startsWith('ال') && token.length >= 4) {
+            final withoutAl = token.substring(2);
+            if (ayahNorm.contains(withoutAl)) continue;
+          }
+
+          allTokensMatch = false;
+          break;
+        }
+
+        if (allTokensMatch) {
+          if (addedIds.add(_allAyahs[i].id)) {
+            results.add(_allAyahs[i]);
+            if (results.length >= limit) return results;
+          }
+        }
+      }
+    } else if (tokens.length == 1) {
+      // كلمة مفردة بدأت بـ "ال" ولم تتطابق حرفياً
+      final single = tokens.first;
+      if (single.startsWith('ال') && single.length >= 4) {
+        final withoutAl = single.substring(2);
+        for (int i = 0; i < _allAyahs.length; i++) {
+          if (_normalizedAyahTexts[i].contains(withoutAl)) {
+            if (addedIds.add(_allAyahs[i].id)) {
+              results.add(_allAyahs[i]);
+              if (results.length >= limit) return results;
+            }
+          }
+        }
+      }
+    }
+
     return results;
+  }
+
+  /// يحاول التعرف على استعلامات الإحالة المباشرة للآيات القرآنية
+  /// مثل: "البقرة 255"، "2:255"، "سورة الكهف"، أو "آية الكرسي".
+  Ayah? _tryParseDirectAyahReference(String rawQuery) {
+    if (!_isLoaded) return null;
+    final englishQuery = ArabicSearchNormalizer.toEnglishDigits(rawQuery.trim());
+    final norm = ArabicSearchNormalizer.normalize(rawQuery);
+
+    // ١. مسميات مشهورة لآيات محددة
+    if (norm == 'ايه الكرسي' || norm == 'الكرسي') {
+      return getAyah(2, 255);
+    }
+    if (norm == 'ايه الدين' || norm == 'الدين') {
+      return getAyah(2, 282);
+    }
+
+    // ٢. صيغة "رقم السورة:رقم الآية" (مثلاً "2:255" أو "18:10")
+    final colonMatch = RegExp(r'^(\d{1,3})\s*[:\s]\s*(\d{1,3})$').firstMatch(englishQuery);
+    if (colonMatch != null) {
+      final surahNum = int.tryParse(colonMatch.group(1)!);
+      final ayahNum = int.tryParse(colonMatch.group(2)!);
+      if (surahNum != null && ayahNum != null && surahNum >= 1 && surahNum <= 114) {
+        final surah = getSurah(surahNum);
+        if (ayahNum >= 1 && ayahNum <= surah.ayahCount) {
+          return getAyah(surahNum, ayahNum);
+        }
+      }
+    }
+
+    // ٣. صيغة "اسم السورة + رقم الآية" (مثلاً "البقرة 255" أو "سورة الكهف 10")
+    final surahAyahMatch = RegExp(r'^(?:سورة\s+)?([^\d:]+?)\s+(\d{1,3})$').firstMatch(englishQuery);
+    if (surahAyahMatch != null) {
+      final surahNameRaw = surahAyahMatch.group(1)!.trim();
+      final ayahNum = int.tryParse(surahAyahMatch.group(2)!);
+      if (ayahNum != null) {
+        final surah = _findSurahByName(surahNameRaw);
+        if (surah != null && ayahNum >= 1 && ayahNum <= surah.ayahCount) {
+          return getAyah(surah.number, ayahNum);
+        }
+      }
+    }
+
+    // ٤. صيغة "اسم السورة" فقط (مثلاً "سورة الكهف" أو "سورة الفاتحة")
+    final surahOnlyMatch = RegExp(r'^سورة\s+([^\d:]+)$').firstMatch(englishQuery);
+    if (surahOnlyMatch != null) {
+      final surahNameRaw = surahOnlyMatch.group(1)!.trim();
+      final surah = _findSurahByName(surahNameRaw);
+      if (surah != null) {
+        return getAyah(surah.number, 1);
+      }
+    }
+
+    return null;
+  }
+
+  /// يبحث عن سورة بمطابقة الاسم العادي أو مع حذف "ال" التعريف.
+  Surah? _findSurahByName(String nameQuery) {
+    final normQuery = ArabicSearchNormalizer.normalize(nameQuery);
+    final withoutAl = normQuery.startsWith('ال') && normQuery.length > 3
+        ? normQuery.substring(2)
+        : normQuery;
+
+    for (final surah in _surahs) {
+      final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
+      final surahWithoutAl = surahNorm.startsWith('ال') && surahNorm.length > 3
+          ? surahNorm.substring(2)
+          : surahNorm;
+
+      if (surahNorm == normQuery ||
+          surahWithoutAl == withoutAl ||
+          surahNorm == withoutAl ||
+          surahWithoutAl == normQuery) {
+        return surah;
+      }
+    }
+    return null;
   }
 
   /// Instant offline Arabic root and morphological search across all 6,236 ayahs.

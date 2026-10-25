@@ -1,70 +1,108 @@
-/// Arabic text normalizer and numeral formatting utilities for Tadbeer.
+/// أدوات تطبيع النصوص العربية وتنسيق الأرقام لمحرك البحث في تطبيق تدبر.
 ///
-/// EDUCATIONAL NOTE:
-/// IMPORTANT:
-/// Quran text itself must NEVER be normalized or modified for display.
-/// Normalization is ONLY used for search matching.
-///
-/// Arabic orthography often contains stylistic variations (such as Alef with hamza
-/// above/below/wasla: أ, إ, آ, ٱ, or Taa Marbuta: ة vs Haa: ه).
-/// Removing diacritics and collapsing orthographic variants in query matching
-/// enables an intuitive, fast search experience while preserving 100% of the
-/// verified Uthmani script in the Quran reader.
+/// ملاحظة معمارية هامة:
+/// نصوص المصحف الشريف العثمانية الأصلية لا تُمس نهائياً وتبقى محفوظة بنسبة ١٠٠٪ للعرض والقراءة.
+/// عمليات التطبيع هنا تُطبق حصرياً وفقط أثناء مطابقة البحث لتسهيل العثور على الآيات بمختلف طرق الكتابة.
 class ArabicSearchNormalizer {
   ArabicSearchNormalizer._();
 
-  // Arabic Tashkeel (diacritics) and Quranic annotation Unicode characters
+  // علامات التشكيل وحركات الوقف والرموز المصحفية في اليونيكود
   static final RegExp _diacriticsRegex = RegExp(
-    r'[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]',
+    r'[\u0610-\u061A\u064B-\u065F\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]',
   );
 
   static final RegExp _tatweelRegex = RegExp(r'\u0640');
 
-  /// Normalizes Arabic text for flexible search without modifying original text.
+  /// يطبع النص العربي للبحث المرن دون المساس بالنص الأصلي.
   static String normalize(String text) {
     if (text.isEmpty) return text;
 
     var result = text;
 
-    // 1. Remove diacritics and Quranic pause/sajdah/stop marks
+    // ١. معالجة الألف الخنجرية (\u0670) في الرسم العثماني ومطابقتها مع الرسم الإملائي القياسي:
+    // تحويل الواو الملحقة بألف خنجرية (مثل: صلوٰة، حيوٰة، زكوٰة، ربوٰا، مشكوٰة) إلى ألف قائمة
+    result = result.replaceAll('و\u0670', 'ا');
+
+    // الألف المقصورة المتبوعة بألف خنجرية:
+    // إذا كانت وسطية متصلة بضمير (مثل: هَدَىٰكُمْ، سَوَّىٰهُ)، تُحول لألف قائمة (هداكم، سواه)
+    result = result.replaceAll(RegExp(r'ى\u0670(?=[\u0621-\u064A])'), 'ا');
+    // إذا كانت في نهاية الكلمة (مثل: عَلَىٰ، إِلَىٰ، حَتَّىٰ، مُوسَىٰ)، تُبقى ألفاً مقصورة لتطبيعها لاحقاً
+    result = result.replaceAll('ى\u0670', 'ى');
+
+    // تحويل سائر الألفات الخنجرية المنفردة (مثل: كِتَٰب، ٱلصَّٰبِرِين، ٱلظَّٰلِمِين) إلى ألف قائمة
+    result = result.replaceAll('\u0670', 'ا');
+
+    // ٢. إزالة التشكيل وحركات الوقف والرموز المصحفية
     result = result.replaceAll(_diacriticsRegex, '');
 
-    // 2. Remove Tatweel (Kashida)
+    // ٣. إزالة التطويل (الكشيدة)
     result = result.replaceAll(_tatweelRegex, '');
 
-    // 3. Normalize all Alef forms (أ, إ, آ, ٱ, and Uthmani isolated hamza before Alef ءا) to bare Alef (ا)
+    // ٤. توحيد مختلف صور الهمزة والألف (أ، إ، آ، ٱ، ءا) إلى ألف مجردة (ا)
     result = result.replaceAll('ءا', 'ا');
     result = result.replaceAll(RegExp(r'[أإآٱ]'), 'ا');
 
-    // 4. Normalize Taa Marbuta (ة) to Haa (ه)
+    // ٥. توحيد التاء المربوطة (ة) مع الهاء (ه)
     result = result.replaceAll('ة', 'ه');
 
-    // 5. Normalize Alef Maqsura (ى) to Yaa (ي)
+    // ٦. توحيد الألف المقصورة (ى) مع الياء (ي)
     result = result.replaceAll('ى', 'ي');
 
-    // 6. Normalize Hamza on Waw / Yaa
+    // ٧. توحيد الهمزة على الواو والياء (ؤ، ئ)
     result = result.replaceAll('ؤ', 'و');
     result = result.replaceAll('ئ', 'ي');
 
-    // 7. Normalize canonical Quranic Uthmani / Modern orthography variations for search:
-    // Waw-Alif mappings in Uthmani (e.g. صلوة -> صلاة, زكوة -> زكاة, حيوة -> حياة)
+    // ٨. دمج تكرار الألف المتتالية (مثل ناتج ربوا -> رباا -> ربا)
+    result = result.replaceAll(RegExp(r'ا+'), 'ا');
+
+    // ٩. تسوية الفروق الإملائية والنطق الصوتي الشائع مع الرسم القياسي:
+    // تسوية لفظ الرحمن (الرحمن / الرحمان)
+    result = result.replaceAll('الرحمان', 'الرحمن');
+    result = result.replaceAll('رحمان', 'رحمن');
+
+    // تسوية أسماء الإشارة (هذا / هاذا، ذلك / ذالك، ...)
+    result = result.replaceAll('هاذا', 'هذا');
+    result = result.replaceAll('هاذه', 'هذه');
+    result = result.replaceAll('هاولاء', 'هولاء');
+    result = result.replaceAll('هاذان', 'هذان');
+    result = result.replaceAll('هاذين', 'هذين');
+    result = result.replaceAll('هاكذا', 'هكذا');
+    result = result.replaceAll('ذالك', 'ذلك');
+
+    // تسوية لكن (لكن / لاكن)
+    result = result.replaceAll('لاكن', 'لكن');
+
+    // تسوية فواتح السور الشائعة نطقا
+    result = result.replaceAll('طاها', 'طه');
+
+    // تسوية اسم النبي داود (داود / داوود)
+    result = result.replaceAll('داوود', 'داود');
+
+    // تسوية لفظ إله ومشتقاته (إلاه -> اله، الاه -> اله) مع حماية الكلمات التي تبدأ بـ الأهل أو الأهرام
+    result = result.replaceAllMapped(
+      RegExp(r'(^|\s|[وفبك])الاه($|\s|[انكهي])'),
+      (m) => '${m[1]}اله${m[2]}',
+    );
+
+    // مطابقة احتياطية لرسوم الواو في العثماني (صلوه -> صلاه، زكوه -> زكاه، حيوة -> حياة)
     result = result.replaceAll('صلوه', 'صلاه');
     result = result.replaceAll('زكوه', 'زكاه');
     result = result.replaceAll('حيوه', 'حياه');
     result = result.replaceAll('ربوا', 'ربا');
 
-    // Canonical names and terms where Uthmani uses dagger alif and modern Arabic uses full alif:
-    result = result.replaceAll('ابراهيم', 'ابرهيم');
-    result = result.replaceAll('اسماعيل', 'اسمعيل');
-    result = result.replaceAll('اسحاق', 'اسحق');
-    result = result.replaceAll('هارون', 'هرون');
-    result = result.replaceAll('سليمان', 'سليمن');
-    result = result.replaceAll('السماوات', 'السموات');
-    result = result.replaceAll('سماوات', 'سموات');
-    result = result.replaceAll('العالمين', 'العلمين');
-    result = result.replaceAll('عالمين', 'علمين');
+    // تسوية الأسماء والمصطلحات القرآنية بين الرسم العثماني المقتضب والرسم الحديث التام
+    result = result.replaceAll('ابرهيم', 'ابراهيم');
+    result = result.replaceAll('ابراهم', 'ابراهيم');
+    result = result.replaceAll('اسمعيل', 'اسماعيل');
+    result = result.replaceAll('اسحق', 'اسحاق');
+    result = result.replaceAll('هرون', 'هارون');
+    result = result.replaceAll('سليمن', 'سليمان');
+    result = result.replaceAll('السموات', 'السماوات');
+    result = result.replaceAll('سموات', 'سماوات');
+    result = result.replaceAll('العلمين', 'العالمين');
+    result = result.replaceAll('علمين', 'عالمين');
 
-    // 8. Trim and collapse whitespace
+    // ١٠. ضبط وإزالة المسافات الزائدة
     result = result.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
 
     return result;

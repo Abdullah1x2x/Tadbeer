@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 /// Central color system for Tadbeer (تَدْبِير).
@@ -32,6 +33,19 @@ class AppColors {
   static const Color darkTextSecondary = Color(0xFFAAA69C);
   static const Color darkBorder = Color(0xFF384139);
   static const Color darkSelectedAyah = Color(0x52C0A66B);
+
+  // ---------------------------------------------------------------------------
+  // ⚡ FUTURISTIC DIGITAL ACCENTS & ELEVATIONS
+  // ---------------------------------------------------------------------------
+  static const Color cyberEmerald = Color(0xFF10B981);
+  static const Color electricGold = Color(0xFFE5C07B);
+  static const Color darkSurfaceElevated = Color(0xFF222D26);
+  static const Color lightSurfaceElevated = Color(0xFFFAF7EE);
+
+  static const Color statusSuccess = Color(0xFF10B981);
+  static const Color statusWarning = Color(0xFFF59E0B);
+  static const Color statusError = Color(0xFFEF4444);
+  static const Color statusInfo = Color(0xFF3B82F6);
 
   // ---------------------------------------------------------------------------
   // 📖 MUSHAF PAGE (Fixed across both Light and Dark modes)
@@ -120,6 +134,12 @@ class AppColors {
       Theme.of(context).brightness == Brightness.dark
       ? darkSelectedAyah
       : lightSelectedAyah;
+
+  /// إرجاع لون السطح المرتفع حسب السمة الحالية.
+  static Color surfaceElevated(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? darkSurfaceElevated
+          : lightSurfaceElevated;
 }
 
 /// Application theme definitions for Tadbeer.
@@ -318,6 +338,15 @@ class AppTheme {
         thickness: 1,
         space: 1,
       ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+        },
+      ),
     );
   }
 
@@ -497,6 +526,15 @@ class AppTheme {
         color: AppColors.darkBorder,
         thickness: 1,
         space: 1,
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+        },
       ),
     );
   }

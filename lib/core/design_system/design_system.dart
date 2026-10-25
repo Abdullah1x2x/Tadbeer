@@ -1,0 +1,10 @@
+/// نظام التصميم المستقبلي الشامل لتطبيق تَدْبِير.
+///
+/// Tadbeer Futuristic Digital Experience Design System.
+/// Exports design tokens, cards, buttons, badges, and motion helpers.
+library;
+
+export 'app_tokens.dart';
+export 'futuristic_badge.dart';
+export 'futuristic_button.dart';
+export 'futuristic_card.dart';

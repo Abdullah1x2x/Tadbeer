@@ -3,6 +3,8 @@ import 'package:uuid/uuid.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/design_system.dart';
+import '../../core/motion/app_motion.dart';
 import '../../core/services/local_reminder_service.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
@@ -135,9 +137,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
                         initialTime: selectedTime,
                         builder: (context, child) {
                           return MediaQuery(
-                            data: MediaQuery.of(
-                              context,
-                            ).copyWith(alwaysUse24HourFormat: false),
+                            data: MediaQuery.of(context)
+                                .copyWith(alwaysUse24HourFormat: false),
                             child: child!,
                           );
                         },
@@ -507,9 +508,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
             );
             final reminders = allReminders.where((r) {
               if (normalizedQuery.isEmpty) return true;
-              return ArabicSearchNormalizer.normalize(r.title).contains(
-                normalizedQuery,
-              );
+              return ArabicSearchNormalizer.normalize(r.title)
+                  .contains(normalizedQuery);
             }).toList();
 
             return Column(
@@ -520,39 +520,47 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (val) =>
-                        setState(() => _searchQuery = val.trim()),
-                    decoration: InputDecoration(
-                      hintText: l10n.searchRemindersHint,
-                      hintStyle: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 14,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                      borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                      border: Border.all(
+                        color: AppColors.border(context),
+                        width: AppTokens.borderHairline,
                       ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: AppColors.olive,
-                      ),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear, size: 20),
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() => _searchQuery = '');
-                              },
-                            )
-                          : null,
-                      filled: true,
-                      fillColor: isDark
-                          ? AppColors.darkSurface
-                          : AppColors.comsilk,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+                      boxShadow: AppTokens.cardShadow(isDark: isDark),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (val) =>
+                          setState(() => _searchQuery = val.trim()),
+                      decoration: InputDecoration(
+                        hintText: l10n.searchRemindersHint,
+                        hintStyle: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 14,
+                          color: isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search_rounded,
+                          color: AppColors.cyberEmerald,
+                        ),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded, size: 20),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                              )
+                            : null,
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -761,35 +769,37 @@ class _ReminderCard extends StatelessWidget {
     final alertTypeIcon = isAlarm
         ? Icons.alarm_on_rounded
         : Icons.notifications_none_rounded;
+    final accent = reminder.isEnabled
+        ? AppColors.cyberEmerald
+        : AppColors.olive.withValues(alpha: 0.5);
 
-    return Container(
+    return FuturisticCard(
+      accentColor: accent,
+      showTopAccentGlow: reminder.isEnabled,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border(context)),
-      ),
       child: Row(
         children: [
           // Time & Alert Type display
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                reminder.formattedTime,
+              AnimatedDefaultTextStyle(
+                duration: AppMotion.normal,
+                curve: AppMotion.standard,
                 style: TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: reminder.isEnabled
                       ? (isDark ? AppColors.comsilk : AppColors.oliveDark)
-                      : Colors.grey,
+                      : (isDark ? AppColors.nightSubtitle : Colors.grey),
                 ),
+                child: Text(reminder.formattedTime),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(alertTypeIcon, size: 13, color: AppColors.olive),
+                  Icon(alertTypeIcon, size: 13, color: AppColors.cyberEmerald),
                   const SizedBox(width: 4),
                   Text(
                     '$alertTypeLabel • $repeatSubtitle',
@@ -812,15 +822,21 @@ class _ReminderCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  reminder.title,
+                AnimatedDefaultTextStyle(
+                  duration: AppMotion.normal,
+                  curve: AppMotion.standard,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? AppColors.nightQuranText
-                        : AppColors.dayQuranText,
+                    color: reminder.isEnabled
+                        ? (isDark
+                              ? AppColors.nightQuranText
+                              : AppColors.dayQuranText)
+                        : (isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle),
                   ),
+                  child: Text(reminder.title),
                 ),
               ],
             ),
@@ -829,7 +845,8 @@ class _ReminderCard extends StatelessWidget {
           // Toggle Switch
           Switch(
             value: reminder.isEnabled,
-            activeThumbColor: AppColors.olive,
+            activeThumbColor: AppColors.cyberEmerald,
+            activeTrackColor: AppColors.cyberEmerald.withValues(alpha: 0.4),
             onChanged: onToggle,
           ),
 
@@ -861,7 +878,10 @@ class _ReminderCard extends StatelessWidget {
                       color: Colors.redAccent,
                     ),
                     const SizedBox(width: 8),
-                    Text(l10n.delete, style: const TextStyle(color: Colors.redAccent)),
+                    Text(
+                      l10n.delete,
+                      style: const TextStyle(color: Colors.redAccent),
+                    ),
                   ],
                 ),
               ),

@@ -41,7 +41,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (216 tests across 24 test files - 100% passing)
+# 3. Run automated tests (246 tests across 26 test files - 100% passing)
 flutter test
 
 # 4. Run application in debug mode
@@ -54,7 +54,7 @@ flutter build appbundle --release
 
 ---
 
-## 3. Codebase File Map (`lib/` — 84 Files)
+## 3. Codebase File Map (`lib/` — 81 Cohesive Files)
 
 ```text
 lib/
@@ -63,7 +63,15 @@ lib/
 │   ├── localization.dart             # Dual-language string tables (Arabic & English)
 │   └── theme.dart                    # AppColors, typography, and theme definitions
 │
-├── core/                             # Core infrastructure & shared services (8 files)
+├── core/                             # Core infrastructure, design system & motion (14 files)
+│   ├── design_system/                # Futuristic design system tokens & components (5 files)
+│   │   ├── app_tokens.dart           # Geometric radii, borders, and ambient shadows
+│   │   ├── design_system.dart        # Central export module
+│   │   ├── futuristic_badge.dart     # Status badges & presence indicators
+│   │   ├── futuristic_button.dart    # Tactile buttons with press feedback
+│   │   └── futuristic_card.dart      # Geometric layered cards with subtle borders
+│   ├── motion/                       # Unified motion engine & accessibility
+│   │   └── app_motion.dart           # AppMotion durations, curves, & ScaleOnPress micro-interactions
 │   ├── services/
 │   │   ├── backup_crypto_service.dart # AES-256 backup encryption, compression & verification
 │   │   └── local_reminder_service.dart# Offline scheduled notification service
@@ -72,36 +80,40 @@ lib/
 │   │   └── user_data_store.dart       # Reactive in-memory cache (ChangeNotifier singleton)
 │   └── utils/
 │       ├── arabic_root_search_helper.dart # Root extraction & morphological matcher
-│       ├── arabic_search_normalizer.dart  # Diacritic stripping & Arabic normalization
+│       ├── arabic_search_normalizer.dart  # Diacritic stripping, normalization & phonetic query mapping
 │       ├── note_pdf_exporter.dart        # Formatted single-note PDF exporter
 │       └── tadbeer_journal_exporter.dart # Reflection journal exporter (PDF & Markdown)
 │
-├── features/                         # Feature domain modules (52 files)
+├── features/                         # High-cohesion domain modules with consolidated models (63 files)
 │   ├── ayah_links/                   # Thematic verse relationship graph (11 files)
 │   │   ├── ayah_link_detail_screen.dart, ayah_link_model.dart, ayah_link_repository.dart
 │   │   ├── ayah_links_screen.dart, curated_pathways.dart
 │   │   ├── views/ (ayah_link_network_view.dart, ayah_link_ordered_view.dart)
-│   │   └── widgets/ (add_verse, picker, qr_dialog, create_link)
+│   │   └── widgets/ (add_verse_to_link_dialog, picker, qr_dialog, create_link)
 │   ├── backup/                       # Encrypted backup UI (backup_screen.dart)
-│   ├── bookmarks/                    # Reading bookmarks (model, repo, screen - 3 files)
-│   ├── duas/                         # Comprehensive Duas & Adhkar module (13 files)
+│   ├── bookmarks/                    # Consolidated bookmarks (bookmark_model.dart [model + repo], screen - 2 files)
+│   ├── books/                        # Curated booklets & study library (6 files)
+│   │   ├── book_model.dart, book_repository.dart, book_reader_screen.dart, book_section_screen.dart, curated_books.dart
+│   │   └── data/ (heritage_data.dart [Nahj, Risalat al-Huquq, Tuhaf], malazem_data.dart, sahifah_sajjadiyah_data.dart)
+│   ├── duas/                         # Comprehensive Duas & Adhkar module (11 files)
 │   │   ├── duas_screen.dart          # Organized main hub for all duas & adhkar sections
 │   │   ├── quran_dua_model.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # 88 Quranic Duas
-│   │   ├── adhkar_model.dart, adhkar_repository.dart, morning_evening_adhkar_screen.dart # Morning & Evening Adhkar
-│   │   ├── ahlulbayt_dua_model.dart, ahlulbayt_duas_repository.dart # Ahlulbayt & Sahifah Sajjadiyah repo
+│   │   ├── adhkar_repository.dart [model + repo], morning_evening_adhkar_screen.dart # Morning & Evening Adhkar
+│   │   ├── ahlulbayt_duas_repository.dart [model + repo] # Ahlulbayt & Sahifah Sajjadiyah repo
 │   │   ├── ahlulbayt_duas_screen.dart, ahlulbayt_dua_reader_screen.dart # Ahlulbayt duas browser & reader
 │   │   └── sunnah_duas_repository.dart, general_duas_list_screen.dart # Prophetic & Comprehensive Duas
+│   ├── highlights/                   # Consolidated highlights (highlight_model.dart [model + repo], screen - 2 files)
 │   ├── home/                         # Home dashboard & resume banner (home_screen.dart)
-│   ├── notes/                        # Reflection notes (model, repo, editor, screen - 4 files)
+│   ├── notes/                        # Reflection notes (note_model.dart [model + repo], editor, screen - 3 files)
 │   ├── quran/                        # Mushaf rendering engine & page data (8 files)
 │   │   ├── data/ (quran_models.dart, quran_repository.dart)
 │   │   ├── screens/ (quran_page_view.dart, quran_screen.dart)
-│   │   └── widgets/ (ayah_action_sheet, quran_side_menu, surah_header_banner, word_meanings_panel)
+│   │   └── widgets/ (ayah_action_sheet, mushaf_frame_painter, quran_side_menu, surah_header_banner, word_meanings_panel)
 │   ├── reminders/                    # Offline reading reminders (model, screen - 2 files)
 │   ├── search/                       # Unified search system (providers, registry, screen - 3 files)
 │   ├── settings/                     # Appearance, font sizing/family, about (model, screen - 2 files)
 │   ├── tadbeer/                      # 4-prompt reflection worksheet (model, intro, sheet - 3 files)
-│   ├── tasbeeh/                      # Electronic tasbeeh & Istighfar counter (model, repo, screen - 3 files)
+│   ├── tasbeeh/                      # Consolidated electronic tasbeeh (tasbeeh_model.dart [model + repo], screen - 2 files)
 │   └── word_meanings/                # Word meanings lexicon browser (word_meanings_screen.dart)
 │
 └── main.dart                         # Entrypoint & asynchronous engine bootstrap
@@ -142,23 +154,30 @@ Managed by `BackupCryptoService`:
 - **Single-Word Invariant:** Every entry strictly satisfies `!word.contains(' ')` (no multi-word compounds).
 - **License:** Sourced from Quranpedia.net (2026-10-10) under CC0 1.0 Public Domain.
 
-### 4.5. Unified Search System (`lib/features/search/`)
-- Driven by `SearchRegistry` querying 9 domains concurrently via `Future.wait` with per-provider `try/catch` error isolation:
-  - Quran Ayahs, Reflection Notes, Tadbeer Pauses, Bookmarks, Highlights, Ayah Links, Duas, Reminders, and Word Meanings.
+### 4.5. Unified Search System & Phonetic Normalization (`lib/features/search/`)
+- Driven by `SearchRegistry` querying 10 domains concurrently via `Future.wait` with per-provider `try/catch` error isolation:
+  - Quran Ayahs, Curated Heritage Books, Reflection Notes, Tadbeer Pauses, Bookmarks, Highlights, Ayah Links, Duas, Reminders, and Word Meanings.
+- **Phonetic-to-Standard Arabic Query Normalization:** Via `ArabicSearchNormalizer.normalizeSearchQuery`, commonly mis-typed or phonetically spelled queries (e.g. `هازا`, `هاذه`, `ذالك`, `لكن`, `رحمن`, `صلوه/صلاه`) are normalized to standard Uthmani and modern orthographic forms strictly inside the search input pipeline. Crucially, the immutable Quranic and classical text corpora remain 100% intact.
 - **Root Search:** Supports morphological root search via `جذر:XXX` syntax (e.g. `جذر:صبر`).
 - **Normalization:** All search matching utilizes `ArabicSearchNormalizer.normalize()`.
 
-### 4.6. Digital Tasbeeh & Istighfar Sanctuary (`lib/features/tasbeeh/`)
+### 4.6. Futuristic Design System & Motion Engine (`lib/core/design_system/` & `lib/core/motion/`)
+- **Centralized Tokens (`AppTokens`):** Standardizes geometric radii (`radiusSm: 8`, `radiusMd: 14`, `radiusLg: 20`, `radiusXl: 28`), subtle multi-layered borders, and ambient drop shadows.
+- **High-Precision Components:** `FuturisticCard` providing subtle gradients and focus states, tactile `FuturisticButton`, status indicators (`FuturisticBadge`), and micro-interactive `FuturisticIconButton`.
+- **Unified Motion Engine (`AppMotion`):** Calibrated durations (`fast: 120ms`, `normal: 200ms`, `slow: 350ms`), cubic curves (`easeOutCubic`, `easeInOutCubic`), and `ScaleOnPress` micro-feedback.
+- **Reduced Motion Compliance:** Respects `MediaQuery.disableAnimationsOf(context)` via `AppMotion.isReduceMotion(context)` to protect motion-sensitive readers.
+
+### 4.7. Digital Tasbeeh & Istighfar Sanctuary (`lib/features/tasbeeh/`)
 - **Direct Dual Sections (`DhikrSection`):** Clean separation between **Istighfar** (`DhikrSection.istighfar`) and **Tasbeeh** (`DhikrSection.tasbeeh`).
 - **Fixed Display Card Dimensions (`_buildFixedDhikrCard`):** Guaranteed fixed height to eliminate jitter or layout jumps when navigating between dhikrs.
 - **Curated Dhikr Catalog (49 Authentic Formulas):** 20 Istighfar formulas and 29 Tasbeeh/Tahmeed/Takbeer/Salawat formulas.
-- **State Repository (`TasbeehRepository`):** Manages round counting, target cycles, daily counts, lifetime tallies, and auto-advance state locally in `tadbeer_tasbeeh_state.json`.
+- **Consolidated Model & Repository (`TasbeehRepository`):** Co-located within `tasbeeh_model.dart`, managing round counting, target cycles, daily counts, lifetime tallies, and auto-advance state locally in `tadbeer_tasbeeh_state.json`.
 - **Easy Switching & Gestures:** Next/Previous buttons, directional chips, and one-tap copy with SnackBar confirmation.
 
-### 4.7. Books & Booklets Library (`lib/features/books/`)
+### 4.8. Books & Booklets Library (`lib/features/books/`)
 - **Curated Sections Included in App:**
   1. **Sayyed Hussein Al-Houthi Quranic Guidance Booklets («ملازم هدي القرآن الكريم»):** 86 unabridged booklets and lectures from the Quranic guidance series, safely organized under `assets/books/malazem/` to guarantee smooth builds across Android, iOS, and Linux.
-  2. **Ahlulbayt Heritage («تراث وأدعية أهل البيت (عليهم السلام)»):** Open Islamic heritage books with in-app interactive reading and companion high-resolution PDF attachments: **Al-Sahifah Al-Sajjadiyah**, **Risalat Al-Huquq**, and **Nahj Al-Balagha**.
+  2. **Ahlulbayt Heritage («تراث وأدعية أهل البيت (عليهم السلام)»):** Open Islamic heritage books with in-app interactive reading and companion high-resolution PDF attachments: **Al-Sahifah Al-Sajjadiyah**, **Risalat Al-Huquq**, and **Nahj Al-Balagha** (consolidated cleanly in `heritage_data.dart`).
   3. **Quranic Sciences & Reflection («علوم وتدبر القرآن الكريم»):** Open public heritage works including **Akhlaq Hamalat Al-Quran** by Al-Ajurri, **Qawaid Wa Usul fi Tadabbur Al-Quran**, and **Al-Tibyan fi Adab Hamalat Al-Quran** by Imam Al-Nawawi.
 - **Developer Extensibility (`lib/features/books/curated_books.dart`):** Easily declare new sections and books in Dart code via `BookSectionConfig` and `BookConfig` with PDF attachments, text files, or in-code chapters (`BookChapter`).
 - **Reader & Document Viewer (`BookReaderScreen`):** Native interactive reading for chapters (font scaling, chapter index, copying) and external opening / sharing for PDF documents with automatic clean Arabic file naming.
@@ -173,7 +192,7 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 216 tests must pass
+   flutter test    # All 246 tests must pass
    ```
 5. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.
 
