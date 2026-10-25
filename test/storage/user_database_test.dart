@@ -247,5 +247,81 @@ void main() {
       expect(pos, isNull);
       expect(bms.isEmpty, isTrue);
     });
+
+    test('A corrupt row is skipped instead of hiding the whole table', () async {
+      final now = DateTime(2026, 10, 1);
+      await db.insertOrUpdateNote(
+        NoteItem(
+          id: 'good-note',
+          type: NoteType.free,
+          content: 'سليمة',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      // Simulate a damaged row written by a crash / disk issue.
+      await db.db.insert('notes', {
+        'id': 'broken-note',
+        'type': 'free',
+        'data': '{not valid json',
+        'created_at': now.toIso8601String(),
+        'updated_at': now.toIso8601String(),
+      });
+
+      db.lastIssue.value = null;
+      final notes = await db.loadNotes();
+      expect(notes.map((n) => n.id), equals(['good-note']));
+      expect(
+        db.lastIssue.value?.kind,
+        equals(UserDatabaseIssueKind.corruptRowsSkipped),
+      );
+
+      // The damaged row is kept on disk (never silently deleted).
+      final raw = await db.db.query('notes');
+      expect(raw.length, equals(2));
+    });
+
+    test('replaceAllUserData swaps all tables in one transaction', () async {
+      final now = DateTime(2026, 10, 1);
+      await db.insertBookmark(
+        BookmarkItem(
+          id: 'old-bm',
+          ayahId: 1,
+          surahNumber: 1,
+          ayahNumber: 1,
+          page: 1,
+          createdAt: now,
+        ),
+      );
+
+      final ok = await db.replaceAllUserData(
+        readingPosition: ReadingPosition(
+          page: 3,
+          surahNumber: 2,
+          ayahNumber: 10,
+          updatedAt: now,
+        ),
+        notes: [
+          NoteItem(
+            id: 'new-note',
+            type: NoteType.free,
+            content: 'جديدة',
+            createdAt: now,
+            updatedAt: now,
+          ),
+        ],
+        bookmarks: const [],
+        highlights: const [],
+        reminders: const [],
+        ayahLinks: const [],
+        tadbeerItems: const [],
+        settings: const UserSettings(),
+      );
+
+      expect(ok, isTrue);
+      expect((await db.loadBookmarks()).isEmpty, isTrue);
+      expect((await db.loadNotes()).single.id, equals('new-note'));
+      expect((await db.loadReadingPosition())!.page, equals(3));
+    });
   });
 }

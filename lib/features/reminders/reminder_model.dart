@@ -59,6 +59,13 @@ class ReminderItem {
   /// تاريخ ووقت إنشاء التذكير.
   final DateTime createdAt;
 
+  /// الموعد الفعلي المجدول للتنبيه ذي المرة الواحدة.
+  ///
+  /// For [ReminderRepeatMode.once] only: the exact moment the OS notification
+  /// was scheduled for. Once this moment has passed, the reminder has already
+  /// fired and must be disabled instead of being rescheduled for the next day.
+  final DateTime? scheduledFor;
+
   /// ينشئ كائن تذكير جديد.
   const ReminderItem({
     required this.id,
@@ -70,7 +77,16 @@ class ReminderItem {
     this.selectedDays = const [],
     this.isEnabled = true,
     required this.createdAt,
+    this.scheduledFor,
   });
+
+  /// ما إذا كان تنبيه "مرة واحدة" قد حان موعده وانقضى (أي أنه رنّ بالفعل).
+  bool hasOnceReminderFired([DateTime? now]) {
+    if (repeatMode != ReminderRepeatMode.once) return false;
+    final at = scheduledFor;
+    if (at == null) return false;
+    return !at.isAfter(now ?? DateTime.now());
+  }
 
   /// وقت التذكير ككائن [TimeOfDay].
   TimeOfDay get time => TimeOfDay(hour: hour, minute: minute);
@@ -117,6 +133,7 @@ class ReminderItem {
     'selectedDays': selectedDays,
     'isEnabled': isEnabled,
     'createdAt': createdAt.toIso8601String(),
+    if (scheduledFor != null) 'scheduledFor': scheduledFor!.toIso8601String(),
   };
 
   /// ينشئ كائن تذكير من خريطة بيانات JSON المحفوظة.
@@ -148,10 +165,17 @@ class ReminderItem {
       selectedDays: (json['selectedDays'] as List?)?.cast<int>() ?? const [],
       isEnabled: json['isEnabled'] as bool? ?? true,
       createdAt: DateTime.parse(json['createdAt'] as String),
+      scheduledFor: json['scheduledFor'] is String
+          ? DateTime.tryParse(json['scheduledFor'] as String)
+          : null,
     );
   }
 
   /// ينشئ نسخة محدثة من التذكير مع تعديل الحقول الممررة.
+  ///
+  /// Changing the time, repeat mode, days, or re-enabling the reminder
+  /// clears [scheduledFor] so the next schedule computes a fresh date —
+  /// unless a new [scheduledFor] is passed explicitly.
   ReminderItem copyWith({
     String? title,
     int? hour,
@@ -160,7 +184,18 @@ class ReminderItem {
     ReminderAlertType? alertType,
     List<int>? selectedDays,
     bool? isEnabled,
+    DateTime? scheduledFor,
+    bool clearScheduledFor = false,
   }) {
+    final schedulingChanged =
+        hour != null ||
+        minute != null ||
+        repeatMode != null ||
+        selectedDays != null ||
+        isEnabled == true;
+    final DateTime? nextScheduledFor =
+        scheduledFor ??
+        ((clearScheduledFor || schedulingChanged) ? null : this.scheduledFor);
     return ReminderItem(
       id: id,
       title: title ?? this.title,
@@ -171,6 +206,7 @@ class ReminderItem {
       selectedDays: selectedDays ?? this.selectedDays,
       isEnabled: isEnabled ?? this.isEnabled,
       createdAt: createdAt,
+      scheduledFor: nextScheduledFor,
     );
   }
 }

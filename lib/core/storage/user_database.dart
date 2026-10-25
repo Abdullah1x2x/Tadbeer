@@ -16,6 +16,33 @@ import '../../features/quran/data/quran_models.dart';
 import '../../features/reminders/reminder_model.dart';
 import '../../features/settings/user_settings_model.dart';
 
+/// نوع المشكلة التي حدثت في قاعدة بيانات المستخدم.
+enum UserDatabaseIssueKind {
+  /// فشل قراءة جدول كامل.
+  readFailed,
+
+  /// فشل حفظ أو حذف بيانات.
+  writeFailed,
+
+  /// وُجدت صفوف تالفة وتم تخطيها أثناء التحميل (دون حذفها).
+  corruptRowsSkipped,
+}
+
+/// وصف مشكلة في قاعدة البيانات لعرضها للمستخدم.
+class UserDatabaseIssue {
+  final UserDatabaseIssueKind kind;
+  final String operation;
+  final String error;
+  final DateTime at;
+
+  const UserDatabaseIssue({
+    required this.kind,
+    required this.operation,
+    required this.error,
+    required this.at,
+  });
+}
+
 /// إدارة قاعدة بيانات SQLite لبيانات المستخدم (الملاحظات، الفواصل، روابط الآيات).
 /// نصوص المصحف والكتب ثابتة ومخزنة كأصول للقراءة فقط لحمايتها وتسهيل النسخ الاحتياطي.
 class UserDatabase {
@@ -39,6 +66,52 @@ class UserDatabase {
 
   /// ما إذا كان اتصال قاعدة البيانات مفتوحاً وجاهزاً للاستخدام.
   bool get isOpen => _database != null && _database!.isOpen;
+
+  /// آخر مشكلة حدثت أثناء القراءة أو الكتابة، لتُعرض للمستخدم بدل ابتلاعها بصمت.
+  ///
+  /// Write failures and skipped corrupt rows are published here so the UI can
+  /// tell the user instead of silently pretending everything was saved.
+  final ValueNotifier<UserDatabaseIssue?> lastIssue =
+      ValueNotifier<UserDatabaseIssue?>(null);
+
+  void _reportIssue(UserDatabaseIssueKind kind, String operation, Object error) {
+    debugPrint('UserDatabase.$operation [${kind.name}]: $error');
+    lastIssue.value = UserDatabaseIssue(
+      kind: kind,
+      operation: operation,
+      error: error.toString(),
+      at: DateTime.now(),
+    );
+  }
+
+  /// يفك ترميز صفوف الجدول صفاً صفاً، فيتخطى الصف التالف وحده بدلاً من
+  /// إرجاع قائمة فارغة كاملة (وهو ما كان يُظهر كل البيانات كأنها حُذفت).
+  /// الصفوف التالفة لا تُحذف من قاعدة البيانات.
+  List<T> _decodeRows<T>(
+    List<Map<String, Object?>> rows,
+    T Function(Map<String, dynamic>) fromJson,
+    String label,
+  ) {
+    final result = <T>[];
+    final skippedIds = <Object?>[];
+    for (final r in rows) {
+      try {
+        final data = jsonDecode(r['data'] as String) as Map<String, dynamic>;
+        result.add(fromJson(data));
+      } catch (e) {
+        skippedIds.add(r['id']);
+        debugPrint('UserDatabase: skipped corrupt $label row ${r['id']}: $e');
+      }
+    }
+    if (skippedIds.isNotEmpty) {
+      _reportIssue(
+        UserDatabaseIssueKind.corruptRowsSkipped,
+        'load$label',
+        '${skippedIds.length} corrupt row(s) skipped: $skippedIds',
+      );
+    }
+    return result;
+  }
 
   /// Initializes the SQLite engine and opens the database.
   /// If [customPath] is provided (or in-memory path), it will be used.
@@ -217,7 +290,7 @@ class UserDatabase {
           jsonDecode(rows.first['data'] as String) as Map<String, dynamic>;
       return ReadingPosition.fromJson(data);
     } catch (e) {
-      debugPrint('UserDatabase.loadReadingPosition: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadReadingPosition', e);
       return null;
     }
   }
@@ -226,16 +299,13 @@ class UserDatabase {
   Future<void> saveReadingPosition(ReadingPosition position) async {
     if (!isOpen) return;
     try {
-      await db.insert('reading_position', {
-        'id': 1,
-        'page': position.page,
-        'surah_number': position.surahNumber,
-        'ayah_number': position.ayahNumber,
-        'data': jsonEncode(position.toJson()),
-        'updated_at': position.updatedAt.toIso8601String(),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(
+        'reading_position',
+        _readingPositionRow(position),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
-      debugPrint('UserDatabase.saveReadingPosition: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'saveReadingPosition', e);
     }
   }
 
@@ -246,12 +316,9 @@ class UserDatabase {
     if (!isOpen) return [];
     try {
       final rows = await db.query('notes', orderBy: 'updated_at DESC');
-      return rows.map((r) {
-        final data = jsonDecode(r['data'] as String) as Map<String, dynamic>;
-        return NoteItem.fromJson(data);
-      }).toList();
+      return _decodeRows(rows, NoteItem.fromJson, 'NoteItem');
     } catch (e) {
-      debugPrint('UserDatabase.loadNotes: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadNotes', e);
       return [];
     }
   }
@@ -260,17 +327,13 @@ class UserDatabase {
   Future<void> insertOrUpdateNote(NoteItem note) async {
     if (!isOpen) return;
     try {
-      await db.insert('notes', {
-        'id': note.id,
-        'type': note.type.name,
-        'surah_number': note.surahNumber,
-        'ayah_number': note.ayahNumber,
-        'data': jsonEncode(note.toJson()),
-        'created_at': note.createdAt.toIso8601String(),
-        'updated_at': note.updatedAt.toIso8601String(),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(
+        'notes',
+        _noteRow(note),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
-      debugPrint('UserDatabase.insertOrUpdateNote: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateNote', e);
     }
   }
 
@@ -280,7 +343,7 @@ class UserDatabase {
     try {
       await db.delete('notes', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
-      debugPrint('UserDatabase.deleteNote: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'deleteNote', e);
     }
   }
 
@@ -291,12 +354,9 @@ class UserDatabase {
     if (!isOpen) return [];
     try {
       final rows = await db.query('bookmarks', orderBy: 'created_at DESC');
-      return rows.map((r) {
-        final data = jsonDecode(r['data'] as String) as Map<String, dynamic>;
-        return BookmarkItem.fromJson(data);
-      }).toList();
+      return _decodeRows(rows, BookmarkItem.fromJson, 'BookmarkItem');
     } catch (e) {
-      debugPrint('UserDatabase.loadBookmarks: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadBookmarks', e);
       return [];
     }
   }
@@ -305,15 +365,13 @@ class UserDatabase {
   Future<void> insertBookmark(BookmarkItem bookmark) async {
     if (!isOpen) return;
     try {
-      await db.insert('bookmarks', {
-        'id': bookmark.id,
-        'surah_number': bookmark.surahNumber,
-        'ayah_number': bookmark.ayahNumber,
-        'data': jsonEncode(bookmark.toJson()),
-        'created_at': bookmark.createdAt.toIso8601String(),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(
+        'bookmarks',
+        _bookmarkRow(bookmark),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
-      debugPrint('UserDatabase.insertBookmark: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertBookmark', e);
     }
   }
 
@@ -323,7 +381,7 @@ class UserDatabase {
     try {
       await db.delete('bookmarks', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
-      debugPrint('UserDatabase.deleteBookmark: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'deleteBookmark', e);
     }
   }
 
@@ -334,12 +392,9 @@ class UserDatabase {
     if (!isOpen) return [];
     try {
       final rows = await db.query('highlights', orderBy: 'created_at DESC');
-      return rows.map((r) {
-        final data = jsonDecode(r['data'] as String) as Map<String, dynamic>;
-        return HighlightItem.fromJson(data);
-      }).toList();
+      return _decodeRows(rows, HighlightItem.fromJson, 'HighlightItem');
     } catch (e) {
-      debugPrint('UserDatabase.loadHighlights: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadHighlights', e);
       return [];
     }
   }
@@ -348,16 +403,13 @@ class UserDatabase {
   Future<void> insertOrUpdateHighlight(HighlightItem highlight) async {
     if (!isOpen) return;
     try {
-      await db.insert('highlights', {
-        'id': highlight.id,
-        'surah_number': highlight.surahNumber,
-        'ayah_number': highlight.ayahNumber,
-        'color_index': highlight.colorIndex,
-        'data': jsonEncode(highlight.toJson()),
-        'created_at': highlight.createdAt.toIso8601String(),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(
+        'highlights',
+        _highlightRow(highlight),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
-      debugPrint('UserDatabase.insertOrUpdateHighlight: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateHighlight', e);
     }
   }
 
@@ -367,7 +419,7 @@ class UserDatabase {
     try {
       await db.delete('highlights', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
-      debugPrint('UserDatabase.deleteHighlight: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'deleteHighlight', e);
     }
   }
 
@@ -378,12 +430,9 @@ class UserDatabase {
     if (!isOpen) return [];
     try {
       final rows = await db.query('reminders', orderBy: 'created_at ASC');
-      return rows.map((r) {
-        final data = jsonDecode(r['data'] as String) as Map<String, dynamic>;
-        return ReminderItem.fromJson(data);
-      }).toList();
+      return _decodeRows(rows, ReminderItem.fromJson, 'ReminderItem');
     } catch (e) {
-      debugPrint('UserDatabase.loadReminders: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadReminders', e);
       return [];
     }
   }
@@ -392,14 +441,13 @@ class UserDatabase {
   Future<void> insertOrUpdateReminder(ReminderItem reminder) async {
     if (!isOpen) return;
     try {
-      await db.insert('reminders', {
-        'id': reminder.id,
-        'is_enabled': reminder.isEnabled ? 1 : 0,
-        'data': jsonEncode(reminder.toJson()),
-        'created_at': reminder.createdAt.toIso8601String(),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(
+        'reminders',
+        _reminderRow(reminder),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
-      debugPrint('UserDatabase.insertOrUpdateReminder: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateReminder', e);
     }
   }
 
@@ -409,7 +457,7 @@ class UserDatabase {
     try {
       await db.delete('reminders', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
-      debugPrint('UserDatabase.deleteReminder: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'deleteReminder', e);
     }
   }
 
@@ -420,12 +468,9 @@ class UserDatabase {
     if (!isOpen) return [];
     try {
       final rows = await db.query('ayah_links', orderBy: 'updated_at DESC');
-      return rows.map((r) {
-        final data = jsonDecode(r['data'] as String) as Map<String, dynamic>;
-        return AyahLinkItem.fromJson(data);
-      }).toList();
+      return _decodeRows(rows, AyahLinkItem.fromJson, 'AyahLinkItem');
     } catch (e) {
-      debugPrint('UserDatabase.loadAyahLinks: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadAyahLinks', e);
       return [];
     }
   }
@@ -434,14 +479,13 @@ class UserDatabase {
   Future<void> insertOrUpdateAyahLink(AyahLinkItem link) async {
     if (!isOpen) return;
     try {
-      await db.insert('ayah_links', {
-        'id': link.id,
-        'data': jsonEncode(link.toJson()),
-        'created_at': link.createdAt.toIso8601String(),
-        'updated_at': link.updatedAt.toIso8601String(),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert(
+        'ayah_links',
+        _ayahLinkRow(link),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     } catch (e) {
-      debugPrint('UserDatabase.insertOrUpdateAyahLink: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateAyahLink', e);
     }
   }
 
@@ -451,7 +495,7 @@ class UserDatabase {
     try {
       await db.delete('ayah_links', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
-      debugPrint('UserDatabase.deleteAyahLink: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'deleteAyahLink', e);
     }
   }
 
@@ -471,12 +515,9 @@ class UserDatabase {
           rows = legacyRows;
         }
       }
-      return rows.map((r) {
-        final data = jsonDecode(r['data'] as String) as Map<String, dynamic>;
-        return TadbeerItem.fromJson(data);
-      }).toList();
+      return _decodeRows(rows, TadbeerItem.fromJson, 'TadbeerItem');
     } catch (e) {
-      debugPrint('UserDatabase.loadTadbeerItems: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadTadbeerItems', e);
       return [];
     }
   }
@@ -485,13 +526,7 @@ class UserDatabase {
   Future<void> insertOrUpdateTadbeer(TadbeerItem item) async {
     if (!isOpen) return;
     try {
-      final values = {
-        'id': item.id,
-        'surah_number': item.surahNumber,
-        'ayah_number': item.ayahNumber,
-        'data': jsonEncode(item.toJson()),
-        'updated_at': item.updatedAt.toIso8601String(),
-      };
+      final values = _tadbeerRow(item);
       await db.insert(
         'tadbeer_items',
         values,
@@ -505,7 +540,7 @@ class UserDatabase {
         );
       } catch (_) {}
     } catch (e) {
-      debugPrint('UserDatabase.insertOrUpdateTadbeer: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateTadbeer', e);
     }
   }
 
@@ -518,7 +553,7 @@ class UserDatabase {
         await db.delete('tadabbur_items', where: 'id = ?', whereArgs: [id]);
       } catch (_) {}
     } catch (e) {
-      debugPrint('UserDatabase.deleteTadbeer: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'deleteTadbeer', e);
     }
   }
 
@@ -542,7 +577,7 @@ class UserDatabase {
       }
       return UserSettings.fromJson(map);
     } catch (e) {
-      debugPrint('UserDatabase.loadSettings: $e');
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadSettings', e);
       return null;
     }
   }
@@ -551,14 +586,19 @@ class UserDatabase {
   Future<void> saveSettings(UserSettings settings) async {
     if (!isOpen) return;
     try {
-      for (final entry in settings.toJson().entries) {
-        await db.insert('user_settings', {
-          'key': entry.key,
-          'value': jsonEncode(entry.value),
-        }, conflictAlgorithm: ConflictAlgorithm.replace);
-      }
+      await db.transaction((txn) async {
+        final batch = txn.batch();
+        for (final row in _settingsRows(settings)) {
+          batch.insert(
+            'user_settings',
+            row,
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+        await batch.commit(noResult: true);
+      });
     } catch (e) {
-      debugPrint('UserDatabase.saveSettings: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'saveSettings', e);
     }
   }
 
@@ -580,9 +620,161 @@ class UserDatabase {
       } catch (_) {}
       await db.delete('user_settings');
     } catch (e) {
-      debugPrint('UserDatabase.clearAllUserData: $e');
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'clearAllUserData', e);
     }
   }
+
+  /// يستبدل كل بيانات المستخدم في معاملة واحدة (Transaction).
+  ///
+  /// Used by backup restore and JSON migration: either EVERYTHING is written,
+  /// or (on any failure) the transaction is rolled back and the previous
+  /// database content stays intact. Returns `false` on failure.
+  Future<bool> replaceAllUserData({
+    required ReadingPosition readingPosition,
+    required List<NoteItem> notes,
+    required List<BookmarkItem> bookmarks,
+    required List<HighlightItem> highlights,
+    required List<ReminderItem> reminders,
+    required List<AyahLinkItem> ayahLinks,
+    required List<TadbeerItem> tadbeerItems,
+    required UserSettings settings,
+  }) async {
+    if (!isOpen) return false;
+    try {
+      await db.transaction((txn) async {
+        // The legacy mirror table may be missing on some old installs.
+        final legacy = await txn.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='tadabbur_items'",
+        );
+        final hasLegacyTable = legacy.isNotEmpty;
+
+        for (final table in [
+          'reading_position',
+          'notes',
+          'bookmarks',
+          'highlights',
+          'reminders',
+          'ayah_links',
+          'tadbeer_items',
+          if (hasLegacyTable) 'tadabbur_items',
+          'user_settings',
+        ]) {
+          await txn.delete(table);
+        }
+
+        final batch = txn.batch();
+        const replace = ConflictAlgorithm.replace;
+        batch.insert(
+          'reading_position',
+          _readingPositionRow(readingPosition),
+          conflictAlgorithm: replace,
+        );
+        for (final n in notes) {
+          batch.insert('notes', _noteRow(n), conflictAlgorithm: replace);
+        }
+        for (final b in bookmarks) {
+          batch.insert('bookmarks', _bookmarkRow(b), conflictAlgorithm: replace);
+        }
+        for (final h in highlights) {
+          batch.insert(
+            'highlights',
+            _highlightRow(h),
+            conflictAlgorithm: replace,
+          );
+        }
+        for (final r in reminders) {
+          batch.insert('reminders', _reminderRow(r), conflictAlgorithm: replace);
+        }
+        for (final l in ayahLinks) {
+          batch.insert(
+            'ayah_links',
+            _ayahLinkRow(l),
+            conflictAlgorithm: replace,
+          );
+        }
+        for (final t in tadbeerItems) {
+          final row = _tadbeerRow(t);
+          batch.insert('tadbeer_items', row, conflictAlgorithm: replace);
+          if (hasLegacyTable) {
+            batch.insert('tadabbur_items', row, conflictAlgorithm: replace);
+          }
+        }
+        for (final row in _settingsRows(settings)) {
+          batch.insert('user_settings', row, conflictAlgorithm: replace);
+        }
+        await batch.commit(noResult: true);
+      });
+      return true;
+    } catch (e) {
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'replaceAllUserData', e);
+      return false;
+    }
+  }
+
+  // ==================== ROW BUILDERS ====================
+
+  static Map<String, Object?> _readingPositionRow(ReadingPosition p) => {
+    'id': 1,
+    'page': p.page,
+    'surah_number': p.surahNumber,
+    'ayah_number': p.ayahNumber,
+    'data': jsonEncode(p.toJson()),
+    'updated_at': p.updatedAt.toIso8601String(),
+  };
+
+  static Map<String, Object?> _noteRow(NoteItem note) => {
+    'id': note.id,
+    'type': note.type.name,
+    'surah_number': note.surahNumber,
+    'ayah_number': note.ayahNumber,
+    'data': jsonEncode(note.toJson()),
+    'created_at': note.createdAt.toIso8601String(),
+    'updated_at': note.updatedAt.toIso8601String(),
+  };
+
+  static Map<String, Object?> _bookmarkRow(BookmarkItem b) => {
+    'id': b.id,
+    'surah_number': b.surahNumber,
+    'ayah_number': b.ayahNumber,
+    'data': jsonEncode(b.toJson()),
+    'created_at': b.createdAt.toIso8601String(),
+  };
+
+  static Map<String, Object?> _highlightRow(HighlightItem h) => {
+    'id': h.id,
+    'surah_number': h.surahNumber,
+    'ayah_number': h.ayahNumber,
+    'color_index': h.colorIndex,
+    'data': jsonEncode(h.toJson()),
+    'created_at': h.createdAt.toIso8601String(),
+  };
+
+  static Map<String, Object?> _reminderRow(ReminderItem r) => {
+    'id': r.id,
+    'is_enabled': r.isEnabled ? 1 : 0,
+    'data': jsonEncode(r.toJson()),
+    'created_at': r.createdAt.toIso8601String(),
+  };
+
+  static Map<String, Object?> _ayahLinkRow(AyahLinkItem l) => {
+    'id': l.id,
+    'data': jsonEncode(l.toJson()),
+    'created_at': l.createdAt.toIso8601String(),
+    'updated_at': l.updatedAt.toIso8601String(),
+  };
+
+  static Map<String, Object?> _tadbeerRow(TadbeerItem t) => {
+    'id': t.id,
+    'surah_number': t.surahNumber,
+    'ayah_number': t.ayahNumber,
+    'data': jsonEncode(t.toJson()),
+    'updated_at': t.updatedAt.toIso8601String(),
+  };
+
+  static List<Map<String, Object?>> _settingsRows(UserSettings settings) => [
+    for (final entry in settings.toJson().entries)
+      {'key': entry.key, 'value': jsonEncode(entry.value)},
+  ];
 
   /// إغلاق اتصال قاعدة البيانات بأمان.
   Future<void> close() async {
