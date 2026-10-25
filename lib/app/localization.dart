@@ -166,6 +166,25 @@ class AppStrings {
   String pageCounted(int page) =>
       isArabic ? 'احتُسبت صفحة ${_n(page)}' : 'Page $page counted';
 
+  // Sequential khatma
+  String get fromMushafStart => isArabic ? 'من أول المصحف' : 'From the start';
+  String fromMyPosition(int page) =>
+      isArabic ? 'من موضعي (ص ${_n(page)})' : 'From my place (p. $page)';
+  String reachedPage(int page) =>
+      isArabic ? 'وصلت إلى صفحة ${_n(page)}' : 'Reached page $page';
+  String get setKhatmaPosition =>
+      isArabic ? 'تعديل موضعي في الختمة' : 'Set my khatma position';
+  String get pageNumberLabel => isArabic ? 'رقم الصفحة' : 'Page number';
+  String get markPortionDone =>
+      isArabic ? 'أتممت ورد اليوم' : 'Mark today’s portion done';
+  String khatmaElsewhere(int page) => isArabic
+      ? 'موضع قراءتك صفحة ${_n(page)}؛ انقل الختمة إليه؟'
+      : 'Your reading position is page $page. Move the khatma there?';
+  String get moveKhatmaHere => isArabic ? 'انقل الختمة' : 'Move khatma';
+
+  String get reflectionsThisMonth =>
+      isArabic ? 'تدبرات هذا الشهر' : 'Reflections this month';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

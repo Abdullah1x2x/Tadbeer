@@ -72,7 +72,10 @@ class HifzStore {
     state[_id(surah, ayah)] = current
         .grade(remembered: remembered, now: at)
         .toJson();
-    return UserDataStore.instance.saveFeatureState(_key, state);
+    return UserDataStore.instance
+        .saveFeatureState(_key, state)
+        // A memorization session keeps the day streak going too.
+        .then((_) => UserDataStore.instance.markActiveDay(now: at));
   }
 
   /// الآيات المستحقة للمراجعة اليوم، مرتبة حسب المصحف.

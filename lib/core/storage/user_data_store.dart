@@ -11,6 +11,7 @@ import '../../features/highlights/highlight_model.dart';
 import '../../features/journey/reading_journey.dart';
 import '../../features/notes/note_model.dart';
 import '../../features/quran/data/quran_models.dart';
+import '../../features/quran/data/quran_repository.dart';
 import '../../features/tadbeer/tadbeer_model.dart';
 import '../../features/reminders/reminder_model.dart';
 
@@ -959,14 +960,48 @@ class UserDataStore extends ChangeNotifier {
     if (page < 1 || page > mushafPageCount) return;
     final at = now ?? DateTime.now();
     final already = _journey.dailyPages[dayKey(at)]?.contains(page) ?? false;
-    final inPlan = _journey.plan?.readPages.contains(page) ?? true;
-    if (already && inPlan) return;
+    final advancesPlan = _journey.plan?.currentPage == page;
+    if (already && !advancesPlan) return;
     await _saveJourney(_journey.recordPage(page, at));
   }
 
-  /// يبدأ ختمة جديدة خلال [days] يوماً.
-  Future<void> startKhatma(int days) =>
-      _saveJourney(_journey.startPlan(days, DateTime.now()));
+  /// يبدأ ختمة جديدة خلال [days] يوماً من [startPage]، ويجعلها موضع القراءة
+  /// كي يفتح المصحف والرئيسية على الصفحة نفسها.
+  Future<void> startKhatma(int days, {int startPage = 1}) async {
+    await _saveJourney(
+      _journey.startPlan(days, DateTime.now(), startPage: startPage),
+    );
+    await _moveReadingPositionTo(startPage);
+  }
+
+  /// يضبط موضع الختمة يدوياً (ويجعله موضع القراءة).
+  Future<void> moveKhatmaTo(int page) async {
+    await _saveJourney(_journey.moveKhatmaTo(page));
+    await _moveReadingPositionTo(page);
+  }
+
+  /// يسجّل ورد اليوم كاملاً دفعة واحدة.
+  Future<void> completeTodayPortion() async {
+    await _saveJourney(_journey.completePortion(DateTime.now()));
+    final plan = _journey.plan;
+    if (plan != null) await _moveReadingPositionTo(plan.currentPage);
+  }
+
+  /// يسجّل يوماً فيه نشاط تدبر أو حفظ (للأيام المتتالية).
+  Future<void> markActiveDay({DateTime? now}) async {
+    final next = _journey.markActive(now ?? DateTime.now());
+    if (!identical(next, _journey)) await _saveJourney(next);
+  }
+
+  Future<void> _moveReadingPositionTo(int page) async {
+    final ayahs = QuranRepository.instance.getPage(page).ayahs;
+    if (ayahs.isEmpty) return;
+    await saveReadingPosition(
+      page: page,
+      surahNumber: ayahs.first.surahNumber,
+      ayahNumber: ayahs.first.ayahNumber,
+    );
+  }
 
   /// يلغي الختمة الحالية مع الإبقاء على سجل القراءة.
   Future<void> cancelKhatma() => _saveJourney(_journey.cancelPlan());
@@ -1087,6 +1122,8 @@ class UserDataStore extends ChangeNotifier {
       await userDb.insertOrUpdateTadbeer(item);
     }
     await saveToDisk();
+    // A reflection keeps the day streak going like reading does.
+    await markActiveDay(now: now);
   }
 
   /// حذف إجابات وقفة التدبر المرتبطة بآية محددة.

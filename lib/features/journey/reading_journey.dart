@@ -1,8 +1,9 @@
 /// رحلة القراءة: خطة الختمة وسجل الصفحات المقروءة يومياً.
 ///
-/// Offline record of what the user read: the pages read on each day (for
-/// streaks and the weekly chart) and an optional khatma plan with the set of
-/// pages read since it started (for progress and the daily portion).
+/// Offline record of what the user read: the pages read on each day in
+/// reading mode (for the daily portion and the weekly chart), the days with
+/// any activity (reading, reflection or memorization, for the streak) and an
+/// optional sequential khatma plan.
 library;
 
 /// عدد صفحات مصحف المدينة.
@@ -14,7 +15,14 @@ String dayKey(DateTime d) =>
     '${d.month.toString().padLeft(2, '0')}-'
     '${d.day.toString().padLeft(2, '0')}';
 
-/// خطة ختمة: البدء في تاريخ معيّن والانتهاء خلال عدد من الأيام.
+/// الصفحة التالية في المصحف مع الالتفاف من ٦٠٤ إلى ١.
+int nextMushafPage(int page) => page % mushafPageCount + 1;
+
+/// خطة ختمة متسلسلة: مؤشر واحد «وصلت إلى صفحة» يتقدم صفحة صفحة.
+///
+/// The khatma moves forward only when the page it points at is read, so
+/// browsing other pages never scatters its progress, and the progress ring
+/// and the "continue from page" button always show the same page.
 class KhatmaPlan {
   /// تاريخ بدء الختمة (بداية اليوم).
   final DateTime startDate;
@@ -22,29 +30,33 @@ class KhatmaPlan {
   /// عدد أيام الختمة.
   final int days;
 
-  /// الصفحات المقروءة منذ بدء الختمة.
-  final Set<int> readPages;
+  /// الصفحة التي بدأت منها الختمة.
+  final int startPage;
 
-  /// آخر صفحة قُرئت في الختمة؛ يُكمل القارئ مما بعدها.
-  final int? lastPage;
+  /// الصفحة التي يكمل منها القارئ (لم تُقرأ بعد).
+  final int currentPage;
+
+  /// عدد الصفحات المنجزة في الختمة.
+  final int advanced;
 
   /// ينشئ خطة ختمة.
   KhatmaPlan({
     required DateTime startDate,
     required this.days,
-    Set<int>? readPages,
-    this.lastPage,
+    this.startPage = 1,
+    int? currentPage,
+    this.advanced = 0,
   }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
-       readPages = readPages ?? <int>{};
+       currentPage = currentPage ?? startPage;
 
   /// الورد اليومي بالصفحات.
   int get pagesPerDay => (mushafPageCount / days).ceil();
 
   /// نسبة الإنجاز من ٠ إلى ١.
-  double get progress => readPages.length / mushafPageCount;
+  double get progress => advanced / mushafPageCount;
 
   /// هل اكتملت الختمة.
-  bool get isComplete => readPages.length >= mushafPageCount;
+  bool get isComplete => advanced >= mushafPageCount;
 
   /// رقم اليوم الحالي في الخطة (يبدأ من ١)، محصوراً بين ١ وعدد الأيام.
   int dayNumber(DateTime now) {
@@ -60,44 +72,62 @@ class KhatmaPlan {
   int expectedPagesBefore(DateTime now) =>
       (pagesPerDay * (dayNumber(now) - 1)).clamp(0, mushafPageCount);
 
-  /// الصفحة التي يكمل منها القارئ: أول صفحة غير مقروءة بعد آخر صفحة قرأها،
-  /// مع الالتفاف إلى بداية المصحف عند الوصول لنهايته.
-  ///
-  /// Continuing from the last page read (not from page 1) keeps the button
-  /// moving forward for readers who started the khatma mid-Mushaf.
-  int get nextUnreadPage {
-    final start = (lastPage ?? 0) % mushafPageCount;
-    for (var i = 1; i <= mushafPageCount; i++) {
-      final p = (start + i - 1) % mushafPageCount + 1;
-      if (!readPages.contains(p)) return p;
-    }
-    return mushafPageCount;
-  }
+  /// يتقدم المؤشر إذا كانت [page] هي صفحته الحالية.
+  KhatmaPlan read(int page) => page != currentPage
+      ? this
+      : _copy(currentPage: nextMushafPage(page), advanced: advanced + 1);
 
-  /// Copy with an extra page marked as read.
-  KhatmaPlan withPage(int page) => KhatmaPlan(
-    startDate: startDate,
-    days: days,
-    readPages: {...readPages, page},
-    lastPage: page,
+  /// يضبط موضع الختمة يدوياً على [page]، ويُحسب ما بين البداية وبينها منجزاً.
+  KhatmaPlan moveTo(int page) => _copy(
+    currentPage: page,
+    advanced: (page - startPage + mushafPageCount) % mushafPageCount,
   );
+
+  KhatmaPlan _copy({required int currentPage, required int advanced}) =>
+      KhatmaPlan(
+        startDate: startDate,
+        days: days,
+        startPage: startPage,
+        currentPage: currentPage,
+        advanced: advanced,
+      );
 
   Map<String, dynamic> toJson() => {
     'startDate': dayKey(startDate),
     'days': days,
-    'readPages': (readPages.toList()..sort()),
-    if (lastPage != null) 'lastPage': lastPage,
+    'startPage': startPage,
+    'currentPage': currentPage,
+    'advanced': advanced,
   };
 
-  factory KhatmaPlan.fromJson(Map<String, dynamic> json) => KhatmaPlan(
-    startDate: DateTime.parse(json['startDate'] as String),
-    days: (json['days'] as num).toInt(),
-    readPages: {
-      for (final p in (json['readPages'] as List? ?? const []))
-        (p as num).toInt(),
-    },
-    lastPage: (json['lastPage'] as num?)?.toInt(),
-  );
+  factory KhatmaPlan.fromJson(Map<String, dynamic> json) {
+    final startDate = DateTime.parse(json['startDate'] as String);
+    final days = (json['days'] as num).toInt();
+    if (json['currentPage'] != null) {
+      return KhatmaPlan(
+        startDate: startDate,
+        days: days,
+        startPage: (json['startPage'] as num?)?.toInt() ?? 1,
+        currentPage: (json['currentPage'] as num).toInt(),
+        advanced: (json['advanced'] as num?)?.toInt() ?? 0,
+      );
+    }
+    // Earlier format: a set of scattered pages plus the last page read.
+    // Continue after the last page, keeping the number of pages done.
+    final pages = (json['readPages'] as List? ?? const []).length;
+    final last = (json['lastPage'] as num?)?.toInt();
+    final current = last == null ? 1 : nextMushafPage(last);
+    return KhatmaPlan(
+      startDate: startDate,
+      days: days,
+      startPage:
+          ((current - 1 - pages) % mushafPageCount + mushafPageCount) %
+              mushafPageCount +
+          1,
+      currentPage: current,
+      advanced: pages,
+    );
+  }
 }
 
 /// سجل رحلة القراءة كاملاً.
@@ -108,6 +138,9 @@ class ReadingJourney {
   /// الصفحات المقروءة في كل يوم (مفتاح yyyy-MM-dd).
   final Map<String, Set<int>> dailyPages;
 
+  /// أيام فيها تدبر أو حفظ (تُحسب في الأيام المتتالية مع أيام القراءة).
+  final Set<String> activeDays;
+
   /// عدد الختمات المكتملة.
   final int completedKhatmas;
 
@@ -115,19 +148,24 @@ class ReadingJourney {
   const ReadingJourney({
     this.plan,
     this.dailyPages = const {},
+    this.activeDays = const {},
     this.completedKhatmas = 0,
   });
 
   /// صفحات يوم محدد.
   int pagesOn(DateTime day) => dailyPages[dayKey(day)]?.length ?? 0;
 
-  /// عدد الأيام المتتالية التي قُرئ فيها شيء، حتى اليوم (أو حتى أمس إن
-  /// لم يُقرأ شيء اليوم بعد، كي لا تنقطع السلسلة صباحاً).
+  /// هل كان للمستخدم نشاط (قراءة أو تدبر أو حفظ) في يوم محدد.
+  bool isActiveOn(DateTime day) =>
+      pagesOn(day) > 0 || activeDays.contains(dayKey(day));
+
+  /// عدد الأيام المتتالية التي فيها نشاط، حتى اليوم (أو حتى أمس إن لم يكن
+  /// هناك نشاط اليوم بعد، كي لا تنقطع السلسلة صباحاً).
   int streak(DateTime now) {
     var day = DateTime(now.year, now.month, now.day);
-    if (pagesOn(day) == 0) day = day.subtract(const Duration(days: 1));
+    if (!isActiveOn(day)) day = day.subtract(const Duration(days: 1));
     var count = 0;
-    while (pagesOn(day) > 0) {
+    while (isActiveOn(day)) {
       count++;
       day = day.subtract(const Duration(days: 1));
     }
@@ -146,12 +184,61 @@ class ReadingJourney {
   int get totalPages =>
       dailyPages.values.fold(0, (sum, pages) => sum + pages.length);
 
-  /// Records [page] as read on [now]. When it completes the khatma, the plan
-  /// is cleared and the completed count goes up.
+  /// Records [page] as read on [now] and advances the khatma when it is the
+  /// page the plan points at. Completing the khatma clears the plan.
   ReadingJourney recordPage(int page, DateTime now) {
     final key = dayKey(now);
-    final today = {...?dailyPages[key], page};
-    var newPlan = plan?.withPage(page);
+    return _withPlan(
+      plan?.read(page),
+      dailyPages: {
+        ...dailyPages,
+        key: {...?dailyPages[key], page},
+      },
+    );
+  }
+
+  /// يسجّل يوماً فيه تدبر أو حفظ.
+  ReadingJourney markActive(DateTime now) {
+    final key = dayKey(now);
+    if (activeDays.contains(key)) return this;
+    return _copy(activeDays: {...activeDays, key});
+  }
+
+  /// يقرأ ورد اليوم دفعة واحدة: يتقدم المؤشر بعدد صفحات الورد.
+  ReadingJourney completePortion(DateTime now) {
+    final p = plan;
+    if (p == null) return this;
+    var journey = this;
+    var page = p.currentPage;
+    for (var i = 0; i < p.pagesPerDay && journey.plan != null; i++) {
+      journey = journey.recordPage(page, now);
+      page = nextMushafPage(page);
+    }
+    return journey;
+  }
+
+  /// يضبط موضع الختمة يدوياً.
+  ReadingJourney moveKhatmaTo(int page) => plan == null
+      ? this
+      : _copy(plan: plan!.moveTo(page.clamp(1, mushafPageCount)));
+
+  /// Starts (or replaces) the khatma plan from [startPage].
+  ReadingJourney startPlan(int days, DateTime now, {int startPage = 1}) =>
+      _copy(
+        plan: KhatmaPlan(startDate: now, days: days, startPage: startPage),
+      );
+
+  /// Cancels the current plan, keeping the reading history.
+  ReadingJourney cancelPlan() => ReadingJourney(
+    dailyPages: dailyPages,
+    activeDays: activeDays,
+    completedKhatmas: completedKhatmas,
+  );
+
+  ReadingJourney _withPlan(
+    KhatmaPlan? newPlan, {
+    required Map<String, Set<int>> dailyPages,
+  }) {
     var completed = completedKhatmas;
     if (newPlan != null && newPlan.isComplete) {
       completed++;
@@ -159,29 +246,26 @@ class ReadingJourney {
     }
     return ReadingJourney(
       plan: newPlan,
-      dailyPages: {...dailyPages, key: today},
+      dailyPages: dailyPages,
+      activeDays: activeDays,
       completedKhatmas: completed,
     );
   }
 
-  /// Starts (or replaces) the khatma plan.
-  ReadingJourney startPlan(int days, DateTime now) => ReadingJourney(
-    plan: KhatmaPlan(startDate: now, days: days),
-    dailyPages: dailyPages,
-    completedKhatmas: completedKhatmas,
-  );
-
-  /// Cancels the current plan, keeping the reading history.
-  ReadingJourney cancelPlan() => ReadingJourney(
-    dailyPages: dailyPages,
-    completedKhatmas: completedKhatmas,
-  );
+  ReadingJourney _copy({KhatmaPlan? plan, Set<String>? activeDays}) =>
+      ReadingJourney(
+        plan: plan ?? this.plan,
+        dailyPages: dailyPages,
+        activeDays: activeDays ?? this.activeDays,
+        completedKhatmas: completedKhatmas,
+      );
 
   Map<String, dynamic> toJson() => {
     if (plan != null) 'plan': plan!.toJson(),
     'dailyPages': {
       for (final e in dailyPages.entries) e.key: (e.value.toList()..sort()),
     },
+    'activeDays': (activeDays.toList()..sort()),
     'completedKhatmas': completedKhatmas,
   };
 
@@ -192,6 +276,9 @@ class ReadingJourney {
     dailyPages: {
       for (final e in (json['dailyPages'] as Map? ?? const {}).entries)
         e.key as String: {for (final p in e.value as List) (p as num).toInt()},
+    },
+    activeDays: {
+      for (final d in (json['activeDays'] as List? ?? const [])) d as String,
     },
     completedKhatmas: (json['completedKhatmas'] as num?)?.toInt() ?? 0,
   );
