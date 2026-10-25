@@ -53,156 +53,168 @@ class HomeScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final h = constraints.maxHeight;
-              final isCompact = h < 740;
-              final isVeryCompact = h < 640;
+        body: PatternBackground(
+          child: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final h = constraints.maxHeight;
+                final isCompact = h < 740;
+                final isVeryCompact = h < 640;
 
-              // Spacing tokens
-              final paddingH = isVeryCompact ? 14.0 : (isCompact ? 18.0 : 20.0);
-              final paddingV = isVeryCompact ? 6.0 : (isCompact ? 10.0 : 14.0);
+                // Spacing tokens
+                final paddingH = isVeryCompact
+                    ? 14.0
+                    : (isCompact ? 18.0 : 20.0);
+                final paddingV = isVeryCompact
+                    ? 6.0
+                    : (isCompact ? 10.0 : 14.0);
 
-              final spaceTopBar = isVeryCompact
-                  ? 4.0
-                  : (isCompact ? 6.0 : 10.0);
-              final spaceBrandToSearch = isVeryCompact
-                  ? 6.0
-                  : (isCompact ? 10.0 : 14.0);
-              final spaceSearchToHero = isVeryCompact
-                  ? 8.0
-                  : (isCompact ? 12.0 : 16.0);
-              final spaceHeroToCore = isVeryCompact
-                  ? 8.0
-                  : (isCompact ? 10.0 : 14.0);
+                final spaceTopBar = isVeryCompact
+                    ? 4.0
+                    : (isCompact ? 6.0 : 10.0);
+                final spaceBrandToSearch = isVeryCompact
+                    ? 6.0
+                    : (isCompact ? 10.0 : 14.0);
+                final spaceSearchToHero = isVeryCompact
+                    ? 8.0
+                    : (isCompact ? 12.0 : 16.0);
+                final spaceHeroToCore = isVeryCompact
+                    ? 8.0
+                    : (isCompact ? 10.0 : 14.0);
 
-              return SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(
-                  horizontal: paddingH,
-                  vertical: paddingV,
-                ),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 580),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        // Top App Bar with Settings round button
-                        _buildTopBar(
-                          context,
-                          l10n,
-                          isDark,
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceTopBar),
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: paddingH,
+                    vertical: paddingV,
+                  ),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 580),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          // Top App Bar with Settings round button
+                          _buildTopBar(
+                            context,
+                            l10n,
+                            isDark,
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: spaceTopBar),
 
-                        // Serene Brand Header
-                        _buildBrandHeader(
-                          context,
-                          l10n,
-                          isDark,
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceBrandToSearch),
+                          // Serene Brand Header
+                          _buildBrandHeader(
+                            context,
+                            l10n,
+                            isDark,
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: spaceBrandToSearch),
 
-                        // Prominent Global Search Entry Bar
-                        _buildGlobalSearchBar(
-                          context,
-                          l10n,
-                          isDark,
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceSearchToHero),
+                          // Prominent Global Search Entry Bar
+                          _buildGlobalSearchBar(
+                            context,
+                            l10n,
+                            isDark,
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: spaceSearchToHero),
 
-                        // آية اليوم مع سؤال تدبر
-                        const AyahOfTheDayCard(),
-                        SizedBox(height: spaceHeroToCore),
+                          // آية اليوم مع سؤال تدبر
+                          const AyahOfTheDayCard(),
+                          SizedBox(height: spaceHeroToCore),
 
-                        // 1. Featured Quran Hero Card
-                        _QuranHeroCard(
-                          onTap: () {
-                            if (MainShell.selectTab(context, ShellTab.quran)) {
-                              return;
-                            }
-                            final pos = UserDataStore.instance.readingPosition;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    QuranScreen(
-                                      initialPage: pos.page,
-                                      readingMode: true,
-                                    ),
-                              ),
-                            );
-                          },
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceHeroToCore),
+                          // 1. Featured Quran Hero Card
+                          _QuranHeroCard(
+                            onTap: () {
+                              if (MainShell.selectTab(
+                                context,
+                                ShellTab.quran,
+                              )) {
+                                return;
+                              }
+                              final pos =
+                                  UserDataStore.instance.readingPosition;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => QuranScreen(
+                                    initialPage: pos.page,
+                                    readingMode: true,
+                                  ),
+                                ),
+                              );
+                            },
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: spaceHeroToCore),
 
-                        // رحلة القراءة: الأيام المتتالية وورد اليوم
-                        const JourneySummaryCard(),
-                        SizedBox(height: spaceHeroToCore),
+                          // رحلة القراءة: الأيام المتتالية وورد اليوم
+                          const JourneySummaryCard(),
+                          SizedBox(height: spaceHeroToCore),
 
-                        // آخر أذكار وكتاب وحفظ ومسار (يختفي إن لم يوجد)
-                        const ContinueCard(),
-                        SizedBox(height: spaceHeroToCore),
+                          // آخر أذكار وكتاب وحفظ ومسار (يختفي إن لم يوجد)
+                          const ContinueCard(),
+                          SizedBox(height: spaceHeroToCore),
 
-                        // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)
-                        _IstighfarTasbeehCard(
-                          onTap: () {
-                            if (MainShell.selectTab(context, ShellTab.tasbeeh)) {
-                              return;
-                            }
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const TasbeehScreen(),
-                              ),
-                            );
-                          },
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceHeroToCore),
+                          // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)
+                          _IstighfarTasbeehCard(
+                            onTap: () {
+                              if (MainShell.selectTab(
+                                context,
+                                ShellTab.tasbeeh,
+                              )) {
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const TasbeehScreen(),
+                                ),
+                              );
+                            },
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: spaceHeroToCore),
 
-                        // 3. Core 2x2 Feature Cards Grid
-                        _buildCoreFeaturesGrid(
-                          context,
-                          l10n,
-                          isDark,
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: spaceHeroToCore),
+                          // 3. Core 2x2 Feature Cards Grid
+                          _buildCoreFeaturesGrid(
+                            context,
+                            l10n,
+                            isDark,
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: spaceHeroToCore),
 
-                        // 4. قسم كتب وملازم (مكتبة الملازم التدبرية والكتب الإسلامية)
-                        _BooksHeroCard(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const BooksScreen(),
-                              ),
-                            );
-                          },
-                          isCompact: isCompact,
-                          isVeryCompact: isVeryCompact,
-                        ),
-                        SizedBox(height: isVeryCompact ? 4.0 : 8.0),
-                      ],
+                          // 4. قسم كتب وملازم (مكتبة الملازم التدبرية والكتب الإسلامية)
+                          _BooksHeroCard(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const BooksScreen(),
+                                ),
+                              );
+                            },
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: isVeryCompact ? 4.0 : 8.0),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -316,6 +328,10 @@ class HomeScreen extends StatelessWidget {
             letterSpacing: 0.2,
           ),
         ),
+        if (!isVeryCompact) ...[
+          const SizedBox(height: 4),
+          OrnamentDivider(width: isCompact ? 110 : 130, starSize: 5),
+        ],
       ],
     );
   }
@@ -425,7 +441,11 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      Icon(AppIcons.slidersHorizontal, color: primaryColor, size: 20),
+                      Icon(
+                        AppIcons.slidersHorizontal,
+                        color: primaryColor,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         l10n.filterSearchTitle,
@@ -456,10 +476,7 @@ class HomeScreen extends StatelessWidget {
                     runSpacing: 8,
                     children: [
                       ActionChip(
-                        avatar: const Icon(
-                          AppIcons.globe,
-                          size: 16,
-                        ),
+                        avatar: const Icon(AppIcons.globe, size: 16),
                         label: Text(l10n.searchAll),
                         onPressed: () {
                           Navigator.pop(ctx);

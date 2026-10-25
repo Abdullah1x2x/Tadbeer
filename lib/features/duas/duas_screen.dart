@@ -13,6 +13,7 @@ import 'quran_duas_repository.dart';
 import 'quran_duas_screen.dart';
 import 'sunnah_duas_repository.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/ornaments.dart';
 
 /// الشاشة الرئيسية لقسم الأدعية والأذكار في تطبيق تدبير.
 ///
@@ -62,189 +63,193 @@ class DuasScreen extends StatelessWidget {
           ),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              // الآية القرآنية في فضل الدعاء
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkBorder
-                        : AppColors.lightBorder,
+        body: PatternBackground(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                // الآية القرآنية في فضل الدعاء
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: isDark ? 0.2 : 0.03,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightSurface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.2 : 0.03,
+                        ),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      '﴿ وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ ﴾',
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'AmiriQuran',
-                        fontSize: 18,
-                        height: 1.8,
-                        color: isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.lightPrimary,
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        '﴿ وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ ﴾',
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'AmiriQuran',
+                          fontSize: 18,
+                          height: 1.8,
+                          color: isDark
+                              ? AppColors.darkAccentGold
+                              : AppColors.lightPrimary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      l10n.ayahReference(
-                        isArabic ? 'غافر' : 'Ghafir',
-                        isArabic ? '٦٠' : '60',
+                      const SizedBox(height: 6),
+                      Text(
+                        l10n.ayahReference(
+                          isArabic ? 'غافر' : 'Ghafir',
+                          isArabic ? '٦٠' : '60',
+                        ),
+                        style: TextStyle(
+                          fontFamily: 'IBMPlexSansArabic',
+                          fontSize: 12,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
                       ),
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                        fontSize: 12,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                // القسم 1: أدعية من القرآن الكريم
+                _DuaCategoryCard(
+                  icon: FlutterIslamicIcons.quran,
+                  title: l10n.quranDuasTitle,
+                  subtitle: l10n.quranDuasSubtitle,
+                  countBadge: l10n.duasCountBadge(
+                    isArabic
+                        ? ArabicSearchNormalizer.toArabicDigits(totalQuranDuas)
+                        : totalQuranDuas,
+                  ),
+                  isQuran: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const QuranDuasScreen(),
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              ),
 
-              const SizedBox(height: 18),
+                const SizedBox(height: 12),
 
-              // القسم 1: أدعية من القرآن الكريم
-              _DuaCategoryCard(
-                icon: FlutterIslamicIcons.quran,
-                title: l10n.quranDuasTitle,
-                subtitle: l10n.quranDuasSubtitle,
-                countBadge: l10n.duasCountBadge(
-                  isArabic
-                      ? ArabicSearchNormalizer.toArabicDigits(totalQuranDuas)
-                      : totalQuranDuas,
-                ),
-                isQuran: true,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const QuranDuasScreen()),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 12),
-
-              // القسم 2: أذكار الصباح والمساء
-              _DuaCategoryCard(
-                icon: AppIcons.sun,
-                title: l10n.morningEveningAdhkarTitle,
-                subtitle: l10n.morningEveningAdhkarSubtitle,
-                countBadge: l10n.adhkarCountBadge(
-                  isArabic
-                      ? ArabicSearchNormalizer.toArabicDigits(totalAdhkar)
-                      : totalAdhkar,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MorningEveningAdhkarScreen(),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 12),
-
-              // القسم 3: أدعية مأثورة عن أهل البيت
-              _DuaCategoryCard(
-                icon: FlutterIslamicIcons.prayer,
-                title: l10n.ahlulbaytDuasTitle,
-                subtitle: l10n.ahlulbaytDuasSubtitle,
-                countBadge: l10n.duasCountBadge(
-                  isArabic
-                      ? ArabicSearchNormalizer.toArabicDigits(
-                          totalAhlulbaytDuas,
-                        )
-                      : totalAhlulbaytDuas,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AhlulbaytDuasScreen(),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 12),
-
-              // القسم 4: أدعية من السنة النبوية
-              _DuaCategoryCard(
-                icon: AppIcons.sparkle,
-                title: l10n.sunnahDuasTitle,
-                subtitle: l10n.sunnahDuasSubtitle,
-                countBadge: l10n.duasCountBadge(
-                  isArabic
-                      ? ArabicSearchNormalizer.toArabicDigits(totalSunnahDuas)
-                      : totalSunnahDuas,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => GeneralDuasListScreen(
-                        title: l10n.sunnahDuasTitle,
-                        items: SunnahDuasRepository.sunnahDuas,
+                // القسم 2: أذكار الصباح والمساء
+                _DuaCategoryCard(
+                  icon: AppIcons.sun,
+                  title: l10n.morningEveningAdhkarTitle,
+                  subtitle: l10n.morningEveningAdhkarSubtitle,
+                  countBadge: l10n.adhkarCountBadge(
+                    isArabic
+                        ? ArabicSearchNormalizer.toArabicDigits(totalAdhkar)
+                        : totalAdhkar,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const MorningEveningAdhkarScreen(),
                       ),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 12),
-
-              // القسم 5: جوامع الدعاء والرجاء
-              _DuaCategoryCard(
-                icon: AppIcons.heart,
-                title: l10n.jawamiDuasTitle,
-                subtitle: l10n.jawamiDuasSubtitle,
-                countBadge: l10n.duasCountBadge(
-                  isArabic
-                      ? ArabicSearchNormalizer.toArabicDigits(totalJawamiDuas)
-                      : totalJawamiDuas,
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => GeneralDuasListScreen(
-                        title: l10n.jawamiDuasTitle,
-                        items: SunnahDuasRepository.jawamiDuas,
-                      ),
-                    ),
-                  );
-                },
-              ),
 
-              const SizedBox(height: 16),
-            ],
+                const SizedBox(height: 12),
+
+                // القسم 3: أدعية مأثورة عن أهل البيت
+                _DuaCategoryCard(
+                  icon: FlutterIslamicIcons.prayer,
+                  title: l10n.ahlulbaytDuasTitle,
+                  subtitle: l10n.ahlulbaytDuasSubtitle,
+                  countBadge: l10n.duasCountBadge(
+                    isArabic
+                        ? ArabicSearchNormalizer.toArabicDigits(
+                            totalAhlulbaytDuas,
+                          )
+                        : totalAhlulbaytDuas,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AhlulbaytDuasScreen(),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // القسم 4: أدعية من السنة النبوية
+                _DuaCategoryCard(
+                  icon: AppIcons.sparkle,
+                  title: l10n.sunnahDuasTitle,
+                  subtitle: l10n.sunnahDuasSubtitle,
+                  countBadge: l10n.duasCountBadge(
+                    isArabic
+                        ? ArabicSearchNormalizer.toArabicDigits(totalSunnahDuas)
+                        : totalSunnahDuas,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GeneralDuasListScreen(
+                          title: l10n.sunnahDuasTitle,
+                          items: SunnahDuasRepository.sunnahDuas,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // القسم 5: جوامع الدعاء والرجاء
+                _DuaCategoryCard(
+                  icon: AppIcons.heart,
+                  title: l10n.jawamiDuasTitle,
+                  subtitle: l10n.jawamiDuasSubtitle,
+                  countBadge: l10n.duasCountBadge(
+                    isArabic
+                        ? ArabicSearchNormalizer.toArabicDigits(totalJawamiDuas)
+                        : totalJawamiDuas,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GeneralDuasListScreen(
+                          title: l10n.jawamiDuasTitle,
+                          items: SunnahDuasRepository.jawamiDuas,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),
