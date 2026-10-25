@@ -55,6 +55,19 @@ class _QuranScreenState extends State<QuranScreen> {
   bool _suppressNextPageTap = false;
   Timer? _suppressTimer;
 
+  /// A page counts as read once it has stayed on screen this long.
+  static const _readDwell = Duration(seconds: 6);
+  Timer? _readTimer;
+
+  void _startReadTimer(int pageNumber) {
+    _readTimer?.cancel();
+    _readTimer = Timer(_readDwell, () {
+      // Skip when the reader is a hidden tab (tickers paused offstage).
+      if (!mounted || !TickerMode.valuesOf(context).enabled) return;
+      UserDataStore.instance.recordPageRead(pageNumber);
+    });
+  }
+
   /// يهيئ متحكم الصفحات ويحدد صفحة البداية والآية المستهدفة عند فتح الشاشة.
   @override
   void initState() {
@@ -92,6 +105,7 @@ class _QuranScreenState extends State<QuranScreen> {
         _persistCurrentPagePosition(startPage);
       }
     });
+    _startReadTimer(startPage);
   }
 
   /// يحرر المؤقت ومتحكم الصفحات عند إغلاق الشاشة.
@@ -101,6 +115,7 @@ class _QuranScreenState extends State<QuranScreen> {
       UserDataStore.instance.removeListener(_syncToSavedPosition);
     }
     _suppressTimer?.cancel();
+    _readTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -121,6 +136,7 @@ class _QuranScreenState extends State<QuranScreen> {
       _activeSelectedAyah = null;
     });
     _persistCurrentPagePosition(index + 1);
+    _startReadTimer(index + 1);
   }
 
   /// يحفظ موضع القراءة الحالي (الصفحة والسورة والآية) في التخزين المحلي.

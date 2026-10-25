@@ -93,6 +93,49 @@ class AppStrings {
   String get jumpToPage => isArabic ? 'الانتقال إلى صفحة' : 'Jump to Page';
   String get go => isArabic ? 'انتقال' : 'Go';
   String get cancel => isArabic ? 'إلغاء' : 'Cancel';
+  String get options => isArabic ? 'خيارات' : 'Options';
+
+  // Reading journey (الختمة والإحصاءات)
+  String get myJourney => isArabic ? 'رحلتي مع القرآن' : 'My Quran Journey';
+  String get startKhatmaTitle =>
+      isArabic ? 'ابدأ ختمتك' : 'Start your khatma';
+  String get startKhatmaHint => isArabic
+      ? 'اختر المدة، وسنقسّم المصحف إلى ورد يومي ونتابع تقدمك تلقائياً.'
+      : 'Pick a duration; we split the Mushaf into a daily portion and track your progress.';
+  String daysCount(int d) => isArabic ? '${_n(d)} يوماً' : '$d days';
+  String pagesPerDayHint(int n) =>
+      isArabic ? 'وردك اليومي: ${_n(n)} صفحة' : 'Daily portion: $n pages';
+  String get startKhatma => isArabic ? 'ابدأ الختمة' : 'Start khatma';
+  String completedKhatmas(int n) =>
+      isArabic ? 'أتممت ${_n(n)} ختمة، بارك الله فيك' : 'Khatmas completed: $n';
+  String get cancelKhatma => isArabic ? 'إلغاء الختمة' : 'Cancel khatma';
+  String get cancelKhatmaConfirm => isArabic
+      ? 'سيُحذف تقدم هذه الختمة، ويبقى سجل قراءتك وإحصاءاتك.'
+      : 'This khatma’s progress will be removed; your reading history stays.';
+  String get onTrack => isArabic ? 'ملتزم بالخطة' : 'On track';
+  String behindBy(int n) =>
+      isArabic ? 'متأخر ${_n(n)} صفحة' : '$n pages behind';
+  String khatmaInDays(int n) =>
+      isArabic ? 'ختمة في ${_n(n)} يوماً' : 'Khatma in $n days';
+  String pagesOfMushaf(int n) =>
+      isArabic ? '${_n(n)} من ٦٠٤ صفحة' : '$n of 604 pages';
+  String dayOfPlan(int d, int total) =>
+      isArabic ? 'اليوم ${_n(d)} من ${_n(total)}' : 'Day $d of $total';
+  String get todayPortion => isArabic ? 'ورد اليوم' : 'Today’s portion';
+  String pagesOfTarget(int a, int b) =>
+      isArabic ? '${_n(a)} / ${_n(b)} صفحة' : '$a / $b pages';
+  String get keepReading => isArabic ? 'واصل القراءة' : 'Keep reading';
+  String continueFromPage(int p) =>
+      isArabic ? 'أكمل من صفحة ${_n(p)}' : 'Continue from page $p';
+  String get streakDays => isArabic ? 'أيام متتالية' : 'Day streak';
+  String get totalPagesRead => isArabic ? 'صفحة مقروءة' : 'Pages read';
+  String get khatmasLabel => isArabic ? 'ختمات' : 'Khatmas';
+  String get lastSevenDays => isArabic ? 'آخر ٧ أيام' : 'Last 7 days';
+
+  /// اسم مختصر ليوم الأسبوع ([DateTime.weekday]: ١ = الإثنين).
+  String weekdayShort(int weekday) => isArabic
+      ? const ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'][weekday - 1]
+      : const ['M', 'T', 'W', 'T', 'F', 'S', 'S'][weekday - 1];
   String get close => isArabic ? 'إغلاق' : 'Close';
   String get clearText => isArabic ? 'مسح' : 'Clear';
   String get decrease => isArabic ? 'إنقاص' : 'Decrease';

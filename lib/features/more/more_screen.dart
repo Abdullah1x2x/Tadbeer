@@ -8,6 +8,7 @@ import '../backup/backup_screen.dart';
 import '../bookmarks/bookmarks_screen.dart';
 import '../books/books_screen.dart';
 import '../highlights/highlights_screen.dart';
+import '../journey/journey_screen.dart';
 import '../notes/notes_screen.dart';
 import '../reminders/reminders_screen.dart';
 import '../search/search_screen.dart';
@@ -38,6 +39,11 @@ class MoreScreen extends StatelessWidget {
             _Group(
               title: l10n.isArabic ? 'الأقسام' : 'Sections',
               children: [
+                _Tile(
+                  icon: Icons.insights_rounded,
+                  label: l10n.myJourney,
+                  onTap: () => open(const JourneyScreen()),
+                ),
                 _Tile(
                   icon: Icons.edit_note_rounded,
                   label: l10n.notes,
