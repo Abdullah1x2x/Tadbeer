@@ -116,8 +116,8 @@ void main() {
     );
   });
 
-  group('AyahActionSheet Centering & All 6 Actions Tests', () {
-    testWidgets('Action sheet renders all 6 actions in equal Expanded slots', (
+  group('AyahActionSheet Centering & All 7 Actions Tests', () {
+    testWidgets('Action sheet renders all 7 actions in equal Expanded slots', (
       tester,
     ) async {
       final ayah = QuranRepository.instance.getAyah(1, 1)!;
@@ -131,12 +131,13 @@ void main() {
       expect(find.text('حفظ'), findsOneWidget);
       expect(find.text('تمييز'), findsOneWidget);
       expect(find.text('نسخ'), findsOneWidget);
+      expect(find.text('مشاركة'), findsOneWidget);
 
       final actionsRowFinder = find.byWidgetPredicate(
         (w) =>
             w is Row &&
             w.mainAxisAlignment == MainAxisAlignment.spaceEvenly &&
-            w.children.length == 6,
+            w.children.length == 7,
       );
       expect(actionsRowFinder, findsOneWidget);
 
