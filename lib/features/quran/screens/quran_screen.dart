@@ -31,6 +31,14 @@ class QuranScreen extends StatefulWidget {
   /// reader is pushed as a standalone page.
   final ValueNotifier<bool>? controlsVisible;
 
+  /// وضع القراءة: يحفظ موضع القراءة ويحتسب الصفحات في الختمة والإحصاءات.
+  ///
+  /// When false (viewing mode, the default) the reader only shows a verse
+  /// opened from search, bookmarks, notes and so on: it never moves the
+  /// user's reading position or counts pages, and offers a "continue reading
+  /// from here" action instead.
+  final bool readingMode;
+
   /// ينشئ شاشة قراءة المصحف الشريف مع إمكانية تحديد الصفحة أو الآية المستهدفة.
   const QuranScreen({
     super.key,
@@ -38,6 +46,7 @@ class QuranScreen extends StatefulWidget {
     this.targetSurahNumber,
     this.targetAyahNumber,
     this.controlsVisible,
+    this.readingMode = false,
   });
 
   /// ينشئ الحالة التفاعلية لشاشة قراءة المصحف.
@@ -56,17 +65,45 @@ class _QuranScreenState extends State<QuranScreen> {
   bool _suppressNextPageTap = false;
   Timer? _suppressTimer;
 
-  /// A page counts as read once it has stayed on screen this long.
-  static const _readDwell = Duration(seconds: 6);
-  Timer? _readTimer;
+  /// A page counts as read when the reader moves forward past it after
+  /// spending at least this long on it (skimming and going back don't count).
+  static const _readDwell = Duration(seconds: 3);
+  DateTime _pageShownAt = DateTime.now();
 
-  void _startReadTimer(int pageNumber) {
-    _readTimer?.cancel();
-    _readTimer = Timer(_readDwell, () {
-      // Skip when the reader is a hidden tab (tickers paused offstage).
-      if (!mounted || !TickerMode.valuesOf(context).enabled) return;
-      UserDataStore.instance.recordPageRead(pageNumber);
+  /// Set before a jump the user did not make (syncing the tab), so that page
+  /// change is neither counted nor saved again.
+  bool _ignoreNextPageChange = false;
+
+  /// Page just counted, shown briefly as a confirmation chip.
+  int? _countedPage;
+  Timer? _countedTimer;
+
+  void _maybeCountPage(int fromIndex, int toIndex) {
+    if (!widget.readingMode || toIndex != fromIndex + 1) return;
+    if (DateTime.now().difference(_pageShownAt) < _readDwell) return;
+    final page = fromIndex + 1;
+    UserDataStore.instance.recordPageRead(page);
+    HapticFeedback.lightImpact();
+    _countedTimer?.cancel();
+    setState(() => _countedPage = page);
+    _countedTimer = Timer(const Duration(milliseconds: 1600), () {
+      if (mounted) setState(() => _countedPage = null);
     });
+  }
+
+  /// Makes the page shown in viewing mode the user's reading position.
+  void _continueReadingFromHere() {
+    HapticFeedback.mediumImpact();
+    _persistCurrentPagePosition(_currentPageIndex + 1);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          context.l10n.readingPositionMoved(_currentPageIndex + 1),
+          textAlign: TextAlign.center,
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   /// يهيئ متحكم الصفحات ويحدد صفحة البداية والآية المستهدفة عند فتح الشاشة.
@@ -101,12 +138,11 @@ class _QuranScreenState extends State<QuranScreen> {
       UserDataStore.instance.addListener(_syncToSavedPosition);
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _persistCurrentPagePosition(startPage);
-      }
-    });
-    _startReadTimer(startPage);
+    if (widget.readingMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _persistCurrentPagePosition(startPage);
+      });
+    }
   }
 
   /// يحرر المؤقت ومتحكم الصفحات عند إغلاق الشاشة.
@@ -116,7 +152,7 @@ class _QuranScreenState extends State<QuranScreen> {
       UserDataStore.instance.removeListener(_syncToSavedPosition);
     }
     _suppressTimer?.cancel();
-    _readTimer?.cancel();
+    _countedTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -125,6 +161,7 @@ class _QuranScreenState extends State<QuranScreen> {
   void _syncToSavedPosition() {
     final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
     if (page - 1 != _currentPageIndex && _pageController.hasClients) {
+      _ignoreNextPageChange = true;
       _pageController.jumpToPage(page - 1);
     }
   }
@@ -132,12 +169,20 @@ class _QuranScreenState extends State<QuranScreen> {
   /// يحدث رقم الصفحة الحالية عند تقليب الصفحات ويحفظ موضع القراءة الجديد.
   void _onPageChanged(int index) {
     if (index < 0 || index >= 604) return;
+    final from = _currentPageIndex;
+    final programmatic = _ignoreNextPageChange;
+    _ignoreNextPageChange = false;
     setState(() {
       _currentPageIndex = index;
       _activeSelectedAyah = null;
     });
-    _persistCurrentPagePosition(index + 1);
-    _startReadTimer(index + 1);
+    if (programmatic) {
+      _pageShownAt = DateTime.now();
+      return;
+    }
+    _maybeCountPage(from, index);
+    _pageShownAt = DateTime.now();
+    if (widget.readingMode) _persistCurrentPagePosition(index + 1);
   }
 
   /// يحفظ موضع القراءة الحالي (الصفحة والسورة والآية) في التخزين المحلي.
@@ -976,6 +1021,75 @@ class _QuranScreenState extends State<QuranScreen> {
                         ),
                       ),
                     ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Viewing mode: a verse opened from elsewhere. Offer to make this
+            // the reading position instead of moving it silently.
+            if (!widget.readingMode && !_showTopBar)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 24,
+                child: SafeArea(
+                  child: Center(
+                    child: FilledButton.icon(
+                      onPressed: _continueReadingFromHere,
+                      icon: const Icon(Icons.bookmark_added_rounded, size: 18),
+                      label: Text(context.l10n.continueReadingFromHere),
+                    ),
+                  ),
+                ),
+              ),
+
+            // Brief confirmation that the page was counted.
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: widget.readingMode ? 110 : 84,
+              child: IgnorePointer(
+                child: Center(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    transitionBuilder: (child, a) => FadeTransition(
+                      opacity: a,
+                      child: ScaleTransition(scale: a, child: child),
+                    ),
+                    child: _countedPage == null
+                        ? const SizedBox.shrink()
+                        : Container(
+                            key: ValueKey(_countedPage),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.lightPrimaryDark.withValues(
+                                alpha: 0.92,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.check_circle_rounded,
+                                  color: AppColors.electricGold,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  context.l10n.pageCounted(_countedPage!),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                   ),
                 ),
               ),

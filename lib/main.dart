@@ -83,7 +83,9 @@ void main() async {
     onTapped: (payload) {
       if (payload == 'quran_resume') {
         appNavigatorKey.currentState?.push(
-          MaterialPageRoute(builder: (_) => const QuranScreen()),
+          MaterialPageRoute(
+            builder: (_) => const QuranScreen(readingMode: true),
+          ),
         );
       }
     },
