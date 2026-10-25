@@ -20,8 +20,18 @@ enum ShellTab { home, quran, tasbeeh, duas, more }
 /// state. While the Mushaf tab is being read the bar slides away, and it
 /// returns when the reader taps the page to show the Mushaf controls.
 class MainShell extends StatefulWidget {
+  /// التبويب الذي يفتح عليه الهيكل.
+  final ShellTab initialTab;
+
   /// ينشئ الهيكل الرئيسي للتطبيق.
-  const MainShell({super.key});
+  const MainShell({super.key, this.initialTab = ShellTab.home});
+
+  /// Whether a shell is currently mounted (false while the intro shows).
+  static bool get isMounted => _mountedCount > 0;
+  static int _mountedCount = 0;
+
+  /// Tab requests from outside the widget tree (e.g. a tapped notification).
+  static final ValueNotifier<ShellTab?> requestedTab = ValueNotifier(null);
 
   /// Switches to [tab] when [context] is inside the shell. Returns false
   /// otherwise (e.g. a screen shown on its own), so callers can fall back to
@@ -40,9 +50,23 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell>
     with SingleTickerProviderStateMixin {
-  ShellTab _tab = ShellTab.home;
+  late ShellTab _tab = widget.initialTab;
   ShellTab? _previous;
-  final Set<ShellTab> _visited = {ShellTab.home};
+  late final Set<ShellTab> _visited = {widget.initialTab};
+
+  @override
+  void initState() {
+    super.initState();
+    MainShell._mountedCount++;
+    MainShell.requestedTab.addListener(_onTabRequested);
+  }
+
+  void _onTabRequested() {
+    final tab = MainShell.requestedTab.value;
+    if (tab == null) return;
+    MainShell.requestedTab.value = null;
+    _select(tab);
+  }
 
   /// Mirrors the Mushaf tab's controls; the bar hides while they are hidden.
   final ValueNotifier<bool> _quranControlsVisible = ValueNotifier(true);
@@ -69,6 +93,8 @@ class _MainShellState extends State<MainShell>
 
   @override
   void dispose() {
+    MainShell._mountedCount--;
+    MainShell.requestedTab.removeListener(_onTabRequested);
     _eased.dispose();
     _switch.dispose();
     _quranControlsVisible.dispose();
