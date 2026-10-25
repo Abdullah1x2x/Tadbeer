@@ -7,6 +7,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'tasbeeh_model.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/ornaments.dart';
 
 /// شاشة الاستغفار والتسبيح (سبحة إلكترونية مبسطة ومحراب هادئ للذكر).
 ///
@@ -200,7 +201,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             content: Text(
               context.l10n.targetReachedAuto(finishedTarget),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
+              style: const TextStyle(
+                fontFamily: 'IBMPlexSansArabic',
+                fontSize: 14,
+              ),
             ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -219,7 +223,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             content: Text(
               context.l10n.targetReached(finishedTarget),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 15),
+              style: const TextStyle(
+                fontFamily: 'IBMPlexSansArabic',
+                fontSize: 15,
+              ),
             ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -597,179 +604,180 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             ),
           ],
         ),
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final isCompact = constraints.maxHeight < 680;
-              // The counter is the screen's main action, so it gets the most room.
-              final circleSize = isCompact ? 205.0 : 250.0;
-              // تثبيت صارم لارتفاع مربع عرض الذكر لمنع أي قفز أو تغير في حجمه
-              final cardHeight = isCompact ? 180.0 : 205.0;
+        body: PatternBackground(
+          child: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isCompact = constraints.maxHeight < 680;
+                // The counter is the screen's main action, so it gets the most room.
+                final circleSize = isCompact ? 205.0 : 250.0;
+                // تثبيت صارم لارتفاع مربع عرض الذكر لمنع أي قفز أو تغير في حجمه
+                final cardHeight = isCompact ? 180.0 : 205.0;
 
-              return SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isCompact ? 14 : 18,
-                  vertical: isCompact ? 8 : 12,
-                ),
-                physics: const BouncingScrollPhysics(),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 540),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // 1. مفتاح التبديل المباشر بين الاستغفار والتسبيح (بدون مبالغة)
-                        _buildSectionSwitcher(isDark, primaryColor),
-                        const SizedBox(height: 12),
+                return SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isCompact ? 14 : 18,
+                    vertical: isCompact ? 8 : 12,
+                  ),
+                  physics: const BouncingScrollPhysics(),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 540),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // 1. مفتاح التبديل المباشر بين الاستغفار والتسبيح (بدون مبالغة)
+                          _buildSectionSwitcher(isDark, primaryColor),
+                          const SizedBox(height: 12),
 
-                        // 2. مربع عرض الذكر ذو الحجم الثابت تماماً
-                        _buildFixedDhikrCard(
-                          dhikr,
-                          isDark,
-                          primaryColor,
-                          cardHeight,
-                        ),
-                        SizedBox(height: isCompact ? 14 : 18),
+                          // 2. مربع عرض الذكر ذو الحجم الثابت تماماً
+                          _buildFixedDhikrCard(
+                            dhikr,
+                            isDark,
+                            primaryColor,
+                            cardHeight,
+                          ),
+                          SizedBox(height: isCompact ? 14 : 18),
 
-                        // 3. الدائرة التفاعلية للتسبيح والعدّ
-                        Center(
-                          child: ScaleTransition(
-                            scale: _scaleAnimation,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: _handleTap,
-                              onLongPress: _toggleAutoCount,
-                              child: Container(
-                                width: circleSize,
-                                height: circleSize,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isDark
-                                      ? AppColors.darkSurface
-                                      : AppColors.comsilk,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          (isDark
-                                                  ? AppColors.darkAccentGold
-                                                  : AppColors.olive)
-                                              .withValues(alpha: 0.12),
-                                      blurRadius: 26,
-                                      spreadRadius: 2,
-                                      offset: const Offset(0, 8),
-                                    ),
-                                  ],
-                                  border: Border.all(
+                          // 3. الدائرة التفاعلية للتسبيح والعدّ
+                          Center(
+                            child: ScaleTransition(
+                              scale: _scaleAnimation,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: _handleTap,
+                                onLongPress: _toggleAutoCount,
+                                child: Container(
+                                  width: circleSize,
+                                  height: circleSize,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
                                     color: isDark
-                                        ? AppColors.darkBorder
-                                        : AppColors.lightBorder,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    // مؤشر التقدم الدائري
-                                    SizedBox(
-                                      width: circleSize - 16,
-                                      height: circleSize - 16,
-                                      child: CircularProgressIndicator(
-                                        value: progress,
-                                        strokeWidth: 6,
-                                        backgroundColor: isDark
-                                            ? AppColors.darkBorder.withValues(
-                                                alpha: 0.3,
-                                              )
-                                            : AppColors.lightBorder.withValues(
-                                                alpha: 0.5,
-                                              ),
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              isDark
-                                                  ? AppColors.darkAccentGold
-                                                  : primaryColor,
-                                            ),
+                                        ? AppColors.darkSurface
+                                        : AppColors.comsilk,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            (isDark
+                                                    ? AppColors.darkAccentGold
+                                                    : AppColors.olive)
+                                                .withValues(alpha: 0.12),
+                                        blurRadius: 26,
+                                        spreadRadius: 2,
+                                        offset: const Offset(0, 8),
                                       ),
+                                    ],
+                                    border: Border.all(
+                                      color: isDark
+                                          ? AppColors.darkBorder
+                                          : AppColors.lightBorder,
+                                      width: 1.5,
                                     ),
-                                    // الرقم والهدف ورسالة النقر
-                                    Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          context.l10n.digits(
-                                            _repo.currentCount,
-                                          ),
-                                          style: TextStyle(
-                                            fontFamily: 'Amiri',
-                                            fontSize: isCompact ? 46 : 56,
-                                            fontWeight: FontWeight.bold,
-                                            color: isDark
-                                                ? AppColors.darkTextPrimary
-                                                : AppColors.lightPrimary,
-                                            height: 1.0,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          _repo.targetCount > 0
-                                              ? l10n.targetCount(
-                                                  _repo.targetCount,
+                                  ),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      // مؤشر التقدم الدائري
+                                      SizedBox(
+                                        width: circleSize - 16,
+                                        height: circleSize - 16,
+                                        child: CircularProgressIndicator(
+                                          value: progress,
+                                          strokeWidth: 6,
+                                          backgroundColor: isDark
+                                              ? AppColors.darkBorder.withValues(
+                                                  alpha: 0.3,
                                                 )
-                                              : l10n.freeCount,
-                                          style: TextStyle(
-                                            fontSize: isCompact ? 13 : 14,
-                                            fontWeight: FontWeight.w600,
-                                            color: isDark
-                                                ? AppColors.darkTextSecondary
-                                                : AppColors.lightTextSecondary,
-                                          ),
+                                              : AppColors.lightBorder
+                                                    .withValues(alpha: 0.5),
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                isDark
+                                                    ? AppColors.darkAccentGold
+                                                    : primaryColor,
+                                              ),
                                         ),
-                                        const SizedBox(height: 6),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 3,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: primaryColor.withValues(
-                                              alpha: 0.1,
+                                      ),
+                                      // الرقم والهدف ورسالة النقر
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            context.l10n.digits(
+                                              _repo.currentCount,
                                             ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            l10n.tapAnywhereToCount,
                                             style: TextStyle(
-                                              fontSize: 12,
-                                              color: primaryColor,
-                                              fontWeight: FontWeight.w500,
+                                              fontFamily: 'Amiri',
+                                              fontSize: isCompact ? 46 : 56,
+                                              fontWeight: FontWeight.bold,
+                                              color: isDark
+                                                  ? AppColors.darkTextPrimary
+                                                  : AppColors.lightPrimary,
+                                              height: 1.0,
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            _repo.targetCount > 0
+                                                ? l10n.targetCount(
+                                                    _repo.targetCount,
+                                                  )
+                                                : l10n.freeCount,
+                                            style: TextStyle(
+                                              fontSize: isCompact ? 13 : 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: isDark
+                                                  ? AppColors.darkTextSecondary
+                                                  : AppColors
+                                                        .lightTextSecondary,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 3,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: primaryColor.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Text(
+                                              l10n.tapAnywhereToCount,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: primaryColor,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: isCompact ? 10 : 14),
+                          SizedBox(height: isCompact ? 10 : 14),
 
-                        // 4. شريط كبسولة العدّ التلقائي الهادئ والتحكم بالوتيرة
-                        _buildAutoCountBar(isDark, primaryColor),
-                        SizedBox(height: isCompact ? 10 : 14),
+                          // 4. شريط كبسولة العدّ التلقائي الهادئ والتحكم بالوتيرة
+                          _buildAutoCountBar(isDark, primaryColor),
+                          SizedBox(height: isCompact ? 10 : 14),
 
-                        // 6. شريط الإحصائيات (اليوم والإجمالي)
-                        _buildStatsRow(isDark, primaryColor),
-                        const SizedBox(height: 16),
-                      ],
+                          // 6. شريط الإحصائيات (اليوم والإجمالي)
+                          _buildStatsRow(isDark, primaryColor),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
@@ -827,9 +835,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      _isAutoCounting
-                          ? AppIcons.pause
-                          : AppIcons.play,
+                      _isAutoCounting ? AppIcons.pause : AppIcons.play,
                       size: 18,
                       color: _isAutoCounting
                           ? (isDark ? Colors.black : Colors.white)

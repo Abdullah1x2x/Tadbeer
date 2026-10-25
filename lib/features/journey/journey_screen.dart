@@ -15,6 +15,7 @@ import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
 import 'weekly_goals.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/ornaments.dart';
 
 /// شاشة «رحلتي مع القرآن»: خطة الختمة، ورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
@@ -45,59 +46,61 @@ class JourneyScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: ListenableBuilder(
-          listenable: UserDataStore.instance,
-          builder: (context, _) {
-            final journey = UserDataStore.instance.journey;
-            final now = DateTime.now();
-            final plan = journey.plan;
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-              children: [
-                if (plan == null)
-                  _StartKhatmaCard(completed: journey.completedKhatmas)
-                else ...[
-                  _KhatmaProgressCard(plan: plan, now: now),
-                  const SizedBox(height: 12),
-                  // The user read elsewhere (e.g. moved their reading place):
-                  // offer to bring the khatma along instead of guessing.
-                  if (UserDataStore.instance.readingPosition.page !=
-                      plan.currentPage)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Card(
-                        child: ListTile(
-                          leading: Icon(
-                            AppIcons.arrowsLeftRight,
-                            color: AppColors.accentGold(context),
-                          ),
-                          title: Text(
-                            l10n.khatmaElsewhere(
-                              UserDataStore.instance.readingPosition.page,
+        body: PatternBackground(
+          child: ListenableBuilder(
+            listenable: UserDataStore.instance,
+            builder: (context, _) {
+              final journey = UserDataStore.instance.journey;
+              final now = DateTime.now();
+              final plan = journey.plan;
+              return ListView(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                children: [
+                  if (plan == null)
+                    _StartKhatmaCard(completed: journey.completedKhatmas)
+                  else ...[
+                    _KhatmaProgressCard(plan: plan, now: now),
+                    const SizedBox(height: 12),
+                    // The user read elsewhere (e.g. moved their reading place):
+                    // offer to bring the khatma along instead of guessing.
+                    if (UserDataStore.instance.readingPosition.page !=
+                        plan.currentPage)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Card(
+                          child: ListTile(
+                            leading: Icon(
+                              AppIcons.arrowsLeftRight,
+                              color: AppColors.accentGold(context),
                             ),
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          trailing: TextButton(
-                            onPressed: () =>
-                                UserDataStore.instance.moveKhatmaTo(
-                                  UserDataStore.instance.readingPosition.page,
-                                ),
-                            child: Text(l10n.moveKhatmaHere),
+                            title: Text(
+                              l10n.khatmaElsewhere(
+                                UserDataStore.instance.readingPosition.page,
+                              ),
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            trailing: TextButton(
+                              onPressed: () =>
+                                  UserDataStore.instance.moveKhatmaTo(
+                                    UserDataStore.instance.readingPosition.page,
+                                  ),
+                              child: Text(l10n.moveKhatmaHere),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  _TodayPortionCard(plan: plan, journey: journey, now: now),
+                    _TodayPortionCard(plan: plan, journey: journey, now: now),
+                  ],
+                  const SizedBox(height: 12),
+                  WeeklyGoalsCard(now: now),
+                  const SizedBox(height: 12),
+                  _StatsRow(journey: journey, now: now),
+                  const SizedBox(height: 12),
+                  _WeekChartCard(days: journey.lastSevenDays(now), now: now),
                 ],
-                const SizedBox(height: 12),
-                WeeklyGoalsCard(now: now),
-                const SizedBox(height: 12),
-                _StatsRow(journey: journey, now: now),
-                const SizedBox(height: 12),
-                _WeekChartCard(days: journey.lastSevenDays(now), now: now),
-              ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

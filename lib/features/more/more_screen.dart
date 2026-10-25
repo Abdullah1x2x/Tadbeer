@@ -19,6 +19,7 @@ import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import '../word_meanings/word_meanings_screen.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/ornaments.dart';
 
 /// تبويب «المزيد»: الأدوات الثانوية والإعدادات في قائمة واحدة واضحة.
 class MoreScreen extends StatelessWidget {
@@ -38,105 +39,107 @@ class MoreScreen extends StatelessWidget {
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
         appBar: AppBar(title: Text(l10n.more)),
-        body: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          children: [
-            _Group(
-              title: l10n.isArabic ? 'الأقسام' : 'Sections',
-              children: [
-                _Tile(
-                  icon: AppIcons.chartLineUp,
-                  label: l10n.myJourney,
-                  onTap: () => open(const JourneyScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.gridFour,
-                  label: l10n.mushafMap,
-                  onTap: () => open(const MushafMapScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.path,
-                  label: l10n.guidedPathways,
-                  onTap: () => open(const GuidedPathwaysScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.usersThree,
-                  label: l10n.groupKhatma,
-                  onTap: () => open(const GroupKhatmaScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.brainFill,
-                  label: l10n.memorization,
-                  onTap: () => open(const MemorizationScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.notePencil,
-                  label: l10n.notes,
-                  onTap: () => open(const NotesScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.magnifyingGlass,
-                  label: l10n.search,
-                  onTap: () => open(const SearchScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.translate,
-                  label: l10n.wordMeanings,
-                  onTap: () => open(const WordMeaningsScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.graphFill,
-                  label: l10n.ayahLinks,
-                  onTap: () => open(const AyahLinksScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.bookOpenTextFill,
-                  label: l10n.booksAndBooklets,
-                  onTap: () => open(const BooksScreen()),
-                ),
-              ],
-            ),
-            _Group(
-              title: l10n.isArabic ? 'آياتي' : 'My verses',
-              children: [
-                _Tile(
-                  icon: AppIcons.bookmarkSimpleFill,
-                  label: l10n.bookmarks,
-                  onTap: () => open(const BookmarksScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.paintBrushFill,
-                  label: l10n.highlights,
-                  onTap: () => open(const HighlightsScreen()),
-                ),
-              ],
-            ),
-            _Group(
-              title: l10n.isArabic ? 'الأدوات' : 'Tools',
-              children: [
-                _Tile(
-                  icon: AppIcons.alarmFill,
-                  label: l10n.reminders,
-                  onTap: () => open(const RemindersScreen()),
-                ),
-                _Tile(
-                  icon: AppIcons.cloudArrowUp,
-                  label: l10n.backup,
-                  onTap: () => open(const BackupScreen()),
-                ),
-              ],
-            ),
-            _Group(
-              title: l10n.isArabic ? 'التطبيق' : 'App',
-              children: [
-                _Tile(
-                  icon: AppIcons.gearFill,
-                  label: l10n.settings,
-                  onTap: () => open(const SettingsScreen()),
-                ),
-              ],
-            ),
-          ],
+        body: PatternBackground(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            children: [
+              _Group(
+                title: l10n.isArabic ? 'الأقسام' : 'Sections',
+                children: [
+                  _Tile(
+                    icon: AppIcons.chartLineUp,
+                    label: l10n.myJourney,
+                    onTap: () => open(const JourneyScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.gridFour,
+                    label: l10n.mushafMap,
+                    onTap: () => open(const MushafMapScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.path,
+                    label: l10n.guidedPathways,
+                    onTap: () => open(const GuidedPathwaysScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.usersThree,
+                    label: l10n.groupKhatma,
+                    onTap: () => open(const GroupKhatmaScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.brainFill,
+                    label: l10n.memorization,
+                    onTap: () => open(const MemorizationScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.notePencil,
+                    label: l10n.notes,
+                    onTap: () => open(const NotesScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.magnifyingGlass,
+                    label: l10n.search,
+                    onTap: () => open(const SearchScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.translate,
+                    label: l10n.wordMeanings,
+                    onTap: () => open(const WordMeaningsScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.graphFill,
+                    label: l10n.ayahLinks,
+                    onTap: () => open(const AyahLinksScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.bookOpenTextFill,
+                    label: l10n.booksAndBooklets,
+                    onTap: () => open(const BooksScreen()),
+                  ),
+                ],
+              ),
+              _Group(
+                title: l10n.isArabic ? 'آياتي' : 'My verses',
+                children: [
+                  _Tile(
+                    icon: AppIcons.bookmarkSimpleFill,
+                    label: l10n.bookmarks,
+                    onTap: () => open(const BookmarksScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.paintBrushFill,
+                    label: l10n.highlights,
+                    onTap: () => open(const HighlightsScreen()),
+                  ),
+                ],
+              ),
+              _Group(
+                title: l10n.isArabic ? 'الأدوات' : 'Tools',
+                children: [
+                  _Tile(
+                    icon: AppIcons.alarmFill,
+                    label: l10n.reminders,
+                    onTap: () => open(const RemindersScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.cloudArrowUp,
+                    label: l10n.backup,
+                    onTap: () => open(const BackupScreen()),
+                  ),
+                ],
+              ),
+              _Group(
+                title: l10n.isArabic ? 'التطبيق' : 'App',
+                children: [
+                  _Tile(
+                    icon: AppIcons.gearFill,
+                    label: l10n.settings,
+                    onTap: () => open(const SettingsScreen()),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -159,14 +162,20 @@ class _Group extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsetsDirectional.only(start: 8, bottom: 8),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontFamily: AppTheme.appFontFamily,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textSecondary(context),
-              ),
+            child: Row(
+              children: [
+                const OrnamentStar(size: 10),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: AppTheme.appFontFamily,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textSecondary(context),
+                  ),
+                ),
+              ],
             ),
           ),
           Card(
