@@ -49,6 +49,9 @@ dependencies:
   flutter_islamic_icons: ^1.0.2
   flutter_pdfview: ^1.4.5
   cupertino_icons: ^2.0.0
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +95,8 @@ flutter_launcher_icons:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # Generates AppLocalizations from lib/l10n/*.arb (see l10n.yaml).
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
