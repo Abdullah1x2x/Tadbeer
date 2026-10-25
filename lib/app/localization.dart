@@ -205,6 +205,12 @@ class AppStrings {
 
   String get dailyJourney => isArabic ? 'رحلة يومية' : 'Daily journey';
 
+  String get adhkarReminders => isArabic ? 'تذكير الأذكار' : 'Adhkar reminders';
+  String get morningAdhkarReminder =>
+      isArabic ? 'أذكار الصباح' : 'Morning adhkar';
+  String get eveningAdhkarReminder =>
+      isArabic ? 'أذكار المساء' : 'Evening adhkar';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

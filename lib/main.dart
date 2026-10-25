@@ -6,6 +6,8 @@ import 'core/services/local_reminder_service.dart';
 import 'core/storage/user_data_store.dart';
 import 'features/quran/data/quran_repository.dart';
 import 'app/main_shell.dart';
+import 'features/duas/adhkar_repository.dart';
+import 'features/duas/morning_evening_adhkar_screen.dart';
 
 /// Registers bundled non-Dart asset licenses (Quranic text, Word Meanings dataset,
 /// and SIL OFL 1.1 fonts) into Flutter's [LicenseRegistry] so they appear in
@@ -81,6 +83,31 @@ void main() async {
   // 3. Initialize local reading reminders & synchronize saved schedules
   await LocalReminderService.instance.init(
     onTapped: (payload) {
+      if (payload == 'adhkar_morning' || payload == 'adhkar_evening') {
+        // Open the matching adhkar from the Duas tab.
+        final navigator = appNavigatorKey.currentState;
+        if (navigator == null) return;
+        navigator.popUntil((route) => route.isFirst);
+        if (MainShell.isMounted) {
+          MainShell.requestedTab.value = ShellTab.duas;
+        } else {
+          navigator.pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const MainShell(initialTab: ShellTab.duas),
+            ),
+          );
+        }
+        navigator.push(
+          MaterialPageRoute(
+            builder: (_) => MorningEveningAdhkarScreen(
+              initialCategory: payload == 'adhkar_morning'
+                  ? AdhkarCategory.morning
+                  : AdhkarCategory.evening,
+            ),
+          ),
+        );
+        return;
+      }
       if (payload == 'quran_resume') {
         // Open the Mushaf tab at the reading (khatma) position rather than a
         // separate reader; skip the intro when launched from the reminder.
