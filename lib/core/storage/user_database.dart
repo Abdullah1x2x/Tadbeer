@@ -74,7 +74,11 @@ class UserDatabase {
   final ValueNotifier<UserDatabaseIssue?> lastIssue =
       ValueNotifier<UserDatabaseIssue?>(null);
 
-  void _reportIssue(UserDatabaseIssueKind kind, String operation, Object error) {
+  void _reportIssue(
+    UserDatabaseIssueKind kind,
+    String operation,
+    Object error,
+  ) {
     debugPrint('UserDatabase.$operation [${kind.name}]: $error');
     lastIssue.value = UserDatabaseIssue(
       kind: kind,
@@ -151,10 +155,18 @@ class UserDatabase {
     // Progressive schema migrations
     if (oldVersion < 2) {
       await _createAppStateTable(db);
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_notes_ayah ON notes (surah_number, ayah_number)');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_bookmarks_ayah ON bookmarks (surah_number, ayah_number)');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_highlights_ayah ON highlights (surah_number, ayah_number)');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_tadbeer_ayah ON tadbeer_items (surah_number, ayah_number)');
+      await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_notes_ayah ON notes (surah_number, ayah_number)',
+      );
+      await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_bookmarks_ayah ON bookmarks (surah_number, ayah_number)',
+      );
+      await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_highlights_ayah ON highlights (surah_number, ayah_number)',
+      );
+      await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_tadbeer_ayah ON tadbeer_items (surah_number, ayah_number)',
+      );
     }
   }
 
@@ -470,7 +482,11 @@ class UserDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (e) {
-      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateHighlight', e);
+      _reportIssue(
+        UserDatabaseIssueKind.writeFailed,
+        'insertOrUpdateHighlight',
+        e,
+      );
     }
   }
 
@@ -508,7 +524,11 @@ class UserDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (e) {
-      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateReminder', e);
+      _reportIssue(
+        UserDatabaseIssueKind.writeFailed,
+        'insertOrUpdateReminder',
+        e,
+      );
     }
   }
 
@@ -546,7 +566,11 @@ class UserDatabase {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (e) {
-      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateAyahLink', e);
+      _reportIssue(
+        UserDatabaseIssueKind.writeFailed,
+        'insertOrUpdateAyahLink',
+        e,
+      );
     }
   }
 
@@ -601,7 +625,11 @@ class UserDatabase {
         );
       } catch (_) {}
     } catch (e) {
-      _reportIssue(UserDatabaseIssueKind.writeFailed, 'insertOrUpdateTadbeer', e);
+      _reportIssue(
+        UserDatabaseIssueKind.writeFailed,
+        'insertOrUpdateTadbeer',
+        e,
+      );
     }
   }
 
@@ -735,7 +763,11 @@ class UserDatabase {
           batch.insert('notes', _noteRow(n), conflictAlgorithm: replace);
         }
         for (final b in bookmarks) {
-          batch.insert('bookmarks', _bookmarkRow(b), conflictAlgorithm: replace);
+          batch.insert(
+            'bookmarks',
+            _bookmarkRow(b),
+            conflictAlgorithm: replace,
+          );
         }
         for (final h in highlights) {
           batch.insert(
@@ -745,7 +777,11 @@ class UserDatabase {
           );
         }
         for (final r in reminders) {
-          batch.insert('reminders', _reminderRow(r), conflictAlgorithm: replace);
+          batch.insert(
+            'reminders',
+            _reminderRow(r),
+            conflictAlgorithm: replace,
+          );
         }
         for (final l in ayahLinks) {
           batch.insert(
