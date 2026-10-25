@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/design_system.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../core/utils/note_pdf_exporter.dart';
@@ -71,10 +72,15 @@ class _NotesScreenState extends State<NotesScreen> {
             ),
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.auto_stories_rounded),
-              tooltip: l10n.exportTadbeerJournal,
-              onPressed: () => TadbeerJournalExporter.showExportDialog(context),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: FuturisticIconButton(
+                icon: Icons.auto_stories_rounded,
+                tooltip: l10n.exportTadbeerJournal,
+                size: 40,
+                iconSize: 20,
+                onTap: () => TadbeerJournalExporter.showExportDialog(context),
+              ),
             ),
           ],
         ),
@@ -96,33 +102,49 @@ class _NotesScreenState extends State<NotesScreen> {
             // Search field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (val) => setState(() => _query = val.trim()),
-                decoration: InputDecoration(
-                  hintText: l10n.searchNotesHint,
-                  hintStyle: TextStyle(
-                    fontFamily: 'Amiri',
-                    fontSize: 14,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                  borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                  border: Border.all(
                     color: isDark
-                        ? AppColors.nightSubtitle
-                        : AppColors.daySubtitle,
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                    width: AppTokens.borderRegular,
                   ),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.olive),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 20),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _query = '');
-                          },
-                        )
-                      : null,
-                  filled: true,
-                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                  boxShadow: AppTokens.cardShadow(isDark: isDark),
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (val) => setState(() => _query = val.trim()),
+                  decoration: InputDecoration(
+                    hintText: l10n.searchNotesHint,
+                    hintStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 14,
+                      color: isDark
+                          ? AppColors.nightSubtitle
+                          : AppColors.daySubtitle,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: isDark ? AppColors.darkPrimary : AppColors.olive,
+                    ),
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, size: 20),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _query = '');
+                            },
+                          )
+                        : null,
+                    filled: false,
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                   ),
                 ),
               ),
@@ -311,217 +333,218 @@ class _NoteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = context.l10n;
+    final accent = note.isAyahNote
+        ? AppColors.cyberEmerald
+        : AppColors.electricGold;
 
-    return InkWell(
+    return FuturisticCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border(context)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Header Row: Type badge + date + actions menu
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.olive.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    note.isAyahNote ? l10n.ayahNoteLabel : l10n.freeNoteLabel,
-                    style: const TextStyle(
+      accentColor: accent,
+      showTopAccentGlow: note.isAyahNote,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header Row: Type badge + date + actions menu
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FuturisticBadge(
+                label: note.isAyahNote
+                    ? l10n.ayahNoteLabel
+                    : l10n.freeNoteLabel,
+                color: accent,
+                showDot: note.isAyahNote,
+                isCompact: true,
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${note.createdAt.year}/${note.createdAt.month}/${note.createdAt.day}',
+                    style: TextStyle(
                       fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.olive,
+                      color: isDark
+                          ? AppColors.nightSubtitle
+                          : AppColors.daySubtitle,
                     ),
                   ),
-                ),
-                Text(
-                  '${note.createdAt.year}/${note.createdAt.month}/${note.createdAt.day}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark
-                        ? AppColors.nightSubtitle
-                        : AppColors.daySubtitle,
-                  ),
-                ),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_horiz, size: 20),
-                  onSelected: (val) {
-                    if (val == 'edit') onEdit();
-                    if (val == 'pdf') onExportPdf();
-                    if (val == 'delete') onDelete();
-                  },
-                  itemBuilder: (_) => [
-                    if (!note.isAyahNote)
+                  const SizedBox(width: 4),
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_horiz, size: 20),
+                    onSelected: (val) {
+                      if (val == 'edit') onEdit();
+                      if (val == 'pdf') onExportPdf();
+                      if (val == 'delete') onDelete();
+                    },
+                    itemBuilder: (_) => [
+                      if (!note.isAyahNote)
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.edit, size: 18),
+                              const SizedBox(width: 8),
+                              Text(l10n.edit),
+                            ],
+                          ),
+                        ),
                       PopupMenuItem(
-                        value: 'edit',
+                        value: 'pdf',
                         child: Row(
                           children: [
-                            const Icon(Icons.edit, size: 18),
+                            const Icon(
+                              Icons.picture_as_pdf,
+                              size: 18,
+                              color: AppColors.olive,
+                            ),
                             const SizedBox(width: 8),
-                            Text(l10n.edit),
+                            Text(l10n.exportPdf),
                           ],
                         ),
                       ),
-                    PopupMenuItem(
-                      value: 'pdf',
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.picture_as_pdf,
-                            size: 18,
-                            color: AppColors.olive,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(l10n.exportPdf),
-                        ],
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.delete_outline,
+                              size: 18,
+                              color: Colors.redAccent,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.delete,
+                              style: const TextStyle(color: Colors.redAccent),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.delete_outline,
-                            size: 18,
-                            color: Colors.redAccent,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.delete,
-                            style: const TextStyle(color: Colors.redAccent),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Ayah Note Quote Preview
+          if (note.isAyahNote && note.ayahText != null) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? AppColors.darkBackground
+                    : AppColors.comsilkLight,
+                borderRadius: BorderRadius.circular(AppTokens.radiusSm),
+                border: Border.all(
+                  color: accent.withValues(alpha: 0.15),
+                  width: AppTokens.borderHairline,
                 ),
-              ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (note.surahNumber != null && note.ayahNumber != null) ...[
+                    Builder(
+                      builder: (ctx) {
+                        final surah = QuranRepository.instance.getSurah(
+                          note.surahNumber!,
+                        );
+                        return Text(
+                          l10n.surahAyahPageReference(
+                            surah.name,
+                            context.currentLanguage == AppLanguage.arabic
+                                ? ArabicSearchNormalizer.toArabicDigits(
+                                    note.ayahNumber!,
+                                  )
+                                : note.ayahNumber!,
+                            context.currentLanguage == AppLanguage.arabic
+                                ? ArabicSearchNormalizer.toArabicDigits(
+                                    note.page ?? 1,
+                                  )
+                                : (note.page ?? 1),
+                          ),
+                          style: TextStyle(
+                            fontFamily:
+                                context.currentLanguage == AppLanguage.arabic
+                                ? 'Amiri'
+                                : null,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.oliveDark,
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                  ],
+                  Text(
+                    '﴿ ${note.ayahText} ﴾',
+                    textDirection: TextDirection.rtl,
+                    style: TextStyle(
+                      fontFamily: 'AmiriQuran',
+                      fontSize: 15,
+                      color: isDark
+                          ? AppColors.nightQuranText
+                          : AppColors.dayQuranText,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
+          ],
 
-            // Ayah Note Quote Preview
-            if (note.isAyahNote && note.ayahText != null) ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkBackground
-                      : AppColors.comsilkLight,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (note.surahNumber != null &&
-                        note.ayahNumber != null) ...[
-                      Builder(
-                        builder: (ctx) {
-                          final surah = QuranRepository.instance.getSurah(
-                            note.surahNumber!,
-                          );
-                          return Text(
-                            l10n.surahAyahPageReference(
-                              surah.name,
-                              context.currentLanguage == AppLanguage.arabic
-                                  ? ArabicSearchNormalizer.toArabicDigits(note.ayahNumber!)
-                                  : note.ayahNumber!,
-                              context.currentLanguage == AppLanguage.arabic
-                                  ? ArabicSearchNormalizer.toArabicDigits(note.page ?? 1)
-                                  : (note.page ?? 1),
-                            ),
-                            style: TextStyle(
-                              fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.oliveDark,
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                    Text(
-                      '﴿ ${note.ayahText} ﴾',
-                      textDirection: TextDirection.rtl,
-                      style: TextStyle(
-                        fontFamily: 'AmiriQuran',
-                        fontSize: 15,
-                        color: isDark
-                            ? AppColors.nightQuranText
-                            : AppColors.dayQuranText,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
-
-            // Free Note Title
-            if (!note.isAyahNote &&
-                note.title != null &&
-                note.title!.isNotEmpty) ...[
-              Text(
-                note.title!,
-                style: TextStyle(
-                  fontFamily: 'Amiri',
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: isDark
-                      ? AppColors.nightQuranText
-                      : AppColors.dayQuranText,
-                ),
-              ),
-              const SizedBox(height: 6),
-            ],
-
-            // Content preview
+          // Free Note Title
+          if (!note.isAyahNote &&
+              note.title != null &&
+              note.title!.isNotEmpty) ...[
             Text(
-              note.content,
+              note.title!,
               style: TextStyle(
                 fontFamily: 'Amiri',
-                fontSize: 14,
-                height: 1.5,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
                 color: isDark
                     ? AppColors.nightQuranText
                     : AppColors.dayQuranText,
               ),
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
             ),
+            const SizedBox(height: 6),
+          ],
 
-            if (note.isAyahNote) ...[
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  l10n.goToAyah,
-                  style: const TextStyle(
-                    fontFamily: 'Amiri',
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.olive,
-                  ),
+          // Content preview
+          Text(
+            note.content,
+            style: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 14,
+              height: 1.5,
+              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
+            ),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+          if (note.isAyahNote) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                l10n.goToAyah,
+                style: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: accent,
                 ),
               ),
-            ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import 'adhkar_model.dart';
 import 'adhkar_repository.dart';
 
 /// شاشة أذكار الصباح والمساء المأثورة بتصميم هادئ ومريح مع عداد تفاعلي لكل ذكر.

@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
 import '../../../app/theme.dart';
+import '../../../core/design_system/design_system.dart';
+import '../../../core/motion/app_motion.dart';
 import '../../../core/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_models.dart';
@@ -431,29 +433,30 @@ class _QuranScreenState extends State<QuranScreen> {
     });
   }
 
-  /// يبني الشريط العلوي العائم الذي يضم القائمة الجانبية والبحث ومعاني الكلمات وحجم الخط.
+  /// يبني الشريط العلوي العائم الذي يضم القائمة الجانبية والبحث ومعاني الكلمات وحجم الخط بتصميم مستقبلي.
   Widget _buildTopBar(BuildContext context, int currentPageNumber) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = context.l10n;
+    final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return Container(
-      height: 52,
+      height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.darkSurface : AppColors.comsilkLight)
-            .withValues(alpha: 0.95),
+        color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
+            .withValues(alpha: 0.94),
         border: Border(
           bottom: BorderSide(
             color: (isDark ? AppColors.darkBorder : AppColors.lightBorder)
-                .withValues(alpha: 0.6),
-            width: 0.8,
+                .withValues(alpha: 0.8),
+            width: AppTokens.borderRegular,
           ),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.06),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -461,59 +464,53 @@ class _QuranScreenState extends State<QuranScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 1. Drawer menu button (☰) (at the start / right in RTL)
-          IconButton(
-            icon: const Icon(Icons.menu, size: 22),
+          // 1. Drawer menu button (☰)
+          FuturisticIconButton(
+            icon: Icons.menu,
             tooltip: 'القائمة',
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+            size: 38,
+            iconSize: 20,
+            onTap: () => _scaffoldKey.currentState?.openDrawer(),
           ),
 
-          // Actions group (at the end / left in RTL)
+          // Actions group
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               // 2. Search button (🔍)
-              IconButton(
-                icon: const Icon(Icons.search, size: 22),
+              FuturisticIconButton(
+                icon: Icons.search,
                 tooltip: l10n.search,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-                onPressed: _openSearch,
+                size: 38,
+                iconSize: 20,
+                onTap: _openSearch,
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 8),
               // 3. Word meanings button (📖)
-              IconButton(
-                icon: Icon(
-                  _showMeaningsPanel
-                      ? Icons.auto_stories_rounded
-                      : Icons.auto_stories_outlined,
-                  size: 22,
-                ),
+              FuturisticIconButton(
+                icon: _showMeaningsPanel
+                    ? Icons.auto_stories_rounded
+                    : Icons.auto_stories_outlined,
                 tooltip: 'معاني كلمات الصفحة',
-                color: _showMeaningsPanel
-                    ? (isDark ? AppColors.oliveLight : AppColors.olive)
-                    : (isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary),
-                onPressed: () {
+                size: 38,
+                iconSize: 20,
+                iconColor: _showMeaningsPanel
+                    ? (isDark ? AppColors.cyberEmerald : primary)
+                    : null,
+                onTap: () {
                   setState(() {
                     _showMeaningsPanel = !_showMeaningsPanel;
                   });
                 },
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 8),
               // 4. Quran font size button (Aa)
-              IconButton(
-                icon: const Icon(Icons.format_size_rounded, size: 22),
+              FuturisticIconButton(
+                icon: Icons.format_size_rounded,
                 tooltip: 'حجم الخط',
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-                onPressed: _showFontSizeDialog,
+                size: 38,
+                iconSize: 20,
+                onTap: _showFontSizeDialog,
               ),
             ],
           ),
@@ -522,41 +519,37 @@ class _QuranScreenState extends State<QuranScreen> {
     );
   }
 
-  /// يبني الشريط السفلي العائم الذي يعرض معلومات السورة والجزء وشريط التمرير السريع بين الصفحات.
+  /// يبني الشريط السفلي العائم الذي يعرض معلومات السورة والجزء وشريط التمرير السريع بين الصفحات بتصميم رقمي متطور.
   Widget _buildBottomBar(BuildContext context, int currentPageNumber) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final repo = QuranRepository.instance;
     final pageDigits = ArabicSearchNormalizer.toArabicDigits(currentPageNumber);
     final pageData = repo.getPage(currentPageNumber);
     final firstAyah = pageData.ayahs.isNotEmpty ? pageData.ayahs.first : null;
-    final surahName = firstAyah != null ? repo.getSurah(firstAyah.surahNumber).name : '';
+    final surahName = firstAyah != null
+        ? repo.getSurah(firstAyah.surahNumber).name
+        : '';
     final juzNumber = firstAyah?.juz ?? 1;
     final juzDigits = ArabicSearchNormalizer.toArabicDigits(juzNumber);
     final meaningsCount = repo.getWordMeaningsForPage(currentPageNumber).length;
     final meaningsDigits = ArabicSearchNormalizer.toArabicDigits(meaningsCount);
+    final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 600),
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.darkSurface : AppColors.comsilkLight)
+            color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
                 .withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(AppTokens.radiusXl),
             border: Border.all(
-              color: (isDark ? AppColors.darkBorder : AppColors.lightBorder)
-                  .withValues(alpha: 0.8),
-              width: 0.8,
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              width: AppTokens.borderRegular,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: AppTokens.cardShadow(isDark: isDark, glowColor: primary),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -573,7 +566,7 @@ class _QuranScreenState extends State<QuranScreen> {
                           : 'الجزء $juzDigits',
                       style: TextStyle(
                         fontFamily: 'Amiri',
-                        fontSize: 14,
+                        fontSize: 14.5,
                         fontWeight: FontWeight.bold,
                         color: isDark
                             ? AppColors.darkTextPrimary
@@ -583,111 +576,55 @@ class _QuranScreenState extends State<QuranScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Word meanings toggle button
+                  // Word meanings toggle badge
                   InkWell(
                     onTap: () {
                       setState(() {
                         _showMeaningsPanel = !_showMeaningsPanel;
                       });
                     },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: (_showMeaningsPanel
-                                ? (isDark ? AppColors.oliveLight : AppColors.olive)
-                                : (isDark
-                                    ? AppColors.darkBorder
-                                    : AppColors.lightBorder))
-                            .withValues(alpha: 0.25),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.library_books_rounded,
-                            size: 15,
-                            color: isDark ? AppColors.oliveLight : AppColors.olive,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'المعاني ($meaningsDigits)',
-                            style: TextStyle(
-                              fontFamily: 'Amiri',
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
+                    borderRadius: BorderRadius.circular(AppTokens.radiusPill),
+                    child: FuturisticBadge(
+                      label: 'المعاني ($meaningsDigits)',
+                      icon: Icons.library_books_rounded,
+                      color: _showMeaningsPanel
+                          ? (isDark ? AppColors.cyberEmerald : primary)
+                          : (isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary),
+                      isCompact: true,
                     ),
                   ),
                   const SizedBox(width: 8),
                   // Current page badge (opens jump dialog on tap)
                   InkWell(
                     onTap: _showJumpToPageDialog,
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder)
-                            .withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: (isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder)
-                              .withValues(alpha: 0.6),
-                          width: 0.8,
-                        ),
-                      ),
-                      child: Text(
-                        'ص $pageDigits من ٦٠٤',
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
-                      ),
+                    borderRadius: BorderRadius.circular(AppTokens.radiusPill),
+                    child: FuturisticBadge(
+                      label: 'ص $pageDigits من ٦٠٤',
+                      color: isDark
+                          ? AppColors.electricGold
+                          : AppColors.lightPrimary,
+                      showDot: true,
+                      isCompact: true,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 6),
               // Bottom row: Previous page button, Slider, Next page button
               Row(
                 children: [
                   // Previous page (in Arabic RTL, points right towards earlier pages)
-                  IconButton(
-                    icon: const Icon(Icons.chevron_right_rounded, size: 28),
+                  FuturisticIconButton(
+                    icon: Icons.chevron_right_rounded,
                     tooltip: 'الصفحة السابقة',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 36,
-                      minHeight: 36,
-                    ),
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                    onPressed: currentPageNumber > 1
-                        ? () => _jumpToMushafPage(currentPageNumber - 1)
-                        : null,
+                    size: 36,
+                    iconSize: 22,
+                    isEnabled: currentPageNumber > 1,
+                    onTap: () => _jumpToMushafPage(currentPageNumber - 1),
                   ),
+                  const SizedBox(width: 4),
                   // Slider across pages 1 to 604
                   Expanded(
                     child: SliderTheme(
@@ -699,14 +636,17 @@ class _QuranScreenState extends State<QuranScreen> {
                         overlayShape: const RoundSliderOverlayShape(
                           overlayRadius: 14,
                         ),
-                        activeTrackColor:
-                            isDark ? AppColors.oliveLight : AppColors.olive,
-                        inactiveTrackColor: (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder)
-                            .withValues(alpha: 0.5),
-                        thumbColor:
-                            isDark ? AppColors.oliveLight : AppColors.olive,
+                        activeTrackColor: isDark
+                            ? AppColors.cyberEmerald
+                            : AppColors.lightPrimary,
+                        inactiveTrackColor:
+                            (isDark
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder)
+                                .withValues(alpha: 0.5),
+                        thumbColor: isDark
+                            ? AppColors.cyberEmerald
+                            : AppColors.lightPrimary,
                       ),
                       child: Slider(
                         value: currentPageNumber.toDouble().clamp(1.0, 604.0),
@@ -723,21 +663,15 @@ class _QuranScreenState extends State<QuranScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 4),
                   // Next page (in Arabic RTL, points left towards later pages)
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left_rounded, size: 28),
+                  FuturisticIconButton(
+                    icon: Icons.chevron_left_rounded,
                     tooltip: 'الصفحة التالية',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(
-                      minWidth: 36,
-                      minHeight: 36,
-                    ),
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                    onPressed: currentPageNumber < 604
-                        ? () => _jumpToMushafPage(currentPageNumber + 1)
-                        : null,
+                    size: 36,
+                    iconSize: 22,
+                    isEnabled: currentPageNumber < 604,
+                    onTap: () => _jumpToMushafPage(currentPageNumber + 1),
                   ),
                 ],
               ),
@@ -754,6 +688,7 @@ class _QuranScreenState extends State<QuranScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final repo = QuranRepository.instance;
     final currentPageNumber = _currentPageIndex + 1;
+    final shouldAnimate = AppMotion.shouldAnimate(context);
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -797,8 +732,9 @@ class _QuranScreenState extends State<QuranScreen> {
                           if (pageNumber == 1) {
                             return Center(
                               child: ConstrainedBox(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 480),
+                                constraints: const BoxConstraints(
+                                  maxWidth: 480,
+                                ),
                                 child: QuranPageView(
                                   page: repo.getPage(1),
                                   pageNumber: 1,
@@ -806,7 +742,8 @@ class _QuranScreenState extends State<QuranScreen> {
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear: _handleAyahHighlightClear,
+                                  onAyahHighlightClear:
+                                      _handleAyahHighlightClear,
                                 ),
                               ),
                             );
@@ -832,15 +769,17 @@ class _QuranScreenState extends State<QuranScreen> {
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear: _handleAyahHighlightClear,
+                                  onAyahHighlightClear:
+                                      _handleAyahHighlightClear,
                                 ),
                               ),
                               Container(
                                 width: 1.0,
-                                color: (isDark
-                                        ? AppColors.darkBorder
-                                        : AppColors.lightBorder)
-                                    .withValues(alpha: 0.5),
+                                color:
+                                    (isDark
+                                            ? AppColors.darkBorder
+                                            : AppColors.lightBorder)
+                                        .withValues(alpha: 0.5),
                               ),
                               Expanded(
                                 child: QuranPageView(
@@ -850,7 +789,8 @@ class _QuranScreenState extends State<QuranScreen> {
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear: _handleAyahHighlightClear,
+                                  onAyahHighlightClear:
+                                      _handleAyahHighlightClear,
                                 ),
                               ),
                             ],
@@ -872,11 +812,20 @@ class _QuranScreenState extends State<QuranScreen> {
                 bottom: false,
                 child: IgnorePointer(
                   ignoring: !_showTopBar,
-                  child: AnimatedOpacity(
-                    opacity: _showTopBar ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeInOut,
-                    child: _buildTopBar(context, currentPageNumber),
+                  child: AnimatedSlide(
+                    offset: (_showTopBar || !shouldAnimate)
+                        ? Offset.zero
+                        : const Offset(0, -0.08),
+                    duration: shouldAnimate ? AppMotion.normal : Duration.zero,
+                    curve: AppMotion.emphasized,
+                    child: AnimatedOpacity(
+                      opacity: _showTopBar ? 1.0 : 0.0,
+                      duration: shouldAnimate
+                          ? AppMotion.normal
+                          : Duration.zero,
+                      curve: AppMotion.standard,
+                      child: _buildTopBar(context, currentPageNumber),
+                    ),
                   ),
                 ),
               ),
@@ -891,11 +840,20 @@ class _QuranScreenState extends State<QuranScreen> {
                 top: false,
                 child: IgnorePointer(
                   ignoring: !_showTopBar,
-                  child: AnimatedOpacity(
-                    opacity: _showTopBar ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeInOut,
-                    child: _buildBottomBar(context, currentPageNumber),
+                  child: AnimatedSlide(
+                    offset: (_showTopBar || !shouldAnimate)
+                        ? Offset.zero
+                        : const Offset(0, 0.08),
+                    duration: shouldAnimate ? AppMotion.normal : Duration.zero,
+                    curve: AppMotion.emphasized,
+                    child: AnimatedOpacity(
+                      opacity: _showTopBar ? 1.0 : 0.0,
+                      duration: shouldAnimate
+                          ? AppMotion.normal
+                          : Duration.zero,
+                      curve: AppMotion.standard,
+                      child: _buildBottomBar(context, currentPageNumber),
+                    ),
                   ),
                 ),
               ),

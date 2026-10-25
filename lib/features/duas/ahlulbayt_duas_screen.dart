@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import 'ahlulbayt_dua_model.dart';
 import 'ahlulbayt_dua_reader_screen.dart';
 import 'ahlulbayt_duas_repository.dart';
 

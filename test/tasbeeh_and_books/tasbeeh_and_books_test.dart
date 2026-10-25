@@ -10,7 +10,6 @@ import 'package:tadbeer/features/books/curated_books.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_model.dart';
-import 'package:tadbeer/features/tasbeeh/tasbeeh_repository.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_screen.dart';
 
 Widget buildTestWidget(Widget child) {

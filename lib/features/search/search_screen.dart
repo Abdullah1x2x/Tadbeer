@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/design_system.dart';
+import '../../core/motion/app_motion.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/quran/data/quran_repository.dart';
 import 'search_provider.dart';
@@ -80,6 +82,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   /// يتعامل مع تغير نص البحث مع تأخير زمني قصير لمنع الاستعلامات المتكررة أثناء الكتابة.
   void _onSearchChanged(String query) {
+    if (mounted) setState(() {});
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 180), () {
       _executeSearch(query);
@@ -179,41 +182,54 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         body: Column(
           children: [
-            // Search Input Field
+            // Futuristic Search Input Field
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-              child: TextField(
-                controller: _controller,
-                autofocus: widget.initialQuery == null,
-                onChanged: _onSearchChanged,
-                decoration: InputDecoration(
-                  hintText: _selectedProviderId != null
-                      ? (l10n.isArabic
-                          ? 'ابحث في ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...'
-                          : 'Search in ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...')
-                      : l10n.searchGlobalPlaceholder,
-                  hintStyle: TextStyle(
-                    fontFamily: 'Amiri',
-                    fontSize: 14,
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                  borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                  border: Border.all(
                     color: isDark
-                        ? AppColors.nightSubtitle
-                        : AppColors.daySubtitle,
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                    width: AppTokens.borderRegular,
                   ),
-                  prefixIcon: Icon(Icons.search_rounded, color: primaryColor),
-                  suffixIcon: _controller.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, size: 20),
-                          onPressed: () {
-                            _controller.clear();
-                            _executeSearch('', force: true);
-                          },
-                        )
-                      : null,
-                  filled: true,
-                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                  boxShadow: AppTokens.cardShadow(isDark: isDark),
+                ),
+                child: TextField(
+                  controller: _controller,
+                  autofocus: widget.initialQuery == null,
+                  onChanged: _onSearchChanged,
+                  decoration: InputDecoration(
+                    hintText: _selectedProviderId != null
+                        ? (l10n.isArabic
+                              ? 'ابحث في ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...'
+                              : 'Search in ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...')
+                        : l10n.searchGlobalPlaceholder,
+                    hintStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 14,
+                      color: isDark
+                          ? AppColors.nightSubtitle
+                          : AppColors.daySubtitle,
+                    ),
+                    prefixIcon: Icon(Icons.search_rounded, color: primaryColor),
+                    suffixIcon: _controller.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, size: 20),
+                            onPressed: () {
+                              _controller.clear();
+                              _executeSearch('', force: true);
+                            },
+                          )
+                        : null,
+                    filled: false,
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                   ),
                 ),
               ),
@@ -224,7 +240,10 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 50,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 children: [
                   // "الكل" Filter Chip
                   Padding(
@@ -239,10 +258,12 @@ class _SearchScreenState extends State<SearchScreen> {
                               ? FontWeight.bold
                               : FontWeight.w600,
                           color: _selectedProviderId == null
-                              ? (isDark ? AppColors.darkTextPrimary : primaryColor)
+                              ? (isDark
+                                    ? AppColors.darkTextPrimary
+                                    : primaryColor)
                               : (isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary),
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary),
                         ),
                       ),
                       selected: _selectedProviderId == null,
@@ -256,8 +277,8 @@ class _SearchScreenState extends State<SearchScreen> {
                         color: _selectedProviderId == null
                             ? primaryColor
                             : (isDark
-                                ? AppColors.darkBorder
-                                : AppColors.lightBorder),
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder),
                         width: _selectedProviderId == null ? 1.5 : 0.8,
                       ),
                       onSelected: (_) => _onSelectFilter(null),
@@ -275,11 +296,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           size: 16,
                           color: isSelected
                               ? (isDark
-                                  ? AppColors.darkTextPrimary
-                                  : primaryColor)
+                                    ? AppColors.darkTextPrimary
+                                    : primaryColor)
                               : (isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary),
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary),
                         ),
                         label: Text(
                           p.getSectionTitle(context),
@@ -291,11 +312,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                 : FontWeight.w600,
                             color: isSelected
                                 ? (isDark
-                                    ? AppColors.darkTextPrimary
-                                    : primaryColor)
+                                      ? AppColors.darkTextPrimary
+                                      : primaryColor)
                                 : (isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary),
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary),
                           ),
                         ),
                         selected: isSelected,
@@ -309,8 +330,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           color: isSelected
                               ? primaryColor
                               : (isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder),
+                                    ? AppColors.darkBorder
+                                    : AppColors.lightBorder),
                           width: isSelected ? 1.5 : 0.8,
                         ),
                         onSelected: (_) => _onSelectFilter(p.id),
@@ -325,110 +346,117 @@ class _SearchScreenState extends State<SearchScreen> {
 
             // Search Content / Results Body
             Expanded(
-              child: _isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          primaryColor,
-                        ),
-                      ),
-                    )
-                  : !hasQuery && _selectedProviderId == null
-                  ? Center(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_rounded,
-                              size: 64,
-                              color: AppColors.border(context),
+              child: AnimatedSwitcher(
+                duration: AppMotion.shouldAnimate(context)
+                    ? AppMotion.normal
+                    : Duration.zero,
+                switchInCurve: AppMotion.standard,
+                switchOutCurve: AppMotion.standard,
+                child: KeyedSubtree(
+                  key: ValueKey<String>(
+                    '${_selectedProviderId ?? "all"}_${_isLoading}_$hasQuery',
+                  ),
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              primaryColor,
                             ),
-                            const SizedBox(height: 12),
-                            Text(
-                              l10n.searchGlobalPlaceholder,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 15,
-                                color: isDark
-                                    ? AppColors.nightSubtitle
-                                    : AppColors.daySubtitle,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              l10n.selectSearchSection,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12.5,
-                                color: isDark
-                                    ? AppColors.nightSubtitle.withValues(alpha: 0.8)
-                                    : AppColors.daySubtitle.withValues(alpha: 0.8),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : _results.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off_rounded,
-                              size: 56,
-                              color: isDark
-                                  ? AppColors.nightSubtitle
-                                  : AppColors.daySubtitle,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              _selectedProviderId != null && !hasQuery
-                                  ? (_selectedProviderId == 'quran'
-                                      ? (l10n.isArabic
-                                          ? 'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)'
-                                          : 'Type a word, surah name, or search by root (e.g. root:sbr)')
-                                      : (l10n.isArabic
-                                          ? 'لا توجد عناصر محفوظة في هذا القسم بعد'
-                                          : 'No saved items in this section yet'))
-                                  : l10n.noSearchResults,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 15,
-                                color: isDark
-                                    ? AppColors.nightSubtitle
-                                    : AppColors.daySubtitle,
-                              ),
-                            ),
-                            if (_selectedProviderId != null && hasQuery) ...[
-                              const SizedBox(height: 16),
-                              OutlinedButton.icon(
-                                onPressed: () => _onSelectFilter(null),
-                                icon: const Icon(
-                                  Icons.travel_explore_rounded,
-                                  size: 18,
+                          ),
+                        )
+                      : !hasQuery && _selectedProviderId == null
+                      ? Center(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search_rounded,
+                                  size: 64,
+                                  color: AppColors.border(context),
                                 ),
-                                label: Text(l10n.searchInAllSections),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: primaryColor,
-                                  side: BorderSide(color: primaryColor),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                const SizedBox(height: 12),
+                                Text(
+                                  l10n.searchGlobalPlaceholder,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 15,
+                                    color: isDark
+                                        ? AppColors.nightSubtitle
+                                        : AppColors.daySubtitle,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    )
-                  : _buildResultsList(context, isDark, providers),
+                                const SizedBox(height: 8),
+                                Text(
+                                  l10n.selectSearchSection,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    color: isDark
+                                        ? AppColors.nightSubtitle.withValues(
+                                            alpha: 0.8,
+                                          )
+                                        : AppColors.daySubtitle.withValues(
+                                            alpha: 0.8,
+                                          ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : _results.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search_off_rounded,
+                                  size: 56,
+                                  color: isDark
+                                      ? AppColors.nightSubtitle
+                                      : AppColors.daySubtitle,
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  _selectedProviderId != null && !hasQuery
+                                      ? (_selectedProviderId == 'quran'
+                                            ? (l10n.isArabic
+                                                  ? 'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)'
+                                                  : 'Type a word, surah name, or search by root (e.g. root:sbr)')
+                                            : (l10n.isArabic
+                                                  ? 'لا توجد عناصر محفوظة في هذا القسم بعد'
+                                                  : 'No saved items in this section yet'))
+                                      : l10n.noSearchResults,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 15,
+                                    color: isDark
+                                        ? AppColors.nightSubtitle
+                                        : AppColors.daySubtitle,
+                                  ),
+                                ),
+                                if (_selectedProviderId != null &&
+                                    hasQuery) ...[
+                                  const SizedBox(height: 16),
+                                  FuturisticButton.secondary(
+                                    onPressed: () => _onSelectFilter(null),
+                                    icon: Icons.travel_explore_rounded,
+                                    label: l10n.searchInAllSections,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        )
+                      : _buildResultsList(context, isDark, providers),
+                ),
+              ),
             ),
           ],
         ),
@@ -458,9 +486,7 @@ class _SearchScreenState extends State<SearchScreen> {
             icon: provider.icon,
           ),
           const SizedBox(height: 10),
-          ..._results.map(
-            (item) => _buildResultCard(context, item, isDark),
-          ),
+          ..._results.map((item) => _buildResultCard(context, item, isDark)),
         ],
       );
     }
@@ -492,13 +518,16 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  /// يبني ترويسة مجموعة نتائج لقسم معين مع عداد النتائج.
+  /// يبني ترويسة مجموعة نتائج لقسم معين مع عداد النتائج الرقمي.
   Widget _buildGroupHeader({
     required String title,
     required int count,
     IconData? icon,
   }) {
     final primary = Theme.of(context).colorScheme.primary;
+    final countStr = context.currentLanguage == AppLanguage.arabic
+        ? ArabicSearchNormalizer.toArabicDigits(count)
+        : count.toString();
 
     return Row(
       children: [
@@ -516,104 +545,92 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         const SizedBox(width: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(
-            color: primary.withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            context.currentLanguage == AppLanguage.arabic
-                ? ArabicSearchNormalizer.toArabicDigits(count)
-                : count.toString(),
-            style: TextStyle(
-              fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: primary,
-            ),
-          ),
+        FuturisticBadge(
+          label: countStr,
+          color: primary,
+          showDot: true,
+          isCompact: true,
         ),
       ],
     );
   }
 
-  /// يبني بطاقة عرض لنتيجة بحث مفردة قابلة للنقر.
+  /// يبني بطاقة عرض لنتيجة بحث مفردة بتصميم رقمي مستقبلي.
   Widget _buildResultCard(
     BuildContext context,
     SearchResultItem item,
     bool isDark,
   ) {
-    final isQuranAyah = item.providerId == 'quran' ||
+    final isQuranAyah =
+        item.providerId == 'quran' ||
         item.providerId == 'bookmarks' ||
         item.providerId == 'highlights' ||
         item.providerId == 'duas';
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
-      color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+    final primary = Theme.of(context).colorScheme.primary;
+    final accent = isQuranAyah
+        ? (isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold)
+        : primary;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: FuturisticCard(
         onTap: () => _handleItemTap(item),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      item.title,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightPrimaryDark,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+        borderRadius: AppTokens.radiusLg,
+        padding: const EdgeInsets.all(14),
+        accentColor: accent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    item.title,
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightPrimaryDark,
                     ),
-                  ),
-                  if (item.badge != null) ...[
-                    const SizedBox(width: 8),
-                    Text(
-                      item.badge!,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-              if (item.snippet.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(
-                  item.snippet,
-                  maxLines: isQuranAyah ? null : 4,
-                  overflow: isQuranAyah ? null : TextOverflow.ellipsis,
-                  textDirection: isQuranAyah ? TextDirection.rtl : null,
-                  style: TextStyle(
-                    fontFamily: isQuranAyah ? 'AmiriQuran' : 'Amiri',
-                    fontSize: isQuranAyah ? 16 : 13,
-                    height: isQuranAyah ? 1.8 : 1.4,
-                    color: isDark
-                        ? (isQuranAyah
-                            ? AppColors.nightQuranText
-                            : AppColors.darkTextSecondary)
-                        : (isQuranAyah
-                            ? AppColors.dayQuranText
-                            : AppColors.lightTextSecondary),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                if (item.badge != null) ...[
+                  const SizedBox(width: 8),
+                  FuturisticBadge(
+                    label: item.badge!,
+                    color: accent,
+                    isCompact: true,
+                  ),
+                ],
               ],
+            ),
+            if (item.snippet.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                item.snippet,
+                maxLines: isQuranAyah ? null : 4,
+                overflow: isQuranAyah ? null : TextOverflow.ellipsis,
+                textDirection: isQuranAyah ? TextDirection.rtl : null,
+                style: TextStyle(
+                  fontFamily: isQuranAyah ? 'AmiriQuran' : 'Amiri',
+                  fontSize: isQuranAyah ? 16 : 13,
+                  height: isQuranAyah ? 1.8 : 1.4,
+                  color: isDark
+                      ? (isQuranAyah
+                            ? AppColors.nightQuranText
+                            : AppColors.darkTextSecondary)
+                      : (isQuranAyah
+                            ? AppColors.dayQuranText
+                            : AppColors.lightTextSecondary),
+                ),
+              ),
             ],
-          ),
+          ],
         ),
       ),
     );

@@ -1,3 +1,7 @@
+import 'package:uuid/uuid.dart';
+
+import '../../core/storage/user_data_store.dart';
+
 /// أنواع الخواطر والملاحظات المتاحة في التطبيق.
 enum NoteType {
   /// خواطر مرتبطة بآية قرآنية محددة.
@@ -111,5 +115,74 @@ class NoteItem {
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+}
+
+/// مستودع إدارة الخواطر والتدوينات.
+///
+/// يتيح حفظ الخواطر وتحديثها واسترجاعها حسب الآية أو حذفها عبر [UserDataStore].
+/// تم دمج هذا المستودع داخل ملف النموذج لتقليل عدد الملفات وجمع منطق الخواطر في وحدة متكاملة.
+class NoteRepository {
+  final UserDataStore _store;
+
+  /// ينشئ مستودع الخواطر والتدوينات مع إمكانية تمرير مخزن بيانات مخصص.
+  NoteRepository([UserDataStore? store])
+    : _store = store ?? UserDataStore.instance;
+
+  /// قائمة بجميع الملاحظات والخواطر المحفوظة.
+  List<NoteItem> get allNotes => _store.notes;
+
+  /// يسترجع قائمة الخواطر المرتبطة بآية محددة حسب رقم السورة ورقم الآية.
+  List<NoteItem> getNotesForAyah(int surahNumber, int ayahNumber) {
+    return _store.findNotesForAyah(surahNumber, ayahNumber);
+  }
+
+  /// حفظ خاطرة جديدة أو تحديث خاطرة موجودة مسبقاً.
+  Future<NoteItem> saveNote({
+    String? id,
+    required NoteType type,
+    String? title,
+    required String content,
+    int? ayahId,
+    int? surahNumber,
+    int? ayahNumber,
+    int? page,
+    String? ayahText,
+  }) async {
+    final now = DateTime.now();
+
+    if (id != null) {
+      final existing = _store.notes.where((n) => n.id == id).firstOrNull;
+      if (existing != null) {
+        final updated = existing.copyWith(
+          title: title,
+          content: content,
+          updatedAt: now,
+        );
+        await _store.putNote(updated);
+        return updated;
+      }
+    }
+
+    final newNote = NoteItem(
+      id: id ?? const Uuid().v4(),
+      type: type,
+      title: title,
+      content: content,
+      ayahId: ayahId,
+      surahNumber: surahNumber,
+      ayahNumber: ayahNumber,
+      page: page,
+      ayahText: ayahText,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await _store.putNote(newNote);
+    return newNote;
+  }
+
+  /// حذف خاطرة بواسطة معرّفها الفريد.
+  Future<void> deleteNote(String id) async {
+    await _store.removeNote(id);
   }
 }

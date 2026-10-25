@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'tasbeeh_model.dart';
-import 'tasbeeh_repository.dart';
 
 /// شاشة الاستغفار والتسبيح (سبحة إلكترونية مبسطة ومحراب هادئ للذكر).
 ///

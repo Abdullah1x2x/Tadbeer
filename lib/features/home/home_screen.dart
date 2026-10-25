@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/design_system.dart';
+import '../../core/motion/app_motion.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/ayah_links_screen.dart';
@@ -10,7 +12,9 @@ import '../backup/backup_screen.dart';
 import '../bookmarks/bookmarks_screen.dart';
 import '../books/books_screen.dart';
 import '../duas/duas_screen.dart';
+
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
+
 import '../highlights/highlights_screen.dart';
 import '../notes/notes_screen.dart';
 import '../quran/data/quran_repository.dart';
@@ -60,12 +64,24 @@ class HomeScreen extends StatelessWidget {
               final paddingH = isVeryCompact ? 14.0 : (isCompact ? 18.0 : 20.0);
               final paddingV = isVeryCompact ? 6.0 : (isCompact ? 10.0 : 14.0);
 
-              final spaceTopBar = isVeryCompact ? 4.0 : (isCompact ? 6.0 : 10.0);
-              final spaceBrandToSearch = isVeryCompact ? 6.0 : (isCompact ? 10.0 : 14.0);
-              final spaceSearchToHero = isVeryCompact ? 8.0 : (isCompact ? 12.0 : 16.0);
-              final spaceHeroToCore = isVeryCompact ? 8.0 : (isCompact ? 10.0 : 14.0);
-              final spaceCoreToSection = isVeryCompact ? 8.0 : (isCompact ? 12.0 : 18.0);
-              final spaceSectionToSecondary = isVeryCompact ? 6.0 : (isCompact ? 10.0 : 14.0);
+              final spaceTopBar = isVeryCompact
+                  ? 4.0
+                  : (isCompact ? 6.0 : 10.0);
+              final spaceBrandToSearch = isVeryCompact
+                  ? 6.0
+                  : (isCompact ? 10.0 : 14.0);
+              final spaceSearchToHero = isVeryCompact
+                  ? 8.0
+                  : (isCompact ? 12.0 : 16.0);
+              final spaceHeroToCore = isVeryCompact
+                  ? 8.0
+                  : (isCompact ? 10.0 : 14.0);
+              final spaceCoreToSection = isVeryCompact
+                  ? 8.0
+                  : (isCompact ? 12.0 : 18.0);
+              final spaceSectionToSecondary = isVeryCompact
+                  ? 6.0
+                  : (isCompact ? 10.0 : 14.0);
 
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -80,123 +96,124 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                              // Top App Bar with Settings round button
-                              _buildTopBar(
-                                context,
-                                l10n,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceTopBar),
-
-                              // Serene Brand Header
-                              _buildBrandHeader(
-                                context,
-                                l10n,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceBrandToSearch),
-
-                              // Prominent Global Search Entry Bar
-                              _buildGlobalSearchBar(
-                                context,
-                                l10n,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceSearchToHero),
-
-                              // 1. Featured Quran Hero Card
-                              _QuranHeroCard(
-                                onTap: () {
-                                  final pos = UserDataStore.instance.readingPosition;
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => QuranScreen(initialPage: pos.page),
-                                    ),
-                                  );
-                                },
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceHeroToCore),
-
-                              // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)
-                              _IstighfarTasbeehCard(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const TasbeehScreen(),
-                                    ),
-                                  );
-                                },
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceHeroToCore),
-
-                              // 3. Core 2x2 Feature Cards Grid
-                              _buildCoreFeaturesGrid(
-                                context,
-                                l10n,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceHeroToCore),
-
-                              // 4. قسم كتب وملازم (مكتبة الملازم التدبرية والكتب الإسلامية)
-                              _BooksHeroCard(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const BooksScreen(),
-                                    ),
-                                  );
-                                },
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceCoreToSection),
-
-                              // Secondary Tools Section Header ("أدوات إضافية")
-                              _buildSectionHeader(
-                                context,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: spaceSectionToSecondary),
-
-                              // Secondary Tools (المحفوظات، المميزة، التذكيرات، النسخ الاحتياطي)
-                              _buildSecondaryToolsGrid(
-                                context,
-                                l10n,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: isVeryCompact ? 4.0 : 8.0),
-                            ],
-                          ),
+                        // Top App Bar with Settings round button
+                        _buildTopBar(
+                          context,
+                          l10n,
+                          isDark,
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-        }
+                        SizedBox(height: spaceTopBar),
 
-  /// يبني الشريط العلوي للشاشة مع زر الإعدادات الدائري.
+                        // Serene Brand Header
+                        _buildBrandHeader(
+                          context,
+                          l10n,
+                          isDark,
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: spaceBrandToSearch),
+
+                        // Prominent Global Search Entry Bar
+                        _buildGlobalSearchBar(
+                          context,
+                          l10n,
+                          isDark,
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: spaceSearchToHero),
+
+                        // 1. Featured Quran Hero Card
+                        _QuranHeroCard(
+                          onTap: () {
+                            final pos = UserDataStore.instance.readingPosition;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    QuranScreen(initialPage: pos.page),
+                              ),
+                            );
+                          },
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: spaceHeroToCore),
+
+                        // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)
+                        _IstighfarTasbeehCard(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const TasbeehScreen(),
+                              ),
+                            );
+                          },
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: spaceHeroToCore),
+
+                        // 3. Core 2x2 Feature Cards Grid
+                        _buildCoreFeaturesGrid(
+                          context,
+                          l10n,
+                          isDark,
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: spaceHeroToCore),
+
+                        // 4. قسم كتب وملازم (مكتبة الملازم التدبرية والكتب الإسلامية)
+                        _BooksHeroCard(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const BooksScreen(),
+                              ),
+                            );
+                          },
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: spaceCoreToSection),
+
+                        // Secondary Tools Section Header ("أدوات إضافية")
+                        _buildSectionHeader(
+                          context,
+                          isDark,
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: spaceSectionToSecondary),
+
+                        // Secondary Tools (المحفوظات، المميزة، التذكيرات، النسخ الاحتياطي)
+                        _buildSecondaryToolsGrid(
+                          context,
+                          l10n,
+                          isDark,
+                          isCompact: isCompact,
+                          isVeryCompact: isVeryCompact,
+                        ),
+                        SizedBox(height: isVeryCompact ? 4.0 : 8.0),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// يبني الشريط العلوي للشاشة مع زر الإعدادات الهندسي المستقبلي.
   Widget _buildTopBar(
     BuildContext context,
     AppStrings l10n,
@@ -205,13 +222,14 @@ class HomeScreen extends StatelessWidget {
     required bool isVeryCompact,
   }) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Settings Button (in place of the side menu button)
-        _TopBarIconButton(
+        // Settings Button with squircle futuristic styling
+        FuturisticIconButton(
           icon: Icons.settings_outlined,
           tooltip: l10n.settings,
-          isCompact: isCompact,
-          isVeryCompact: isVeryCompact,
+          size: isVeryCompact ? 36 : (isCompact ? 40 : 44),
+          iconSize: isVeryCompact ? 18 : (isCompact ? 19 : 20),
           onTap: () {
             Navigator.push(
               context,
@@ -252,7 +270,9 @@ class HomeScreen extends StatelessWidget {
             ),
             // Brand Title
             Padding(
-              padding: EdgeInsets.only(top: isVeryCompact ? 4 : (isCompact ? 6 : 10)),
+              padding: EdgeInsets.only(
+                top: isVeryCompact ? 4 : (isCompact ? 6 : 10),
+              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +323,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني شريط الانتقال السريع إلى شاشة البحث الشامل مع زر تصفية تفاعلي.
+  /// يبني شريط الانتقال السريع إلى شاشة البحث الشامل مع زر تصفية تفاعلي وتصميم مستقبلي.
   Widget _buildGlobalSearchBar(
     BuildContext context,
     AppStrings l10n,
@@ -317,69 +337,54 @@ class HomeScreen extends StatelessWidget {
     final fontSize = isVeryCompact ? 12.5 : (isCompact ? 13.0 : 14.0);
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const SearchScreen()),
-            );
-          },
-          borderRadius: BorderRadius.circular(14),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.search_rounded,
-                  color: primaryColor,
-                  size: iconSize,
+    return FuturisticCard(
+      borderRadius: AppTokens.radiusLg,
+      padding: EdgeInsets.zero,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const SearchScreen()),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+        child: Row(
+          children: [
+            Icon(Icons.search_rounded, color: primaryColor, size: iconSize),
+            SizedBox(width: isVeryCompact ? 8 : 12),
+            Expanded(
+              child: Text(
+                l10n.searchGlobalPlaceholder,
+                style: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: fontSize,
+                  color: isDark
+                      ? AppColors.nightSubtitle
+                      : AppColors.daySubtitle,
                 ),
-                SizedBox(width: isVeryCompact ? 8 : 12),
-                Expanded(
-                  child: Text(
-                    l10n.searchGlobalPlaceholder,
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: fontSize,
-                      color: isDark
-                          ? AppColors.nightSubtitle
-                          : AppColors.daySubtitle,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Semantics(
-                  button: true,
-                  label: l10n.filterSearchTitle,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => _showSearchFilterSheet(context),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Icon(
-                          Icons.tune_rounded,
-                          size: isVeryCompact ? 18 : 20,
-                          color: primaryColor.withValues(alpha: 0.8),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
+            Semantics(
+              button: true,
+              label: l10n.filterSearchTitle,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _showSearchFilterSheet(context),
+                  borderRadius: BorderRadius.circular(AppTokens.radiusSm),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTokens.spaceXxs),
+                    child: Icon(
+                      Icons.tune_rounded,
+                      size: isVeryCompact ? 18 : 20,
+                      color: primaryColor.withValues(alpha: 0.85),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -403,91 +408,92 @@ class HomeScreen extends StatelessWidget {
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(18, 14, 18, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Container(
-                    width: 38,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Row(
-                  children: [
-                    Icon(Icons.tune_rounded, color: primaryColor, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.filterSearchTitle,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 38,
+                      height: 4,
+                      decoration: BoxDecoration(
                         color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightPrimaryDark,
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  l10n.selectSearchSection,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark
-                        ? AppColors.nightSubtitle
-                        : AppColors.daySubtitle,
                   ),
-                ),
-                const SizedBox(height: 14),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    ActionChip(
-                      avatar: const Icon(
-                        Icons.travel_explore_rounded,
-                        size: 16,
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Icon(Icons.tune_rounded, color: primaryColor, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.filterSearchTitle,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightPrimaryDark,
+                        ),
                       ),
-                      label: Text(l10n.searchAll),
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const SearchScreen(),
-                          ),
-                        );
-                      },
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.selectSearchSection,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark
+                          ? AppColors.nightSubtitle
+                          : AppColors.daySubtitle,
                     ),
-                    ...providers.map((p) {
-                      return ActionChip(
-                        avatar: Icon(p.icon, size: 16),
-                        label: Text(p.getSectionTitle(context)),
+                  ),
+                  const SizedBox(height: 14),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      ActionChip(
+                        avatar: const Icon(
+                          Icons.travel_explore_rounded,
+                          size: 16,
+                        ),
+                        label: Text(l10n.searchAll),
                         onPressed: () {
                           Navigator.pop(ctx);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => SearchScreen(
-                                initialProviderId: p.id,
-                              ),
+                              builder: (_) => const SearchScreen(),
                             ),
                           );
                         },
-                      );
-                    }),
-                  ],
-                ),
-              ],
+                      ),
+                      ...providers.map((p) {
+                        return ActionChip(
+                          avatar: Icon(p.icon, size: 16),
+                          label: Text(p.getSectionTitle(context)),
+                          onPressed: () {
+                            Navigator.pop(ctx);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    SearchScreen(initialProviderId: p.id),
+                              ),
+                            );
+                          },
+                        );
+                      }),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -590,8 +596,9 @@ class HomeScreen extends StatelessWidget {
                 icon: Icons.edit_note_rounded,
                 title: l10n.notes,
                 subtitle: l10n.yourThoughtsAndReflections,
-                accentColor:
-                    isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                accentColor: isDark
+                    ? AppColors.darkPrimary
+                    : AppColors.lightPrimary,
                 badgeBackground:
                     (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
                         .withValues(alpha: isDark ? 0.20 : 0.12),
@@ -700,62 +707,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// زر أيقونة دائري مخصص للشريط العلوي في الشاشة الرئيسية.
-class _TopBarIconButton extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-  final bool isCompact;
-  final bool isVeryCompact;
-
-  /// ينشئ زر أيقونة دائري للشريط العلوي.
-  const _TopBarIconButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onTap,
-    this.isCompact = false,
-    this.isVeryCompact = false,
-  });
-
-  /// يبني واجهة الزر الدائري مع التلميح النصي.
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final padding = isVeryCompact ? 7.0 : (isCompact ? 8.5 : 10.0);
-    final iconSize = isVeryCompact ? 18.0 : (isCompact ? 19.0 : 20.0);
-
-    return Material(
-      color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-      shape: CircleBorder(
-        side: BorderSide(
-          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          width: 1.2,
-        ),
-      ),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        splashColor: Theme.of(context).colorScheme.primary
-            .withValues(alpha: 0.15),
-        hoverColor: Theme.of(context).colorScheme.primary
-            .withValues(alpha: 0.08),
-        child: Tooltip(
-          message: tooltip,
-          child: Padding(
-            padding: EdgeInsets.all(padding),
-            child: Icon(
-              icon,
-              size: iconSize,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.oliveDark,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// البطاقة البارزة للمصحف الشريف مع حالة استئناف القراءة من آخر موضع.
+/// البطاقة البارزة للمصحف الشريف بتصميم رقمي مستقبلي مع حالة استئناف القراءة.
 class _QuranHeroCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isCompact;
@@ -787,142 +739,108 @@ class _QuranHeroCard extends StatelessWidget {
     final iconDim = isVeryCompact ? 19.0 : (isCompact ? 21.0 : 24.0);
     final titleSize = isVeryCompact ? 16.0 : (isCompact ? 17.0 : 18.0);
     final subtitleSize = isVeryCompact ? 11.0 : (isCompact ? 11.8 : 12.5);
-    final resumeSize = isVeryCompact ? 9.5 : (isCompact ? 10.0 : 10.5);
+    final goldAccent = AppColors.accentGold(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: (isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold)
-              .withValues(alpha: 0.35),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.035),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return FuturisticCard(
+      onTap: onTap,
+      showTopAccentGlow: true,
+      accentColor: goldAccent,
+      borderRadius: AppTokens.radiusXl,
+      padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+      child: Row(
+        children: [
+          // Noble Quran Icon Badge with geometric futuristic styling
+          Container(
+            width: badgeDim,
+            height: badgeDim,
+            decoration: BoxDecoration(
+              color: AppColors.primary(context)
+                  .withValues(alpha: isDark ? 0.20 : 0.12),
+              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+              border: Border.all(
+                color: goldAccent.withValues(alpha: isDark ? 0.45 : 0.35),
+                width: AppTokens.borderRegular,
+              ),
+              boxShadow: isDark
+                  ? [
+                      BoxShadow(
+                        color: goldAccent.withValues(alpha: 0.15),
+                        blurRadius: 8,
+                        spreadRadius: -2,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Icon(
+              FlutterIslamicIcons.quran2,
+              color: isDark ? goldAccent : AppColors.primary(context),
+              size: iconDim,
+            ),
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
-          hoverColor: Theme.of(context).colorScheme.primary
-              .withValues(alpha: 0.06),
-          splashColor: Theme.of(context).colorScheme.primary
-              .withValues(alpha: 0.1),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-            child: Row(
-              children: [
-                // Noble Quran Icon Badge
-                Container(
-                  width: badgeDim,
-                  height: badgeDim,
-                  decoration: BoxDecoration(
-                    color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
-                        .withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: AppColors.primary(context).withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(
-                    FlutterIslamicIcons.quran2,
-                    color: AppColors.primary(context),
-                    size: iconDim,
-                  ),
-                ),
-                SizedBox(width: isVeryCompact ? 10 : 14),
+          SizedBox(width: isVeryCompact ? 10 : 14),
 
-                // Title & Reading Position
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          // Title & Reading Position
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              context.l10n.quran,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: titleSize,
-                                fontWeight: FontWeight.bold,
-                                color: isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: (isDark
-                                        ? AppColors.darkAccentGold
-                                        : AppColors.lightAccentGold)
-                                    .withValues(alpha: 0.18),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                context.l10n.resumeReading,
-                                style: TextStyle(
-                                  fontSize: resumeSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.accentGold(context),
-                                ),
-                              ),
-                            ),
-                          ],
+                      Text(
+                        context.l10n.quran,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: titleSize,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        readingSubtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: subtitleSize,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        ),
+                      const SizedBox(width: AppTokens.spaceXs),
+                      FuturisticBadge(
+                        label: context.l10n.resumeReading,
+                        color: goldAccent,
+                        showDot: true,
+                        isCompact: isVeryCompact,
                       ),
                     ],
                   ),
                 ),
-
-                // Navigation Chevron
-                Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: isVeryCompact ? 12 : 14,
-                  color: (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.lightAccentGold)
-                      .withValues(alpha: 0.8),
+                const SizedBox(height: 2),
+                Text(
+                  readingSubtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: subtitleSize,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
                 ),
               ],
             ),
           ),
-        ),
+
+          // Navigation Chevron
+          Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: isVeryCompact ? 12 : 14,
+            color: goldAccent.withValues(alpha: 0.85),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// بطاقة ميزة رئيسية ضمن الشبكة الرباعية في الشاشة الرئيسية.
+/// بطاقة ميزة رئيسية ضمن الشبكة الرباعية بتصميم رقمي مستقبلي.
 class _GridFeatureCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -956,97 +874,83 @@ class _GridFeatureCard extends StatelessWidget {
     final titleSize = isVeryCompact ? 13.5 : (isCompact ? 14.5 : 15.5);
     final subtitleSize = isVeryCompact ? 10.0 : (isCompact ? 10.8 : 11.5);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          width: 1.1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+    return FuturisticCard(
+      onTap: onTap,
+      accentColor: accentColor,
+      borderRadius: AppTokens.radiusLg,
+      padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+      child: Row(
+        children: [
+          // Icon Illustration Badge with geometric squircle container
+          Container(
+            width: badgeDim,
+            height: badgeDim,
+            decoration: BoxDecoration(
+              color: badgeBackground,
+              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+              border: Border.all(
+                color: accentColor.withValues(alpha: isDark ? 0.35 : 0.25),
+                width: AppTokens.borderHairline,
+              ),
+              boxShadow: isDark
+                  ? [
+                      BoxShadow(
+                        color: accentColor.withValues(alpha: 0.12),
+                        blurRadius: 6,
+                        spreadRadius: -2,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Center(
+              child: Icon(icon, color: accentColor, size: iconDim),
+            ),
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          splashColor: accentColor.withValues(alpha: 0.12),
-          hoverColor: accentColor.withValues(alpha: 0.06),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-            child: Row(
+          SizedBox(width: isVeryCompact ? 8 : 10),
+
+          // Title and Subtitle
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon Illustration Badge
-                Container(
-                  width: badgeDim,
-                  height: badgeDim,
-                  decoration: BoxDecoration(
-                    color: badgeBackground,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: accentColor.withValues(alpha: 0.25),
-                      width: 1,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: titleSize,
+                      fontWeight: FontWeight.bold,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
                     ),
                   ),
-                  child: Center(
-                    child: Icon(icon, color: accentColor, size: iconDim),
-                  ),
                 ),
-                SizedBox(width: isVeryCompact ? 8 : 10),
-
-                // Title and Subtitle
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: titleSize,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: subtitleSize,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        ),
-                      ),
-                    ],
+                const SizedBox(height: 1),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: subtitleSize,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
                   ),
                 ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
-/// عنصر أداة ثانوية يظهر في الشريط السفلي للشاشة الرئيسية.
+/// عنصر أداة ثانوية يظهر في الشريط السفلي للشاشة الرئيسية بتصميم مستقبلي.
 class _SecondaryToolItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -1071,61 +975,83 @@ class _SecondaryToolItem extends StatelessWidget {
     final iconDim = isVeryCompact ? 17.0 : (isCompact ? 19.0 : 21.0);
     final gap = isVeryCompact ? 3.0 : 5.0;
     final labelSize = isVeryCompact ? 10.0 : (isCompact ? 10.5 : 11.0);
+    final accent = isDark ? AppColors.darkAccentGold : AppColors.lightPrimary;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Material(
-          color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: BorderSide(
-              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-              width: 1.1,
-            ),
-          ),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(14),
-            splashColor: Theme.of(context).colorScheme.primary
-                .withValues(alpha: 0.15),
-            hoverColor: Theme.of(context).colorScheme.primary
-                .withValues(alpha: 0.08),
-            child: SizedBox(
-              width: btnDim,
-              height: btnDim,
-              child: Icon(
-                icon,
-                size: iconDim,
-                color: isDark
-                    ? AppColors.darkAccentGold
-                    : AppColors.lightPrimary,
-              ),
+    return ScaleOnPress(
+      pressedScale: 0.94,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+          splashColor: accent.withValues(alpha: 0.15),
+          hoverColor: accent.withValues(alpha: 0.08),
+          focusColor: accent.withValues(alpha: 0.12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: btnDim,
+                  height: btnDim,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightSurface,
+                    borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                      width: AppTokens.borderRegular,
+                    ),
+                    boxShadow: isDark
+                        ? [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.03),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                  ),
+                  child: Center(
+                    child: Icon(icon, size: iconDim, color: accent),
+                  ),
+                ),
+                SizedBox(height: gap),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: labelSize,
+                      fontWeight: FontWeight.w600,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        SizedBox(height: gap),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: labelSize,
-              fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
 
-/// البطاقة البارزة لقسم الاستغفار والتسبيح (السبحة الإلكترونية ومحراب الذكر).
+/// البطاقة البارزة لقسم الاستغفار والتسبيح بتصميم رقمي مستقبلي.
 class _IstighfarTasbeehCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isCompact;
@@ -1141,8 +1067,8 @@ class _IstighfarTasbeehCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
     final l10n = context.l10n;
+    final emeraldAccent = isDark ? AppColors.cyberEmerald : AppColors.olive;
 
     final padH = isVeryCompact ? 12.0 : 16.0;
     final padV = isVeryCompact ? 7.0 : (isCompact ? 9.5 : 12.5);
@@ -1151,147 +1077,105 @@ class _IstighfarTasbeehCard extends StatelessWidget {
     final titleSize = isVeryCompact ? 15.5 : (isCompact ? 16.5 : 17.5);
     final subtitleSize = isVeryCompact ? 11.0 : (isCompact ? 11.8 : 12.5);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: (isDark ? AppColors.darkPrimary : AppColors.olive)
-              .withValues(alpha: 0.35),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.035),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return FuturisticCard(
+      onTap: onTap,
+      showTopAccentGlow: true,
+      accentColor: emeraldAccent,
+      borderRadius: AppTokens.radiusXl,
+      padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+      child: Row(
+        children: [
+          // Tasbeeh Icon Badge
+          Container(
+            width: badgeDim,
+            height: badgeDim,
+            decoration: BoxDecoration(
+              color: emeraldAccent.withValues(alpha: isDark ? 0.20 : 0.12),
+              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+              border: Border.all(
+                color: emeraldAccent.withValues(alpha: isDark ? 0.45 : 0.35),
+                width: AppTokens.borderRegular,
+              ),
+              boxShadow: isDark
+                  ? [
+                      BoxShadow(
+                        color: emeraldAccent.withValues(alpha: 0.15),
+                        blurRadius: 8,
+                        spreadRadius: -2,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Icon(
+              FlutterIslamicIcons.prayer,
+              color: isDark ? emeraldAccent : AppColors.oliveDark,
+              size: iconDim,
+            ),
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
-          hoverColor: primaryColor.withValues(alpha: 0.06),
-          splashColor: primaryColor.withValues(alpha: 0.1),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-            child: Row(
-              children: [
-                // Tasbeeh Icon Badge
-                Container(
-                  width: badgeDim,
-                  height: badgeDim,
-                  decoration: BoxDecoration(
-                    color: (isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.olive)
-                        .withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: (isDark
-                              ? AppColors.darkAccentGold
-                              : AppColors.olive)
-                          .withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(
-                    FlutterIslamicIcons.prayer,
-                    color: isDark
-                        ? AppColors.darkAccentGold
-                        : AppColors.oliveDark,
-                    size: iconDim,
-                  ),
-                ),
-                SizedBox(width: isVeryCompact ? 10 : 14),
+          SizedBox(width: isVeryCompact ? 10 : 14),
 
-                // Title & Subtitle
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          // Title & Subtitle
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              l10n.tasbeehAndIstighfar,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: titleSize,
-                                fontWeight: FontWeight.bold,
-                                color: isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: (isDark
-                                        ? AppColors.darkAccentGold
-                                        : AppColors.olive)
-                                    .withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                l10n.dailyPortion,
-                                style: TextStyle(
-                                  fontSize: isVeryCompact ? 9.5 : 10.5,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? AppColors.darkAccentGold
-                                      : AppColors.oliveDark,
-                                ),
-                              ),
-                            ),
-                          ],
+                      Text(
+                        l10n.tasbeehAndIstighfar,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: titleSize,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        l10n.tasbeehSubtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: subtitleSize,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        ),
+                      const SizedBox(width: AppTokens.spaceXs),
+                      FuturisticBadge(
+                        label: l10n.dailyPortion,
+                        color: emeraldAccent,
+                        showDot: true,
+                        isCompact: isVeryCompact,
                       ),
                     ],
                   ),
                 ),
-
-                // Navigation Chevron
-                Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: isVeryCompact ? 12 : 14,
-                  color: (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.lightAccentGold)
-                      .withValues(alpha: 0.8),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.tasbeehSubtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: subtitleSize,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
                 ),
               ],
             ),
           ),
-        ),
+
+          // Navigation Chevron
+          Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: isVeryCompact ? 12 : 14,
+            color: emeraldAccent.withValues(alpha: 0.8),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// البطاقة البارزة لقسم الكتب والملازم التدبرية.
+/// البطاقة البارزة لقسم الكتب والملازم التدبرية بتصميم رقمي مستقبلي.
 class _BooksHeroCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isCompact;
@@ -1317,135 +1201,100 @@ class _BooksHeroCard extends StatelessWidget {
     final titleSize = isVeryCompact ? 15.5 : (isCompact ? 16.5 : 17.5);
     final subtitleSize = isVeryCompact ? 11.0 : (isCompact ? 11.8 : 12.5);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.035),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return FuturisticCard(
+      onTap: onTap,
+      showTopAccentGlow: true,
+      accentColor: primaryColor,
+      borderRadius: AppTokens.radiusXl,
+      padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+      child: Row(
+        children: [
+          // Books Icon Badge
+          Container(
+            width: badgeDim,
+            height: badgeDim,
+            decoration: BoxDecoration(
+              color: primaryColor.withValues(alpha: isDark ? 0.20 : 0.12),
+              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+              border: Border.all(
+                color: primaryColor.withValues(alpha: isDark ? 0.45 : 0.35),
+                width: AppTokens.borderRegular,
+              ),
+              boxShadow: isDark
+                  ? [
+                      BoxShadow(
+                        color: primaryColor.withValues(alpha: 0.15),
+                        blurRadius: 8,
+                        spreadRadius: -2,
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Icon(
+              Icons.auto_stories_rounded,
+              color: primaryColor,
+              size: iconDim,
+            ),
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
-          hoverColor: primaryColor.withValues(alpha: 0.06),
-          splashColor: primaryColor.withValues(alpha: 0.1),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-            child: Row(
-              children: [
-                // Books Icon Badge
-                Container(
-                  width: badgeDim,
-                  height: badgeDim,
-                  decoration: BoxDecoration(
-                    color: (isDark
-                            ? AppColors.darkPrimary
-                            : AppColors.lightPrimary)
-                        .withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: primaryColor.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.auto_stories_rounded,
-                    color: primaryColor,
-                    size: iconDim,
-                  ),
-                ),
-                SizedBox(width: isVeryCompact ? 10 : 14),
+          SizedBox(width: isVeryCompact ? 10 : 14),
 
-                // Title & Subtitle
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          // Title & Subtitle
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              l10n.booksAndBooklets,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: titleSize,
-                                fontWeight: FontWeight.bold,
-                                color: isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: (isDark
-                                        ? AppColors.darkAccentGold
-                                        : AppColors.olive)
-                                    .withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                l10n.tadbeerLibrary,
-                                style: TextStyle(
-                                  fontSize: isVeryCompact ? 9.5 : 10.5,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? AppColors.darkAccentGold
-                                      : AppColors.oliveDark,
-                                ),
-                              ),
-                            ),
-                          ],
+                      Text(
+                        l10n.booksAndBooklets,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: titleSize,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        l10n.booksSubtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: subtitleSize,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        ),
+                      const SizedBox(width: AppTokens.spaceXs),
+                      FuturisticBadge(
+                        label: l10n.tadbeerLibrary,
+                        color: primaryColor,
+                        isCompact: isVeryCompact,
                       ),
                     ],
                   ),
                 ),
-
-                // Navigation Chevron
-                Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: isVeryCompact ? 12 : 14,
-                  color: (isDark
-                          ? AppColors.darkAccentGold
-                          : AppColors.lightAccentGold)
-                      .withValues(alpha: 0.8),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.booksSubtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: subtitleSize,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
                 ),
               ],
             ),
           ),
-        ),
+
+          // Navigation Chevron
+          Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: isVeryCompact ? 12 : 14,
+            color:
+                (isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold)
+                    .withValues(alpha: 0.8),
+          ),
+        ],
       ),
     );
   }
