@@ -25,11 +25,15 @@ class KhatmaPlan {
   /// الصفحات المقروءة منذ بدء الختمة.
   final Set<int> readPages;
 
+  /// آخر صفحة قُرئت في الختمة؛ يُكمل القارئ مما بعدها.
+  final int? lastPage;
+
   /// ينشئ خطة ختمة.
   KhatmaPlan({
     required DateTime startDate,
     required this.days,
     Set<int>? readPages,
+    this.lastPage,
   }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
        readPages = readPages ?? <int>{};
 
@@ -56,9 +60,15 @@ class KhatmaPlan {
   int expectedPagesBefore(DateTime now) =>
       (pagesPerDay * (dayNumber(now) - 1)).clamp(0, mushafPageCount);
 
-  /// أول صفحة لم تُقرأ بعد في الختمة (ليكمل منها القارئ).
+  /// الصفحة التي يكمل منها القارئ: أول صفحة غير مقروءة بعد آخر صفحة قرأها،
+  /// مع الالتفاف إلى بداية المصحف عند الوصول لنهايته.
+  ///
+  /// Continuing from the last page read (not from page 1) keeps the button
+  /// moving forward for readers who started the khatma mid-Mushaf.
   int get nextUnreadPage {
-    for (var p = 1; p <= mushafPageCount; p++) {
+    final start = (lastPage ?? 0) % mushafPageCount;
+    for (var i = 1; i <= mushafPageCount; i++) {
+      final p = (start + i - 1) % mushafPageCount + 1;
       if (!readPages.contains(p)) return p;
     }
     return mushafPageCount;
@@ -69,12 +79,14 @@ class KhatmaPlan {
     startDate: startDate,
     days: days,
     readPages: {...readPages, page},
+    lastPage: page,
   );
 
   Map<String, dynamic> toJson() => {
     'startDate': dayKey(startDate),
     'days': days,
     'readPages': (readPages.toList()..sort()),
+    if (lastPage != null) 'lastPage': lastPage,
   };
 
   factory KhatmaPlan.fromJson(Map<String, dynamic> json) => KhatmaPlan(
@@ -84,6 +96,7 @@ class KhatmaPlan {
       for (final p in (json['readPages'] as List? ?? const []))
         (p as num).toInt(),
     },
+    lastPage: (json['lastPage'] as num?)?.toInt(),
   );
 }
 
