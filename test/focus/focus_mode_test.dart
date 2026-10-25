@@ -38,6 +38,22 @@ void main() {
     final state = tester.widget<PageView>(find.byType(PageView));
     expect(state.controller!.page!.round(), 1);
 
+    // Moving from Al-Fatiha 7 to Al-Baqarah 1 completes page 1.
+    final pv = tester.widget<PageView>(find.byType(PageView)).controller!;
+    pv.jumpToPage(6);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.runAsync(() async {
+      pv.jumpToPage(7);
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+    await tester.pump(const Duration(seconds: 1));
+    expect(
+      UserDataStore.instance.journey.dailyPages.values.any(
+        (pages) => pages.contains(1),
+      ),
+      isTrue,
+    );
+
     // Breathing circle toggles on.
     await tester.tap(find.byTooltip('تنفّس بهدوء'));
     await tester.pump(const Duration(seconds: 1));

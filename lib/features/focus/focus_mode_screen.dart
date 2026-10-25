@@ -125,6 +125,11 @@ class _FocusModeScreenState extends State<FocusModeScreen>
               itemCount: _ayahs.length,
               onPageChanged: (i) {
                 HapticFeedback.selectionClick();
+                // Moving on from the last verse of a Mushaf page counts that
+                // page as read, as in the Mushaf.
+                if (i == _index + 1 && _ayahs[i].page != _ayahs[_index].page) {
+                  UserDataStore.instance.recordPageRead(_ayahs[_index].page);
+                }
                 setState(() => _index = i);
               },
               itemBuilder: (context, i) =>
