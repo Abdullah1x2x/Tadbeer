@@ -5,6 +5,7 @@
 /// changing daily even when the app is not opened) and the khatma's state.
 library;
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -15,6 +16,7 @@ import '../../core/storage/user_data_store.dart';
 import '../daily/ayah_of_day_card.dart';
 import '../journey/reading_journey.dart';
 import '../quran/data/quran_repository.dart';
+import 'widget_ayah_image.dart';
 
 class HomeWidgetSync {
   HomeWidgetSync._();
@@ -42,6 +44,8 @@ class HomeWidgetSync {
           final ayah = AyahOfTheDay.forDay(day);
           return {
             'd': dayKey(day),
+            's': ayah.surahNumber,
+            'a': ayah.ayahNumber,
             't': ayah.text,
             'r': strings.ayahReference(
               repo.getSurah(ayah.surahNumber).name,
@@ -65,13 +69,17 @@ class HomeWidgetSync {
       'read_today': journey.pagesOn(now),
       'portion_template': strings.widgetPortionLeftTemplate,
       'portion_done': strings.widgetPortionDone,
+      'khatma_page': plan == null ? '' : strings.pageNumber(plan.currentPage),
+      'reflect_label': strings.reflectOnIt,
+      'read_label': strings.resumeReading,
     };
   }
 
   /// Sends the data to the widget when it changed since the last time.
   static Future<void> update({DateTime? now}) async {
     final at = now ?? DateTime.now();
-    final data = payload(UserDataStore.instance, at);
+    final store = UserDataStore.instance;
+    final data = payload(store, at);
     final key = jsonEncode(data);
     if (key == _lastKey) return;
     _lastKey = key;
@@ -81,9 +89,63 @@ class HomeWidgetSync {
         await HomeWidget.saveWidgetData(entry.key, entry.value);
       }
       await HomeWidget.updateWidget(androidName: androidName, iOSName: iOSName);
+      unawaited(_renderAyahImages(at, store.settings.languageCode));
     } catch (e) {
       // No widget support on this platform (tests, desktop).
       debugPrint('Home widget update skipped: $e');
+    }
+  }
+
+  /// Bump when the drawn ayah's look changes, so every image is redrawn.
+  static const _imageStyle = 2;
+  static bool _rendering = false;
+
+  /// Draws the ayah of each coming day in the Quranic font, once per day,
+  /// and deletes the images of days that have passed.
+  static Future<void> _renderAyahImages(DateTime now, String language) async {
+    if (_rendering) return;
+    _rendering = true;
+    try {
+      final stamp = '$_imageStyle-$language';
+      final sameStyle =
+          await HomeWidget.getWidgetData<String>('img_stamp') == stamp;
+      final previous =
+          (await HomeWidget.getWidgetData<String>('img_dates') ?? '')
+              .split(',')
+              .where((d) => d.isNotEmpty)
+              .toSet();
+      final dates = <String>[];
+      var drew = false;
+      for (var d = 0; d < days; d++) {
+        final day = DateTime(now.year, now.month, now.day + d);
+        final date = dayKey(day);
+        dates.add(date);
+        if (sameStyle && previous.contains(date)) continue;
+        final ayah = AyahOfTheDay.forDay(day);
+        await HomeWidget.renderFlutterWidget(
+          WidgetAyahImage(ayah: ayah),
+          key: 'img_$date',
+          logicalSize: WidgetAyahImage.sizeFor(ayah),
+          pixelRatio: 2.5,
+        );
+        drew = true;
+      }
+      for (final old in previous.difference(dates.toSet())) {
+        // Removing the key also deletes the image file.
+        await HomeWidget.saveWidgetData<String>('img_$old', null);
+      }
+      await HomeWidget.saveWidgetData('img_dates', dates.join(','));
+      await HomeWidget.saveWidgetData('img_stamp', stamp);
+      if (drew) {
+        await HomeWidget.updateWidget(
+          androidName: androidName,
+          iOSName: iOSName,
+        );
+      }
+    } catch (e) {
+      debugPrint('Home widget ayah images skipped: $e');
+    } finally {
+      _rendering = false;
     }
   }
 

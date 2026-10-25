@@ -18,5 +18,7 @@ Mac (it has not been built or tested yet):
 5. In the `Runner` target, under *Build Phases*, make sure
    *Embed Foundation Extensions* contains `TadbeerWidget.appex`, and move it
    above *Run Script* if Xcode reports a build cycle.
-6. Build and run on a device, then long-press the home screen → **+** →
+6. Make the app open `tadbeer://` links from the widget: in the `Runner`
+   target, *Info → URL Types → +*, with URL Schemes `tadbeer`.
+7. Build and run on a device, then long-press the home screen → **+** →
    **تَدْبِير**.

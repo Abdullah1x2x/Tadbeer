@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gold line with an eight-pointed star in the middle, as in the app. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="12dp"
+    android:viewportWidth="160"
+    android:viewportHeight="12">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M8,6 L68,6 M92,6 L152,6"
+        android:strokeWidth="0.8"
+        android:strokeAlpha="0.55"
+        android:strokeColor="#E2C27A" />
+    <path
+        android:fillColor="#E2C27A"
+        android:pathData="M80,0 L81.6,2.3 L84.2,1.8 L83.7,4.4 L86,6 L83.7,7.6 L84.2,10.2 L81.6,9.7 L80,12 L78.4,9.7 L75.8,10.2 L76.3,7.6 L74,6 L76.3,4.4 L75.8,1.8 L78.4,2.3 Z" />
+</vector>

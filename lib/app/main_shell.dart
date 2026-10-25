@@ -7,6 +7,7 @@ import '../features/home/home_screen.dart';
 import '../features/more/more_screen.dart';
 import '../features/quran/screens/quran_screen.dart';
 import '../features/tasbeeh/tasbeeh_screen.dart';
+import 'app.dart';
 import 'localization.dart';
 import '../core/design_system/app_icons.dart';
 
@@ -33,6 +34,23 @@ class MainShell extends StatefulWidget {
 
   /// Tab requests from outside the widget tree (e.g. a tapped notification).
   static final ValueNotifier<ShellTab?> requestedTab = ValueNotifier(null);
+
+  /// Shows [tab] when the request comes from outside the app's screens (a
+  /// notification or the home-screen widget), closing any page above the
+  /// shell. Returns the app's navigator, or null before the app is built.
+  static NavigatorState? showFromOutside(ShellTab tab) {
+    final navigator = appNavigatorKey.currentState;
+    if (navigator == null) return null;
+    navigator.popUntil((route) => route.isFirst);
+    if (isMounted) {
+      requestedTab.value = tab;
+    } else {
+      navigator.pushReplacement(
+        MaterialPageRoute(builder: (_) => MainShell(initialTab: tab)),
+      );
+    }
+    return navigator;
+  }
 
   /// Switches to [tab] when [context] is inside the shell. Returns false
   /// otherwise (e.g. a screen shown on its own), so callers can fall back to
