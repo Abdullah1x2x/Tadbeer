@@ -1523,4 +1523,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get portionLeftBody => 'أكمل ختمتك من حيث توقفت';
+
+  @override
+  String get adhkarSetCompleted => 'أتممت الأذكار، واحتُسب يومك في رحلتك';
 }

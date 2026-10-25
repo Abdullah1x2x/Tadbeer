@@ -107,6 +107,10 @@ class TasbeehRepository extends ChangeNotifier {
   static final TasbeehRepository instance = TasbeehRepository._internal();
   TasbeehRepository._internal();
 
+  /// Called when a round reaches its target; the app uses it to count the
+  /// day toward the reading streak.
+  VoidCallback? onTargetReached;
+
   bool _initialized = false;
   TasbeehDhikr _activeDhikr = TasbeehDhikr.defaultDhikrs.first;
   int _currentCount = 0;
@@ -193,6 +197,8 @@ class TasbeehRepository extends ChangeNotifier {
     _todayTotalCount++;
 
     final targetReached = _targetCount > 0 && _currentCount == _targetCount;
+    // A completed round counts the day toward the reading streak.
+    if (targetReached) onTargetReached?.call();
     _persistDebounced();
     notifyListeners();
     return targetReached;

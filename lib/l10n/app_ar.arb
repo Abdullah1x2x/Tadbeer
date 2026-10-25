@@ -965,5 +965,6 @@
       }
     }
   },
-  "portionLeftBody": "أكمل ختمتك من حيث توقفت"
+  "portionLeftBody": "أكمل ختمتك من حيث توقفت",
+  "adhkarSetCompleted": "أتممت الأذكار، واحتُسب يومك في رحلتك"
 }
