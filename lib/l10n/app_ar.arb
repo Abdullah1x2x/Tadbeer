@@ -970,5 +970,17 @@
   "mushafStyleTitle": "طريقة عرض المصحف",
   "mushafStyleMadinah": "مصحف المدينة",
   "mushafStyleText": "نص متدفق",
-  "qcfAttribution": "خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف"
+  "qcfAttribution": "خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف",
+  "widgetPortionLeft": "ورد اليوم: بقي {left} من {portion} صفحة",
+  "@widgetPortionLeft": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "portion": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetPortionDone": "أتممت ورد اليوم"
 }

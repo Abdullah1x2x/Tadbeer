@@ -2795,6 +2795,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف'**
   String get qcfAttribution;
+
+  /// No description provided for @widgetPortionLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'ورد اليوم: بقي {left} من {portion} صفحة'**
+  String widgetPortionLeft(String left, String portion);
+
+  /// No description provided for @widgetPortionDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'أتممت ورد اليوم'**
+  String get widgetPortionDone;
 }
 
 class _AppLocalizationsDelegate

@@ -1544,4 +1544,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get qcfAttribution =>
       'Mushaf font: King Fahd Glorious Quran Printing Complex';
+
+  @override
+  String widgetPortionLeft(String left, String portion) {
+    return 'Today’s portion: $left of $portion pages left';
+  }
+
+  @override
+  String get widgetPortionDone => 'Today’s portion is done';
 }

@@ -1538,4 +1538,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get qcfAttribution => 'خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف';
+
+  @override
+  String widgetPortionLeft(String left, String portion) {
+    return 'ورد اليوم: بقي $left من $portion صفحة';
+  }
+
+  @override
+  String get widgetPortionDone => 'أتممت ورد اليوم';
 }
