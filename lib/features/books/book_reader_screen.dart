@@ -18,10 +18,14 @@ class BookReaderScreen extends StatefulWidget {
   final BookModel book;
   final int initialChapterIndex;
 
+  /// The PDF page (from 0) to open a PDF book at.
+  final int initialPdfPage;
+
   const BookReaderScreen({
     super.key,
     required this.book,
     this.initialChapterIndex = 0,
+    this.initialPdfPage = 0,
   });
 
   @override
@@ -52,6 +56,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     } else {
       _currentChapterIndex = 0;
     }
+    _currentPdfPage = widget.initialPdfPage < 0 ? 0 : widget.initialPdfPage;
     _recordActivity();
 
     if (widget.book.hasAttachedFile && widget.book.isText) {
@@ -173,11 +178,13 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     }
   }
 
+  /// Remembers the chapter, or the PDF page for a PDF book, so "continue
+  /// where you left off" returns to it.
   void _recordActivity() => LastActivityStore.record(
     ActivityKind.book,
     ref: widget.book.id,
     title: widget.book.title,
-    position: _currentChapterIndex,
+    position: widget.book.isPdf ? _currentPdfPage : _currentChapterIndex,
   );
 
   void _changeChapter(int index) {
@@ -611,10 +618,12 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               },
               onPageChanged: (page, total) {
                 if (mounted) {
+                  final moved = (page ?? 0) != _currentPdfPage;
                   setState(() {
                     _currentPdfPage = page ?? 0;
                     _totalPdfPages = total ?? 0;
                   });
+                  if (moved) _recordActivity();
                 }
               },
             ),
