@@ -58,6 +58,16 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   /// Line box height relative to the font size.
   static const _lineHeight = 1.9;
 
+  /// Widest line of an ordinary page at [_probe] size (the median across
+  /// the Mushaf), used to size the opening pages like the rest.
+  static const _typicalWidest = 1450.0;
+
+  /// The fonts of the first two pages draw words smaller for the same font
+  /// size: their median word height is 0.889 and 0.834 of the size, against
+  /// 1.036 elsewhere (measured from the glyph outlines). These factors make
+  /// their letters as tall as on every other page.
+  static const _openingScale = {1: 1.165, 2: 1.241};
+
   late Future<bool> _ready;
   int? _measuredPage;
   double _widestLine = 0;
@@ -125,14 +135,25 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     final lines = QcfLayout.instance.page(widget.pageNumber);
     if (lines.isEmpty) return widget.fallback;
     final widest = _measure(lines);
-    // The opening pages are printed as a narrow centred block.
-    final opening = widget.pageNumber <= 2;
+    final openingScale = _openingScale[widget.pageNumber];
     return LayoutBuilder(
       builder: (context, box) {
-        final width = box.maxWidth * (opening ? 0.66 : 1);
-        final byWidth = _probe * width / widest;
+        final byWidth = _probe * box.maxWidth / widest;
         final byHeight = box.maxHeight / (lines.length * _lineHeight);
-        final fit = math.min(byWidth, byHeight);
+        var fit = math.min(byWidth, byHeight);
+        if (openingScale != null) {
+          // Sized like an ordinary 15-line page on this screen, then
+          // corrected for the smaller glyphs, keeping the short lines a
+          // centred block no wider than 85% of the page.
+          final ordinary = math.min(
+            _probe * box.maxWidth / _typicalWidest,
+            box.maxHeight / (15 * _lineHeight),
+          );
+          fit = math.min(
+            ordinary * openingScale,
+            math.min(byWidth * 0.85, byHeight),
+          );
+        }
         if (widget.zoom <= 1.0) {
           return _printed(lines, fit * widget.zoom, box.maxHeight);
         }
