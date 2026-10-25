@@ -153,6 +153,10 @@ class AppStrings {
       ? 'أتقنت ${_n(a)} من ${_n(b)} آية. سنعيد عليك الباقي غداً.'
       : 'You mastered $a of $b verses. The rest will come back tomorrow.';
 
+  // Ayah of the day
+  String get ayahOfTheDay => isArabic ? 'آية اليوم' : 'Verse of the day';
+  String get reflectOnIt => isArabic ? 'تدبّرها' : 'Reflect';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

@@ -304,6 +304,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Open Notes from Home
+      await tester.ensureVisible(find.text('الملاحظات'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('الملاحظات'));
       await tester.pumpAndSettle();
       expect(find.byType(NotesScreen), findsOneWidget);
