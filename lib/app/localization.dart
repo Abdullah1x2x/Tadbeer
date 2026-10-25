@@ -95,6 +95,14 @@ class AppStrings {
   String get cancel => isArabic ? 'إلغاء' : 'Cancel';
   String get options => isArabic ? 'خيارات' : 'Options';
 
+  // Focus mode (وضع التأمل)
+  String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
+  String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';
+  String get breatheIn => isArabic ? 'شهيق…' : 'Breathe in…';
+  String get breatheOut => isArabic ? 'زفير…' : 'Breathe out…';
+  String get swipeForNextAyah =>
+      isArabic ? 'اسحب للآية التالية' : 'Swipe for the next verse';
+
   // Reading journey (الختمة والإحصاءات)
   String get myJourney => isArabic ? 'رحلتي مع القرآن' : 'My Quran Journey';
   String get startKhatmaTitle =>

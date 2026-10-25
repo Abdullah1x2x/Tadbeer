@@ -13,6 +13,7 @@ import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
 import '../widgets/ayah_action_sheet.dart';
 import '../widgets/word_meanings_panel.dart';
+import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
 import 'quran_page_view.dart';
 import '../widgets/quran_side_menu.dart';
@@ -522,6 +523,24 @@ class _QuranScreenState extends State<QuranScreen> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // 1b. Focus mode: one verse at a time
+              FuturisticIconButton(
+                icon: Icons.self_improvement_rounded,
+                tooltip: l10n.focusMode,
+                size: 38,
+                iconSize: 20,
+                onTap: () {
+                  final page = QuranRepository.instance.getPage(
+                    currentPageNumber,
+                  );
+                  if (page.ayahs.isEmpty) return;
+                  FocusModeScreen.open(
+                    context,
+                    _activeSelectedAyah ?? page.ayahs.first,
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
               // 2. Search button (🔍)
               FuturisticIconButton(
                 icon: Icons.search,
