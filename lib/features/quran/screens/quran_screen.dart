@@ -425,7 +425,7 @@ class _QuranScreenState extends State<QuranScreen> {
                         Text(
                           '${ArabicSearchNormalizer.toArabicDigits(currentSize.round())} نقطة',
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.primary,
@@ -674,7 +674,7 @@ class _QuranScreenState extends State<QuranScreen> {
                           ? '$surahName • الجزء $juzDigits'
                           : 'الجزء $juzDigits',
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 14.5,
                         fontWeight: FontWeight.bold,
                         color: isDark

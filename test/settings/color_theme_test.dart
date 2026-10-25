@@ -20,6 +20,10 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Amiri-Regular.ttf'))
       ..addFont(rootBundle.load('assets/fonts/Amiri-Bold.ttf'));
     await amiri.load();
+    final plex = FontLoader('IBMPlexSansArabic')
+      ..addFont(rootBundle.load('assets/fonts/IBMPlexSansArabic-Regular.ttf'))
+      ..addFont(rootBundle.load('assets/fonts/IBMPlexSansArabic-Bold.ttf'));
+    await plex.load();
   });
 
   setUp(() async {

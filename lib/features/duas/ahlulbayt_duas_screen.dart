@@ -75,7 +75,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
               ? 'تم نسخ ${dua.title} إلى الحافظة بنجاح'
               : '${dua.title} copied to clipboard',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -102,7 +102,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
           title: Text(
             l10n.ahlulbaytDuasScreenTitle,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -129,11 +129,11 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                   child: TextField(
                     controller: _searchController,
                     onChanged: (val) => setState(() => _searchQuery = val),
-                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
+                    style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
                     decoration: InputDecoration(
                       hintText: l10n.searchAhlulbaytHint,
                       hintStyle: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         color: isDark
                             ? AppColors.darkTextSecondary
@@ -181,7 +181,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                       label: Text(
                         labelText,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 12,
                           fontWeight: isSelected
                               ? FontWeight.bold
@@ -265,7 +265,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                             Text(
                               l10n.noDuasFound,
                               style: const TextStyle(
-                                fontFamily: 'Amiri',
+                                fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 15,
                               ),
                             ),
@@ -355,7 +355,7 @@ class _DuaCard extends StatelessWidget {
                       Text(
                         dua.title,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 16.5,
                           fontWeight: FontWeight.bold,
                           color: isDark
@@ -407,7 +407,7 @@ class _DuaCard extends StatelessWidget {
             Text(
               dua.summary,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 12.5,
                 height: 1.45,
                 color: isDark

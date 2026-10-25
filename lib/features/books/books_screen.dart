@@ -353,7 +353,7 @@ class _SectionDirectoryCard extends StatelessWidget {
                       child: Text(
                         _formatCountLabel(context),
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold,
                           color: badgeColor,

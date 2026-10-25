@@ -123,7 +123,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   Text(
                     'معاني الكلمات ($countDigits)',
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: isDark
@@ -211,7 +211,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                         child: Text(
                           'معاني كلمات صفحة $pageDigits',
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: isDark
@@ -320,7 +320,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
               'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,
                 color: isDark
                     ? AppColors.darkTextSecondary

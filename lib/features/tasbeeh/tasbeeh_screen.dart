@@ -199,7 +199,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             content: Text(
               context.l10n.targetReachedAuto(finishedTarget),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
             ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -218,7 +218,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             content: Text(
               context.l10n.targetReached(finishedTarget),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Amiri', fontSize: 15),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 15),
             ),
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
@@ -243,7 +243,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         content: Text(
           context.l10n.dhikrCopied,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -270,7 +270,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           title: Text(
             l10n.resetCycleCounterTitle,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -500,7 +500,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          fontFamily: 'Amiri',
+                                          fontFamily: 'IBMPlexSansArabic',
                                           fontSize: 16,
                                           fontWeight: isSelected
                                               ? FontWeight.bold
@@ -573,7 +573,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           title: Text(
             l10n.tasbeehAndIstighfar,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -838,7 +838,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                     Text(
                       _isAutoCounting ? l10n.stopAutoCount : l10n.autoCount,
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: _isAutoCounting
@@ -890,7 +890,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   Text(
                     l10n.smartPaceSeconds(pace),
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: isDark
@@ -1351,7 +1351,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         label,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 14,
                           fontWeight: isSelected
                               ? FontWeight.bold
@@ -1507,7 +1507,7 @@ class _SectionTab extends StatelessWidget {
                 '$title (${context.l10n.digits(count)})',
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontFamily: 'Amiri',
+                  fontFamily: 'IBMPlexSansArabic',
                   fontSize: 13,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   color: isSelected
@@ -1625,7 +1625,7 @@ class _StatCard extends StatelessWidget {
                 Text(
                   context.l10n.digits(count),
                   style: TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: isDark

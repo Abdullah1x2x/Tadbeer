@@ -57,7 +57,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
               ? 'تم نسخ ${item.title} إلى الحافظة بنجاح'
               : '${item.title} copied to clipboard',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'Amiri', fontSize: 13),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -84,7 +84,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
           title: Text(
             widget.title,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -111,11 +111,11 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                   child: TextField(
                     controller: _searchController,
                     onChanged: (val) => setState(() => _searchQuery = val),
-                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
+                    style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
                     decoration: InputDecoration(
                       hintText: l10n.searchGeneralDuasHint(widget.title),
                       hintStyle: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 13,
                         color: isDark
                             ? AppColors.darkTextSecondary
@@ -244,7 +244,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                                 child: Text(
                                   item.title,
                                   style: TextStyle(
-                                    fontFamily: 'Amiri',
+                                    fontFamily: 'IBMPlexSansArabic',
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                     color: isDark

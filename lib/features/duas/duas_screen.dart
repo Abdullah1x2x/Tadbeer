@@ -114,7 +114,7 @@ class DuasScreen extends StatelessWidget {
                         isArabic ? '٦٠' : '60',
                       ),
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 12,
                         color: isDark
                             ? AppColors.darkTextSecondary
@@ -424,7 +424,7 @@ class _DuaCategoryCard extends StatelessWidget {
                           child: Text(
                             countBadge,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: isQuran
@@ -441,7 +441,7 @@ class _DuaCategoryCard extends StatelessWidget {
                       maxLines: isQuran ? 2 : 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 12,
                         color: isDark
                             ? AppColors.darkTextSecondary

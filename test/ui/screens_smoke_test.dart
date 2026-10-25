@@ -41,6 +41,12 @@ import 'package:tadbeer/features/word_meanings/word_meanings_screen.dart';
 Future<void> _loadAppFonts() async {
   const families = {
     'Amiri': ['Amiri-Regular.ttf', 'Amiri-Bold.ttf'],
+    'IBMPlexSansArabic': [
+      'IBMPlexSansArabic-Regular.ttf',
+      'IBMPlexSansArabic-Medium.ttf',
+      'IBMPlexSansArabic-SemiBold.ttf',
+      'IBMPlexSansArabic-Bold.ttf',
+    ],
     'ScheherazadeNew': ['ScheherazadeNew-Regular.ttf'],
     'NotoNaskhArabic': ['NotoNaskhArabic-Regular.ttf'],
     'Harmattan': ['Harmattan-Regular.ttf'],

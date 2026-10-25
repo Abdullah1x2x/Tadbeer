@@ -123,7 +123,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                             controller: _searchController,
                             textDirection: context.currentLanguage.direction,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 15,
                               color: isDark
                                   ? AppColors.darkTextPrimary
@@ -134,7 +134,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                                   ? 'ابحث في أدعية القرآن الكريم...'
                                   : 'Search Quranic supplications...',
                               hintStyle: TextStyle(
-                                fontFamily: 'Amiri',
+                                fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 14,
                                 color: isDark
                                     ? AppColors.darkTextSecondary
@@ -193,7 +193,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                                 : _filteredDuas.length,
                           ),
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
                             color: isDark
@@ -229,7 +229,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                         label: Text(
                           labelText,
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 13,
                             fontWeight: isSelected
                                 ? FontWeight.bold
@@ -286,7 +286,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                     Text(
                       l10n.noDuasFound,
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 16,
                         color: isDark
                             ? AppColors.darkTextSecondary

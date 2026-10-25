@@ -74,7 +74,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
               existing == null ? l10n.addReminder : l10n.editReminder,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -87,10 +87,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   TextField(
                     controller: titleController,
                     textDirection: TextDirection.rtl,
-                    style: const TextStyle(fontFamily: 'Amiri'),
+                    style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                     decoration: InputDecoration(
                       labelText: l10n.reminderTitle,
-                      labelStyle: const TextStyle(fontFamily: 'Amiri'),
+                      labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                       filled: true,
                       fillColor: isDark
                           ? AppColors.darkSurface
@@ -114,7 +114,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     leading: Icon(Icons.access_time, color: AppColors.olive),
                     title: Text(
                       l10n.reminderTime,
-                      style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
+                      style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
                     ),
                     trailing: Text(
                       ReminderItem.formatTime12Hour(
@@ -151,7 +151,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   Text(
                     l10n.alertType,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: isDark ? AppColors.comsilk : AppColors.oliveDark,
@@ -193,7 +193,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   Text(
                     l10n.repeatMode,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: isDark ? AppColors.comsilk : AppColors.oliveDark,
@@ -214,7 +214,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.repeatDaily,
-                            style: const TextStyle(fontFamily: 'Amiri'),
+                            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                           ),
                         ),
                         RadioListTile<ReminderRepeatMode>(
@@ -222,7 +222,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.repeatOnce,
-                            style: const TextStyle(fontFamily: 'Amiri'),
+                            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                           ),
                         ),
                         RadioListTile<ReminderRepeatMode>(
@@ -230,7 +230,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.selectDays,
-                            style: const TextStyle(fontFamily: 'Amiri'),
+                            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                           ),
                         ),
                       ],
@@ -305,7 +305,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 onPressed: () => Navigator.pop(dialogCtx),
                 child: Text(
                   l10n.cancel,
-                  style: const TextStyle(fontFamily: 'Amiri'),
+                  style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                 ),
               ),
               ElevatedButton(
@@ -337,7 +337,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       SnackBar(
                         content: Text(
                           l10n.reminderScheduledSuccess(modeLabel),
-                          style: const TextStyle(fontFamily: 'Amiri'),
+                          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                         ),
                         duration: const Duration(seconds: 2),
                       ),
@@ -351,7 +351,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 child: Text(
                   l10n.save,
                   style: const TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -390,7 +390,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     ? l10n.testAlarmSentSuccess
                     : l10n.testNotificationSentSuccess)
               : l10n.testAlertPermissionError,
-          style: const TextStyle(fontFamily: 'Amiri'),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
         ),
         duration: const Duration(seconds: 3),
       ),
@@ -410,7 +410,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
           title: Text(
             l10n.reminders,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -430,7 +430,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       Flexible(
                         child: Text(
                           l10n.testNotificationNow,
-                          style: const TextStyle(fontFamily: 'Amiri'),
+                          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                         ),
                       ),
                     ],
@@ -446,7 +446,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       Flexible(
                         child: Text(
                           l10n.testAlarmNow,
-                          style: const TextStyle(fontFamily: 'Amiri'),
+                          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                         ),
                       ),
                     ],
@@ -464,7 +464,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
           label: Text(
             l10n.addReminder,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -516,7 +516,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       decoration: InputDecoration(
                         hintText: l10n.searchRemindersHint,
                         hintStyle: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 14,
                           color: isDark
                               ? AppColors.nightSubtitle
@@ -553,7 +553,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           child: Text(
                             l10n.noSearchResults,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 15,
                               color: isDark
                                   ? AppColors.nightSubtitle
@@ -653,7 +653,7 @@ class _AlertTypeOptionCard extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: selected
@@ -667,7 +667,7 @@ class _AlertTypeOptionCard extends StatelessWidget {
               subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 12,
                 color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
               ),
@@ -700,7 +700,7 @@ class _DayChip extends StatelessWidget {
     return FilterChip(
       label: Text(
         label,
-        style: const TextStyle(fontFamily: 'Amiri', fontSize: 12),
+        style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 12),
       ),
       selected: selected,
       selectedColor: AppColors.olive.withValues(alpha: 0.25),
@@ -784,7 +784,7 @@ class _ReminderCard extends StatelessWidget {
                   Text(
                     '$alertTypeLabel • $repeatSubtitle',
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 12,
                       color: isDark
                           ? AppColors.nightSubtitle

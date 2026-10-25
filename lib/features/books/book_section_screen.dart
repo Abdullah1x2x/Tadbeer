@@ -251,7 +251,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                             selected: isSelected,
                             label: Text(label),
                             labelStyle: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 12,
                               fontWeight: isSelected
                                   ? FontWeight.bold
@@ -484,7 +484,7 @@ class _SectionBookCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 15.5,
                       fontWeight: FontWeight.bold,
                       height: 1.35,

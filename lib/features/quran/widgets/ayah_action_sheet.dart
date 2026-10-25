@@ -187,7 +187,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         style: TextStyle(
                           fontFamily:
                               context.currentLanguage == AppLanguage.arabic
-                              ? 'Amiri'
+                              ? 'IBMPlexSansArabic'
                               : null,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -203,7 +203,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       style: TextStyle(
                         fontFamily:
                             context.currentLanguage == AppLanguage.arabic
-                            ? 'Amiri'
+                            ? 'IBMPlexSansArabic'
                             : null,
                         fontSize: 13,
                         color: isDark
