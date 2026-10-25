@@ -23,6 +23,51 @@ void main() {
   });
 
   group('Reminders & Notification System Tests', () {
+    test('One-time reminder is detected as fired once its moment passed', () {
+      final base = ReminderItem(
+        id: 'once-1',
+        title: 'مرة واحدة',
+        hour: 6,
+        minute: 0,
+        repeatMode: ReminderRepeatMode.once,
+        createdAt: DateTime(2026, 1, 1),
+      );
+      final now = DateTime(2026, 5, 10, 12);
+
+      // Never scheduled yet -> not fired.
+      expect(base.hasOnceReminderFired(now), isFalse);
+
+      final scheduledPast = base.copyWith(
+        scheduledFor: DateTime(2026, 5, 10, 6),
+      );
+      expect(scheduledPast.hasOnceReminderFired(now), isTrue);
+
+      final scheduledFuture = base.copyWith(
+        scheduledFor: DateTime(2026, 5, 11, 6),
+      );
+      expect(scheduledFuture.hasOnceReminderFired(now), isFalse);
+
+      // scheduledFor survives JSON round-trip.
+      final restored = ReminderItem.fromJson(scheduledPast.toJson());
+      expect(restored.scheduledFor, DateTime(2026, 5, 10, 6));
+
+      // Disabling keeps the target; re-enabling or editing the time clears it
+      // so a fresh date gets scheduled.
+      expect(
+        scheduledPast.copyWith(isEnabled: false).scheduledFor,
+        isNotNull,
+      );
+      expect(scheduledPast.copyWith(isEnabled: true).scheduledFor, isNull);
+      expect(scheduledPast.copyWith(hour: 7).scheduledFor, isNull);
+
+      // Repeating reminders never count as "fired".
+      final daily = scheduledPast.copyWith(
+        repeatMode: ReminderRepeatMode.daily,
+        scheduledFor: DateTime(2026, 5, 10, 6),
+      );
+      expect(daily.hasOnceReminderFired(now), isFalse);
+    });
+
     test(
       'ReminderItem serializes and deserializes all repeat modes and alert types',
       () {

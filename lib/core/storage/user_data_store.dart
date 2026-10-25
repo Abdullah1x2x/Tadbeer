@@ -204,106 +204,154 @@ class UserDataStore extends ChangeNotifier {
   }
 
   /// تفريغ البيانات المستخرجة من خريطة JSON إلى القوائم والفهارس في الذاكرة.
+  ///
+  /// IMPORTANT: Only sections that are PRESENT in [data] are replaced.
+  /// A partial backup (e.g. exported without notes) must never wipe the
+  /// user's existing data for the sections it does not contain.
+  ///
+  /// Parsing happens into temporary collections first, so a malformed
+  /// section throws before anything in memory is modified.
   void _applyData(Map<String, dynamic> data) {
-    if (data.containsKey('readingPosition')) {
-      _readingPosition = ReadingPosition.fromJson(
-        data['readingPosition'] as Map<String, dynamic>,
+    ReadingPosition? newPosition;
+    if (data['readingPosition'] is Map) {
+      newPosition = ReadingPosition.fromJson(
+        Map<String, dynamic>.from(data['readingPosition'] as Map),
       );
     }
 
-    _notes.clear();
-    if (data.containsKey('notes')) {
-      final rawNotes = data['notes'] as List;
-      for (final n in rawNotes) {
-        _notes.add(NoteItem.fromJson(n as Map<String, dynamic>));
-      }
-      // Sort newest first
-      _notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    List<NoteItem>? newNotes;
+    if (data['notes'] is List) {
+      final parsed = (data['notes'] as List)
+          .map((n) => NoteItem.fromJson(Map<String, dynamic>.from(n as Map)))
+          .toList();
+      parsed.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      newNotes = parsed;
     }
 
-    _bookmarks.clear();
-    _bookmarkLookup.clear();
-    if (data.containsKey('bookmarks')) {
-      final rawBookmarks = data['bookmarks'] as List;
-      for (final b in rawBookmarks) {
-        final item = BookmarkItem.fromJson(b as Map<String, dynamic>);
+    List<BookmarkItem>? newBookmarks;
+    if (data['bookmarks'] is List) {
+      newBookmarks = (data['bookmarks'] as List)
+          .map(
+            (b) => BookmarkItem.fromJson(Map<String, dynamic>.from(b as Map)),
+          )
+          .toList();
+    }
+
+    List<HighlightItem>? newHighlights;
+    if (data['highlights'] is List) {
+      newHighlights = (data['highlights'] as List)
+          .map(
+            (h) => HighlightItem.fromJson(Map<String, dynamic>.from(h as Map)),
+          )
+          .toList();
+    }
+
+    List<ReminderItem>? newReminders;
+    if (data['reminders'] is List) {
+      newReminders = (data['reminders'] as List)
+          .map(
+            (r) => ReminderItem.fromJson(Map<String, dynamic>.from(r as Map)),
+          )
+          .toList();
+    }
+
+    List<AyahLinkItem>? newLinks;
+    if (data['ayahLinks'] is List) {
+      final parsed = (data['ayahLinks'] as List)
+          .map(
+            (l) => AyahLinkItem.fromJson(Map<String, dynamic>.from(l as Map)),
+          )
+          .toList();
+      parsed.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      newLinks = parsed;
+    }
+
+    List<TadbeerItem>? newTadbeer;
+    final tadbeerData = data['tadbeer'] ?? data['tadabbur'];
+    if (tadbeerData is List) {
+      newTadbeer = tadbeerData
+          .map(
+            (t) => TadbeerItem.fromJson(Map<String, dynamic>.from(t as Map)),
+          )
+          .toList();
+    }
+
+    UserSettings? newSettings;
+    if (data['settings'] is Map) {
+      newSettings = UserSettings.fromJson(
+        Map<String, dynamic>.from(data['settings'] as Map),
+      );
+    }
+
+    // ---- Everything parsed successfully: apply present sections only ----
+    if (newPosition != null) _readingPosition = newPosition;
+
+    if (newNotes != null) {
+      _notes
+        ..clear()
+        ..addAll(newNotes);
+    }
+
+    if (newBookmarks != null) {
+      _bookmarks.clear();
+      _bookmarkLookup.clear();
+      for (final item in newBookmarks) {
         _bookmarks.add(item);
         _bookmarkLookup[item.ayahKey] = item;
       }
     }
 
-    _highlights.clear();
-    _highlightLookup.clear();
-    if (data.containsKey('highlights')) {
-      final rawHighlights = data['highlights'] as List;
-      for (final h in rawHighlights) {
-        final item = HighlightItem.fromJson(h as Map<String, dynamic>);
+    if (newHighlights != null) {
+      _highlights.clear();
+      _highlightLookup.clear();
+      for (final item in newHighlights) {
         _highlights.add(item);
         _highlightLookup[item.ayahKey] = item;
       }
     }
 
-    _reminders.clear();
-    if (data.containsKey('reminders')) {
-      final rawReminders = data['reminders'] as List;
-      for (final r in rawReminders) {
-        _reminders.add(ReminderItem.fromJson(r as Map<String, dynamic>));
-      }
+    if (newReminders != null) {
+      _reminders
+        ..clear()
+        ..addAll(newReminders);
     }
 
-    _ayahLinks.clear();
-    if (data.containsKey('ayahLinks')) {
-      final rawLinks = data['ayahLinks'] as List;
-      for (final l in rawLinks) {
-        _ayahLinks.add(AyahLinkItem.fromJson(l as Map<String, dynamic>));
-      }
-      _ayahLinks.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    if (newLinks != null) {
+      _ayahLinks
+        ..clear()
+        ..addAll(newLinks);
     }
 
-    _tadbeerItems.clear();
-    _tadbeerLookup.clear();
-    final tadbeerData = data['tadbeer'] ?? data['tadabbur'];
-    if (tadbeerData is List) {
-      for (final t in tadbeerData) {
-        final item = TadbeerItem.fromJson(t as Map<String, dynamic>);
+    if (newTadbeer != null) {
+      _tadbeerItems.clear();
+      _tadbeerLookup.clear();
+      for (final item in newTadbeer) {
         _tadbeerItems.add(item);
         _tadbeerLookup[item.ayahKey] = item;
       }
     }
 
-    if (data.containsKey('settings')) {
-      _settings = UserSettings.fromJson(
-        data['settings'] as Map<String, dynamic>,
-      );
+    if (newSettings != null) {
+      _settings = newSettings;
       settingsNotifier.value = _settings;
     }
   }
 
-  /// Persists all in-memory collections into the SQLite user database within an atomic transaction.
-  Future<void> _persistAllToSQLite() async {
+  /// Persists all in-memory collections into the SQLite user database within
+  /// a single atomic transaction (all-or-nothing). Returns `false` on failure.
+  Future<bool> _persistAllToSQLite() async {
     final userDb = UserDatabase.instance;
-    if (!userDb.isOpen) return;
-
-    await userDb.saveReadingPosition(_readingPosition);
-    for (final note in _notes) {
-      await userDb.insertOrUpdateNote(note);
-    }
-    for (final bookmark in _bookmarks) {
-      await userDb.insertBookmark(bookmark);
-    }
-    for (final highlight in _highlights) {
-      await userDb.insertOrUpdateHighlight(highlight);
-    }
-    for (final reminder in _reminders) {
-      await userDb.insertOrUpdateReminder(reminder);
-    }
-    for (final link in _ayahLinks) {
-      await userDb.insertOrUpdateAyahLink(link);
-    }
-    for (final item in _tadbeerItems) {
-      await userDb.insertOrUpdateTadbeer(item);
-    }
-    await userDb.saveSettings(_settings);
+    if (!userDb.isOpen) return false;
+    return userDb.replaceAllUserData(
+      readingPosition: _readingPosition,
+      notes: _notes,
+      bookmarks: _bookmarks,
+      highlights: _highlights,
+      reminders: _reminders,
+      ayahLinks: _ayahLinks,
+      tadbeerItems: _tadbeerItems,
+      settings: _settings,
+    );
   }
 
   /// Flushes current state to disk using an atomic JSON file pattern.
@@ -858,6 +906,7 @@ class UserDataStore extends ChangeNotifier {
     _tadbeerItems.clear();
     _tadbeerLookup.clear();
     _settings = const UserSettings();
+    settingsNotifier.value = _settings;
     notifyListeners();
     await LocalReminderService.instance.cancelAll();
     final userDb = UserDatabase.instance;
@@ -997,18 +1046,30 @@ class UserDataStore extends ChangeNotifier {
   }
 
   /// IMPORTANT:
-  /// Restore intentionally replaces the existing user dataset.
-  /// It must NEVER merge with existing data, ensuring mathematical consistency.
+  /// Restore replaces every section CONTAINED in [data] (never merges inside a
+  /// section). Sections absent from [data] are left untouched.
+  ///
+  /// Throws [StateError] if the database could not be written; in that case
+  /// the in-memory state is rolled back so nothing changes for the user.
   Future<void> replaceAllUserData(Map<String, dynamic> data) async {
-    await LocalReminderService.instance.cancelAll();
+    final previous = exportSnapshot();
+
+    // Parses everything first: throws before modifying anything if invalid.
     _applyData(data);
-    notifyListeners();
+
     final userDb = UserDatabase.instance;
     if (userDb.isOpen) {
-      await userDb.clearAllUserData();
-      await _persistAllToSQLite();
+      final ok = await _persistAllToSQLite();
+      if (!ok) {
+        _applyData(previous); // roll back in-memory state
+        notifyListeners();
+        throw StateError('Could not write restored data to the database');
+      }
     }
+
+    notifyListeners();
     await saveToDisk();
+    await LocalReminderService.instance.cancelAll();
     await LocalReminderService.instance.syncAllReminders(_reminders);
   }
 }
