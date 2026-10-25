@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'book_model.dart';
+import '../continue/last_activity.dart';
 
 /// شاشة قراءة واستعراض الملازم والكتب التدبرية (فصول، نصوص، أو مستندات PDF).
 class BookReaderScreen extends StatefulWidget {
@@ -50,6 +51,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     } else {
       _currentChapterIndex = 0;
     }
+    _recordActivity();
 
     if (widget.book.hasAttachedFile && widget.book.isText) {
       _loadFileText();
@@ -170,12 +172,20 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     }
   }
 
+  void _recordActivity() => LastActivityStore.record(
+    ActivityKind.book,
+    ref: widget.book.id,
+    title: widget.book.title,
+    position: _currentChapterIndex,
+  );
+
   void _changeChapter(int index) {
     if (index < 0 || index >= widget.book.chapters.length) return;
     HapticFeedback.selectionClick();
     setState(() {
       _currentChapterIndex = index;
     });
+    _recordActivity();
     _scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 250),

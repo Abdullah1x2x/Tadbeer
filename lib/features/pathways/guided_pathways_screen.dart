@@ -10,6 +10,7 @@ import '../ayah_links/curated_pathways.dart';
 import '../quran/data/quran_repository.dart';
 import '../tadbeer/tadbeer_model.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
+import '../continue/last_activity.dart';
 
 /// تقدم المسارات الموجّهة: الأيام المكتملة لكل مسار.
 class GuidedPathwayProgress {
@@ -75,7 +76,14 @@ class GuidedPathwaysScreen extends StatelessWidget {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => PathwayJourneyScreen(pathway: p),
+                            builder: (_) {
+                              LastActivityStore.record(
+                                ActivityKind.pathway,
+                                ref: p.id,
+                                title: p.title,
+                              );
+                              return PathwayJourneyScreen(pathway: p);
+                            },
                           ),
                         ),
                         child: Column(
