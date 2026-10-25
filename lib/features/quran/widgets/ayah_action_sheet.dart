@@ -9,6 +9,7 @@ import '../../notes/note_model.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
+import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
 
 /// Modal action sheet for interacting with an individual Ayah.
@@ -501,6 +502,19 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                               : null,
                           onTap: () =>
                               setState(() => _isHighlightPickerOpen = true),
+                        ),
+                      ),
+
+                      // Share as designed image card
+                      Expanded(
+                        child: _ActionButton(
+                          icon: Icons.ios_share_rounded,
+                          label: l10n.share,
+                          onTap: () {
+                            final ayah = widget.ayah;
+                            Navigator.of(context).pop();
+                            AyahShareSheet.show(context, ayah);
+                          },
                         ),
                       ),
 

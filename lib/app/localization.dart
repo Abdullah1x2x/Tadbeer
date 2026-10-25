@@ -109,6 +109,14 @@ class AppStrings {
   String get highlight => isArabic ? 'تمييز' : 'Highlight';
   String get removeHighlight => isArabic ? 'إزالة التمييز' : 'Remove Highlight';
   String get copy => isArabic ? 'نسخ' : 'Copy';
+  String get share => isArabic ? 'مشاركة' : 'Share';
+  String get shareAsImage =>
+      isArabic ? 'مشاركة الآية كبطاقة' : 'Share verse as a card';
+  String get shareImage => isArabic ? 'مشاركة الصورة' : 'Share image';
+  String get cardSquare => isArabic ? 'منشور' : 'Post';
+  String get cardStory => isArabic ? 'قصة' : 'Story';
+  String get cardNight => isArabic ? 'كحلي' : 'Night';
+  String get cardPaper => isArabic ? 'ورقي' : 'Paper';
   String get copiedToClipboard =>
       isArabic ? 'تم نسخ الآية إلى الحافظة' : 'Ayah copied to clipboard';
 
