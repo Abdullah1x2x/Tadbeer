@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_description">Ayah of the day and your khatma progress</string>
+    <!-- Shown in the widget picker before the app has sent any data. -->
+    <string name="widget_sample_title">Ayah of the day</string>
+    <string name="widget_sample_ayah">أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ</string>
+    <string name="widget_sample_ref">Ar-Ra‘d · 28</string>
+</resources>

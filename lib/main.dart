@@ -10,6 +10,7 @@ import 'features/duas/adhkar_repository.dart';
 import 'features/duas/morning_evening_adhkar_screen.dart';
 import 'features/journey/portion_reminder.dart';
 import 'features/tasbeeh/tasbeeh_model.dart';
+import 'features/widgets/home_widget_sync.dart';
 
 /// Registers bundled non-Dart asset licenses (Quranic text, Word Meanings dataset,
 /// and SIL OFL 1.1 fonts) into Flutter's [LicenseRegistry] so they appear in
@@ -133,6 +134,8 @@ void main() async {
   );
   // Keeps the khatma reminder's "pages left today" current while reading.
   PortionReminderSync.attach();
+  // The home-screen widget follows the ayah of the day and the khatma.
+  HomeWidgetSync.attach();
   // A completed tasbeeh round counts toward the reading streak.
   TasbeehRepository.instance.onTargetReached = () =>
       UserDataStore.instance.markActiveDay();

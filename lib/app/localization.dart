@@ -177,6 +177,10 @@ class AppStrings {
   String portionLeftTitle(int pages) => _l.portionLeftTitle(digits(pages));
   String get portionLeftBody => _l.portionLeftBody;
   String get adhkarSetCompleted => _l.adhkarSetCompleted;
+  /// The widget fills in the numbers itself, so they stay placeholders.
+  String get widgetPortionLeftTemplate =>
+      _l.widgetPortionLeft('{left}', '{portion}');
+  String get widgetPortionDone => _l.widgetPortionDone;
   String get mushafStyleTitle => _l.mushafStyleTitle;
   String get mushafStyleMadinah => _l.mushafStyleMadinah;
   String get mushafStyleText => _l.mushafStyleText;
