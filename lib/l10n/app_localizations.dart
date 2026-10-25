@@ -2771,6 +2771,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أتممت الأذكار، واحتُسب يومك في رحلتك'**
   String get adhkarSetCompleted;
+
+  /// No description provided for @mushafStyleTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طريقة عرض المصحف'**
+  String get mushafStyleTitle;
+
+  /// No description provided for @mushafStyleMadinah.
+  ///
+  /// In ar, this message translates to:
+  /// **'مصحف المدينة'**
+  String get mushafStyleMadinah;
+
+  /// No description provided for @mushafStyleText.
+  ///
+  /// In ar, this message translates to:
+  /// **'نص متدفق'**
+  String get mushafStyleText;
+
+  /// No description provided for @qcfAttribution.
+  ///
+  /// In ar, this message translates to:
+  /// **'خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف'**
+  String get qcfAttribution;
 }
 
 class _AppLocalizationsDelegate

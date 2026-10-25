@@ -966,5 +966,9 @@
     }
   },
   "portionLeftBody": "أكمل ختمتك من حيث توقفت",
-  "adhkarSetCompleted": "أتممت الأذكار، واحتُسب يومك في رحلتك"
+  "adhkarSetCompleted": "أتممت الأذكار، واحتُسب يومك في رحلتك",
+  "mushafStyleTitle": "طريقة عرض المصحف",
+  "mushafStyleMadinah": "مصحف المدينة",
+  "mushafStyleText": "نص متدفق",
+  "qcfAttribution": "خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف"
 }

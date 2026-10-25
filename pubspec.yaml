@@ -107,7 +107,9 @@ flutter:
   assets:
     - assets/quran/quran_data.json
     - assets/quran/word_meanings.json
+    - assets/quran/qcf_v1_layout.json.gz
     - assets/fonts/
+    - assets/fonts/qcf/
     - assets/icons/app_logo.png
     - assets/icons/app_icon.png
     - assets/books/

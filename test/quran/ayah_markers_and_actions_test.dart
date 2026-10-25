@@ -11,6 +11,7 @@ import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_intro_screen.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
+import 'package:tadbeer/features/settings/user_settings_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,8 @@ void main() {
     tempDir = await Directory.systemTemp.createTemp('marker_test_');
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
+    // These tests cover the flowing text view, not the Madinah pages.
+    await UserDataStore.instance.setMushafStyle(MushafStyle.text);
     await QuranRepository.instance.init();
   });
 

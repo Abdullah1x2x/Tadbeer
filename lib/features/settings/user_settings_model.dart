@@ -150,6 +150,15 @@ enum QuranFontFamilyOption {
       isArabic ? subtitleArabic : subtitleEnglish;
 }
 
+/// طريقة عرض المصحف.
+enum MushafStyle {
+  /// صفحات مصحف المدينة بخط مجمع الملك فهد كما في المطبوع (الأساسية).
+  madinah,
+
+  /// نص عثماني متدفق بالخط المختار (الثانوية، لا تحتاج تحميلاً).
+  text,
+}
+
 /// إعدادات المستخدم المحفوظة محلياً (المظهر، اللغة، الخطوط، وخيارات القراءة).
 class UserSettings {
   /// الحجم الافتراضي لخط المصحف بالنقاط (20.0pt).
@@ -158,8 +167,9 @@ class UserSettings {
   /// الحد الأدنى المسموح به لحجم خط المصحف (16.0pt) لضمان وضوح التشكيل والوقفات.
   static const double minQuranFontSize = 16.0;
 
-  /// الحد الأقصى المسموح به لحجم خط المصحف (32.0pt) لمنع تشوه تخطيط الأسطر.
-  static const double maxQuranFontSize = 32.0;
+  /// الحد الأقصى المسموح به لحجم خط المصحف (40.0pt)؛ في مصحف المدينة
+  /// يعني ضعف حجم الصفحة الكاملة مع التفاف الأسطر.
+  static const double maxQuranFontSize = 40.0;
 
   /// وضع المظهر الحالي (فاتح، داكن، أو حسب النظام).
   final ThemeMode themeMode;
@@ -198,6 +208,9 @@ class UserSettings {
   /// سمة الألوان المختارة (الكحلي افتراضياً).
   final AppColorTheme colorTheme;
 
+  /// طريقة عرض المصحف (مصحف المدينة افتراضياً).
+  final MushafStyle mushafStyle;
+
   /// اسم عائلة خط المصحف المختارة للاستخدام المباشر في الأنماط النصية.
   String get quranFontFamilyName => quranFontFamily.fontFamily;
 
@@ -213,6 +226,7 @@ class UserSettings {
     this.ayahLinkFontSize = 18.0,
     this.mushafPaperTone = MushafPaperTone.classic,
     this.colorTheme = AppColorTheme.navy,
+    this.mushafStyle = MushafStyle.madinah,
   }) : hideTadbeerIntroPermanently =
            hideTadabburIntroPermanently ?? hideTadbeerIntroPermanently;
 
@@ -228,6 +242,7 @@ class UserSettings {
     'ayahLinkFontSize': ayahLinkFontSize,
     'mushafPaperTone': mushafPaperTone.name,
     'colorTheme': colorTheme.name,
+    'mushafStyle': mushafStyle.name,
   };
 
   /// ينشئ كائن إعدادات المستخدم من خريطة بيانات JSON المحفوظة.
@@ -290,6 +305,10 @@ class UserSettings {
         (e) => e.name == json['mushafPaperTone'],
         orElse: () => MushafPaperTone.classic,
       ),
+      mushafStyle: MushafStyle.values.firstWhere(
+        (e) => e.name == json['mushafStyle'],
+        orElse: () => MushafStyle.madinah,
+      ),
     );
   }
 
@@ -305,6 +324,7 @@ class UserSettings {
     double? ayahLinkFontSize,
     MushafPaperTone? mushafPaperTone,
     AppColorTheme? colorTheme,
+    MushafStyle? mushafStyle,
   }) {
     final newQuranFontSize = quranFontSize != null
         ? quranFontSize.clamp(minQuranFontSize, maxQuranFontSize)
@@ -323,6 +343,7 @@ class UserSettings {
       ayahLinkFontSize: ayahLinkFontSize ?? this.ayahLinkFontSize,
       mushafPaperTone: mushafPaperTone ?? this.mushafPaperTone,
       colorTheme: colorTheme ?? this.colorTheme,
+      mushafStyle: mushafStyle ?? this.mushafStyle,
     );
   }
 }

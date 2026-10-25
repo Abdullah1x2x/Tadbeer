@@ -37,6 +37,11 @@ mixin _SettingsSection on _StoreState {
     await updateSettings(_settings.copyWith(quranFontSize: clamped));
   }
 
+  /// تغيير طريقة عرض المصحف وحفظها.
+  Future<void> setMushafStyle(MushafStyle style) async {
+    await updateSettings(_settings.copyWith(mushafStyle: style));
+  }
+
   /// تغيير نوع خط المصحف وحفظه في الإعدادات.
   Future<void> setQuranFontFamily(QuranFontFamilyOption fontFamily) async {
     await updateSettings(_settings.copyWith(quranFontFamily: fontFamily));

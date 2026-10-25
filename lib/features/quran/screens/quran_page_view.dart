@@ -13,6 +13,8 @@ import '../widgets/ayah_action_sheet.dart';
 import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../settings/user_settings_model.dart';
+import '../qcf/qcf_page_body.dart';
 
 /// متعرف إيماءات مخصص للآيات القرآنية المدمجة داخل TextSpan.
 ///
@@ -314,6 +316,7 @@ class _QuranPageViewState extends State<QuranPageView> {
         final surahBlocks = _groupAyahsBySurah(quranPage.ayahs);
 
         final marginStamps = MarginStampData.forPage(quranPage);
+        final useQcf = storage.settings.mushafStyle == MushafStyle.madinah;
 
         return Directionality(
           textDirection: TextDirection.rtl,
@@ -337,231 +340,284 @@ class _QuranPageViewState extends State<QuranPageView> {
                           horizontal: 10.0,
                           vertical: 7.0,
                         ),
-                        child: Stack(
-                          children: [
-                            NotificationListener<ScrollNotification>(
-                              onNotification: (notification) {
-                                if (notification is ScrollUpdateNotification ||
-                                    notification is OverscrollNotification ||
-                                    notification is UserScrollNotification) {
-                                  _updateScrollIndicators();
-                                }
-                                return false;
-                              },
-                              child: RawScrollbar(
-                                controller: _scrollController,
-                                thumbColor:
-                                    (isDark
-                                            ? AppColors.darkAccentGold
-                                            : AppColors.lightAccentGold)
-                                        .withValues(alpha: 0.65),
-                                radius: const Radius.circular(3),
-                                thickness: 2.5,
-                                padding: const EdgeInsetsDirectional.only(
-                                  end: 1.0,
-                                  top: 4.0,
-                                  bottom: 4.0,
+                        child: useQcf
+                            ? _buildQcfPage(
+                                context,
+                                pageNumber: pageNumber,
+                                surah: surah,
+                                juzNumber: quranPage.juzNumber,
+                                marginStamps: marginStamps,
+                                isDark: isDark,
+                                palette: palette,
+                                storage: storage,
+                                fontSize: effectiveFontSize,
+                                fallback: SingleChildScrollView(
+                                  child: isOpeningPage
+                                      ? _buildOpeningPageContent(
+                                          context: context,
+                                          blocks: surahBlocks,
+                                          fontSize: effectiveFontSize,
+                                          isDark: isDark,
+                                          storage: storage,
+                                        )
+                                      : _buildStandardPageContent(
+                                          context: context,
+                                          blocks: surahBlocks,
+                                          fontSize: effectiveFontSize,
+                                          isDark: isDark,
+                                          storage: storage,
+                                        ),
                                 ),
-                                child: SingleChildScrollView(
-                                  controller: _scrollController,
-                                  physics: const BouncingScrollPhysics(),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      minHeight: math.max(
-                                        0.0,
-                                        constraints.maxHeight - 22.0,
+                              )
+                            : Stack(
+                                children: [
+                                  NotificationListener<ScrollNotification>(
+                                    onNotification: (notification) {
+                                      if (notification
+                                              is ScrollUpdateNotification ||
+                                          notification
+                                              is OverscrollNotification ||
+                                          notification
+                                              is UserScrollNotification) {
+                                        _updateScrollIndicators();
+                                      }
+                                      return false;
+                                    },
+                                    child: RawScrollbar(
+                                      controller: _scrollController,
+                                      thumbColor:
+                                          (isDark
+                                                  ? AppColors.darkAccentGold
+                                                  : AppColors.lightAccentGold)
+                                              .withValues(alpha: 0.65),
+                                      radius: const Radius.circular(3),
+                                      thickness: 2.5,
+                                      padding: const EdgeInsetsDirectional.only(
+                                        end: 1.0,
+                                        top: 4.0,
+                                        bottom: 4.0,
                                       ),
-                                    ),
-                                    child: IntrinsicHeight(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          // 1. Top Page Header (Surah name & Juz number)
-                                          if (widget.showHeader)
-                                            _buildPageHeader(
-                                              context,
-                                              surah: surah,
-                                              juzNumber: quranPage.juzNumber,
-                                              isDark: isDark,
-                                              palette: palette,
-                                              marginStamps: marginStamps,
-                                            )
-                                          else
-                                            const SizedBox(height: 4),
-
-                                          const SizedBox(height: 4),
-
-                                          // 2. Main Quranic Text Body
-                                          Expanded(
-                                            child: isOpeningPage
-                                                ? _buildOpeningPageContent(
-                                                    context: context,
-                                                    blocks: surahBlocks,
-                                                    fontSize: effectiveFontSize,
-                                                    isDark: isDark,
-                                                    storage: storage,
-                                                  )
-                                                : _buildStandardPageContent(
-                                                    context: context,
-                                                    blocks: surahBlocks,
-                                                    fontSize: effectiveFontSize,
-                                                    isDark: isDark,
-                                                    storage: storage,
-                                                  ),
+                                      child: SingleChildScrollView(
+                                        controller: _scrollController,
+                                        physics: const BouncingScrollPhysics(),
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            minHeight: math.max(
+                                              0.0,
+                                              constraints.maxHeight - 22.0,
+                                            ),
                                           ),
+                                          child: IntrinsicHeight(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              children: [
+                                                // 1. Top Page Header (Surah name & Juz number)
+                                                if (widget.showHeader)
+                                                  _buildPageHeader(
+                                                    context,
+                                                    surah: surah,
+                                                    juzNumber:
+                                                        quranPage.juzNumber,
+                                                    isDark: isDark,
+                                                    palette: palette,
+                                                    marginStamps: marginStamps,
+                                                  )
+                                                else
+                                                  const SizedBox(height: 4),
 
-                                          const SizedBox(height: 4),
+                                                const SizedBox(height: 4),
 
-                                          // 3. Bottom Page Footer (Arabic page number)
-                                          if (widget.showFooter)
-                                            _buildPageFooter(
-                                              context,
-                                              pageNumber: pageNumber,
-                                              isDark: isDark,
-                                            )
-                                          else
-                                            const SizedBox(height: 4),
-                                        ],
+                                                // 2. Main Quranic Text Body
+                                                Expanded(
+                                                  child: isOpeningPage
+                                                      ? _buildOpeningPageContent(
+                                                          context: context,
+                                                          blocks: surahBlocks,
+                                                          fontSize:
+                                                              effectiveFontSize,
+                                                          isDark: isDark,
+                                                          storage: storage,
+                                                        )
+                                                      : _buildStandardPageContent(
+                                                          context: context,
+                                                          blocks: surahBlocks,
+                                                          fontSize:
+                                                              effectiveFontSize,
+                                                          isDark: isDark,
+                                                          storage: storage,
+                                                        ),
+                                                ),
+
+                                                const SizedBox(height: 4),
+
+                                                // 3. Bottom Page Footer (Arabic page number)
+                                                if (widget.showFooter)
+                                                  _buildPageFooter(
+                                                    context,
+                                                    pageNumber: pageNumber,
+                                                    isDark: isDark,
+                                                  )
+                                                else
+                                                  const SizedBox(height: 4),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
 
-                            // 2. Bottom subtle gradient fade
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              height: 36,
-                              child: ValueListenableBuilder<bool>(
-                                valueListenable: _showBottomGradient,
-                                builder: (context, show, _) {
-                                  final pageBg = palette.page;
-                                  return IgnorePointer(
-                                    child: TweenAnimationBuilder<double>(
-                                      tween: Tween<double>(
-                                        begin: 0.0,
-                                        end: show ? 1.0 : 0.0,
-                                      ),
-                                      duration: const Duration(
-                                        milliseconds: 250,
-                                      ),
-                                      builder: (context, opacity, child) {
-                                        if (opacity <= 0.001) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return Opacity(
-                                          opacity: opacity,
-                                          child: child,
-                                        );
-                                      },
-                                      child: DecoratedBox(
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              pageBg.withValues(alpha: 0.0),
-                                              pageBg.withValues(alpha: 0.65),
-                                              pageBg.withValues(alpha: 0.95),
-                                            ],
-                                            stops: const [0.0, 0.55, 1.0],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-
-                            // 3. Subtle micro chevron indicator
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 3,
-                              child: ValueListenableBuilder<bool>(
-                                valueListenable: _showScrollHint,
-                                builder: (context, show, _) {
-                                  return IgnorePointer(
-                                    ignoring: !show,
-                                    child: TweenAnimationBuilder<double>(
-                                      tween: Tween<double>(
-                                        begin: 0.0,
-                                        end: show ? 1.0 : 0.0,
-                                      ),
-                                      duration: const Duration(
-                                        milliseconds: 250,
-                                      ),
-                                      builder: (context, opacity, child) {
-                                        if (opacity <= 0.001) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return Opacity(
-                                          opacity: opacity,
-                                          child: child,
-                                        );
-                                      },
-                                      child: Center(
-                                        child: GestureDetector(
-                                          behavior: HitTestBehavior.opaque,
-                                          onTap: _scrollDownOneStep,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 1.5,
+                                  // 2. Bottom subtle gradient fade
+                                  Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    height: 36,
+                                    child: ValueListenableBuilder<bool>(
+                                      valueListenable: _showBottomGradient,
+                                      builder: (context, show, _) {
+                                        final pageBg = palette.page;
+                                        return IgnorePointer(
+                                          child: TweenAnimationBuilder<double>(
+                                            tween: Tween<double>(
+                                              begin: 0.0,
+                                              end: show ? 1.0 : 0.0,
                                             ),
-                                            decoration: BoxDecoration(
-                                              color: palette.page.withValues(
-                                                alpha: 0.92,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              border: Border.all(
-                                                color:
-                                                    (isDark
-                                                            ? AppColors
-                                                                  .darkAccentGold
-                                                            : AppColors
-                                                                  .lightAccentGold)
-                                                        .withValues(alpha: 0.5),
-                                                width: 0.8,
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black
-                                                      .withValues(
-                                                        alpha: isDark
-                                                            ? 0.35
-                                                            : 0.08,
-                                                      ),
-                                                  blurRadius: 4,
-                                                  offset: const Offset(0, 1),
+                                            duration: const Duration(
+                                              milliseconds: 250,
+                                            ),
+                                            builder: (context, opacity, child) {
+                                              if (opacity <= 0.001) {
+                                                return const SizedBox.shrink();
+                                              }
+                                              return Opacity(
+                                                opacity: opacity,
+                                                child: child,
+                                              );
+                                            },
+                                            child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    pageBg.withValues(
+                                                      alpha: 0.0,
+                                                    ),
+                                                    pageBg.withValues(
+                                                      alpha: 0.65,
+                                                    ),
+                                                    pageBg.withValues(
+                                                      alpha: 0.95,
+                                                    ),
+                                                  ],
+                                                  stops: const [0.0, 0.55, 1.0],
                                                 ),
-                                              ],
-                                            ),
-                                            child: Icon(
-                                              AppIcons.caretDown,
-                                              size: 16,
-                                              color: isDark
-                                                  ? AppColors.darkAccentGold
-                                                  : AppColors.oliveDark,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                      },
                                     ),
-                                  );
-                                },
+                                  ),
+
+                                  // 3. Subtle micro chevron indicator
+                                  Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 3,
+                                    child: ValueListenableBuilder<bool>(
+                                      valueListenable: _showScrollHint,
+                                      builder: (context, show, _) {
+                                        return IgnorePointer(
+                                          ignoring: !show,
+                                          child: TweenAnimationBuilder<double>(
+                                            tween: Tween<double>(
+                                              begin: 0.0,
+                                              end: show ? 1.0 : 0.0,
+                                            ),
+                                            duration: const Duration(
+                                              milliseconds: 250,
+                                            ),
+                                            builder: (context, opacity, child) {
+                                              if (opacity <= 0.001) {
+                                                return const SizedBox.shrink();
+                                              }
+                                              return Opacity(
+                                                opacity: opacity,
+                                                child: child,
+                                              );
+                                            },
+                                            child: Center(
+                                              child: GestureDetector(
+                                                behavior:
+                                                    HitTestBehavior.opaque,
+                                                onTap: _scrollDownOneStep,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 1.5,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: palette.page
+                                                        .withValues(
+                                                          alpha: 0.92,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          16,
+                                                        ),
+                                                    border: Border.all(
+                                                      color:
+                                                          (isDark
+                                                                  ? AppColors
+                                                                        .darkAccentGold
+                                                                  : AppColors
+                                                                        .lightAccentGold)
+                                                              .withValues(
+                                                                alpha: 0.5,
+                                                              ),
+                                                      width: 0.8,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withValues(
+                                                              alpha: isDark
+                                                                  ? 0.35
+                                                                  : 0.08,
+                                                            ),
+                                                        blurRadius: 4,
+                                                        offset: const Offset(
+                                                          0,
+                                                          1,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Icon(
+                                                    AppIcons.caretDown,
+                                                    size: 16,
+                                                    color: isDark
+                                                        ? AppColors
+                                                              .darkAccentGold
+                                                        : AppColors.oliveDark,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ),
@@ -571,6 +627,77 @@ class _QuranPageViewState extends State<QuranPageView> {
           ),
         );
       },
+    );
+  }
+
+  /// صفحة مصحف المدينة: الترويسة والأسطر المطبوعة والتذييل.
+  Widget _buildQcfPage(
+    BuildContext context, {
+    required int pageNumber,
+    required Surah surah,
+    required int juzNumber,
+    required List<MarginStampData> marginStamps,
+    required bool isDark,
+    required MushafPalette palette,
+    required UserDataStore storage,
+    required double fontSize,
+    required Widget fallback,
+  }) {
+    final memorized = HifzStore.all().keys.toSet();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (widget.showHeader)
+          _buildPageHeader(
+            context,
+            surah: surah,
+            juzNumber: juzNumber,
+            isDark: isDark,
+            palette: palette,
+            marginStamps: marginStamps,
+          )
+        else
+          const SizedBox(height: 4),
+        const SizedBox(height: 4),
+        Expanded(
+          child: QcfPageBody(
+            pageNumber: pageNumber,
+            zoom: fontSize / UserSettings.defaultQuranFontSize,
+            textColor: palette.text,
+            markerColor: isDark
+                ? AppColors.darkAccentGold
+                : AppColors.lightAccentGold,
+            backgroundFor: (s, a) {
+              final selected = widget.selectedAyah;
+              if (selected != null &&
+                  selected.surahNumber == s &&
+                  selected.ayahNumber == a) {
+                return isDark
+                    ? AppColors.darkSelectedAyah
+                    : const Color(0x36B89745);
+              }
+              final highlight = storage.getHighlight(s, a);
+              if (highlight == null) return null;
+              final base = AppColors.highlightColors[highlight.colorIndex];
+              return base.withValues(alpha: isDark ? 0.35 : 0.25);
+            },
+            isMarked: (s, a) {
+              final reflection = storage.getTadbeer(s, a);
+              return storage.isBookmarked(s, a) ||
+                  storage.getNotesForAyah(s, a).isNotEmpty ||
+                  (reflection != null && !reflection.isEmpty) ||
+                  memorized.contains('$s:$a');
+            },
+            recognizerFor: _getOrCreateRecognizer,
+            fallback: fallback,
+          ),
+        ),
+        const SizedBox(height: 4),
+        if (widget.showFooter)
+          _buildPageFooter(context, pageNumber: pageNumber, isDark: isDark)
+        else
+          const SizedBox(height: 4),
+      ],
     );
   }
 
