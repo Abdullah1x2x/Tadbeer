@@ -11,6 +11,7 @@ import '../highlights/highlights_screen.dart';
 import '../journey/journey_screen.dart';
 import '../journey/mushaf_map_screen.dart';
 import '../notes/notes_screen.dart';
+import '../pathways/guided_pathways_screen.dart';
 import '../reminders/reminders_screen.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
@@ -49,6 +50,11 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.grid_on_rounded,
                   label: l10n.mushafMap,
                   onTap: () => open(const MushafMapScreen()),
+                ),
+                _Tile(
+                  icon: Icons.route_rounded,
+                  label: l10n.guidedPathways,
+                  onTap: () => open(const GuidedPathwaysScreen()),
                 ),
                 _Tile(
                   icon: Icons.edit_note_rounded,

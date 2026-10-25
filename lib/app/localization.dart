@@ -115,6 +115,21 @@ class AppStrings {
   String shortDate(DateTime d) =>
       isArabic ? _n('${d.day}/${d.month}/${d.year}') : '${d.day}/${d.month}/${d.year}';
 
+  // Guided pathways
+  String get guidedPathways => isArabic ? 'مسارات التدبر' : 'Guided pathways';
+  String get guidedPathwaysHint => isArabic
+      ? 'رحلات قصيرة: آية كل يوم مع إضاءة وسؤال تدبر. أتمّ اليوم ليُفتح التالي.'
+      : 'Short journeys: one verse a day with an insight and a question. Finish a day to unlock the next.';
+  String daysOfTotal(int a, int b) =>
+      isArabic ? '${_n(a)} / ${_n(b)} أيام' : '$a / $b days';
+  String dayN(int n) => isArabic ? 'اليوم ${_n(n)}' : 'Day $n';
+  String get completeDay => isArabic ? 'أتممت اليوم' : 'Day done';
+  String get pathwayUnlockHint => isArabic
+      ? 'أتمّ يوم اليوم ليُفتح الذي بعده'
+      : 'Finish today to unlock the next day';
+  String get pathwayComplete =>
+      isArabic ? 'أتممت المسار، بارك الله فيك' : 'Pathway complete!';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

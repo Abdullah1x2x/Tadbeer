@@ -310,6 +310,22 @@ class UserDatabase {
     }
   }
 
+  /// تحميل كل حالات الميزات المحفوظة.
+  Future<Map<String, Map<String, dynamic>>> loadAllAppState() async {
+    if (!isOpen) return {};
+    try {
+      final rows = await db.query('app_state');
+      return {
+        for (final r in rows)
+          r['key'] as String:
+              jsonDecode(r['value'] as String) as Map<String, dynamic>,
+      };
+    } catch (e) {
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadAllAppState', e);
+      return {};
+    }
+  }
+
   /// حفظ حالة ميزة كـ JSON بمفتاحها.
   Future<void> saveAppState(String key, Map<String, dynamic> value) async {
     if (!isOpen) return;
