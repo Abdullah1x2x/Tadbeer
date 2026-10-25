@@ -211,6 +211,24 @@ class AppStrings {
   String get eveningAdhkarReminder =>
       isArabic ? 'أذكار المساء' : 'Evening adhkar';
 
+  String get monthlyReport => isArabic ? 'تقرير الشهر' : 'Monthly report';
+  String get activeDaysLabel => isArabic ? 'يوم نشاط' : 'Active days';
+  String get reflectionsLabel => isArabic ? 'وقفة تدبر' : 'Reflections';
+  String get memorizedLabel => isArabic ? 'آية محفوظة' : 'Verses memorized';
+  String monthTitle(int month, int year) {
+    const ar = [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+    ];
+    const en = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+    return isArabic
+        ? '${ar[month - 1]} ${_n(year)}'
+        : '${en[month - 1]} $year';
+  }
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

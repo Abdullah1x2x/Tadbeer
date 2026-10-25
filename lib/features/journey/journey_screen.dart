@@ -10,6 +10,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/screens/quran_screen.dart';
 import '../reminders/reminder_model.dart';
+import 'monthly_report.dart';
 import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
 
@@ -27,6 +28,11 @@ class JourneyScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(l10n.myJourney),
           actions: [
+            IconButton(
+              tooltip: l10n.monthlyReport,
+              icon: const Icon(Icons.insights_rounded),
+              onPressed: () => MonthlyReportSheet.show(context),
+            ),
             IconButton(
               tooltip: l10n.mushafMap,
               icon: const Icon(Icons.grid_on_rounded),
