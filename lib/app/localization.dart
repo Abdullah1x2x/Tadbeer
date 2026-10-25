@@ -229,6 +229,40 @@ class AppStrings {
         : '${en[month - 1]} $year';
   }
 
+  // Group khatma
+  String get groupKhatma => isArabic ? 'ختمة جماعية' : 'Group khatma';
+  String get groupKhatmaHint => isArabic
+      ? 'وزّع الأجزاء الثلاثين على العائلة أو الأصدقاء، وشارك الرمز معهم. كل شخص يلصق الرمز ويختار اسمه ويتابع أجزاءه، دون إنترنت.'
+      : 'Split the 30 juz among family or friends and share the code. Each person pastes it, picks their name and tracks their juz, offline.';
+  String get createGroupKhatma =>
+      isArabic ? 'إنشاء ختمة جماعية' : 'Create a group khatma';
+  String get groupKhatmaTitle =>
+      isArabic ? 'اسم الختمة' : 'Khatma name';
+  String get participantNames =>
+      isArabic ? 'أسماء المشاركين' : 'Participants';
+  String get oneNamePerLine => isArabic ? 'اسم في كل سطر' : 'One name per line';
+  String get distributeJuz => isArabic ? 'وزّع الأجزاء' : 'Distribute juz';
+  String get joinWithCode => isArabic ? 'الانضمام برمز' : 'Join with a code';
+  String get pasteGroupCode =>
+      isArabic ? 'الصق رمز الختمة' : 'Paste the khatma code';
+  String get invalidGroupCode =>
+      isArabic ? 'الرمز غير صحيح' : 'This code is not valid';
+  String get join => isArabic ? 'انضم' : 'Join';
+  String get whoAreYou => isArabic ? 'اختر اسمك' : 'Pick your name';
+  String juzList(List<int> juz) =>
+      isArabic ? 'الأجزاء: ${juz.map(_n).join('، ')}' : 'Juz: ${juz.join(', ')}';
+  String juzLabel(int juz) => isArabic ? 'الجزء ${_n(juz)}' : 'Juz $juz';
+  String myJuzTitle(String name) =>
+      isArabic ? 'أجزاء $name' : '$name’s juz';
+  String get readJuz => isArabic ? 'اقرأ الجزء' : 'Read juz';
+  String get everyonesJuz => isArabic ? 'توزيع الجميع' : 'Everyone’s juz';
+  String get showQr => isArabic ? 'عرض رمز QR' : 'Show QR code';
+  String get leaveGroupKhatma =>
+      isArabic ? 'مغادرة الختمة' : 'Leave khatma';
+  String get groupCodeIntro => isArabic
+      ? 'للانضمام: افتح تدبير ← المزيد ← ختمة جماعية، والصق هذا الرمز:'
+      : 'To join: open Tadbeer → More → Group khatma and paste this code:';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

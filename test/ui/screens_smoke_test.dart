@@ -16,6 +16,7 @@ import 'package:tadbeer/features/duas/duas_screen.dart';
 import 'package:tadbeer/features/duas/morning_evening_adhkar_screen.dart';
 import 'package:tadbeer/features/duas/quran_duas_screen.dart';
 import 'package:tadbeer/features/focus/focus_mode_screen.dart';
+import 'package:tadbeer/features/group_khatma/group_khatma_screen.dart';
 import 'package:tadbeer/features/highlights/highlights_screen.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/journey/journey_screen.dart';
@@ -99,6 +100,7 @@ void main() {
     'WordMeanings': () => const WordMeaningsScreen(),
     'AyahLinks': () => const AyahLinksScreen(),
     'Books': () => const BooksScreen(),
+    'GroupKhatma': () => const GroupKhatmaScreen(),
     'Focus': () =>
         FocusModeScreen(startAyah: QuranRepository.instance.getAyah(2, 255)!),
   };
