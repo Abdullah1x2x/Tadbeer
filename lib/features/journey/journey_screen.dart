@@ -7,6 +7,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/storage/user_data_store.dart';
 import '../quran/screens/quran_screen.dart';
+import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
 
 /// شاشة «رحلتي مع القرآن»: خطة الختمة، ورد اليوم، والإحصاءات.
@@ -20,7 +21,19 @@ class JourneyScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        appBar: AppBar(title: Text(l10n.myJourney)),
+        appBar: AppBar(
+          title: Text(l10n.myJourney),
+          actions: [
+            IconButton(
+              tooltip: l10n.mushafMap,
+              icon: const Icon(Icons.grid_on_rounded),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MushafMapScreen()),
+              ),
+            ),
+          ],
+        ),
         body: ListenableBuilder(
           listenable: UserDataStore.instance,
           builder: (context, _) {

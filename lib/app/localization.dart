@@ -95,6 +95,26 @@ class AppStrings {
   String get cancel => isArabic ? 'إلغاء' : 'Cancel';
   String get options => isArabic ? 'خيارات' : 'Options';
 
+  // Mushaf map & reflection log
+  String get mushafMap => isArabic ? 'خريطة المصحف' : 'Mushaf map';
+  String get mapTab => isArabic ? 'الخريطة' : 'Map';
+  String get reflectionLog => isArabic ? 'سجل التدبر' : 'Reflection log';
+  String pagesTouched(int n) => isArabic
+      ? 'صفحات لك فيها أثر: ${_n(n)} من ٦٠٤'
+      : 'Pages you have touched: $n of 604';
+
+  /// Legend label for [PageActivity] by index.
+  String activityLabel(int i) => isArabic
+      ? const ['لم تُقرأ', 'مقروءة', 'محفوظة أو مميزة', 'فيها تدبر'][i]
+      : const ['Not read', 'Read', 'Saved or highlighted', 'Reflected'][i];
+  String get noReflectionsYet =>
+      isArabic ? 'لا توجد وقفات تدبر بعد' : 'No reflections yet';
+  String get reflectionsEmptyHint => isArabic
+      ? 'اضغط مطولاً على آية واختر «وقفة تدبر» لتبدأ سجلك.'
+      : 'Long-press a verse and choose “Reflection” to start your log.';
+  String shortDate(DateTime d) =>
+      isArabic ? _n('${d.day}/${d.month}/${d.year}') : '${d.day}/${d.month}/${d.year}';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';
