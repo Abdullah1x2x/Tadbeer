@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/services/local_reminder_service.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/screens/quran_screen.dart';
+import '../reminders/reminder_model.dart';
 import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
 
@@ -68,9 +70,10 @@ class JourneyScreen extends StatelessWidget {
                             style: const TextStyle(fontSize: 14),
                           ),
                           trailing: TextButton(
-                            onPressed: () => UserDataStore.instance.moveKhatmaTo(
-                              UserDataStore.instance.readingPosition.page,
-                            ),
+                            onPressed: () =>
+                                UserDataStore.instance.moveKhatmaTo(
+                                  UserDataStore.instance.readingPosition.page,
+                                ),
                             child: Text(l10n.moveKhatmaHere),
                           ),
                         ),
@@ -102,6 +105,39 @@ class _StartKhatmaCard extends StatefulWidget {
 }
 
 class _StartKhatmaCardState extends State<_StartKhatmaCard> {
+  /// Fixed id so a new khatma updates the same reminder instead of adding.
+  static const _reminderId = 'khatma_daily_portion';
+
+  /// Offers a daily reminder for the portion right after starting.
+  Future<void> _offerPortionReminder(BuildContext context) async {
+    final l10n = context.l10n;
+    final time = await showTimePicker(
+      context: context,
+      helpText: l10n.portionReminderPrompt,
+      initialTime: const TimeOfDay(hour: 20, minute: 0),
+    );
+    if (time == null) return;
+    final pages = (mushafPageCount / _days).ceil();
+    final reminder = ReminderItem(
+      id: _reminderId,
+      title: l10n.portionReminderTitle(pages),
+      hour: time.hour,
+      minute: time.minute,
+      repeatMode: ReminderRepeatMode.daily,
+      alertType: ReminderAlertType.notification,
+      createdAt: DateTime.now(),
+    );
+    await UserDataStore.instance.putReminder(reminder);
+    await LocalReminderService.instance.scheduleReminder(reminder);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.portionReminderSet, textAlign: TextAlign.center),
+        ),
+      );
+    }
+  }
+
   static const _options = [7, 15, 30, 60, 90];
   int _days = 30;
   bool _fromCurrent = false;
@@ -159,10 +195,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
             const SizedBox(height: 18),
             SegmentedButton<bool>(
               segments: [
-                ButtonSegment(
-                  value: false,
-                  label: Text(l10n.fromMushafStart),
-                ),
+                ButtonSegment(value: false, label: Text(l10n.fromMushafStart)),
                 ButtonSegment(
                   value: true,
                   label: Text(
@@ -181,14 +214,15 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
             ),
             const SizedBox(height: 14),
             FilledButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 HapticFeedback.mediumImpact();
-                UserDataStore.instance.startKhatma(
+                await UserDataStore.instance.startKhatma(
                   _days,
                   startPage: _fromCurrent
                       ? UserDataStore.instance.readingPosition.page
                       : 1,
                 );
+                if (context.mounted) await _offerPortionReminder(context);
               },
               icon: const Icon(Icons.play_arrow_rounded),
               label: Text(l10n.startKhatma),

@@ -185,6 +185,13 @@ class AppStrings {
   String get reflectionsThisMonth =>
       isArabic ? 'تدبرات هذا الشهر' : 'Reflections this month';
 
+  String get portionReminderPrompt =>
+      isArabic ? 'متى نذكّرك بوردك يومياً؟' : 'When should we remind you daily?';
+  String portionReminderTitle(int pages) =>
+      isArabic ? 'ورد الختمة: ${_n(pages)} صفحة' : 'Khatma portion: $pages pages';
+  String get portionReminderSet =>
+      isArabic ? 'سنذكّرك بوردك كل يوم' : 'We’ll remind you every day';
+
   // Focus mode (وضع التأمل)
   String get focusMode => isArabic ? 'وضع التأمل' : 'Focus mode';
   String get breathe => isArabic ? 'تنفّس بهدوء' : 'Breathe';

@@ -5,7 +5,7 @@ import 'app/app.dart';
 import 'core/services/local_reminder_service.dart';
 import 'core/storage/user_data_store.dart';
 import 'features/quran/data/quran_repository.dart';
-import 'features/quran/screens/quran_screen.dart';
+import 'app/main_shell.dart';
 
 /// Registers bundled non-Dart asset licenses (Quranic text, Word Meanings dataset,
 /// and SIL OFL 1.1 fonts) into Flutter's [LicenseRegistry] so they appear in
@@ -82,11 +82,20 @@ void main() async {
   await LocalReminderService.instance.init(
     onTapped: (payload) {
       if (payload == 'quran_resume') {
-        appNavigatorKey.currentState?.push(
-          MaterialPageRoute(
-            builder: (_) => const QuranScreen(readingMode: true),
-          ),
-        );
+        // Open the Mushaf tab at the reading (khatma) position rather than a
+        // separate reader; skip the intro when launched from the reminder.
+        final navigator = appNavigatorKey.currentState;
+        if (navigator == null) return;
+        navigator.popUntil((route) => route.isFirst);
+        if (MainShell.isMounted) {
+          MainShell.requestedTab.value = ShellTab.quran;
+        } else {
+          navigator.pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const MainShell(initialTab: ShellTab.quran),
+            ),
+          );
+        }
       }
     },
   );
