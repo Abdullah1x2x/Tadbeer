@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import '../../features/ayah_links/ayah_link_model.dart';
 import '../../features/bookmarks/bookmark_model.dart';
 import '../../features/highlights/highlight_model.dart';
+import '../../features/journey/reading_journey.dart';
 import '../../features/notes/note_model.dart';
 import '../../features/quran/data/quran_models.dart';
 import '../../features/tadbeer/tadbeer_model.dart';
@@ -53,6 +54,12 @@ class UserDataStore extends ChangeNotifier {
   /// آخر موضع قراءة محفوظ للمستخدم.
   ReadingPosition get readingPosition => _readingPosition;
 
+  ReadingJourney _journey = const ReadingJourney();
+  static const _journeyKey = 'reading_journey';
+
+  /// رحلة القراءة: خطة الختمة وسجل الصفحات اليومية.
+  ReadingJourney get journey => _journey;
+
   /// قائمة جميع الملاحظات والخواطر غير القابلة للتعديل المباشر.
   List<NoteItem> get notes => List.unmodifiable(_notes);
 
@@ -90,6 +97,7 @@ class UserDataStore extends ChangeNotifier {
     if (testFile != null) {
       _dataFile = testFile;
       _readingPosition = ReadingPosition.defaultPosition();
+      _journey = const ReadingJourney();
       _notes.clear();
       _bookmarks.clear();
       _bookmarkLookup.clear();
@@ -114,6 +122,11 @@ class UserDataStore extends ChangeNotifier {
     if (userDb.isOpen) {
       final savedPos = await userDb.loadReadingPosition();
       if (savedPos != null) _readingPosition = savedPos;
+
+      final savedJourney = await userDb.loadAppState(_journeyKey);
+      if (savedJourney != null) {
+        _journey = ReadingJourney.fromJson(savedJourney);
+      }
 
       final dbNotes = await userDb.loadNotes();
       if (dbNotes.isNotEmpty) {
@@ -276,6 +289,13 @@ class UserDataStore extends ChangeNotifier {
           .toList();
     }
 
+    ReadingJourney? newJourney;
+    if (data['readingJourney'] is Map) {
+      newJourney = ReadingJourney.fromJson(
+        Map<String, dynamic>.from(data['readingJourney'] as Map),
+      );
+    }
+
     UserSettings? newSettings;
     if (data['settings'] is Map) {
       newSettings = UserSettings.fromJson(
@@ -285,6 +305,7 @@ class UserDataStore extends ChangeNotifier {
 
     // ---- Everything parsed successfully: apply present sections only ----
     if (newPosition != null) _readingPosition = newPosition;
+    if (newJourney != null) _journey = newJourney;
 
     if (newNotes != null) {
       _notes
@@ -342,6 +363,7 @@ class UserDataStore extends ChangeNotifier {
   Future<bool> _persistAllToSQLite() async {
     final userDb = UserDatabase.instance;
     if (!userDb.isOpen) return false;
+    await userDb.saveAppState(_journeyKey, _journey.toJson());
     return userDb.replaceAllUserData(
       readingPosition: _readingPosition,
       notes: _notes,
@@ -363,6 +385,7 @@ class UserDataStore extends ChangeNotifier {
         'schemaVersion': currentSchemaVersion,
         'exportedAt': DateTime.now().toIso8601String(),
         'readingPosition': _readingPosition.toJson(),
+        'readingJourney': _journey.toJson(),
         'notes': _notes.map((n) => n.toJson()).toList(),
         'bookmarks': _bookmarks.map((b) => b.toJson()).toList(),
         'highlights': _highlights.map((h) => h.toJson()).toList(),
@@ -890,12 +913,41 @@ class UserDataStore extends ChangeNotifier {
   }
 
   // ==========================================
+  // READING JOURNEY (الختمة والإحصاءات)
+  // ==========================================
+
+  /// يسجل قراءة صفحة اليوم ويحدّث تقدم الختمة.
+  Future<void> recordPageRead(int page, {DateTime? now}) async {
+    if (page < 1 || page > mushafPageCount) return;
+    final at = now ?? DateTime.now();
+    final already = _journey.dailyPages[dayKey(at)]?.contains(page) ?? false;
+    final inPlan = _journey.plan?.readPages.contains(page) ?? true;
+    if (already && inPlan) return;
+    await _saveJourney(_journey.recordPage(page, at));
+  }
+
+  /// يبدأ ختمة جديدة خلال [days] يوماً.
+  Future<void> startKhatma(int days) =>
+      _saveJourney(_journey.startPlan(days, DateTime.now()));
+
+  /// يلغي الختمة الحالية مع الإبقاء على سجل القراءة.
+  Future<void> cancelKhatma() => _saveJourney(_journey.cancelPlan());
+
+  Future<void> _saveJourney(ReadingJourney journey) async {
+    _journey = journey;
+    notifyListeners();
+    await UserDatabase.instance.saveAppState(_journeyKey, journey.toJson());
+    await saveToDisk();
+  }
+
+  // ==========================================
   // DATA INTEGRITY & RESET
   // ==========================================
 
   /// إعادة ضبط ومسح جميع بيانات المستخدم وإلغاء جميع المنبهات المجدولة.
   Future<void> resetAllData() async {
     _readingPosition = ReadingPosition.defaultPosition();
+    _journey = const ReadingJourney();
     _notes.clear();
     _bookmarks.clear();
     _bookmarkLookup.clear();
@@ -1032,6 +1084,7 @@ class UserDataStore extends ChangeNotifier {
       'schemaVersion': currentSchemaVersion,
       'exportedAt': DateTime.now().toIso8601String(),
       'readingPosition': _readingPosition.toJson(),
+      'readingJourney': _journey.toJson(),
       if (notes) 'notes': _notes.map((n) => n.toJson()).toList(),
       if (bookmarks) 'bookmarks': _bookmarks.map((b) => b.toJson()).toList(),
       if (highlights) 'highlights': _highlights.map((h) => h.toJson()).toList(),

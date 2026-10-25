@@ -10,6 +10,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/ayah_links_screen.dart';
 import '../books/books_screen.dart';
 import '../duas/duas_screen.dart';
+import '../journey/journey_summary_card.dart';
 
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
@@ -134,6 +135,10 @@ class HomeScreen extends StatelessWidget {
                           isCompact: isCompact,
                           isVeryCompact: isVeryCompact,
                         ),
+                        SizedBox(height: spaceHeroToCore),
+
+                        // رحلة القراءة: الأيام المتتالية وورد اليوم
+                        const JourneySummaryCard(),
                         SizedBox(height: spaceHeroToCore),
 
                         // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)

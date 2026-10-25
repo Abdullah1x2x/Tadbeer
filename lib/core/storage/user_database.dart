@@ -50,7 +50,7 @@ class UserDatabase {
   UserDatabase._internal();
 
   static const String databaseFileName = 'tadbeer_user_data.db';
-  static const int databaseVersion = 1;
+  static const int databaseVersion = 2;
 
   Database? _database;
 
@@ -150,6 +150,7 @@ class UserDatabase {
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // Progressive schema migrations
     if (oldVersion < 2) {
+      await _createAppStateTable(db);
       await db.execute('CREATE INDEX IF NOT EXISTS idx_notes_ayah ON notes (surah_number, ayah_number)');
       await db.execute('CREATE INDEX IF NOT EXISTS idx_bookmarks_ayah ON bookmarks (surah_number, ayah_number)');
       await db.execute('CREATE INDEX IF NOT EXISTS idx_highlights_ayah ON highlights (surah_number, ayah_number)');
@@ -263,7 +264,10 @@ class UserDatabase {
       )
     ''');
 
-    // 9. Composite Indexes for O(log N) Ayah Queries
+    // 9. Generic per-feature state (reading journey, ...)
+    await _createAppStateTable(db);
+
+    // 10. Composite Indexes for O(log N) Ayah Queries
     await db.execute(
       'CREATE INDEX IF NOT EXISTS idx_notes_ayah ON notes (surah_number, ayah_number)',
     );
@@ -276,6 +280,47 @@ class UserDatabase {
     await db.execute(
       'CREATE INDEX IF NOT EXISTS idx_tadbeer_ayah ON tadbeer_items (surah_number, ayah_number)',
     );
+  }
+
+  /// Key/value JSON store for feature state that has no table of its own.
+  static Future<void> _createAppStateTable(DatabaseExecutor db) =>
+      db.execute('''
+        CREATE TABLE IF NOT EXISTS app_state (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL
+        )
+      ''');
+
+  // ==================== APP STATE ====================
+
+  /// تحميل حالة ميزة محفوظة كـ JSON بمفتاحها.
+  Future<Map<String, dynamic>?> loadAppState(String key) async {
+    if (!isOpen) return null;
+    try {
+      final rows = await db.query(
+        'app_state',
+        where: 'key = ?',
+        whereArgs: [key],
+      );
+      if (rows.isEmpty) return null;
+      return jsonDecode(rows.first['value'] as String) as Map<String, dynamic>;
+    } catch (e) {
+      _reportIssue(UserDatabaseIssueKind.readFailed, 'loadAppState', e);
+      return null;
+    }
+  }
+
+  /// حفظ حالة ميزة كـ JSON بمفتاحها.
+  Future<void> saveAppState(String key, Map<String, dynamic> value) async {
+    if (!isOpen) return;
+    try {
+      await db.insert('app_state', {
+        'key': key,
+        'value': jsonEncode(value),
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (e) {
+      _reportIssue(UserDatabaseIssueKind.writeFailed, 'saveAppState', e);
+    }
   }
 
   // ==================== READING POSITION ====================
@@ -615,6 +660,7 @@ class UserDatabase {
       await db.delete('reminders');
       await db.delete('ayah_links');
       await db.delete('tadbeer_items');
+      await db.delete('app_state');
       try {
         await db.delete('tadabbur_items');
       } catch (_) {}
