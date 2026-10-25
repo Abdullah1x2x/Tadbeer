@@ -11,6 +11,7 @@ import '../../quran/data/quran_repository.dart';
 import '../ayah_link_detail_screen.dart';
 import '../ayah_link_model.dart';
 import '../ayah_link_repository.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// أدوات مشاركة واستيراد روابط الآيات دون اتصال بالإنترنت عبر رمز الاستجابة السريعة (QR).
 class AyahLinkQrDialog {
@@ -75,7 +76,7 @@ class AyahLinkQrDialog {
             ),
             title: Row(
               children: [
-                Icon(Icons.qr_code_2_rounded, color: primary),
+                Icon(AppIcons.qrCode, color: primary),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -176,7 +177,7 @@ class AyahLinkQrDialog {
                     ),
                   );
                 },
-                icon: const Icon(Icons.copy_rounded, size: 16),
+                icon: const Icon(AppIcons.copy, size: 16),
                 label: Text(l10n.isArabic ? 'نسخ البيانات' : 'Copy Data'),
               ),
               ElevatedButton(
@@ -229,7 +230,7 @@ class AyahLinkQrDialog {
                 ),
                 title: Row(
                   children: [
-                    Icon(Icons.qr_code_scanner_rounded, color: primary),
+                    Icon(AppIcons.scan, color: primary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -268,7 +269,7 @@ class AyahLinkQrDialog {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           suffixIcon: IconButton(
-                            icon: const Icon(Icons.paste_rounded, size: 20),
+                            icon: const Icon(AppIcons.clipboardText, size: 20),
                             tooltip: l10n.isArabic
                                 ? 'لصق من الحافظة'
                                 : 'Paste from clipboard',

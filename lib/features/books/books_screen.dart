@@ -7,6 +7,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'book_model.dart';
 import 'book_repository.dart';
 import 'book_section_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 export 'book_section_screen.dart';
 
@@ -138,7 +139,7 @@ class _BooksScreenState extends State<BooksScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.auto_stories_rounded,
+                  AppIcons.bookOpenTextFill,
                   size: 40,
                   color: isDark
                       ? AppColors.darkAccentGold
@@ -367,7 +368,7 @@ class _SectionDirectoryCard extends StatelessWidget {
 
               // 3. سهم الدخول في طرف البطاقة (ينعكس تلقائياً مع اتجاه اللغة)
               Icon(
-                Icons.chevron_right_rounded,
+                AppIcons.caretRight,
                 color: isDark
                     ? AppColors.darkTextSecondary
                     : AppColors.lightTextSecondary,

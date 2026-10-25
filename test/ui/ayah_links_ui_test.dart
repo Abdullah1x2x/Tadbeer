@@ -14,6 +14,7 @@ import 'package:tadbeer/features/ayah_links/ayah_links_screen.dart';
 import 'package:tadbeer/features/ayah_links/views/ayah_link_network_view.dart';
 import 'package:tadbeer/features/ayah_links/views/ayah_link_ordered_view.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -231,7 +232,7 @@ void main() {
         );
         final centerButton = find.byTooltip('العودة إلى الوسط');
         expect(centerButton, findsOneWidget);
-        expect(find.byIcon(Icons.center_focus_strong), findsOneWidget);
+        expect(find.byIcon(AppIcons.crosshair), findsOneWidget);
 
         // 3. Tapping Center button triggers centerView smoothly without error
         await tester.tap(centerButton);
@@ -393,7 +394,7 @@ void main() {
           findsOneWidget,
         );
         // 2 more_vert icons: 1 in AppBar for Link options, 1 in Note Card for Note actions
-        expect(find.byIcon(Icons.more_vert), findsNWidgets(2));
+        expect(find.byIcon(AppIcons.dotsThreeVertical), findsNWidgets(2));
       },
     );
 

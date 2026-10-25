@@ -11,6 +11,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// وضع التأمل: آية واحدة في كل مرة على خلفية هادئة متحركة.
 ///
@@ -150,7 +151,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
                       IconButton(
                         tooltip: l10n.close,
                         onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close_rounded),
+                        icon: const Icon(AppIcons.x),
                         color: Colors.white70,
                       ),
                       const Spacer(),
@@ -158,7 +159,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
                         tooltip: l10n.breathe,
                         onPressed: _toggleBreathing,
                         icon: Icon(
-                          _breathing ? Icons.air_rounded : Icons.spa_outlined,
+                          _breathing ? AppIcons.wind : AppIcons.flowerLotus,
                         ),
                         color: _breathing ? gold : Colors.white70,
                       ),
@@ -183,7 +184,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
                         ),
                         onPressed: () =>
                             TadbeerPauseSheet.show(context, _ayahs[_index]),
-                        icon: const Icon(Icons.spa_rounded),
+                        icon: const Icon(AppIcons.flowerLotusFill),
                         label: Text(l10n.tadbeerPause),
                       ),
                       const SizedBox(height: 10),

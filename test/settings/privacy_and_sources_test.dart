@@ -7,6 +7,7 @@ import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/core/storage/user_database.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -72,7 +73,7 @@ void main() {
         );
 
         // Close the modal sheet
-        final closeButton = find.byIcon(Icons.close_rounded);
+        final closeButton = find.byIcon(AppIcons.x);
         expect(closeButton, findsOneWidget);
         await tester.tap(closeButton);
         await tester.pumpAndSettle();

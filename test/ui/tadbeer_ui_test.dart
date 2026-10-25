@@ -15,6 +15,7 @@ import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/search/search_screen.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 /// Opacity of the floating bar's wrapper (0 while it is hidden for reading).
 double barOpacity(WidgetTester tester) => tester
@@ -153,11 +154,11 @@ void main() {
       }
 
       // Verify side menu button is removed and settings button replaced it
-      expect(find.byIcon(Icons.menu_rounded), findsNothing);
-      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+      expect(find.byIcon(AppIcons.list), findsNothing);
+      expect(find.byIcon(AppIcons.gear), findsOneWidget);
 
       // Verify tapping settings button opens SettingsScreen
-      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.tap(find.byIcon(AppIcons.gear));
       await tester.pumpAndSettle();
       expect(find.byType(SettingsScreen), findsOneWidget);
     });
@@ -327,7 +328,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap Save button in AppBar within runAsync for real disk I/O
-      final saveButton = find.byIcon(Icons.check);
+      final saveButton = find.byIcon(AppIcons.check);
       expect(saveButton, findsOneWidget);
       await tester.runAsync(() async {
         await tester.tap(saveButton);

@@ -9,6 +9,7 @@ import '../../core/motion/app_motion.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/quran/data/quran_repository.dart';
 import 'search_provider.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة البحث الشامل والفوري بدون إنترنت عبر جميع أقسام تطبيق تدبير.
 ///
@@ -214,11 +215,14 @@ class _SearchScreenState extends State<SearchScreen> {
                           ? AppColors.nightSubtitle
                           : AppColors.daySubtitle,
                     ),
-                    prefixIcon: Icon(Icons.search_rounded, color: primaryColor),
+                    prefixIcon: Icon(
+                      AppIcons.magnifyingGlass,
+                      color: primaryColor,
+                    ),
                     suffixIcon: _controller.text.isNotEmpty
                         ? IconButton(
                             tooltip: context.l10n.clearText,
-                            icon: const Icon(Icons.clear, size: 20),
+                            icon: const Icon(AppIcons.x, size: 20),
                             onPressed: () {
                               _controller.clear();
                               _executeSearch('', force: true);
@@ -370,7 +374,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.search_rounded,
+                                  AppIcons.magnifyingGlass,
                                   size: 64,
                                   color: AppColors.border(context),
                                 ),
@@ -413,7 +417,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.search_off_rounded,
+                                  AppIcons.magnifyingGlassMinus,
                                   size: 56,
                                   color: isDark
                                       ? AppColors.nightSubtitle
@@ -444,7 +448,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   const SizedBox(height: 16),
                                   FuturisticButton.secondary(
                                     onPressed: () => _onSelectFilter(null),
-                                    icon: Icons.travel_explore_rounded,
+                                    icon: AppIcons.globe,
                                     label: l10n.searchInAllSections,
                                   ),
                                 ],

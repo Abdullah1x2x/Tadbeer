@@ -11,6 +11,7 @@ import 'package:tadbeer/features/duas/quran_duas_screen.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -148,7 +149,7 @@ void main() {
         expect(find.textContaining('الأنبياء'), findsOneWidget);
 
         // Clear search
-        final clearButton = find.byIcon(Icons.clear);
+        final clearButton = find.byIcon(AppIcons.x);
         expect(clearButton, findsOneWidget);
         await tester.tap(clearButton);
         await tester.pumpAndSettle();
@@ -170,7 +171,7 @@ void main() {
 
       expect(find.text('٠ دعاء'), findsOneWidget);
       expect(find.text('لا توجد أدعية مطابقة لبحثك'), findsOneWidget);
-      expect(find.byIcon(Icons.search_off_rounded), findsOneWidget);
+      expect(find.byIcon(AppIcons.magnifyingGlassMinus), findsOneWidget);
     });
 
     testWidgets('Tapping "عرض الآية" navigates to QuranScreen', (

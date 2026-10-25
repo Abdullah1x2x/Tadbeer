@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +51,7 @@ void main() {
       final controller = scrollable.controller!;
 
       // 1. Initially at top: chevron down icon is visible
-      final chevronFinder = find.byIcon(Icons.keyboard_arrow_down_rounded);
+      final chevronFinder = find.byIcon(AppIcons.caretDown);
       expect(chevronFinder, findsOneWidget);
 
       // 2. Scroll partway down (not reaching the bottom yet)
@@ -65,14 +66,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // When reaching the bottom, chevron indicator is hidden
-      expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsNothing);
+      expect(find.byIcon(AppIcons.caretDown), findsNothing);
 
       // 4. Scroll back up to the top
       controller.jumpTo(0.0);
       await tester.pumpAndSettle();
 
       // Verify chevron reappears when scrolled back up
-      expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsOneWidget);
+      expect(find.byIcon(AppIcons.caretDown), findsOneWidget);
 
       // Reset surface size
       await tester.binding.setSurfaceSize(null);

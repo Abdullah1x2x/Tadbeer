@@ -6,6 +6,7 @@ import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/screens/quran_screen.dart';
 import 'quran_dua_model.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// بطاقة عرض الدعاء القرآني الموثق مع أزرار النسخ والانتقال المباشر للمصحف.
 ///
@@ -129,7 +130,7 @@ class QuranDuaCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    Icons.info_outline_rounded,
+                    AppIcons.info,
                     size: 16,
                     color: isDark ? Colors.amber[300] : Colors.amber[800],
                   ),
@@ -280,7 +281,7 @@ class QuranDuaCard extends StatelessWidget {
                   );
                 },
                 icon: Icon(
-                  Icons.menu_book_rounded,
+                  AppIcons.bookOpenFill,
                   size: 16,
                   color: isDark
                       ? AppColors.darkAccentGold
@@ -348,7 +349,7 @@ class QuranDuaCard extends StatelessWidget {
                   );
                 },
                 icon: Icon(
-                  Icons.copy_rounded,
+                  AppIcons.copy,
                   size: 16,
                   color: isDark
                       ? AppColors.darkTextSecondary

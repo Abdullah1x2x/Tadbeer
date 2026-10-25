@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../curated_books.dart';
+import '../../../core/design_system/app_icons.dart';
 
 // =============================================================================
 // 💡 لإضافة دعاء جديد للصحيفة السجادية:
@@ -15,7 +16,7 @@ const sahifahSajjadiyahBook = BookConfig(
   author: 'الإمام علي بن الحسين (زين العابدين) عليه السلام',
   assetPath: null,
   estimatedMinutes: 60,
-  icon: Icons.menu_book_rounded,
+  icon: AppIcons.bookOpenFill,
   badgeText: '٥٤ دعاءً كاملاً',
   badgeColor: Color(0xFF2C4F7C),
   chapters: [

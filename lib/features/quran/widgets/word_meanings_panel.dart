@@ -4,6 +4,7 @@ import '../../../app/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// لوحة معاني الكلمات القرآنية المصاحبة لقراءة المصحف الشريف.
 ///
@@ -115,7 +116,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.auto_stories_rounded,
+                    AppIcons.bookOpenTextFill,
                     size: 18,
                     color: isDark ? AppColors.oliveLight : AppColors.olive,
                   ),
@@ -133,7 +134,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   ),
                   const SizedBox(width: 6),
                   Icon(
-                    Icons.keyboard_arrow_up_rounded,
+                    AppIcons.caretUp,
                     size: 20,
                     color: isDark
                         ? AppColors.nightSubtitle
@@ -146,7 +147,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
           if (widget.onDismiss != null) ...[
             const SizedBox(width: 4),
             IconButton(
-              icon: const Icon(Icons.close_rounded, size: 18),
+              icon: const Icon(AppIcons.x, size: 18),
               tooltip: 'إخفاء الشريط',
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
@@ -199,7 +200,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
             child: Row(
               children: [
                 Icon(
-                  Icons.auto_stories_rounded,
+                  AppIcons.bookOpenTextFill,
                   size: 20,
                   color: isDark ? AppColors.oliveLight : AppColors.olive,
                 ),
@@ -248,7 +249,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded, size: 22),
+                  icon: const Icon(AppIcons.x, size: 22),
                   tooltip: 'إغلاق اللوحة',
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
@@ -311,7 +312,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.check_circle_outline_rounded,
+              AppIcons.checkCircle,
               size: 32,
               color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
             ),
@@ -431,7 +432,7 @@ void _showWordDetailsModal(
                 Row(
                   children: [
                     Icon(
-                      Icons.menu_book_rounded,
+                      AppIcons.bookOpenFill,
                       size: 16,
                       color: isDark ? AppColors.oliveLight : AppColors.olive,
                     ),

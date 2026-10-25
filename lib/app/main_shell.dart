@@ -8,6 +8,7 @@ import '../features/more/more_screen.dart';
 import '../features/quran/screens/quran_screen.dart';
 import '../features/tasbeeh/tasbeeh_screen.dart';
 import 'localization.dart';
+import '../core/design_system/app_icons.dart';
 
 /// تبويبات الشريط السفلي بترتيب ظهورها.
 enum ShellTab { home, quran, tasbeeh, duas, more }
@@ -189,28 +190,28 @@ class _MainShellState extends State<MainShell>
 
     final items = [
       FloatingNavItem(
-        icon: Icons.home_outlined,
-        selectedIcon: Icons.home_rounded,
+        icon: AppIcons.house,
+        selectedIcon: AppIcons.houseFill,
         label: l10n.home,
       ),
       FloatingNavItem(
-        icon: Icons.menu_book_outlined,
-        selectedIcon: Icons.menu_book_rounded,
+        icon: AppIcons.bookOpen,
+        selectedIcon: AppIcons.bookOpenFill,
         label: l10n.isArabic ? 'المصحف' : 'Mushaf',
       ),
       FloatingNavItem(
-        icon: Icons.radio_button_checked_outlined,
-        selectedIcon: Icons.radio_button_checked_rounded,
+        icon: AppIcons.radioButton,
+        selectedIcon: AppIcons.radioButtonFill,
         label: l10n.isArabic ? 'الاستغفار' : 'Istighfar',
       ),
       FloatingNavItem(
-        icon: Icons.volunteer_activism_outlined,
-        selectedIcon: Icons.volunteer_activism_rounded,
+        icon: AppIcons.handHeart,
+        selectedIcon: AppIcons.handHeartFill,
         label: l10n.duas,
       ),
       FloatingNavItem(
-        icon: Icons.grid_view_outlined,
-        selectedIcon: Icons.grid_view_rounded,
+        icon: AppIcons.squaresFour,
+        selectedIcon: AppIcons.squaresFourFill,
         label: l10n.more,
       ),
     ];

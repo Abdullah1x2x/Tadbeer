@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'book_model.dart';
 import 'data/heritage_data.dart';
 import 'data/malazem_data.dart';
+import '../../core/design_system/app_icons.dart';
 
 export 'book_model.dart';
 export 'data/malazem_data.dart';
@@ -15,7 +16,7 @@ class BookSectionConfig {
   /// وصف مختصر للقسم (اختياري).
   final String description;
 
-  /// أيقونة القسم (اختياري، الافتراضي: Icons.folder_special_rounded).
+  /// أيقونة القسم (اختياري، الافتراضي: AppIcons.folderStar).
   final IconData icon;
 
   /// لون تمييز القسم في الواجهة والبطاقات (اختياري).
@@ -33,7 +34,7 @@ class BookSectionConfig {
   const BookSectionConfig({
     required this.name,
     this.description = '',
-    this.icon = Icons.folder_special_rounded,
+    this.icon = AppIcons.folderStar,
     this.color,
     this.countLabel,
     this.seriesFilterList = const [],
@@ -100,7 +101,7 @@ class BookConfig {
     this.fileType,
     this.chapters = const [],
     this.estimatedMinutes = 10,
-    this.icon = Icons.menu_book_rounded,
+    this.icon = AppIcons.bookOpenFill,
     this.badgeText,
     this.badgeColor,
   });
@@ -210,7 +211,7 @@ final List<BookSectionConfig> curatedBookSections = [
   BookSectionConfig(
     name: 'ملازم هدي القرآن الكريم',
     description: 'سلسلة ملازم ودروس ومحاضرات السيد حسين بدر الدين الحوثي من هدي القرآن الكريم (٩١ ملزمة موثقة كاملة)',
-    icon: Icons.auto_stories_rounded,
+    icon: AppIcons.bookOpenTextFill,
     color: const Color(0xFFC59B27),
     countLabel: '٩١ ملزمة موثقة • PDF وفصول تفاعلية',
     seriesFilterList: const [

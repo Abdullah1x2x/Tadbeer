@@ -11,6 +11,7 @@ import '../../features/notes/note_model.dart';
 import '../../features/quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import 'note_editor_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة عرض وإدارة الخواطر المرتبطة بالآيات والملاحظات الحرة في قائمة موحدة.
 ///
@@ -75,7 +76,7 @@ class _NotesScreenState extends State<NotesScreen> {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: FuturisticIconButton(
-                icon: Icons.auto_stories_rounded,
+                icon: AppIcons.bookOpenTextFill,
                 tooltip: l10n.exportTadbeerJournal,
                 size: 40,
                 iconSize: 20,
@@ -88,7 +89,7 @@ class _NotesScreenState extends State<NotesScreen> {
           onPressed: () => _openFreeNoteEditor(),
           backgroundColor: AppColors.olive,
           foregroundColor: Colors.white,
-          icon: const Icon(Icons.add),
+          icon: const Icon(AppIcons.plus),
           label: Text(
             l10n.newFreeNote,
             style: const TextStyle(
@@ -127,13 +128,13 @@ class _NotesScreenState extends State<NotesScreen> {
                           : AppColors.daySubtitle,
                     ),
                     prefixIcon: Icon(
-                      Icons.search_rounded,
+                      AppIcons.magnifyingGlass,
                       color: isDark ? AppColors.darkPrimary : AppColors.olive,
                     ),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             tooltip: context.l10n.clearText,
-                            icon: const Icon(Icons.clear, size: 20),
+                            icon: const Icon(AppIcons.x, size: 20),
                             onPressed: () {
                               _searchController.clear();
                               setState(() => _query = '');
@@ -177,7 +178,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.edit_note,
+                            AppIcons.notePencil,
                             size: 64,
                             color: AppColors.border(context),
                           ),
@@ -372,7 +373,7 @@ class _NoteCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_horiz, size: 20),
+                    icon: const Icon(AppIcons.dotsThree, size: 20),
                     onSelected: (val) {
                       if (val == 'edit') onEdit();
                       if (val == 'pdf') onExportPdf();
@@ -384,7 +385,7 @@ class _NoteCard extends StatelessWidget {
                           value: 'edit',
                           child: Row(
                             children: [
-                              const Icon(Icons.edit, size: 18),
+                              const Icon(AppIcons.pencilSimpleFill, size: 18),
                               const SizedBox(width: 8),
                               Text(l10n.edit),
                             ],
@@ -395,7 +396,7 @@ class _NoteCard extends StatelessWidget {
                         child: Row(
                           children: [
                             Icon(
-                              Icons.picture_as_pdf,
+                              AppIcons.filePdfFill,
                               size: 18,
                               color: AppColors.olive,
                             ),
@@ -409,7 +410,7 @@ class _NoteCard extends StatelessWidget {
                         child: Row(
                           children: [
                             const Icon(
-                              Icons.delete_outline,
+                              AppIcons.trash,
                               size: 18,
                               color: Colors.redAccent,
                             ),

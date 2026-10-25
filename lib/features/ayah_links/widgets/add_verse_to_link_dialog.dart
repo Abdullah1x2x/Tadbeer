@@ -7,6 +7,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_link_repository.dart';
 import '../../quran/data/quran_models.dart';
 import '../../quran/data/quran_repository.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// أوضاع اختيار الآية في نافذة الإضافة لرابط الآيات.
 enum _AddVerseMode {
@@ -192,7 +193,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                           hintText: l10n.isArabic
                               ? 'ابحث باسم السورة أو رقمها...'
                               : 'Search surah name or number...',
-                          prefixIcon: const Icon(Icons.search_rounded),
+                          prefixIcon: const Icon(AppIcons.magnifyingGlass),
                           filled: true,
                           fillColor: AppColors.surface(context),
                           border: OutlineInputBorder(
@@ -265,7 +266,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                             ),
                             trailing: isSelected
                                 ? Icon(
-                                    Icons.check_circle_rounded,
+                                    AppIcons.checkCircleFill,
                                     color: Theme.of(context)
                                         .colorScheme
                                         .primary,
@@ -443,7 +444,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
-                  Icons.bookmark_add_rounded,
+                  AppIcons.bookmarkSimple,
                   color: primaryColor,
                   size: 20,
                 ),
@@ -459,7 +460,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close_rounded, size: 20),
+                icon: const Icon(AppIcons.x, size: 20),
                 onPressed: () => Navigator.pop(context),
                 tooltip: l10n.close,
               ),
@@ -491,21 +492,21 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
           children: [
             _buildTabButton(
               title: l10n.isArabic ? 'بحث فوري' : 'Quick Search',
-              icon: Icons.search_rounded,
+              icon: AppIcons.magnifyingGlass,
               mode: _AddVerseMode.search,
               primaryColor: primaryColor,
               isDark: isDark,
             ),
             _buildTabButton(
               title: l10n.isArabic ? 'تحديد يدوي' : 'Manual Picker',
-              icon: Icons.tune_rounded,
+              icon: AppIcons.slidersHorizontal,
               mode: _AddVerseMode.manual,
               primaryColor: primaryColor,
               isDark: isDark,
             ),
             _buildTabButton(
               title: l10n.isArabic ? 'محفوظاتي' : 'My Saved',
-              icon: Icons.bookmarks_outlined,
+              icon: AppIcons.bookmarks,
               mode: _AddVerseMode.saved,
               primaryColor: primaryColor,
               isDark: isDark,
@@ -592,14 +593,14 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   : AppColors.lightTextSecondary,
             ),
             prefixIcon: Icon(
-              Icons.search_rounded,
+              AppIcons.magnifyingGlass,
               color: primaryColor,
               size: 20,
             ),
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
                     tooltip: context.l10n.clearText,
-                    icon: const Icon(Icons.clear_rounded, size: 18),
+                    icon: const Icon(AppIcons.x, size: 18),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _searchResults = []);
@@ -690,7 +691,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ),
                   trailing: isSelected
                       ? Icon(
-                          Icons.check_circle_rounded,
+                          AppIcons.checkCircleFill,
                           color: primaryColor,
                           size: 18,
                         )
@@ -763,7 +764,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   child: Row(
                     children: [
                       Icon(
-                        Icons.menu_book_rounded,
+                        AppIcons.bookOpenFill,
                         color: primaryColor,
                         size: 18,
                       ),
@@ -794,7 +795,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                           ],
                         ),
                       ),
-                      const Icon(Icons.arrow_drop_down_rounded),
+                      const Icon(AppIcons.caretDown),
                     ],
                   ),
                 ),
@@ -830,10 +831,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                       children: [
                         IconButton(
                           tooltip: context.l10n.decrease,
-                          icon: const Icon(
-                            Icons.remove_circle_outline_rounded,
-                            size: 20,
-                          ),
+                          icon: const Icon(AppIcons.minusCircle, size: 20),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(
                             minWidth: 28,
@@ -878,10 +876,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                         ),
                         IconButton(
                           tooltip: context.l10n.increase,
-                          icon: const Icon(
-                            Icons.add_circle_outline_rounded,
-                            size: 20,
-                          ),
+                          icon: const Icon(AppIcons.plusCircle, size: 20),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(
                             minWidth: 28,
@@ -948,7 +943,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
         child: Column(
           children: [
             Icon(
-              Icons.bookmarks_outlined,
+              AppIcons.bookmarks,
               size: 36,
               color: Colors.grey.withValues(alpha: 0.6),
             ),
@@ -1034,11 +1029,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               style: const TextStyle(fontFamily: 'AmiriQuran', fontSize: 13),
             ),
             trailing: isSelected
-                ? Icon(
-                    Icons.check_circle_rounded,
-                    color: primaryColor,
-                    size: 18,
-                  )
+                ? Icon(AppIcons.checkCircleFill, color: primaryColor, size: 18)
                 : null,
             onTap: () => _selectAyah(a, updateSearchText: true),
           );
@@ -1109,7 +1100,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(
-                        Icons.warning_amber_rounded,
+                        AppIcons.warning,
                         size: 13,
                         color: Colors.orange,
                       ),
@@ -1211,7 +1202,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                         color: Colors.white,
                       ),
                     )
-                  : const Icon(Icons.add_link_rounded, size: 18),
+                  : const Icon(AppIcons.link, size: 18),
               label: Text(
                 l10n.isArabic ? 'إضافة إلى الرابط' : 'Add to Link',
                 style: const TextStyle(fontWeight: FontWeight.bold),

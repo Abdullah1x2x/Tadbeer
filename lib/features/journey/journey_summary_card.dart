@@ -5,6 +5,7 @@ import '../../app/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/storage/user_data_store.dart';
 import 'journey_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// بطاقة مختصرة في الرئيسية: الأيام المتتالية وورد اليوم وتقدم الختمة.
 class JourneySummaryCard extends StatelessWidget {
@@ -36,11 +37,7 @@ class JourneySummaryCard extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.local_fire_department_rounded,
-                    color: Color(0xFFE07A3F),
-                    size: 28,
-                  ),
+                  const Icon(AppIcons.fire, color: Color(0xFFE07A3F), size: 28),
                   Text(
                     l10n.digits(streak),
                     style: const TextStyle(
@@ -90,7 +87,7 @@ class JourneySummaryCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Icon(Icons.chevron_right_rounded, color: gold),
+              Icon(AppIcons.caretRight, color: gold),
             ],
           ),
         );

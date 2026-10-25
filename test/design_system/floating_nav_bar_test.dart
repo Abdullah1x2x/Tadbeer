@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/design_system/design_system.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   const items = [
     FloatingNavItem(
-      icon: Icons.home_outlined,
-      selectedIcon: Icons.home_rounded,
+      icon: AppIcons.house,
+      selectedIcon: AppIcons.houseFill,
       label: 'الرئيسية',
     ),
     FloatingNavItem(
-      icon: Icons.menu_book_outlined,
-      selectedIcon: Icons.menu_book_rounded,
+      icon: AppIcons.bookOpen,
+      selectedIcon: AppIcons.bookOpenFill,
       label: 'المصحف',
     ),
     FloatingNavItem(
-      icon: Icons.grid_view_outlined,
-      selectedIcon: Icons.grid_view_rounded,
+      icon: AppIcons.squaresFour,
+      selectedIcon: AppIcons.squaresFourFill,
       label: 'المزيد',
     ),
   ];

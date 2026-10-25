@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
+import '../core/design_system/app_icons.dart';
 
 /// سمات الألوان التي يختارها المستخدم (الكحلي هو الافتراضي).
 enum AppColorTheme {
@@ -689,6 +690,13 @@ class AppTheme {
       splashColor: primary.withValues(alpha: 0.14),
       highlightColor: primary.withValues(alpha: 0.06),
       shadowColor: shadow,
+      // Back, close and menu buttons use the same Phosphor set as the rest.
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (_) => const Icon(AppIcons.arrowLeft),
+        closeButtonIconBuilder: (_) => const Icon(AppIcons.x),
+        drawerButtonIconBuilder: (_) => const Icon(AppIcons.list),
+        endDrawerButtonIconBuilder: (_) => const Icon(AppIcons.list),
+      ),
       cardTheme: CardThemeData(
         color: surface,
         surfaceTintColor: Colors.transparent,
@@ -856,7 +864,7 @@ class AppTheme {
         trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
         thumbIcon: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.selected)
-              ? Icon(Icons.check_rounded, size: 16, color: gold)
+              ? Icon(AppIcons.check, size: 16, color: gold)
               : null,
         ),
       ),

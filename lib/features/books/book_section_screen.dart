@@ -7,6 +7,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'book_model.dart';
 import 'book_reader_screen.dart';
 import 'book_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة استعراض محتويات قسم محدد من أقسام المكتبة.
 /// تعرض قائمة الملازم أو الكتب التابعة لهذا القسم فقط مع تصفية وبحث موضعي.
@@ -209,14 +210,14 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               tooltip: context.l10n.clearText,
-                              icon: const Icon(Icons.clear_rounded, size: 18),
+                              icon: const Icon(AppIcons.x, size: 18),
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() => _searchQuery = '');
                               },
                             )
                           : Icon(
-                              Icons.search_rounded,
+                              AppIcons.magnifyingGlass,
                               color: primaryColor,
                               size: 20,
                             ),
@@ -336,9 +337,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  hasSearch
-                      ? Icons.search_off_rounded
-                      : Icons.library_books_rounded,
+                  hasSearch ? AppIcons.magnifyingGlassMinus : AppIcons.books,
                   size: 36,
                   color: isDark
                       ? AppColors.darkAccentGold
@@ -440,7 +439,7 @@ class _SectionBookCard extends StatelessWidget {
 
   IconData _getBookIcon() {
     if (book.isPdf) {
-      return Icons.picture_as_pdf_rounded;
+      return AppIcons.filePdfFill;
     }
     return book.icon;
   }
@@ -579,7 +578,7 @@ class _SectionBookCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Icon(
                   // Mirrors with text direction, so it points left in Arabic.
-                  Icons.chevron_right_rounded,
+                  AppIcons.caretRight,
                   size: 18,
                   color: isDark
                       ? AppColors.darkTextSecondary

@@ -8,6 +8,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../backup/backup_screen.dart';
 import '../reminders/reminders_screen.dart';
 import 'user_settings_model.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة الإعدادات لإدارة المظهر ونوع وحجم خط المصحف واللغة وإعادة تعيين البيانات.
 ///
@@ -52,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
                         Row(
                           children: [
                             Icon(
-                              Icons.palette_outlined,
+                              AppIcons.palette,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
@@ -103,7 +104,7 @@ class SettingsScreen extends StatelessWidget {
                                 isSelected:
                                     settings.themeMode == ThemeMode.light,
                                 label: l10n.light,
-                                icon: Icons.light_mode_rounded,
+                                icon: AppIcons.sun,
                                 isDark: isDark,
                                 onSelect: () {
                                   UserDataStore.instance.updateSettings(
@@ -121,7 +122,7 @@ class SettingsScreen extends StatelessWidget {
                                 isSelected:
                                     settings.themeMode == ThemeMode.dark,
                                 label: l10n.dark,
-                                icon: Icons.dark_mode_rounded,
+                                icon: AppIcons.moon,
                                 isDark: isDark,
                                 onSelect: () {
                                   UserDataStore.instance.updateSettings(
@@ -143,7 +144,7 @@ class SettingsScreen extends StatelessWidget {
                                         AppLanguage.arabic
                                     ? 'تلقائي'
                                     : 'System',
-                                icon: Icons.brightness_auto_rounded,
+                                icon: AppIcons.circleHalf,
                                 isDark: isDark,
                                 onSelect: () {
                                   UserDataStore.instance.updateSettings(
@@ -189,7 +190,7 @@ class SettingsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(
-                              Icons.remove_red_eye_outlined,
+                              AppIcons.eye,
                               size: 18,
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -228,7 +229,7 @@ class SettingsScreen extends StatelessWidget {
                         Row(
                           children: [
                             Icon(
-                              Icons.font_download_outlined,
+                              AppIcons.textT,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
@@ -297,7 +298,7 @@ class SettingsScreen extends StatelessWidget {
                             Row(
                               children: [
                                 Icon(
-                                  Icons.format_size_rounded,
+                                  AppIcons.textAa,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                                 const SizedBox(width: 8),
@@ -345,7 +346,7 @@ class SettingsScreen extends StatelessWidget {
                         Row(
                           children: [
                             Icon(
-                              Icons.auto_stories_outlined,
+                              AppIcons.bookOpenText,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
@@ -365,13 +366,13 @@ class SettingsScreen extends StatelessWidget {
                                 0,
                                 MushafPaperTone.classic,
                                 l10n.paperClassic,
-                                Icons.description_outlined,
+                                AppIcons.fileText,
                               ),
                               (
                                 1,
                                 MushafPaperTone.sepia,
                                 l10n.paperSepia,
-                                Icons.local_cafe_outlined,
+                                AppIcons.coffee,
                               ),
                             ]) ...[
                               if (index > 0) const SizedBox(width: 8),
@@ -443,7 +444,7 @@ class SettingsScreen extends StatelessWidget {
                                               UserSettings.defaultQuranFontSize,
                                             ),
                                   icon: const Icon(
-                                    Icons.refresh_rounded,
+                                    AppIcons.arrowClockwise,
                                     size: 16,
                                   ),
                                   label: Text(
@@ -473,7 +474,7 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         leading: Icon(
-                          Icons.language_outlined,
+                          AppIcons.globe,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         title: Text(
@@ -519,7 +520,7 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(height: 1),
                       ListTile(
                         leading: Icon(
-                          Icons.alarm_rounded,
+                          AppIcons.alarmFill,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         title: Text(
@@ -535,12 +536,7 @@ class SettingsScreen extends StatelessWidget {
                                 : AppColors.daySubtitle,
                           ),
                         ),
-                        trailing: Icon(
-                          isArabic
-                              ? Icons.chevron_left_rounded
-                              : Icons.chevron_right_rounded,
-                          size: 20,
-                        ),
+                        trailing: Icon(AppIcons.caretRight, size: 20),
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -561,7 +557,7 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         leading: Icon(
-                          Icons.security_rounded,
+                          AppIcons.shieldCheck,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         title: Text(
@@ -577,12 +573,7 @@ class SettingsScreen extends StatelessWidget {
                                 : AppColors.daySubtitle,
                           ),
                         ),
-                        trailing: Icon(
-                          isArabic
-                              ? Icons.chevron_left_rounded
-                              : Icons.chevron_right_rounded,
-                          size: 20,
-                        ),
+                        trailing: Icon(AppIcons.caretRight, size: 20),
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -593,7 +584,7 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(height: 1),
                       ListTile(
                         leading: const Icon(
-                          Icons.delete_forever_rounded,
+                          AppIcons.trash,
                           color: Colors.redAccent,
                         ),
                         title: Text(
@@ -639,7 +630,7 @@ class SettingsScreen extends StatelessWidget {
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
-                                Icons.menu_book_rounded,
+                                AppIcons.bookOpenFill,
                                 color: Theme.of(context).colorScheme.primary,
                                 size: 20,
                               ),
@@ -717,10 +708,7 @@ class SettingsScreen extends StatelessWidget {
                               child: OutlinedButton.icon(
                                 onPressed: () =>
                                     _showPrivacyPolicyDialog(context),
-                                icon: const Icon(
-                                  Icons.shield_outlined,
-                                  size: 17,
-                                ),
+                                icon: const Icon(AppIcons.shield, size: 17),
                                 label: Text(
                                   l10n.privacyPolicy,
                                   style: const TextStyle(fontSize: 12),
@@ -744,10 +732,7 @@ class SettingsScreen extends StatelessWidget {
                                         'Books & Malazem: Authentic Public Domain & Heritage Works',
                                   );
                                 },
-                                icon: const Icon(
-                                  Icons.policy_outlined,
-                                  size: 17,
-                                ),
+                                icon: const Icon(AppIcons.fileText, size: 17),
                                 label: Text(
                                   l10n.openSourceLicenses,
                                   style: const TextStyle(fontSize: 12),
@@ -777,11 +762,7 @@ class SettingsScreen extends StatelessWidget {
       builder: (dialogCtx) => AlertDialog(
         title: Row(
           children: [
-            const Icon(
-              Icons.warning_amber_rounded,
-              color: Colors.redAccent,
-              size: 24,
-            ),
+            const Icon(AppIcons.warning, color: Colors.redAccent, size: 24),
             const SizedBox(width: 8),
             Text(l10n.resetData),
           ],
@@ -790,7 +771,7 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton.icon(
             onPressed: () => Navigator.pop(dialogCtx, false),
-            icon: const Icon(Icons.close_rounded, size: 16),
+            icon: const Icon(AppIcons.x, size: 16),
             label: Text(l10n.cancel),
           ),
           ElevatedButton.icon(
@@ -802,7 +783,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             onPressed: () => Navigator.pop(dialogCtx, true),
-            icon: const Icon(Icons.delete_forever_rounded, size: 16),
+            icon: const Icon(AppIcons.trash, size: 16),
             label: Text(l10n.confirmReset),
           ),
         ],
@@ -934,7 +915,7 @@ class SettingsScreen extends StatelessWidget {
                   duration: const Duration(milliseconds: 180),
                   opacity: isSelected ? 1.0 : 0.0,
                   child: Icon(
-                    Icons.check_circle_rounded,
+                    AppIcons.checkCircleFill,
                     size: 14,
                     color: primaryColor,
                   ),
@@ -1034,7 +1015,7 @@ class SettingsScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            Icons.shield_rounded,
+                            AppIcons.shieldFill,
                             color: primaryColor,
                             size: 22,
                           ),
@@ -1066,7 +1047,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(Icons.close_rounded, size: 20),
+                          icon: const Icon(AppIcons.x, size: 20),
                           tooltip: context.l10n.close,
                         ),
                       ],
@@ -1079,7 +1060,7 @@ class SettingsScreen extends StatelessWidget {
                         controller: scrollController,
                         children: [
                           _buildPrivacyTile(
-                            icon: Icons.cloud_off_rounded,
+                            icon: AppIcons.cloudSlash,
                             title: isArabic
                                 ? 'عمل محلي تام دون إنترنت (100% Offline-First)'
                                 : '100% Offline-First by Architecture',
@@ -1090,7 +1071,7 @@ class SettingsScreen extends StatelessWidget {
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
-                            icon: Icons.no_accounts_rounded,
+                            icon: AppIcons.userMinus,
                             title: isArabic
                                 ? 'عدم جمع أي بيانات شخصية (Zero Data Collection)'
                                 : 'Zero Personal Data Collection',
@@ -1101,7 +1082,7 @@ class SettingsScreen extends StatelessWidget {
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
-                            icon: Icons.enhanced_encryption_rounded,
+                            icon: AppIcons.lockKey,
                             title: isArabic
                                 ? 'تخزين محلي وتشفير عالي (AES-256)'
                                 : 'Local Storage & AES-256 Encryption',
@@ -1112,7 +1093,7 @@ class SettingsScreen extends StatelessWidget {
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
-                            icon: Icons.notifications_active_rounded,
+                            icon: AppIcons.bellRingingFill,
                             title: isArabic
                                 ? 'استخدام حصري ومحدد للأذونات (Device Permissions)'
                                 : 'Strictly Scoped Device Permissions',
@@ -1123,7 +1104,7 @@ class SettingsScreen extends StatelessWidget {
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
-                            icon: Icons.block_flipped,
+                            icon: AppIcons.prohibit,
                             title: isArabic
                                 ? 'خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)'
                                 : 'Zero Advertisements & Trackers',
@@ -1280,7 +1261,7 @@ class _ColorThemeSwatch extends StatelessWidget {
                 ],
               ),
               child: selected
-                  ? const Icon(Icons.check_rounded, color: Colors.white)
+                  ? const Icon(AppIcons.check, color: Colors.white)
                   : Align(
                       alignment: const Alignment(0.55, 0.55),
                       child: Container(

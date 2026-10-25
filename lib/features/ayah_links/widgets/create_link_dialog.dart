@@ -4,6 +4,7 @@ import '../../../app/localization.dart';
 import '../../../app/theme.dart';
 import '../ayah_link_model.dart';
 import '../ayah_link_repository.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// نافذة حوار مبسطة لإنشاء رابط آيات جديد أو تعديل رابط موجود.
 ///
@@ -109,7 +110,7 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
         title: Row(
           children: [
             Icon(
-              Icons.hub_outlined,
+              AppIcons.graph,
               color: Theme.of(context).colorScheme.primary,
               size: 24,
             ),

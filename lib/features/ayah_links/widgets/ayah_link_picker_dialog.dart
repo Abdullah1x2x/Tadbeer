@@ -7,6 +7,7 @@ import '../ayah_link_repository.dart';
 import '../../quran/data/quran_models.dart';
 import '../../quran/data/quran_repository.dart';
 import 'create_link_dialog.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// لوحة سفلية تتيح للمستخدم ربط آية قرآنية من المصحف برابط آيات موجود أو جديد.
 ///
@@ -125,7 +126,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                         Row(
                           children: [
                             Icon(
-                              Icons.hub_outlined,
+                              AppIcons.graph,
                               color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
@@ -140,7 +141,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                         ),
                         IconButton(
                           tooltip: context.l10n.close,
-                          icon: const Icon(Icons.close, size: 20),
+                          icon: const Icon(AppIcons.x, size: 20),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -185,7 +186,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        Icons.add,
+                        AppIcons.plus,
                         color: Theme.of(context).colorScheme.primary,
                         size: 20,
                       ),
@@ -218,7 +219,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                       child: Column(
                         children: [
                           Icon(
-                            Icons.hub_outlined,
+                            AppIcons.graph,
                             size: 40,
                             color: Colors.grey.withValues(alpha: 0.5),
                           ),
@@ -249,8 +250,8 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                           return ListTile(
                             leading: Icon(
                               isAlreadyLinked
-                                  ? Icons.check_circle_rounded
-                                  : Icons.circle_outlined,
+                                  ? AppIcons.checkCircleFill
+                                  : AppIcons.circle,
                               color: isAlreadyLinked
                                   ? Theme.of(context).colorScheme.primary
                                   : Colors.grey,
@@ -286,13 +287,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                           .primary,
                                     ),
                                   )
-                                : Icon(
-                                    context.currentLanguage.direction ==
-                                            TextDirection.rtl
-                                        ? Icons.arrow_back_ios_new_rounded
-                                        : Icons.arrow_forward_ios_rounded,
-                                    size: 14,
-                                  ),
+                                : Icon(AppIcons.caretRight, size: 14),
                             onTap: isAlreadyLinked
                                 ? null
                                 : () => _addVerseToLink(link.id, link.title),

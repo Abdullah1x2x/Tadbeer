@@ -5,6 +5,7 @@ import 'package:tadbeer/core/services/local_reminder_service.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/reminders/reminder_model.dart';
 import 'package:tadbeer/features/reminders/reminders_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   Widget buildTestWidget(Widget child) {
@@ -111,7 +112,7 @@ void main() {
         expect(find.text('لا توجد تنبيهات قراءة مضافة'), findsOneWidget);
 
         // Tap Test Notification menu in AppBar and choose standard notification
-        final testBtn = find.byIcon(Icons.notifications_active_outlined);
+        final testBtn = find.byIcon(AppIcons.bellRinging);
         expect(testBtn, findsOneWidget);
         await tester.tap(testBtn);
         await tester.pumpAndSettle();
@@ -126,7 +127,7 @@ void main() {
         );
 
         // Tap Add Reminder FAB
-        await tester.tap(find.byIcon(Icons.alarm_add));
+        await tester.tap(find.byIcon(AppIcons.alarm));
         await tester.pumpAndSettle();
 
         // Verify both alert type options exist in dialog

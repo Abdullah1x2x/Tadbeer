@@ -10,6 +10,7 @@ import 'views/ayah_link_ordered_view.dart';
 import 'widgets/add_verse_to_link_dialog.dart';
 import 'widgets/ayah_link_qr_dialog.dart';
 import 'widgets/create_link_dialog.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة عرض تفاصيل رابط الآيات عبر وضعي الشبكة التفاعلية والقائمة المرتبة.
 ///
@@ -78,7 +79,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
         title: Row(
           children: [
             Icon(
-              Icons.edit_note_rounded,
+              AppIcons.notePencil,
               color: Theme.of(context).colorScheme.primary,
               size: 26,
             ),
@@ -302,7 +303,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
               ),
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.qr_code_2_rounded),
+                  icon: const Icon(AppIcons.qrCode),
                   tooltip: l10n.isArabic
                       ? 'مشاركة عبر رمز الاستجابة السريعة (QR)'
                       : 'Share via QR Code',
@@ -311,7 +312,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                 ),
                 // Secondary actions popup menu
                 PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert),
+                  icon: const Icon(AppIcons.dotsThreeVertical),
                   tooltip: l10n.more,
                   onSelected: (val) {
                     if (val == 'autolayout') {
@@ -329,7 +330,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                         child: Row(
                           children: [
                             const Icon(
-                              Icons.auto_awesome_mosaic_outlined,
+                              AppIcons.squaresFour,
                               size: 18,
                             ),
                             const SizedBox(width: 8),
@@ -341,7 +342,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                       value: 'edit',
                       child: Row(
                         children: [
-                          const Icon(Icons.edit_outlined, size: 18),
+                          const Icon(AppIcons.pencilSimple, size: 18),
                           const SizedBox(width: 8),
                           Text(l10n.editTitleAndDescription),
                         ],
@@ -352,7 +353,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                       child: Row(
                         children: [
                           const Icon(
-                            Icons.delete_outline,
+                            AppIcons.trash,
                             color: Colors.redAccent,
                             size: 18,
                           ),
@@ -391,14 +392,14 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                     children: [
                       _ViewTabButton(
                         label: l10n.networkView,
-                        icon: Icons.hub_outlined,
+                        icon: AppIcons.graph,
                         isActive: _activeViewMode == 'network',
                         onTap: () => _switchViewMode('network'),
                       ),
                       const SizedBox(width: 8),
                       _ViewTabButton(
                         label: l10n.orderedView,
-                        icon: Icons.format_list_numbered_rtl_rounded,
+                        icon: AppIcons.listNumbers,
                         isActive: _activeViewMode == 'ordered',
                         onTap: () => _switchViewMode('ordered'),
                       ),
@@ -430,7 +431,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                   onPressed: () => _openAddVerse(link),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
-                  icon: const Icon(Icons.add),
+                  icon: const Icon(AppIcons.plus),
                   label: Text(l10n.addVerse),
                 ),
                 const SizedBox(width: 8),
@@ -452,7 +453,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                           : AppColors.olive.withValues(alpha: 0.4),
                     ),
                   ),
-                  icon: const Icon(Icons.edit_note_rounded),
+                  icon: const Icon(AppIcons.notePencil),
                   label: Text(
                     l10n.isArabic ? 'إضافة ملاحظة' : 'Add Note',
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -477,7 +478,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                             : AppColors.lightBorder,
                       ),
                     ),
-                    child: const Icon(Icons.center_focus_strong, size: 20),
+                    child: const Icon(AppIcons.crosshair, size: 20),
                   ),
                 ],
               ],

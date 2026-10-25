@@ -18,6 +18,7 @@ import '../reminders/reminders_screen.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import '../word_meanings/word_meanings_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// تبويب «المزيد»: الأدوات الثانوية والإعدادات في قائمة واحدة واضحة.
 class MoreScreen extends StatelessWidget {
@@ -44,52 +45,52 @@ class MoreScreen extends StatelessWidget {
               title: l10n.isArabic ? 'الأقسام' : 'Sections',
               children: [
                 _Tile(
-                  icon: Icons.insights_rounded,
+                  icon: AppIcons.chartLineUp,
                   label: l10n.myJourney,
                   onTap: () => open(const JourneyScreen()),
                 ),
                 _Tile(
-                  icon: Icons.grid_on_rounded,
+                  icon: AppIcons.gridFour,
                   label: l10n.mushafMap,
                   onTap: () => open(const MushafMapScreen()),
                 ),
                 _Tile(
-                  icon: Icons.route_rounded,
+                  icon: AppIcons.path,
                   label: l10n.guidedPathways,
                   onTap: () => open(const GuidedPathwaysScreen()),
                 ),
                 _Tile(
-                  icon: Icons.groups_rounded,
+                  icon: AppIcons.usersThree,
                   label: l10n.groupKhatma,
                   onTap: () => open(const GroupKhatmaScreen()),
                 ),
                 _Tile(
-                  icon: Icons.psychology_rounded,
+                  icon: AppIcons.brainFill,
                   label: l10n.memorization,
                   onTap: () => open(const MemorizationScreen()),
                 ),
                 _Tile(
-                  icon: Icons.edit_note_rounded,
+                  icon: AppIcons.notePencil,
                   label: l10n.notes,
                   onTap: () => open(const NotesScreen()),
                 ),
                 _Tile(
-                  icon: Icons.search_rounded,
+                  icon: AppIcons.magnifyingGlass,
                   label: l10n.search,
                   onTap: () => open(const SearchScreen()),
                 ),
                 _Tile(
-                  icon: Icons.translate_rounded,
+                  icon: AppIcons.translate,
                   label: l10n.wordMeanings,
                   onTap: () => open(const WordMeaningsScreen()),
                 ),
                 _Tile(
-                  icon: Icons.hub_rounded,
+                  icon: AppIcons.graphFill,
                   label: l10n.ayahLinks,
                   onTap: () => open(const AyahLinksScreen()),
                 ),
                 _Tile(
-                  icon: Icons.auto_stories_rounded,
+                  icon: AppIcons.bookOpenTextFill,
                   label: l10n.booksAndBooklets,
                   onTap: () => open(const BooksScreen()),
                 ),
@@ -99,12 +100,12 @@ class MoreScreen extends StatelessWidget {
               title: l10n.isArabic ? 'آياتي' : 'My verses',
               children: [
                 _Tile(
-                  icon: Icons.bookmark_rounded,
+                  icon: AppIcons.bookmarkSimpleFill,
                   label: l10n.bookmarks,
                   onTap: () => open(const BookmarksScreen()),
                 ),
                 _Tile(
-                  icon: Icons.format_paint_rounded,
+                  icon: AppIcons.paintBrushFill,
                   label: l10n.highlights,
                   onTap: () => open(const HighlightsScreen()),
                 ),
@@ -114,12 +115,12 @@ class MoreScreen extends StatelessWidget {
               title: l10n.isArabic ? 'الأدوات' : 'Tools',
               children: [
                 _Tile(
-                  icon: Icons.alarm_rounded,
+                  icon: AppIcons.alarmFill,
                   label: l10n.reminders,
                   onTap: () => open(const RemindersScreen()),
                 ),
                 _Tile(
-                  icon: Icons.backup_rounded,
+                  icon: AppIcons.cloudArrowUp,
                   label: l10n.backup,
                   onTap: () => open(const BackupScreen()),
                 ),
@@ -129,7 +130,7 @@ class MoreScreen extends StatelessWidget {
               title: l10n.isArabic ? 'التطبيق' : 'App',
               children: [
                 _Tile(
-                  icon: Icons.settings_rounded,
+                  icon: AppIcons.gearFill,
                   label: l10n.settings,
                   onTap: () => open(const SettingsScreen()),
                 ),
@@ -220,7 +221,7 @@ class _Tile extends StatelessWidget {
       ),
       // Mirrors with text direction, so it points left in Arabic.
       trailing: Icon(
-        Icons.chevron_right_rounded,
+        AppIcons.caretRight,
         color: AppColors.textSecondary(context),
       ),
     );

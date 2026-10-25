@@ -8,6 +8,8 @@ import '../../settings/settings_screen.dart';
 
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
+import '../../../core/design_system/app_icons.dart';
+
 /// Side drawer menu providing direct jump navigation across Surahs and Juzs,
 /// as well as fast access to Home and Settings.
 /// القائمة الجانبية للمصحف للتنقل المباشر بين السور والأجزاء والوصول السريع للرئيسية والإعدادات.
@@ -129,14 +131,14 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                         : AppColors.daySubtitle,
                   ),
                   prefixIcon: Icon(
-                    Icons.search,
+                    AppIcons.magnifyingGlass,
                     size: 18,
                     color: AppColors.olive,
                   ),
                   suffixIcon: _filter.isNotEmpty
                       ? IconButton(
                           tooltip: context.l10n.clearText,
-                          icon: const Icon(Icons.clear, size: 16),
+                          icon: const Icon(AppIcons.x, size: 16),
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _filter = '');
@@ -240,14 +242,14 @@ class _QuranSideMenuState extends State<QuranSideMenu>
           ),
           // Home Button
           IconButton(
-            icon: const Icon(Icons.home_outlined),
+            icon: const Icon(AppIcons.house),
             tooltip: l10n.home,
             color: AppColors.olive,
             onPressed: () => _navigateToHome(context),
           ),
           // Settings Button
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(AppIcons.gear),
             tooltip: l10n.settings,
             color: AppColors.olive,
             onPressed: () => _navigateToSettings(context),

@@ -7,6 +7,7 @@ import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/ayah_links/curated_pathways.dart';
 import 'package:tadbeer/features/pathways/guided_pathways_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   late Directory tempDir;
@@ -56,7 +57,7 @@ void main() {
     expect(GuidedPathwayProgress.completedDays(pathway.id), {0});
     // Day 2 is now the open card.
     expect(find.text('أتممت اليوم'), findsOneWidget);
-    expect(find.byIcon(Icons.check_rounded), findsWidgets);
+    expect(find.byIcon(AppIcons.check), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 }

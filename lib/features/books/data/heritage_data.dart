@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../book_model.dart';
 import '../curated_books.dart' show BookConfig, BookSectionConfig;
 import 'sahifah_sajjadiyah_data.dart';
+import '../../../core/design_system/app_icons.dart';
 
 export 'sahifah_sajjadiyah_data.dart';
 
@@ -25,7 +26,7 @@ const nahjAlBalaghaBook = BookConfig(
   author: 'أمير المؤمنين علي بن أبي طالب عليه السلام',
   assetPath: null,
   estimatedMinutes: 50,
-  icon: Icons.auto_stories_rounded,
+  icon: AppIcons.bookOpenTextFill,
   badgeText: 'كبرى الخطب والرسائل والحكم',
   badgeColor: Color(0xFF2C4F7C),
   chapters: [
@@ -214,7 +215,7 @@ const risalatAlHuquqBook = BookConfig(
   author: 'الإمام علي بن الحسين (زين العابدين) عليه السلام',
   assetPath: null,
   estimatedMinutes: 35,
-  icon: Icons.balance_rounded,
+  icon: AppIcons.scales,
   badgeText: 'رسالة الحقوق (٥٠ حقاً)',
   badgeColor: Color(0xFF2C4F7C),
   chapters: [
@@ -351,7 +352,7 @@ const tuhafAlUqulBook = BookConfig(
       'أبي محمد الحسن بن علي بن الحسين بن شعبة الحراني (القرن الرابع الهجري)',
   assetPath: null,
   estimatedMinutes: 45,
-  icon: Icons.auto_stories_rounded,
+  icon: AppIcons.bookOpenTextFill,
   badgeText: 'جامع مواعظ ووصايا المعصومين',
   badgeColor: Color(0xFF2C4F7C),
   chapters: [
@@ -398,7 +399,7 @@ const tuhafAlUqulBook = BookConfig(
 const ahlulbaytHeritageSection = BookSectionConfig(
   name: 'تراث وأدعية أهل البيت (عليهم السلام)',
   description: 'أشرف كتب ومناجاة وأدعية أئمة الهدى ومختارات البلاغة والتربية الإيمانية الكاملة',
-  icon: Icons.mosque_rounded,
+  icon: AppIcons.mosque,
   color: Color(0xFF2C4F7C),
   countLabel: 'أمهات كتب كاملة • ٥٤ دعاء و٥٠ حقاً',
   books: [
@@ -414,7 +415,7 @@ const quranSciencesSection = BookSectionConfig(
   name: 'علوم وتدبر القرآن الكريم',
   description:
       'أمهات كتب آداب التلاوة وقواعد التدبر الإيماني وأخلاق حملة القرآن',
-  icon: Icons.menu_book_rounded,
+  icon: AppIcons.bookOpenFill,
   color: Color(0xFF3A6EA5),
   countLabel: 'كتب تدبرية وتفسيرية',
   books: [
@@ -425,7 +426,7 @@ const quranSciencesSection = BookSectionConfig(
       author: 'الإمام أبي بكر محمد بن الحسين الآجري (ت 360 هـ)',
       assetPath: 'assets/books/akhlaq_hamalat_quran.pdf',
       estimatedMinutes: 20,
-      icon: Icons.import_contacts_rounded,
+      icon: AppIcons.bookOpen,
       chapters: [
         BookChapter(
           title: 'فضل حملة القرآن الكريم وقارئيه',
@@ -462,7 +463,7 @@ const quranSciencesSection = BookSectionConfig(
       author: 'دراسة جامعة محققة من أصول التفسير والتدبر',
       assetPath: 'assets/books/qawaid_tadabbur_quran.pdf',
       estimatedMinutes: 25,
-      icon: Icons.lightbulb_rounded,
+      icon: AppIcons.lightbulbFill,
       chapters: [
         BookChapter(
           title: 'القاعدة الأولى: حقيقة التدبر القرآني وغايته',
@@ -500,7 +501,7 @@ const quranSciencesSection = BookSectionConfig(
       author: 'الإمام يحيى بن شرف النووي (ت 676 هـ)',
       assetPath: 'assets/books/al_tibyan.pdf',
       estimatedMinutes: 25,
-      icon: Icons.menu_book_rounded,
+      icon: AppIcons.bookOpenFill,
       chapters: [
         BookChapter(
           title: 'فضل تلاوة القرآن وسالكي طريقه',

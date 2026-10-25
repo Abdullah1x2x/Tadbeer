@@ -7,6 +7,7 @@ import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/notes/note_model.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 List<Rect> mergeTextBoxes(List<TextBox> boxes, double maxWidth) {
   if (boxes.isEmpty) return const [];
@@ -162,8 +163,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.bookmark_rounded), findsNothing);
-    expect(find.byIcon(Icons.edit_note_rounded), findsNothing);
+    expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsNothing);
+    expect(find.byIcon(AppIcons.notePencil), findsNothing);
 
     // Add bookmark to first Ayah
     await tester.runAsync(() async {
@@ -171,8 +172,8 @@ void main() {
     });
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.bookmark_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.edit_note_rounded), findsNothing);
+    expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsOneWidget);
+    expect(find.byIcon(AppIcons.notePencil), findsNothing);
 
     // Add note to first Ayah
     await tester.runAsync(() async {
@@ -188,8 +189,8 @@ void main() {
     });
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.bookmark_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
+    expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsOneWidget);
+    expect(find.byIcon(AppIcons.notePencil), findsOneWidget);
   });
 }
 

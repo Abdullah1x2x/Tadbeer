@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import 'tasbeeh_model.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة الاستغفار والتسبيح (سبحة إلكترونية مبسطة ومحراب هادئ للذكر).
 ///
@@ -365,7 +366,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         Row(
                           children: [
                             Icon(
-                              Icons.format_list_bulleted_rounded,
+                              AppIcons.listBullets,
                               color: primaryColor,
                               size: 20,
                             ),
@@ -454,7 +455,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           decoration: InputDecoration(
                             hintText: context.l10n.searchDhikrHint,
                             prefixIcon: const Icon(
-                              Icons.search_rounded,
+                              AppIcons.magnifyingGlass,
                               size: 20,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
@@ -524,7 +525,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                       ),
                                       trailing: isSelected
                                           ? Icon(
-                                              Icons.check_circle_rounded,
+                                              AppIcons.checkCircleFill,
                                               color: primaryColor,
                                             )
                                           : null,
@@ -581,17 +582,17 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           actions: [
             IconButton(
               tooltip: l10n.countSettings,
-              icon: const Icon(Icons.tune_rounded),
+              icon: const Icon(AppIcons.slidersHorizontal),
               onPressed: () => _showCountSettingsSheet(isDark, primaryColor),
             ),
             IconButton(
               tooltip: l10n.browseAllFormulas,
-              icon: const Icon(Icons.format_list_bulleted_rounded),
+              icon: const Icon(AppIcons.listBullets),
               onPressed: _showDhikrPickerSheet,
             ),
             IconButton(
               tooltip: l10n.resetCycleCounter,
-              icon: const Icon(Icons.restart_alt_rounded),
+              icon: const Icon(AppIcons.arrowCounterClockwise),
               onPressed: _confirmReset,
             ),
           ],
@@ -827,8 +828,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                   children: [
                     Icon(
                       _isAutoCounting
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
+                          ? AppIcons.pause
+                          : AppIcons.play,
                       size: 18,
                       color: _isAutoCounting
                           ? (isDark ? Colors.black : Colors.white)
@@ -863,7 +864,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             // زر تسريع الوتيرة (-)
             IconButton(
               tooltip: l10n.decreasePace,
-              icon: const Icon(Icons.remove_rounded, size: 16),
+              icon: const Icon(AppIcons.minus, size: 16),
               visualDensity: VisualDensity.compact,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
@@ -880,7 +881,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.timer_outlined,
+                    AppIcons.timer,
                     size: 13,
                     color: isDark
                         ? AppColors.darkTextSecondary
@@ -905,7 +906,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             // زر إبطاء الوتيرة (+)
             IconButton(
               tooltip: l10n.increasePace,
-              icon: const Icon(Icons.add_rounded, size: 16),
+              icon: const Icon(AppIcons.plus, size: 16),
               visualDensity: VisualDensity.compact,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
@@ -948,7 +949,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             child: _SectionTab(
               title: context.l10n.istighfar,
               count: istighfarCount,
-              icon: Icons.spa_rounded,
+              icon: AppIcons.flowerLotusFill,
               isSelected: activeSection == DhikrSection.istighfar,
               isDark: isDark,
               primaryColor: primaryColor,
@@ -960,7 +961,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             child: _SectionTab(
               title: context.l10n.tasbeeh,
               count: tasbeehCount,
-              icon: Icons.motion_photos_on_rounded,
+              icon: AppIcons.arrowsClockwise,
               isSelected: activeSection == DhikrSection.tasbeeh,
               isDark: isDark,
               primaryColor: primaryColor,
@@ -1068,7 +1069,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                     ),
                     IconButton(
                       tooltip: context.l10n.copyDhikrTooltip,
-                      icon: const Icon(Icons.copy_rounded, size: 16),
+                      icon: const Icon(AppIcons.copy, size: 16),
                       visualDensity: VisualDensity.compact,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(
@@ -1099,7 +1100,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                             ),
                             const SizedBox(width: 2),
                             Icon(
-                              Icons.keyboard_arrow_down_rounded,
+                              AppIcons.caretDown,
                               size: 16,
                               color: primaryColor,
                             ),
@@ -1120,7 +1121,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       tooltip: context.l10n.nextDhikr,
                       icon: const Directionality(
                         textDirection: TextDirection.ltr,
-                        child: Icon(Icons.chevron_right_rounded, size: 24),
+                        child: Icon(AppIcons.caretRight, size: 24),
                       ),
                       color: isDark
                           ? AppColors.darkTextSecondary
@@ -1172,7 +1173,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       tooltip: context.l10n.previousDhikr,
                       icon: const Directionality(
                         textDirection: TextDirection.ltr,
-                        child: Icon(Icons.chevron_left_rounded, size: 24),
+                        child: Icon(AppIcons.caretLeft, size: 24),
                       ),
                       color: isDark
                           ? AppColors.darkTextSecondary
@@ -1200,7 +1201,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.auto_awesome_rounded,
+                        AppIcons.sparkleFill,
                         size: 13,
                         color: isDark
                             ? AppColors.darkAccentGold
@@ -1231,7 +1232,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.swipe_rounded,
+                        AppIcons.handSwipeRight,
                         size: 13,
                         color:
                             (isDark
@@ -1386,8 +1387,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                 children: [
                   Icon(
                     _repo.autoAdvanceEnabled
-                        ? Icons.auto_mode_rounded
-                        : Icons.sync_disabled_rounded,
+                        ? AppIcons.arrowsClockwise
+                        : AppIcons.prohibit,
                     size: 18,
                     color: _repo.autoAdvanceEnabled
                         ? (isDark
@@ -1437,7 +1438,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           child: _StatCard(
             label: context.l10n.todayCount,
             count: _repo.todayTotalCount,
-            icon: Icons.today_rounded,
+            icon: AppIcons.calendarCheck,
             isDark: isDark,
           ),
         ),
@@ -1446,7 +1447,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           child: _StatCard(
             label: context.l10n.lifetimeTotalCount,
             count: _repo.lifetimeTotalCount,
-            icon: Icons.all_inclusive_rounded,
+            icon: AppIcons.infinity,
             isDark: isDark,
           ),
         ),

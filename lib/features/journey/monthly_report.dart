@@ -10,6 +10,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/storage/user_data_store.dart';
 import '../memorization/memorization_model.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// إحصاءات شهر واحد لتقرير الشهر.
 class MonthStats {
@@ -128,7 +129,7 @@ class _MonthlyReportSheetState extends State<MonthlyReportSheet> {
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: _sharing ? null : _share,
-              icon: const Icon(Icons.ios_share_rounded),
+              icon: const Icon(AppIcons.export),
               label: Text(l10n.shareImage),
             ),
           ],
@@ -217,14 +218,14 @@ class MonthlyReportCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: stat(
-                    Icons.auto_stories_rounded,
+                    AppIcons.bookOpenTextFill,
                     l10n.digits(stats.pages),
                     l10n.totalPagesRead,
                   ),
                 ),
                 Expanded(
                   child: stat(
-                    Icons.local_fire_department_rounded,
+                    AppIcons.fire,
                     l10n.digits(stats.activeDays),
                     l10n.activeDaysLabel,
                   ),
@@ -236,14 +237,14 @@ class MonthlyReportCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: stat(
-                    Icons.spa_rounded,
+                    AppIcons.flowerLotusFill,
                     l10n.digits(stats.reflections),
                     l10n.reflectionsLabel,
                   ),
                 ),
                 Expanded(
                   child: stat(
-                    Icons.psychology_rounded,
+                    AppIcons.brainFill,
                     l10n.digits(stats.memorized),
                     l10n.memorizedLabel,
                   ),

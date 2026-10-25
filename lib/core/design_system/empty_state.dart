@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import 'app_icons.dart';
 
 /// حالة فارغة موحدة تشرح للمستخدم كيف يبدأ، مع زر إجراء اختياري.
 ///
@@ -84,7 +85,7 @@ class EmptyState extends StatelessWidget {
               const SizedBox(height: 24),
               FilledButton.icon(
                 onPressed: onAction,
-                icon: Icon(actionIcon ?? Icons.arrow_back_rounded, size: 20),
+                icon: Icon(actionIcon ?? AppIcons.arrowLeft, size: 20),
                 label: Text(actionLabel!),
               ),
             ],

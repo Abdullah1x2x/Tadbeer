@@ -12,6 +12,7 @@ import 'morning_evening_adhkar_screen.dart';
 import 'quran_duas_repository.dart';
 import 'quran_duas_screen.dart';
 import 'sunnah_duas_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// الشاشة الرئيسية لقسم الأدعية والأذكار في تطبيق تدبير.
 ///
@@ -150,7 +151,7 @@ class DuasScreen extends StatelessWidget {
 
               // القسم 2: أذكار الصباح والمساء
               _DuaCategoryCard(
-                icon: Icons.wb_sunny_outlined,
+                icon: AppIcons.sun,
                 title: l10n.morningEveningAdhkarTitle,
                 subtitle: l10n.morningEveningAdhkarSubtitle,
                 countBadge: l10n.adhkarCountBadge(
@@ -196,7 +197,7 @@ class DuasScreen extends StatelessWidget {
 
               // القسم 4: أدعية من السنة النبوية
               _DuaCategoryCard(
-                icon: Icons.auto_awesome_outlined,
+                icon: AppIcons.sparkle,
                 title: l10n.sunnahDuasTitle,
                 subtitle: l10n.sunnahDuasSubtitle,
                 countBadge: l10n.duasCountBadge(
@@ -221,7 +222,7 @@ class DuasScreen extends StatelessWidget {
 
               // القسم 5: جوامع الدعاء والرجاء
               _DuaCategoryCard(
-                icon: Icons.favorite_border_rounded,
+                icon: AppIcons.heart,
                 title: l10n.jawamiDuasTitle,
                 subtitle: l10n.jawamiDuasSubtitle,
                 countBadge: l10n.duasCountBadge(
@@ -456,9 +457,7 @@ class _DuaCategoryCard extends StatelessWidget {
 
               // سهم التنقل
               Icon(
-                context.currentLanguage.direction == TextDirection.rtl
-                    ? Icons.arrow_back_ios_new_rounded
-                    : Icons.arrow_forward_ios_rounded,
+                AppIcons.caretRight,
                 size: 14,
                 color: isQuran ? quranArrowColor : standardArrowColor,
               ),

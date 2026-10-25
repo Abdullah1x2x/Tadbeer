@@ -5,6 +5,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'sunnah_duas_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// شاشة استعراض أدعية السنة النبوية أو جوامع الدعاء والرجاء.
 class GeneralDuasListScreen extends StatefulWidget {
@@ -122,14 +123,14 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                             : AppColors.lightTextSecondary,
                       ),
                       prefixIcon: Icon(
-                        Icons.search_rounded,
+                        AppIcons.magnifyingGlass,
                         size: 20,
                         color: isDark ? AppColors.darkAccentGold : primaryColor,
                       ),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               tooltip: context.l10n.clearText,
-                              icon: const Icon(Icons.clear_rounded, size: 18),
+                              icon: const Icon(AppIcons.x, size: 18),
                               onPressed: () {
                                 _searchController.clear();
                                 setState(() => _searchQuery = '');
@@ -256,7 +257,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                               ),
                               IconButton(
                                 tooltip: l10n.copyDuaTooltip,
-                                icon: const Icon(Icons.copy_rounded, size: 17),
+                                icon: const Icon(AppIcons.copy, size: 17),
                                 visualDensity: VisualDensity.compact,
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(

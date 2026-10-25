@@ -10,6 +10,7 @@ import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_intro_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -47,8 +48,8 @@ void main() {
       await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.bookmark_rounded), findsNothing);
-      expect(find.byIcon(Icons.edit_note_rounded), findsNothing);
+      expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsNothing);
+      expect(find.byIcon(AppIcons.notePencil), findsNothing);
     });
 
     testWidgets('Bookmarked State: displays bookmark icon next to ayah', (
@@ -63,8 +64,8 @@ void main() {
       await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.bookmark_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.edit_note_rounded), findsNothing);
+      expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsOneWidget);
+      expect(find.byIcon(AppIcons.notePencil), findsNothing);
     });
 
     testWidgets('Note State: displays note icon next to ayah', (tester) async {
@@ -85,8 +86,8 @@ void main() {
       await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.bookmark_rounded), findsNothing);
+      expect(find.byIcon(AppIcons.notePencil), findsOneWidget);
+      expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsNothing);
     });
 
     testWidgets(
@@ -110,8 +111,8 @@ void main() {
         await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
         await tester.pumpAndSettle();
 
-        expect(find.byIcon(Icons.bookmark_rounded), findsOneWidget);
-        expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
+        expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsOneWidget);
+        expect(find.byIcon(AppIcons.notePencil), findsOneWidget);
       },
     );
   });

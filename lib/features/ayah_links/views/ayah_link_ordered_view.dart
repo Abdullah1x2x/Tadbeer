@@ -9,6 +9,7 @@ import '../ayah_link_model.dart';
 import '../ayah_link_repository.dart';
 import '../../quran/data/quran_repository.dart';
 import '../../quran/screens/quran_screen.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// واجهة عرض القائمة المرتبة لرابط الآيات للقراءة المتسلسلة الهادئة.
 ///
@@ -137,7 +138,7 @@ class AyahLinkOrderedView extends StatelessWidget {
         title: Row(
           children: [
             Icon(
-              Icons.edit_note_rounded,
+              AppIcons.notePencil,
               color: Theme.of(context).colorScheme.primary,
               size: 24,
             ),
@@ -301,7 +302,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      Icons.hub_rounded,
+                      AppIcons.graphFill,
                       color: Theme.of(context).colorScheme.primary,
                       size: 22,
                     ),
@@ -347,7 +348,7 @@ class AyahLinkOrderedView extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.sticky_note_2_rounded,
+                    AppIcons.noteFill,
                     size: 18,
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -384,7 +385,7 @@ class AyahLinkOrderedView extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.format_list_numbered_rounded,
+                    AppIcons.listNumbers,
                     size: 18,
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -412,7 +413,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(
-                      Icons.menu_book_rounded,
+                      AppIcons.bookOpenFill,
                       size: 44,
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -431,7 +432,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                       ),
-                      icon: const Icon(Icons.add, size: 18),
+                      icon: const Icon(AppIcons.plus, size: 18),
                       label: Text(context.l10n.addAyah),
                     ),
                   ],
@@ -444,7 +445,7 @@ class AyahLinkOrderedView extends StatelessWidget {
               child: Center(
                 child: OutlinedButton.icon(
                   onPressed: onAddVerse,
-                  icon: const Icon(Icons.add, size: 18),
+                  icon: const Icon(AppIcons.plus, size: 18),
                   label: Text(context.l10n.addAyah),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.primary,
@@ -531,7 +532,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                           ],
                         ),
                         PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert, size: 20),
+                          icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
                           onSelected: (val) {
                             if (val == 'quran') {
                               Navigator.push(
@@ -555,7 +556,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                               value: 'quran',
                               child: Row(
                                 children: [
-                                  const Icon(Icons.menu_book_rounded, size: 18),
+                                  const Icon(AppIcons.bookOpenFill, size: 18),
                                   const SizedBox(width: 8),
                                   Text(context.l10n.openInQuran),
                                 ],
@@ -565,7 +566,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                               value: 'note',
                               child: Row(
                                 children: [
-                                  const Icon(Icons.edit_note_rounded, size: 18),
+                                  const Icon(AppIcons.notePencil, size: 18),
                                   const SizedBox(width: 8),
                                   Text(context.l10n.editVerseNote),
                                 ],
@@ -576,7 +577,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                               child: Row(
                                 children: [
                                   const Icon(
-                                    Icons.delete_outline,
+                                    AppIcons.trash,
                                     color: Colors.redAccent,
                                     size: 18,
                                   ),
@@ -641,7 +642,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(
-                              Icons.sticky_note_2_outlined,
+                              AppIcons.note,
                               size: 16,
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -728,7 +729,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
-                  Icons.edit_note_rounded,
+                  AppIcons.notePencil,
                   size: 18,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -750,7 +751,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                 ),
               ),
               PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert, size: 20),
+                icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
                 onSelected: (val) {
                   if (val == 'edit') {
                     onEdit();
@@ -765,7 +766,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                     value: 'edit',
                     child: Row(
                       children: [
-                        const Icon(Icons.edit_outlined, size: 18),
+                        const Icon(AppIcons.pencilSimple, size: 18),
                         const SizedBox(width: 8),
                         Text(
                           context.l10n.isArabic ? 'تعديل الملاحظة' : 'Edit Note',
@@ -777,7 +778,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                     value: 'copy',
                     child: Row(
                       children: [
-                        const Icon(Icons.copy_rounded, size: 18),
+                        const Icon(AppIcons.copy, size: 18),
                         const SizedBox(width: 8),
                         Text(context.l10n.isArabic ? 'نسخ النص' : 'Copy Text'),
                       ],
@@ -788,7 +789,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                     child: Row(
                       children: [
                         const Icon(
-                          Icons.delete_outline,
+                          AppIcons.trash,
                           color: Colors.redAccent,
                           size: 18,
                         ),

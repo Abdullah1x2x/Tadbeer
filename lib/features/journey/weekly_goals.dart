@@ -5,6 +5,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// أهداف الأسبوع المرنة: عدد صفحات وعدد وقفات تدبر.
 class WeeklyGoals {
@@ -129,7 +130,7 @@ class WeeklyGoalsCard extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  done ? Icons.check_circle_rounded : icon,
+                  done ? AppIcons.checkCircleFill : icon,
                   size: 18,
                   color: color,
                 ),
@@ -174,7 +175,7 @@ class WeeklyGoalsCard extends StatelessWidget {
                 ),
                 IconButton(
                   tooltip: l10n.editGoals,
-                  icon: const Icon(Icons.tune_rounded),
+                  icon: const Icon(AppIcons.slidersHorizontal),
                   onPressed: () => _edit(context, goals),
                 ),
               ],
@@ -184,14 +185,14 @@ class WeeklyGoalsCard extends StatelessWidget {
               child: Column(
                 children: [
                   bar(
-                    Icons.auto_stories_rounded,
+                    AppIcons.bookOpenTextFill,
                     l10n.pagesGoal,
                     pages,
                     goals.pages,
                     AppColors.accentGold(context),
                   ),
                   bar(
-                    Icons.spa_rounded,
+                    AppIcons.flowerLotusFill,
                     l10n.reflectionsGoal,
                     reflections,
                     goals.reflections,

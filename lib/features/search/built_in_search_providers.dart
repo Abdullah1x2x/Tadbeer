@@ -17,6 +17,7 @@ import '../../features/quran/screens/quran_screen.dart';
 import '../../features/reminders/reminder_model.dart';
 import '../../features/reminders/reminders_screen.dart';
 import 'search_provider.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// مزود البحث في آيات القرآن الكريم (بالنص المطبع أو بالجذر اللغوي).
 ///
@@ -35,7 +36,7 @@ class QuranSearchProvider implements SearchProvider {
 
   /// أيقونة قسم المصحف الشريف.
   @override
-  IconData get icon => Icons.menu_book_rounded;
+  IconData get icon => AppIcons.bookOpenFill;
 
   /// يبحث في آيات القرآن الكريم ويعيد النتائج المطابقة مع إمكانية الانتقال لصفحة المصحف.
   @override
@@ -102,7 +103,7 @@ class NotesSearchProvider implements SearchProvider {
 
   /// أيقونة قسم الملاحظات.
   @override
-  IconData get icon => Icons.edit_note_rounded;
+  IconData get icon => AppIcons.notePencil;
 
   /// يبحث في عناوين ومحتوى الملاحظات والنصوص القرآنية المرتبطة بها.
   @override
@@ -173,7 +174,7 @@ class TadbeerSearchProvider implements SearchProvider {
 
   /// أيقونة قسم وقفات التدبر.
   @override
-  IconData get icon => Icons.auto_awesome_rounded;
+  IconData get icon => AppIcons.sparkleFill;
 
   /// يبحث في إجابات وقفات التدبر وأسماء السور ونصوص الآيات المرتبطة بها.
   @override
@@ -272,7 +273,7 @@ class BookmarksSearchProvider implements SearchProvider {
 
   /// أيقونة قسم المحفوظات.
   @override
-  IconData get icon => Icons.bookmark_rounded;
+  IconData get icon => AppIcons.bookmarkSimpleFill;
 
   /// يبحث في الآيات المحفوظة حسب اسم السورة أو رقم الآية أو نصها.
   @override
@@ -351,7 +352,7 @@ class HighlightsSearchProvider implements SearchProvider {
 
   /// أيقونة قسم الآيات المميزة.
   @override
-  IconData get icon => Icons.palette_outlined;
+  IconData get icon => AppIcons.palette;
 
   /// يبحث في الآيات المميزة بالألوان حسب اسم السورة أو رقم الآية أو نصها.
   @override
@@ -430,7 +431,7 @@ class AyahLinksSearchProvider implements SearchProvider {
 
   /// أيقونة قسم روابط الآيات.
   @override
-  IconData get icon => Icons.hub_outlined;
+  IconData get icon => AppIcons.graph;
 
   /// يبحث في عناوين ووصف خرائط روابط الآيات والآيات المتصلة بها.
   @override
@@ -482,7 +483,7 @@ class DuasSearchProvider implements SearchProvider {
 
   /// أيقونة قسم الأدعية.
   @override
-  IconData get icon => Icons.front_hand_outlined;
+  IconData get icon => AppIcons.hand;
 
   /// يبحث في نصوص وعناوين وتصنيفات الأدعية القرآنية.
   @override
@@ -540,7 +541,7 @@ class RemindersSearchProvider implements SearchProvider {
 
   /// أيقونة قسم التذكيرات.
   @override
-  IconData get icon => Icons.alarm_outlined;
+  IconData get icon => AppIcons.alarm;
 
   /// يبحث في عناوين تذكيرات الورد القرآني المحفوظة.
   @override
@@ -597,7 +598,7 @@ class WordMeaningsSearchProvider implements SearchProvider {
 
   /// أيقونة قسم معاني الكلمات.
   @override
-  IconData get icon => Icons.auto_stories_rounded;
+  IconData get icon => AppIcons.bookOpenTextFill;
 
   /// يبحث في الكلمات القرآنية ومعانيها الموثقة ويعيد النتائج المطابقة.
   @override
@@ -657,7 +658,7 @@ class BooksSearchProvider implements SearchProvider {
 
   /// أيقونة قسم الكتب والملازم.
   @override
-  IconData get icon => Icons.auto_stories_rounded;
+  IconData get icon => AppIcons.bookOpenTextFill;
 
   /// يبحث في عناوين الملازم، وأسماء السلاسل، والمؤلفين، والفصول، والوصف مع دعم البحث المرن وتعدد الكلمات.
   @override
@@ -781,7 +782,7 @@ class PathwaysSearchProvider implements SearchProvider {
   String getSectionTitle(BuildContext context) => context.l10n.guidedPathways;
 
   @override
-  IconData get icon => Icons.route_rounded;
+  IconData get icon => AppIcons.path;
 
   @override
   Future<List<SearchResultItem>> search(

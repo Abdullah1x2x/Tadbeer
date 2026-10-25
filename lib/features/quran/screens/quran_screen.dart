@@ -18,6 +18,7 @@ import '../../search/search_screen.dart';
 import 'quran_page_view.dart';
 import '../widgets/quran_side_menu.dart';
 import '../../settings/user_settings_model.dart';
+import '../../../core/design_system/app_icons.dart';
 
 /// Fullscreen Medina Mushaf reading experience for Tadbeer (1421H layout, 604 pages).
 /// شاشة قراءة المصحف المدني الكاملة (٦٠٤ صفحات) مع أدوات التدبر والبحث والتنقل.
@@ -557,7 +558,7 @@ class _QuranScreenState extends State<QuranScreen> {
         children: [
           // 1. Drawer menu button (☰)
           FuturisticIconButton(
-            icon: Icons.menu,
+            icon: AppIcons.list,
             tooltip: 'القائمة',
             size: 38,
             iconSize: 20,
@@ -570,7 +571,7 @@ class _QuranScreenState extends State<QuranScreen> {
             children: [
               // 1b. Focus mode: one verse at a time
               FuturisticIconButton(
-                icon: Icons.self_improvement_rounded,
+                icon: AppIcons.personSimpleTaiChi,
                 tooltip: l10n.focusMode,
                 size: 38,
                 iconSize: 20,
@@ -588,7 +589,7 @@ class _QuranScreenState extends State<QuranScreen> {
               const SizedBox(width: 8),
               // 2. Search button (🔍)
               FuturisticIconButton(
-                icon: Icons.search,
+                icon: AppIcons.magnifyingGlass,
                 tooltip: l10n.search,
                 size: 38,
                 iconSize: 20,
@@ -598,8 +599,8 @@ class _QuranScreenState extends State<QuranScreen> {
               // 3. Word meanings button (📖)
               FuturisticIconButton(
                 icon: _showMeaningsPanel
-                    ? Icons.auto_stories_rounded
-                    : Icons.auto_stories_outlined,
+                    ? AppIcons.bookOpenTextFill
+                    : AppIcons.bookOpenText,
                 tooltip: 'معاني كلمات الصفحة',
                 size: 38,
                 iconSize: 20,
@@ -615,7 +616,7 @@ class _QuranScreenState extends State<QuranScreen> {
               const SizedBox(width: 8),
               // 4. Quran font size button (Aa)
               FuturisticIconButton(
-                icon: Icons.format_size_rounded,
+                icon: AppIcons.textAa,
                 tooltip: 'حجم الخط',
                 size: 38,
                 iconSize: 20,
@@ -695,7 +696,7 @@ class _QuranScreenState extends State<QuranScreen> {
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
                     child: FuturisticBadge(
                       label: 'المعاني ($meaningsDigits)',
-                      icon: Icons.library_books_rounded,
+                      icon: AppIcons.books,
                       color: _showMeaningsPanel
                           ? (isDark ? AppColors.cyberEmerald : primary)
                           : (isDark
@@ -726,7 +727,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 children: [
                   // Previous page (in Arabic RTL, points right towards earlier pages)
                   FuturisticIconButton(
-                    icon: Icons.chevron_right_rounded,
+                    icon: AppIcons.caretRight,
                     tooltip: 'الصفحة السابقة',
                     size: 36,
                     iconSize: 22,
@@ -775,7 +776,7 @@ class _QuranScreenState extends State<QuranScreen> {
                   const SizedBox(width: 4),
                   // Next page (in Arabic RTL, points left towards later pages)
                   FuturisticIconButton(
-                    icon: Icons.chevron_left_rounded,
+                    icon: AppIcons.caretLeft,
                     tooltip: 'الصفحة التالية',
                     size: 36,
                     iconSize: 22,
@@ -1037,7 +1038,7 @@ class _QuranScreenState extends State<QuranScreen> {
                   child: Center(
                     child: FilledButton.icon(
                       onPressed: _continueReadingFromHere,
-                      icon: const Icon(Icons.bookmark_added_rounded, size: 18),
+                      icon: const Icon(AppIcons.bookmarkSimple, size: 18),
                       label: Text(context.l10n.continueReadingFromHere),
                     ),
                   ),
@@ -1075,7 +1076,7 @@ class _QuranScreenState extends State<QuranScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.check_circle_rounded,
+                                  AppIcons.checkCircleFill,
                                   color: AppColors.electricGold,
                                   size: 18,
                                 ),

@@ -14,6 +14,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
 /// مقاس بطاقة المشاركة.
 enum AyahCardFormat {
@@ -139,12 +140,12 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
               segments: [
                 ButtonSegment(
                   value: AyahCardFormat.square,
-                  icon: const Icon(Icons.crop_square_rounded),
+                  icon: const Icon(AppIcons.square),
                   label: Text(l10n.cardSquare),
                 ),
                 ButtonSegment(
                   value: AyahCardFormat.story,
-                  icon: const Icon(Icons.crop_portrait_rounded),
+                  icon: const Icon(AppIcons.rectangle),
                   label: Text(l10n.cardStory),
                 ),
               ],
@@ -160,12 +161,12 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
               segments: [
                 ButtonSegment(
                   value: AyahCardStyle.night,
-                  icon: const Icon(Icons.nights_stay_rounded),
+                  icon: const Icon(AppIcons.moonStars),
                   label: Text(l10n.cardNight),
                 ),
                 ButtonSegment(
                   value: AyahCardStyle.paper,
-                  icon: const Icon(Icons.description_rounded),
+                  icon: const Icon(AppIcons.fileTextFill),
                   label: Text(l10n.cardPaper),
                 ),
               ],
@@ -185,7 +186,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.ios_share_rounded),
+                  : const Icon(AppIcons.export),
               label: Text(l10n.shareImage),
             ),
           ],

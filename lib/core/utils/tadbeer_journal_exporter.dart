@@ -13,6 +13,7 @@ import '../../features/quran/data/quran_repository.dart';
 import '../../features/tadbeer/tadbeer_model.dart';
 import 'arabic_search_normalizer.dart';
 import 'note_pdf_exporter.dart';
+import '../design_system/app_icons.dart';
 
 /// Timeframes available for reflection journal export.
 enum JournalPeriod {
@@ -696,7 +697,7 @@ class TadbeerJournalExporter {
                       Row(
                         children: [
                           Icon(
-                            Icons.auto_stories_rounded,
+                            AppIcons.bookOpenTextFill,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           const SizedBox(width: 8),
@@ -775,7 +776,7 @@ class TadbeerJournalExporter {
                               onPressed: () {
                                 setSheetState(() => exportAsPdf = true);
                               },
-                              icon: const Icon(Icons.picture_as_pdf_rounded),
+                              icon: const Icon(AppIcons.filePdfFill),
                               label: const Text(
                                 'مستند PDF',
                                 style: TextStyle(fontFamily: 'Amiri'),
@@ -799,7 +800,7 @@ class TadbeerJournalExporter {
                               onPressed: () {
                                 setSheetState(() => exportAsPdf = false);
                               },
-                              icon: const Icon(Icons.code_rounded),
+                              icon: const Icon(AppIcons.code),
                               label: const Text(
                                 'ملف Markdown',
                                 style: TextStyle(fontFamily: 'Amiri'),
@@ -849,7 +850,7 @@ class TadbeerJournalExporter {
                             asPdf: exportAsPdf,
                           );
                         },
-                        icon: const Icon(Icons.share_rounded),
+                        icon: const Icon(AppIcons.shareNetworkFill),
                         label: const Text(
                           'تصدير ومشاركة الآن',
                           style: TextStyle(
