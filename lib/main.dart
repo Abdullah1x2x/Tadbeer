@@ -8,6 +8,7 @@ import 'features/quran/data/quran_repository.dart';
 import 'app/main_shell.dart';
 import 'features/duas/adhkar_repository.dart';
 import 'features/duas/morning_evening_adhkar_screen.dart';
+import 'features/journey/portion_reminder.dart';
 
 /// Registers bundled non-Dart asset licenses (Quranic text, Word Meanings dataset,
 /// and SIL OFL 1.1 fonts) into Flutter's [LicenseRegistry] so they appear in
@@ -129,6 +130,8 @@ void main() async {
   await LocalReminderService.instance.syncAllReminders(
     UserDataStore.instance.reminders,
   );
+  // Keeps the khatma reminder's "pages left today" current while reading.
+  PortionReminderSync.attach();
 
   runApp(const TadbeerApp());
 }

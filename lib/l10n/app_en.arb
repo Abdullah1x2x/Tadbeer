@@ -441,5 +441,7 @@
   "allFormulasCount": "All formulas ({total})",
   "targetReachedAuto": "MashaAllah! Target completed ({target}). Auto-advanced to next dhikr.",
   "targetReached": "MashaAllah! Target ({target}) completed successfully.",
-  "smartPaceSeconds": "Pace {seconds}s"
+  "smartPaceSeconds": "Pace {seconds}s",
+  "portionLeftTitle": "{pages} pages left in today’s portion",
+  "portionLeftBody": "Continue your khatma where you left off"
 }

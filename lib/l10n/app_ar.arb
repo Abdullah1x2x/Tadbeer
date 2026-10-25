@@ -956,5 +956,14 @@
         "type": "String"
       }
     }
-  }
+  },
+  "portionLeftTitle": "بقي من وردك اليوم {pages} صفحة",
+  "@portionLeftTitle": {
+    "placeholders": {
+      "pages": {
+        "type": "String"
+      }
+    }
+  },
+  "portionLeftBody": "أكمل ختمتك من حيث توقفت"
 }
