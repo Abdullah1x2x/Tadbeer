@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -107,19 +108,27 @@ class _FocusModeScreenState extends State<FocusModeScreen>
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     const gold = Color(0xFFE8C878);
+    // The night sky takes the colours of the chosen theme.
+    final deepest = Color.lerp(AppColors.darkBackground, Colors.black, 0.4)!;
+    final sky = [
+      AppColors.heroGradient(true).colors.first,
+      AppColors.darkBackground,
+      deepest,
+    ];
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: const Color(0xFF070C16),
+        backgroundColor: deepest,
         body: Stack(
           fit: StackFit.expand,
           children: [
             // Drifting night gradient with slowly twinkling stars.
             AnimatedBuilder(
               animation: _ambient,
-              builder: (context, _) =>
-                  CustomPaint(painter: _NightSkyPainter(t: _ambient.value)),
+              builder: (context, _) => CustomPaint(
+                painter: _NightSkyPainter(t: _ambient.value, sky: sky),
+              ),
             ),
             PageView.builder(
               controller: _pages,
@@ -333,7 +342,10 @@ class _BreathingCircle extends StatelessWidget {
 class _NightSkyPainter extends CustomPainter {
   final double t;
 
-  _NightSkyPainter({required this.t});
+  /// Sky colours from the centre of the glow outwards, from the app theme.
+  final List<Color> sky;
+
+  _NightSkyPainter({required this.t, required this.sky});
 
   static final List<Offset> _stars = List.generate(70, (i) {
     final r = math.Random(i * 7919);
@@ -353,11 +365,7 @@ class _NightSkyPainter extends CustomPainter {
             -0.3 + math.cos(angle) * 0.2,
           ),
           radius: 1.3,
-          colors: const [
-            Color(0xFF1E3A5F),
-            Color(0xFF0B1220),
-            Color(0xFF070C16),
-          ],
+          colors: sky,
           stops: const [0, 0.55, 1],
         ).createShader(rect),
     );
@@ -375,5 +383,6 @@ class _NightSkyPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _NightSkyPainter old) => old.t != t;
+  bool shouldRepaint(covariant _NightSkyPainter old) =>
+      old.t != t || !listEquals(old.sky, sky);
 }

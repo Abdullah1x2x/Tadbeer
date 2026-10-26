@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import '../core/design_system/design_system.dart';
 import '../core/motion/app_motion.dart';
@@ -215,8 +216,9 @@ class _MainShellState extends State<MainShell>
         label: l10n.isArabic ? 'المصحف' : 'Mushaf',
       ),
       FloatingNavItem(
-        icon: AppIcons.radioButton,
-        selectedIcon: AppIcons.radioButtonFill,
+        // Prayer beads, so it never looks like the duas tab.
+        icon: FlutterIslamicIcons.tasbih2,
+        selectedIcon: FlutterIslamicIcons.solidTasbih2,
         label: l10n.isArabic ? 'الاستغفار' : 'Istighfar',
       ),
       FloatingNavItem(

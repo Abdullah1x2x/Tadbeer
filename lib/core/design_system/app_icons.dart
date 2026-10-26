@@ -594,16 +594,6 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
-  static const IconData radioButton = IconData(
-    0xeb08,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
-  static const IconData radioButtonFill = IconData(
-    0xeb08,
-    fontFamily: _fill,
-    fontPackage: _package,
-  );
   static const IconData rectangle = IconData(
     0xe3f0,
     fontFamily: _regular,
@@ -718,11 +708,6 @@ abstract final class AppIcons {
   );
   static const IconData timer = IconData(
     0xe492,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
-  static const IconData translate = IconData(
-    0xe4a2,
     fontFamily: _regular,
     fontPackage: _package,
   );

@@ -16,6 +16,7 @@ class JourneySummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final gold = AppColors.accentGold(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListenableBuilder(
       listenable: UserDataStore.instance,
@@ -33,19 +34,24 @@ class JourneySummaryCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
             children: [
-              // Streak flame with its count.
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(AppIcons.fire, color: Color(0xFFE07A3F), size: 28),
-                  Text(
-                    l10n.digits(streak),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+              // Journey badge, styled like the Mushaf card's.
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: AppColors.primary(context)
+                      .withValues(alpha: isDark ? 0.20 : 0.12),
+                  borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                  border: Border.all(
+                    color: gold.withValues(alpha: isDark ? 0.45 : 0.35),
+                    width: AppTokens.borderRegular,
                   ),
-                ],
+                ),
+                child: Icon(
+                  AppIcons.chartLineUp,
+                  color: isDark ? gold : AppColors.primary(context),
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -86,8 +92,29 @@ class JourneySummaryCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              Icon(AppIcons.caretRight, color: gold),
+              const SizedBox(width: 12),
+              // Streak flame with its count, on the far side.
+              Semantics(
+                label: "${l10n.digits(streak)} ${l10n.streakDays}",
+                excludeSemantics: true,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      AppIcons.fire,
+                      color: Color(0xFFE07A3F),
+                      size: 28,
+                    ),
+                    Text(
+                      l10n.digits(streak),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         );
