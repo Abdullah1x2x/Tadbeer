@@ -190,7 +190,11 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
                 ),
                 ButtonSegment(
                   value: AyahCardFormat.story,
-                  icon: const Icon(AppIcons.rectangle),
+                  // Upright, the shape of a story.
+                  icon: const RotatedBox(
+                    quarterTurns: 1,
+                    child: Icon(AppIcons.rectangle),
+                  ),
                   label: Text(l10n.cardStory),
                 ),
               ],
