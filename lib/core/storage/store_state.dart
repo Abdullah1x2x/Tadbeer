@@ -94,4 +94,7 @@ abstract class _StoreState extends ChangeNotifier {
 
   /// تسجيل يوم نشاط للأيام المتتالية (قسم رحلة القراءة).
   Future<void> markActiveDay({DateTime? now});
+
+  /// نقل الختمة إلى موضع القراءة الجديد (قسم رحلة القراءة).
+  Future<void> followReadingPosition(int page);
 }

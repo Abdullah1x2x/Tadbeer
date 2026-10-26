@@ -28,15 +28,34 @@ void main() {
   Widget host(Widget child) =>
       MaterialApp(theme: AppTheme.lightTheme, home: child);
 
-  testWidgets('opening a verse makes its page the reading position', (
+  /// Lets the database writes that follow a counted page finish.
+  /// Each write in the chain (count the page, save the position, move the
+  /// khatma) is real I/O that resumes on the next pump.
+  Future<void> settleWrites(WidgetTester tester) async {
+    for (var i = 0; i < 6; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+    }
+  }
+
+  testWidgets('a verse opened from search moves nothing until it is read', (
     tester,
   ) async {
     await tester.pumpWidget(
       host(const QuranScreen(targetSurahNumber: 2, targetAyahNumber: 255)),
     );
     await tester.pump(const Duration(seconds: 1));
-    expect(UserDataStore.instance.readingPosition.page, 42);
+    await settleWrites(tester);
+    // A glance at a search result keeps the reading place.
+    expect(UserDataStore.instance.readingPosition.page, 100);
     expect(find.text('أكمل القراءة من هنا'), findsNothing);
+
+    // Staying to read it makes it the reading place.
+    await tester.pump(const Duration(seconds: 40));
+    await settleWrites(tester);
+    expect(UserDataStore.instance.readingPosition.page, 42);
   });
 
   testWidgets('a page counts when moving forward past it', (tester) async {
@@ -52,16 +71,18 @@ void main() {
         .controller!;
     controller.jumpToPage(50);
     await tester.pump(const Duration(seconds: 1));
+    await settleWrites(tester);
 
     expect(UserDataStore.instance.journey.pagesOn(DateTime.now()), 1);
     expect(UserDataStore.instance.readingPosition.page, 51);
-    // No confirmation chip any more.
-    expect(find.text('احتُسبت صفحة ٥٠'), findsNothing);
 
-    // Moving forward again immediately does not count the skimmed page.
+    // Moving forward again at once neither counts the skimmed page nor
+    // moves the reading place.
     controller.jumpToPage(51);
     await tester.pump(const Duration(seconds: 2));
+    await settleWrites(tester);
     expect(UserDataStore.instance.journey.pagesOn(DateTime.now()), 1);
+    expect(UserDataStore.instance.readingPosition.page, 51);
   });
 
   testWidgets('the page on screen counts after a while without turning it', (

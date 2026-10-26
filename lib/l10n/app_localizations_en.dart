@@ -170,9 +170,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markPortionDone => 'Mark today’s portion done';
 
   @override
-  String get moveKhatmaHere => 'Move khatma';
-
-  @override
   String get reflectionsThisMonth => 'Reflections this month';
 
   @override
@@ -1231,11 +1228,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String reachedPage(String page) {
     return 'Reached page $page';
-  }
-
-  @override
-  String khatmaElsewhere(String page) {
-    return 'Your reading position is page $page. Move the khatma there?';
   }
 
   @override

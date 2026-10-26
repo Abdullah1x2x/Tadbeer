@@ -52,7 +52,6 @@
   "setKhatmaPosition": "تعديل موضعي في الختمة",
   "pageNumberLabel": "رقم الصفحة",
   "markPortionDone": "أتممت ورد اليوم",
-  "moveKhatmaHere": "انقل الختمة",
   "reflectionsThisMonth": "تدبرات هذا الشهر",
   "portionReminderPrompt": "متى نذكّرك بوردك يومياً؟",
   "portionReminderSet": "سنذكّرك بوردك كل يوم",
@@ -472,14 +471,6 @@
   },
   "reachedPage": "وصلت إلى صفحة {page}",
   "@reachedPage": {
-    "placeholders": {
-      "page": {
-        "type": "String"
-      }
-    }
-  },
-  "khatmaElsewhere": "موضع قراءتك صفحة {page}؛ انقل الختمة إليه؟",
-  "@khatmaElsewhere": {
     "placeholders": {
       "page": {
         "type": "String"

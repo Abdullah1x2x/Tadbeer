@@ -31,5 +31,7 @@ mixin _ReadingPositionSection on _StoreState {
       updatedAt: DateTime.now(),
     );
     await setReadingPosition(position);
+    // The khatma is where the reader is.
+    await followReadingPosition(page);
   }
 }
