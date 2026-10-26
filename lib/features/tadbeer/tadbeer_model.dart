@@ -3,11 +3,10 @@
 /// Represents a user's reflective Tadbeer Pause session for an individual Ayah.
 ///
 /// EDUCATIONAL NOTE:
-/// Tadbeer encourages contemplation (تدبر) through 4 targeted guiding questions:
-/// 1. ما الذي لفت انتباهك في هذه الآية؟
-/// 2. ماذا فهمت من الآية؟
-/// 3. هل هناك شيء تريد تطبيقه؟
-/// 4. ما العلاقة التي تراها بين هذه الآية وما قبلها؟
+/// Tadbeer encourages contemplation (تدبر) through 4 guiding questions:
+/// what stopped you, what the ayah says to you, what it stirred in you,
+/// and what you will do with it today. Some ayahs swap one of them, see
+/// `TadbeerQuestions`.
 ///
 /// Offline-first principles:
 /// - Stored locally via stable Ayah ID (`surahNumber:ayahNumber`).
@@ -27,8 +26,8 @@ class TadbeerItem {
   /// المعرّف الموحد للآية (إن وجد).
   final int? ayahId;
 
-  /// خريطة إجابات المستخدم مربوطة برقم السؤال (من 1 إلى 4).
-  final Map<int, String> answers; // Question index (1..4) -> user answer
+  /// خريطة إجابات المستخدم مربوطة بمفتاح السؤال من [questionKeys].
+  final Map<int, String> answers;
 
   /// تاريخ ووقت إنشاء وقفة التدبر.
   final DateTime createdAt;
@@ -50,14 +49,20 @@ class TadbeerItem {
   /// المفتاح المركب للآية بصيغة (رقم السورة:رقم الآية).
   String get ayahKey => '$surahNumber:$ayahNumber';
 
-  /// الأسئلة التوجيهية الأربعة المعتمدة في وقفة التدبر.
+  /// مفاتيح الإجابات بترتيب عرض الأسئلة.
   ///
-  /// The 4 authentic guiding questions for Tadbeer
+  /// Answers are keyed by what a question asks, so earlier saves keep their
+  /// place: 1 what stopped you, 2 what the ayah says to you, 5 what it
+  /// stirred, 3 what you will do. Key 4 held a retired question about the
+  /// ayah before; [TadbeerItem.fromJson] folds it into 2.
+  static const List<int> questionKeys = [1, 2, 5, 3];
+
+  /// الأسئلة التوجيهية الأربعة العامة لوقفة التدبر، بترتيب [questionKeys].
   static const List<String> questions = [
-    'ما الذي لفت انتباهك في هذه الآية؟',
-    'ماذا فهمت من الآية؟',
-    'هل هناك شيء تريد تطبيقه؟',
-    'ما العلاقة التي تراها بين هذه الآية وما قبلها؟',
+    'أيّ كلمة أو عبارة توقّفت عندها؟',
+    'ماذا تقول لك هذه الآية؟',
+    'ماذا حرّكت فيك؟',
+    'ما الذي ستفعله بها اليوم؟',
   ];
 
   /// ما إذا كانت جميع إجابات وقفة التدبر فارغة.
@@ -68,8 +73,8 @@ class TadbeerItem {
   /// Formats all non-empty answers into a clean, peaceful reflection summary.
   String get combinedSummary {
     final buffer = StringBuffer();
-    for (int i = 1; i <= questions.length; i++) {
-      final ans = answers[i]?.trim();
+    for (final key in questionKeys) {
+      final ans = answers[key]?.trim();
       if (ans != null && ans.isNotEmpty) {
         if (buffer.isNotEmpty) buffer.writeln();
         buffer.write(ans);
@@ -98,6 +103,12 @@ class TadbeerItem {
       if (key != null && entry.value is String) {
         parsedAnswers[key] = entry.value as String;
       }
+    }
+    // The retired question about the ayah before joins what the ayah says.
+    final retired = parsedAnswers.remove(4)?.trim() ?? '';
+    if (retired.isNotEmpty) {
+      final said = parsedAnswers[2]?.trim() ?? '';
+      parsedAnswers[2] = said.isEmpty ? retired : '$said\n$retired';
     }
     return TadbeerItem(
       id: json['id'] as String,

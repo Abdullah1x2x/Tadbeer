@@ -11,6 +11,7 @@ import '../../core/storage/user_data_store.dart';
 import '../../features/notes/note_model.dart';
 import '../../features/quran/data/quran_repository.dart';
 import '../../features/tadbeer/tadbeer_model.dart';
+import '../../features/tadbeer/tadbeer_questions.dart';
 import 'arabic_search_normalizer.dart';
 import 'note_pdf_exporter.dart';
 import '../design_system/app_icons.dart';
@@ -147,7 +148,9 @@ class TadbeerJournalExporter {
     buffer.writeln();
 
     if (summary.surahNames.isNotEmpty) {
-      buffer.writeln('**السور التي تم تدبرها:** ${summary.surahNames.join('، ')}');
+      buffer.writeln(
+        '**السور التي تم تدبرها:** ${summary.surahNames.join('، ')}',
+      );
       buffer.writeln();
     }
 
@@ -168,10 +171,11 @@ class TadbeerJournalExporter {
           buffer.writeln('> ﴿ ${ayah.text} ﴾');
           buffer.writeln();
         }
-        for (int i = 1; i <= TadbeerItem.questions.length; i++) {
-          final ans = t.answers[i]?.trim();
+        final questions = TadbeerQuestions.forAyah(ayah);
+        for (var i = 0; i < questions.length; i++) {
+          final ans = t.answers[TadbeerItem.questionKeys[i]]?.trim();
           if (ans != null && ans.isNotEmpty) {
-            buffer.writeln('*${TadbeerItem.questions[i - 1]}*');
+            buffer.writeln('*${questions[i]}*');
             buffer.writeln(ans);
             buffer.writeln();
           }
@@ -215,7 +219,9 @@ class TadbeerJournalExporter {
     }
 
     buffer.writeln();
-    buffer.writeln('_تم التصدير محليًا عبر تطبيق تَدْبِير (Tadbeer) — بدون أي اتصال خارجي_');
+    buffer.writeln(
+      '_تم التصدير محليًا عبر تطبيق تَدْبِير (Tadbeer) — بدون أي اتصال خارجي_',
+    );
     return buffer.toString();
   }
 
@@ -464,7 +470,8 @@ class TadbeerJournalExporter {
                       ],
                       pw.SizedBox(height: 8),
                       ...List.generate(TadbeerItem.questions.length, (idx) {
-                        final ans = t.answers[idx + 1]?.trim();
+                        final ans = t.answers[TadbeerItem.questionKeys[idx]]
+                            ?.trim();
                         if (ans == null || ans.isEmpty) {
                           return pw.SizedBox.shrink();
                         }
@@ -474,7 +481,7 @@ class TadbeerJournalExporter {
                             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                             children: [
                               pw.Text(
-                                TadbeerItem.questions[idx],
+                                TadbeerQuestions.forAyah(ayah)[idx],
                                 style: pw.TextStyle(
                                   font: ttfBold,
                                   fontSize: 10,
@@ -526,8 +533,7 @@ class TadbeerJournalExporter {
               pw.SizedBox(height: 10),
               ...summary.notes.map((n) {
                 final isAyahNote = n.isAyahNote;
-                final surah =
-                    isAyahNote ? repo.getSurah(n.surahNumber!) : null;
+                final surah = isAyahNote ? repo.getSurah(n.surahNumber!) : null;
 
                 return pw.Container(
                   margin: const pw.EdgeInsets.only(bottom: 12),
@@ -734,7 +740,9 @@ class TadbeerJournalExporter {
                                 fontFamily: 'Amiri',
                                 color: isSelected
                                     ? Colors.white
-                                    : (isDark ? Colors.white70 : Colors.black87),
+                                    : (isDark
+                                          ? Colors.white70
+                                          : Colors.black87),
                               ),
                             ),
                             selected: isSelected,

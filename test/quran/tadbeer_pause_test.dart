@@ -23,18 +23,32 @@ void main() {
   });
 
   group('TadbeerItem Model Tests', () {
-    test('Has exactly 4 authentic sequential reflection questions', () {
-      expect(TadbeerItem.questions.length, equals(4));
-      expect(
-        TadbeerItem.questions[0],
-        equals('ما الذي لفت انتباهك في هذه الآية؟'),
+    test('Has four general questions, each with its answer key', () {
+      expect(TadbeerItem.questions, [
+        'أيّ كلمة أو عبارة توقّفت عندها؟',
+        'ماذا تقول لك هذه الآية؟',
+        'ماذا حرّكت فيك؟',
+        'ما الذي ستفعله بها اليوم؟',
+      ]);
+      expect(TadbeerItem.questionKeys, [1, 2, 5, 3]);
+    });
+
+    test('An answer to the retired question joins what the ayah says', () {
+      final now = DateTime(2026);
+      Map<String, dynamic> saved(Map<String, String> answers) => {
+        'id': 'x',
+        'surahNumber': 3,
+        'ayahNumber': 102,
+        'answers': answers,
+        'createdAt': now.toIso8601String(),
+        'updatedAt': now.toIso8601String(),
+      };
+      final both = TadbeerItem.fromJson(
+        saved({'1': 'أ', '2': 'فهم', '3': 'عمل', '4': 'صلة'}),
       );
-      expect(TadbeerItem.questions[1], equals('ماذا فهمت من الآية؟'));
-      expect(TadbeerItem.questions[2], equals('هل هناك شيء تريد تطبيقه؟'));
-      expect(
-        TadbeerItem.questions[3],
-        equals('ما العلاقة التي تراها بين هذه الآية وما قبلها؟'),
-      );
+      expect(both.answers, {1: 'أ', 2: 'فهم\nصلة', 3: 'عمل'});
+      final onlyOld = TadbeerItem.fromJson(saved({'4': 'صلة'}));
+      expect(onlyOld.answers, {2: 'صلة'});
     });
 
     test('combinedSummary joins only non-empty answers in question order', () {
@@ -85,11 +99,12 @@ void main() {
         expect(restored.ayahId, equals(395));
         expect(restored.ayahKey, equals('3:102'));
         expect(restored.answers[1], equals('تقوى الله حق تقاته'));
+        // The retired fourth question now sits with what the ayah says.
         expect(
-          restored.answers[4],
+          restored.answers[2],
           equals('صلتها بما قبلها من التحذير من أهل الكتاب'),
         );
-        expect(restored.answers.containsKey(2), isFalse);
+        expect(restored.answers.containsKey(4), isFalse);
       },
     );
   });
