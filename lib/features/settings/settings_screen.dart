@@ -9,6 +9,7 @@ import '../backup/backup_screen.dart';
 import '../reminders/reminders_screen.dart';
 import 'user_settings_model.dart';
 import '../../core/design_system/app_icons.dart';
+import '../quran/qcf/madinah_preview.dart';
 
 /// شاشة الإعدادات لإدارة المظهر ونوع وحجم خط المصحف واللغة وإعادة تعيين البيانات.
 ///
@@ -37,6 +38,7 @@ class SettingsScreen extends StatelessWidget {
           listenable: UserDataStore.instance,
           builder: (context, _) {
             final settings = UserDataStore.instance.settings;
+            final madinah = settings.mushafStyle == MushafStyle.madinah;
 
             return ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -260,8 +262,19 @@ class SettingsScreen extends StatelessWidget {
                           onSelectionChanged: (v) =>
                               UserDataStore.instance.setMushafStyle(v.first),
                         ),
-                        if (settings.mushafStyle == MushafStyle.madinah) ...[
-                          const SizedBox(height: 8),
+                        const SizedBox(height: 8),
+                        Text(
+                          madinah
+                              ? l10n.mushafStyleMadinahHint
+                              : l10n.mushafStyleTextHint,
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            height: 1.5,
+                            color: AppColors.textSecondary(context),
+                          ),
+                        ),
+                        if (madinah) ...[
+                          const SizedBox(height: 4),
                           Text(
                             l10n.qcfAttribution,
                             style: TextStyle(
@@ -271,72 +284,78 @@ class SettingsScreen extends StatelessWidget {
                           ),
                         ],
                         const Divider(height: 28),
-                        Row(
-                          children: [
-                            Icon(
-                              AppIcons.textT,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.quranFontFamily,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
+                        // The font choice only applies to the flowing text.
+                        if (!madinah) ...[
+                          Row(
+                            children: [
+                              Icon(
+                                AppIcons.textT,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        // A compact dropdown replaces the five large cards;
-                        // the live preview below shows the chosen font.
-                        DropdownButtonFormField<QuranFontFamilyOption>(
-                          // Re-created when the setting changes elsewhere
-                          // (e.g. after restoring a backup).
-                          key: ValueKey(settings.quranFontFamily),
-                          initialValue: settings.quranFontFamily,
-                          isExpanded: true,
-                          borderRadius: BorderRadius.circular(16),
-                          items: [
-                            for (final fontOpt in QuranFontFamilyOption.values)
-                              DropdownMenuItem(
-                                value: fontOpt,
-                                child: Text(
-                                  fontOpt.getLabel(
-                                    context.currentLanguage ==
-                                        AppLanguage.arabic,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                  ),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.quranFontFamily,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                          ],
-                          onChanged: (fontOpt) {
-                            if (fontOpt == null) return;
-                            HapticFeedback.selectionClick();
-                            UserDataStore.instance.setQuranFontFamily(fontOpt);
-                          },
-                        ),
-                        const SizedBox(height: 6),
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(start: 6),
-                          child: Text(
-                            settings.quranFontFamily.getSubtitle(
-                              context.currentLanguage == AppLanguage.arabic,
-                            ),
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              height: 1.5,
-                              color: AppColors.textSecondary(context),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          // A compact dropdown replaces the five large cards;
+                          // the live preview below shows the chosen font.
+                          DropdownButtonFormField<QuranFontFamilyOption>(
+                            // Re-created when the setting changes elsewhere
+                            // (e.g. after restoring a backup).
+                            key: ValueKey(settings.quranFontFamily),
+                            initialValue: settings.quranFontFamily,
+                            isExpanded: true,
+                            borderRadius: BorderRadius.circular(16),
+                            items: [
+                              for (final fontOpt
+                                  in QuranFontFamilyOption.values)
+                                DropdownMenuItem(
+                                  value: fontOpt,
+                                  child: Text(
+                                    fontOpt.getLabel(
+                                      context.currentLanguage ==
+                                          AppLanguage.arabic,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                            onChanged: (fontOpt) {
+                              if (fontOpt == null) return;
+                              HapticFeedback.selectionClick();
+                              UserDataStore.instance.setQuranFontFamily(
+                                fontOpt,
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 6),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(start: 6),
+                            child: Text(
+                              settings.quranFontFamily.getSubtitle(
+                                context.currentLanguage == AppLanguage.arabic,
+                              ),
+                              style: TextStyle(
+                                fontSize: 12.5,
+                                height: 1.5,
+                                color: AppColors.textSecondary(context),
+                              ),
                             ),
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Divider(height: 1),
-                        ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Divider(height: 1),
+                          ),
+                        ],
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -348,7 +367,7 @@ class SettingsScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  l10n.fontSize,
+                                  madinah ? l10n.pageSize : l10n.fontSize,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -356,13 +375,23 @@ class SettingsScreen extends StatelessWidget {
                               ],
                             ),
                             Text(
-                              l10n.fontSizePoints(
-                                context.currentLanguage == AppLanguage.arabic
-                                    ? ArabicSearchNormalizer.toArabicDigits(
-                                        settings.quranFontSize.round(),
-                                      )
-                                    : settings.quranFontSize.round(),
-                              ),
+                              // Madinah pages zoom: 100% fits the screen.
+                              madinah
+                                  ? l10n.percent(
+                                      (settings.quranFontSize /
+                                              UserSettings
+                                                  .defaultQuranFontSize *
+                                              100)
+                                          .round(),
+                                    )
+                                  : l10n.fontSizePoints(
+                                      context.currentLanguage ==
+                                              AppLanguage.arabic
+                                          ? ArabicSearchNormalizer.toArabicDigits(
+                                              settings.quranFontSize.round(),
+                                            )
+                                          : settings.quranFontSize.round(),
+                                    ),
                               style: TextStyle(
                                 fontFamily:
                                     context.currentLanguage ==
@@ -381,8 +410,15 @@ class SettingsScreen extends StatelessWidget {
                           value: settings.quranFontSize,
                           min: UserSettings.minQuranFontSize,
                           max: UserSettings.maxQuranFontSize,
-                          divisions: 16,
-                          label: '${settings.quranFontSize.round()}',
+                          divisions: 24,
+                          label: madinah
+                              ? l10n.percent(
+                                  (settings.quranFontSize /
+                                          UserSettings.defaultQuranFontSize *
+                                          100)
+                                      .round(),
+                                )
+                              : '${settings.quranFontSize.round()}',
                           onChanged: (newSize) {
                             UserDataStore.instance.setQuranFontSize(newSize);
                           },
@@ -457,20 +493,30 @@ class SettingsScreen extends StatelessWidget {
                               width: 0.8,
                             ),
                           ),
-                          child: Text(
-                            'ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ\u00A0\u00A0ۛ فِيهِ\u00A0\u00A0ۛ هُدًى لِّلْمُتَّقِينَ ﴿٢﴾ أُو۟لَٰٓئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ\u00A0\u00A0ۖ وَأُو۟لَٰٓئِكَ هُمُ ٱلْمُفْلِحُونَ ﴿٥﴾',
-                            textAlign: TextAlign.center,
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                              fontFamily: settings.quranFontFamilyName,
-                              fontSize: settings.quranFontSize,
-                              height: 1.85,
-                              color: MushafPalette.of(
-                                isDark: isDark,
-                                tone: settings.mushafPaperTone,
-                              ).text,
-                            ),
-                          ),
+                          child: madinah
+                              ? MadinahPreview(
+                                  zoom:
+                                      settings.quranFontSize /
+                                      UserSettings.defaultQuranFontSize,
+                                  color: MushafPalette.of(
+                                    isDark: isDark,
+                                    tone: settings.mushafPaperTone,
+                                  ).text,
+                                )
+                              : Text(
+                                  'ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ\u00A0\u00A0ۛ فِيهِ\u00A0\u00A0ۛ هُدًى لِّلْمُتَّقِينَ ﴿٢﴾ أُو۟لَٰٓئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ\u00A0\u00A0ۖ وَأُو۟لَٰٓئِكَ هُمُ ٱلْمُفْلِحُونَ ﴿٥﴾',
+                                  textAlign: TextAlign.center,
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(
+                                    fontFamily: settings.quranFontFamilyName,
+                                    fontSize: settings.quranFontSize,
+                                    height: 1.85,
+                                    color: MushafPalette.of(
+                                      isDark: isDark,
+                                      tone: settings.mushafPaperTone,
+                                    ).text,
+                                  ),
+                                ),
                         ),
                         const SizedBox(height: 8),
                         Row(
@@ -494,10 +540,9 @@ class SettingsScreen extends StatelessWidget {
                                   ),
                                   label: Text(
                                     l10n.resetToDefaultWithVal(
-                                      context.currentLanguage ==
-                                              AppLanguage.arabic
-                                          ? '٢٠'
-                                          : '20',
+                                      madinah
+                                          ? l10n.percent(100)
+                                          : l10n.digits(20),
                                     ),
                                   ),
                                 ),

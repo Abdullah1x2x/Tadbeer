@@ -1554,4 +1554,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeAuto => 'Auto';
+
+  @override
+  String get addVerseTitle => 'Add an ayah to the link';
+
+  @override
+  String get addVerseSearchHint => 'Search the text, or type: Al-Baqarah 255';
+
+  @override
+  String get addVerseFromSaved => 'From your saved ayahs';
+
+  @override
+  String get addVersePickBySurah => 'Pick by surah and number';
+
+  @override
+  String get addVerseSurah => 'Surah';
+
+  @override
+  String get addVerseAyah => 'Ayah';
+
+  @override
+  String get addVerseNote => 'Note (optional)';
+
+  @override
+  String get addVerseAlready => 'Already in this link';
+
+  @override
+  String get addVerseAction => 'Add to link';
+
+  @override
+  String get addVerseChange => 'Change';
+
+  @override
+  String get addVerseNoResults => 'No results';
+
+  @override
+  String get addVerseSearchSurah => 'Search surah name or number';
+
+  @override
+  String get mushafStyleMadinahHint =>
+      'Pages identical to the printed Mushaf; lines wrap when enlarged.';
+
+  @override
+  String get mushafStyleTextHint => 'Flowing text in the font you choose.';
+
+  @override
+  String get pageSize => 'Page size';
 }

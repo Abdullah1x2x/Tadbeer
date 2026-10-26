@@ -311,9 +311,7 @@ void main() {
         late AyahLinkItem link;
         await tester.runAsync(() async {
           final repo = AyahLinkRepository();
-          link = await repo.createLink(
-            title: 'رابط التدبر والاختبار',
-          );
+          link = await repo.createLink(title: 'رابط التدبر والاختبار');
           final ayahObj = QuranRepository.instance.getAyah(1, 1);
           await repo.addVerseToLink(
             link.id,
@@ -321,8 +319,7 @@ void main() {
             surahNumber: 1,
             ayahNumber: 1,
             page: 1,
-            note:
-                'ملاحظة تدبرية طويلة جداً على الآية الأولى تمتد لعدة أسطر للتأكد من ظهورها كاملة على العقدة دون أي اقتطاع أو علامات حذف نهائياً.',
+            note: 'ملاحظة تدبرية طويلة جداً على الآية الأولى تمتد لعدة أسطر للتأكد من ظهورها كاملة على العقدة دون أي اقتطاع أو علامات حذف نهائياً.',
           );
         });
 
@@ -332,8 +329,10 @@ void main() {
         await tester.pumpAndSettle();
 
         // 1. Verify 'إضافة ملاحظة' FAB exists next to 'إضافة آية'
-        final addNoteFab =
-            find.widgetWithText(FloatingActionButton, 'إضافة ملاحظة');
+        final addNoteFab = find.widgetWithText(
+          FloatingActionButton,
+          'إضافة ملاحظة',
+        );
         expect(addNoteFab, findsOneWidget);
 
         // 2. Tap 'إضافة ملاحظة' and write link reflection note
@@ -372,14 +371,11 @@ void main() {
         late AyahLinkItem link;
         await tester.runAsync(() async {
           final repo = AyahLinkRepository();
-          link = await repo.createLink(
-            title: 'رابط التدبر المتقدم',
-          );
+          link = await repo.createLink(title: 'رابط التدبر المتقدم');
           await repo.addNoteToLink(
             link.id,
             title: 'عنوان الكرت التدبري',
-            content:
-                'نص كرت الملاحظة التدبرية بالكامل دون أي اختصار أو اقتطاع نهائياً.',
+            content: 'نص كرت الملاحظة التدبرية بالكامل دون أي اختصار أو اقتطاع نهائياً.',
           );
           await repo.updateViewState(link.id, viewMode: 'ordered');
         });
@@ -403,12 +399,11 @@ void main() {
     );
 
     testWidgets(
-      'AddVerseToLinkDialog bottom sheet renders tabs, supports search and manual selection',
+      'adding an ayah: search, choose, then add; nothing is chosen at first',
       (WidgetTester tester) async {
         late AyahLinkItem link;
         await tester.runAsync(() async {
-          final repo = AyahLinkRepository();
-          link = await repo.createLink(
+          link = await AyahLinkRepository().createLink(
             title: 'رابط تدبري لاختبار إضافة الآيات',
           );
         });
@@ -418,41 +413,55 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        // 1. Tap Add Ayah button
-        final addAyahBtn =
-            find.widgetWithText(FloatingActionButton, 'إضافة آية');
-        expect(addAyahBtn, findsOneWidget);
-        await tester.tap(addAyahBtn);
+        await tester.tap(
+          find.widgetWithText(FloatingActionButton, 'إضافة آية'),
+        );
         await tester.pumpAndSettle();
-
-        // 2. Bottom Sheet should appear with Title and 3 mode tabs
         expect(find.text('إضافة آية إلى الرابط'), findsOneWidget);
-        expect(find.text('بحث فوري'), findsOneWidget);
-        expect(find.text('تحديد يدوي'), findsOneWidget);
-        expect(find.text('محفوظاتي'), findsOneWidget);
+        // One flow, no tabs, and nothing chosen yet.
+        expect(find.text('بحث فوري'), findsNothing);
+        final add = find.widgetWithText(FilledButton, 'إضافة إلى الرابط');
+        expect(tester.widget<FilledButton>(add).onPressed, isNull);
 
-        // 3. Switch to Manual Picker
-        await tester.tap(find.text('تحديد يدوي'));
+        await tester.enterText(find.byType(TextField).first, 'البقرة 255');
         await tester.pumpAndSettle();
+        await tester.tap(find.textContaining('سورة البقرة').first);
+        await tester.pumpAndSettle();
+        expect(find.text('تغيير'), findsOneWidget);
+        expect(tester.widget<FilledButton>(add).onPressed, isNotNull);
 
-        // Verify Surah selection card and Ayah stepper are visible
-        expect(find.textContaining('السورة'), findsOneWidget);
-        expect(find.textContaining('رقم الآية'), findsOneWidget);
-
-        // 4. Verify preview card and submit button are displayed
-        expect(find.text('إضافة إلى الرابط'), findsOneWidget);
-
-        // 5. Submit adding the verse
         await tester.runAsync(() async {
-          await tester.tap(find.widgetWithText(ElevatedButton, 'إضافة إلى الرابط'));
-          await Future.delayed(const Duration(milliseconds: 150));
+          await tester.tap(add);
+          await Future<void>.delayed(const Duration(milliseconds: 150));
         });
         await tester.pumpAndSettle();
-
-        // Dialog closes and verse is added to the link
         expect(find.text('إضافة آية إلى الرابط'), findsNothing);
+        final saved = AyahLinkRepository().getLink(link.id);
+        expect(saved!.verses.single.ayahNumber, 255);
       },
     );
+
+    testWidgets('picking by surah and number', (WidgetTester tester) async {
+      late AyahLinkItem link;
+      await tester.runAsync(() async {
+        link = await AyahLinkRepository().createLink(title: 'رابط');
+      });
+      await tester.pumpWidget(
+        buildTestApp(AyahLinkDetailScreen(linkId: link.id)),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FloatingActionButton, 'إضافة آية'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('اختيار بالسورة ورقم الآية'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('زيادة'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(AppIcons.check));
+      await tester.pumpAndSettle();
+      // Al-Fatiha 2 is now the chosen ayah.
+      expect(find.text('تغيير'), findsOneWidget);
+      expect(find.textContaining('الفاتحة'), findsWidgets);
+    });
   });
 }
-

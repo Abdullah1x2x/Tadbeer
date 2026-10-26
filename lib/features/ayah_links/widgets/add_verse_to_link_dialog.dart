@@ -2,29 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
 import '../../../app/theme.dart';
+import '../../../core/design_system/app_icons.dart';
 import '../../../core/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../ayah_link_repository.dart';
 import '../../quran/data/quran_models.dart';
 import '../../quran/data/quran_repository.dart';
-import '../../../core/design_system/app_icons.dart';
+import '../ayah_link_repository.dart';
 
-/// أوضاع اختيار الآية في نافذة الإضافة لرابط الآيات.
-enum _AddVerseMode {
-  search, // بحث فوري بنص الآية أو مرجعها
-  manual, // تحديد يدوي باختيار السورة ورقم الآية
-  saved, // اختيار من المحفوظات أو المميزة
-}
-
-/// نافذة سفلية تفاعلية وحديثة لاختيار آية قرآنية وإضافتها مع ملاحظة تدبرية إلى رابط الآيات.
+/// نافذة إضافة آية إلى رابط الآيات.
 ///
-/// Interactive bottom sheet modal enabling users to add an Ayah to a Link
-/// via smart search, manual picker, or saved bookmarks/highlights.
+/// One search field finds an ayah by its words or by surah and number
+/// ("البقرة ٢٥٥"); with nothing typed it lists the reader's saved and
+/// highlighted ayahs, and picking by surah and number is one tap away.
+/// Nothing is chosen until the reader picks an ayah, then an optional note
+/// and a single "Add to link" button follow.
 class AddVerseToLinkDialog extends StatefulWidget {
   /// معرّف رابط الآيات المراد إضافة الآية إليه.
   final String linkId;
 
-  /// قائمة معرّفات الآيات المضافة مسبقاً في هذا الرابط لتفادي التكرار.
+  /// معرّفات الآيات المضافة مسبقاً في هذا الرابط لتفادي التكرار.
   final List<int> existingAyahIds;
 
   /// ينشئ نافذة إضافة آية إلى الرابط.
@@ -34,7 +30,7 @@ class AddVerseToLinkDialog extends StatefulWidget {
     this.existingAyahIds = const [],
   });
 
-  /// يعرض نافذة اختيار الآية كلوحة سفلية متكيفة مع لوحة المفاتيح.
+  /// يعرض النافذة كلوحة سفلية تتكيف مع لوحة المفاتيح.
   static Future<bool?> show(
     BuildContext context, {
     required String linkId,
@@ -57,253 +53,71 @@ class AddVerseToLinkDialog extends StatefulWidget {
 }
 
 class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
-  _AddVerseMode _currentMode = _AddVerseMode.search;
-
-  late int _selectedSurahNumber;
-  late int _selectedAyahNumber;
-
   final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _ayahNumberController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-  List<Ayah> _searchResults = [];
+  List<Ayah> _results = const [];
+
+  /// The chosen ayah; nothing until the reader picks one.
+  Ayah? _selected;
+
+  /// Whether the surah-and-number picker is open.
+  bool _byNumber = false;
+  int _surah = 1;
+  int _ayah = 1;
   bool _isAdding = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedSurahNumber = 1;
-    _selectedAyahNumber = 1;
-    _ayahNumberController.text = '1';
-    _searchController.addListener(_onSearchQueryChanged);
+    _searchController.addListener(_onQueryChanged);
   }
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchQueryChanged);
+    _searchController.removeListener(_onQueryChanged);
     _searchController.dispose();
-    _ayahNumberController.dispose();
     _noteController.dispose();
     super.dispose();
   }
 
-  /// ينفذ البحث القرآني الفوري عند تغير نص البحث.
-  void _onSearchQueryChanged() {
+  void _onQueryChanged() {
     final query = _searchController.text.trim();
-    if (query.isEmpty) {
-      if (mounted) setState(() => _searchResults = []);
-      return;
-    }
-
-    final results = QuranRepository.instance.searchAyahs(query, limit: 15);
-    if (mounted) {
-      setState(() {
-        _searchResults = results;
-        if (results.length == 1) {
-          _selectAyah(results.first, updateSearchText: false);
-        }
-      });
-    }
-  }
-
-  /// يعيد بيانات السورة المختارة حالياً.
-  Surah get _currentSurah =>
-      QuranRepository.instance.getSurah(_selectedSurahNumber);
-
-  /// يعيد بيانات الآية المختارة حالياً.
-  Ayah? get _currentAyah => QuranRepository.instance.getAyah(
-    _selectedSurahNumber,
-    _selectedAyahNumber,
-  );
-
-  /// يتحقق مما إذا كانت الآية المختارة مضافة مسبقاً في هذا الرابط.
-  bool get _isAlreadyAdded {
-    final ayah = _currentAyah;
-    if (ayah == null) return false;
-    return widget.existingAyahIds.contains(ayah.id);
-  }
-
-  /// يحدد آية معينة ويحدث حقول العرض.
-  void _selectAyah(Ayah ayah, {bool updateSearchText = false}) {
     setState(() {
-      _selectedSurahNumber = ayah.surahNumber;
-      _selectedAyahNumber = ayah.ayahNumber;
-      _ayahNumberController.text = '${ayah.ayahNumber}';
-      if (updateSearchText) {
-        final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
-        _searchController.removeListener(_onSearchQueryChanged);
-        _searchController.text = '${surah.name} ${ayah.ayahNumber}';
-        _searchController.addListener(_onSearchQueryChanged);
-        _searchResults = [];
-      }
+      _results = query.isEmpty
+          ? const []
+          : QuranRepository.instance.searchAyahs(query, limit: 15);
     });
   }
 
-  /// يفتح نافذة سريعة للبحث واختيار السورة من بين ١١٤ سورة.
-  Future<void> _showSurahPickerModal() async {
-    final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surahs = QuranRepository.instance.surahs;
+  bool _isAdded(Ayah ayah) => widget.existingAyahIds.contains(ayah.id);
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (pickerCtx) {
-        String filter = '';
-        return StatefulBuilder(
-          builder: (ctx, setPickerState) {
-            final filteredSurahs = filter.isEmpty
-                ? surahs
-                : surahs.where((s) {
-                    final normFilter = ArabicSearchNormalizer.normalize(filter);
-                    final normName = ArabicSearchNormalizer.normalize(s.name);
-                    final numberStr = '${s.number}';
-                    return normName.contains(normFilter) ||
-                        numberStr.contains(filter);
-                  }).toList();
+  void _choose(Ayah? ayah) => setState(() => _selected = ayah);
 
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.75,
-              decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkBackground
-                    : AppColors.comsilkLight,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
-              ),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
-                      child: TextField(
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          hintText: l10n.isArabic
-                              ? 'ابحث باسم السورة أو رقمها...'
-                              : 'Search surah name or number...',
-                          prefixIcon: const Icon(AppIcons.magnifyingGlass),
-                          filled: true,
-                          fillColor: AppColors.surface(context),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: AppColors.border(context),
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
-                        ),
-                        onChanged: (val) => setPickerState(() => filter = val),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.separated(
-                        itemCount: filteredSurahs.length,
-                        separatorBuilder: (_, _) => Divider(
-                          height: 1,
-                          color: AppColors.border(context)
-                              .withValues(alpha: 0.4),
-                        ),
-                        itemBuilder: (_, idx) {
-                          final s = filteredSurahs[idx];
-                          final isSelected = s.number == _selectedSurahNumber;
-                          return ListTile(
-                            leading: Container(
-                              width: 36,
-                              height: 36,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : (isDark
-                                          ? Colors.white10
-                                          : Colors.black.withValues(
-                                              alpha: 0.05,
-                                            )),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Text(
-                                l10n.isArabic
-                                    ? ArabicSearchNormalizer.toArabicDigits(
-                                        s.number,
-                                      )
-                                    : '${s.number}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                  color: isSelected ? Colors.white : null,
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              l10n.surahTitle(s.name),
-                              style: TextStyle(
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : null,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '${s.isMeccan ? l10n.meccan : l10n.medinan} · ${l10n.ayahCount(s.ayahCount)}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            trailing: isSelected
-                                ? Icon(
-                                    AppIcons.checkCircleFill,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary,
-                                  )
-                                : null,
-                            onTap: () {
-                              setState(() {
-                                _selectedSurahNumber = s.number;
-                                _selectedAyahNumber = 1;
-                                _ayahNumberController.text = '1';
-                              });
-                              Navigator.pop(pickerCtx);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
+  /// Saved and highlighted ayahs, newest kinds first, each once.
+  List<Ayah> get _savedAyahs {
+    final repo = QuranRepository.instance;
+    final store = UserDataStore.instance;
+    final seen = <String>{};
+    final out = <Ayah>[];
+    for (final (s, a) in [
+      for (final b in store.bookmarks) (b.surahNumber, b.ayahNumber),
+      for (final h in store.highlights) (h.surahNumber, h.ayahNumber),
+    ]) {
+      if (!seen.add('$s:$a')) continue;
+      final ayah = repo.getAyah(s, a);
+      if (ayah != null) out.add(ayah);
+    }
+    return out;
   }
 
-  /// يحفظ الآية المختارة وملاحظتها التدبرية في الرابط ويغلق النافذة.
   Future<void> _submit() async {
-    final ayah = _currentAyah;
-    if (ayah == null || _isAlreadyAdded) return;
-
+    final ayah = _selected;
+    if (ayah == null || _isAdded(ayah)) return;
     setState(() => _isAdding = true);
     try {
-      final repo = AyahLinkRepository();
       final note = _noteController.text.trim();
-      await repo.addVerseToLink(
+      await AyahLinkRepository().addVerseToLink(
         widget.linkId,
         ayahId: ayah.id,
         surahNumber: ayah.surahNumber,
@@ -311,105 +125,68 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
         page: ayah.page,
         note: note.isEmpty ? null : note,
       );
-
-      if (mounted) {
-        Navigator.pop(context, true);
-      }
+      if (mounted) Navigator.pop(context, true);
     } finally {
-      if (mounted) {
-        setState(() => _isAdding = false);
-      }
+      if (mounted) setState(() => _isAdding = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final ayah = _currentAyah;
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final selected = _selected;
+    final canAdd = selected != null && !_isAdded(selected) && !_isAdding;
 
     return Directionality(
       textDirection: context.currentLanguage.direction,
-      child: Container(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.90,
+      // A Material, so the list rows' tap ripples show on it.
+      child: Material(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkBackground : AppColors.comsilkLight,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // 1. مقبض السحب ورأس النافذة
-                _buildHeader(context, l10n, primaryColor),
-
-                // 2. محدد طريقة الاختيار (بحث فوري / يدوي / محفوظاتي)
-                _buildModeSegmentedControl(context, l10n, isDark, primaryColor),
-
-                // 3. المحتوى المتغير حسب الوضع المختار
-                Flexible(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 8,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (_currentMode == _AddVerseMode.search)
-                          _buildSearchSection(
-                            context,
-                            l10n,
-                            isDark,
-                            primaryColor,
-                          )
-                        else if (_currentMode == _AddVerseMode.manual)
-                          _buildManualSection(
-                            context,
-                            l10n,
-                            isDark,
-                            primaryColor,
-                          )
-                        else
-                          _buildSavedSection(
-                            context,
-                            l10n,
-                            isDark,
-                            primaryColor,
-                          ),
-
-                        const SizedBox(height: 12),
-
-                        // 4. بطاقة معاينة الآية المختارة
-                        if (ayah != null)
-                          _buildSelectedAyahCard(
-                            context,
-                            ayah,
-                            l10n,
-                            isDark,
-                            primaryColor,
-                          ),
-
-                        const SizedBox(height: 14),
-
-                        // 5. حقل الملاحظة التدبرية
-                        _buildNoteField(context, l10n),
-                      ],
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * 0.9,
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.viewInsetsOf(context).bottom,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _Header(title: l10n.addVerseTitle),
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+                      children: selected == null
+                          ? _choosing(context, l10n)
+                          : _chosen(context, l10n, selected),
                     ),
                   ),
-                ),
-
-                // 6. شريط أزرار الإجراءات (إلغاء / إضافة إلى الرابط)
-                _buildBottomActionBar(context, l10n, primaryColor),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+                    child: FilledButton.icon(
+                      onPressed: canAdd ? _submit : null,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      icon: _isAdding
+                          ? const SizedBox.square(
+                              dimension: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(AppIcons.link, size: 18),
+                      label: Text(l10n.addVerseAction),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -417,808 +194,390 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     );
   }
 
-  Widget _buildHeader(
-    BuildContext context,
-    AppStrings l10n,
-    Color primaryColor,
-  ) {
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        Container(
-          width: 38,
-          height: 4,
-          decoration: BoxDecoration(
-            color: Colors.grey.withValues(alpha: 0.35),
-            borderRadius: BorderRadius.circular(2),
+  /// Search, saved ayahs and the surah-and-number picker.
+  List<Widget> _choosing(BuildContext context, AppStrings l10n) {
+    final query = _searchController.text.trim();
+    final saved = query.isEmpty && !_byNumber ? _savedAyahs : const <Ayah>[];
+    return [
+      TextField(
+        controller: _searchController,
+        autofocus: false,
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          hintText: l10n.addVerseSearchHint,
+          prefixIcon: const Icon(AppIcons.magnifyingGlass, size: 20),
+          suffixIcon: query.isEmpty
+              ? null
+              : IconButton(
+                  tooltip: l10n.clearText,
+                  icon: const Icon(AppIcons.x, size: 18),
+                  onPressed: _searchController.clear,
+                ),
+        ),
+      ),
+      const SizedBox(height: 8),
+      if (query.isNotEmpty) ...[
+        if (_results.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              l10n.addVerseNoResults,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.textSecondary(context)),
+            ),
+          ),
+        for (final ayah in _results)
+          _AyahTile(
+            ayah: ayah,
+            added: _isAdded(ayah),
+            onTap: () => _choose(ayah),
+          ),
+      ] else ...[
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TextButton.icon(
+            onPressed: () => setState(() => _byNumber = !_byNumber),
+            icon: Icon(
+              _byNumber ? AppIcons.caretUp : AppIcons.listNumbers,
+              size: 18,
+            ),
+            label: Text(l10n.addVersePickBySurah),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  color: primaryColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
+        if (_byNumber) _numberPicker(context, l10n),
+        if (saved.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          _SectionTitle(l10n.addVerseFromSaved),
+          for (final ayah in saved)
+            _AyahTile(
+              ayah: ayah,
+              added: _isAdded(ayah),
+              onTap: () => _choose(ayah),
+            ),
+        ],
+      ],
+    ];
+  }
+
+  /// The chosen ayah, a way to change it and the optional note.
+  List<Widget> _chosen(BuildContext context, AppStrings l10n, Ayah ayah) {
+    final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
+    final added = _isAdded(ayah);
+    final gold = AppColors.accentGold(context);
+    return [
+      Container(
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+        decoration: BoxDecoration(
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: added
+                ? AppColors.statusWarning
+                : gold.withValues(alpha: 0.5),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.ayahReference(
+                      surah.name,
+                      l10n.digits(ayah.ayahNumber),
+                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: gold),
+                  ),
                 ),
-                child: Icon(
-                  AppIcons.bookmarkSimple,
-                  color: primaryColor,
-                  size: 20,
+                TextButton(
+                  onPressed: () => _choose(null),
+                  child: Text(l10n.addVerseChange),
+                ),
+              ],
+            ),
+            Text(
+              ayah.text,
+              textAlign: TextAlign.center,
+              maxLines: 6,
+              overflow: TextOverflow.fade,
+              style: const TextStyle(
+                fontFamily: 'AmiriQuran',
+                fontSize: 17,
+                height: 1.9,
+              ),
+            ),
+            if (added) ...[
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    AppIcons.warning,
+                    size: 16,
+                    color: AppColors.statusWarning,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.addVerseAlready,
+                    style: TextStyle(
+                      color: AppColors.statusWarning,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+      const SizedBox(height: 12),
+      if (!added)
+        TextField(
+          controller: _noteController,
+          minLines: 2,
+          maxLines: 4,
+          decoration: InputDecoration(labelText: l10n.addVerseNote),
+        ),
+    ];
+  }
+
+  Widget _numberPicker(BuildContext context, AppStrings l10n) {
+    final surah = QuranRepository.instance.getSurah(_surah);
+    void pick(int ayah) {
+      final value = ayah.clamp(1, surah.ayahCount);
+      setState(() => _ayah = value);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: OutlinedButton(
+              onPressed: () async {
+                final number = await _pickSurah(context, l10n);
+                if (number != null) {
+                  setState(() {
+                    _surah = number;
+                    _ayah = 1;
+                  });
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
                 ),
               ),
-              const SizedBox(width: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${l10n.addVerseSurah}: ${surah.name}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const Icon(AppIcons.caretDown, size: 16),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            tooltip: l10n.decrease,
+            onPressed: _ayah > 1 ? () => pick(_ayah - 1) : null,
+            icon: const Icon(AppIcons.minusCircle),
+          ),
+          Text(
+            '${l10n.addVerseAyah} ${l10n.digits(_ayah)}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          IconButton(
+            tooltip: l10n.increase,
+            onPressed: _ayah < surah.ayahCount ? () => pick(_ayah + 1) : null,
+            icon: const Icon(AppIcons.plusCircle),
+          ),
+          FilledButton.tonal(
+            onPressed: () =>
+                _choose(QuranRepository.instance.getAyah(_surah, _ayah)),
+            child: const Icon(AppIcons.check, size: 18),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// A searchable list of the 114 surahs; returns the chosen number.
+  Future<int?> _pickSurah(BuildContext context, AppStrings l10n) {
+    final surahs = QuranRepository.instance.surahs;
+    return showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheet) {
+        var filter = '';
+        return StatefulBuilder(
+          builder: (context, setSheet) {
+            final norm = ArabicSearchNormalizer.normalize(filter);
+            final shown = filter.isEmpty
+                ? surahs
+                : surahs
+                      .where(
+                        (s) =>
+                            ArabicSearchNormalizer.normalize(s.name)
+                                .contains(norm) ||
+                            '${s.number}'.contains(filter),
+                      )
+                      .toList();
+            return SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.75,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: TextField(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: l10n.addVerseSearchSurah,
+                        prefixIcon: const Icon(AppIcons.magnifyingGlass),
+                      ),
+                      onChanged: (v) => setSheet(() => filter = v),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: shown.length,
+                      itemBuilder: (_, i) {
+                        final s = shown[i];
+                        return ListTile(
+                          leading: CircleAvatar(
+                            radius: 16,
+                            child: Text(
+                              l10n.digits(s.number),
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          title: Text(l10n.surahTitle(s.name)),
+                          subtitle: Text(
+                            '${s.isMeccan ? l10n.meccan : l10n.medinan} · ${l10n.ayahCount(s.ayahCount)}',
+                          ),
+                          selected: s.number == _surah,
+                          onTap: () => Navigator.pop(sheet, s.number),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  final String title;
+
+  const _Header({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 10, 8, 4),
+      child: Column(
+        children: [
+          Container(
+            width: 38,
+            height: 4,
+            decoration: BoxDecoration(
+              color: AppColors.border(context),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Row(
+            children: [
               Expanded(
                 child: Text(
-                  l10n.isArabic ? 'إضافة آية إلى الرابط' : 'Add Verse to Link',
+                  title,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                     fontSize: 17,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
               IconButton(
+                tooltip: context.l10n.close,
                 icon: const Icon(AppIcons.x, size: 20),
                 onPressed: () => Navigator.pop(context),
-                tooltip: l10n.close,
               ),
             ],
-          ),
-        ),
-        const Divider(height: 1),
-      ],
-    );
-  }
-
-  Widget _buildModeSegmentedControl(
-    BuildContext context,
-    AppStrings l10n,
-    bool isDark,
-    Color primaryColor,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDark
-              ? AppColors.darkSurface
-              : Colors.black.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.all(3),
-        child: Row(
-          children: [
-            _buildTabButton(
-              title: l10n.isArabic ? 'بحث فوري' : 'Quick Search',
-              icon: AppIcons.magnifyingGlass,
-              mode: _AddVerseMode.search,
-              primaryColor: primaryColor,
-              isDark: isDark,
-            ),
-            _buildTabButton(
-              title: l10n.isArabic ? 'تحديد يدوي' : 'Manual Picker',
-              icon: AppIcons.slidersHorizontal,
-              mode: _AddVerseMode.manual,
-              primaryColor: primaryColor,
-              isDark: isDark,
-            ),
-            _buildTabButton(
-              title: l10n.isArabic ? 'محفوظاتي' : 'My Saved',
-              icon: AppIcons.bookmarks,
-              mode: _AddVerseMode.saved,
-              primaryColor: primaryColor,
-              isDark: isDark,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTabButton({
-    required String title,
-    required IconData icon,
-    required _AddVerseMode mode,
-    required Color primaryColor,
-    required bool isDark,
-  }) {
-    final isSelected = _currentMode == mode;
-    return Expanded(
-      child: InkWell(
-        onTap: () => setState(() => _currentMode = mode),
-        borderRadius: BorderRadius.circular(10),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? (isDark ? primaryColor.withValues(alpha: 0.25) : Colors.white)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: isSelected && !isDark
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 15,
-                color: isSelected ? primaryColor : Colors.grey,
-              ),
-              const SizedBox(width: 5),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected ? primaryColor : Colors.grey,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchSection(
-    BuildContext context,
-    AppStrings l10n,
-    bool isDark,
-    Color primaryColor,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: l10n.isArabic
-                ? 'اكتب اسم السورة ورقم الآية (مثل: البقرة 255) أو نص الآية...'
-                : 'Type surah and verse (e.g. Baqarah 255) or text...',
-            hintStyle: TextStyle(
-              fontSize: 13,
-              color: isDark
-                  ? AppColors.nightSubtitle
-                  : AppColors.lightTextSecondary,
-            ),
-            prefixIcon: Icon(
-              AppIcons.magnifyingGlass,
-              color: primaryColor,
-              size: 20,
-            ),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? IconButton(
-                    tooltip: context.l10n.clearText,
-                    icon: const Icon(AppIcons.x, size: 18),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() => _searchResults = []);
-                    },
-                  )
-                : null,
-            filled: true,
-            fillColor: AppColors.surface(context),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.border(context)),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 12,
-            ),
-          ),
-        ),
-        if (_searchResults.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Container(
-            constraints: const BoxConstraints(maxHeight: 180),
-            decoration: BoxDecoration(
-              color: AppColors.surface(context),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border(context)),
-            ),
-            child: ListView.separated(
-              shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              itemCount: _searchResults.length,
-              separatorBuilder: (_, _) => Divider(
-                height: 1,
-                color: AppColors.border(context).withValues(alpha: 0.5),
-              ),
-              itemBuilder: (_, idx) {
-                final ayahItem = _searchResults[idx];
-                final isSelected =
-                    ayahItem.surahNumber == _selectedSurahNumber &&
-                    ayahItem.ayahNumber == _selectedAyahNumber;
-                final isAlready = widget.existingAyahIds.contains(ayahItem.id);
-                final surahName = QuranRepository.instance
-                    .getSurah(ayahItem.surahNumber)
-                    .name;
-
-                return ListTile(
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
-                  title: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: primaryColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          '$surahName : ${ayahItem.ayahNumber}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: primaryColor,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      if (isAlready)
-                        Text(
-                          l10n.isArabic ? '(مضافة بالفعل)' : '(Already added)',
-                          style: const TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.orange,
-                          ),
-                        ),
-                    ],
-                  ),
-                  subtitle: Text(
-                    ayahItem.text,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontFamily: 'AmiriQuran',
-                      fontSize: 13,
-                    ),
-                  ),
-                  trailing: isSelected
-                      ? Icon(
-                          AppIcons.checkCircleFill,
-                          color: primaryColor,
-                          size: 18,
-                        )
-                      : null,
-                  onTap: () => _selectAyah(ayahItem, updateSearchText: false),
-                );
-              },
-            ),
-          ),
-        ] else if (_searchController.text.trim().isEmpty) ...[
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              _buildQuickChip('البقرة 255 (آية الكرسي)', 2, 255),
-              _buildQuickChip('الكهف 10', 18, 10),
-              _buildQuickChip('الإخلاص 1', 112, 1),
-              _buildQuickChip('الفاتحة 1', 1, 1),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildQuickChip(String label, int surah, int ayah) {
-    return ActionChip(
-      label: Text(label, style: const TextStyle(fontSize: 12)),
-      padding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-      onPressed: () {
-        final target = QuranRepository.instance.getAyah(surah, ayah);
-        if (target != null) {
-          _selectAyah(target, updateSearchText: true);
-        }
-      },
-    );
-  }
-
-  Widget _buildManualSection(
-    BuildContext context,
-    AppStrings l10n,
-    bool isDark,
-    Color primaryColor,
-  ) {
-    final surah = _currentSurah;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            // زر اختيار السورة
-            Expanded(
-              flex: 3,
-              child: InkWell(
-                onTap: _showSurahPickerModal,
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface(context),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border(context)),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        AppIcons.bookOpenFill,
-                        color: primaryColor,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.isArabic
-                                  ? 'السورة (انقر للاختيار)'
-                                  : 'Surah (tap to pick)',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: isDark
-                                    ? AppColors.nightSubtitle
-                                    : AppColors.lightTextSecondary,
-                              ),
-                            ),
-                            Text(
-                              '${surah.number}. ${l10n.surahTitle(surah.name)}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13.5,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Icon(AppIcons.caretDown),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-
-            // حقل رقم الآية مع أزرار الزيادة والنقصان
-            Expanded(
-              flex: 2,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.surface(context),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border(context)),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      l10n.isArabic
-                          ? 'رقم الآية (1-${surah.ayahCount})'
-                          : 'Verse (1-${surah.ayahCount})',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.lightTextSecondary,
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          tooltip: context.l10n.decrease,
-                          icon: const Icon(AppIcons.minusCircle, size: 20),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 28,
-                            minHeight: 28,
-                          ),
-                          onPressed: _selectedAyahNumber > 1
-                              ? () {
-                                  setState(() {
-                                    _selectedAyahNumber--;
-                                    _ayahNumberController.text =
-                                        '$_selectedAyahNumber';
-                                  });
-                                }
-                              : null,
-                        ),
-                        SizedBox(
-                          width: 44,
-                          child: TextField(
-                            controller: _ayahNumberController,
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                            onChanged: (val) {
-                              final parsed = int.tryParse(
-                                ArabicSearchNormalizer.toEnglishDigits(val),
-                              );
-                              if (parsed != null &&
-                                  parsed >= 1 &&
-                                  parsed <= surah.ayahCount) {
-                                setState(() => _selectedAyahNumber = parsed);
-                              }
-                            },
-                          ),
-                        ),
-                        IconButton(
-                          tooltip: context.l10n.increase,
-                          icon: const Icon(AppIcons.plusCircle, size: 20),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(
-                            minWidth: 28,
-                            minHeight: 28,
-                          ),
-                          onPressed: _selectedAyahNumber < surah.ayahCount
-                              ? () {
-                                  setState(() {
-                                    _selectedAyahNumber++;
-                                    _ayahNumberController.text =
-                                        '$_selectedAyahNumber';
-                                  });
-                                }
-                              : null,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSavedSection(
-    BuildContext context,
-    AppStrings l10n,
-    bool isDark,
-    Color primaryColor,
-  ) {
-    final bookmarks = UserDataStore.instance.bookmarks;
-    final highlights = UserDataStore.instance.highlights;
-
-    final savedAyahs = <Ayah>[];
-    final seenKeys = <String>{};
-
-    for (final b in bookmarks) {
-      final key = '${b.surahNumber}:${b.ayahNumber}';
-      if (seenKeys.add(key)) {
-        final a = QuranRepository.instance.getAyah(b.surahNumber, b.ayahNumber);
-        if (a != null) savedAyahs.add(a);
-      }
-    }
-    for (final h in highlights) {
-      final key = '${h.surahNumber}:${h.ayahNumber}';
-      if (seenKeys.add(key)) {
-        final a = QuranRepository.instance.getAyah(h.surahNumber, h.ayahNumber);
-        if (a != null) savedAyahs.add(a);
-      }
-    }
-
-    if (savedAyahs.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(18),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: AppColors.surface(context),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border(context)),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              AppIcons.bookmarks,
-              size: 36,
-              color: Colors.grey.withValues(alpha: 0.6),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.isArabic
-                  ? 'لا توجد آيات محفوظة أو مميزة بعد'
-                  : 'No saved or highlighted verses yet',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              l10n.isArabic
-                  ? 'يمكنك حفظ الآيات أو تمييزها أثناء قراءة المصحف لتظهر هنا مباشرة.'
-                  : 'Bookmark or highlight verses while reading to see them here.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: isDark
-                    ? AppColors.nightSubtitle
-                    : AppColors.lightTextSecondary,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 180),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border(context)),
-      ),
-      child: ListView.separated(
-        shrinkWrap: true,
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        itemCount: savedAyahs.length,
-        separatorBuilder: (_, _) => Divider(
-          height: 1,
-          color: AppColors.border(context).withValues(alpha: 0.5),
-        ),
-        itemBuilder: (_, idx) {
-          final a = savedAyahs[idx];
-          final isSelected =
-              a.surahNumber == _selectedSurahNumber &&
-              a.ayahNumber == _selectedAyahNumber;
-          final isAlready = widget.existingAyahIds.contains(a.id);
-          final surahName = QuranRepository.instance
-              .getSurah(a.surahNumber)
-              .name;
-
-          return ListTile(
-            dense: true,
-            visualDensity: VisualDensity.compact,
-            title: Row(
-              children: [
-                Text(
-                  '$surahName · آية ${a.ayahNumber}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
-                  ),
-                ),
-                if (isAlready) ...[
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.isArabic ? '(مضافة بالفعل)' : '(Already added)',
-                    style: const TextStyle(
-                      fontSize: 12.0,
-                      color: Colors.orange,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            subtitle: Text(
-              a.text,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontFamily: 'AmiriQuran', fontSize: 13),
-            ),
-            trailing: isSelected
-                ? Icon(AppIcons.checkCircleFill, color: primaryColor, size: 18)
-                : null,
-            onTap: () => _selectAyah(a, updateSearchText: true),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildSelectedAyahCard(
-    BuildContext context,
-    Ayah ayah,
-    AppStrings l10n,
-    bool isDark,
-    Color primaryColor,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: _isAlreadyAdded
-              ? Colors.orange.withValues(alpha: 0.7)
-              : primaryColor.withValues(alpha: 0.35),
-          width: 1.2,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: primaryColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  l10n.surahAyahPageReference(
-                    QuranRepository.instance.getSurah(ayah.surahNumber).name,
-                    l10n.isArabic
-                        ? ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)
-                        : ayah.ayahNumber,
-                    l10n.isArabic
-                        ? ArabicSearchNormalizer.toArabicDigits(ayah.page)
-                        : ayah.page,
-                  ),
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
-                  ),
-                ),
-              ),
-              if (_isAlreadyAdded)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        AppIcons.warning,
-                        size: 13,
-                        color: Colors.orange,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        l10n.isArabic ? 'مضافة مسبقاً' : 'Already in link',
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.orange,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            '﴿ ${ayah.text} ﴾',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'AmiriQuran',
-              fontSize: 16,
-              height: 1.85,
-              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
-            ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildNoteField(BuildContext context, AppStrings l10n) {
-    return TextField(
-      controller: _noteController,
-      minLines: 2,
-      maxLines: 4,
-      decoration: InputDecoration(
-        labelText: l10n.isArabic
-            ? 'ملاحظتك التدبرية على الآية في هذا الرابط (اختيارية)'
-            : 'Your reflection note on this verse (optional)',
-        hintText: l10n.isArabic
-            ? 'سجل ما لفت نظرك أو الفكرة الرابطة بين هذه الآية وموضوع الرابط...'
-            : 'Record your reflection or connection for this verse...',
-        hintStyle: const TextStyle(fontSize: 12),
-        filled: true,
-        fillColor: AppColors.surface(context),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.border(context)),
+class _SectionTitle extends StatelessWidget {
+  final String text;
+
+  const _SectionTitle(this.text);
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textSecondary(context),
+      ),
+    ),
+  );
+}
+
+/// One ayah in a list: its reference and the start of its text.
+class _AyahTile extends StatelessWidget {
+  final Ayah ayah;
+  final bool added;
+  final VoidCallback onTap;
+
+  const _AyahTile({
+    required this.ayah,
+    required this.added,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      title: Text(
+        ayah.text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(fontFamily: 'AmiriQuran', fontSize: 15),
+      ),
+      subtitle: Text(
+        added
+            ? '${l10n.ayahReference(surah.name, l10n.digits(ayah.ayahNumber))} · ${l10n.addVerseAlready}'
+            : l10n.ayahReference(surah.name, l10n.digits(ayah.ayahNumber)),
+        style: TextStyle(
+          fontSize: 12,
+          color: added
+              ? AppColors.statusWarning
+              : AppColors.accentGold(context),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 12,
-        ),
       ),
-    );
-  }
-
-  Widget _buildBottomActionBar(
-    BuildContext context,
-    AppStrings l10n,
-    Color primaryColor,
-  ) {
-    final canSubmit = !_isAlreadyAdded && !_isAdding && _currentAyah != null;
-
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-      decoration: BoxDecoration(
-        color: AppColors.surface(context),
-        border: Border(top: BorderSide(color: AppColors.border(context))),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(l10n.cancel),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            flex: 2,
-            child: ElevatedButton.icon(
-              onPressed: canSubmit ? _submit : null,
-              icon: _isAdding
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Icon(AppIcons.link, size: 18),
-              label: Text(
-                l10n.isArabic ? 'إضافة إلى الرابط' : 'Add to Link',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      trailing: const Icon(AppIcons.caretRight, size: 16),
+      onTap: onTap,
     );
   }
 }

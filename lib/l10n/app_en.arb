@@ -452,5 +452,20 @@
   "themePickerTitle": "Choose the app’s look",
   "themePickerHint": "You can change it any time in Settings",
   "themePickerStart": "Start",
-  "themeAuto": "Auto"
+  "themeAuto": "Auto",
+  "addVerseTitle": "Add an ayah to the link",
+  "addVerseSearchHint": "Search the text, or type: Al-Baqarah 255",
+  "addVerseFromSaved": "From your saved ayahs",
+  "addVersePickBySurah": "Pick by surah and number",
+  "addVerseSurah": "Surah",
+  "addVerseAyah": "Ayah",
+  "addVerseNote": "Note (optional)",
+  "addVerseAlready": "Already in this link",
+  "addVerseAction": "Add to link",
+  "addVerseChange": "Change",
+  "addVerseNoResults": "No results",
+  "addVerseSearchSurah": "Search surah name or number",
+  "mushafStyleMadinahHint": "Pages identical to the printed Mushaf; lines wrap when enlarged.",
+  "mushafStyleTextHint": "Flowing text in the font you choose.",
+  "pageSize": "Page size"
 }

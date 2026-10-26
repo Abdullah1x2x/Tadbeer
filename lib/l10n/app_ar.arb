@@ -970,5 +970,20 @@
   "themePickerTitle": "اختر مظهر التطبيق",
   "themePickerHint": "يمكنك تغييره متى شئت من الإعدادات",
   "themePickerStart": "ابدأ",
-  "themeAuto": "تلقائي"
+  "themeAuto": "تلقائي",
+  "addVerseTitle": "إضافة آية إلى الرابط",
+  "addVerseSearchHint": "ابحث بنص الآية أو اكتب: البقرة ٢٥٥",
+  "addVerseFromSaved": "من محفوظاتك",
+  "addVersePickBySurah": "اختيار بالسورة ورقم الآية",
+  "addVerseSurah": "السورة",
+  "addVerseAyah": "الآية",
+  "addVerseNote": "ملاحظة (اختيارية)",
+  "addVerseAlready": "مضافة إلى هذا الرابط",
+  "addVerseAction": "إضافة إلى الرابط",
+  "addVerseChange": "تغيير",
+  "addVerseNoResults": "لا توجد نتائج",
+  "addVerseSearchSurah": "ابحث باسم السورة أو رقمها",
+  "mushafStyleMadinahHint": "صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.",
+  "mushafStyleTextHint": "نص متدفق بالخط الذي تختاره.",
+  "pageSize": "حجم الصفحة"
 }

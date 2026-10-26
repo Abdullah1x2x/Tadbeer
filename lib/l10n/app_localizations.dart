@@ -2819,6 +2819,96 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تلقائي'**
   String get themeAuto;
+
+  /// No description provided for @addVerseTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة آية إلى الرابط'**
+  String get addVerseTitle;
+
+  /// No description provided for @addVerseSearchHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث بنص الآية أو اكتب: البقرة ٢٥٥'**
+  String get addVerseSearchHint;
+
+  /// No description provided for @addVerseFromSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'من محفوظاتك'**
+  String get addVerseFromSaved;
+
+  /// No description provided for @addVersePickBySurah.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار بالسورة ورقم الآية'**
+  String get addVersePickBySurah;
+
+  /// No description provided for @addVerseSurah.
+  ///
+  /// In ar, this message translates to:
+  /// **'السورة'**
+  String get addVerseSurah;
+
+  /// No description provided for @addVerseAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآية'**
+  String get addVerseAyah;
+
+  /// No description provided for @addVerseNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظة (اختيارية)'**
+  String get addVerseNote;
+
+  /// No description provided for @addVerseAlready.
+  ///
+  /// In ar, this message translates to:
+  /// **'مضافة إلى هذا الرابط'**
+  String get addVerseAlready;
+
+  /// No description provided for @addVerseAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة إلى الرابط'**
+  String get addVerseAction;
+
+  /// No description provided for @addVerseChange.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغيير'**
+  String get addVerseChange;
+
+  /// No description provided for @addVerseNoResults.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد نتائج'**
+  String get addVerseNoResults;
+
+  /// No description provided for @addVerseSearchSurah.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث باسم السورة أو رقمها'**
+  String get addVerseSearchSurah;
+
+  /// No description provided for @mushafStyleMadinahHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.'**
+  String get mushafStyleMadinahHint;
+
+  /// No description provided for @mushafStyleTextHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'نص متدفق بالخط الذي تختاره.'**
+  String get mushafStyleTextHint;
+
+  /// No description provided for @pageSize.
+  ///
+  /// In ar, this message translates to:
+  /// **'حجم الصفحة'**
+  String get pageSize;
 }
 
 class _AppLocalizationsDelegate
