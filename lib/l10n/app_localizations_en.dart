@@ -1672,4 +1672,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cardSaveDenied =>
       'Allow Tadbeer to add photos in your device settings';
+
+  @override
+  String get continueReflection => 'Continue your reflection';
+
+  @override
+  String get markAyah => 'Bookmark';
+
+  @override
+  String get unmarkAyah => 'Remove bookmark';
 }

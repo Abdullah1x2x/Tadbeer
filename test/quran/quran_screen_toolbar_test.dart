@@ -213,11 +213,11 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(AyahActionSheet), findsOneWidget);
 
-        // Verify all 6 options are present
+        // Verify the options are present
         expect(find.text('وقفة تدبر'), findsOneWidget);
         expect(find.text('رابط آيات'), findsOneWidget);
         expect(find.text('ملاحظة'), findsOneWidget);
-        expect(find.text('حفظ'), findsOneWidget);
+        expect(find.text('علامة'), findsOneWidget);
         expect(find.text('تمييز'), findsOneWidget);
         expect(find.text('نسخ'), findsOneWidget);
 

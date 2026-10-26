@@ -3041,6 +3041,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'اسمح لتدبير بإضافة الصور من إعدادات الجهاز'**
   String get cardSaveDenied;
+
+  /// No description provided for @continueReflection.
+  ///
+  /// In ar, this message translates to:
+  /// **'تابع وقفتك'**
+  String get continueReflection;
+
+  /// No description provided for @markAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'علامة'**
+  String get markAyah;
+
+  /// No description provided for @unmarkAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة العلامة'**
+  String get unmarkAyah;
 }
 
 class _AppLocalizationsDelegate

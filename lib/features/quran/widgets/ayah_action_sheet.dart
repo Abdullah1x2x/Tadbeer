@@ -8,7 +8,9 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../notes/note_model.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
+import '../qcf/qcf_ayah_text.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
+import '../../settings/user_settings_model.dart';
 import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
@@ -134,6 +136,27 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
       widget.ayah.surahNumber,
       widget.ayah.ayahNumber,
     );
+    final quranText = isDark
+        ? AppColors.nightQuranText
+        : AppColors.dayQuranText;
+    final plainAyah = Text(
+      '﴿ ${widget.ayah.text} ﴾',
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.rtl,
+      style: TextStyle(
+        fontFamily: storage.quranFontFamily,
+        fontSize: 19,
+        height: 1.8,
+        color: quranText,
+      ),
+    );
+    final inHifz = HifzStore.contains(
+      widget.ayah.surahNumber,
+      widget.ayah.ayahNumber,
+    );
+    final hasReflection =
+        storage.getTadbeer(widget.ayah.surahNumber, widget.ayah.ayahNumber) !=
+        null;
 
     return Center(
       child: Material(
@@ -212,59 +235,24 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                             : AppColors.daySubtitle,
                       ),
                     ),
-                    // Add or remove this verse from memorization review.
-                    Builder(
-                      builder: (context) {
-                        final inHifz = HifzStore.contains(
-                          widget.ayah.surahNumber,
-                          widget.ayah.ayahNumber,
-                        );
-                        return IconButton(
-                          tooltip: inHifz
-                              ? context.l10n.removeFromMemorization
-                              : context.l10n.addToMemorization,
-                          visualDensity: VisualDensity.compact,
-                          icon: Icon(
-                            inHifz
-                                ? AppIcons.brainFill
-                                : AppIcons.brain,
-                            color: inHifz
-                                ? AppColors.accentGold(context)
-                                : null,
-                          ),
-                          onPressed: () async {
-                            HapticFeedback.selectionClick();
-                            await HifzStore.toggle(
-                              widget.ayah.surahNumber,
-                              widget.ayah.ayahNumber,
-                            );
-                            if (mounted) setState(() {});
-                          },
-                        );
-                      },
-                    ),
                   ],
                 ),
               ),
 
-              // Selected Ayah text preview
+              // The ayah as the reader sees it in the Mushaf: in the
+              // Madinah script, or in their font in the flowing text view.
               ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 180),
+                constraints: const BoxConstraints(maxHeight: 200),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Text(
-                    '﴿ ${widget.ayah.text} ﴾',
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      fontFamily: storage.quranFontFamily,
-                      fontSize: 19,
-                      height: 1.8,
-                      color: isDark
-                          ? AppColors.nightQuranText
-                          : AppColors.dayQuranText,
-                    ),
-                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                  child: storage.settings.mushafStyle == MushafStyle.madinah
+                      ? QcfAyahText(
+                          ayah: widget.ayah,
+                          fontSize: 23,
+                          color: quranText,
+                          fallback: plainAyah,
+                        )
+                      : plainAyah,
                 ),
               ),
 
@@ -454,125 +442,106 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                   ),
                 ),
               ] else ...[
-                // Main Actions Row: Tadbeer Pause, Ayah Links, Note, Bookmark, Highlight, Copy
-                // Distributed equally and centered without horizontal scroll or RTL bias
+                // Reflection leads, as the app's purpose; the other actions
+                // sit in a grid of four that takes another one in its row.
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 6,
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+                  child: _ReflectButton(
+                    label: hasReflection
+                        ? l10n.continueReflection
+                        : l10n.tadbeerPause,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      TadbeerPauseSheet.show(context, widget.ayah);
+                    },
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 6, 8, 12),
+                  child: _ActionGrid(
                     children: [
-                      // Tadbeer Pause action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: AppIcons.flowerLotusFill,
-                          label: l10n.tadbeerPause,
-                          isPrimary: true,
-                          hasActiveIndicator:
-                              storage.getTadbeer(
-                                widget.ayah.surahNumber,
-                                widget.ayah.ayahNumber,
-                              ) !=
-                              null,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            TadbeerPauseSheet.show(context, widget.ayah);
-                          },
-                        ),
+                      _ActionButton(
+                        icon: AppIcons.graphFill,
+                        label: l10n.ayahLink,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          AyahLinkPickerDialog.show(context, widget.ayah);
+                        },
                       ),
-
-                      // Ayah Links action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: AppIcons.graphFill,
-                          label: l10n.ayahLink,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            AyahLinkPickerDialog.show(context, widget.ayah);
-                          },
-                        ),
+                      _ActionButton(
+                        icon: AppIcons.notePencil,
+                        label: l10n.addNote,
+                        onTap: () => setState(() => _isNoteEditorOpen = true),
+                        hasActiveIndicator: _existingNoteId != null,
                       ),
-
-                      // Note action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: AppIcons.notePencil,
-                          label: l10n.addNote,
-                          onTap: () => setState(() => _isNoteEditorOpen = true),
-                          hasActiveIndicator: _existingNoteId != null,
-                        ),
+                      _ActionButton(
+                        icon: isBookmarked
+                            ? AppIcons.bookmarkSimpleFill
+                            : AppIcons.bookmarkSimple,
+                        label: isBookmarked ? l10n.unmarkAyah : l10n.markAyah,
+                        iconColor: isBookmarked
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                        onTap: () async {
+                          await storage.toggleBookmark(widget.ayah);
+                          if (context.mounted) Navigator.of(context).pop();
+                        },
                       ),
-
-                      // Bookmark action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: isBookmarked
-                              ? AppIcons.bookmarkSimpleFill
-                              : AppIcons.bookmarkSimple,
-                          label: isBookmarked
-                              ? l10n.removeBookmark
-                              : l10n.saveBookmark,
-                          iconColor: isBookmarked
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
-                          onTap: () async {
-                            await storage.toggleBookmark(widget.ayah);
-                            if (context.mounted) Navigator.of(context).pop();
-                          },
-                        ),
+                      _ActionButton(
+                        icon: AppIcons.highlighterCircle,
+                        label: l10n.highlight,
+                        iconColor: currentHighlight != null
+                            ? AppColors.highlightColors[currentHighlight
+                                  .colorIndex]
+                            : null,
+                        onTap: () =>
+                            setState(() => _isHighlightPickerOpen = true),
                       ),
-
-                      // Highlight action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: AppIcons.highlighterCircle,
-                          label: l10n.highlight,
-                          iconColor: currentHighlight != null
-                              ? AppColors.highlightColors[currentHighlight
-                                    .colorIndex]
-                              : null,
-                          onTap: () =>
-                              setState(() => _isHighlightPickerOpen = true),
-                        ),
+                      _ActionButton(
+                        icon: inHifz ? AppIcons.brainFill : AppIcons.brain,
+                        label: inHifz
+                            ? l10n.removeFromMemorization
+                            : l10n.addToMemorization,
+                        iconColor: inHifz
+                            ? AppColors.accentGold(context)
+                            : null,
+                        onTap: () async {
+                          HapticFeedback.selectionClick();
+                          await HifzStore.toggle(
+                            widget.ayah.surahNumber,
+                            widget.ayah.ayahNumber,
+                          );
+                          if (mounted) setState(() {});
+                        },
                       ),
-
-                      // Share as designed image card
-                      Expanded(
-                        child: _ActionButton(
-                          icon: AppIcons.export,
-                          label: l10n.share,
-                          onTap: () {
-                            final ayah = widget.ayah;
-                            Navigator.of(context).pop();
-                            AyahShareSheet.show(context, ayah);
-                          },
-                        ),
+                      _ActionButton(
+                        icon: AppIcons.export,
+                        label: l10n.share,
+                        onTap: () {
+                          final ayah = widget.ayah;
+                          Navigator.of(context).pop();
+                          AyahShareSheet.show(context, ayah);
+                        },
                       ),
-
-                      // Copy action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: AppIcons.copy,
-                          label: l10n.copy,
-                          onTap: () {
-                            final shareText =
-                                '﴿${widget.ayah.text}﴾ [سورة ${surah.name}: ${widget.ayah.ayahNumber}]';
-                            Clipboard.setData(ClipboardData(text: shareText));
-                            Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  l10n.copiedToClipboard,
-                                  textAlign: TextAlign.center,
-                                ),
-                                duration: const Duration(seconds: 2),
-                                behavior: SnackBarBehavior.floating,
+                      _ActionButton(
+                        icon: AppIcons.copy,
+                        label: l10n.copy,
+                        onTap: () {
+                          final shareText =
+                              '﴿${widget.ayah.text}﴾ [سورة ${surah.name}: ${widget.ayah.ayahNumber}]';
+                          Clipboard.setData(ClipboardData(text: shareText));
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                l10n.copiedToClipboard,
+                                textAlign: TextAlign.center,
                               ),
-                            );
-                          },
-                        ),
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -586,16 +555,68 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
   }
 }
 
-/// زر إجراء فردي يعرض أيقونة وتسمية ومؤشر حالة نشط داخل نافذة إجراءات الآية.
+/// The ayah's actions, four to a row; a row that is not full is centred,
+/// so adding an action needs nothing but a new child.
+class _ActionGrid extends StatelessWidget {
+  final List<Widget> children;
+
+  const _ActionGrid({required this.children});
+
+  static const _perRow = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, box) {
+        final width = box.maxWidth / _perRow;
+        return Wrap(
+          alignment: WrapAlignment.center,
+          runSpacing: 4,
+          children: [
+            for (final child in children) SizedBox(width: width, child: child),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// زر وقفة التدبر البارز في رأس الإجراءات.
+class _ReflectButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _ReflectButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return FilledButton.icon(
+      onPressed: onTap,
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.accentGold(context),
+        // Dark text on gold reads clearly in both modes.
+        foregroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightPrimaryDark,
+        minimumSize: const Size.fromHeight(50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      icon: const Icon(AppIcons.flowerLotusFill, size: 22),
+      label: Text(label),
+    );
+  }
+}
+
+/// زر إجراء في شبكة نافذة الآية: أيقونة في دائرة وتسمية تحتها، ونقطة ذهبية
+/// إن كان للآية ما يخص هذا الإجراء.
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
   final Color? iconColor;
   final bool hasActiveIndicator;
-
-  /// الإجراء الرئيسي (وقفة التدبر) يُبرز بدائرة ذهبية ممتلئة.
-  final bool isPrimary;
 
   /// ينشئ زر إجراء لنافذة إجراءات الآية.
   const _ActionButton({
@@ -604,30 +625,19 @@ class _ActionButton extends StatelessWidget {
     required this.onTap,
     this.iconColor,
     this.hasActiveIndicator = false,
-    this.isPrimary = false,
   });
 
-  /// يبني واجهة زر الإجراء مع الأيقونة والنص ونقطة التنبيه عند التفعيل.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final gold = AppColors.accentGold(context);
-    final color = isPrimary
-        ? (isDark ? AppColors.darkBackground : Colors.white)
-        : iconColor ??
-              (isDark ? AppColors.darkTextPrimary : AppColors.lightPrimaryDark);
-    final circleColor = isPrimary
-        ? gold
-        : Theme.of(context).colorScheme.primary.withValues(
-            alpha: isDark ? 0.18 : 0.08,
-          );
+    final color =
+        iconColor ??
+        (isDark ? AppColors.darkTextPrimary : AppColors.lightPrimaryDark);
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      hoverColor: isDark
-          ? AppColors.darkBorder
-          : Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
         child: Column(
@@ -637,10 +647,11 @@ class _ActionButton extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Container(
-                  width: 46,
-                  height: 46,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
-                    color: circleColor,
+                    color: Theme.of(context).colorScheme.primary
+                        .withValues(alpha: isDark ? 0.18 : 0.08),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, size: 24, color: color),
@@ -650,8 +661,8 @@ class _ActionButton extends StatelessWidget {
                     top: 0,
                     right: 0,
                     child: Container(
-                      width: 8,
-                      height: 8,
+                      width: 9,
+                      height: 9,
                       decoration: BoxDecoration(
                         color: gold,
                         shape: BoxShape.circle,
@@ -667,22 +678,18 @@ class _ActionButton extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: isPrimary ? FontWeight.bold : FontWeight.w600,
-                  color: isPrimary
-                      ? gold
-                      : isDark
-                      ? AppColors.nightQuranText
-                      : AppColors.dayQuranText,
-                ),
+            // Two lines at most, so a longer name wraps instead of shrinking.
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.25,
+                fontWeight: FontWeight.w600,
+                color: isDark
+                    ? AppColors.nightQuranText
+                    : AppColors.dayQuranText,
               ),
             ),
           ],

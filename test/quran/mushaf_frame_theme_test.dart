@@ -6,7 +6,6 @@ import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/widgets/surah_header_banner.dart';
-import 'package:tadbeer/features/settings/user_settings_model.dart';
 
 void main() {
   late Directory tempDir;

@@ -489,5 +489,8 @@
   "saveToPhotos": "Save to Photos",
   "cardSaved": "Card saved to Photos",
   "cardSaveFailed": "Couldn't save the card",
-  "cardSaveDenied": "Allow Tadbeer to add photos in your device settings"
+  "cardSaveDenied": "Allow Tadbeer to add photos in your device settings",
+  "continueReflection": "Continue your reflection",
+  "markAyah": "Bookmark",
+  "unmarkAyah": "Remove bookmark"
 }
