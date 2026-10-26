@@ -500,6 +500,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                                                     context,
                                                     pageNumber: pageNumber,
                                                     isDark: isDark,
+                                                    palette: palette,
                                                   )
                                                 else
                                                   const SizedBox(height: 4),
@@ -734,7 +735,12 @@ class _QuranPageViewState extends State<QuranPageView> {
         ),
         const SizedBox(height: 4),
         if (widget.showFooter)
-          _buildPageFooter(context, pageNumber: pageNumber, isDark: isDark)
+          _buildPageFooter(
+            context,
+            pageNumber: pageNumber,
+            isDark: isDark,
+            palette: palette,
+          )
         else
           const SizedBox(height: 4),
       ],
@@ -750,19 +756,15 @@ class _QuranPageViewState extends State<QuranPageView> {
     required MushafPalette palette,
     List<MarginStampData> marginStamps = const [],
   }) {
-    final goldColor = isDark
-        ? AppColors.darkAccentGold
-        : AppColors.lightAccentGold;
-    final headerColor = isDark
-        ? AppColors.darkTextPrimary
-        : AppColors.lightPrimary;
+    final frameColor = palette.frame;
+    final headerColor = isDark ? AppColors.darkTextPrimary : palette.frame;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: goldColor.withValues(alpha: isDark ? 0.35 : 0.45),
+            color: frameColor.withValues(alpha: isDark ? 0.35 : 0.45),
             width: 0.75,
           ),
         ),
@@ -778,7 +780,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                   '❖ ',
                   style: TextStyle(
                     fontSize: 7.5,
-                    color: goldColor.withValues(alpha: 0.8),
+                    color: frameColor.withValues(alpha: 0.8),
                   ),
                 ),
                 Flexible(
@@ -835,7 +837,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                   ' ❖',
                   style: TextStyle(
                     fontSize: 7.5,
-                    color: goldColor.withValues(alpha: 0.8),
+                    color: frameColor.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -851,17 +853,16 @@ class _QuranPageViewState extends State<QuranPageView> {
     BuildContext context, {
     required int pageNumber,
     required bool isDark,
+    required MushafPalette palette,
   }) {
-    final goldColor = isDark
-        ? AppColors.darkAccentGold
-        : AppColors.lightAccentGold;
+    final frameColor = palette.frame;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 3),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: goldColor.withValues(alpha: isDark ? 0.35 : 0.45),
+            color: frameColor.withValues(alpha: isDark ? 0.35 : 0.45),
             width: 0.75,
           ),
         ),
@@ -872,7 +873,7 @@ class _QuranPageViewState extends State<QuranPageView> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: goldColor.withValues(alpha: isDark ? 0.45 : 0.55),
+              color: frameColor.withValues(alpha: isDark ? 0.45 : 0.55),
               width: 0.7,
             ),
             color:
