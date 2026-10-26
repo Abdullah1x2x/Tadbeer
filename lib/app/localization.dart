@@ -181,6 +181,8 @@ class AppStrings {
   String get mushafStyleMadinahHint => _l.mushafStyleMadinahHint;
   String get mushafStyleTextHint => _l.mushafStyleTextHint;
   String get pageSize => _l.pageSize;
+  String get khatmaStartNow => _l.khatmaStartNow;
+  String khatmaStartFromPage(int p) => _l.khatmaStartFromPage(digits(p));
 
   /// A percentage in this language's digits (١٢٠٪ / 120%).
   String percent(int value) => isArabic ? '${digits(value)}٪' : '$value%';

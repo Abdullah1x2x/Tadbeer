@@ -1586,4 +1586,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pageSize => 'حجم الصفحة';
+
+  @override
+  String get khatmaStartNow => 'ابدأ الآن';
+
+  @override
+  String khatmaStartFromPage(String p) {
+    return 'ابدأ من صفحة $p';
+  }
 }
