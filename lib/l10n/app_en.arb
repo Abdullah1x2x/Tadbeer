@@ -466,6 +466,5 @@
   "mushafStyleMadinahHint": "Pages identical to the printed Mushaf; lines wrap when enlarged.",
   "mushafStyleTextHint": "Flowing text in the font you choose.",
   "pageSize": "Page size",
-  "khatmaStartNow": "Start now",
-  "khatmaStartFromPage": "Start from page {p}"
+  "khatmaStartNow": "Start now"
 }

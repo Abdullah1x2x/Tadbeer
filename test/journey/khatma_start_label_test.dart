@@ -59,14 +59,14 @@ void main() {
     expect(find.textContaining('أكمل من صفحة'), findsNothing);
   });
 
-  testWidgets('a khatma from the reader’s page names that page', (
+  testWidgets('a khatma from the reader’s page also says start now', (
     tester,
   ) async {
     await tester.runAsync(
       () => UserDataStore.instance.startKhatma(30, startPage: 50),
     );
     await pumpJourney(tester);
-    expect(find.text('ابدأ من صفحة ٥٠'), findsOneWidget);
+    expect(find.text('ابدأ الآن'), findsOneWidget);
   });
 
   testWidgets('once reading has begun it offers to continue', (tester) async {

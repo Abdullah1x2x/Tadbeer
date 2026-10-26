@@ -2903,12 +2903,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ابدأ الآن'**
   String get khatmaStartNow;
-
-  /// No description provided for @khatmaStartFromPage.
-  ///
-  /// In ar, this message translates to:
-  /// **'ابدأ من صفحة {p}'**
-  String khatmaStartFromPage(String p);
 }
 
 class _AppLocalizationsDelegate

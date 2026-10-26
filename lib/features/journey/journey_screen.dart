@@ -470,9 +470,7 @@ class _TodayPortionCard extends StatelessWidget {
                     ? l10n.keepReading
                     // Nothing read yet: there is nothing to continue.
                     : plan.advanced == 0
-                    ? (plan.startPage == 1
-                          ? l10n.khatmaStartNow
-                          : l10n.khatmaStartFromPage(plan.startPage))
+                    ? l10n.khatmaStartNow
                     : l10n.continueFromPage(plan.currentPage),
               ),
             ),
