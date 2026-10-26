@@ -233,6 +233,8 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   bool get _mayMove {
     if (!mounted || _held) return false;
     if (!TickerMode.valuesOf(context).enabled) return false;
+    // Hold still under a sheet or page opened on top, such as a reflection.
+    if (ModalRoute.isCurrentOf(context) == false) return false;
     if (MediaQuery.accessibleNavigationOf(context)) return false;
     return AppMotion.shouldAnimate(context);
   }

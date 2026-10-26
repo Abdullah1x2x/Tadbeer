@@ -5,10 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/duas/duas_screen.dart';
-import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:tadbeer/features/duas/quran_dua_card.dart';
 import 'package:tadbeer/features/duas/quran_duas_screen.dart';
-import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
@@ -189,30 +187,6 @@ void main() {
 
       // Should push QuranScreen
       expect(find.byType(QuranScreen), findsOneWidget);
-    });
-
-    testWidgets('HomeScreen "الأدعية" tile opens DuasScreen Hub', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const HomeScreen()));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(HomeScreen), findsOneWidget);
-
-      // Find "الأدعية" card
-      final duasCard = find.text('الأدعية');
-      expect(duasCard, findsWidgets);
-      expect(find.byIcon(FlutterIslamicIcons.prayer), findsWidgets);
-
-      await tester.ensureVisible(duasCard.first);
-      await tester.pumpAndSettle();
-      await tester.tap(duasCard.first);
-      await tester.pumpAndSettle();
-
-      // Should open DuasScreen (Hub)
-      expect(find.byType(DuasScreen), findsOneWidget);
-      expect(find.text('الأدعية'), findsOneWidget);
-      expect(find.text('أدعية من القرآن'), findsOneWidget);
     });
 
     testWidgets(

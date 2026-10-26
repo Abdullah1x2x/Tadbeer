@@ -11,12 +11,13 @@ import '../ayah_links/ayah_links_screen.dart';
 import '../books/books_screen.dart';
 import '../continue/continue_card.dart';
 import '../daily/ayah_of_day_card.dart';
-import '../duas/duas_screen.dart';
 import '../journey/journey_summary_card.dart';
 
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import '../notes/notes_screen.dart';
+import '../tadbeer/commitment_card.dart';
+import '../tadbeer/my_reflections_screen.dart';
 import '../quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../search/search_provider.dart';
@@ -128,6 +129,9 @@ class HomeScreen extends StatelessWidget {
                           // آية اليوم مع سؤال تدبر
                           const AyahOfTheDayCard(),
                           SizedBox(height: spaceHeroToCore),
+
+                          // سؤال عمّا التزم به القارئ في وقفة سابقة
+                          CommitmentCard(gap: spaceHeroToCore),
 
                           // 1. Featured Quran Hero Card
                           _QuranHeroCard(
@@ -529,19 +533,20 @@ class HomeScreen extends StatelessWidget {
           children: [
             Expanded(
               child: _GridFeatureCard(
-                icon: FlutterIslamicIcons.prayer,
-                title: l10n.duas,
-                subtitle: l10n.quranAndSunnahDuas,
+                icon: AppIcons.flowerLotusFill,
+                title: l10n.myReflections,
+                subtitle: l10n.myReflectionsSubtitle,
                 accentColor: AppColors.accentGold(context),
                 badgeBackground: AppColors.accentGold(context)
                     .withValues(alpha: isDark ? 0.20 : 0.12),
                 isCompact: isCompact,
                 isVeryCompact: isVeryCompact,
                 onTap: () {
-                  if (MainShell.selectTab(context, ShellTab.duas)) return;
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const DuasScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const MyReflectionsScreen(),
+                    ),
                   );
                 },
               ),

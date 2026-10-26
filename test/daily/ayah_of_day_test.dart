@@ -85,6 +85,19 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('the card holds still under an open sheet', (tester) async {
+    await pumpCard(tester);
+    final today = AyahOfTheDay.forDayAll(DateTime.now());
+    showModalBottomSheet<void>(
+      context: tester.element(find.byType(AyahOfTheDayCard)),
+      builder: (_) => const SizedBox(height: 100),
+    );
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 20));
+    await tester.pumpAndSettle();
+    expect(shownText(tester), today[0].text);
+  });
+
   testWidgets('the card stays still with reduced motion', (tester) async {
     await pumpCard(tester, reduceMotion: true);
     final today = AyahOfTheDay.forDayAll(DateTime.now());

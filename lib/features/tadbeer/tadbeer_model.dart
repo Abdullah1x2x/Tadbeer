@@ -35,6 +35,16 @@ class TadbeerItem {
   /// تاريخ ووقت آخر تحديث لوقفة التدبر.
   final DateTime updatedAt;
 
+  /// متى كُتب ما التزم به القارئ (جواب «ما الذي ستفعله بها اليوم؟»)
+  /// أو تغيّر آخر مرة.
+  final DateTime? commitmentAt;
+
+  /// ما إذا قال القارئ إنه فعل ما التزم به.
+  final bool commitmentDone;
+
+  /// ما إذا سُئل عن التزامه في الرئيسية فقال «ليس بعد»، فلا يُسأل ثانية.
+  final bool commitmentAsked;
+
   /// ينشئ كائن وقفة تدبر جديد.
   const TadbeerItem({
     required this.id,
@@ -44,7 +54,19 @@ class TadbeerItem {
     required this.answers,
     required this.createdAt,
     required this.updatedAt,
+    this.commitmentAt,
+    this.commitmentDone = false,
+    this.commitmentAsked = false,
   });
+
+  /// مفتاح جواب «ما الذي ستفعله بها اليوم؟».
+  static const int commitmentKey = 3;
+
+  /// ما التزم به القارئ عند هذه الآية، أو null إن لم يكتب شيئاً.
+  String? get commitment {
+    final text = answers[commitmentKey]?.trim() ?? '';
+    return text.isEmpty ? null : text;
+  }
 
   /// المفتاح المركب للآية بصيغة (رقم السورة:رقم الآية).
   String get ayahKey => '$surahNumber:$ayahNumber';
@@ -92,6 +114,9 @@ class TadbeerItem {
     'answers': answers.map((k, v) => MapEntry(k.toString(), v)),
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
+    if (commitmentAt != null) 'commitmentAt': commitmentAt!.toIso8601String(),
+    if (commitmentDone) 'commitmentDone': true,
+    if (commitmentAsked) 'commitmentAsked': true,
   };
 
   /// ينشئ كائن وقفة تدبر من خريطة بيانات JSON المحفوظة.
@@ -118,11 +143,19 @@ class TadbeerItem {
       answers: parsedAnswers,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      commitmentAt: DateTime.tryParse(json['commitmentAt'] as String? ?? ''),
+      commitmentDone: json['commitmentDone'] as bool? ?? false,
+      commitmentAsked: json['commitmentAsked'] as bool? ?? false,
     );
   }
 
   /// ينشئ نسخة محدثة من وقفة التدبر مع تعديل الإجابات أو تاريخ التحديث.
-  TadbeerItem copyWith({Map<int, String>? answers, DateTime? updatedAt}) {
+  TadbeerItem copyWith({
+    Map<int, String>? answers,
+    DateTime? updatedAt,
+    bool? commitmentDone,
+    bool? commitmentAsked,
+  }) {
     return TadbeerItem(
       id: id,
       surahNumber: surahNumber,
@@ -131,6 +164,9 @@ class TadbeerItem {
       answers: answers ?? this.answers,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      commitmentAt: commitmentAt,
+      commitmentDone: commitmentDone ?? this.commitmentDone,
+      commitmentAsked: commitmentAsked ?? this.commitmentAsked,
     );
   }
 }

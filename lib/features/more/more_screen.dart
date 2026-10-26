@@ -13,6 +13,7 @@ import '../journey/journey_screen.dart';
 import '../journey/mushaf_map_screen.dart';
 import '../memorization/memorization_screen.dart';
 import '../notes/notes_screen.dart';
+import '../tadbeer/my_reflections_screen.dart';
 import '../pathways/guided_pathways_screen.dart';
 import '../reminders/reminders_screen.dart';
 import '../search/search_screen.dart';
@@ -70,6 +71,11 @@ class MoreScreen extends StatelessWidget {
                     icon: AppIcons.brainFill,
                     label: l10n.memorization,
                     onTap: () => open(const MemorizationScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.flowerLotusFill,
+                    label: l10n.myReflections,
+                    onTap: () => open(const MyReflectionsScreen()),
                   ),
                   _Tile(
                     icon: AppIcons.notePencil,
