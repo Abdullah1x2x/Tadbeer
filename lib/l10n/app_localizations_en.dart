@@ -1595,9 +1595,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get khatmaStartNow => 'Start now';
-
-  @override
-  String khatmaStartFromPage(String p) {
-    return 'Start from page $p';
-  }
 }

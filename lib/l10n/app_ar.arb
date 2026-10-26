@@ -977,13 +977,5 @@
   "mushafStyleMadinahHint": "صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.",
   "mushafStyleTextHint": "نص متدفق بالخط الذي تختاره.",
   "pageSize": "حجم الصفحة",
-  "khatmaStartNow": "ابدأ الآن",
-  "khatmaStartFromPage": "ابدأ من صفحة {p}",
-  "@khatmaStartFromPage": {
-    "placeholders": {
-      "p": {
-        "type": "String"
-      }
-    }
-  }
+  "khatmaStartNow": "ابدأ الآن"
 }
