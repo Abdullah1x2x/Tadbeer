@@ -92,7 +92,20 @@ void main() {
   const wordHeight = {1: 0.889, 2: 0.834, 3: 1.036};
 
   for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
-    testWidgets(
+    testWidgets('the basmala is drawn in the Mushaf script', (tester) async {
+    await pumpPage(tester, size: const Size(412, 915), page: 2);
+    final basmala = find.byWidgetPredicate(
+      (w) =>
+          w is Text &&
+          w.data == '\uFB51\uFB52\uFB53\uFB54' &&
+          w.style?.fontFamily == QcfFonts.familyFor(1),
+    );
+    expect(basmala, findsOneWidget);
+    expect(find.text('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
       'the opening pages read as large as the rest (${size.width.toInt()} wide)',
       (tester) async {
         await pumpPage(tester, size: size);

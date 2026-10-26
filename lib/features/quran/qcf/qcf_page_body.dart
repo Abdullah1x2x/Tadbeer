@@ -69,6 +69,16 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   /// their letters as tall as on every other page.
   static const _openingScale = {1: 1.165, 2: 1.241};
 
+  /// The basmala as printed: the words of Al-Fatiha's first ayah in the
+  /// first page's font, without its ayah number. Basmala lines carry no
+  /// glyphs of their own.
+  static const _basmalaGlyphs = '\uFB51\uFB52\uFB53\uFB54';
+
+  /// Size of the basmala against the page's font size: the first page's
+  /// glyphs are drawn small, and at this size the basmala's letters match
+  /// the page's and it spans about half the line, as printed.
+  static const _basmalaScale = 1.6;
+
   late Future<bool> _ready;
   Timer? _neighbours;
 
@@ -98,6 +108,8 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     _ready = Future.wait([
       QcfLayout.instance.init().then((_) => true),
       QcfFonts.instance.ensurePage(page),
+      // Holds the basmala glyphs drawn at the top of most surahs.
+      QcfFonts.instance.ensurePage(1),
     ]).then((r) => r.every((ok) => ok));
     // Neighbouring pages load in the background so swiping stays smooth,
     // once the swipe that brought this page has settled: registering a
@@ -136,7 +148,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   Widget build(BuildContext context) {
     final page = widget.pageNumber;
     final loaded =
-        QcfLayout.instance.isReady && QcfFonts.instance.isPageLoaded(page);
+        QcfLayout.instance.isReady &&
+        QcfFonts.instance.isPageLoaded(page) &&
+        QcfFonts.instance.isPageLoaded(1);
     if (loaded) return _page(context);
     return FutureBuilder<bool>(
       future: _ready,
@@ -242,7 +256,24 @@ class _QcfPageBodyState extends State<QcfPageBody> {
           surah: QuranRepository.instance.getSurah(line.surah),
         );
       case QcfLineKind.basmala:
-        return const FittedBox(child: BismillahBanner());
+        return Text(
+          _basmalaGlyphs,
+          maxLines: 1,
+          softWrap: false,
+          textDirection: TextDirection.rtl,
+          style: TextStyle(
+            fontFamily: QcfFonts.familyFor(1),
+            // The opening pages' size is raised for their own small glyphs,
+            // which the basmala does not share.
+            fontSize:
+                size * _basmalaScale / (_openingScale[widget.pageNumber] ?? 1),
+            height:
+                _lineHeight *
+                (_openingScale[widget.pageNumber] ?? 1) /
+                _basmalaScale,
+            color: widget.textColor,
+          ),
+        );
       case QcfLineKind.words:
         return Text.rich(
           _spans(line.words, size),
