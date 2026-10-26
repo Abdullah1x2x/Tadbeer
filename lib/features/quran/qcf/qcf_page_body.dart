@@ -182,14 +182,15 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         if (openingScale != null) {
           // Sized like an ordinary 15-line page on this screen, then
           // corrected for the smaller glyphs, keeping the short lines a
-          // centred block no wider than 85% of the page.
+          // centred block no wider than 92% of the page (85% shrank page 1
+          // on common phones).
           final ordinary = math.min(
             _probe * box.maxWidth / _typicalWidest,
             box.maxHeight / (15 * _lineHeight),
           );
           fit = math.min(
             ordinary * openingScale,
-            math.min(byWidth * 0.85, byHeight),
+            math.min(byWidth * 0.92, byHeight),
           );
         }
         if (widget.zoom <= 1.0) {
