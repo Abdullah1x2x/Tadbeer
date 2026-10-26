@@ -1614,4 +1614,40 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reminderAdhkarBody => 'حان وقت الأذكار، ذكّر قلبك بالله';
+
+  @override
+  String get myReflections => 'وقفاتي';
+
+  @override
+  String get myReflectionsSubtitle => 'ما كتبته عند الآيات';
+
+  @override
+  String get reflectionsAll => 'الكل';
+
+  @override
+  String get reflectionsCommitments => 'ما التزمت به';
+
+  @override
+  String get noReflectionsHint => 'اضغط على آية في المصحف واختر «وقفة تدبر».';
+
+  @override
+  String get noCommitmentsYet =>
+      'ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.';
+
+  @override
+  String get commitmentDid => 'فعلته';
+
+  @override
+  String get commitmentNotYet => 'ليس بعد';
+
+  @override
+  String get commitmentPending => 'باقٍ';
+
+  @override
+  String commitmentSaidAt(String reference) {
+    return 'قلتَ عند $reference:';
+  }
+
+  @override
+  String get commitmentQuestion => 'هل فعلته؟';
 }

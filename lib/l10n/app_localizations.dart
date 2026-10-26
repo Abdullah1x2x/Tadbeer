@@ -2951,6 +2951,72 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'حان وقت الأذكار، ذكّر قلبك بالله'**
   String get reminderAdhkarBody;
+
+  /// No description provided for @myReflections.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفاتي'**
+  String get myReflections;
+
+  /// No description provided for @myReflectionsSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما كتبته عند الآيات'**
+  String get myReflectionsSubtitle;
+
+  /// No description provided for @reflectionsAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكل'**
+  String get reflectionsAll;
+
+  /// No description provided for @reflectionsCommitments.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما التزمت به'**
+  String get reflectionsCommitments;
+
+  /// No description provided for @noReflectionsHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط على آية في المصحف واختر «وقفة تدبر».'**
+  String get noReflectionsHint;
+
+  /// No description provided for @noCommitmentsYet.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.'**
+  String get noCommitmentsYet;
+
+  /// No description provided for @commitmentDid.
+  ///
+  /// In ar, this message translates to:
+  /// **'فعلته'**
+  String get commitmentDid;
+
+  /// No description provided for @commitmentNotYet.
+  ///
+  /// In ar, this message translates to:
+  /// **'ليس بعد'**
+  String get commitmentNotYet;
+
+  /// No description provided for @commitmentPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'باقٍ'**
+  String get commitmentPending;
+
+  /// No description provided for @commitmentSaidAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'قلتَ عند {reference}:'**
+  String commitmentSaidAt(String reference);
+
+  /// No description provided for @commitmentQuestion.
+  ///
+  /// In ar, this message translates to:
+  /// **'هل فعلته؟'**
+  String get commitmentQuestion;
 }
 
 class _AppLocalizationsDelegate

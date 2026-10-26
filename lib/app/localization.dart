@@ -190,6 +190,18 @@ class AppStrings {
   String get yourNameNotSet => _l.yourNameNotSet;
   String get reminderQuranBody => _l.reminderQuranBody;
   String get reminderAdhkarBody => _l.reminderAdhkarBody;
+  String get myReflections => _l.myReflections;
+  String get myReflectionsSubtitle => _l.myReflectionsSubtitle;
+  String get reflectionsAll => _l.reflectionsAll;
+  String get reflectionsCommitments => _l.reflectionsCommitments;
+  String get noReflectionsHint => _l.noReflectionsHint;
+  String get noCommitmentsYet => _l.noCommitmentsYet;
+  String get commitmentDid => _l.commitmentDid;
+  String get commitmentNotYet => _l.commitmentNotYet;
+  String get commitmentPending => _l.commitmentPending;
+  String get commitmentQuestion => _l.commitmentQuestion;
+  String commitmentSaidAt(String reference) =>
+      _l.commitmentSaidAt(reference);
 
   /// Addresses [text] to the reader by [name] ("أحمد، …" / "Ahmed, …");
   /// the name goes first so the wording suits anyone.

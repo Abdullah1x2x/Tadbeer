@@ -391,7 +391,7 @@ void main() {
         expect(find.byType(HomeScreen), findsOneWidget);
         // Only the selected tab (Home) shows its name in the bar.
         expect(find.text('المصحف'), findsOneWidget);
-        expect(find.text('الأدعية'), findsOneWidget);
+        expect(find.text('وقفاتي'), findsOneWidget);
         expect(find.text('معاني الكلمات'), findsOneWidget);
         expect(find.text('الملاحظات'), findsOneWidget);
         expect(find.text('روابط الآيات'), findsOneWidget);

@@ -985,5 +985,23 @@
   "yourName": "اسمك",
   "yourNameNotSet": "لم يُحدَّد",
   "reminderQuranBody": "حان وقت تلاوة وتدبّر القرآن الكريم",
-  "reminderAdhkarBody": "حان وقت الأذكار، ذكّر قلبك بالله"
+  "reminderAdhkarBody": "حان وقت الأذكار، ذكّر قلبك بالله",
+  "myReflections": "وقفاتي",
+  "myReflectionsSubtitle": "ما كتبته عند الآيات",
+  "reflectionsAll": "الكل",
+  "reflectionsCommitments": "ما التزمت به",
+  "noReflectionsHint": "اضغط على آية في المصحف واختر «وقفة تدبر».",
+  "noCommitmentsYet": "ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.",
+  "commitmentDid": "فعلته",
+  "commitmentNotYet": "ليس بعد",
+  "commitmentPending": "باقٍ",
+  "commitmentSaidAt": "قلتَ عند {reference}:",
+  "@commitmentSaidAt": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "commitmentQuestion": "هل فعلته؟"
 }

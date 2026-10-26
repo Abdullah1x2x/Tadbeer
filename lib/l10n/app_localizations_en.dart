@@ -1622,4 +1622,41 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reminderAdhkarBody =>
       'It’s time for your adhkar; remind your heart of Allah';
+
+  @override
+  String get myReflections => 'My reflections';
+
+  @override
+  String get myReflectionsSubtitle => 'What you wrote on ayahs';
+
+  @override
+  String get reflectionsAll => 'All';
+
+  @override
+  String get reflectionsCommitments => 'Commitments';
+
+  @override
+  String get noReflectionsHint =>
+      'Tap an ayah in the Mushaf and choose “Tadbeer pause”.';
+
+  @override
+  String get noCommitmentsYet =>
+      'What you write for “What will you do with it today?” shows here.';
+
+  @override
+  String get commitmentDid => 'I did it';
+
+  @override
+  String get commitmentNotYet => 'Not yet';
+
+  @override
+  String get commitmentPending => 'Pending';
+
+  @override
+  String commitmentSaidAt(String reference) {
+    return 'At $reference you said:';
+  }
+
+  @override
+  String get commitmentQuestion => 'Did you do it?';
 }
