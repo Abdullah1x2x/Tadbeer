@@ -158,9 +158,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reflectOnIt => 'Reflect';
 
   @override
-  String get continueReadingFromHere => 'Continue reading from here';
-
-  @override
   String get fromMushafStart => 'From the start';
 
   @override
@@ -1224,16 +1221,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String sessionSummary(String a, String b) {
     return 'You mastered $a of $b verses. The rest will come back tomorrow.';
-  }
-
-  @override
-  String readingPositionMoved(String page) {
-    return 'Page $page is now your reading position';
-  }
-
-  @override
-  String pageCounted(String page) {
-    return 'Page $page counted';
   }
 
   @override

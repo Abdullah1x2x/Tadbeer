@@ -54,7 +54,7 @@ List<PortionNotice> portionNotices(
   final notices = <PortionNotice>[];
   for (var d = 0; d < days && remaining > 0; d++) {
     final target = d == 0
-        ? math.max(0, plan.pagesPerDay - journey.pagesOn(now))
+        ? math.max(0, plan.pagesPerDay - journey.portionPagesOn(now))
         : plan.pagesPerDay;
     final pages = math.min(target, remaining);
     remaining -= pages;
@@ -94,7 +94,7 @@ class PortionReminderSync {
       reminder.hour,
       reminder.minute,
       dayKey(now),
-      journey.pagesOn(now),
+      journey.portionPagesOn(now),
       journey.plan?.toJson().toString(),
     ].join('|');
     if (key == _lastKey) return;

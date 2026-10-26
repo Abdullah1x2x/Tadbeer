@@ -48,7 +48,6 @@
   "sessionDone": "أحسنت! انتهت الجلسة",
   "ayahOfTheDay": "آية اليوم",
   "reflectOnIt": "تدبّرها",
-  "continueReadingFromHere": "أكمل القراءة من هنا",
   "fromMushafStart": "من أول المصحف",
   "setKhatmaPosition": "تعديل موضعي في الختمة",
   "pageNumberLabel": "رقم الصفحة",
@@ -459,22 +458,6 @@
         "type": "String"
       },
       "b": {
-        "type": "String"
-      }
-    }
-  },
-  "readingPositionMoved": "أصبحت صفحة {page} موضع قراءتك",
-  "@readingPositionMoved": {
-    "placeholders": {
-      "page": {
-        "type": "String"
-      }
-    }
-  },
-  "pageCounted": "احتُسبت صفحة {page}",
-  "@pageCounted": {
-    "placeholders": {
-      "page": {
         "type": "String"
       }
     }

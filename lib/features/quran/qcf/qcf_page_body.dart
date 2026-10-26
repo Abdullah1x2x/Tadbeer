@@ -126,8 +126,15 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     if (loaded) return _page(context);
     return FutureBuilder<bool>(
       future: _ready,
-      builder: (context, snap) =>
-          snap.data == true ? _page(context) : widget.fallback,
+      builder: (context, snap) {
+        if (snap.data == true) return _page(context);
+        // Blank for the moment the font takes to load, so the page never
+        // flashes in the plain text font; that view is only for a failure.
+        if (snap.connectionState != ConnectionState.done) {
+          return const SizedBox.expand();
+        }
+        return widget.fallback;
+      },
     );
   }
 
@@ -216,10 +223,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   Widget _line(QcfLine line, double size) {
     switch (line.kind) {
       case QcfLineKind.surahHeader:
-        return FittedBox(
-          child: SurahHeaderBanner(
-            surah: QuranRepository.instance.getSurah(line.surah),
-          ),
+        // Fills the line; the banner scales itself to the line's height.
+        return SurahHeaderBanner(
+          surah: QuranRepository.instance.getSurah(line.surah),
         );
       case QcfLineKind.basmala:
         return const FittedBox(child: BismillahBanner());

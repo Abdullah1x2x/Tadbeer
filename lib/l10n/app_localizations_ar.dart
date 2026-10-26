@@ -158,9 +158,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reflectOnIt => 'تدبّرها';
 
   @override
-  String get continueReadingFromHere => 'أكمل القراءة من هنا';
-
-  @override
   String get fromMushafStart => 'من أول المصحف';
 
   @override
@@ -1220,16 +1217,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String sessionSummary(String a, String b) {
     return 'أتقنت $a من $b آية. سنعيد عليك الباقي غداً.';
-  }
-
-  @override
-  String readingPositionMoved(String page) {
-    return 'أصبحت صفحة $page موضع قراءتك';
-  }
-
-  @override
-  String pageCounted(String page) {
-    return 'احتُسبت صفحة $page';
   }
 
   @override

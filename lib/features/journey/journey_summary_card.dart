@@ -65,7 +65,7 @@ class JourneySummaryCard extends StatelessWidget {
                       plan == null
                           ? l10n.startKhatmaTitle
                           : l10n.pagesOfTarget(
-                              journey.pagesOn(now),
+                              journey.portionPagesOn(now),
                               plan.pagesPerDay,
                             ),
                       style: TextStyle(

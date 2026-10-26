@@ -28,29 +28,19 @@ void main() {
   Widget host(Widget child) =>
       MaterialApp(theme: AppTheme.lightTheme, home: child);
 
-  testWidgets('viewing a verse never moves the reading position', (
+  testWidgets('opening a verse makes its page the reading position', (
     tester,
   ) async {
     await tester.pumpWidget(
       host(const QuranScreen(targetSurahNumber: 2, targetAyahNumber: 255)),
     );
     await tester.pump(const Duration(seconds: 1));
-
-    expect(UserDataStore.instance.readingPosition.page, 100);
-    expect(find.text('أكمل القراءة من هنا'), findsOneWidget);
-
-    // The user can choose to make it the reading position.
-    await tester.tap(find.text('أكمل القراءة من هنا'));
-    await tester.pump(const Duration(seconds: 1));
     expect(UserDataStore.instance.readingPosition.page, 42);
+    expect(find.text('أكمل القراءة من هنا'), findsNothing);
   });
 
-  testWidgets('reading mode counts a page when moving forward past it', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      host(const QuranScreen(initialPage: 50, readingMode: true)),
-    );
+  testWidgets('a page counts when moving forward past it', (tester) async {
+    await tester.pumpWidget(host(const QuranScreen(initialPage: 50)));
     await tester.pump(const Duration(seconds: 1));
 
     // Spend real time on the page before moving on.
@@ -63,14 +53,38 @@ void main() {
     controller.jumpToPage(50);
     await tester.pump(const Duration(seconds: 1));
 
-    final today = UserDataStore.instance.journey.pagesOn(DateTime.now());
-    expect(today, 1);
+    expect(UserDataStore.instance.journey.pagesOn(DateTime.now()), 1);
     expect(UserDataStore.instance.readingPosition.page, 51);
-    expect(find.text('احتُسبت صفحة ٥٠'), findsOneWidget);
+    // No confirmation chip any more.
+    expect(find.text('احتُسبت صفحة ٥٠'), findsNothing);
 
     // Moving forward again immediately does not count the skimmed page.
     controller.jumpToPage(51);
     await tester.pump(const Duration(seconds: 2));
     expect(UserDataStore.instance.journey.pagesOn(DateTime.now()), 1);
+  });
+
+  testWidgets('the page on screen counts after a while without turning it', (
+    tester,
+  ) async {
+    await tester.pumpWidget(host(const QuranScreen(initialPage: 50)));
+    await tester.pump(const Duration(seconds: 39));
+    expect(UserDataStore.instance.journey.pagesOn(DateTime.now()), 0);
+    await tester.pump(const Duration(seconds: 2));
+    expect(UserDataStore.instance.journey.pagesOn(DateTime.now()), 1);
+    expect(
+      UserDataStore.instance.journey.dailyPages.values.single,
+      contains(50),
+    );
+  });
+
+  testWidgets('a hidden reader does not count the page', (tester) async {
+    await tester.pumpWidget(
+      host(
+        const TickerMode(enabled: false, child: QuranScreen(initialPage: 50)),
+      ),
+    );
+    await tester.pump(const Duration(seconds: 41));
+    expect(UserDataStore.instance.journey.pagesOn(DateTime.now()), 0);
   });
 }
