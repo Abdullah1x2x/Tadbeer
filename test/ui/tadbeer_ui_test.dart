@@ -181,8 +181,8 @@ void main() {
         await tester.pumpWidget(const TadbeerApp());
         await tester.pumpAndSettle();
 
-        // Tap Quran card on Home
-        await tester.tap(find.text('المصحف').first);
+        // Open the Mushaf tab.
+        await tester.tap(find.byTooltip('المصحف'));
         await tester.pumpAndSettle();
 
         // Should be on QuranScreen
