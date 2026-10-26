@@ -54,6 +54,7 @@ dependencies:
   intl: any
   phosphor_flutter: ^2.1.0
   home_widget: ^0.10.0
+  gal: ^2.3.3
 
 dev_dependencies:
   flutter_test:

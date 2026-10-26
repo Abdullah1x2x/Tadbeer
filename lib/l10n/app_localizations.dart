@@ -842,17 +842,17 @@ abstract class AppLocalizations {
   /// **'قصة'**
   String get cardStory;
 
-  /// No description provided for @cardNight.
+  /// No description provided for @cardDark.
   ///
   /// In ar, this message translates to:
-  /// **'كحلي'**
-  String get cardNight;
+  /// **'داكن'**
+  String get cardDark;
 
-  /// No description provided for @cardPaper.
+  /// No description provided for @cardLight.
   ///
   /// In ar, this message translates to:
-  /// **'ورقي'**
-  String get cardPaper;
+  /// **'فاتح'**
+  String get cardLight;
 
   /// No description provided for @copiedToClipboard.
   ///
@@ -3017,6 +3017,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'هل فعلته؟'**
   String get commitmentQuestion;
+
+  /// No description provided for @saveToPhotos.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ في الصور'**
+  String get saveToPhotos;
+
+  /// No description provided for @cardSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظت البطاقة في الصور'**
+  String get cardSaved;
+
+  /// No description provided for @cardSaveFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر حفظ البطاقة'**
+  String get cardSaveFailed;
+
+  /// No description provided for @cardSaveDenied.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسمح لتدبير بإضافة الصور من إعدادات الجهاز'**
+  String get cardSaveDenied;
 }
 
 class _AppLocalizationsDelegate

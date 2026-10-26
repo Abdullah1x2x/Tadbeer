@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -25,14 +26,17 @@ enum AyahCardFormat {
   story,
 }
 
-/// نمط ألوان بطاقة المشاركة.
+/// نمط ألوان بطاقة المشاركة، من ألوان السمة المختارة.
 enum AyahCardStyle {
-  /// خلفية كحلية ليلية بإطار ذهبي.
-  night,
+  /// خلفية داكنة من لون السمة بإطار ذهبي.
+  dark,
 
-  /// خلفية ورق المصحف بنص كحلي.
-  paper,
+  /// خلفية فاتحة كورق السمة بنص من لونها.
+  light,
 }
+
+/// What became of saving the card to the gallery.
+enum _SaveState { idle, saving, saved, denied, failed }
 
 /// لوحة سفلية تعرض معاينة بطاقة الآية وتشاركها كصورة عالية الدقة.
 class AyahShareSheet extends StatefulWidget {
@@ -58,28 +62,62 @@ class AyahShareSheet extends StatefulWidget {
 class _AyahShareSheetState extends State<AyahShareSheet> {
   final GlobalKey _cardKey = GlobalKey();
   AyahCardFormat _format = AyahCardFormat.square;
-  AyahCardStyle _style = AyahCardStyle.night;
+  AyahCardStyle _style = AyahCardStyle.dark;
   bool _sharing = false;
+  _SaveState _save = _SaveState.idle;
 
-  /// Logical width of the card; captured at 3x for a 1080 px wide image.
+  /// Logical width of the card.
   static const double _cardWidth = 360;
+
+  /// Width of the shared and saved image in pixels: sharp when zoomed in
+  /// or printed.
+  static const double imageWidth = 2160;
+
+  String get _fileName =>
+      'tadbeer_${widget.ayah.surahNumber}_${widget.ayah.ayahNumber}';
+
+  /// The card as shown, drawn at [imageWidth] pixels wide.
+  Future<Uint8List?> _capture() async {
+    final boundary =
+        _cardKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    final image = await boundary.toImage(pixelRatio: imageWidth / _cardWidth);
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
+    return bytes?.buffer.asUint8List();
+  }
+
+  Future<void> _saveToPhotos() async {
+    setState(() => _save = _SaveState.saving);
+    var result = _SaveState.failed;
+    try {
+      if (!await Gal.hasAccess() && !await Gal.requestAccess()) {
+        result = _SaveState.denied;
+      } else {
+        final bytes = await _capture();
+        if (bytes != null) {
+          await Gal.putImageBytes(bytes, name: _fileName);
+          result = _SaveState.saved;
+        }
+      }
+    } on GalException catch (e) {
+      debugPrint('Saving the ayah card failed: ${e.type}');
+      result = e.type == GalExceptionType.accessDenied
+          ? _SaveState.denied
+          : _SaveState.failed;
+    }
+    if (mounted) setState(() => _save = result);
+  }
 
   Future<void> _share() async {
     setState(() => _sharing = true);
     try {
-      final boundary =
-          _cardKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: 1080 / _cardWidth);
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      image.dispose();
+      final bytes = await _capture();
       if (bytes == null) return;
 
       final dir = await getTemporaryDirectory();
       final ayah = widget.ayah;
-      final file = File(
-        '${dir.path}/tadbeer_${ayah.surahNumber}_${ayah.ayahNumber}.png',
-      );
-      await file.writeAsBytes(bytes.buffer.asUint8List());
+      final file = File('${dir.path}/$_fileName.png');
+      await file.writeAsBytes(bytes);
 
       final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
       await SharePlus.instance.share(
@@ -92,6 +130,13 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
       if (mounted) setState(() => _sharing = false);
     }
   }
+
+  String? _saveMessage(AppStrings l10n) => switch (_save) {
+    _SaveState.saved => l10n.cardSaved,
+    _SaveState.denied => l10n.cardSaveDenied,
+    _SaveState.failed => l10n.cardSaveFailed,
+    _SaveState.idle || _SaveState.saving => null,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +170,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 250),
                     child: AyahCard(
-                      key: ValueKey('$_format-$_style'),
+                      key: ValueKey('$_format-$_style-${AppColors.theme}'),
                       ayah: widget.ayah,
                       style: _style,
                       width: _cardWidth,
@@ -160,40 +205,86 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
             SegmentedButton<AyahCardStyle>(
               segments: [
                 ButtonSegment(
-                  value: AyahCardStyle.night,
+                  value: AyahCardStyle.dark,
                   icon: const Icon(AppIcons.moonStars),
-                  label: Text(l10n.cardNight),
+                  label: Text(l10n.cardDark),
                 ),
                 ButtonSegment(
-                  value: AyahCardStyle.paper,
+                  value: AyahCardStyle.light,
                   icon: const Icon(AppIcons.fileTextFill),
-                  label: Text(l10n.cardPaper),
+                  label: Text(l10n.cardLight),
                 ),
               ],
               selected: {_style},
               showSelectedIcon: false,
               onSelectionChanged: (s) {
                 HapticFeedback.selectionClick();
-                setState(() => _style = s.first);
+                setState(() {
+                  _style = s.first;
+                  _save = _SaveState.idle;
+                });
               },
             ),
             const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _sharing ? null : _share,
-              icon: _sharing
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(AppIcons.export),
-              label: Text(l10n.shareImage),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: _sharing ? null : _share,
+                    icon: _sharing
+                        ? const _Spinner()
+                        : const Icon(AppIcons.export),
+                    label: Text(l10n.shareImage),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _save == _SaveState.saving
+                        ? null
+                        : _saveToPhotos,
+                    icon: switch (_save) {
+                      _SaveState.saving => const _Spinner(),
+                      _SaveState.saved => const Icon(AppIcons.checkCircleFill),
+                      _ => const Icon(AppIcons.downloadSimple),
+                    },
+                    label: Text(l10n.saveToPhotos),
+                  ),
+                ),
+              ],
             ),
+            // Says how saving went, under the buttons rather than in a
+            // snack bar hidden behind the sheet.
+            if (_saveMessage(l10n) case final message?)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _save == _SaveState.saved
+                        ? AppColors.primary(context)
+                        : Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
     );
   }
+}
+
+/// A small progress circle that fits in a button's icon slot.
+class _Spinner extends StatelessWidget {
+  const _Spinner();
+
+  @override
+  Widget build(BuildContext context) => const SizedBox(
+    width: 18,
+    height: 18,
+    child: CircularProgressIndicator(strokeWidth: 2),
+  );
 }
 
 /// البطاقة المصممة للآية: إطار ذهبي مزدوج، ونقش هندسي خفيف، واسم السورة،
@@ -204,6 +295,9 @@ class AyahCard extends StatelessWidget {
   final double width;
   final double height;
 
+  /// السمة التي تأخذ البطاقة ألوانها منها؛ السمة المختارة إن لم تُحدَّد.
+  final AppColorTheme? colorTheme;
+
   /// ينشئ بطاقة الآية بالمقاس والنمط المحددين.
   const AyahCard({
     super.key,
@@ -211,18 +305,18 @@ class AyahCard extends StatelessWidget {
     required this.style,
     required this.width,
     required this.height,
+    this.colorTheme,
   });
 
   @override
   Widget build(BuildContext context) {
-    final night = style == AyahCardStyle.night;
+    final night = style == AyahCardStyle.dark;
+    final p = ThemePalette.of(colorTheme ?? AppColors.theme);
     final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
     final quranFont = UserDataStore.instance.quranFontFamily;
     const gold = Color(0xFFD9B566);
-    final textColor = night
-        ? const Color(0xFFF2EEE4)
-        : AppColors.lightPrimaryDark;
-    final metaColor = night ? gold : AppColors.lightAccentGold;
+    final textColor = night ? const Color(0xFFF2EEE4) : p.lightPrimaryDark;
+    final metaColor = night ? gold : p.lightAccentGold;
     final ayahNumber = ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber);
 
     return Directionality(
@@ -232,16 +326,21 @@ class AyahCard extends StatelessWidget {
         height: height,
         child: DecoratedBox(
           decoration: BoxDecoration(
+            // The theme's hero colour glowing out of its night background,
+            // or its paper with a breath of the hero colour at the foot.
             gradient: night
-                ? const RadialGradient(
-                    center: Alignment(0, -0.35),
+                ? RadialGradient(
+                    center: const Alignment(0, -0.35),
                     radius: 1.2,
-                    colors: [Color(0xFF26497A), Color(0xFF0B1220)],
+                    colors: [p.heroLightStart, p.darkBackground],
                   )
-                : const LinearGradient(
+                : LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0xFFFBF7EC), Color(0xFFF1E8D2)],
+                    colors: [
+                      Color.lerp(p.lightBackground, Colors.white, 0.45)!,
+                      Color.lerp(p.lightBackground, p.heroLightStart, 0.08)!,
+                    ],
                   ),
           ),
           child: CustomPaint(
