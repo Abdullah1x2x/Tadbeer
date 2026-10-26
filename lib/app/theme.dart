@@ -478,8 +478,8 @@ enum MushafPaperTone {
 
 /// ألوان صفحة المصحف المحسوبة من السمة ولون الورق المختار.
 ///
-/// Instances are canonical constants, so painters can compare them by
-/// identity in `shouldRepaint`.
+/// One instance per theme, mode and paper, so painters can compare them by
+/// identity in `shouldRepaint` and repaint when any of the three changes.
 class MushafPalette {
   /// لون المساحة المحيطة بالصفحة.
   final Color outer;
@@ -493,51 +493,68 @@ class MushafPalette {
   /// لون النص القرآني.
   final Color text;
 
+  /// لون إطار الصفحة وترويسات السور وعلامات الهامش: اللون الأساسي للسمة.
+  final Color frame;
+
   const MushafPalette._({
     required this.outer,
     required this.page,
     required this.band,
     required this.text,
+    required this.frame,
   });
 
-  static final MushafPalette classicLight = MushafPalette._(
-    outer: AppColors.mushafBackground,
-    page: AppColors.mushafBackground,
-    band: AppColors.lightSurface,
-    text: AppColors.mushafQuranText,
-  );
+  static final _cache =
+      <(AppColorTheme, bool, MushafPaperTone), MushafPalette>{};
 
-  static final MushafPalette classicDark = MushafPalette._(
-    outer: AppColors.darkBackground,
-    page: AppColors.darkSurface,
-    band: AppColors.darkSurface,
-    text: AppColors.darkTextPrimary,
-  );
-
-  static const MushafPalette sepiaLight = MushafPalette._(
-    outer: Color(0xFFEAD9B8),
-    page: Color(0xFFEAD9B8),
-    band: Color(0xFFE0CCA6),
-    text: Color(0xFF3B2F1E),
-  );
-
-  static const MushafPalette sepiaDark = MushafPalette._(
-    outer: Color(0xFF120F0A),
-    page: Color(0xFF1B1610),
-    band: Color(0xFF1B1610),
-    text: Color(0xFFDDD0B6),
-  );
-
-  /// إرجاع ألوان الصفحة المناسبة للوضع الحالي ولون الورق المختار.
+  /// إرجاع ألوان الصفحة المناسبة للسمة والوضع الحاليين ولون الورق المختار.
   static MushafPalette of({
     required bool isDark,
     required MushafPaperTone tone,
+  }) => _cache.putIfAbsent((
+    AppColors.theme,
+    isDark,
+    tone,
+  ), () => _build(isDark: isDark, tone: tone));
+
+  static MushafPalette _build({
+    required bool isDark,
+    required MushafPaperTone tone,
   }) {
+    final frame = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
     switch (tone) {
       case MushafPaperTone.classic:
-        return isDark ? classicDark : classicLight;
+        return isDark
+            ? MushafPalette._(
+                outer: AppColors.darkBackground,
+                page: AppColors.darkSurface,
+                band: AppColors.darkSurface,
+                text: AppColors.darkTextPrimary,
+                frame: frame,
+              )
+            : MushafPalette._(
+                outer: AppColors.mushafBackground,
+                page: AppColors.mushafBackground,
+                band: AppColors.lightSurface,
+                text: AppColors.mushafQuranText,
+                frame: frame,
+              );
       case MushafPaperTone.sepia:
-        return isDark ? sepiaDark : sepiaLight;
+        return isDark
+            ? MushafPalette._(
+                outer: const Color(0xFF120F0A),
+                page: const Color(0xFF1B1610),
+                band: const Color(0xFF1B1610),
+                text: const Color(0xFFDDD0B6),
+                frame: frame,
+              )
+            : MushafPalette._(
+                outer: const Color(0xFFEAD9B8),
+                page: const Color(0xFFEAD9B8),
+                band: const Color(0xFFE0CCA6),
+                text: const Color(0xFF3B2F1E),
+                frame: frame,
+              );
     }
   }
 }

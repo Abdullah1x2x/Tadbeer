@@ -8,8 +8,8 @@ import '../data/quran_models.dart';
 
 /// ترويسة السورة على طراز ترويسات مصحف المدينة.
 ///
-/// A band with pointed ends and a gold double rule fills the line it is
-/// given; the surah name sits in a central cartouche, its number in an
+/// A band with pointed ends and a double rule in the theme's frame colour
+/// fills the line it is given; the surah name sits in a central cartouche, its number in an
 /// eight-pointed rosette on one side and its type and length on the other.
 /// Everything is sized from the band's height, so it looks the same on any
 /// screen and at any zoom.
@@ -35,7 +35,7 @@ class SurahHeaderBanner extends StatelessWidget {
       isDark: isDark,
       tone: UserDataStore.instance.settings.mushafPaperTone,
     );
-    final gold = isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
+    final gold = palette.frame;
     final meta = isDark
         ? AppColors.darkTextSecondary
         : AppColors.lightTextSecondary;
@@ -178,7 +178,7 @@ class _SurahBandPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..color = gold;
 
-    // Band with a soft gold wash and a double rule.
+    // Band with a soft wash of the frame colour and a double rule.
     final outer = _bandPath(size, 1);
     canvas.drawPath(
       outer,
