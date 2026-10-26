@@ -91,8 +91,7 @@ void main() {
   // Median word height per unit of font size, measured from the glyphs.
   const wordHeight = {1: 0.889, 2: 0.834, 3: 1.036};
 
-  for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
-    testWidgets('the basmala is drawn in the Mushaf script', (tester) async {
+  testWidgets('the basmala is drawn in the Mushaf script', (tester) async {
     await pumpPage(tester, size: const Size(412, 915), page: 2);
     final basmala = find.byWidgetPredicate(
       (w) =>
@@ -105,7 +104,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets(
+  for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
+    testWidgets(
       'the opening pages read as large as the rest (${size.width.toInt()} wide)',
       (tester) async {
         await pumpPage(tester, size: size);
@@ -115,7 +115,9 @@ void main() {
           final letters = mushafFontSize(tester, page) * wordHeight[page]!;
           expect(
             letters / ordinary,
-            inInclusiveRange(0.9, 1.1),
+            // Page 3 is among the largest ordinary pages; 0.93 catches the
+            // opening pages shrunk by too tight a width limit.
+            inInclusiveRange(0.93, 1.1),
             reason: 'page $page',
           );
           for (final line in mushafLines(tester, page: page)) {
