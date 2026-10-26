@@ -40,7 +40,18 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- Home-screen widget: ayah of the day and khatma progress. -->
+        <!-- Wakes the widget each quarter hour for its next ayah, and again
+             after a reboot or an app update. -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetScheduledUpdateReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <!-- Home-screen widget: an ayah each quarter hour and khatma progress. -->
         <receiver
             android:name=".TadbeerWidgetProvider"
             android:exported="false">

@@ -1533,4 +1533,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get widgetPortionDone => 'أتممت ورد اليوم';
+
+  @override
+  String get widgetAyahTitle => 'آية للتدبّر';
 }

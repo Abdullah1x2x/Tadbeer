@@ -1,8 +1,9 @@
-/// بيانات ودجت الشاشة الرئيسية: آية اليوم وتقدم الختمة.
+/// بيانات ودجت الشاشة الرئيسية: آية كل ربع ساعة وتقدم الختمة.
 ///
 /// The widget runs outside the app, so it is given what it needs ahead of
-/// time: the ayah for each of the next [days] days (it picks today's itself,
-/// changing daily even when the app is not opened) and the khatma's state.
+/// time: an ayah for every quarter hour of the next [quarters] quarters
+/// (it picks the current one itself, from the clock) with each ayah drawn
+/// in the Quranic font, the khatma's state and the colour theme.
 library;
 
 import 'dart:async';
@@ -15,6 +16,7 @@ import '../../app/localization.dart';
 import '../../core/storage/user_data_store.dart';
 import '../daily/ayah_of_day_card.dart';
 import '../journey/reading_journey.dart';
+import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
 import 'widget_ayah_image.dart';
 
@@ -25,10 +27,29 @@ class HomeWidgetSync {
   static const iOSName = 'TadbeerWidget';
   static const appGroupId = 'group.com.tadbeer.app';
 
-  /// Days of ayahs stored ahead.
-  static const days = 30;
+  /// Quarter hours stored ahead: two days. Past them the widget cycles
+  /// through the stored ayahs until the app is opened again.
+  static const quarters = 2 * 96;
 
   static String? _lastKey;
+
+  /// Number of the quarter hour [time] falls in, counted from 2020-01-01 in
+  /// local time. The widget's native code counts the same way.
+  static int quarterOf(DateTime time) {
+    final days = DateTime.utc(
+      time.year,
+      time.month,
+      time.day,
+    ).difference(DateTime.utc(2020)).inDays;
+    return days * 96 + time.hour * 4 + time.minute ~/ 15;
+  }
+
+  /// The ayah shown during quarter [quarter]; a large prime stride spreads
+  /// consecutive quarters across the Mushaf.
+  static Ayah ayahForQuarter(int quarter) {
+    final pool = AyahOfTheDay.pool;
+    return pool[(quarter * 7919) % pool.length];
+  }
 
   /// Everything the widget shows, keyed as the native code reads it.
   @visibleForTesting
@@ -37,13 +58,13 @@ class HomeWidgetSync {
       AppLanguage.fromCode(store.settings.languageCode),
     );
     final repo = QuranRepository.instance;
+    final first = quarterOf(now);
     final ayahs = [
-      for (var d = 0; d < days; d++)
+      for (var q = first; q < first + quarters; q++)
         () {
-          final day = DateTime(now.year, now.month, now.day + d);
-          final ayah = AyahOfTheDay.forDay(day);
+          final ayah = ayahForQuarter(q);
           return {
-            'd': dayKey(day),
+            'q': q,
             's': ayah.surahNumber,
             'a': ayah.ayahNumber,
             't': ayah.text,
@@ -57,8 +78,9 @@ class HomeWidgetSync {
     final journey = store.journey;
     final plan = journey.plan;
     return {
-      'title': strings.ayahOfTheDay,
+      'title': strings.widgetAyahTitle,
       'ayahs': jsonEncode(ayahs),
+      'theme': store.settings.colorTheme.name,
       'has_khatma': plan != null && !plan.isComplete,
       'khatma_title': strings.myJourney,
       'khatma_progress': plan == null ? 0 : (plan.progress * 100).round(),
@@ -97,11 +119,15 @@ class HomeWidgetSync {
   }
 
   /// Bump when the drawn ayah's look changes, so every image is redrawn.
-  static const _imageStyle = 2;
+  static const _imageStyle = 3;
   static bool _rendering = false;
 
-  /// Draws the ayah of each coming day in the Quranic font, once per day,
-  /// and deletes the images of days that have passed.
+  /// Image key of an ayah; the widget reads the same key.
+  static String imageKey(Ayah ayah) =>
+      'img_${ayah.surahNumber}_${ayah.ayahNumber}';
+
+  /// Draws each ayah of the stored quarters in the Quranic font, once per
+  /// ayah, and deletes the images no longer needed.
   static Future<void> _renderAyahImages(DateTime now, String language) async {
     if (_rendering) return;
     _rendering = true;
@@ -110,33 +136,39 @@ class HomeWidgetSync {
       final sameStyle =
           await HomeWidget.getWidgetData<String>('img_stamp') == stamp;
       final previous =
-          (await HomeWidget.getWidgetData<String>('img_dates') ?? '')
+          (await HomeWidget.getWidgetData<String>('img_keys') ?? '')
               .split(',')
-              .where((d) => d.isNotEmpty)
+              .where((k) => k.isNotEmpty)
               .toSet();
-      final dates = <String>[];
-      var drew = false;
-      for (var d = 0; d < days; d++) {
-        final day = DateTime(now.year, now.month, now.day + d);
-        final date = dayKey(day);
-        dates.add(date);
-        if (sameStyle && previous.contains(date)) continue;
-        final ayah = AyahOfTheDay.forDay(day);
+      final first = quarterOf(now);
+      final wanted = <String, Ayah>{
+        for (var q = first; q < first + quarters; q++)
+          imageKey(ayahForQuarter(q)): ayahForQuarter(q),
+      };
+      var drew = 0;
+      for (final MapEntry(key: key, value: ayah) in wanted.entries) {
+        if (sameStyle && previous.contains(key)) continue;
         await HomeWidget.renderFlutterWidget(
           WidgetAyahImage(ayah: ayah),
-          key: 'img_$date',
+          key: key,
           logicalSize: WidgetAyahImage.sizeFor(ayah),
           pixelRatio: 2.5,
         );
-        drew = true;
+        // Show the first ones as soon as they exist.
+        if (++drew == 2) {
+          await HomeWidget.updateWidget(
+            androidName: androidName,
+            iOSName: iOSName,
+          );
+        }
       }
-      for (final old in previous.difference(dates.toSet())) {
+      for (final old in previous.difference(wanted.keys.toSet())) {
         // Removing the key also deletes the image file.
-        await HomeWidget.saveWidgetData<String>('img_$old', null);
+        await HomeWidget.saveWidgetData<String>(old, null);
       }
-      await HomeWidget.saveWidgetData('img_dates', dates.join(','));
+      await HomeWidget.saveWidgetData('img_keys', wanted.keys.join(','));
       await HomeWidget.saveWidgetData('img_stamp', stamp);
-      if (drew) {
+      if (drew > 0) {
         await HomeWidget.updateWidget(
           androidName: androidName,
           iOSName: iOSName,

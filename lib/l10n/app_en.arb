@@ -447,5 +447,6 @@
   "mushafStyleText": "Flowing text",
   "qcfAttribution": "Mushaf font: King Fahd Glorious Quran Printing Complex",
   "widgetPortionLeft": "Today’s portion: {left} of {portion} pages left",
-  "widgetPortionDone": "Today’s portion is done"
+  "widgetPortionDone": "Today’s portion is done",
+  "widgetAyahTitle": "An ayah to reflect on"
 }
