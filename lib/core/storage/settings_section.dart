@@ -37,6 +37,15 @@ mixin _SettingsSection on _StoreState {
     await updateSettings(_settings.copyWith(quranFontSize: clamped));
   }
 
+  /// حفظ اسم القارئ وإعادة جدولة التذكيرات لتناديه به.
+  Future<void> setUserName(String name) async {
+    final clean = name.trim();
+    if (clean == _settings.userName) return;
+    await updateSettings(_settings.copyWith(userName: clean));
+    // Scheduled notifications keep the text they were given; redo them.
+    await LocalReminderService.instance.syncAllReminders(_reminders);
+  }
+
   /// تغيير طريقة عرض المصحف وحفظها.
   Future<void> setMushafStyle(MushafStyle style) async {
     await updateSettings(_settings.copyWith(mushafStyle: style));

@@ -8,6 +8,7 @@ import 'localization.dart';
 import 'theme.dart';
 import '../l10n/app_localizations.dart';
 import '../features/onboarding/theme_picker_screen.dart';
+import '../features/onboarding/name_screen.dart';
 
 /// مفتاح التنقل العام للتطبيق لفتح الشاشات عند النقر على الإشعارات أو المنبهات.
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
@@ -84,7 +85,10 @@ class _TadbeerAppState extends State<TadbeerApp> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(message, style: const TextStyle(fontFamily: 'IBMPlexSansArabic')),
+          content: Text(
+            message,
+            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+          ),
           duration: const Duration(seconds: 6),
         ),
       );
@@ -148,7 +152,10 @@ class _TadbeerAppState extends State<TadbeerApp> {
             },
             home: _initialThemeChosen
                 ? _afterThemePicker(context)
-                : ThemePickerScreen(next: _afterThemePicker),
+                // First launch: the reader's name, then the look.
+                : NameScreen(
+                    next: (_) => ThemePickerScreen(next: _afterThemePicker),
+                  ),
           ),
         );
       },

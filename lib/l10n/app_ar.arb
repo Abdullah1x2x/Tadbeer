@@ -977,5 +977,13 @@
   "mushafStyleMadinahHint": "صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.",
   "mushafStyleTextHint": "نص متدفق بالخط الذي تختاره.",
   "pageSize": "حجم الصفحة",
-  "khatmaStartNow": "ابدأ الآن"
+  "khatmaStartNow": "ابدأ الآن",
+  "askNameTitle": "ما اسمك؟",
+  "askNameHint": "نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.",
+  "askNameField": "اسمك",
+  "skipStep": "تخطّي",
+  "yourName": "اسمك",
+  "yourNameNotSet": "لم يُحدَّد",
+  "reminderQuranBody": "حان وقت تلاوة وتدبّر القرآن الكريم",
+  "reminderAdhkarBody": "حان وقت الأذكار، ذكّر قلبك بالله"
 }

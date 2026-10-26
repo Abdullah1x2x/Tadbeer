@@ -466,5 +466,13 @@
   "mushafStyleMadinahHint": "Pages identical to the printed Mushaf; lines wrap when enlarged.",
   "mushafStyleTextHint": "Flowing text in the font you choose.",
   "pageSize": "Page size",
-  "khatmaStartNow": "Start now"
+  "khatmaStartNow": "Start now",
+  "askNameTitle": "What’s your name?",
+  "askNameHint": "We use it in your reminders and notifications. It stays on your device.",
+  "askNameField": "Your name",
+  "skipStep": "Skip",
+  "yourName": "Your name",
+  "yourNameNotSet": "Not set",
+  "reminderQuranBody": "It’s time to recite and reflect on the Quran",
+  "reminderAdhkarBody": "It’s time for your adhkar; remind your heart of Allah"
 }

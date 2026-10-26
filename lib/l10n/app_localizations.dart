@@ -2903,6 +2903,54 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ابدأ الآن'**
   String get khatmaStartNow;
+
+  /// No description provided for @askNameTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما اسمك؟'**
+  String get askNameTitle;
+
+  /// No description provided for @askNameHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.'**
+  String get askNameHint;
+
+  /// No description provided for @askNameField.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسمك'**
+  String get askNameField;
+
+  /// No description provided for @skipStep.
+  ///
+  /// In ar, this message translates to:
+  /// **'تخطّي'**
+  String get skipStep;
+
+  /// No description provided for @yourName.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسمك'**
+  String get yourName;
+
+  /// No description provided for @yourNameNotSet.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُحدَّد'**
+  String get yourNameNotSet;
+
+  /// No description provided for @reminderQuranBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حان وقت تلاوة وتدبّر القرآن الكريم'**
+  String get reminderQuranBody;
+
+  /// No description provided for @reminderAdhkarBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حان وقت الأذكار، ذكّر قلبك بالله'**
+  String get reminderAdhkarBody;
 }
 
 class _AppLocalizationsDelegate

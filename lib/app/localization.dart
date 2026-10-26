@@ -182,6 +182,23 @@ class AppStrings {
   String get mushafStyleTextHint => _l.mushafStyleTextHint;
   String get pageSize => _l.pageSize;
   String get khatmaStartNow => _l.khatmaStartNow;
+  String get askNameTitle => _l.askNameTitle;
+  String get askNameHint => _l.askNameHint;
+  String get askNameField => _l.askNameField;
+  String get skipStep => _l.skipStep;
+  String get yourName => _l.yourName;
+  String get yourNameNotSet => _l.yourNameNotSet;
+  String get reminderQuranBody => _l.reminderQuranBody;
+  String get reminderAdhkarBody => _l.reminderAdhkarBody;
+
+  /// Addresses [text] to the reader by [name] ("أحمد، …" / "Ahmed, …");
+  /// the name goes first so the wording suits anyone.
+  String toReader(String name, String text) {
+    final n = name.trim();
+    if (n.isEmpty || text.isEmpty) return text;
+    if (isArabic) return '$n، $text';
+    return '$n, ${text[0].toLowerCase()}${text.substring(1)}';
+  }
 
   /// A percentage in this language's digits (١٢٠٪ / 120%).
   String percent(int value) => isArabic ? '${digits(value)}٪' : '$value%';
