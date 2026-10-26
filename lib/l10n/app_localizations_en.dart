@@ -390,10 +390,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cardStory => 'Story';
 
   @override
-  String get cardNight => 'Night';
+  String get cardDark => 'Dark';
 
   @override
-  String get cardPaper => 'Paper';
+  String get cardLight => 'Light';
 
   @override
   String get copiedToClipboard => 'Ayah copied to clipboard';
@@ -1659,4 +1659,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commitmentQuestion => 'Did you do it?';
+
+  @override
+  String get saveToPhotos => 'Save to Photos';
+
+  @override
+  String get cardSaved => 'Card saved to Photos';
+
+  @override
+  String get cardSaveFailed => 'Couldn\'t save the card';
+
+  @override
+  String get cardSaveDenied =>
+      'Allow Tadbeer to add photos in your device settings';
 }

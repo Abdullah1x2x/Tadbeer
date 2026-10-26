@@ -124,8 +124,8 @@
   "shareImage": "Share image",
   "cardSquare": "Post",
   "cardStory": "Story",
-  "cardNight": "Night",
-  "cardPaper": "Paper",
+  "cardDark": "Dark",
+  "cardLight": "Light",
   "copiedToClipboard": "Ayah copied to clipboard",
   "newNote": "New Note",
   "newFreeNote": "Free Note",
@@ -485,5 +485,9 @@
   "commitmentNotYet": "Not yet",
   "commitmentPending": "Pending",
   "commitmentSaidAt": "At {reference} you said:",
-  "commitmentQuestion": "Did you do it?"
+  "commitmentQuestion": "Did you do it?",
+  "saveToPhotos": "Save to Photos",
+  "cardSaved": "Card saved to Photos",
+  "cardSaveFailed": "Couldn't save the card",
+  "cardSaveDenied": "Allow Tadbeer to add photos in your device settings"
 }

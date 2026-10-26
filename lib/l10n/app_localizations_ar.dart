@@ -390,10 +390,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cardStory => 'قصة';
 
   @override
-  String get cardNight => 'كحلي';
+  String get cardDark => 'داكن';
 
   @override
-  String get cardPaper => 'ورقي';
+  String get cardLight => 'فاتح';
 
   @override
   String get copiedToClipboard => 'تم نسخ الآية إلى الحافظة';
@@ -1650,4 +1650,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commitmentQuestion => 'هل فعلته؟';
+
+  @override
+  String get saveToPhotos => 'حفظ في الصور';
+
+  @override
+  String get cardSaved => 'حُفظت البطاقة في الصور';
+
+  @override
+  String get cardSaveFailed => 'تعذّر حفظ البطاقة';
+
+  @override
+  String get cardSaveDenied => 'اسمح لتدبير بإضافة الصور من إعدادات الجهاز';
 }

@@ -124,8 +124,8 @@
   "shareImage": "مشاركة الصورة",
   "cardSquare": "منشور",
   "cardStory": "قصة",
-  "cardNight": "كحلي",
-  "cardPaper": "ورقي",
+  "cardDark": "داكن",
+  "cardLight": "فاتح",
   "copiedToClipboard": "تم نسخ الآية إلى الحافظة",
   "newNote": "ملاحظة جديدة",
   "newFreeNote": "ملاحظة حرة",
@@ -1003,5 +1003,9 @@
       }
     }
   },
-  "commitmentQuestion": "هل فعلته؟"
+  "commitmentQuestion": "هل فعلته؟",
+  "saveToPhotos": "حفظ في الصور",
+  "cardSaved": "حُفظت البطاقة في الصور",
+  "cardSaveFailed": "تعذّر حفظ البطاقة",
+  "cardSaveDenied": "اسمح لتدبير بإضافة الصور من إعدادات الجهاز"
 }

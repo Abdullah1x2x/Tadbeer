@@ -370,8 +370,12 @@ class AppStrings {
   String get shareImage => _l.shareImage;
   String get cardSquare => _l.cardSquare;
   String get cardStory => _l.cardStory;
-  String get cardNight => _l.cardNight;
-  String get cardPaper => _l.cardPaper;
+  String get cardDark => _l.cardDark;
+  String get cardLight => _l.cardLight;
+  String get saveToPhotos => _l.saveToPhotos;
+  String get cardSaved => _l.cardSaved;
+  String get cardSaveFailed => _l.cardSaveFailed;
+  String get cardSaveDenied => _l.cardSaveDenied;
   String get copiedToClipboard => _l.copiedToClipboard;
 
   // Notes

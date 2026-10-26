@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
@@ -22,7 +24,9 @@ void main() {
 
   Widget host(Widget child) => MaterialApp(
     theme: AppTheme.lightTheme,
-    home: Scaffold(body: Center(child: FittedBox(child: child))),
+    home: Scaffold(
+      body: Center(child: FittedBox(child: child)),
+    ),
   );
 
   group('AyahCard', () {
@@ -46,5 +50,141 @@ void main() {
         });
       }
     }
+
+    /// The colours the card's background is painted with.
+    List<Color> backgroundOf(WidgetTester tester) {
+      final box = tester.widget<DecoratedBox>(
+        find
+            .descendant(
+              of: find.byType(AyahCard),
+              matching: find.byType(DecoratedBox),
+            )
+            .first,
+      );
+      return (box.decoration as BoxDecoration).gradient!.colors;
+    }
+
+    for (final theme in AppColorTheme.values) {
+      testWidgets('takes its colours from the $theme theme', (tester) async {
+        final ayah = QuranRepository.instance.getAyah(1, 2)!;
+        final p = ThemePalette.of(theme);
+        for (final style in AyahCardStyle.values) {
+          await tester.pumpWidget(
+            host(
+              AyahCard(
+                ayah: ayah,
+                style: style,
+                width: 360,
+                height: 360,
+                colorTheme: theme,
+              ),
+            ),
+          );
+          final colors = backgroundOf(tester);
+          if (style == AyahCardStyle.dark) {
+            expect(colors, [p.heroLightStart, p.darkBackground]);
+          } else {
+            // A light paper, tinted by the theme.
+            expect(colors.first.computeLuminance(), greaterThan(0.85));
+            expect(
+              colors.last,
+              Color.lerp(p.lightBackground, p.heroLightStart, 0.08),
+            );
+          }
+          expect(tester.takeException(), isNull);
+        }
+      });
+    }
+  });
+
+  group('AyahShareSheet saving', () {
+    const channel = MethodChannel('gal');
+    late List<MethodCall> calls;
+    late bool granted;
+
+    setUp(() {
+      calls = [];
+      granted = true;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, (call) async {
+            calls.add(call);
+            return switch (call.method) {
+              'hasAccess' || 'requestAccess' => granted,
+              _ => null,
+            };
+          });
+    });
+
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, null);
+    });
+
+    Future<void> openSheet(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      final ayah = QuranRepository.instance.getAyah(2, 255)!;
+      await tester.pumpWidget(
+        AppLocalizationScope(
+          currentLanguage: AppLanguage.arabic,
+          strings: const AppStrings(AppLanguage.arabic),
+          onLanguageChanged: (_) {},
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: Builder(
+              builder: (context) => Scaffold(
+                body: TextButton(
+                  onPressed: () => AyahShareSheet.show(context, ayah),
+                  child: const Text('open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+    }
+
+    /// Whether the sheet has finished asking for access or saving.
+    bool settled() =>
+        calls.any((c) => c.method == 'putImageBytes') ||
+        (!granted && calls.any((c) => c.method == 'requestAccess'));
+
+    Future<void> tapSave(WidgetTester tester) async {
+      // Drawing the image runs off the test clock.
+      await tester.runAsync(() async {
+        await tester.tap(find.text('حفظ في الصور'));
+        for (var i = 0; i < 40 && !settled(); i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+        }
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+    }
+
+    testWidgets('saves a 2160 pixel wide image to Photos', (tester) async {
+      await openSheet(tester);
+      await tapSave(tester);
+      final put = calls.singleWhere((c) => c.method == 'putImageBytes');
+      final bytes = (put.arguments as Map)['bytes'] as Uint8List;
+      // A PNG's width is the four bytes after its 16-byte header.
+      final width = ByteData.sublistView(bytes, 16, 20).getUint32(0);
+      expect(width, 2160);
+      expect((put.arguments as Map)['name'], 'tadbeer_2_255');
+      expect(find.text('حُفظت البطاقة في الصور'), findsOneWidget);
+    });
+
+    testWidgets('says how to allow it when access is refused', (tester) async {
+      granted = false;
+      await openSheet(tester);
+      await tapSave(tester);
+      expect(calls.where((c) => c.method == 'putImageBytes'), isEmpty);
+      expect(
+        find.text('اسمح لتدبير بإضافة الصور من إعدادات الجهاز'),
+        findsOneWidget,
+      );
+    });
   });
 }
