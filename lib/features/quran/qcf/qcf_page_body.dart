@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
@@ -69,6 +70,14 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   static const _openingScale = {1: 1.165, 2: 1.241};
 
   late Future<bool> _ready;
+  Timer? _neighbours;
+
+  @override
+  void dispose() {
+    _neighbours?.cancel();
+    super.dispose();
+  }
+
   int? _measuredPage;
   double _widestLine = 0;
 
@@ -90,10 +99,15 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       QcfLayout.instance.init().then((_) => true),
       QcfFonts.instance.ensurePage(page),
     ]).then((r) => r.every((ok) => ok));
-    // Neighbouring pages load in the background so swiping stays smooth.
-    for (final p in [page - 1, page + 1]) {
-      if (p >= 1 && p <= QcfFonts.pageCount) QcfFonts.instance.ensurePage(p);
-    }
+    // Neighbouring pages load in the background so swiping stays smooth,
+    // once the swipe that brought this page has settled: registering a
+    // font blocks the UI thread for a moment.
+    _neighbours?.cancel();
+    _neighbours = Timer(const Duration(milliseconds: 600), () {
+      for (final p in [page - 1, page + 1]) {
+        if (p >= 1 && p <= QcfFonts.pageCount) QcfFonts.instance.ensurePage(p);
+      }
+    });
   }
 
   String get _family => QcfFonts.familyFor(widget.pageNumber);

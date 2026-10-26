@@ -684,7 +684,8 @@ class AppTheme {
     return base.copyWith(
       scaffoldBackgroundColor: background,
       canvasColor: background,
-      splashFactory: InkSparkle.splashFactory,
+      // InkRipple: InkSparkle's shader costs a frame on every tap.
+      splashFactory: InkRipple.splashFactory,
       hoverColor: primary.withValues(alpha: 0.06),
       focusColor: gold.withValues(alpha: 0.14),
       splashColor: primary.withValues(alpha: 0.14),

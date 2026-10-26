@@ -181,9 +181,16 @@ class HomeWidgetSync {
     }
   }
 
-  /// Keeps the widget current while the app runs.
+  static Timer? _debounce;
+
+  /// Keeps the widget current while the app runs. Changes come in bursts
+  /// (a page turn saves the position and counts the page), so the widget
+  /// is refreshed once things settle rather than on every change.
   static void attach() {
-    UserDataStore.instance.addListener(update);
+    UserDataStore.instance.addListener(() {
+      _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 1500), update);
+    });
     update();
   }
 }

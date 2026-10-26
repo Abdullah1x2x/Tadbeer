@@ -143,10 +143,48 @@ class _QuranPageViewState extends State<QuranPageView> {
   /// إشعار يحدد ما إذا كان سهم التوجيه السفلي ظاهراً لتنبيه القارئ بالسحب.
   final ValueNotifier<bool> _showScrollHint = ValueNotifier<bool>(false);
 
+  /// What this page shows from the user's data, as one comparable value.
+  String? _signature;
+
+  /// Saving the reading position or counting a page notifies the store on
+  /// every page turn; the page only rebuilds when something it shows
+  /// (settings, or a mark on one of its ayahs) actually changed.
+  void _onStoreChanged() {
+    final next = _contentSignature();
+    if (next != _signature && mounted) setState(() => _signature = next);
+  }
+
+  String _contentSignature() {
+    final store = UserDataStore.instance;
+    final s = store.settings;
+    final pageNumber = widget.page?.pageNumber ?? widget.pageNumber!;
+    final page = widget.page ?? QuranRepository.instance.getPage(pageNumber);
+    final memorized = HifzStore.all().keys.toSet();
+    final out = StringBuffer(
+      '${s.quranFontSize}|${s.quranFontFamilyName}|${s.mushafPaperTone}|'
+      '${s.mushafStyle}',
+    );
+    for (final a in page.ayahs) {
+      final reflection = store.getTadbeer(a.surahNumber, a.ayahNumber);
+      out
+        ..write('|')
+        ..write(store.getHighlight(a.surahNumber, a.ayahNumber)?.colorIndex)
+        ..write(store.isBookmarked(a.surahNumber, a.ayahNumber) ? 'b' : '')
+        ..write(store.getNotesForAyah(a.surahNumber, a.ayahNumber).length)
+        ..write(reflection != null && !reflection.isEmpty ? 't' : '')
+        ..write(
+          memorized.contains('${a.surahNumber}:${a.ayahNumber}') ? 'h' : '',
+        );
+    }
+    return out.toString();
+  }
+
   /// يضبط الاستماع لأحداث التمرير وتحديث المؤشرات البصرية عند بدء الحالة.
   @override
   void initState() {
     super.initState();
+    _signature = _contentSignature();
+    UserDataStore.instance.addListener(_onStoreChanged);
     _scrollController.addListener(_updateScrollIndicators);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _updateScrollIndicators();
@@ -160,6 +198,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     final oldPage = oldWidget.page?.pageNumber ?? oldWidget.pageNumber;
     final newPage = widget.page?.pageNumber ?? widget.pageNumber;
     if (oldPage != newPage) {
+      _signature = _contentSignature();
       if (_scrollController.hasClients && _scrollController.offset > 0) {
         _scrollController.jumpTo(0.0);
       }
@@ -172,6 +211,7 @@ class _QuranPageViewState extends State<QuranPageView> {
   /// يحرر موارد متحكم التمرير والإشعارات ومتعرفات الإيماءات عند إزالة الودجت.
   @override
   void dispose() {
+    UserDataStore.instance.removeListener(_onStoreChanged);
     _scrollController.removeListener(_updateScrollIndicators);
     _scrollController.dispose();
     _showBottomGradient.dispose();
@@ -294,9 +334,9 @@ class _QuranPageViewState extends State<QuranPageView> {
     final pageNumber = widget.page?.pageNumber ?? widget.pageNumber!;
     final quranPage = widget.page ?? repo.getPage(pageNumber);
 
-    return ListenableBuilder(
-      listenable: UserDataStore.instance,
-      builder: (context, _) {
+    // Rebuilt by _onStoreChanged only when this page's content changes.
+    return Builder(
+      builder: (context) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final storage = UserDataStore.instance;
         final effectiveFontSize =

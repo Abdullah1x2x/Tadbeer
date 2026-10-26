@@ -60,9 +60,11 @@ class FloatingNavBar extends StatelessWidget {
     final gold = AppColors.accentGold(context);
     final duration = AppMotion.duration(
       context,
-      const Duration(milliseconds: 450),
+      const Duration(milliseconds: 380),
     );
-    const curve = Curves.easeOutBack;
+    // No overshoot: the pill and the widths must stay inside the bar even
+    // at the first and last tabs. The bounce lives on the icon instead.
+    const curve = Curves.easeOutCubic;
 
     return SafeArea(
       top: false,
@@ -98,52 +100,56 @@ class FloatingNavBar extends StatelessWidget {
               final start = narrow * selectedIndex;
               final left = isRtl ? inner - start - wide : start;
 
-              return Padding(
-                padding: const EdgeInsets.all(_inset),
-                child: Stack(
-                  children: [
-                    AnimatedPositioned(
-                      duration: duration,
-                      curve: curve,
-                      left: left,
-                      top: 0,
-                      bottom: 0,
-                      width: wide,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: AppColors.goldGradient,
-                          borderRadius: BorderRadius.circular(_radius),
-                          boxShadow: [
-                            BoxShadow(
-                              color: gold.withValues(alpha: 0.45),
-                              blurRadius: 16,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+              // Own layer: the moving pill repaints without redrawing the
+              // bar's large shadow every frame.
+              return RepaintBoundary(
+                child: Padding(
+                  padding: const EdgeInsets.all(_inset),
+                  child: Stack(
+                    children: [
+                      AnimatedPositioned(
+                        duration: duration,
+                        curve: curve,
+                        left: left,
+                        top: 0,
+                        bottom: 0,
+                        width: wide,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: AppColors.goldGradient,
+                            borderRadius: BorderRadius.circular(_radius),
+                            boxShadow: [
+                              BoxShadow(
+                                color: gold.withValues(alpha: 0.4),
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        for (var i = 0; i < items.length; i++)
-                          AnimatedContainer(
-                            duration: duration,
-                            curve: curve,
-                            width: i == selectedIndex ? wide : narrow,
-                            child: _NavButton(
-                              item: items[i],
-                              selected: i == selectedIndex,
+                      Row(
+                        children: [
+                          for (var i = 0; i < items.length; i++)
+                            AnimatedContainer(
                               duration: duration,
-                              onTap: () {
-                                if (i == selectedIndex) return;
-                                HapticFeedback.selectionClick();
-                                onSelected(i);
-                              },
+                              curve: curve,
+                              width: i == selectedIndex ? wide : narrow,
+                              child: _NavButton(
+                                item: items[i],
+                                selected: i == selectedIndex,
+                                duration: duration,
+                                onTap: () {
+                                  if (i == selectedIndex) return;
+                                  HapticFeedback.selectionClick();
+                                  onSelected(i);
+                                },
+                              ),
                             ),
-                          ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
