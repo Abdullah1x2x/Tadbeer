@@ -9,20 +9,25 @@ import android.view.View
 import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
+import es.antonborri.home_widget.HomeWidgetScheduler
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 /**
- * Home-screen widget: the ayah of the day on frosted glass, and the khatma's
- * progress.
+ * Home-screen widget: an ayah on frosted glass that changes every quarter
+ * hour, and the khatma's progress.
  *
- * The app stores the next 30 days of ayahs, each also drawn as an image in
- * the Quranic font, so the widget shows today's even when the app has not
- * been opened since. Taps open the ayah, its reflection, or the khatma page.
+ * The app stores an ayah for each quarter hour of the next two days, each
+ * also drawn as an image in the Quranic font; the widget picks the current
+ * one from the clock and wakes itself at the next quarter hour. The glass
+ * follows the app's colour theme. Taps open the ayah, its reflection, or
+ * the khatma page.
  */
 class TadbeerWidgetProvider : HomeWidgetProvider() {
     override fun onUpdate(
@@ -33,13 +38,15 @@ class TadbeerWidgetProvider : HomeWidgetProvider() {
     ) {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
         val title = widgetData.getString("title", null)
+        val glass = glassFor(widgetData.getString("theme", null))
         // Arabic-Indic digits when the app is in Arabic.
         val arabic = title?.any { it in '؀'..'ۿ' } ?: true
         val number = { n: Int -> if (arabic) toArabicDigits(n) else n.toString() }
-        val ayah = todaysAyah(widgetData.getString("ayahs", null), today)
+        val ayah = currentAyah(widgetData.getString("ayahs", null), quarterOf(Calendar.getInstance()))
 
         for (id in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.tadbeer_widget)
+            views.setImageViewResource(R.id.widget_glass, glass)
             if (title != null) views.setTextViewText(R.id.widget_title, title)
             widgetData.getString("reflect_label", null)?.let {
                 views.setTextViewText(R.id.widget_reflect, it)
@@ -49,7 +56,7 @@ class TadbeerWidgetProvider : HomeWidgetProvider() {
                 // Read leniently: data saved by an older version may lack fields.
                 views.setTextViewText(R.id.widget_ayah, ayah.optString("t"))
                 views.setTextViewText(R.id.widget_ref, ayah.optString("r"))
-                val image = widgetData.getString("img_$today", null)
+                val image = widgetData.getString("img_${ayah.optInt("s")}_${ayah.optInt("a")}", null)
                     ?.takeIf { File(it).exists() }
                     ?.let { BitmapFactory.decodeFile(it) }
                 if (image != null) {
@@ -101,29 +108,79 @@ class TadbeerWidgetProvider : HomeWidgetProvider() {
             views.setOnClickPendingIntent(R.id.widget_root, open(context, "tadbeer://home"))
             appWidgetManager.updateAppWidget(id, views)
         }
+        scheduleNextQuarter(context)
+    }
+
+    override fun onDisabled(context: Context) {
+        super.onDisabled(context)
+        HomeWidgetScheduler.cancel(context, TadbeerWidgetProvider::class.java.name)
+    }
+
+    /** Wakes the widget just after the next quarter hour begins. */
+    private fun scheduleNextQuarter(context: Context) {
+        val next = Calendar.getInstance().apply {
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.MINUTE, (get(Calendar.MINUTE) / 15) * 15)
+            add(Calendar.MINUTE, 15)
+        }
+        HomeWidgetScheduler.schedule(
+            context,
+            TadbeerWidgetProvider::class.java.name,
+            listOf(next.timeInMillis + 2_000),
+        )
+    }
+
+    /**
+     * Number of the quarter hour [time] falls in, counted from 2020-01-01 in
+     * local time, as the app counts it (HomeWidgetSync.quarterOf).
+     */
+    private fun quarterOf(time: Calendar): Long {
+        val day = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            clear()
+            set(time.get(Calendar.YEAR), time.get(Calendar.MONTH), time.get(Calendar.DAY_OF_MONTH))
+        }
+        val days = day.timeInMillis / 86_400_000L - EPOCH_2020_DAYS
+        return days * 96 + time.get(Calendar.HOUR_OF_DAY) * 4 + time.get(Calendar.MINUTE) / 15
+    }
+
+    private fun glassFor(theme: String?): Int = when (theme) {
+        "emerald" -> R.drawable.widget_glass_emerald
+        "burgundy" -> R.drawable.widget_glass_burgundy
+        "brown" -> R.drawable.widget_glass_brown
+        "teal" -> R.drawable.widget_glass_teal
+        else -> R.drawable.widget_glass_navy
     }
 
     private fun open(context: Context, uri: String) =
         HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java, Uri.parse(uri))
 
-    private fun todaysAyah(json: String?, today: String): JSONObject? {
+    /**
+     * The stored ayah for [quarter], or past the stored quarters one of them
+     * in turn, so the widget keeps changing until the app refreshes it.
+     */
+    private fun currentAyah(json: String?, quarter: Long): JSONObject? {
         if (json == null) return null
         val list = try {
             JSONArray(json)
         } catch (e: Exception) {
             return null
         }
-        var latest: JSONObject? = null
+        if (list.length() == 0) return null
         for (i in 0 until list.length()) {
             val item = list.getJSONObject(i)
-            val day = item.optString("d")
-            if (day == today) return item
-            // Past the stored days, keep showing the last one.
-            if (day < today) latest = item
+            if (item.optLong("q", -1) == quarter) return item
         }
-        return latest ?: if (list.length() > 0) list.getJSONObject(0) else null
+        val first = list.getJSONObject(0).optLong("q", quarter)
+        val index = (quarter - first).mod(list.length().toLong()).toInt()
+        return list.getJSONObject(index)
     }
 
     private fun toArabicDigits(n: Int): String =
         n.toString().map { if (it in '0'..'9') '٠' + (it - '0') else it }.joinToString("")
+
+    private companion object {
+        /** Days from 1970-01-01 to 2020-01-01. */
+        const val EPOCH_2020_DAYS = 18262L
+    }
 }

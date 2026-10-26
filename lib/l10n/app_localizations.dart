@@ -2789,6 +2789,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أتممت ورد اليوم'**
   String get widgetPortionDone;
+
+  /// No description provided for @widgetAyahTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية للتدبّر'**
+  String get widgetAyahTitle;
 }
 
 class _AppLocalizationsDelegate

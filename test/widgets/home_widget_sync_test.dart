@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/daily/ayah_of_day_card.dart';
 import 'package:tadbeer/features/journey/reading_journey.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/widgets/home_widget_sync.dart';
@@ -22,17 +21,29 @@ void main() {
     if (tempDir.existsSync()) tempDir.deleteSync(recursive: true);
   });
 
-  test('stores the coming month of ayahs, matching the app', () {
-    final now = DateTime(2026, 10, 26, 9);
+  test('counts quarter hours from 2020 in local time', () {
+    expect(HomeWidgetSync.quarterOf(DateTime(2020, 1, 1)), 0);
+    expect(HomeWidgetSync.quarterOf(DateTime(2020, 1, 1, 0, 14)), 0);
+    expect(HomeWidgetSync.quarterOf(DateTime(2020, 1, 1, 0, 15)), 1);
+    expect(HomeWidgetSync.quarterOf(DateTime(2020, 1, 2, 23, 59)), 191);
+  });
+
+  test('stores an ayah for every quarter hour of the next two days', () {
+    final now = DateTime(2026, 10, 26, 9, 20);
     final data = HomeWidgetSync.payload(UserDataStore.instance, now);
     final ayahs = (jsonDecode(data['ayahs'] as String) as List)
         .cast<Map<String, dynamic>>();
-    expect(ayahs, hasLength(HomeWidgetSync.days));
-    expect(ayahs.first['d'], '2026-10-26');
-    expect(ayahs.last['d'], '2026-11-24');
-    expect(ayahs[1]['t'], AyahOfTheDay.forDay(DateTime(2026, 10, 27)).text);
-    expect(ayahs.first['r'], isNotEmpty);
-    expect(data['title'], 'آية اليوم');
+    expect(ayahs, hasLength(HomeWidgetSync.quarters));
+    final first = HomeWidgetSync.quarterOf(now);
+    expect(ayahs.first['q'], first);
+    expect(ayahs.last['q'], first + HomeWidgetSync.quarters - 1);
+    final next = HomeWidgetSync.ayahForQuarter(first + 1);
+    expect(ayahs[1]['t'], next.text);
+    expect(ayahs[1]['s'], next.surahNumber);
+    // Neighbouring quarters show different ayahs.
+    expect(ayahs[0]['t'], isNot(ayahs[1]['t']));
+    expect(data['title'], 'آية للتدبّر');
+    expect(data['theme'], 'navy');
     expect(data['has_khatma'], isFalse);
   });
 

@@ -1539,4 +1539,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetPortionDone => 'Today’s portion is done';
+
+  @override
+  String get widgetAyahTitle => 'An ayah to reflect on';
 }

@@ -9,11 +9,12 @@
     android:clipToOutline="true">
 
     <ImageView
+        android:id="@+id/widget_glass"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        android:src="@drawable/widget_glass" />
+        android:src="@drawable/widget_glass_navy" />
 
     <ImageView
         android:layout_width="match_parent"
