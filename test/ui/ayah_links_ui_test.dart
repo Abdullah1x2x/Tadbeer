@@ -27,6 +27,10 @@ void main() {
     );
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
+    // A returning user: the first-launch theme picker is behind them.
+    await UserDataStore.instance.updateSettings(
+      UserDataStore.instance.settings.copyWith(themeChosen: true),
+    );
     await QuranRepository.instance.init();
     await UserDataStore.instance.updateSettings(
       UserDataStore.instance.settings.copyWith(

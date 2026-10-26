@@ -211,6 +211,10 @@ class UserSettings {
   /// طريقة عرض المصحف (مصحف المدينة افتراضياً).
   final MushafStyle mushafStyle;
 
+  /// Whether the reader has picked a look; until then a new install opens
+  /// on the theme picker. Settings saved before it existed count as picked.
+  final bool themeChosen;
+
   /// اسم عائلة خط المصحف المختارة للاستخدام المباشر في الأنماط النصية.
   String get quranFontFamilyName => quranFontFamily.fontFamily;
 
@@ -227,6 +231,7 @@ class UserSettings {
     this.mushafPaperTone = MushafPaperTone.classic,
     this.colorTheme = AppColorTheme.navy,
     this.mushafStyle = MushafStyle.madinah,
+    this.themeChosen = false,
   }) : hideTadbeerIntroPermanently =
            hideTadabburIntroPermanently ?? hideTadbeerIntroPermanently;
 
@@ -243,6 +248,7 @@ class UserSettings {
     'mushafPaperTone': mushafPaperTone.name,
     'colorTheme': colorTheme.name,
     'mushafStyle': mushafStyle.name,
+    'themeChosen': themeChosen,
   };
 
   /// ينشئ كائن إعدادات المستخدم من خريطة بيانات JSON المحفوظة.
@@ -309,6 +315,7 @@ class UserSettings {
         (e) => e.name == json['mushafStyle'],
         orElse: () => MushafStyle.madinah,
       ),
+      themeChosen: json['themeChosen'] as bool? ?? true,
     );
   }
 
@@ -325,6 +332,7 @@ class UserSettings {
     MushafPaperTone? mushafPaperTone,
     AppColorTheme? colorTheme,
     MushafStyle? mushafStyle,
+    bool? themeChosen,
   }) {
     final newQuranFontSize = quranFontSize != null
         ? quranFontSize.clamp(minQuranFontSize, maxQuranFontSize)
@@ -344,6 +352,7 @@ class UserSettings {
       mushafPaperTone: mushafPaperTone ?? this.mushafPaperTone,
       colorTheme: colorTheme ?? this.colorTheme,
       mushafStyle: mushafStyle ?? this.mushafStyle,
+      themeChosen: themeChosen ?? this.themeChosen,
     );
   }
 }

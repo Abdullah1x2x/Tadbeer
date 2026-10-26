@@ -37,6 +37,10 @@ void main() {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_ui_test_');
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
+    // A returning user: the first-launch theme picker is behind them.
+    await UserDataStore.instance.updateSettings(
+      UserDataStore.instance.settings.copyWith(themeChosen: true),
+    );
     await QuranRepository.instance.init();
   });
 

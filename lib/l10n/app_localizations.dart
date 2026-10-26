@@ -2795,6 +2795,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'آية للتدبّر'**
   String get widgetAyahTitle;
+
+  /// No description provided for @themePickerTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر مظهر التطبيق'**
+  String get themePickerTitle;
+
+  /// No description provided for @themePickerHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكنك تغييره متى شئت من الإعدادات'**
+  String get themePickerHint;
+
+  /// No description provided for @themePickerStart.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابدأ'**
+  String get themePickerStart;
+
+  /// No description provided for @themeAuto.
+  ///
+  /// In ar, this message translates to:
+  /// **'تلقائي'**
+  String get themeAuto;
 }
 
 class _AppLocalizationsDelegate

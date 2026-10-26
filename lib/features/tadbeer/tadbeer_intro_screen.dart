@@ -11,6 +11,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/quran/data/quran_models.dart';
 import '../../features/quran/data/quran_repository.dart';
 import '../../app/main_shell.dart';
+import '../../core/motion/app_motion.dart';
 
 /// شاشة الترحيب التي تظهر عند تشغيل التطبيق.
 ///
@@ -31,7 +32,8 @@ class TadbeerIntroScreen extends StatefulWidget {
 typedef TadabburIntroScreen = TadbeerIntroScreen;
 
 /// الحالة الداخلية لشاشة الترحيب واختيار آية التدبر العشوائية.
-class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
+class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
+    with SingleTickerProviderStateMixin {
   // هنا خزنت أرقام السور والآيات التي أريد استخدامها في شاشة الترحيب.
   // الرقم الأول = رقم السورة
   // الرقم الثاني = رقم الآية
@@ -54,6 +56,56 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
 
   // false في البداية لأن الـ Checkbox غير محدد.
   bool _doNotShowAgain = false;
+
+  /// Drives the welcome: the logo, then the name, the ayah and the button
+  /// come in one after another.
+  late final AnimationController _entrance = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_entrance.isDismissed) {
+      // Shown at once when the reader asked the system for less motion.
+      AppMotion.shouldAnimate(context)
+          ? _entrance.forward()
+          : _entrance.value = 1;
+    }
+  }
+
+  @override
+  void dispose() {
+    _entrance.dispose();
+    super.dispose();
+  }
+
+  /// Gives each element of the column its own delayed entrance; the
+  /// first one (the logo) also grows into place.
+  List<Widget> _staggered(List<Widget> children) {
+    final out = <Widget>[];
+    var order = 0;
+    for (final child in children) {
+      if (child is SizedBox) {
+        out.add(child);
+        continue;
+      }
+      final start = (order * 0.12).clamp(0.0, 0.55);
+      out.add(
+        _Entrance(
+          animation: CurvedAnimation(
+            parent: _entrance,
+            curve: Interval(start, start + 0.45, curve: Curves.easeOutCubic),
+          ),
+          grow: order == 0,
+          child: child,
+        ),
+      );
+      order++;
+    }
+    return out;
+  }
 
   /// يختار مرجع آية تدبرية عشوائية عند تهيئة الشاشة.
   @override
@@ -213,7 +265,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
+                        children: _staggered([
                           // شعار التطبيق (اللوقو)
                           Center(
                             child: Container(
@@ -427,7 +479,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
                               ),
                             ),
                           ),
-                        ],
+                        ]),
                       ),
                     ),
                   ),
@@ -438,5 +490,35 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen> {
         ),
       ),
     );
+  }
+}
+
+/// Fades an element in while it rises (and, for the logo, grows) into place.
+class _Entrance extends StatelessWidget {
+  final Animation<double> animation;
+  final bool grow;
+  final Widget child;
+
+  const _Entrance({
+    required this.animation,
+    required this.grow,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final moved = SlideTransition(
+      position: Tween(
+        begin: const Offset(0, 0.12),
+        end: Offset.zero,
+      ).animate(animation),
+      child: grow
+          ? ScaleTransition(
+              scale: Tween(begin: 0.8, end: 1.0).animate(animation),
+              child: child,
+            )
+          : child,
+    );
+    return FadeTransition(opacity: animation, child: moved);
   }
 }

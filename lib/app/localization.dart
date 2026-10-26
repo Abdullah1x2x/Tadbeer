@@ -177,6 +177,10 @@ class AppStrings {
       _l.widgetPortionLeft('{left}', '{portion}');
   String get widgetPortionDone => _l.widgetPortionDone;
   String get widgetAyahTitle => _l.widgetAyahTitle;
+  String get themePickerTitle => _l.themePickerTitle;
+  String get themePickerHint => _l.themePickerHint;
+  String get themePickerStart => _l.themePickerStart;
+  String get themeAuto => _l.themeAuto;
   String get mushafStyleTitle => _l.mushafStyleTitle;
   String get mushafStyleMadinah => _l.mushafStyleMadinah;
   String get mushafStyleText => _l.mushafStyleText;
