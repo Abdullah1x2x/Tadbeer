@@ -34,14 +34,6 @@ class QuranScreen extends StatefulWidget {
   /// reader is pushed as a standalone page.
   final ValueNotifier<bool>? controlsVisible;
 
-  /// وضع القراءة: يحفظ موضع القراءة ويحتسب الصفحات في الختمة والإحصاءات.
-  ///
-  /// When false (viewing mode, the default) the reader only shows a verse
-  /// opened from search, bookmarks, notes and so on: it never moves the
-  /// user's reading position or counts pages, and offers a "continue reading
-  /// from here" action instead.
-  final bool readingMode;
-
   /// ينشئ شاشة قراءة المصحف الشريف مع إمكانية تحديد الصفحة أو الآية المستهدفة.
   const QuranScreen({
     super.key,
@@ -49,7 +41,6 @@ class QuranScreen extends StatefulWidget {
     this.targetSurahNumber,
     this.targetAyahNumber,
     this.controlsVisible,
-    this.readingMode = false,
   });
 
   /// ينشئ الحالة التفاعلية لشاشة قراءة المصحف.
@@ -73,40 +64,35 @@ class _QuranScreenState extends State<QuranScreen> {
   static const _readDwell = Duration(seconds: 3);
   DateTime _pageShownAt = DateTime.now();
 
+  /// A page also counts once it has stayed on screen this long, so the last
+  /// page of a session is counted without turning it.
+  static const _autoCountDwell = Duration(seconds: 40);
+
+  /// The page shown on the page slider while it is being dragged.
+  int? _sliderPage;
+  Timer? _autoCountTimer;
+
   /// Set before a jump the user did not make (syncing the tab), so that page
   /// change is neither counted nor saved again.
   bool _ignoreNextPageChange = false;
 
-  /// Page just counted, shown briefly as a confirmation chip.
-  int? _countedPage;
-  Timer? _countedTimer;
-
   void _maybeCountPage(int fromIndex, int toIndex) {
-    if (!widget.readingMode || toIndex != fromIndex + 1) return;
+    if (toIndex != fromIndex + 1) return;
     if (DateTime.now().difference(_pageShownAt) < _readDwell) return;
-    final page = fromIndex + 1;
-    UserDataStore.instance.recordPageRead(page);
-    HapticFeedback.lightImpact();
-    _countedTimer?.cancel();
-    setState(() => _countedPage = page);
-    _countedTimer = Timer(const Duration(milliseconds: 1600), () {
-      if (mounted) setState(() => _countedPage = null);
-    });
+    UserDataStore.instance.recordPageRead(fromIndex + 1);
   }
 
-  /// Makes the page shown in viewing mode the user's reading position.
-  void _continueReadingFromHere() {
-    HapticFeedback.mediumImpact();
-    _persistCurrentPagePosition(_currentPageIndex + 1);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          context.l10n.readingPositionMoved(_currentPageIndex + 1),
-          textAlign: TextAlign.center,
-        ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  /// Restarts the wait after which the page on screen counts as read.
+  void _startAutoCount() {
+    _autoCountTimer?.cancel();
+    final page = _currentPageIndex + 1;
+    _autoCountTimer = Timer(_autoCountDwell, () {
+      // Only while the reader is the visible tab or page.
+      if (!mounted || !TickerMode.valuesOf(context).enabled) return;
+      if (_currentPageIndex + 1 == page) {
+        UserDataStore.instance.recordPageRead(page);
+      }
+    });
   }
 
   /// يهيئ متحكم الصفحات ويحدد صفحة البداية والآية المستهدفة عند فتح الشاشة.
@@ -141,11 +127,11 @@ class _QuranScreenState extends State<QuranScreen> {
       UserDataStore.instance.addListener(_syncToSavedPosition);
     }
 
-    if (widget.readingMode) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _persistCurrentPagePosition(startPage);
-      });
-    }
+    // Wherever the Mushaf is opened, the page shown is the reading position.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _persistCurrentPagePosition(startPage);
+    });
+    _startAutoCount();
   }
 
   /// يحرر المؤقت ومتحكم الصفحات عند إغلاق الشاشة.
@@ -156,7 +142,7 @@ class _QuranScreenState extends State<QuranScreen> {
     }
     _suppressTimer?.cancel();
     _pinchFontSize.dispose();
-    _countedTimer?.cancel();
+    _autoCountTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
@@ -180,13 +166,14 @@ class _QuranScreenState extends State<QuranScreen> {
       _currentPageIndex = index;
       _activeSelectedAyah = null;
     });
+    _startAutoCount();
     if (programmatic) {
       _pageShownAt = DateTime.now();
       return;
     }
     _maybeCountPage(from, index);
     _pageShownAt = DateTime.now();
-    if (widget.readingMode) _persistCurrentPagePosition(index + 1);
+    _persistCurrentPagePosition(index + 1);
   }
 
   /// يحفظ موضع القراءة الحالي (الصفحة والسورة والآية) في التخزين المحلي.
@@ -693,7 +680,10 @@ class _QuranScreenState extends State<QuranScreen> {
   Widget _buildBottomBar(BuildContext context, int currentPageNumber) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final repo = QuranRepository.instance;
-    final pageDigits = ArabicSearchNormalizer.toArabicDigits(currentPageNumber);
+    // While the slider is dragged it shows the target page; the Mushaf
+    // jumps there when the finger lifts.
+    final sliderPage = _sliderPage ?? currentPageNumber;
+    final pageDigits = ArabicSearchNormalizer.toArabicDigits(sliderPage);
     final pageData = repo.getPage(currentPageNumber);
     final firstAyah = pageData.ayahs.isNotEmpty ? pageData.ayahs.first : null;
     final surahName = firstAyah != null
@@ -819,12 +809,15 @@ class _QuranScreenState extends State<QuranScreen> {
                             : AppColors.lightPrimary,
                       ),
                       child: Slider(
-                        value: currentPageNumber.toDouble().clamp(1.0, 604.0),
+                        value: sliderPage.toDouble().clamp(1.0, 604.0),
                         min: 1.0,
                         max: 604.0,
                         divisions: 603,
                         label: 'ص $pageDigits',
-                        onChanged: (val) {
+                        onChanged: (val) =>
+                            setState(() => _sliderPage = val.round()),
+                        onChangeEnd: (val) {
+                          setState(() => _sliderPage = null);
                           final targetPage = val.round();
                           if (targetPage != currentPageNumber) {
                             _jumpToMushafPage(targetPage);
@@ -1100,75 +1093,6 @@ class _QuranScreenState extends State<QuranScreen> {
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-            ),
-
-            // Viewing mode: a verse opened from elsewhere. Offer to make this
-            // the reading position instead of moving it silently.
-            if (!widget.readingMode && !_showTopBar)
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 24,
-                child: SafeArea(
-                  child: Center(
-                    child: FilledButton.icon(
-                      onPressed: _continueReadingFromHere,
-                      icon: const Icon(AppIcons.bookmarkSimple, size: 18),
-                      label: Text(context.l10n.continueReadingFromHere),
-                    ),
-                  ),
-                ),
-              ),
-
-            // Brief confirmation that the page was counted.
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: widget.readingMode ? 110 : 84,
-              child: IgnorePointer(
-                child: Center(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    transitionBuilder: (child, a) => FadeTransition(
-                      opacity: a,
-                      child: ScaleTransition(scale: a, child: child),
-                    ),
-                    child: _countedPage == null
-                        ? const SizedBox.shrink()
-                        : Container(
-                            key: ValueKey(_countedPage),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.lightPrimaryDark.withValues(
-                                alpha: 0.92,
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  AppIcons.checkCircleFill,
-                                  color: AppColors.electricGold,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  context.l10n.pageCounted(_countedPage!),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                   ),
                 ),
               ),

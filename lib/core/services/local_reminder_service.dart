@@ -278,7 +278,7 @@ class LocalReminderService {
         final plan = journey.plan;
         final left = plan == null || plan.isComplete
             ? 0
-            : plan.pagesPerDay - journey.pagesOn(now);
+            : plan.pagesPerDay - journey.portionPagesOn(now);
         shouldFire = shouldFire && left > 0;
         final strings = AppStrings(
           AppLanguage.fromCode(store.settings.languageCode),

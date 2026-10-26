@@ -442,7 +442,7 @@ class _TodayPortionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final gold = AppColors.accentGold(context);
-    final today = journey.pagesOn(now);
+    final today = journey.portionPagesOn(now);
     final target = plan.pagesPerDay;
     final done = today >= target;
 
@@ -489,10 +489,7 @@ class _TodayPortionCard extends StatelessWidget {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => QuranScreen(
-                    initialPage: plan.currentPage,
-                    readingMode: true,
-                  ),
+                  builder: (_) => QuranScreen(initialPage: plan.currentPage),
                 ),
               ),
               icon: const Icon(AppIcons.bookOpenFill),

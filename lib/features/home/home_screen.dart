@@ -143,10 +143,8 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => QuranScreen(
-                                    initialPage: pos.page,
-                                    readingMode: true,
-                                  ),
+                                  builder: (_) =>
+                                      QuranScreen(initialPage: pos.page),
                                 ),
                               );
                             },

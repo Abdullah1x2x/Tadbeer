@@ -149,11 +149,6 @@ class AppStrings {
   String get reflectOnIt => _l.reflectOnIt;
 
   // Reading vs viewing
-  String get continueReadingFromHere => _l.continueReadingFromHere;
-  String readingPositionMoved(int page) =>
-      _l.readingPositionMoved(digits(page));
-  String pageCounted(int page) =>
-      _l.pageCounted(digits(page));
 
   // Sequential khatma
   String get fromMushafStart => _l.fromMushafStart;

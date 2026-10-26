@@ -386,12 +386,6 @@ abstract class AppLocalizations {
   /// **'تدبّرها'**
   String get reflectOnIt;
 
-  /// No description provided for @continueReadingFromHere.
-  ///
-  /// In ar, this message translates to:
-  /// **'أكمل القراءة من هنا'**
-  String get continueReadingFromHere;
-
   /// No description provided for @fromMushafStart.
   ///
   /// In ar, this message translates to:
@@ -2401,18 +2395,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أتقنت {a} من {b} آية. سنعيد عليك الباقي غداً.'**
   String sessionSummary(String a, String b);
-
-  /// No description provided for @readingPositionMoved.
-  ///
-  /// In ar, this message translates to:
-  /// **'أصبحت صفحة {page} موضع قراءتك'**
-  String readingPositionMoved(String page);
-
-  /// No description provided for @pageCounted.
-  ///
-  /// In ar, this message translates to:
-  /// **'احتُسبت صفحة {page}'**
-  String pageCounted(String page);
 
   /// No description provided for @fromMyPosition.
   ///

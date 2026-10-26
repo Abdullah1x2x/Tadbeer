@@ -39,6 +39,10 @@ class KhatmaPlan {
   /// عدد الصفحات المنجزة في الختمة.
   final int advanced;
 
+  /// Pages already read on the day the khatma started, before it started;
+  /// they do not count toward that day's portion.
+  final int pagesBeforeStart;
+
   /// ينشئ خطة ختمة.
   KhatmaPlan({
     required DateTime startDate,
@@ -46,6 +50,7 @@ class KhatmaPlan {
     this.startPage = 1,
     int? currentPage,
     this.advanced = 0,
+    this.pagesBeforeStart = 0,
   }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
        currentPage = currentPage ?? startPage;
 
@@ -90,6 +95,7 @@ class KhatmaPlan {
         startPage: startPage,
         currentPage: currentPage,
         advanced: advanced,
+        pagesBeforeStart: pagesBeforeStart,
       );
 
   Map<String, dynamic> toJson() => {
@@ -98,6 +104,7 @@ class KhatmaPlan {
     'startPage': startPage,
     'currentPage': currentPage,
     'advanced': advanced,
+    if (pagesBeforeStart > 0) 'pagesBeforeStart': pagesBeforeStart,
   };
 
   factory KhatmaPlan.fromJson(Map<String, dynamic> json) {
@@ -110,6 +117,7 @@ class KhatmaPlan {
         startPage: (json['startPage'] as num?)?.toInt() ?? 1,
         currentPage: (json['currentPage'] as num).toInt(),
         advanced: (json['advanced'] as num?)?.toInt() ?? 0,
+        pagesBeforeStart: (json['pagesBeforeStart'] as num?)?.toInt() ?? 0,
       );
     }
     // Earlier format: a set of scattered pages plus the last page read.
@@ -154,6 +162,18 @@ class ReadingJourney {
 
   /// صفحات يوم محدد.
   int pagesOn(DateTime day) => dailyPages[dayKey(day)]?.length ?? 0;
+
+  /// صفحات ورد اليوم: ما قُرئ في [day] للختمة الحالية. On the day a khatma
+  /// starts, pages read before it do not fill its first portion.
+  int portionPagesOn(DateTime day) {
+    final read = pagesOn(day);
+    final p = plan;
+    if (p == null || !_sameDay(p.startDate, day)) return read;
+    return (read - p.pagesBeforeStart).clamp(0, read);
+  }
+
+  static bool _sameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   /// هل كان للمستخدم نشاط (قراءة أو تدبر أو حفظ) في يوم محدد.
   bool isActiveOn(DateTime day) =>
@@ -225,7 +245,12 @@ class ReadingJourney {
   /// Starts (or replaces) the khatma plan from [startPage].
   ReadingJourney startPlan(int days, DateTime now, {int startPage = 1}) =>
       _copy(
-        plan: KhatmaPlan(startDate: now, days: days, startPage: startPage),
+        plan: KhatmaPlan(
+          startDate: now,
+          days: days,
+          startPage: startPage,
+          pagesBeforeStart: pagesOn(now),
+        ),
       );
 
   /// Cancels the current plan, keeping the reading history.

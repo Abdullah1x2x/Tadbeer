@@ -66,7 +66,7 @@ class HomeWidgetSync {
       // they stay right after midnight.
       'portion': plan?.pagesPerDay ?? 0,
       'read_day': dayKey(now),
-      'read_today': journey.pagesOn(now),
+      'read_today': journey.portionPagesOn(now),
       'portion_template': strings.widgetPortionLeftTemplate,
       'portion_done': strings.widgetPortionDone,
       'khatma_page': plan == null ? '' : strings.pageNumber(plan.currentPage),
