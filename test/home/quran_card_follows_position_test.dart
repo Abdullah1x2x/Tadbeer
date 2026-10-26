@@ -57,4 +57,49 @@ void main() {
     await tester.pump();
     expect(find.textContaining('صفحة ٣٠٠'), findsOneWidget);
   });
+
+  testWidgets('the Mushaf card offers to start until something is read', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      AppLocalizationScope(
+        currentLanguage: AppLanguage.arabic,
+        strings: const AppStrings(AppLanguage.arabic),
+        onLanguageChanged: (_) {},
+        child: MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const HomeScreen(),
+        ),
+      ),
+    );
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('ابدأ الآن'), findsOneWidget);
+    expect(find.text('استئناف القراءة'), findsNothing);
+
+    // Reading a page saves the position after counting it.
+    await tester.runAsync(() async {
+      await UserDataStore.instance.recordPageRead(1);
+      await UserDataStore.instance.saveReadingPosition(
+        page: 2,
+        surahNumber: 2,
+        ayahNumber: 1,
+      );
+    });
+    await tester.pump();
+    expect(find.text('استئناف القراءة'), findsOneWidget);
+    expect(find.text('ابدأ الآن'), findsNothing);
+  });
+
+  test('a khatma not begun offers to start; one under way resumes', () async {
+    final store = UserDataStore.instance;
+    await store.recordPageRead(1);
+    expect(store.readingNotStarted, isFalse);
+    await store.startKhatma(30, startPage: 50);
+    expect(store.readingNotStarted, isTrue);
+    await store.recordPageRead(50);
+    expect(store.readingNotStarted, isFalse);
+  });
 }
