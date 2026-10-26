@@ -13,6 +13,10 @@ void main() {
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_shell_req_');
     await UserDataStore.instance.init(File('${tempDir.path}/data.json'));
+    // A returning user: the first-launch theme picker is behind them.
+    await UserDataStore.instance.updateSettings(
+      UserDataStore.instance.settings.copyWith(themeChosen: true),
+    );
     await QuranRepository.instance.init();
     await UserDataStore.instance.updateSettings(
       UserDataStore.instance.settings.copyWith(

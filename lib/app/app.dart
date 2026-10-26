@@ -7,6 +7,7 @@ import '../features/tadbeer/tadbeer_intro_screen.dart';
 import 'localization.dart';
 import 'theme.dart';
 import '../l10n/app_localizations.dart';
+import '../features/onboarding/theme_picker_screen.dart';
 
 /// مفتاح التنقل العام للتطبيق لفتح الشاشات عند النقر على الإشعارات أو المنبهات.
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
@@ -31,6 +32,11 @@ class TadbeerApp extends StatefulWidget {
 class _TadbeerAppState extends State<TadbeerApp> {
   late AppLanguage _currentLanguage;
   late bool _initialHideIntro;
+  late bool _initialThemeChosen;
+
+  /// What opens after the theme picker (or first, once a theme is chosen).
+  Widget _afterThemePicker(BuildContext context) =>
+      _initialHideIntro ? const MainShell() : const TadbeerIntroScreen();
 
   /// تهيئة لغة التطبيق وحالة إخفاء الشاشة الترحيبية من الإعدادات المحفوظة.
   @override
@@ -40,6 +46,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
     _currentLanguage = AppLanguage.fromCode(savedCode);
     _initialHideIntro =
         UserDataStore.instance.settings.hideTadbeerIntroPermanently;
+    _initialThemeChosen = UserDataStore.instance.settings.themeChosen;
     UserDatabase.instance.lastIssue.addListener(_scheduleDatabaseIssue);
     // Issues that happened during startup (before this widget existed).
     if (UserDatabase.instance.lastIssue.value != null) {
@@ -139,9 +146,9 @@ class _TadbeerAppState extends State<TadbeerApp> {
                 child: child!,
               );
             },
-            home: _initialHideIntro
-                ? const MainShell()
-                : const TadbeerIntroScreen(),
+            home: _initialThemeChosen
+                ? _afterThemePicker(context)
+                : ThemePickerScreen(next: _afterThemePicker),
           ),
         );
       },

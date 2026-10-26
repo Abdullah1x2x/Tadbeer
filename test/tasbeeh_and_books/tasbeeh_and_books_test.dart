@@ -621,6 +621,7 @@ void main() {
         await UserDataStore.instance.updateSettings(
           UserDataStore.instance.settings.copyWith(
             hideTadbeerIntroPermanently: true,
+            themeChosen: true,
           ),
         );
       });

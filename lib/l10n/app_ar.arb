@@ -966,5 +966,9 @@
     }
   },
   "widgetPortionDone": "أتممت ورد اليوم",
-  "widgetAyahTitle": "آية للتدبّر"
+  "widgetAyahTitle": "آية للتدبّر",
+  "themePickerTitle": "اختر مظهر التطبيق",
+  "themePickerHint": "يمكنك تغييره متى شئت من الإعدادات",
+  "themePickerStart": "ابدأ",
+  "themeAuto": "تلقائي"
 }

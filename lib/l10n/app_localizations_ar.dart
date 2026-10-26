@@ -1536,4 +1536,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get widgetAyahTitle => 'آية للتدبّر';
+
+  @override
+  String get themePickerTitle => 'اختر مظهر التطبيق';
+
+  @override
+  String get themePickerHint => 'يمكنك تغييره متى شئت من الإعدادات';
+
+  @override
+  String get themePickerStart => 'ابدأ';
+
+  @override
+  String get themeAuto => 'تلقائي';
 }

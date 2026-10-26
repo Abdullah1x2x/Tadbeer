@@ -1542,4 +1542,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get widgetAyahTitle => 'An ayah to reflect on';
+
+  @override
+  String get themePickerTitle => 'Choose the app’s look';
+
+  @override
+  String get themePickerHint => 'You can change it any time in Settings';
+
+  @override
+  String get themePickerStart => 'Start';
+
+  @override
+  String get themeAuto => 'Auto';
 }

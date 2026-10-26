@@ -448,5 +448,9 @@
   "qcfAttribution": "Mushaf font: King Fahd Glorious Quran Printing Complex",
   "widgetPortionLeft": "Today’s portion: {left} of {portion} pages left",
   "widgetPortionDone": "Today’s portion is done",
-  "widgetAyahTitle": "An ayah to reflect on"
+  "widgetAyahTitle": "An ayah to reflect on",
+  "themePickerTitle": "Choose the app’s look",
+  "themePickerHint": "You can change it any time in Settings",
+  "themePickerStart": "Start",
+  "themeAuto": "Auto"
 }
