@@ -9,6 +9,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/curated_pathways.dart';
 import '../quran/data/quran_repository.dart';
 import '../tadbeer/tadbeer_model.dart';
+import '../tadbeer/tadbeer_questions.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
@@ -230,7 +231,9 @@ class _DayCard extends StatelessWidget {
     final gold = AppColors.accentGold(context);
     final ayah = QuranRepository.instance.getAyah(verse.surah, verse.ayah);
     final surah = QuranRepository.instance.getSurah(verse.surah);
-    final question = TadbeerItem.questions[day % TadbeerItem.questions.length];
+    final question = TadbeerQuestions.forAyah(
+      ayah,
+    )[day % TadbeerItem.questions.length];
 
     final header = Row(
       children: [
@@ -344,7 +347,12 @@ class _DayCard extends StatelessWidget {
                     onPressed: ayah == null
                         ? null
                         : () async {
-                            await TadbeerPauseSheet.show(context, ayah);
+                            await TadbeerPauseSheet.show(
+                              context,
+                              ayah,
+                              initialQuestion:
+                                  day % TadbeerItem.questions.length,
+                            );
                             // Saving a reflection on today's verse completes
                             // the day, so the reader doesn't tap twice.
                             final saved = UserDataStore.instance.getTadbeer(

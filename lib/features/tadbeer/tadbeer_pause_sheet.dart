@@ -7,6 +7,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
 import 'tadbeer_model.dart';
+import 'tadbeer_questions.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// نافذة سفلية تفاعلية لـ "وقفة تدبر" موجهة بأربعة أسئلة متدرجة حول الآية.
@@ -23,18 +24,30 @@ class TadbeerPauseSheet extends StatefulWidget {
   /// الآية القرآنية المستهدفة بوقفة التدبر.
   final Ayah ayah;
 
+  /// السؤال الذي تبدأ منه النافذة (من 0 إلى 3).
+  final int initialQuestion;
+
   /// ينشئ نافذة وقفة التدبر للآية المحددة.
-  const TadbeerPauseSheet({super.key, required this.ayah});
+  const TadbeerPauseSheet({
+    super.key,
+    required this.ayah,
+    this.initialQuestion = 0,
+  });
 
   /// يعرض نافذة وقفة التدبر كبطاقة سفلية منبثقة.
   ///
   /// Displays the Tadbeer Pause sheet as a modal bottom sheet.
-  static Future<void> show(BuildContext context, Ayah ayah) {
+  static Future<void> show(
+    BuildContext context,
+    Ayah ayah, {
+    int initialQuestion = 0,
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => TadbeerPauseSheet(ayah: ayah),
+      builder: (ctx) =>
+          TadbeerPauseSheet(ayah: ayah, initialQuestion: initialQuestion),
     );
   }
 
@@ -50,7 +63,8 @@ typedef TadabburPauseSheet = TadbeerPauseSheet;
 
 /// الحالة الداخلية لنافذة وقفة التدبر وإدارة التنقل بين الأسئلة وحفظ الإجابات.
 class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
-  int _currentQuestionIndex = 0; // 0..3 for questions 1..4
+  int _currentQuestionIndex = 0; // 0..3, see TadbeerItem.questionKeys
+  late final List<String> _questions = TadbeerQuestions.forAyah(widget.ayah);
   final Map<int, TextEditingController> _controllers = {};
   bool _isSaving = false;
 
@@ -64,10 +78,14 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
       widget.ayah.ayahNumber,
     );
 
-    for (int i = 1; i <= TadbeerItem.questions.length; i++) {
-      final initialText = existingTadbeer?.answers[i] ?? '';
-      _controllers[i] = TextEditingController(text: initialText);
+    for (final key in TadbeerItem.questionKeys) {
+      final initialText = existingTadbeer?.answers[key] ?? '';
+      _controllers[key] = TextEditingController(text: initialText);
     }
+    _currentQuestionIndex = widget.initialQuestion.clamp(
+      0,
+      TadbeerItem.questionKeys.length - 1,
+    );
   }
 
   /// يحرر جميع متحكمات النصوص عند إغلاق النافذة.
@@ -107,11 +125,11 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
           content: Text(
             answers.isEmpty
                 ? (l10n.isArabic
-                    ? 'تم مسح الإجابات الفارغة بنجاح'
-                    : 'Cleared empty answers successfully')
+                      ? 'تم مسح الإجابات الفارغة بنجاح'
+                      : 'Cleared empty answers successfully')
                 : (l10n.isArabic
-                    ? 'تم حفظ وقفة التدبر بنجاح'
-                    : 'Tadbeer pause saved successfully'),
+                      ? 'تم حفظ وقفة التدبر بنجاح'
+                      : 'Tadbeer pause saved successfully'),
             textAlign: TextAlign.center,
           ),
           backgroundColor: AppColors.olive,
@@ -124,7 +142,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
 
   /// ينتقل إلى السؤال التالي أو يحفظ وينهي عند الوصول للسؤال الأخير.
   void _nextQuestion() {
-    if (_currentQuestionIndex < TadbeerItem.questions.length - 1) {
+    if (_currentQuestionIndex < _questions.length - 1) {
       setState(() {
         _currentQuestionIndex++;
       });
@@ -149,8 +167,9 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surah = QuranRepository.instance.getSurah(widget.ayah.surahNumber);
     final questionNumber = _currentQuestionIndex + 1;
-    final currentQuestion = TadbeerItem.questions[_currentQuestionIndex];
-    final activeController = _controllers[questionNumber]!;
+    final currentQuestion = _questions[_currentQuestionIndex];
+    final activeController =
+        _controllers[TadbeerItem.questionKeys[_currentQuestionIndex]]!;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Directionality(
@@ -246,7 +265,9 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                             l10n.ayahReference(
                               surah.name,
                               l10n.isArabic
-                                  ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.ayahNumber)
+                                  ? ArabicSearchNormalizer.toArabicDigits(
+                                      widget.ayah.ayahNumber,
+                                    )
                                   : widget.ayah.ayahNumber,
                             ),
                             style: TextStyle(
@@ -260,7 +281,9 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                           Text(
                             l10n.pageAbbr(
                               l10n.isArabic
-                                  ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.page)
+                                  ? ArabicSearchNormalizer.toArabicDigits(
+                                      widget.ayah.page,
+                                    )
                                   : widget.ayah.page,
                             ),
                             style: TextStyle(
@@ -307,12 +330,12 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                       ),
                     ),
                     Row(
-                      children: List.generate(TadbeerItem.questions.length, (
-                        idx,
-                      ) {
+                      children: List.generate(_questions.length, (idx) {
                         final isCurrent = idx == _currentQuestionIndex;
                         final isFilled =
-                            (_controllers[idx + 1]?.text.trim().isNotEmpty ??
+                            (_controllers[TadbeerItem.questionKeys[idx]]?.text
+                                .trim()
+                                .isNotEmpty ??
                             false);
 
                         return Container(
@@ -418,10 +441,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        icon: Icon(
-                          AppIcons.arrowLeft,
-                          size: 16,
-                        ),
+                        icon: Icon(AppIcons.arrowLeft, size: 16),
                         label: Text(l10n.previous),
                       ),
                       const SizedBox(width: 8),
@@ -440,15 +460,13 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                           ),
                         ),
                         icon: Icon(
-                          _currentQuestionIndex <
-                                  TadbeerItem.questions.length - 1
+                          _currentQuestionIndex < _questions.length - 1
                               ? AppIcons.arrowRight
                               : AppIcons.check,
                           size: 16,
                         ),
                         label: Text(
-                          _currentQuestionIndex <
-                                  TadbeerItem.questions.length - 1
+                          _currentQuestionIndex < _questions.length - 1
                               ? (l10n.isArabic ? 'التالي' : 'Next')
                               : (l10n.isArabic ? 'تم وحفظ' : 'Done & Save'),
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -460,7 +478,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 const SizedBox(height: 10),
 
                 // Save & finish at any stage button
-                if (_currentQuestionIndex < TadbeerItem.questions.length - 1)
+                if (_currentQuestionIndex < _questions.length - 1)
                   Center(
                     child: TextButton.icon(
                       onPressed: _saveAndClose,

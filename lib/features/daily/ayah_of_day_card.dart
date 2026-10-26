@@ -16,6 +16,7 @@ import '../quran/data/quran_repository.dart';
 import '../share/ayah_share_sheet.dart';
 import '../tadbeer/tadbeer_model.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
+import '../tadbeer/tadbeer_questions.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// آيات للتدبّر: القائمة المشتركة بين بطاقة الرئيسية والودجت.
@@ -168,15 +169,19 @@ class AyahOfTheDay {
 
   /// The reflection question shown with the [index]th ayah of [day].
   static String questionFor(DateTime day, int index) {
-    final q = TadbeerItem.questions;
-    return q[(_dayIndex(day) + index) % q.length];
+    final ayah = forDayAll(day)[index];
+    return TadbeerQuestions.forAyah(ayah)[questionIndex(day, index)];
   }
+
+  /// Which of the ayah's four questions the card asks, so the reflection
+  /// opens on it.
+  static int questionIndex(DateTime day, int index) =>
+      (_dayIndex(day) + index) % TadbeerItem.questions.length;
 
   /// سؤال التدبر لهذا اليوم.
   static String questionForDay(DateTime day) => questionFor(day, 0);
 }
 
-/// بطاقة آية اليوم في الرئيسية.
 /// بطاقة «آية للتدبّر» في الرئيسية: آيات اليوم تتتابع تلقائياً.
 ///
 /// The day's ayahs follow one another every [_interval] while the card is
@@ -417,7 +422,14 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                           _Action(
                             icon: AppIcons.flowerLotusFill,
                             label: l10n.reflectOnIt,
-                            onTap: () => TadbeerPauseSheet.show(context, ayah),
+                            onTap: () => TadbeerPauseSheet.show(
+                              context,
+                              ayah,
+                              initialQuestion: AyahOfTheDay.questionIndex(
+                                _day,
+                                _index,
+                              ),
+                            ),
                           ),
                           _Action(
                             icon: AppIcons.export,
