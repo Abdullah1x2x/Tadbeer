@@ -227,7 +227,9 @@ void main() {
           )
           .first,
     );
+    // Just above the medallion, however short the ayah.
     expect(card.bottom, lessThan(centre.dy - 150));
+    expect(card.bottom, greaterThan(centre.dy - 190));
     expect(tester.takeException(), isNull);
   });
 

@@ -346,7 +346,10 @@ class _RosetteState extends State<_Rosette>
         cardTop + _minCardHeight + 12 + _reach,
       ),
     );
-    final cardMaxHeight = _centre.dy - _reach - 12 - cardTop;
+    // The ayah sits just above the medallion and grows upward when long,
+    // so the two read as one however short the ayah is.
+    final cardBottom = _centre.dy - _medallion - 14;
+    final cardMaxHeight = cardBottom - cardTop;
 
     final p = ThemePalette.of(AppColors.theme);
     final night = isDark
@@ -393,13 +396,13 @@ class _RosetteState extends State<_Rosette>
             ),
             // The ayah on its own, as on the page.
             Positioned(
-              top: cardTop,
+              bottom: size.height - cardBottom,
               left: 16,
               right: 16,
               child: Opacity(
                 opacity: t,
                 child: Transform.translate(
-                  offset: Offset(0, -12 * (1 - t)),
+                  offset: Offset(0, 12 * (1 - t)),
                   child: Center(
                     child: _IsolatedAyah(
                       ayah: _ayah,
