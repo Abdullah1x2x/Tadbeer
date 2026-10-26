@@ -181,6 +181,24 @@ class AppStrings {
   String get themePickerHint => _l.themePickerHint;
   String get themePickerStart => _l.themePickerStart;
   String get themeAuto => _l.themeAuto;
+  String get mushafStyleMadinahHint => _l.mushafStyleMadinahHint;
+  String get mushafStyleTextHint => _l.mushafStyleTextHint;
+  String get pageSize => _l.pageSize;
+
+  /// A percentage in this language's digits (١٢٠٪ / 120%).
+  String percent(int value) => isArabic ? '${digits(value)}٪' : '$value%';
+  String get addVerseTitle => _l.addVerseTitle;
+  String get addVerseSearchHint => _l.addVerseSearchHint;
+  String get addVerseFromSaved => _l.addVerseFromSaved;
+  String get addVersePickBySurah => _l.addVersePickBySurah;
+  String get addVerseSurah => _l.addVerseSurah;
+  String get addVerseAyah => _l.addVerseAyah;
+  String get addVerseNote => _l.addVerseNote;
+  String get addVerseAlready => _l.addVerseAlready;
+  String get addVerseAction => _l.addVerseAction;
+  String get addVerseChange => _l.addVerseChange;
+  String get addVerseNoResults => _l.addVerseNoResults;
+  String get addVerseSearchSurah => _l.addVerseSearchSurah;
   String get mushafStyleTitle => _l.mushafStyleTitle;
   String get mushafStyleMadinah => _l.mushafStyleMadinah;
   String get mushafStyleText => _l.mushafStyleText;

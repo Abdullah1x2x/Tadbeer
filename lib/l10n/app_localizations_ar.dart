@@ -1548,4 +1548,50 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get themeAuto => 'تلقائي';
+
+  @override
+  String get addVerseTitle => 'إضافة آية إلى الرابط';
+
+  @override
+  String get addVerseSearchHint => 'ابحث بنص الآية أو اكتب: البقرة ٢٥٥';
+
+  @override
+  String get addVerseFromSaved => 'من محفوظاتك';
+
+  @override
+  String get addVersePickBySurah => 'اختيار بالسورة ورقم الآية';
+
+  @override
+  String get addVerseSurah => 'السورة';
+
+  @override
+  String get addVerseAyah => 'الآية';
+
+  @override
+  String get addVerseNote => 'ملاحظة (اختيارية)';
+
+  @override
+  String get addVerseAlready => 'مضافة إلى هذا الرابط';
+
+  @override
+  String get addVerseAction => 'إضافة إلى الرابط';
+
+  @override
+  String get addVerseChange => 'تغيير';
+
+  @override
+  String get addVerseNoResults => 'لا توجد نتائج';
+
+  @override
+  String get addVerseSearchSurah => 'ابحث باسم السورة أو رقمها';
+
+  @override
+  String get mushafStyleMadinahHint =>
+      'صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.';
+
+  @override
+  String get mushafStyleTextHint => 'نص متدفق بالخط الذي تختاره.';
+
+  @override
+  String get pageSize => 'حجم الصفحة';
 }

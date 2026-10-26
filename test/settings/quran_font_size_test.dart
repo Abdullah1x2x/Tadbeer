@@ -93,8 +93,19 @@ void main() {
             child: const MaterialApp(home: SettingsScreen()),
           ),
         );
-        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 300));
 
+        // Madinah pages: a page size in percent, no font choice.
+        expect(find.text('نوع خط المصحف'), findsNothing);
+        expect(find.text('حجم الصفحة'), findsOneWidget);
+        expect(find.text('١٠٠٪'), findsOneWidget);
+        expect(find.byType(Slider), findsOneWidget);
+
+        // Flowing text: the font choice and a size in points.
+        await tester.runAsync(
+          () => UserDataStore.instance.setMushafStyle(MushafStyle.text),
+        );
+        await tester.pump(const Duration(milliseconds: 300));
         expect(find.text('نوع خط المصحف'), findsOneWidget);
         expect(find.text('حجم خط المصحف'), findsOneWidget);
         expect(find.byType(Slider), findsOneWidget);

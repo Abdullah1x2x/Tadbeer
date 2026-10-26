@@ -12,6 +12,7 @@ import '../../app/theme.dart';
 import 'book_model.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/utils/text_direction.dart';
 
 /// شاشة قراءة واستعراض الملازم والكتب التدبرية (فصول، نصوص، أو مستندات PDF).
 class BookReaderScreen extends StatefulWidget {
@@ -291,6 +292,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                             ),
                             title: Text(
                               chap.title,
+                              textDirection: directionOfText(chap.title),
                               style: TextStyle(
                                 fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 15,
@@ -303,6 +305,9 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                             subtitle: chap.summary.isNotEmpty
                                 ? Text(
                                     chap.summary,
+                                    textDirection: directionOfText(
+                                      chap.summary,
+                                    ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(fontSize: 12),
@@ -889,6 +894,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                   children: [
                     Text(
                       chapter.title,
+                      textDirection: directionOfText(chapter.title),
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: _fontSize + 4,
@@ -916,6 +922,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                         ),
                         child: Text(
                           chapter.summary,
+                          textDirection: directionOfText(chapter.summary),
                           style: TextStyle(
                             fontSize: 13,
                             height: 1.5,
@@ -927,8 +934,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                       ),
                     ],
                     const SizedBox(height: 20),
+                    // The book's language decides, not the interface's.
                     SelectableText(
                       chapter.content,
+                      textDirection: directionOfText(chapter.content),
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: _fontSize,
@@ -1057,6 +1066,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 constraints: const BoxConstraints(maxWidth: 680),
                 child: SelectableText(
                   content,
+                  textDirection: directionOfText(content),
                   style: TextStyle(
                     fontFamily: 'Amiri',
                     fontSize: _fontSize,
