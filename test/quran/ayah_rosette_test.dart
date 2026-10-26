@@ -9,6 +9,7 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_rosette.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_pause_sheet.dart';
@@ -17,15 +18,27 @@ void main() {
   late Directory tempDir;
   late BuildContext host;
 
-  // Where the finger presses; the rosette opens centred on it.
-  const centre = Offset(206, 450);
+  // Where the finger presses on an ayah.
+  const press = Offset(206, 300);
   const ring = 98.0;
+
+  /// The middle of the medallion, wherever it opened.
+  late Offset centre;
 
   /// Where petal [i] sits, clockwise from the top.
   Offset petal(int i) {
     final a = i * math.pi / 4;
     return centre + Offset(math.sin(a), -math.cos(a)) * ring;
   }
+
+  Offset heartOf(WidgetTester tester) => tester.getCenter(
+    find
+        .ancestor(
+          of: find.text('وقفة تدبر'),
+          matching: find.byType(AnimatedScale),
+        )
+        .first,
+  );
 
   // Real fonts, so text measures as on a device.
   setUpAll(() async {
@@ -50,7 +63,7 @@ void main() {
 
   Future<void> open(
     WidgetTester tester, {
-    Offset? at = centre,
+    Offset? at = press,
     bool screenReader = false,
   }) async {
     tester.view.physicalSize = const Size(412, 915);
@@ -82,6 +95,7 @@ void main() {
     final ayah = QuranRepository.instance.getAyah(2, 255)!;
     unawaited(AyahRosette.show(host, ayah, at: at));
     await tester.pumpAndSettle();
+    if (!screenReader) centre = heartOf(tester);
   }
 
   /// Whether the actions' names are showing under them.
@@ -122,10 +136,9 @@ void main() {
     tester,
   ) async {
     await open(tester);
-    AyahRosette.releaseAt(centre);
+    AyahRosette.releaseAt(press);
     await tester.pumpAndSettle();
     expect(labelsShown(tester), isTrue);
-    expect(find.text('سورة البقرة · الآية ٢٥٥'), findsOneWidget);
 
     // Now a tap chooses.
     await tester.tap(find.text('تمييز').first);
@@ -163,7 +176,7 @@ void main() {
     tester,
   ) async {
     await open(tester);
-    AyahRosette.releaseAt(centre);
+    AyahRosette.releaseAt(press);
     await tester.pumpAndSettle();
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
@@ -171,18 +184,51 @@ void main() {
     expect(find.byType(Scaffold), findsOneWidget);
   });
 
-  testWidgets('lifting in place chooses nothing near the edge too', (
+  testWidgets('lifting in place chooses nothing, wherever it pressed', (
     tester,
   ) async {
-    // Near the edge the rosette opens off-centre, so the finger rests
-    // on the heart without having moved to it.
-    const edge = Offset(400, 450);
-    await open(tester, at: edge);
-    AyahRosette.dragTo(edge + const Offset(3, 0));
-    AyahRosette.releaseAt(edge);
+    // Pressed where a petal will sit: the finger has not moved to it.
+    await open(tester, at: const Offset(206, 700));
+    AyahRosette.dragTo(const Offset(209, 700));
+    AyahRosette.releaseAt(const Offset(206, 700));
     await tester.pumpAndSettle();
     expect(find.byType(TadbeerPauseSheet), findsNothing);
     expect(labelsShown(tester), isTrue);
+  });
+
+  testWidgets('it opens in the same place for every ayah', (tester) async {
+    await open(tester, at: const Offset(60, 150));
+    final first = centre;
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    unawaited(
+      AyahRosette.show(
+        host,
+        QuranRepository.instance.getAyah(1, 2)!,
+        at: const Offset(350, 820),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(heartOf(tester), first);
+    // Low on the screen, leaving the top for the ayah.
+    expect(first.dx, 206);
+    expect(first.dy, greaterThan(915 / 2));
+  });
+
+  testWidgets('the ayah is shown on its own above it', (tester) async {
+    await open(tester);
+    expect(find.text('سورة البقرة · الآية ٢٥٥'), findsOneWidget);
+    expect(find.byType(QcfAyahText), findsOneWidget);
+    final card = tester.getRect(
+      find
+          .ancestor(
+            of: find.byType(QcfAyahText),
+            matching: find.byType(DecoratedBox),
+          )
+          .first,
+    );
+    expect(card.bottom, lessThan(centre.dy - 150));
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('a screen reader gets the plain sheet', (tester) async {

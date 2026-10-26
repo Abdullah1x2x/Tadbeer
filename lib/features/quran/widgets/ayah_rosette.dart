@@ -16,7 +16,9 @@ import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
 import '../data/quran_models.dart';
+import '../../settings/user_settings_model.dart';
 import '../data/quran_repository.dart';
+import '../qcf/qcf_ayah_text.dart';
 import 'ayah_action_sheet.dart';
 
 /// الوردة الثمانية: إجراءات الآية تتفتح حول الإصبع على هيئة نجمة ثمانية.
@@ -134,6 +136,9 @@ class _RosetteState extends State<_Rosette>
 
   /// Room the rosette needs around its centre.
   static const _reach = _medallion + 6;
+
+  /// Least height left for the ayah above the medallion.
+  static const _minCardHeight = 140.0;
 
   /// The heart is index -1; petals are 0 to 7, clockwise from the top.
   static const _heart = -1;
@@ -331,17 +336,17 @@ class _RosetteState extends State<_Rosette>
     final padding = MediaQuery.paddingOf(context);
     final petals = _petals(l10n);
 
-    // Under the finger, kept whole on screen with the reference above it.
-    final want = widget.anchor ?? size.center(Offset.zero);
-    final minX = math.min(_reach + 4, size.width / 2);
-    final minY = padding.top + _reach + 44;
+    // Always in the same place: centred, low on the screen within reach of
+    // the thumb, leaving the top for the ayah.
+    final cardTop = padding.top + 12;
     _centre = Offset(
-      want.dx.clamp(minX, size.width - minX),
-      want.dy.clamp(
-        math.min(minY, size.height / 2),
-        math.max(size.height - padding.bottom - _reach, size.height / 2),
+      size.width / 2,
+      math.max(
+        size.height - padding.bottom - _reach - 12,
+        cardTop + _minCardHeight + 12 + _reach,
       ),
     );
+    final cardMaxHeight = _centre.dy - _reach - 12 - cardTop;
 
     final p = ThemePalette.of(AppColors.theme);
     final night = isDark
@@ -372,31 +377,46 @@ class _RosetteState extends State<_Rosette>
         final t = bloom.value;
         return Stack(
           children: [
-            // The page softens behind; a tap on it closes the rosette.
+            // The page stays in sight, only a little softer, so the ayah
+            // stands apart without hiding the rest; a tap on it closes.
             Positioned.fill(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: _dismiss,
                 child: BackdropFilter(
-                  filter: ui.ImageFilter.blur(sigmaX: 3 * t, sigmaY: 3 * t),
+                  filter: ui.ImageFilter.blur(sigmaX: 1.2 * t, sigmaY: 1.2 * t),
                   child: ColoredBox(
-                    color: Colors.black.withValues(alpha: 0.32 * t),
+                    color: Colors.black.withValues(alpha: 0.16 * t),
                   ),
                 ),
               ),
             ),
-            if (!_dragging)
-              Positioned(
-                left: 0,
-                right: 0,
-                top: _centre.dy - _medallion - 40,
-                child: Center(
-                  child: _Plate(
-                    text: l10n.ayahReference(surah.name, _ayah.ayahNumber),
-                    colour: night.last,
+            // The ayah on its own, as on the page.
+            Positioned(
+              top: cardTop,
+              left: 16,
+              right: 16,
+              child: Opacity(
+                opacity: t,
+                child: Transform.translate(
+                  offset: Offset(0, -12 * (1 - t)),
+                  child: Center(
+                    child: _IsolatedAyah(
+                      ayah: _ayah,
+                      reference: l10n.ayahReference(
+                        surah.name,
+                        _ayah.ayahNumber,
+                      ),
+                      palette: MushafPalette.of(
+                        isDark: isDark,
+                        tone: UserDataStore.instance.settings.mushafPaperTone,
+                      ),
+                      maxHeight: cardMaxHeight,
+                    ),
                   ),
                 ),
               ),
+            ),
             Positioned(
               left: _centre.dx - _reach,
               top: _centre.dy - _reach,
@@ -635,28 +655,91 @@ class _PetalView extends StatelessWidget {
   }
 }
 
-/// The ayah's reference on a dark plate above the medallion.
-class _Plate extends StatelessWidget {
-  final String text;
-  final Color colour;
+/// The chosen ayah on its own, on a piece of the Mushaf's paper: its
+/// reference above, the ayah in the Madinah script (or the reader's font in
+/// the flowing text view), scrolling if long.
+class _IsolatedAyah extends StatelessWidget {
+  final Ayah ayah;
+  final String reference;
+  final MushafPalette palette;
+  final double maxHeight;
 
-  const _Plate({required this.text, required this.colour});
+  const _IsolatedAyah({
+    required this.ayah,
+    required this.reference,
+    required this.palette,
+    required this.maxHeight,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: colour,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _gold.withValues(alpha: 0.7), width: 0.8),
+    final store = UserDataStore.instance;
+    final plain = Text(
+      '﴿ ${ayah.text} ﴾',
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.rtl,
+      style: TextStyle(
+        fontFamily: store.quranFontFamily,
+        fontSize: 20,
+        height: 1.9,
+        color: palette.text,
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 13.5,
-          fontWeight: FontWeight.bold,
-          color: _cream,
+    );
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 560, maxHeight: maxHeight),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: palette.page,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: palette.frame.withValues(alpha: 0.55)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.18),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('❖', style: TextStyle(fontSize: 9, color: _gold)),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      reference,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.bold,
+                        color: palette.frame,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text('❖', style: TextStyle(fontSize: 9, color: _gold)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: store.settings.mushafStyle == MushafStyle.madinah
+                      ? QcfAyahText(
+                          ayah: ayah,
+                          fontSize: 24,
+                          color: palette.text,
+                          fallback: plain,
+                        )
+                      : plain,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
