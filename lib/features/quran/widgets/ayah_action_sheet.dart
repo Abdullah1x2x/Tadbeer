@@ -28,19 +28,31 @@ import '../../../core/design_system/app_icons.dart';
 class AyahActionSheet extends StatefulWidget {
   final Ayah ayah;
 
+  /// What the sheet opens on: all actions, or straight to one of its editors.
+  final AyahSheetMode mode;
+
   /// ينشئ نافذة إجراءات الآية القرآنية المحددة.
-  const AyahActionSheet({super.key, required this.ayah});
+  const AyahActionSheet({
+    super.key,
+    required this.ayah,
+    this.mode = AyahSheetMode.actions,
+  });
 
   /// Displays the Ayah action sheet as a smooth, responsive modal dialog.
   /// يعرض نافذة إجراءات الآية كحوار منبثق سلس ومتجاوب.
-  static Future<void> show(BuildContext context, Ayah ayah) {
+  static Future<void> show(
+    BuildContext context,
+    Ayah ayah, {
+    AyahSheetMode mode = AyahSheetMode.actions,
+  }) {
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Dismiss',
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 180),
-      pageBuilder: (context, anim1, anim2) => AyahActionSheet(ayah: ayah),
+      pageBuilder: (context, anim1, anim2) =>
+          AyahActionSheet(ayah: ayah, mode: mode),
       transitionBuilder: (context, anim1, anim2, child) {
         final curved = CurvedAnimation(
           parent: anim1,
@@ -63,14 +75,26 @@ class AyahActionSheet extends StatefulWidget {
   State<AyahActionSheet> createState() => _AyahActionSheetState();
 }
 
+/// ما تفتح عليه نافذة الآية.
+enum AyahSheetMode {
+  /// كل الإجراءات.
+  actions,
+
+  /// محرر ملاحظة الآية.
+  note,
+
+  /// اختيار لون التمييز.
+  highlight,
+}
+
 /// Backward compatibility alias for AyahActionSheet
 /// اسم بديل متوافق مع الإصدارات السابقة لنافذة إجراءات الآية.
 typedef AyahActionDialog = AyahActionSheet;
 
 /// الحالة التفاعلية لنافذة إجراءات الآية القرآنية.
 class _AyahActionSheetState extends State<AyahActionSheet> {
-  bool _isNoteEditorOpen = false;
-  bool _isHighlightPickerOpen = false;
+  late bool _isNoteEditorOpen = widget.mode == AyahSheetMode.note;
+  late bool _isHighlightPickerOpen = widget.mode == AyahSheetMode.highlight;
   late TextEditingController _noteController;
   String? _existingNoteId;
 

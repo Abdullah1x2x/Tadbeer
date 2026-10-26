@@ -163,7 +163,7 @@ void main() {
               body: QuranPageView(
                 page: page1,
                 onAyahTap: (_) {},
-                onAyahLongPress: (_) {},
+                onAyahLongPress: (_, {at}) {},
               ),
             ),
           ),

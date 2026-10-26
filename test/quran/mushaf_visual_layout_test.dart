@@ -141,7 +141,7 @@ void main() {
           QuranPageView(
             page: page1,
             onAyahTap: (a) => tappedAyah = a,
-            onAyahLongPress: (a) => longPressedAyah = a,
+            onAyahLongPress: (a, {at}) => longPressedAyah = a,
           ),
         ),
       );
