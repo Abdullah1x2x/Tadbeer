@@ -918,7 +918,7 @@ class _IstighfarTasbeehCard extends StatelessWidget {
                   : null,
             ),
             child: Icon(
-              FlutterIslamicIcons.prayer,
+              FlutterIslamicIcons.tasbih2,
               color: isDark ? emeraldAccent : AppColors.oliveDark,
               size: iconDim,
             ),

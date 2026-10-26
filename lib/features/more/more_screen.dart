@@ -82,7 +82,7 @@ class MoreScreen extends StatelessWidget {
                     onTap: () => open(const SearchScreen()),
                   ),
                   _Tile(
-                    icon: AppIcons.translate,
+                    icon: AppIcons.books,
                     label: l10n.wordMeanings,
                     onTap: () => open(const WordMeaningsScreen()),
                   ),

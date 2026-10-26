@@ -62,4 +62,31 @@ void main() {
     // Unmount so the looping animations stop before the test ends.
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets('the night sky follows the colour theme', (tester) async {
+    addTearDown(() => AppColors.use(AppColorTheme.navy));
+    final first = QuranRepository.instance.getAyah(1, 1)!;
+    Future<Color?> background(AppColorTheme theme) async {
+      AppColors.use(theme);
+      await tester.pumpWidget(
+        MaterialApp(
+          key: ValueKey(theme),
+          theme: AppTheme.darkTheme,
+          home: FocusModeScreen(startAyah: first),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      return tester
+          .widget<Scaffold>(find.byType(Scaffold).first)
+          .backgroundColor;
+    }
+
+    final navy = await background(AppColorTheme.navy);
+    final emerald = await background(AppColorTheme.emerald);
+    expect(navy, isNot(emerald));
+    expect(
+      emerald,
+      Color.lerp(ThemePalette.emerald.darkBackground, Colors.black, 0.4),
+    );
+  });
 }
