@@ -473,6 +473,7 @@ class _RosetteState extends State<_Rosette>
                           },
                           hovered: _hovered == _heart,
                           onTap: _dragging ? null : () => _run(_heart),
+                          ink: p.lightPrimaryDark,
                         ),
                       ),
                     ],
@@ -502,6 +503,7 @@ class _RosetteState extends State<_Rosette>
 const _gold = Color(0xFFD9B566);
 const _cream = Color(0xFFF2EEE4);
 const _onGold = Color(0xFF1A1405);
+const _paper = Color(0xFFF7F1E3);
 
 /// The reflection at the heart of the medallion; while the finger slides
 /// it names the action under it.
@@ -511,11 +513,15 @@ class _Heart extends StatelessWidget {
   final bool hovered;
   final VoidCallback? onTap;
 
+  /// The theme's deep colour, for the lotus and its name on the paper.
+  final Color ink;
+
   const _Heart({
     required this.label,
     required this.icon,
     required this.hovered,
     required this.onTap,
+    required this.ink,
   });
 
   @override
@@ -537,24 +543,31 @@ class _Heart extends StatelessWidget {
               height: size,
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                color: _gold,
+                // The Mushaf's paper in a gold ring, like the ayah above.
+                color: _paper,
                 shape: BoxShape.circle,
-                border: Border.all(color: _cream.withValues(alpha: 0.9)),
+                border: Border.all(color: _gold, width: 2.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: _gold.withValues(alpha: hovered ? 0.6 : 0.25),
+                    blurRadius: hovered ? 14 : 8,
+                  ),
+                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, size: 24, color: _onGold),
+                  Icon(icon, size: 24, color: ink),
                   const SizedBox(height: 2),
                   Text(
                     label,
                     maxLines: 2,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11.5,
                       height: 1.15,
                       fontWeight: FontWeight.bold,
-                      color: _onGold,
+                      color: ink,
                     ),
                   ),
                 ],
@@ -799,15 +812,64 @@ class _MedallionPainter extends CustomPainter {
         ..color = _gold.withValues(alpha: 0.55),
     );
 
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.7;
+
+    // Ground: stars and crosses, the classic tile pattern, faint and
+    // kept inside the scalloped band.
+    canvas.save();
+    canvas.clipPath(
+      Path()..addOval(Rect.fromCircle(center: c, radius: r - 16)),
+    );
+    const step = 30.0;
+    line.color = _gold.withValues(alpha: 0.13);
+    for (var y = -r; y <= r; y += step) {
+      for (var x = -r; x <= r; x += step) {
+        canvas.drawPath(eightPointStar(c + Offset(x, y), step * 0.5), line);
+      }
+    }
+    canvas.restore();
+
+    // Scallops inside the rim, as on an illuminated Mushaf medallion.
+    line
+      ..color = _gold.withValues(alpha: 0.5)
+      ..strokeWidth = 0.8;
+    const scallops = 48;
+    final band = r - 13;
+    final arc = math.pi * band / scallops;
+    for (var i = 0; i < scallops; i++) {
+      final a = i * 2 * math.pi / scallops;
+      final at = c + Offset(math.sin(a), -math.cos(a)) * band;
+      canvas.drawArc(
+        Rect.fromCircle(center: at, radius: arc * 0.55),
+        // The half facing the centre.
+        a,
+        math.pi,
+        false,
+        line,
+      );
+    }
+
+    // The shamsa: a sixteen-pointed sun round the heart, turning into
+    // place as the medallion opens.
     canvas.save();
     canvas.translate(c.dx, c.dy);
     canvas.rotate(turn);
-    canvas.drawPath(
-      eightPointStar(Offset.zero, ring * 0.66),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.9
-        ..color = _gold.withValues(alpha: 0.28),
+    final sun = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.9
+      ..color = _gold.withValues(alpha: 0.42);
+    for (final spin in [0.0, math.pi / 8]) {
+      canvas.save();
+      canvas.rotate(spin);
+      canvas.drawPath(eightPointStar(Offset.zero, ring * 0.64), sun);
+      canvas.restore();
+    }
+    canvas.drawCircle(
+      Offset.zero,
+      ring * 0.5,
+      sun..color = _gold.withValues(alpha: 0.3),
     );
     canvas.restore();
 
