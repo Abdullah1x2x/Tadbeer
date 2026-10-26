@@ -891,16 +891,20 @@ class _QuranScreenState extends State<QuranScreen> {
                               final pageNumber = index + 1;
                               if (!isWideSpread) {
                                 final page = repo.getPage(pageNumber);
-                                return QuranPageView(
-                                  fontSize: pinchSize,
-                                  page: page,
-                                  pageNumber: pageNumber,
-                                  selectedAyah: _activeSelectedAyah,
-                                  onAyahTap: _handleAyahTap,
-                                  onAyahLongPress: _handleAyahLongPress,
-                                  onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear:
-                                      _handleAyahHighlightClear,
+                                // Own layer per page, so a swipe moves the
+                                // pages instead of repainting them.
+                                return RepaintBoundary(
+                                  child: QuranPageView(
+                                    fontSize: pinchSize,
+                                    page: page,
+                                    pageNumber: pageNumber,
+                                    selectedAyah: _activeSelectedAyah,
+                                    onAyahTap: _handleAyahTap,
+                                    onAyahLongPress: _handleAyahLongPress,
+                                    onAyahHighlight: _handleAyahHighlight,
+                                    onAyahHighlightClear:
+                                        _handleAyahHighlightClear,
+                                  ),
                                 );
                               }
 

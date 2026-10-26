@@ -40,6 +40,36 @@ void main() {
   }
 
   group('FloatingNavBar', () {
+    testWidgets('the pill stays inside the bar while moving to an edge', (
+      WidgetTester tester,
+    ) async {
+      final pill = find
+          .descendant(
+            of: find.byType(AnimatedPositioned),
+            matching: find.byType(DecoratedBox),
+          )
+          .first;
+      final track = find
+          .ancestor(
+            of: find.byType(AnimatedPositioned),
+            matching: find.byType(Stack),
+          )
+          .first;
+      for (final (from, to) in [(0, 2), (2, 0)]) {
+        await tester.pumpWidget(host(selected: from, onSelected: (_) {}));
+        await tester.pumpAndSettle();
+        await tester.pumpWidget(host(selected: to, onSelected: (_) {}));
+        for (var frame = 0; frame < 30; frame++) {
+          await tester.pump(const Duration(milliseconds: 16));
+          final bounds = tester.getRect(track);
+          final rect = tester.getRect(pill);
+          expect(rect.left, greaterThanOrEqualTo(bounds.left - 0.01));
+          expect(rect.right, lessThanOrEqualTo(bounds.right + 0.01));
+        }
+      }
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('shows only the selected name and keeps all as tooltips', (
       WidgetTester tester,
     ) async {

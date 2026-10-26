@@ -71,7 +71,6 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell>
     with SingleTickerProviderStateMixin {
   late ShellTab _tab = widget.initialTab;
-  ShellTab? _previous;
   late final Set<ShellTab> _visited = {widget.initialTab};
 
   @override
@@ -91,17 +90,12 @@ class _MainShellState extends State<MainShell>
   /// Mirrors the Mushaf tab's controls; the bar hides while they are hidden.
   final ValueNotifier<bool> _quranControlsVisible = ValueNotifier(true);
 
-  /// Drives the cross-slide between the outgoing and incoming tab.
-  late final AnimationController _switch =
-      AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 320),
-        value: 1,
-      )..addStatusListener((status) {
-        if (status == AnimationStatus.completed && _previous != null) {
-          setState(() => _previous = null);
-        }
-      });
+  /// Drives the incoming tab's slide and the veil fading off it.
+  late final AnimationController _switch = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 300),
+    value: 1,
+  );
 
   late final CurvedAnimation _eased = CurvedAnimation(
     parent: _switch,
@@ -144,7 +138,6 @@ class _MainShellState extends State<MainShell>
     final forward = tab.index > _tab.index;
     setState(() {
       _travel = (forward ? 1.0 : -1.0) * (isRtl ? -1.0 : 1.0);
-      _previous = _tab;
       _tab = tab;
       _visited.add(tab);
     });
@@ -152,48 +145,49 @@ class _MainShellState extends State<MainShell>
       _switch.forward(from: 0);
     } else {
       _switch.value = 1;
-      setState(() => _previous = null);
     }
   }
 
   /// Every visited tab keeps the same wrapper chain, so switching only changes
   /// parameters and never rebuilds a tab's state.
+  ///
+  /// The switch fades through the page colour: the outgoing tab goes at once
+  /// and the incoming one slides in under a veil of the background colour
+  /// that fades away. Fading one flat colour is nearly free, where fading
+  /// whole pages made every frame redraw them off-screen.
   Widget _tabLayer(ShellTab tab) {
     final isCurrent = tab == _tab;
-    final isLeaving = tab == _previous;
-    final visible = isCurrent || isLeaving;
-    final eased = _eased;
-
-    final Animation<double> opacity;
-    final Animation<Offset> position;
-    if (isCurrent) {
-      opacity = eased;
-      position = Tween(
-        begin: Offset(0.08 * _travel, 0),
-        end: Offset.zero,
-      ).animate(eased);
-    } else if (isLeaving) {
-      opacity = ReverseAnimation(eased);
-      position = Tween(
-        begin: Offset.zero,
-        end: Offset(-0.04 * _travel, 0),
-      ).animate(eased);
-    } else {
-      opacity = const AlwaysStoppedAnimation(1);
-      position = const AlwaysStoppedAnimation(Offset.zero);
-    }
+    final position = isCurrent
+        ? Tween(
+            begin: Offset(0.06 * _travel, 0),
+            end: Offset.zero,
+          ).animate(_eased)
+        : const AlwaysStoppedAnimation(Offset.zero);
 
     return Offstage(
       // Keyed so tabs keep their state when a newly visited tab is inserted.
       key: ValueKey(tab),
-      offstage: !visible,
+      offstage: !isCurrent,
       child: TickerMode(
-        enabled: visible,
+        enabled: isCurrent,
         child: IgnorePointer(
           ignoring: !isCurrent,
-          child: FadeTransition(
-            opacity: opacity,
-            child: SlideTransition(position: position, child: _buildTab(tab)),
+          child: SlideTransition(
+            position: position,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                RepaintBoundary(child: _buildTab(tab)),
+                IgnorePointer(
+                  child: FadeTransition(
+                    opacity: ReverseAnimation(_eased),
+                    child: ColoredBox(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
