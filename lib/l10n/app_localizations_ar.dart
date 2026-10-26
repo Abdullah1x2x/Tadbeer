@@ -170,9 +170,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get markPortionDone => 'أتممت ورد اليوم';
 
   @override
-  String get moveKhatmaHere => 'انقل الختمة';
-
-  @override
   String get reflectionsThisMonth => 'تدبرات هذا الشهر';
 
   @override
@@ -1227,11 +1224,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String reachedPage(String page) {
     return 'وصلت إلى صفحة $page';
-  }
-
-  @override
-  String khatmaElsewhere(String page) {
-    return 'موضع قراءتك صفحة $page؛ انقل الختمة إليه؟';
   }
 
   @override

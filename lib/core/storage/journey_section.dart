@@ -38,6 +38,15 @@ mixin _JourneySection on _StoreState {
     if (plan != null) await _moveReadingPositionTo(plan.currentPage);
   }
 
+  /// الختمة تتبع موضع القراءة: صفحتها هي الصفحة التي يقف عندها القارئ،
+  /// والمنجز ما قبلها منذ بدايتها، كالعلامة في المصحف الورقي.
+  @override
+  Future<void> followReadingPosition(int page) async {
+    final plan = _journey.plan;
+    if (plan == null || plan.currentPage == page) return;
+    await _saveJourney(_journey.moveKhatmaTo(page));
+  }
+
   /// يسجّل يوماً فيه نشاط تدبر أو حفظ (للأيام المتتالية).
   @override
   Future<void> markActiveDay({DateTime? now}) async {

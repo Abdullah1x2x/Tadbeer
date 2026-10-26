@@ -410,12 +410,6 @@ abstract class AppLocalizations {
   /// **'أتممت ورد اليوم'**
   String get markPortionDone;
 
-  /// No description provided for @moveKhatmaHere.
-  ///
-  /// In ar, this message translates to:
-  /// **'انقل الختمة'**
-  String get moveKhatmaHere;
-
   /// No description provided for @reflectionsThisMonth.
   ///
   /// In ar, this message translates to:
@@ -2407,12 +2401,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'وصلت إلى صفحة {page}'**
   String reachedPage(String page);
-
-  /// No description provided for @khatmaElsewhere.
-  ///
-  /// In ar, this message translates to:
-  /// **'موضع قراءتك صفحة {page}؛ انقل الختمة إليه؟'**
-  String khatmaElsewhere(String page);
 
   /// No description provided for @portionReminderTitle.
   ///

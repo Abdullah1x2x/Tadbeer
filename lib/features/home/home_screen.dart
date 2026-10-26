@@ -635,6 +635,14 @@ class _QuranHeroCard extends StatelessWidget {
   /// يبني واجهة بطاقة المصحف ومعلومات السورة والصفحة الحالية.
   @override
   Widget build(BuildContext context) {
+    // Follows the reading position as it moves while reading.
+    return ListenableBuilder(
+      listenable: UserDataStore.instance,
+      builder: (context, _) => _build(context),
+    );
+  }
+
+  Widget _build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final pos = UserDataStore.instance.readingPosition;
     final surah = QuranRepository.instance.getSurah(pos.surahNumber);

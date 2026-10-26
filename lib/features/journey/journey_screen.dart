@@ -62,34 +62,6 @@ class JourneyScreen extends StatelessWidget {
                   else ...[
                     _KhatmaProgressCard(plan: plan, now: now),
                     const SizedBox(height: 12),
-                    // The user read elsewhere (e.g. moved their reading place):
-                    // offer to bring the khatma along instead of guessing.
-                    if (UserDataStore.instance.readingPosition.page !=
-                        plan.currentPage)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Card(
-                          child: ListTile(
-                            leading: Icon(
-                              AppIcons.arrowsLeftRight,
-                              color: AppColors.accentGold(context),
-                            ),
-                            title: Text(
-                              l10n.khatmaElsewhere(
-                                UserDataStore.instance.readingPosition.page,
-                              ),
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                            trailing: TextButton(
-                              onPressed: () =>
-                                  UserDataStore.instance.moveKhatmaTo(
-                                    UserDataStore.instance.readingPosition.page,
-                                  ),
-                              child: Text(l10n.moveKhatmaHere),
-                            ),
-                          ),
-                        ),
-                      ),
                     _TodayPortionCard(plan: plan, journey: journey, now: now),
                   ],
                   const SizedBox(height: 12),

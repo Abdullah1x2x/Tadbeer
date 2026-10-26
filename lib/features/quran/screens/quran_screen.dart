@@ -76,10 +76,16 @@ class _QuranScreenState extends State<QuranScreen> {
   /// change is neither counted nor saved again.
   bool _ignoreNextPageChange = false;
 
-  void _maybeCountPage(int fromIndex, int toIndex) {
+  /// The reading position (and with it the khatma) moves only when the
+  /// reader actually reads: moving forward past a page after reading it,
+  /// or staying on a page. A glance, a search result or a slider jump moves
+  /// nothing.
+  Future<void> _maybeCountPage(int fromIndex, int toIndex) async {
     if (toIndex != fromIndex + 1) return;
     if (DateTime.now().difference(_pageShownAt) < _readDwell) return;
-    UserDataStore.instance.recordPageRead(fromIndex + 1);
+    // Counted first, so finishing the khatma's last page completes it.
+    await UserDataStore.instance.recordPageRead(fromIndex + 1);
+    _persistCurrentPagePosition(toIndex + 1);
   }
 
   /// Restarts the wait after which the page on screen counts as read.
@@ -90,7 +96,9 @@ class _QuranScreenState extends State<QuranScreen> {
       // Only while the reader is the visible tab or page.
       if (!mounted || !TickerMode.valuesOf(context).enabled) return;
       if (_currentPageIndex + 1 == page) {
-        UserDataStore.instance.recordPageRead(page);
+        UserDataStore.instance
+            .recordPageRead(page)
+            .then((_) => _persistCurrentPagePosition(page));
       }
     });
   }
@@ -127,10 +135,6 @@ class _QuranScreenState extends State<QuranScreen> {
       UserDataStore.instance.addListener(_syncToSavedPosition);
     }
 
-    // Wherever the Mushaf is opened, the page shown is the reading position.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _persistCurrentPagePosition(startPage);
-    });
     _startAutoCount();
   }
 
@@ -173,7 +177,6 @@ class _QuranScreenState extends State<QuranScreen> {
     }
     _maybeCountPage(from, index);
     _pageShownAt = DateTime.now();
-    _persistCurrentPagePosition(index + 1);
   }
 
   /// يحفظ موضع القراءة الحالي (الصفحة والسورة والآية) في التخزين المحلي.

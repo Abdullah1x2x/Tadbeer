@@ -159,9 +159,6 @@ class AppStrings {
   String get setKhatmaPosition => _l.setKhatmaPosition;
   String get pageNumberLabel => _l.pageNumberLabel;
   String get markPortionDone => _l.markPortionDone;
-  String khatmaElsewhere(int page) =>
-      _l.khatmaElsewhere(digits(page));
-  String get moveKhatmaHere => _l.moveKhatmaHere;
 
   String get reflectionsThisMonth => _l.reflectionsThisMonth;
 
