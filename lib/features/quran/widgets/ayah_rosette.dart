@@ -336,13 +336,15 @@ class _RosetteState extends State<_Rosette>
     final padding = MediaQuery.paddingOf(context);
     final petals = _petals(l10n);
 
-    // Always in the same place: centred, low on the screen within reach of
-    // the thumb, leaving the top for the ayah.
+    // Always in the same place: centred, in the lower part of the screen
+    // within reach of the thumb but lifted off its edge, leaving room above
+    // for the ayah.
     final cardTop = padding.top + 12;
+    final lowest = size.height - padding.bottom - _reach - 12;
     _centre = Offset(
       size.width / 2,
       math.max(
-        size.height - padding.bottom - _reach - 12,
+        math.min(size.height * 0.7, lowest),
         cardTop + _minCardHeight + 12 + _reach,
       ),
     );
