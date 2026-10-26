@@ -13,7 +13,7 @@ import '../../../core/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
-import '../widgets/ayah_action_sheet.dart';
+import '../widgets/ayah_rosette.dart';
 import '../widgets/word_meanings_panel.dart';
 import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
@@ -234,8 +234,8 @@ class _QuranScreenState extends State<QuranScreen> {
     _toggleTopBar();
   }
 
-  /// يعالج الضغط المطول على الآية لفتح نافذة إجراءات الآية مع اهتزاز خفيف.
-  Future<void> _handleAyahLongPress(Ayah ayah) async {
+  /// يعالج الضغط المطول على الآية بفتح الوردة الثمانية عند الإصبع مع اهتزاز خفيف.
+  Future<void> _handleAyahLongPress(Ayah ayah, {Offset? at}) async {
     _suppressNextPageTap = true;
     setState(() {
       _activeSelectedAyah = ayah;
@@ -243,7 +243,7 @@ class _QuranScreenState extends State<QuranScreen> {
 
     HapticFeedback.mediumImpact();
 
-    await AyahActionSheet.show(context, ayah);
+    await AyahRosette.show(context, ayah, at: at);
 
     if (mounted) {
       setState(() {

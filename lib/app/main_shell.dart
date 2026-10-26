@@ -7,6 +7,7 @@ import '../features/duas/duas_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/more/more_screen.dart';
 import '../features/quran/screens/quran_screen.dart';
+import '../features/quran/widgets/ayah_rosette.dart';
 import '../features/tasbeeh/tasbeeh_screen.dart';
 import 'app.dart';
 import 'localization.dart';
@@ -233,7 +234,10 @@ class _MainShellState extends State<MainShell>
         // Back from any other tab returns to Home before leaving the app.
         canPop: _tab == ShellTab.home,
         onPopInvokedWithResult: (didPop, _) {
-          if (!didPop) _select(ShellTab.home);
+          if (didPop) return;
+          // An open rosette of ayah actions goes first.
+          if (AyahRosette.dismissIfOpen()) return;
+          _select(ShellTab.home);
         },
         child: Scaffold(
           body: Stack(

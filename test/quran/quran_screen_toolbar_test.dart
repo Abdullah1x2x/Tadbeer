@@ -193,7 +193,7 @@ void main() {
     );
 
     testWidgets(
-      'Tapping an Ayah does NOT open action sheet; Long pressing opens AyahActionSheet with all 6 options',
+      'Tapping an Ayah opens nothing; a long press opens the rosette of actions',
       (tester) async {
         await tester.pumpWidget(buildTestScreen());
         await tester.pumpAndSettle();
@@ -208,10 +208,10 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(AyahActionSheet), findsNothing);
 
-        // 2. Long press triggers AyahActionSheet
+        // 2. Long press opens the rosette (the sheet is for screen readers)
         qpv.onAyahLongPress?.call(pageAyah);
         await tester.pumpAndSettle();
-        expect(find.byType(AyahActionSheet), findsOneWidget);
+        expect(find.byType(AyahActionSheet), findsNothing);
 
         // Verify the options are present
         expect(find.text('وقفة تدبر'), findsOneWidget);
@@ -221,10 +221,10 @@ void main() {
         expect(find.text('تمييز'), findsOneWidget);
         expect(find.text('نسخ'), findsOneWidget);
 
-        // Dismiss action sheet
+        // Tapping outside closes it
         await tester.tapAt(const Offset(10, 10));
         await tester.pumpAndSettle();
-        expect(find.byType(AyahActionSheet), findsNothing);
+        expect(find.text('رابط آيات'), findsNothing);
       },
     );
   });

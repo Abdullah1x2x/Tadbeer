@@ -9,7 +9,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
 import '../../memorization/memorization_model.dart';
-import '../widgets/ayah_action_sheet.dart';
+import '../widgets/ayah_rosette.dart';
 import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
 import '../../../core/design_system/app_icons.dart';
@@ -101,7 +101,10 @@ class QuranPageView extends StatefulWidget {
   final double? fontSize;
   final Ayah? selectedAyah;
   final ValueChanged<Ayah>? onAyahTap;
-  final ValueChanged<Ayah>? onAyahLongPress;
+
+  /// A long press on an ayah, with where the finger is when it comes from
+  /// one (the finger may then slide over the rosette that opens there).
+  final void Function(Ayah ayah, {Offset? at})? onAyahLongPress;
   final ValueChanged<Ayah>? onAyahHighlight;
   final ValueChanged<Ayah>? onAyahHighlightClear;
   final bool showHeader;
@@ -278,14 +281,23 @@ class _QuranPageViewState extends State<QuranPageView> {
       onTap: () {
         widget.onAyahTap?.call(ayah);
       },
-      onLongPress: () {
-        if (widget.onAyahLongPress != null) {
-          widget.onAyahLongPress!(ayah);
-        } else {
-          AyahActionSheet.show(context, ayah);
-        }
-      },
     );
+    // The same press goes on to steer the rosette that opens under it.
+    recognizer
+      ..onLongPressStart = (details) {
+        final at = details.globalPosition;
+        if (widget.onAyahLongPress != null) {
+          widget.onAyahLongPress!(ayah, at: at);
+        } else {
+          AyahRosette.show(context, ayah, at: at);
+        }
+      }
+      ..onLongPressMoveUpdate = (details) {
+        AyahRosette.dragTo(details.globalPosition);
+      }
+      ..onLongPressEnd = (details) {
+        AyahRosette.releaseAt(details.globalPosition);
+      };
 
     _recognizers[ayah.id] = recognizer;
     return recognizer;
@@ -1103,7 +1115,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                     if (widget.onAyahLongPress != null) {
                       widget.onAyahLongPress!(ayah);
                     } else {
-                      AyahActionSheet.show(context, ayah);
+                      AyahRosette.show(context, ayah);
                     }
                   },
                   child: Container(
