@@ -1589,4 +1589,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get khatmaStartNow => 'ابدأ الآن';
+
+  @override
+  String get askNameTitle => 'ما اسمك؟';
+
+  @override
+  String get askNameHint =>
+      'نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.';
+
+  @override
+  String get askNameField => 'اسمك';
+
+  @override
+  String get skipStep => 'تخطّي';
+
+  @override
+  String get yourName => 'اسمك';
+
+  @override
+  String get yourNameNotSet => 'لم يُحدَّد';
+
+  @override
+  String get reminderQuranBody => 'حان وقت تلاوة وتدبّر القرآن الكريم';
+
+  @override
+  String get reminderAdhkarBody => 'حان وقت الأذكار، ذكّر قلبك بالله';
 }

@@ -562,6 +562,31 @@ class SettingsScreen extends StatelessWidget {
                   context: context,
                   child: Column(
                     children: [
+                      // The name reminders address the reader by.
+                      ListTile(
+                        leading: Icon(
+                          AppIcons.user,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        title: Text(
+                          l10n.yourName,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          settings.userName.isEmpty
+                              ? l10n.yourNameNotSet
+                              : settings.userName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
+                          ),
+                        ),
+                        trailing: const Icon(AppIcons.pencilSimple, size: 20),
+                        onTap: () => _editName(context, settings.userName),
+                      ),
+                      const Divider(height: 1),
                       ListTile(
                         leading: Icon(
                           AppIcons.globe,
@@ -894,6 +919,15 @@ class SettingsScreen extends StatelessWidget {
   }
 
   /// يبني عنوان قسم فرعي داخل شاشة الإعدادات.
+  /// Lets the reader change the name reminders address them by.
+  Future<void> _editName(BuildContext context, String current) async {
+    final name = await showDialog<String>(
+      context: context,
+      builder: (_) => _NameDialog(initial: current),
+    );
+    if (name != null) await UserDataStore.instance.setUserName(name);
+  }
+
   Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, right: 4, left: 4),
@@ -1375,6 +1409,60 @@ class _ColorThemeSwatch extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Edits the reader's name; owns its text controller so it outlives the
+/// dialog's closing animation.
+class _NameDialog extends StatefulWidget {
+  final String initial;
+
+  const _NameDialog({required this.initial});
+
+  @override
+  State<_NameDialog> createState() => _NameDialogState();
+}
+
+class _NameDialogState extends State<_NameDialog> {
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.initial,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.yourName),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        maxLength: 30,
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          hintText: l10n.askNameField,
+          helperText: l10n.askNameHint,
+          helperMaxLines: 2,
+          counterText: '',
+        ),
+        onSubmitted: (v) => Navigator.pop(context, v),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, _controller.text),
+          child: Text(l10n.save),
+        ),
+      ],
     );
   }
 }

@@ -215,6 +215,10 @@ class UserSettings {
   /// on the theme picker. Settings saved before it existed count as picked.
   final bool themeChosen;
 
+  /// What the reader asked to be called in reminders; empty when not given.
+  /// Kept on the device only.
+  final String userName;
+
   /// اسم عائلة خط المصحف المختارة للاستخدام المباشر في الأنماط النصية.
   String get quranFontFamilyName => quranFontFamily.fontFamily;
 
@@ -232,6 +236,7 @@ class UserSettings {
     this.colorTheme = AppColorTheme.navy,
     this.mushafStyle = MushafStyle.madinah,
     this.themeChosen = false,
+    this.userName = '',
   }) : hideTadbeerIntroPermanently =
            hideTadabburIntroPermanently ?? hideTadbeerIntroPermanently;
 
@@ -249,6 +254,7 @@ class UserSettings {
     'colorTheme': colorTheme.name,
     'mushafStyle': mushafStyle.name,
     'themeChosen': themeChosen,
+    'userName': userName,
   };
 
   /// ينشئ كائن إعدادات المستخدم من خريطة بيانات JSON المحفوظة.
@@ -316,6 +322,7 @@ class UserSettings {
         orElse: () => MushafStyle.madinah,
       ),
       themeChosen: json['themeChosen'] as bool? ?? true,
+      userName: json['userName'] as String? ?? '',
     );
   }
 
@@ -333,6 +340,7 @@ class UserSettings {
     AppColorTheme? colorTheme,
     MushafStyle? mushafStyle,
     bool? themeChosen,
+    String? userName,
   }) {
     final newQuranFontSize = quranFontSize != null
         ? quranFontSize.clamp(minQuranFontSize, maxQuranFontSize)
@@ -353,6 +361,7 @@ class UserSettings {
       colorTheme: colorTheme ?? this.colorTheme,
       mushafStyle: mushafStyle ?? this.mushafStyle,
       themeChosen: themeChosen ?? this.themeChosen,
+      userName: userName?.trim() ?? this.userName,
     );
   }
 }

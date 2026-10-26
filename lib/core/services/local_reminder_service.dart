@@ -270,7 +270,7 @@ class LocalReminderService {
       var title = reminder.title.trim().isNotEmpty
           ? reminder.title.trim()
           : 'ورد القرآن الكريم';
-      var body = 'حان وقت تلاوة وتدبّر القرآن الكريم';
+      var body = _strings.toReader(_readerName, _strings.reminderQuranBody);
       if (reminder.id == portionReminderId) {
         // Pages left today, or nothing once today's portion is read.
         final store = UserDataStore.instance;
@@ -280,11 +280,8 @@ class LocalReminderService {
             ? 0
             : plan.pagesPerDay - journey.portionPagesOn(now);
         shouldFire = shouldFire && left > 0;
-        final strings = AppStrings(
-          AppLanguage.fromCode(store.settings.languageCode),
-        );
-        title = strings.portionLeftTitle(left);
-        body = strings.portionLeftBody;
+        title = _strings.toReader(_readerName, _strings.portionLeftTitle(left));
+        body = _strings.portionLeftBody;
       }
 
       if (shouldFire) {
@@ -550,6 +547,14 @@ class LocalReminderService {
     }
   }
 
+  /// Notification texts in the app's language.
+  AppStrings get _strings => AppStrings(
+    AppLanguage.fromCode(UserDataStore.instance.settings.languageCode),
+  );
+
+  /// The name the reader gave, used to address reminders to them.
+  String get _readerName => UserDataStore.instance.settings.userName;
+
   /// Ids of the khatma portion notices, above every hashed reminder id.
   static const int _portionBaseId = 100000000;
 
@@ -683,9 +688,11 @@ class LocalReminderService {
         : 'ورد القرآن الكريم';
     // Adhkar reminders open the adhkar instead of the Mushaf.
     final isAdhkar = reminder.id.startsWith('adhkar_');
-    final body = isAdhkar
-        ? 'حان وقت الأذكار، ذكّر قلبك بالله'
-        : 'حان وقت تلاوة وتدبّر القرآن الكريم';
+    final strings = _strings;
+    final body = strings.toReader(
+      _readerName,
+      isAdhkar ? strings.reminderAdhkarBody : strings.reminderQuranBody,
+    );
     final payload = isAdhkar ? reminder.id : 'quran_resume';
 
     final baseId = _baseNotificationId(reminder.id);
@@ -791,9 +798,7 @@ class LocalReminderService {
     AndroidScheduleMode scheduleMode,
   ) async {
     final store = UserDataStore.instance;
-    final strings = AppStrings(
-      AppLanguage.fromCode(store.settings.languageCode),
-    );
+    final strings = _strings;
     final notices = portionNotices(
       store.journey,
       DateTime.now(),
@@ -803,7 +808,10 @@ class LocalReminderService {
     for (var i = 0; i < notices.length; i++) {
       await _zonedScheduleSafe(
         id: _portionBaseId + i,
-        title: strings.portionLeftTitle(notices[i].pages),
+        title: strings.toReader(
+          _readerName,
+          strings.portionLeftTitle(notices[i].pages),
+        ),
         body: strings.portionLeftBody,
         scheduledDate: tz.TZDateTime.from(notices[i].at, tz.local),
         details: details,

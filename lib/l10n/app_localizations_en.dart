@@ -1595,4 +1595,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get khatmaStartNow => 'Start now';
+
+  @override
+  String get askNameTitle => 'What’s your name?';
+
+  @override
+  String get askNameHint =>
+      'We use it in your reminders and notifications. It stays on your device.';
+
+  @override
+  String get askNameField => 'Your name';
+
+  @override
+  String get skipStep => 'Skip';
+
+  @override
+  String get yourName => 'Your name';
+
+  @override
+  String get yourNameNotSet => 'Not set';
+
+  @override
+  String get reminderQuranBody =>
+      'It’s time to recite and reflect on the Quran';
+
+  @override
+  String get reminderAdhkarBody =>
+      'It’s time for your adhkar; remind your heart of Allah';
 }
