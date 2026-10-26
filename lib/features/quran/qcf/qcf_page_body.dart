@@ -36,6 +36,19 @@ class QcfPageBody extends StatefulWidget {
   /// Shown until the page's font is ready, or if it cannot be loaded.
   final Widget fallback;
 
+  /// The basmala as printed: the words of Al-Fatiha's first ayah in the
+  /// first page's font, without its ayah number. Basmala lines carry no
+  /// glyphs of their own.
+  @visibleForTesting
+  static const basmalaGlyphs = '\uFB51\uFB52\uFB53\uFB54';
+
+  /// Size of the basmala against the page's font size, so its letters are
+  /// exactly as large as the ayahs': the same four words in An-Naml 30
+  /// (page 379) draw 1.32 times as tall and 1.38 times as wide as the
+  /// first page's basmala at one font size.
+  @visibleForTesting
+  static const basmalaScale = 1.35;
+
   const QcfPageBody({
     super.key,
     required this.pageNumber,
@@ -68,16 +81,6 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   /// 1.036 elsewhere (measured from the glyph outlines). These factors make
   /// their letters as tall as on every other page.
   static const _openingScale = {1: 1.165, 2: 1.241};
-
-  /// The basmala as printed: the words of Al-Fatiha's first ayah in the
-  /// first page's font, without its ayah number. Basmala lines carry no
-  /// glyphs of their own.
-  static const _basmalaGlyphs = '\uFB51\uFB52\uFB53\uFB54';
-
-  /// Size of the basmala against the page's font size: the first page's
-  /// glyphs are drawn small, and at this size the basmala's letters match
-  /// the page's and it spans about half the line, as printed.
-  static const _basmalaScale = 1.6;
 
   late Future<bool> _ready;
   Timer? _neighbours;
@@ -257,7 +260,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         );
       case QcfLineKind.basmala:
         return Text(
-          _basmalaGlyphs,
+          QcfPageBody.basmalaGlyphs,
           maxLines: 1,
           softWrap: false,
           textDirection: TextDirection.rtl,
@@ -266,11 +269,13 @@ class _QcfPageBodyState extends State<QcfPageBody> {
             // The opening pages' size is raised for their own small glyphs,
             // which the basmala does not share.
             fontSize:
-                size * _basmalaScale / (_openingScale[widget.pageNumber] ?? 1),
+                size *
+                QcfPageBody.basmalaScale /
+                (_openingScale[widget.pageNumber] ?? 1),
             height:
                 _lineHeight *
                 (_openingScale[widget.pageNumber] ?? 1) /
-                _basmalaScale,
+                QcfPageBody.basmalaScale,
             color: widget.textColor,
           ),
         );
