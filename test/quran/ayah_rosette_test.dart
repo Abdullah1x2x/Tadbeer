@@ -231,6 +231,36 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('cancelling a note from it leaves nothing open', (tester) async {
+    await open(tester);
+    AyahRosette.releaseAt(press);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ملاحظة').first);
+    await tester.pumpAndSettle();
+    expect(find.byType(TextField), findsOneWidget);
+
+    await tester.tap(find.text('إلغاء'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AyahActionSheet), findsNothing);
+    expect(find.text('رابط آيات'), findsNothing);
+  });
+
+  testWidgets('saving a note from it closes it too', (tester) async {
+    await open(tester);
+    AyahRosette.releaseAt(press);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ملاحظة').first);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'ملاحظة على الآية');
+    await tester.runAsync(() async {
+      await tester.tap(find.text('حفظ'));
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    });
+    await tester.pumpAndSettle();
+    expect(find.byType(AyahActionSheet), findsNothing);
+    expect(UserDataStore.instance.getNotesForAyah(2, 255), hasLength(1));
+  });
+
   testWidgets('a screen reader gets the plain sheet', (tester) async {
     await open(tester, screenReader: true);
     expect(find.byType(AyahActionSheet), findsOneWidget);
