@@ -6,6 +6,14 @@ mixin _JourneySection on _StoreState {
   // READING JOURNEY (الختمة والإحصاءات)
   // ==========================================
 
+  /// Whether the Mushaf offers to start rather than resume: a khatma not
+  /// begun yet, or, without one, nothing read so far.
+  bool get readingNotStarted {
+    final plan = _journey.plan;
+    if (plan != null) return plan.advanced == 0;
+    return _journey.totalPages == 0 && readingPosition.page == 1;
+  }
+
   /// يسجل قراءة صفحة اليوم ويحدّث تقدم الختمة.
   Future<void> recordPageRead(int page, {DateTime? now}) async {
     if (page < 1 || page > mushafPageCount) return;

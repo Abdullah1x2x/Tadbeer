@@ -93,7 +93,7 @@ class HomeWidgetSync {
       'portion_done': strings.widgetPortionDone,
       'khatma_page': plan == null ? '' : strings.pageNumber(plan.currentPage),
       'reflect_label': strings.reflectOnIt,
-      'read_label': plan != null && plan.advanced == 0
+      'read_label': store.readingNotStarted
           ? strings.khatmaStartNow
           : strings.resumeReading,
     };

@@ -729,7 +729,9 @@ class _QuranHeroCard extends StatelessWidget {
                       ),
                       const SizedBox(width: AppTokens.spaceXs),
                       FuturisticBadge(
-                        label: context.l10n.resumeReading,
+                        label: UserDataStore.instance.readingNotStarted
+                            ? context.l10n.khatmaStartNow
+                            : context.l10n.resumeReading,
                         color: goldAccent,
                         showDot: true,
                         isCompact: isVeryCompact,
