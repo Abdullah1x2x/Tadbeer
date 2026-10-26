@@ -468,6 +468,11 @@ class _TodayPortionCard extends StatelessWidget {
               label: Text(
                 done
                     ? l10n.keepReading
+                    // Nothing read yet: there is nothing to continue.
+                    : plan.advanced == 0
+                    ? (plan.startPage == 1
+                          ? l10n.khatmaStartNow
+                          : l10n.khatmaStartFromPage(plan.startPage))
                     : l10n.continueFromPage(plan.currentPage),
               ),
             ),
@@ -634,7 +639,9 @@ class _WeekChartCard extends StatelessWidget {
                               duration: Duration(milliseconds: 500 + i * 70),
                               curve: Curves.easeOutBack,
                               builder: (context, v, _) => Container(
-                                height: math.max(4, 100 * v),
+                                // easeOutBack overshoots; the tallest bar must
+                                // not outgrow the chart while it bounces.
+                                height: (100 * v).clamp(4.0, 100.0),
                                 decoration: BoxDecoration(
                                   gradient: i == days.length - 1
                                       ? AppColors.goldGradient
