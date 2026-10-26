@@ -1007,5 +1007,8 @@
   "saveToPhotos": "حفظ في الصور",
   "cardSaved": "حُفظت البطاقة في الصور",
   "cardSaveFailed": "تعذّر حفظ البطاقة",
-  "cardSaveDenied": "اسمح لتدبير بإضافة الصور من إعدادات الجهاز"
+  "cardSaveDenied": "اسمح لتدبير بإضافة الصور من إعدادات الجهاز",
+  "continueReflection": "تابع وقفتك",
+  "markAyah": "علامة",
+  "unmarkAyah": "إزالة العلامة"
 }

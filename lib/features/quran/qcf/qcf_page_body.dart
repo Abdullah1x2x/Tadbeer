@@ -49,6 +49,16 @@ class QcfPageBody extends StatefulWidget {
   @visibleForTesting
   static const basmalaScale = 1.35;
 
+  /// The fonts of the first two pages draw words smaller for the same font
+  /// size: their median word height is 0.889 and 0.834 of the size, against
+  /// 1.036 elsewhere (measured from the glyph outlines). These factors make
+  /// their letters as tall as on every other page.
+  static const _openingScale = {1: 1.165, 2: 1.241};
+
+  /// How much larger [page]'s glyphs must be drawn to match the rest of the
+  /// Mushaf: above 1 for the two opening pages, 1 elsewhere.
+  static double glyphScale(int page) => _openingScale[page] ?? 1;
+
   const QcfPageBody({
     super.key,
     required this.pageNumber,
@@ -75,12 +85,6 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   /// Widest line of an ordinary page at [_probe] size (the median across
   /// the Mushaf), used to size the opening pages like the rest.
   static const _typicalWidest = 1450.0;
-
-  /// The fonts of the first two pages draw words smaller for the same font
-  /// size: their median word height is 0.889 and 0.834 of the size, against
-  /// 1.036 elsewhere (measured from the glyph outlines). These factors make
-  /// their letters as tall as on every other page.
-  static const _openingScale = {1: 1.165, 2: 1.241};
 
   late Future<bool> _ready;
   Timer? _neighbours;
@@ -173,7 +177,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     final lines = QcfLayout.instance.page(widget.pageNumber);
     if (lines.isEmpty) return widget.fallback;
     final widest = _measure(lines);
-    final openingScale = _openingScale[widget.pageNumber];
+    final openingScale = QcfPageBody._openingScale[widget.pageNumber];
     return LayoutBuilder(
       builder: (context, box) {
         final byWidth = _probe * box.maxWidth / widest;
@@ -272,10 +276,10 @@ class _QcfPageBodyState extends State<QcfPageBody> {
             fontSize:
                 size *
                 QcfPageBody.basmalaScale /
-                (_openingScale[widget.pageNumber] ?? 1),
+                QcfPageBody.glyphScale(widget.pageNumber),
             height:
                 _lineHeight *
-                (_openingScale[widget.pageNumber] ?? 1) /
+                QcfPageBody.glyphScale(widget.pageNumber) /
                 QcfPageBody.basmalaScale,
             color: widget.textColor,
           ),

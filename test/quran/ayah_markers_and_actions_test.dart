@@ -132,23 +132,38 @@ void main() {
       expect(find.text('وقفة تدبر'), findsOneWidget);
       expect(find.text('رابط آيات'), findsOneWidget);
       expect(find.text('ملاحظة'), findsOneWidget);
-      expect(find.text('حفظ'), findsOneWidget);
+      expect(find.text('علامة'), findsOneWidget);
       expect(find.text('تمييز'), findsOneWidget);
+      expect(find.text('أضف للحفظ'), findsOneWidget);
       expect(find.text('نسخ'), findsOneWidget);
       expect(find.text('مشاركة'), findsOneWidget);
 
-      final actionsRowFinder = find.byWidgetPredicate(
-        (w) =>
-            w is Row &&
-            w.mainAxisAlignment == MainAxisAlignment.spaceEvenly &&
-            w.children.length == 7,
-      );
-      expect(actionsRowFinder, findsOneWidget);
-
-      final row = tester.widget<Row>(actionsRowFinder);
-      for (final child in row.children) {
-        expect(child, isA<Expanded>());
+      // Reflection leads on its own; the rest sit four to a row, each as
+      // wide as the others, with room left for another in the last row.
+      final reflect = tester.getRect(find.text('وقفة تدبر'));
+      final tiles = [
+        for (final label in [
+          'رابط آيات',
+          'ملاحظة',
+          'علامة',
+          'تمييز',
+          'أضف للحفظ',
+          'مشاركة',
+          'نسخ',
+        ])
+          tester.getRect(
+            find.ancestor(of: find.text(label), matching: find.byType(InkWell)),
+          ),
+      ];
+      final rows = tiles.map((r) => r.top.round()).toSet().toList()..sort();
+      expect(rows, hasLength(2));
+      expect(rows.first, greaterThan(reflect.bottom));
+      expect(tiles.where((r) => r.top.round() == rows.first), hasLength(4));
+      expect(tiles.where((r) => r.top.round() == rows.last), hasLength(3));
+      for (final r in tiles) {
+        expect(r.width, closeTo(tiles.first.width, 0.5));
       }
+      expect(tester.takeException(), isNull);
     });
   });
 
@@ -167,8 +182,7 @@ void main() {
       expect(
         hasReducedSpacing,
         isTrue,
-        reason:
-            'Intro screen option must be raised by ~10px using SizedBox(height: 6)',
+        reason: 'Intro screen option must be raised by ~10px using SizedBox(height: 6)',
       );
     });
   });

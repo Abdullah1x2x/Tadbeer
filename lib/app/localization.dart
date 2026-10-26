@@ -362,6 +362,9 @@ class AppStrings {
   String get addNote => _l.addNote;
   String get saveBookmark => _l.saveBookmark;
   String get removeBookmark => _l.removeBookmark;
+  String get continueReflection => _l.continueReflection;
+  String get markAyah => _l.markAyah;
+  String get unmarkAyah => _l.unmarkAyah;
   String get highlight => _l.highlight;
   String get removeHighlight => _l.removeHighlight;
   String get copy => _l.copy;

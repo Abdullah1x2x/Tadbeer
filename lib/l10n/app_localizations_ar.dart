@@ -1662,4 +1662,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cardSaveDenied => 'اسمح لتدبير بإضافة الصور من إعدادات الجهاز';
+
+  @override
+  String get continueReflection => 'تابع وقفتك';
+
+  @override
+  String get markAyah => 'علامة';
+
+  @override
+  String get unmarkAyah => 'إزالة العلامة';
 }
