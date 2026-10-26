@@ -140,9 +140,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
         ayahText: widget.ayah.text,
       );
     }
-    if (mounted) {
-      setState(() => _isNoteEditorOpen = false);
-    }
+    // The sheet closes after saving, so it does not go back to the actions.
   }
 
   /// يبني واجهة نافذة إجراءات الآية وأوضاع تحرير الملاحظة أو اختيار لون التظليل.
@@ -340,8 +338,11 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            onPressed: () =>
-                                setState(() => _isNoteEditorOpen = false),
+                            // Opened on the editor alone, cancel closes it
+                            // rather than showing the other actions.
+                            onPressed: () => widget.mode == AyahSheetMode.note
+                                ? Navigator.of(context).pop()
+                                : setState(() => _isNoteEditorOpen = false),
                             child: Text(
                               l10n.cancel,
                               style: TextStyle(
