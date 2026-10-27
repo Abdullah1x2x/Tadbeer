@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/features/audio/audio_downloads.dart';
 import 'package:tadbeer/features/audio/quran_audio.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
@@ -151,6 +152,11 @@ void main() {
     final engine = _SilentEngine();
     final previous = QuranAudio.instance;
     QuranAudio.instance = QuranAudio.withEngine(engine);
+    // Nothing downloaded: the recitation would stream.
+    AudioDownloads.instance = AudioDownloads.at(
+      Directory('${tempDir.path}/recitations'),
+      (url, to) async {},
+    );
     addTearDown(() => QuranAudio.instance = previous);
 
     await open(tester);
@@ -295,7 +301,8 @@ class _SilentEngine implements AudioEngine {
   @override
   Stream<Object> get errors => const Stream.empty();
   @override
-  Future<void> load(List<Uri> urls, {int start = 0}) async => loaded = true;
+  Future<void> load(List<AudioTrack> tracks, {int start = 0}) async =>
+      loaded = true;
   @override
   Future<void> play() async {}
   @override

@@ -8,6 +8,7 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/audio/audio_bar.dart';
+import 'package:tadbeer/features/audio/audio_downloads.dart';
 import 'package:tadbeer/features/audio/quran_audio.dart';
 import 'package:tadbeer/features/audio/reciters.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
@@ -22,6 +23,7 @@ class _FakeEngine implements AudioEngine {
 
   final calls = <String>[];
   List<Uri> loaded = const [];
+  List<String> titles = const [];
   bool failLoad = false;
 
   @override
@@ -36,10 +38,11 @@ class _FakeEngine implements AudioEngine {
   Stream<Object> get errors => failures.stream;
 
   @override
-  Future<void> load(List<Uri> urls, {int start = 0}) async {
+  Future<void> load(List<AudioTrack> tracks, {int start = 0}) async {
     calls.add('load');
     if (failLoad) throw Exception('offline');
-    loaded = urls;
+    loaded = [for (final t in tracks) t.uri];
+    titles = [for (final t in tracks) t.title];
     indexes.add(start);
   }
 
@@ -72,10 +75,24 @@ void main() {
   late Directory tempDir;
   final repo = QuranRepository.instance;
 
+  /// Every file asked of the internet by the downloads.
+  late List<Uri> fetched;
+  late bool offline;
+
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_audio_');
     await UserDataStore.instance.init(File('${tempDir.path}/data.json'));
     await repo.init();
+    fetched = [];
+    offline = false;
+    AudioDownloads.instance = AudioDownloads.at(
+      Directory('${tempDir.path}/recitations'),
+      (url, to) async {
+        if (offline) throw const SocketException('offline');
+        fetched.add(url);
+        await to.writeAsBytes([1, 2, 3]);
+      },
+    );
   });
 
   tearDown(() {
@@ -122,6 +139,76 @@ void main() {
       // Basmala, then each of the four ayahs three times.
       expect(queue.urls, hasLength(1 + 4 * 3));
       expect(queue.startOf(repo.getAyah(112, 2)!), 4);
+    });
+  });
+
+  group('AudioDownloads', () {
+    final husary = reciterById('ar.husary');
+
+    test('downloads a surah with its basmala, file by file', () async {
+      final downloads = AudioDownloads.instance;
+      expect(await downloads.downloadSurah(husary, 112), isTrue);
+      // The basmala and al-Ikhlas's four ayahs.
+      expect(fetched, hasLength(5));
+      expect(downloads.isDownloaded(husary, 112), isTrue);
+      expect(downloads.isDownloaded(husary, 113), isFalse);
+      final first = repo.getAyah(112, 1)!.id;
+      expect(downloads.sourceFor(husary, first).scheme, 'file');
+      expect(
+        File.fromUri(downloads.sourceFor(husary, first)).existsSync(),
+        isTrue,
+      );
+      expect(
+        downloads.sourceFor(reciterById('ar.minshawi'), first).scheme,
+        'https',
+      );
+      expect(await downloads.bytesOf(husary), 15);
+
+      // Already there: nothing is fetched again.
+      fetched.clear();
+      await downloads.downloadSurah(husary, 112);
+      expect(fetched, isEmpty);
+    });
+
+    test('finds earlier downloads on the next start', () async {
+      await AudioDownloads.instance.downloadSurah(husary, 112);
+      final again = AudioDownloads.at(
+        Directory('${tempDir.path}/recitations'),
+        (url, to) async {},
+      );
+      await again.ready();
+      expect(again.isDownloaded(husary, 112), isTrue);
+    });
+
+    test('keeps the basmala while another surah needs it', () async {
+      final downloads = AudioDownloads.instance;
+      await downloads.downloadSurah(husary, 112);
+      await downloads.downloadSurah(husary, 113);
+      await downloads.deleteSurah(husary, 112);
+      expect(downloads.isDownloaded(husary, 112), isFalse);
+      expect(downloads.isDownloaded(husary, 113), isTrue);
+      await downloads.deleteSurah(husary, 113);
+      expect(downloads.has(husary, 1), isFalse);
+      expect(await downloads.bytesOf(husary), 0);
+    });
+
+    test('a failed download says so and keeps what it got', () async {
+      final downloads = AudioDownloads.instance;
+      offline = true;
+      expect(await downloads.downloadSurah(husary, 114), isFalse);
+      expect(downloads.failed, contains(('ar.husary', 114)));
+      offline = false;
+      expect(await downloads.downloadSurah(husary, 114), isTrue);
+      expect(downloads.failed, isEmpty);
+    });
+
+    test('plays downloaded ayahs from the device', () async {
+      await AudioDownloads.instance.downloadSurah(husary, 112);
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      await audio.playFrom(repo.getAyah(112, 1)!);
+      expect(engine.loaded.every((u) => u.scheme == 'file'), isTrue);
+      expect(engine.titles[1], 'سورة الإخلاص · الآية ١');
     });
   });
 

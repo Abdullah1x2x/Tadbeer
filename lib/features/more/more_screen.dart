@@ -10,6 +10,7 @@ import '../books/books_screen.dart';
 import '../highlights/highlights_screen.dart';
 import '../journey/journey_screen.dart';
 import '../journey/mushaf_map_screen.dart';
+import '../audio/downloads_screen.dart';
 import '../qibla/qibla_screen.dart';
 import '../memorization/memorization_screen.dart';
 import '../notes/notes_screen.dart';
@@ -61,6 +62,11 @@ class MoreScreen extends StatelessWidget {
                     icon: AppIcons.path,
                     label: l10n.guidedPathways,
                     onTap: () => open(const GuidedPathwaysScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.headphones,
+                    label: l10n.recitationDownloads,
+                    onTap: () => open(const RecitationDownloadsScreen()),
                   ),
                   _Tile(
                     icon: AppIcons.compass,

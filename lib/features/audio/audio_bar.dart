@@ -5,6 +5,7 @@ import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/design_system/app_icons.dart';
 import '../quran/data/quran_repository.dart';
+import 'downloads_screen.dart';
 import 'quran_audio.dart';
 import 'reciters.dart';
 
@@ -236,7 +237,23 @@ class AudioSettingsSheet extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 14),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(AppIcons.downloadSimple, color: gold),
+                title: Text(l10n.downloadForOffline),
+                trailing: const Icon(AppIcons.caretRight),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RecitationDownloadsScreen(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 8),
               Text(
                 l10n.audioSource,
                 textAlign: TextAlign.center,

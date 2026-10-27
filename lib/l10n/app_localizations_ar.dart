@@ -1816,4 +1816,45 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get audioSource =>
       'التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت';
+
+  @override
+  String get recitationDownloads => 'تنزيل التلاوات';
+
+  @override
+  String get downloadForOffline => 'تنزيل للاستماع دون إنترنت';
+
+  @override
+  String get downloadedLabel => 'منزّلة على جهازك';
+
+  @override
+  String get downloadFailed => 'تعذّر التنزيل، حاول مرة أخرى';
+
+  @override
+  String get downloadSurah => 'تنزيل السورة';
+
+  @override
+  String get cancelDownload => 'إيقاف التنزيل';
+
+  @override
+  String get deleteDownload => 'حذف التنزيل';
+
+  @override
+  String get deleteAllDownloads => 'حذف كل التنزيلات';
+
+  @override
+  String deleteAllDownloadsConfirm(String name) {
+    return 'ستُحذف كل سور $name المنزّلة من جهازك.';
+  }
+
+  @override
+  String downloadsSize(String size) {
+    return 'على جهازك: $size ميجابايت';
+  }
+
+  @override
+  String get downloadJuzAmma => 'تنزيل جزء عمّ';
+
+  @override
+  String get downloadsHint =>
+      'السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.';
 }

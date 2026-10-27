@@ -1067,5 +1067,27 @@
   "pauseAudio": "إيقاف مؤقت",
   "stopAudio": "إيقاف التلاوة",
   "resting": "وقفة تدبر…",
-  "audioSource": "التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت"
+  "audioSource": "التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت",
+  "recitationDownloads": "تنزيل التلاوات",
+  "downloadForOffline": "تنزيل للاستماع دون إنترنت",
+  "downloadedLabel": "منزّلة على جهازك",
+  "downloadFailed": "تعذّر التنزيل، حاول مرة أخرى",
+  "downloadSurah": "تنزيل السورة",
+  "cancelDownload": "إيقاف التنزيل",
+  "deleteDownload": "حذف التنزيل",
+  "deleteAllDownloads": "حذف كل التنزيلات",
+  "deleteAllDownloadsConfirm": "ستُحذف كل سور {name} المنزّلة من جهازك.",
+  "@deleteAllDownloadsConfirm": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "downloadsSize": "على جهازك: {size} ميجابايت",
+  "@downloadsSize": {
+    "placeholders": {
+      "size": {"type": "String"}
+    }
+  },
+  "downloadJuzAmma": "تنزيل جزء عمّ",
+  "downloadsHint": "السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال."
 }

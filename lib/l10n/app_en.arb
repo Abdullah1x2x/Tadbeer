@@ -557,5 +557,27 @@
   "pauseAudio": "Pause",
   "stopAudio": "Stop recitation",
   "resting": "Pausing to reflect…",
-  "audioSource": "Recitations from Islamic Network (alquran.cloud); they need an internet connection"
+  "audioSource": "Recitations from Islamic Network (alquran.cloud); they need an internet connection",
+  "recitationDownloads": "Recitation downloads",
+  "downloadForOffline": "Download to listen offline",
+  "downloadedLabel": "On your device",
+  "downloadFailed": "Download failed, try again",
+  "downloadSurah": "Download surah",
+  "cancelDownload": "Stop download",
+  "deleteDownload": "Delete download",
+  "deleteAllDownloads": "Delete all downloads",
+  "deleteAllDownloadsConfirm": "Every downloaded surah by {name} will be removed from your device.",
+  "@deleteAllDownloadsConfirm": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "downloadsSize": "On your device: {size} MB",
+  "@downloadsSize": {
+    "placeholders": {
+      "size": {"type": "String"}
+    }
+  },
+  "downloadJuzAmma": "Download Juz Amma",
+  "downloadsHint": "Downloaded surahs play offline; the rest stream when you are connected."
 }
