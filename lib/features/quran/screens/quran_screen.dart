@@ -12,6 +12,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
 import '../widgets/ayah_rosette.dart';
+import '../widgets/text_scale_control.dart';
 import '../widgets/word_meanings_panel.dart';
 import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
@@ -421,7 +422,9 @@ class _QuranScreenState extends State<QuranScreen> {
                         ],
                       ),
                       const SizedBox(height: 14),
-                      // The chosen font, shown on the basmala.
+                      const TextScaleControl(),
+                      const SizedBox(height: 12),
+                      // The chosen font and size, shown on the basmala.
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -446,7 +449,7 @@ class _QuranScreenState extends State<QuranScreen> {
                           textDirection: TextDirection.rtl,
                           style: TextStyle(
                             fontFamily: settings.quranFontFamilyName,
-                            fontSize: 22,
+                            fontSize: 20 * settings.flowingTextScale,
                             color: MushafPalette.of(
                               isDark: isDark,
                               tone: settings.mushafPaperTone,

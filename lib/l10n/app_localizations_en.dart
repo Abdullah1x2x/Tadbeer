@@ -1687,4 +1687,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchSurahHint => 'Search by surah name or number';
+
+  @override
+  String get enlargeText => 'Text size';
+
+  @override
+  String get textSmaller => 'Smaller text';
+
+  @override
+  String get textLarger => 'Larger text';
 }

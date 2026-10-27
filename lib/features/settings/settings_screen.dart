@@ -9,6 +9,7 @@ import '../reminders/reminders_screen.dart';
 import 'user_settings_model.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_select.dart';
+import '../quran/widgets/text_scale_control.dart';
 import '../quran/qcf/madinah_preview.dart';
 
 /// شاشة الإعدادات لإدارة المظهر ونوع وحجم خط المصحف واللغة وإعادة تعيين البيانات.
@@ -340,6 +341,8 @@ class SettingsScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+                          const SizedBox(height: 12),
+                          const TextScaleControl(),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 8),
                             child: Divider(height: 1),
@@ -428,7 +431,7 @@ class SettingsScreen extends StatelessWidget {
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(
                                     fontFamily: settings.quranFontFamilyName,
-                                    fontSize: 20,
+                                    fontSize: 20 * settings.flowingTextScale,
                                     height: 1.85,
                                     color: MushafPalette.of(
                                       isDark: isDark,
