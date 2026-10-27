@@ -1819,4 +1819,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get audioSource =>
       'Recitations from Islamic Network (alquran.cloud); they need an internet connection';
+
+  @override
+  String get recitationDownloads => 'Recitation downloads';
+
+  @override
+  String get downloadForOffline => 'Download to listen offline';
+
+  @override
+  String get downloadedLabel => 'On your device';
+
+  @override
+  String get downloadFailed => 'Download failed, try again';
+
+  @override
+  String get downloadSurah => 'Download surah';
+
+  @override
+  String get cancelDownload => 'Stop download';
+
+  @override
+  String get deleteDownload => 'Delete download';
+
+  @override
+  String get deleteAllDownloads => 'Delete all downloads';
+
+  @override
+  String deleteAllDownloadsConfirm(String name) {
+    return 'Every downloaded surah by $name will be removed from your device.';
+  }
+
+  @override
+  String downloadsSize(String size) {
+    return 'On your device: $size MB';
+  }
+
+  @override
+  String get downloadJuzAmma => 'Download Juz Amma';
+
+  @override
+  String get downloadsHint =>
+      'Downloaded surahs play offline; the rest stream when you are connected.';
 }

@@ -3257,6 +3257,78 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت'**
   String get audioSource;
+
+  /// No description provided for @recitationDownloads.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنزيل التلاوات'**
+  String get recitationDownloads;
+
+  /// No description provided for @downloadForOffline.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنزيل للاستماع دون إنترنت'**
+  String get downloadForOffline;
+
+  /// No description provided for @downloadedLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'منزّلة على جهازك'**
+  String get downloadedLabel;
+
+  /// No description provided for @downloadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر التنزيل، حاول مرة أخرى'**
+  String get downloadFailed;
+
+  /// No description provided for @downloadSurah.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنزيل السورة'**
+  String get downloadSurah;
+
+  /// No description provided for @cancelDownload.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف التنزيل'**
+  String get cancelDownload;
+
+  /// No description provided for @deleteDownload.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف التنزيل'**
+  String get deleteDownload;
+
+  /// No description provided for @deleteAllDownloads.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف كل التنزيلات'**
+  String get deleteAllDownloads;
+
+  /// No description provided for @deleteAllDownloadsConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستُحذف كل سور {name} المنزّلة من جهازك.'**
+  String deleteAllDownloadsConfirm(String name);
+
+  /// No description provided for @downloadsSize.
+  ///
+  /// In ar, this message translates to:
+  /// **'على جهازك: {size} ميجابايت'**
+  String downloadsSize(String size);
+
+  /// No description provided for @downloadJuzAmma.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنزيل جزء عمّ'**
+  String get downloadJuzAmma;
+
+  /// No description provided for @downloadsHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.'**
+  String get downloadsHint;
 }
 
 class _AppLocalizationsDelegate

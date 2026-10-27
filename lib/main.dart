@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import 'app/app.dart';
 import 'core/services/local_reminder_service.dart';
@@ -122,6 +123,19 @@ void main() async {
   // A completed tasbeeh round counts toward the reading streak.
   TasbeehRepository.instance.onTargetReached = () =>
       UserDataStore.instance.markActiveDay();
+
+  // The recitation plays on in the background, with its controls in the
+  // notification. Platforms without it (desktop) play in the app only.
+  try {
+    await JustAudioBackground.init(
+      androidNotificationChannelId: 'com.tadbeer.app.recitation',
+      androidNotificationChannelName: 'التلاوة',
+      androidNotificationOngoing: true,
+      androidNotificationIcon: 'mipmap/ic_launcher',
+    );
+  } on Object catch (e) {
+    debugPrint('Background recitation unavailable: $e');
+  }
 
   runApp(const TadbeerApp());
   // Buttons on the home-screen widget open the matching screen.

@@ -348,6 +348,19 @@ class AppStrings {
   String get textSmaller => _l.textSmaller;
   String get textLarger => _l.textLarger;
   String get defaultTextSize => _l.defaultTextSize;
+  String get recitationDownloads => _l.recitationDownloads;
+  String get downloadForOffline => _l.downloadForOffline;
+  String get downloadedLabel => _l.downloadedLabel;
+  String get downloadFailed => _l.downloadFailed;
+  String get downloadSurah => _l.downloadSurah;
+  String get cancelDownload => _l.cancelDownload;
+  String get deleteDownload => _l.deleteDownload;
+  String get deleteAllDownloads => _l.deleteAllDownloads;
+  String deleteAllDownloadsConfirm(String name) =>
+      _l.deleteAllDownloadsConfirm(name);
+  String downloadsSize(String size) => _l.downloadsSize(size);
+  String get downloadJuzAmma => _l.downloadJuzAmma;
+  String get downloadsHint => _l.downloadsHint;
   String get listen => _l.listen;
   String get listenFromHere => _l.listenFromHere;
   String get audioSettings => _l.audioSettings;

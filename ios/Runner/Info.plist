@@ -76,5 +76,9 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>يحتاج تدبير موقعك التقريبي لحساب اتجاه القبلة، ولا يُرسل إلى أي مكان.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>

@@ -10,10 +10,13 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import '../../core/storage/user_data_store.dart';
+import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
+import 'audio_downloads.dart';
 import 'reciters.dart';
 
 /// What the playback needs from an audio player; replaceable in tests.
@@ -29,9 +32,9 @@ abstract class AudioEngine {
   Stream<void> get completed;
   Stream<Object> get errors;
 
-  /// Loads [urls] as the queue, ready to play from [start]; throws when
+  /// Loads [tracks] as the queue, ready to play from [start]; throws when
   /// the first file cannot be fetched.
-  Future<void> load(List<Uri> urls, {int start = 0});
+  Future<void> load(List<AudioTrack> tracks, {int start = 0});
   Future<void> play();
   Future<void> pause();
   Future<void> seekTo(int index);
@@ -64,10 +67,20 @@ class JustAudioEngine implements AudioEngine {
   Stream<Object> get errors => _player.errorStream;
 
   @override
-  Future<void> load(List<Uri> urls, {int start = 0}) => _player.setAudioSources(
-    [for (final url in urls) AudioSource.uri(url)],
-    initialIndex: start,
-  );
+  Future<void> load(List<AudioTrack> tracks, {int start = 0}) =>
+      _player.setAudioSources([
+        for (final (i, t) in tracks.indexed)
+          AudioSource.uri(
+            t.uri,
+            // What the notification and the lock screen show.
+            tag: MediaItem(
+              id: '$i:${t.uri}',
+              title: t.title,
+              artist: t.artist,
+              album: 'تَدْبِير',
+            ),
+          ),
+      ], initialIndex: start);
 
   @override
   Future<void> play() async {
@@ -85,36 +98,64 @@ class JustAudioEngine implements AudioEngine {
   Future<void> stop() => _player.stop();
 }
 
+/// ملف واحد في قائمة التشغيل وما يُعرض عنه في الإشعار.
+class AudioTrack {
+  final Uri uri;
+  final String title;
+  final String artist;
+
+  const AudioTrack(this.uri, {required this.title, required this.artist});
+}
+
 /// قائمة التشغيل: ملف لكل عنصر، والآية التي يقرؤها.
 class AudioQueue {
-  final List<Uri> urls;
+  final List<AudioTrack> tracks;
 
   /// The ayah each item recites; the basmala carries the ayah it opens.
   final List<Ayah> ayahs;
 
-  const AudioQueue._(this.urls, this.ayahs);
+  const AudioQueue._(this.tracks, this.ayahs);
+
+  /// Where each item plays from.
+  List<Uri> get urls => [for (final t in tracks) t.uri];
 
   /// From [from] to the end of its surah, each ayah [repeat] times, by
   /// [reciter]. A surah begun from its first ayah opens with the basmala,
-  /// except al-Fatiha, whose first ayah it is, and at-Tawbah.
-  factory AudioQueue.from(Ayah from, Reciter reciter, {int repeat = 1}) {
+  /// except al-Fatiha, whose first ayah it is, and at-Tawbah. Each file
+  /// comes from [source] (a download, or the internet by default).
+  factory AudioQueue.from(
+    Ayah from,
+    Reciter reciter, {
+    int repeat = 1,
+    Uri Function(int ayahId)? source,
+  }) {
     final repo = QuranRepository.instance;
     final surah = repo.getSurah(from.surahNumber);
-    final urls = <Uri>[];
+    final uriFor = source ?? reciter.urlFor;
+    final tracks = <AudioTrack>[];
     final ayahs = <Ayah>[];
+    void add(int fileId, Ayah ayah) {
+      tracks.add(
+        AudioTrack(
+          uriFor(fileId),
+          title:
+              'سورة ${surah.name} · الآية '
+              '${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}',
+          artist: reciter.name,
+        ),
+      );
+      ayahs.add(ayah);
+    }
+
     for (var n = from.ayahNumber; n <= surah.ayahCount; n++) {
       final ayah = repo.getAyah(surah.number, n);
       if (ayah == null) continue;
-      if (n == 1 && surah.number != 1 && surah.number != 9) {
-        urls.add(reciter.urlFor(1));
-        ayahs.add(ayah);
-      }
+      if (n == 1 && surah.number != 1 && surah.number != 9) add(1, ayah);
       for (var i = 0; i < repeat; i++) {
-        urls.add(reciter.urlFor(ayah.id));
-        ayahs.add(ayah);
+        add(ayah.id, ayah);
       }
     }
-    return AudioQueue._(urls, ayahs);
+    return AudioQueue._(tracks, ayahs);
   }
 
   /// The first item of [ayah], or null if it is not in the queue.
@@ -227,12 +268,21 @@ class QuranAudio extends ChangeNotifier {
   Future<void> playFrom(Ayah ayah) async {
     _pauseTimer?.cancel();
     failed = false;
-    final queue = _queue = AudioQueue.from(ayah, reciter, repeat: repeat);
     current = ayah;
     loading = true;
     notifyListeners();
+    // Downloaded ayahs play from the device; the rest stream.
+    final downloads = AudioDownloads.instance;
+    await downloads.ready();
+    final reciter = this.reciter;
+    final queue = _queue = AudioQueue.from(
+      ayah,
+      reciter,
+      repeat: repeat,
+      source: (id) => downloads.sourceFor(reciter, id),
+    );
     try {
-      await _player.load(queue.urls);
+      await _player.load(queue.tracks);
       if (!identical(queue, _queue)) return;
       await _player.play();
     } on Object {
