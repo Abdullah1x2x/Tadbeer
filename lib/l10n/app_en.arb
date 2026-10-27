@@ -67,23 +67,6 @@
   "activeDaysLabel": "Active days",
   "reflectionsLabel": "Reflections",
   "memorizedLabel": "Verses memorized",
-  "groupKhatma": "Group khatma",
-  "groupKhatmaHint": "Split the 30 juz among family or friends and share the code. Each person pastes it, picks their name and tracks their juz, offline.",
-  "createGroupKhatma": "Create a group khatma",
-  "groupKhatmaTitle": "Khatma name",
-  "participantNames": "Participants",
-  "oneNamePerLine": "One name per line",
-  "distributeJuz": "Distribute juz",
-  "joinWithCode": "Join with a code",
-  "pasteGroupCode": "Paste the khatma code",
-  "invalidGroupCode": "This code is not valid",
-  "join": "Join",
-  "whoAreYou": "Pick your name",
-  "readJuz": "Read juz",
-  "everyonesJuz": "Everyone’s juz",
-  "showQr": "Show QR code",
-  "leaveGroupKhatma": "Leave khatma",
-  "groupCodeIntro": "To join: open Tadbeer → More → Group khatma and paste this code:",
   "continueWhereYouLeft": "Continue where you left off",
   "adhkarKind": "Adhkar",
   "weeklyGoals": "Weekly goals",
@@ -385,8 +368,6 @@
   "fromMyPosition": "From my place (p. {page})",
   "reachedPage": "Reached page {page}",
   "portionReminderTitle": "Khatma portion: {pages} pages",
-  "juzLabel": "Juz {juz}",
-  "myJuzTitle": "{name}’s juz",
   "chapterN": "Chapter {n}",
   "daysCount": "{count, plural, =1{1 day} other{{d} days}}",
   "pagesPerDayHint": "Daily portion: {n} pages",
@@ -522,5 +503,37 @@
       "time": {"type": "String"}
     }
   },
-  "streakReminderPrompt": "When should we remind you if you have not read?"
+  "streakReminderPrompt": "When should we remind you if you have not read?",
+  "qibla": "Qibla direction",
+  "qiblaUpdateLocation": "Update my location",
+  "qiblaLocating": "Finding your location…",
+  "qiblaFacing": "You are facing the Qibla",
+  "qiblaTurnRight": "Turn right {deg}°",
+  "@qiblaTurnRight": {
+    "placeholders": {
+      "deg": {"type": "String"}
+    }
+  },
+  "qiblaTurnLeft": "Turn left {deg}°",
+  "@qiblaTurnLeft": {
+    "placeholders": {
+      "deg": {"type": "String"}
+    }
+  },
+  "qiblaFromNorth": "from north",
+  "qiblaKmToMakkah": "km to Makkah",
+  "qiblaFromHere": "From your current location",
+  "qiblaFromLastLocation": "From your last known location",
+  "qiblaNoCompass": "Your device has no compass: point its top north; the Qibla is at the Kaaba mark",
+  "qiblaCalibrate": "If the direction looks off, move the phone in a figure 8 and keep away from metal",
+  "qiblaLocationOff": "Location is off on your device. Turn it on to find the Qibla",
+  "qiblaTurnOnLocation": "Turn on location",
+  "qiblaNeedsLocation": "We need your approximate location to find the Qibla; it is never sent anywhere",
+  "qiblaAllowLocation": "Allow location",
+  "qiblaOpenSettings": "Open settings",
+  "qiblaLocationFailed": "Could not find your location. Make sure it is on and try again",
+  "qiblaNorth": "N",
+  "qiblaEast": "E",
+  "qiblaSouth": "S",
+  "qiblaWest": "W"
 }

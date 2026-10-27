@@ -74,5 +74,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>يحتاج تدبير موقعك التقريبي لحساب اتجاه القبلة، ولا يُرسل إلى أي مكان.</string>
 </dict>
 </plist>
