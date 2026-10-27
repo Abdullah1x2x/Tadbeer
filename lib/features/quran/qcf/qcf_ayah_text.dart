@@ -83,6 +83,7 @@ class _QcfAyahTextState extends State<QcfAyahText> {
         fontFamily: QcfFonts.familyFor(_page),
         fontSize: widget.fontSize * scale,
         height: widget.height / scale,
+        wordSpacing: QcfPageBody.wordSpacingFor(_page, widget.fontSize * scale),
         color: widget.color,
       ),
     );
