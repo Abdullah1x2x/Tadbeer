@@ -171,6 +171,12 @@ class UserSettings {
   /// يعني ضعف حجم الصفحة الكاملة مع التفاف الأسطر.
   static const double maxQuranFontSize = 40.0;
 
+  /// أصغر تكبير للنص المتدفق: حجمه التلقائي كما هو.
+  static const double minFlowingTextScale = 1.0;
+
+  /// أكبر تكبير للنص المتدفق.
+  static const double maxFlowingTextScale = 1.8;
+
   /// وضع المظهر الحالي (فاتح، داكن، أو حسب النظام).
   final ThemeMode themeMode;
 
@@ -198,6 +204,9 @@ class UserSettings {
 
   /// حجم خط المصحف المخصص بالنقاط.
   final double quranFontSize;
+
+  /// تكبير القارئ لخط النص المتدفق فوق حجمه التلقائي (١ = بلا تكبير).
+  final double flowingTextScale;
 
   /// حجم خط عرض الآيات في شاشة روابط الآيات (الافتراضي 18.0pt).
   final double ayahLinkFontSize;
@@ -231,6 +240,7 @@ class UserSettings {
     this.quranFontOption = QuranFontSizeOption.medium,
     this.quranFontFamily = QuranFontFamilyOption.scheherazade,
     this.quranFontSize = defaultQuranFontSize,
+    this.flowingTextScale = 1.0,
     this.ayahLinkFontSize = 18.0,
     this.mushafPaperTone = MushafPaperTone.classic,
     this.colorTheme = AppColorTheme.navy,
@@ -249,6 +259,7 @@ class UserSettings {
     'quranFontOption': quranFontOption.name,
     'quranFontFamily': quranFontFamily.name,
     'quranFontSize': quranFontSize,
+    'flowingTextScale': flowingTextScale,
     'ayahLinkFontSize': ayahLinkFontSize,
     'mushafPaperTone': mushafPaperTone.name,
     'colorTheme': colorTheme.name,
@@ -308,6 +319,8 @@ class UserSettings {
       quranFontOption: fontOpt,
       quranFontFamily: familyOpt,
       quranFontSize: quranSize,
+      flowingTextScale: ((json['flowingTextScale'] as num?)?.toDouble() ?? 1.0)
+          .clamp(minFlowingTextScale, maxFlowingTextScale),
       ayahLinkFontSize: (json['ayahLinkFontSize'] as num?)?.toDouble() ?? 18.0,
       colorTheme: AppColorTheme.values.firstWhere(
         (e) => e.name == json['colorTheme'],
@@ -335,6 +348,7 @@ class UserSettings {
     QuranFontSizeOption? quranFontOption,
     QuranFontFamilyOption? quranFontFamily,
     double? quranFontSize,
+    double? flowingTextScale,
     double? ayahLinkFontSize,
     MushafPaperTone? mushafPaperTone,
     AppColorTheme? colorTheme,
@@ -356,6 +370,9 @@ class UserSettings {
       quranFontOption: quranFontOption ?? this.quranFontOption,
       quranFontFamily: quranFontFamily ?? this.quranFontFamily,
       quranFontSize: newQuranFontSize,
+      flowingTextScale:
+          flowingTextScale?.clamp(minFlowingTextScale, maxFlowingTextScale) ??
+          this.flowingTextScale,
       ayahLinkFontSize: ayahLinkFontSize ?? this.ayahLinkFontSize,
       mushafPaperTone: mushafPaperTone ?? this.mushafPaperTone,
       colorTheme: colorTheme ?? this.colorTheme,

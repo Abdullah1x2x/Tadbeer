@@ -3071,6 +3071,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ابحث باسم السورة أو رقمها'**
   String get searchSurahHint;
+
+  /// No description provided for @enlargeText.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكبير الخط'**
+  String get enlargeText;
+
+  /// No description provided for @textSmaller.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصغير الخط'**
+  String get textSmaller;
+
+  /// No description provided for @textLarger.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكبير الخط أكثر'**
+  String get textLarger;
 }
 
 class _AppLocalizationsDelegate

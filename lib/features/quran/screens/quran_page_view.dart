@@ -171,7 +171,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     final page = widget.page ?? QuranRepository.instance.getPage(pageNumber);
     final memorized = HifzStore.all().keys.toSet();
     final out = StringBuffer(
-      '${s.quranFontSize}|${s.quranFontFamilyName}|${s.mushafPaperTone}|'
+      '${s.quranFontSize}|${s.flowingTextScale}|${s.quranFontFamilyName}|${s.mushafPaperTone}|'
       '${s.mushafStyle}',
     );
     for (final a in page.ayahs) {
@@ -358,8 +358,12 @@ class _QuranPageViewState extends State<QuranPageView> {
       builder: (context, box) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final storage = UserDataStore.instance;
+        // Sized to the screen, enlarged as far as the reader asked; the
+        // Madinah pages ignore it and always fit the screen.
         final effectiveFontSize =
-            widget.fontSize ?? QuranPageView.textSizeFor(box.maxWidth);
+            widget.fontSize ??
+            QuranPageView.textSizeFor(box.maxWidth) *
+                storage.settings.flowingTextScale;
         final palette = MushafPalette.of(
           isDark: isDark,
           tone: storage.settings.mushafPaperTone,

@@ -10,6 +10,7 @@ import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
+import 'package:tadbeer/features/quran/widgets/text_scale_control.dart';
 import 'package:tadbeer/features/settings/user_settings_model.dart';
 
 /// The Mushaf sizes itself to every screen, with nothing to set by hand.
@@ -129,6 +130,81 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  Future<void> setScale(WidgetTester tester, double scale) => tester.runAsync(
+    () => UserDataStore.instance.updateSettings(
+      UserDataStore.instance.settings.copyWith(flowingTextScale: scale),
+    ),
+  );
+
+  testWidgets('the reader can enlarge the flowing text, and it still fits', (
+    tester,
+  ) async {
+    await tester.runAsync(
+      () => UserDataStore.instance.setMushafStyle(MushafStyle.text),
+    );
+    for (final screen in [screens['small phone']!, screens['tablet']!]) {
+      await setScale(tester, 1.8);
+      await pumpPage(tester, screen, page: 51);
+      final family = UserDataStore.instance.settings.quranFontFamilyName;
+      final page = tester.getSize(find.byType(QuranPageView)).width;
+      expect(
+        drawnSize(tester, family),
+        closeTo(QuranPageView.textSizeFor(page) * 1.8, 0.01),
+      );
+      expect(tester.takeException(), isNull);
+    }
+  });
+
+  testWidgets('the Madinah pages ignore the enlargement', (tester) async {
+    await pumpPage(tester, screens['large phone']!);
+    final before = drawnSize(tester, QcfFonts.familyFor(50));
+    await setScale(tester, 1.8);
+    await pumpPage(tester, screens['large phone']!);
+    expect(drawnSize(tester, QcfFonts.familyFor(50)), before);
+  });
+
+  testWidgets('the size control steps within its bounds', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.lightTheme,
+        home: const Scaffold(body: TextScaleControl()),
+      ),
+    );
+    IconButton button(String tip) => tester.widget<IconButton>(
+      find.ancestor(of: find.byTooltip(tip), matching: find.byType(IconButton)),
+    );
+    // At the automatic size it cannot shrink further.
+    expect(button('تصغير الخط').onPressed, isNull);
+
+    for (var i = 0; i < 10; i++) {
+      await tester.runAsync(() async {
+        await tester.tap(find.byTooltip('تكبير الخط أكثر'));
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+      });
+      await tester.pump();
+    }
+    expect(UserDataStore.instance.settings.flowingTextScale, 1.8);
+    expect(button('تكبير الخط أكثر').onPressed, isNull);
+    expect(find.text('١٨٠٪'), findsOneWidget);
+
+    await tester.runAsync(() async {
+      await tester.tap(find.byTooltip('تصغير الخط'));
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+    });
+    await tester.pump();
+    expect(UserDataStore.instance.settings.flowingTextScale, 1.7);
+  });
+
+  test('the enlargement is saved and kept within bounds', () {
+    final saved = const UserSettings().copyWith(flowingTextScale: 1.4);
+    expect(UserSettings.fromJson(saved.toJson()).flowingTextScale, 1.4);
+    expect(
+      UserSettings.fromJson({'flowingTextScale': 5}).flowingTextScale,
+      1.8,
+    );
+    expect(UserSettings.fromJson({}).flowingTextScale, 1.0);
+  });
 
   testWidgets('larger system text still fits', (tester) async {
     for (final screen in [screens['small phone']!, screens['large phone']!]) {

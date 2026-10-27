@@ -367,6 +367,9 @@ class AppStrings {
   String get unmarkAyah => _l.unmarkAyah;
   String get chooseSurah => _l.chooseSurah;
   String get searchSurahHint => _l.searchSurahHint;
+  String get enlargeText => _l.enlargeText;
+  String get textSmaller => _l.textSmaller;
+  String get textLarger => _l.textLarger;
   String get highlight => _l.highlight;
   String get removeHighlight => _l.removeHighlight;
   String get copy => _l.copy;

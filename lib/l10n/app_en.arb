@@ -494,5 +494,8 @@
   "markAyah": "Bookmark",
   "unmarkAyah": "Remove bookmark",
   "chooseSurah": "Choose a surah",
-  "searchSurahHint": "Search by surah name or number"
+  "searchSurahHint": "Search by surah name or number",
+  "enlargeText": "Text size",
+  "textSmaller": "Smaller text",
+  "textLarger": "Larger text"
 }
