@@ -16,6 +16,10 @@ import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
+import '../quran/qcf/qcf_fonts.dart';
+import '../quran/qcf/qcf_layout.dart';
+import '../settings/user_settings_model.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// مقاس بطاقة المشاركة.
@@ -79,6 +83,22 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
 
   /// The card as shown, drawn at [imageWidth] pixels wide.
   Future<Uint8List?> _capture() async {
+    // The Madinah glyphs load with their page; wait for them, so the image
+    // never catches the plain font standing in.
+    final page = widget.ayah.page;
+    if (UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah &&
+        !(QcfLayout.instance.isReady && QcfFonts.instance.isPageLoaded(page))) {
+      await QcfLayout.instance.init();
+      if (await QcfFonts.instance.ensurePage(page)) {
+        // One frame to draw the glyphs in place of the plain font.
+        WidgetsBinding.instance.scheduleFrame();
+        await WidgetsBinding.instance.endOfFrame.timeout(
+          const Duration(milliseconds: 500),
+          onTimeout: () {},
+        );
+      }
+      if (!mounted) return null;
+    }
     final boundary =
         _cardKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
     final image = await boundary.toImage(pixelRatio: imageWidth / _cardWidth);
@@ -323,6 +343,28 @@ class AyahCard extends StatelessWidget {
     final textColor = night ? const Color(0xFFF2EEE4) : p.lightPrimaryDark;
     final metaColor = night ? gold : p.lightAccentGold;
     final ayahNumber = ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber);
+    // Taller story cards have room for larger text.
+    final verseSize = height > width ? 28.0 : 24.0;
+    final madinah =
+        UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
+    final flowing = Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: ayah.text),
+          TextSpan(
+            text: ' ﴿$ayahNumber﴾',
+            style: TextStyle(color: metaColor),
+          ),
+        ],
+      ),
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: quranFont,
+        fontSize: verseSize,
+        height: 2.0,
+        color: textColor,
+      ),
+    );
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -382,25 +424,18 @@ class AyahCard extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: width - 68),
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: ayah.text),
-                                TextSpan(
-                                  text: ' ﴿$ayahNumber﴾',
-                                  style: TextStyle(color: metaColor),
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: quranFont,
-                              // Taller story cards have room for larger text.
-                              fontSize: height > width ? 28 : 24,
-                              height: 2.0,
-                              color: textColor,
-                            ),
-                          ),
+                          // In the Mushaf the reader chose: the Madinah
+                          // glyphs, with their own ayah marker, or the
+                          // flowing text's font.
+                          child: madinah
+                              ? QcfAyahText(
+                                  ayah: ayah,
+                                  fontSize: verseSize,
+                                  height: 2.0,
+                                  color: textColor,
+                                  fallback: flowing,
+                                )
+                              : flowing,
                         ),
                       ),
                     ),
