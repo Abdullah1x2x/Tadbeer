@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 // هذه الملفات أرجع لها حسب الوظيفة التي أحتاجها في الشاشة
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/app_logo.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../features/quran/data/quran_models.dart';
@@ -267,37 +268,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: _staggered([
                           // شعار التطبيق (اللوقو)
-                          Center(
-                            child: Container(
-                              width: logoSize,
-                              height: logoSize,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  logoSize * 0.28,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.olive.withValues(
-                                      alpha: 0.22,
-                                    ),
-                                    blurRadius: 14,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                                border: Border.all(
-                                  color: isDark
-                                      ? AppColors.darkSurfaceVariant
-                                      : AppColors.olive.withValues(alpha: 0.35),
-                                  width: 1.5,
-                                ),
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: Image.asset(
-                                'assets/icons/app_logo.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                          Center(child: AppLogo(size: logoSize)),
                           SizedBox(height: spaceAfterLogo),
 
                           // اسم التطبيق

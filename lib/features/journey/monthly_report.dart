@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../app/localization.dart';
 import '../../app/theme.dart';
+import '../../core/design_system/app_logo.dart';
 import '../../core/storage/user_data_store.dart';
 import '../memorization/memorization_model.dart';
 import '../../core/design_system/app_icons.dart';
@@ -263,14 +264,7 @@ class MonthlyReportCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.asset(
-                    'assets/icons/app_logo.png',
-                    width: 22,
-                    height: 22,
-                  ),
-                ),
+                const AppLogo(size: 22, elevated: false),
                 const SizedBox(width: 8),
                 const Text(
                   'تَدْبِير',
