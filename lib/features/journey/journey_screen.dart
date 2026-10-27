@@ -649,6 +649,15 @@ class _StreakReminderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Its own listener: the card is const, so the screen's rebuild alone
+    // would not refresh it when the reminder is saved.
+    return ListenableBuilder(
+      listenable: UserDataStore.instance,
+      builder: (context, _) => _build(context),
+    );
+  }
+
+  Widget _build(BuildContext context) {
     final l10n = context.l10n;
     final reminder = _reminder;
     final on = reminder?.isEnabled ?? false;
