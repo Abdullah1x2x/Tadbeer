@@ -55,6 +55,8 @@ dependencies:
   phosphor_flutter: ^2.1.0
   home_widget: ^0.10.0
   gal: ^2.3.3
+  geolocator: ^14.0.1
+  flutter_compass: ^0.8.1
 
 dev_dependencies:
   flutter_test:

@@ -263,29 +263,6 @@ class AppStrings {
   }
 
   // Group khatma
-  String get groupKhatma => _l.groupKhatma;
-  String get groupKhatmaHint => _l.groupKhatmaHint;
-  String get createGroupKhatma => _l.createGroupKhatma;
-  String get groupKhatmaTitle => _l.groupKhatmaTitle;
-  String get participantNames => _l.participantNames;
-  String get oneNamePerLine => _l.oneNamePerLine;
-  String get distributeJuz => _l.distributeJuz;
-  String get joinWithCode => _l.joinWithCode;
-  String get pasteGroupCode => _l.pasteGroupCode;
-  String get invalidGroupCode => _l.invalidGroupCode;
-  String get join => _l.join;
-  String get whoAreYou => _l.whoAreYou;
-  String juzList(List<int> juz) =>
-      isArabic ? 'الأجزاء: ${juz.map(_n).join('، ')}' : 'Juz: ${juz.join(', ')}';
-  String juzLabel(int juz) =>
-      _l.juzLabel(digits(juz));
-  String myJuzTitle(String name) =>
-      _l.myJuzTitle(name);
-  String get readJuz => _l.readJuz;
-  String get everyonesJuz => _l.everyonesJuz;
-  String get showQr => _l.showQr;
-  String get leaveGroupKhatma => _l.leaveGroupKhatma;
-  String get groupCodeIntro => _l.groupCodeIntro;
 
   String get continueWhereYouLeft => _l.continueWhereYouLeft;
   String get adhkarKind => _l.adhkarKind;
@@ -371,6 +348,28 @@ class AppStrings {
   String get textSmaller => _l.textSmaller;
   String get textLarger => _l.textLarger;
   String get defaultTextSize => _l.defaultTextSize;
+  String get qibla => _l.qibla;
+  String get qiblaUpdateLocation => _l.qiblaUpdateLocation;
+  String get qiblaLocating => _l.qiblaLocating;
+  String get qiblaFacing => _l.qiblaFacing;
+  String qiblaTurnRight(int deg) => _l.qiblaTurnRight(digits(deg));
+  String qiblaTurnLeft(int deg) => _l.qiblaTurnLeft(digits(deg));
+  String get qiblaFromNorth => _l.qiblaFromNorth;
+  String get qiblaKmToMakkah => _l.qiblaKmToMakkah;
+  String get qiblaFromHere => _l.qiblaFromHere;
+  String get qiblaFromLastLocation => _l.qiblaFromLastLocation;
+  String get qiblaNoCompass => _l.qiblaNoCompass;
+  String get qiblaCalibrate => _l.qiblaCalibrate;
+  String get qiblaLocationOff => _l.qiblaLocationOff;
+  String get qiblaTurnOnLocation => _l.qiblaTurnOnLocation;
+  String get qiblaNeedsLocation => _l.qiblaNeedsLocation;
+  String get qiblaAllowLocation => _l.qiblaAllowLocation;
+  String get qiblaOpenSettings => _l.qiblaOpenSettings;
+  String get qiblaLocationFailed => _l.qiblaLocationFailed;
+  String get qiblaNorth => _l.qiblaNorth;
+  String get qiblaEast => _l.qiblaEast;
+  String get qiblaSouth => _l.qiblaSouth;
+  String get qiblaWest => _l.qiblaWest;
   String streakAtRiskTitle(int n) => _l.streakAtRiskTitle(n, digits(n));
   String get streakAtRiskBody => _l.streakAtRiskBody;
   String get streakReminder => _l.streakReminder;

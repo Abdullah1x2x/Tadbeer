@@ -7,10 +7,10 @@ import '../ayah_links/ayah_links_screen.dart';
 import '../backup/backup_screen.dart';
 import '../bookmarks/bookmarks_screen.dart';
 import '../books/books_screen.dart';
-import '../group_khatma/group_khatma_screen.dart';
 import '../highlights/highlights_screen.dart';
 import '../journey/journey_screen.dart';
 import '../journey/mushaf_map_screen.dart';
+import '../qibla/qibla_screen.dart';
 import '../memorization/memorization_screen.dart';
 import '../notes/notes_screen.dart';
 import '../tadbeer/my_reflections_screen.dart';
@@ -63,9 +63,9 @@ class MoreScreen extends StatelessWidget {
                     onTap: () => open(const GuidedPathwaysScreen()),
                   ),
                   _Tile(
-                    icon: AppIcons.usersThree,
-                    label: l10n.groupKhatma,
-                    onTap: () => open(const GroupKhatmaScreen()),
+                    icon: AppIcons.compass,
+                    label: l10n.qibla,
+                    onTap: () => open(const QiblaScreen()),
                   ),
                   _Tile(
                     icon: AppIcons.brainFill,

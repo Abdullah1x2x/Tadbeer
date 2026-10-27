@@ -67,23 +67,6 @@
   "activeDaysLabel": "يوم نشاط",
   "reflectionsLabel": "وقفة تدبر",
   "memorizedLabel": "آية محفوظة",
-  "groupKhatma": "ختمة جماعية",
-  "groupKhatmaHint": "وزّع الأجزاء الثلاثين على العائلة أو الأصدقاء، وشارك الرمز معهم. كل شخص يلصق الرمز ويختار اسمه ويتابع أجزاءه، دون إنترنت.",
-  "createGroupKhatma": "إنشاء ختمة جماعية",
-  "groupKhatmaTitle": "اسم الختمة",
-  "participantNames": "أسماء المشاركين",
-  "oneNamePerLine": "اسم في كل سطر",
-  "distributeJuz": "وزّع الأجزاء",
-  "joinWithCode": "الانضمام برمز",
-  "pasteGroupCode": "الصق رمز الختمة",
-  "invalidGroupCode": "الرمز غير صحيح",
-  "join": "انضم",
-  "whoAreYou": "اختر اسمك",
-  "readJuz": "اقرأ الجزء",
-  "everyonesJuz": "توزيع الجميع",
-  "showQr": "عرض رمز QR",
-  "leaveGroupKhatma": "مغادرة الختمة",
-  "groupCodeIntro": "للانضمام: افتح تدبير ← المزيد ← ختمة جماعية، والصق هذا الرمز:",
   "continueWhereYouLeft": "أكمل من حيث توقفت",
   "adhkarKind": "الأذكار",
   "weeklyGoals": "أهداف الأسبوع",
@@ -481,22 +464,6 @@
   "@portionReminderTitle": {
     "placeholders": {
       "pages": {
-        "type": "String"
-      }
-    }
-  },
-  "juzLabel": "الجزء {juz}",
-  "@juzLabel": {
-    "placeholders": {
-      "juz": {
-        "type": "String"
-      }
-    }
-  },
-  "myJuzTitle": "أجزاء {name}",
-  "@myJuzTitle": {
-    "placeholders": {
-      "name": {
         "type": "String"
       }
     }
@@ -1046,5 +1013,37 @@
       "time": {"type": "String"}
     }
   },
-  "streakReminderPrompt": "متى نذكّرك إن لم تقرأ في يومك؟"
+  "streakReminderPrompt": "متى نذكّرك إن لم تقرأ في يومك؟",
+  "qibla": "اتجاه القبلة",
+  "qiblaUpdateLocation": "تحديث موقعي",
+  "qiblaLocating": "نحدد موقعك…",
+  "qiblaFacing": "أنت متجه إلى القبلة",
+  "qiblaTurnRight": "استدر يمينًا {deg}°",
+  "@qiblaTurnRight": {
+    "placeholders": {
+      "deg": {"type": "String"}
+    }
+  },
+  "qiblaTurnLeft": "استدر يسارًا {deg}°",
+  "@qiblaTurnLeft": {
+    "placeholders": {
+      "deg": {"type": "String"}
+    }
+  },
+  "qiblaFromNorth": "من الشمال",
+  "qiblaKmToMakkah": "كم إلى مكة المكرمة",
+  "qiblaFromHere": "حسب موقعك الحالي",
+  "qiblaFromLastLocation": "حسب آخر موقع معروف لك",
+  "qiblaNoCompass": "لا توجد بوصلة في جهازك: وجّه أعلى الجهاز نحو الشمال، والقبلة حيث علامة الكعبة",
+  "qiblaCalibrate": "إن بدا الاتجاه غير دقيق فحرّك الجهاز في الهواء على شكل ٨، وابتعد عن المعادن والأجهزة",
+  "qiblaLocationOff": "خدمة الموقع متوقفة في جهازك. شغّلها لنحسب اتجاه القبلة",
+  "qiblaTurnOnLocation": "تشغيل الموقع",
+  "qiblaNeedsLocation": "نحتاج موقعك التقريبي لنحسب اتجاه القبلة، ولا يُرسل إلى أي مكان",
+  "qiblaAllowLocation": "السماح بالموقع",
+  "qiblaOpenSettings": "فتح الإعدادات",
+  "qiblaLocationFailed": "تعذّر تحديد موقعك. تأكد من تشغيل الموقع وحاول مرة أخرى",
+  "qiblaNorth": "ش",
+  "qiblaEast": "ق",
+  "qiblaSouth": "ج",
+  "qiblaWest": "غ"
 }

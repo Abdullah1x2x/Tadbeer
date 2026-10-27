@@ -215,59 +215,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get memorizedLabel => 'آية محفوظة';
 
   @override
-  String get groupKhatma => 'ختمة جماعية';
-
-  @override
-  String get groupKhatmaHint =>
-      'وزّع الأجزاء الثلاثين على العائلة أو الأصدقاء، وشارك الرمز معهم. كل شخص يلصق الرمز ويختار اسمه ويتابع أجزاءه، دون إنترنت.';
-
-  @override
-  String get createGroupKhatma => 'إنشاء ختمة جماعية';
-
-  @override
-  String get groupKhatmaTitle => 'اسم الختمة';
-
-  @override
-  String get participantNames => 'أسماء المشاركين';
-
-  @override
-  String get oneNamePerLine => 'اسم في كل سطر';
-
-  @override
-  String get distributeJuz => 'وزّع الأجزاء';
-
-  @override
-  String get joinWithCode => 'الانضمام برمز';
-
-  @override
-  String get pasteGroupCode => 'الصق رمز الختمة';
-
-  @override
-  String get invalidGroupCode => 'الرمز غير صحيح';
-
-  @override
-  String get join => 'انضم';
-
-  @override
-  String get whoAreYou => 'اختر اسمك';
-
-  @override
-  String get readJuz => 'اقرأ الجزء';
-
-  @override
-  String get everyonesJuz => 'توزيع الجميع';
-
-  @override
-  String get showQr => 'عرض رمز QR';
-
-  @override
-  String get leaveGroupKhatma => 'مغادرة الختمة';
-
-  @override
-  String get groupCodeIntro =>
-      'للانضمام: افتح تدبير ← المزيد ← ختمة جماعية، والصق هذا الرمز:';
-
-  @override
   String get continueWhereYouLeft => 'أكمل من حيث توقفت';
 
   @override
@@ -1232,16 +1179,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String juzLabel(String juz) {
-    return 'الجزء $juz';
-  }
-
-  @override
-  String myJuzTitle(String name) {
-    return 'أجزاء $name';
-  }
-
-  @override
   String chapterN(String n) {
     return 'الفصل $n';
   }
@@ -1750,4 +1687,79 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get streakReminderPrompt => 'متى نذكّرك إن لم تقرأ في يومك؟';
+
+  @override
+  String get qibla => 'اتجاه القبلة';
+
+  @override
+  String get qiblaUpdateLocation => 'تحديث موقعي';
+
+  @override
+  String get qiblaLocating => 'نحدد موقعك…';
+
+  @override
+  String get qiblaFacing => 'أنت متجه إلى القبلة';
+
+  @override
+  String qiblaTurnRight(String deg) {
+    return 'استدر يمينًا $deg°';
+  }
+
+  @override
+  String qiblaTurnLeft(String deg) {
+    return 'استدر يسارًا $deg°';
+  }
+
+  @override
+  String get qiblaFromNorth => 'من الشمال';
+
+  @override
+  String get qiblaKmToMakkah => 'كم إلى مكة المكرمة';
+
+  @override
+  String get qiblaFromHere => 'حسب موقعك الحالي';
+
+  @override
+  String get qiblaFromLastLocation => 'حسب آخر موقع معروف لك';
+
+  @override
+  String get qiblaNoCompass =>
+      'لا توجد بوصلة في جهازك: وجّه أعلى الجهاز نحو الشمال، والقبلة حيث علامة الكعبة';
+
+  @override
+  String get qiblaCalibrate =>
+      'إن بدا الاتجاه غير دقيق فحرّك الجهاز في الهواء على شكل ٨، وابتعد عن المعادن والأجهزة';
+
+  @override
+  String get qiblaLocationOff =>
+      'خدمة الموقع متوقفة في جهازك. شغّلها لنحسب اتجاه القبلة';
+
+  @override
+  String get qiblaTurnOnLocation => 'تشغيل الموقع';
+
+  @override
+  String get qiblaNeedsLocation =>
+      'نحتاج موقعك التقريبي لنحسب اتجاه القبلة، ولا يُرسل إلى أي مكان';
+
+  @override
+  String get qiblaAllowLocation => 'السماح بالموقع';
+
+  @override
+  String get qiblaOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get qiblaLocationFailed =>
+      'تعذّر تحديد موقعك. تأكد من تشغيل الموقع وحاول مرة أخرى';
+
+  @override
+  String get qiblaNorth => 'ش';
+
+  @override
+  String get qiblaEast => 'ق';
+
+  @override
+  String get qiblaSouth => 'ج';
+
+  @override
+  String get qiblaWest => 'غ';
 }

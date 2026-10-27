@@ -215,59 +215,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memorizedLabel => 'Verses memorized';
 
   @override
-  String get groupKhatma => 'Group khatma';
-
-  @override
-  String get groupKhatmaHint =>
-      'Split the 30 juz among family or friends and share the code. Each person pastes it, picks their name and tracks their juz, offline.';
-
-  @override
-  String get createGroupKhatma => 'Create a group khatma';
-
-  @override
-  String get groupKhatmaTitle => 'Khatma name';
-
-  @override
-  String get participantNames => 'Participants';
-
-  @override
-  String get oneNamePerLine => 'One name per line';
-
-  @override
-  String get distributeJuz => 'Distribute juz';
-
-  @override
-  String get joinWithCode => 'Join with a code';
-
-  @override
-  String get pasteGroupCode => 'Paste the khatma code';
-
-  @override
-  String get invalidGroupCode => 'This code is not valid';
-
-  @override
-  String get join => 'Join';
-
-  @override
-  String get whoAreYou => 'Pick your name';
-
-  @override
-  String get readJuz => 'Read juz';
-
-  @override
-  String get everyonesJuz => 'Everyone’s juz';
-
-  @override
-  String get showQr => 'Show QR code';
-
-  @override
-  String get leaveGroupKhatma => 'Leave khatma';
-
-  @override
-  String get groupCodeIntro =>
-      'To join: open Tadbeer → More → Group khatma and paste this code:';
-
-  @override
   String get continueWhereYouLeft => 'Continue where you left off';
 
   @override
@@ -1236,16 +1183,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String juzLabel(String juz) {
-    return 'Juz $juz';
-  }
-
-  @override
-  String myJuzTitle(String name) {
-    return '$name’s juz';
-  }
-
-  @override
   String chapterN(String n) {
     return 'Chapter $n';
   }
@@ -1752,4 +1689,79 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get streakReminderPrompt =>
       'When should we remind you if you have not read?';
+
+  @override
+  String get qibla => 'Qibla direction';
+
+  @override
+  String get qiblaUpdateLocation => 'Update my location';
+
+  @override
+  String get qiblaLocating => 'Finding your location…';
+
+  @override
+  String get qiblaFacing => 'You are facing the Qibla';
+
+  @override
+  String qiblaTurnRight(String deg) {
+    return 'Turn right $deg°';
+  }
+
+  @override
+  String qiblaTurnLeft(String deg) {
+    return 'Turn left $deg°';
+  }
+
+  @override
+  String get qiblaFromNorth => 'from north';
+
+  @override
+  String get qiblaKmToMakkah => 'km to Makkah';
+
+  @override
+  String get qiblaFromHere => 'From your current location';
+
+  @override
+  String get qiblaFromLastLocation => 'From your last known location';
+
+  @override
+  String get qiblaNoCompass =>
+      'Your device has no compass: point its top north; the Qibla is at the Kaaba mark';
+
+  @override
+  String get qiblaCalibrate =>
+      'If the direction looks off, move the phone in a figure 8 and keep away from metal';
+
+  @override
+  String get qiblaLocationOff =>
+      'Location is off on your device. Turn it on to find the Qibla';
+
+  @override
+  String get qiblaTurnOnLocation => 'Turn on location';
+
+  @override
+  String get qiblaNeedsLocation =>
+      'We need your approximate location to find the Qibla; it is never sent anywhere';
+
+  @override
+  String get qiblaAllowLocation => 'Allow location';
+
+  @override
+  String get qiblaOpenSettings => 'Open settings';
+
+  @override
+  String get qiblaLocationFailed =>
+      'Could not find your location. Make sure it is on and try again';
+
+  @override
+  String get qiblaNorth => 'N';
+
+  @override
+  String get qiblaEast => 'E';
+
+  @override
+  String get qiblaSouth => 'S';
+
+  @override
+  String get qiblaWest => 'W';
 }

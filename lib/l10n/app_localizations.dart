@@ -500,108 +500,6 @@ abstract class AppLocalizations {
   /// **'آية محفوظة'**
   String get memorizedLabel;
 
-  /// No description provided for @groupKhatma.
-  ///
-  /// In ar, this message translates to:
-  /// **'ختمة جماعية'**
-  String get groupKhatma;
-
-  /// No description provided for @groupKhatmaHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'وزّع الأجزاء الثلاثين على العائلة أو الأصدقاء، وشارك الرمز معهم. كل شخص يلصق الرمز ويختار اسمه ويتابع أجزاءه، دون إنترنت.'**
-  String get groupKhatmaHint;
-
-  /// No description provided for @createGroupKhatma.
-  ///
-  /// In ar, this message translates to:
-  /// **'إنشاء ختمة جماعية'**
-  String get createGroupKhatma;
-
-  /// No description provided for @groupKhatmaTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'اسم الختمة'**
-  String get groupKhatmaTitle;
-
-  /// No description provided for @participantNames.
-  ///
-  /// In ar, this message translates to:
-  /// **'أسماء المشاركين'**
-  String get participantNames;
-
-  /// No description provided for @oneNamePerLine.
-  ///
-  /// In ar, this message translates to:
-  /// **'اسم في كل سطر'**
-  String get oneNamePerLine;
-
-  /// No description provided for @distributeJuz.
-  ///
-  /// In ar, this message translates to:
-  /// **'وزّع الأجزاء'**
-  String get distributeJuz;
-
-  /// No description provided for @joinWithCode.
-  ///
-  /// In ar, this message translates to:
-  /// **'الانضمام برمز'**
-  String get joinWithCode;
-
-  /// No description provided for @pasteGroupCode.
-  ///
-  /// In ar, this message translates to:
-  /// **'الصق رمز الختمة'**
-  String get pasteGroupCode;
-
-  /// No description provided for @invalidGroupCode.
-  ///
-  /// In ar, this message translates to:
-  /// **'الرمز غير صحيح'**
-  String get invalidGroupCode;
-
-  /// No description provided for @join.
-  ///
-  /// In ar, this message translates to:
-  /// **'انضم'**
-  String get join;
-
-  /// No description provided for @whoAreYou.
-  ///
-  /// In ar, this message translates to:
-  /// **'اختر اسمك'**
-  String get whoAreYou;
-
-  /// No description provided for @readJuz.
-  ///
-  /// In ar, this message translates to:
-  /// **'اقرأ الجزء'**
-  String get readJuz;
-
-  /// No description provided for @everyonesJuz.
-  ///
-  /// In ar, this message translates to:
-  /// **'توزيع الجميع'**
-  String get everyonesJuz;
-
-  /// No description provided for @showQr.
-  ///
-  /// In ar, this message translates to:
-  /// **'عرض رمز QR'**
-  String get showQr;
-
-  /// No description provided for @leaveGroupKhatma.
-  ///
-  /// In ar, this message translates to:
-  /// **'مغادرة الختمة'**
-  String get leaveGroupKhatma;
-
-  /// No description provided for @groupCodeIntro.
-  ///
-  /// In ar, this message translates to:
-  /// **'للانضمام: افتح تدبير ← المزيد ← ختمة جماعية، والصق هذا الرمز:'**
-  String get groupCodeIntro;
-
   /// No description provided for @continueWhereYouLeft.
   ///
   /// In ar, this message translates to:
@@ -2408,18 +2306,6 @@ abstract class AppLocalizations {
   /// **'ورد الختمة: {pages} صفحة'**
   String portionReminderTitle(String pages);
 
-  /// No description provided for @juzLabel.
-  ///
-  /// In ar, this message translates to:
-  /// **'الجزء {juz}'**
-  String juzLabel(String juz);
-
-  /// No description provided for @myJuzTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'أجزاء {name}'**
-  String myJuzTitle(String name);
-
   /// No description provided for @chapterN.
   ///
   /// In ar, this message translates to:
@@ -3137,6 +3023,138 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'متى نذكّرك إن لم تقرأ في يومك؟'**
   String get streakReminderPrompt;
+
+  /// No description provided for @qibla.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتجاه القبلة'**
+  String get qibla;
+
+  /// No description provided for @qiblaUpdateLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحديث موقعي'**
+  String get qiblaUpdateLocation;
+
+  /// No description provided for @qiblaLocating.
+  ///
+  /// In ar, this message translates to:
+  /// **'نحدد موقعك…'**
+  String get qiblaLocating;
+
+  /// No description provided for @qiblaFacing.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت متجه إلى القبلة'**
+  String get qiblaFacing;
+
+  /// No description provided for @qiblaTurnRight.
+  ///
+  /// In ar, this message translates to:
+  /// **'استدر يمينًا {deg}°'**
+  String qiblaTurnRight(String deg);
+
+  /// No description provided for @qiblaTurnLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'استدر يسارًا {deg}°'**
+  String qiblaTurnLeft(String deg);
+
+  /// No description provided for @qiblaFromNorth.
+  ///
+  /// In ar, this message translates to:
+  /// **'من الشمال'**
+  String get qiblaFromNorth;
+
+  /// No description provided for @qiblaKmToMakkah.
+  ///
+  /// In ar, this message translates to:
+  /// **'كم إلى مكة المكرمة'**
+  String get qiblaKmToMakkah;
+
+  /// No description provided for @qiblaFromHere.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسب موقعك الحالي'**
+  String get qiblaFromHere;
+
+  /// No description provided for @qiblaFromLastLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسب آخر موقع معروف لك'**
+  String get qiblaFromLastLocation;
+
+  /// No description provided for @qiblaNoCompass.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد بوصلة في جهازك: وجّه أعلى الجهاز نحو الشمال، والقبلة حيث علامة الكعبة'**
+  String get qiblaNoCompass;
+
+  /// No description provided for @qiblaCalibrate.
+  ///
+  /// In ar, this message translates to:
+  /// **'إن بدا الاتجاه غير دقيق فحرّك الجهاز في الهواء على شكل ٨، وابتعد عن المعادن والأجهزة'**
+  String get qiblaCalibrate;
+
+  /// No description provided for @qiblaLocationOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمة الموقع متوقفة في جهازك. شغّلها لنحسب اتجاه القبلة'**
+  String get qiblaLocationOff;
+
+  /// No description provided for @qiblaTurnOnLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'تشغيل الموقع'**
+  String get qiblaTurnOnLocation;
+
+  /// No description provided for @qiblaNeedsLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'نحتاج موقعك التقريبي لنحسب اتجاه القبلة، ولا يُرسل إلى أي مكان'**
+  String get qiblaNeedsLocation;
+
+  /// No description provided for @qiblaAllowLocation.
+  ///
+  /// In ar, this message translates to:
+  /// **'السماح بالموقع'**
+  String get qiblaAllowLocation;
+
+  /// No description provided for @qiblaOpenSettings.
+  ///
+  /// In ar, this message translates to:
+  /// **'فتح الإعدادات'**
+  String get qiblaOpenSettings;
+
+  /// No description provided for @qiblaLocationFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر تحديد موقعك. تأكد من تشغيل الموقع وحاول مرة أخرى'**
+  String get qiblaLocationFailed;
+
+  /// No description provided for @qiblaNorth.
+  ///
+  /// In ar, this message translates to:
+  /// **'ش'**
+  String get qiblaNorth;
+
+  /// No description provided for @qiblaEast.
+  ///
+  /// In ar, this message translates to:
+  /// **'ق'**
+  String get qiblaEast;
+
+  /// No description provided for @qiblaSouth.
+  ///
+  /// In ar, this message translates to:
+  /// **'ج'**
+  String get qiblaSouth;
+
+  /// No description provided for @qiblaWest.
+  ///
+  /// In ar, this message translates to:
+  /// **'غ'**
+  String get qiblaWest;
 }
 
 class _AppLocalizationsDelegate
