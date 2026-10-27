@@ -1,11 +1,14 @@
-"""Builds the app's charcoal logo and launcher icon images.
+"""Builds the app's logo and launcher icon images in sand and bronze.
 
 Usage: python3 tool/brand/make_logo.py
        then: dart run flutter_launcher_icons
 
-Draws a charcoal diagonal gradient with a soft glow behind the book, and
-lays the unchanged foreground (gold arch and white book,
-assets/icons/app_icon_foreground.png) over it. Writes:
+One palette that sits well on all five themes: a warm sand background
+with a soft glow behind the book, the arch and stand in deep bronze, and
+the Mushaf in a darker parchment so it reads clearly against the sand.
+The shapes come from assets/icons/app_icon_foreground.original.png (the
+first, gold-and-white foreground), recoloured by brightness. Writes:
+  assets/icons/app_icon_foreground.png  adaptive icon foreground
   assets/icons/app_icon_background.png  adaptive icon background
   assets/icons/app_icon.png             full launcher image
   assets/icons/app_logo.png             in-app logo, 512 px
@@ -18,24 +21,49 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ICONS = os.path.join(ROOT, 'assets/icons')
 
-LIGHT = np.array([0x3A, 0x38, 0x35], dtype=float)  # top-left
-DARK = np.array([0x16, 0x15, 0x14], dtype=float)   # bottom-right
-GLOW = 16.0                                         # added at the centre
+
+def rgb(hexa):
+    return np.array([int(hexa[i:i + 2], 16) for i in (0, 2, 4)], dtype=float)
+
+
+SAND_LIGHT, SAND_DARK = rgb('E9DCC0'), rgb('CDB58A')  # background, top-left to bottom-right
+GLOW = 14.0                                          # added behind the book
+BRONZE_DARK, BRONZE_LIGHT = rgb('5E401C'), rgb('946C33')  # arch and stand
+BOOK_DARK, BOOK_LIGHT = rgb('7E6845'), rgb('CDB98F')      # the Mushaf's pages
 
 
 def background(size):
     y, x = np.mgrid[0:size, 0:size] / (size - 1)
-    t = ((x + y) / 2)[..., None]
-    rgb = LIGHT + (DARK - LIGHT) * t
+    out = SAND_LIGHT + (SAND_DARK - SAND_LIGHT) * ((x + y) / 2)[..., None]
     d = np.sqrt((x - 0.5) ** 2 + (y - 0.48) ** 2)
-    rgb += (GLOW * np.clip(1 - d / 0.45, 0, 1) ** 2)[..., None]
-    return Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), 'RGB')
+    out += (GLOW * np.clip(1 - d / 0.45, 0, 1) ** 2)[..., None]
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), 'RGB')
+
+
+def foreground(original):
+    """The gold parts become bronze, the white pages parchment."""
+    a = np.array(original).astype(float)
+    colour = a[..., :3]
+    top, low = colour.max(2), colour.min(2)
+    saturation = np.where(top > 0, (top - low) / np.maximum(top, 1), 0)
+    value = top / 255
+    gilded = (saturation > 0.22)[..., None]
+    t_arch = np.clip((value - 0.35) / 0.6, 0, 1)[..., None]
+    t_book = np.clip((value - 0.55) / 0.45, 0, 1)[..., None]
+    a[..., :3] = np.where(
+        gilded,
+        BRONZE_DARK + (BRONZE_LIGHT - BRONZE_DARK) * t_arch,
+        BOOK_DARK + (BOOK_LIGHT - BOOK_DARK) * t_book,
+    )
+    return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), 'RGBA')
 
 
 def main():
-    fg = Image.open(os.path.join(ICONS, 'app_icon_foreground.png')).convert('RGBA')
-    size = fg.width
-    bg = background(size)
+    original = Image.open(
+        os.path.join(ICONS, 'app_icon_foreground.original.png')).convert('RGBA')
+    fg = foreground(original)
+    fg.save(os.path.join(ICONS, 'app_icon_foreground.png'))
+    bg = background(fg.width)
     bg.save(os.path.join(ICONS, 'app_icon_background.png'))
     full = bg.convert('RGBA')
     full.alpha_composite(fg)
