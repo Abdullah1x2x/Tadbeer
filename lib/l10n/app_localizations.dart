@@ -3089,6 +3089,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تكبير الخط أكثر'**
   String get textLarger;
+
+  /// No description provided for @defaultTextSize.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحجم الافتراضي'**
+  String get defaultTextSize;
 }
 
 class _AppLocalizationsDelegate

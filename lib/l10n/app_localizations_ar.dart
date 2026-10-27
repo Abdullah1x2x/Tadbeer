@@ -1686,4 +1686,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get textLarger => 'تكبير الخط أكثر';
+
+  @override
+  String get defaultTextSize => 'الحجم الافتراضي';
 }

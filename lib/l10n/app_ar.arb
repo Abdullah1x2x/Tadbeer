@@ -1015,5 +1015,6 @@
   "searchSurahHint": "ابحث باسم السورة أو رقمها",
   "enlargeText": "حجم الخط",
   "textSmaller": "تصغير الخط",
-  "textLarger": "تكبير الخط أكثر"
+  "textLarger": "تكبير الخط أكثر",
+  "defaultTextSize": "الحجم الافتراضي"
 }

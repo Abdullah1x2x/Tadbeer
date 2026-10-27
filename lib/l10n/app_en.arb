@@ -497,5 +497,6 @@
   "searchSurahHint": "Search by surah name or number",
   "enlargeText": "Text size",
   "textSmaller": "Smaller text",
-  "textLarger": "Larger text"
+  "textLarger": "Larger text",
+  "defaultTextSize": "Default size"
 }

@@ -1696,4 +1696,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get textLarger => 'Larger text';
+
+  @override
+  String get defaultTextSize => 'Default size';
 }

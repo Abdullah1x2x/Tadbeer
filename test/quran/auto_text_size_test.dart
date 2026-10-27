@@ -184,6 +184,8 @@ void main() {
       }
     }
 
+    // At the automatic size there is nothing to reset.
+    expect(button('الحجم الافتراضي').onPressed, isNull);
     await tap('تصغير الخط', 5);
     expect(UserDataStore.instance.settings.flowingTextScale, 0.8);
     expect(button('تصغير الخط').onPressed, isNull);
@@ -196,6 +198,10 @@ void main() {
 
     await tap('تصغير الخط', 1);
     expect(UserDataStore.instance.settings.flowingTextScale, 1.3);
+
+    await tap('الحجم الافتراضي', 1);
+    expect(UserDataStore.instance.settings.flowingTextScale, 1.0);
+    expect(button('الحجم الافتراضي').onPressed, isNull);
   });
 
   test('the enlargement is saved and kept within bounds', () {
