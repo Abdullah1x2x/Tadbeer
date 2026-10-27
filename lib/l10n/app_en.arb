@@ -535,5 +535,27 @@
   "qiblaNorth": "N",
   "qiblaEast": "E",
   "qiblaSouth": "S",
-  "qiblaWest": "W"
+  "qiblaWest": "W",
+  "listen": "Listen",
+  "listenFromHere": "Listen from here",
+  "audioSettings": "Recitation settings",
+  "reciterLabel": "Reciter",
+  "lowerQuality": "Lower quality",
+  "repeatEachAyah": "Repeat each ayah",
+  "pauseAfterAyah": "Pause to reflect after each ayah",
+  "noPause": "No pause",
+  "secondsShort": "{n}s",
+  "@secondsShort": {
+    "placeholders": {
+      "n": {"type": "String"}
+    }
+  },
+  "audioFailed": "Could not play the recitation. Check your internet connection",
+  "nextAyah": "Next ayah",
+  "previousAyah": "Previous ayah",
+  "playAudio": "Play",
+  "pauseAudio": "Pause",
+  "stopAudio": "Stop recitation",
+  "resting": "Pausing to reflect…",
+  "audioSource": "Recitations from Islamic Network (alquran.cloud); they need an internet connection"
 }

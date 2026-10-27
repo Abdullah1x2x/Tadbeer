@@ -13,6 +13,8 @@ import '../data/quran_models.dart';
 import '../data/quran_repository.dart';
 import '../widgets/ayah_rosette.dart';
 import '../widgets/text_scale_control.dart';
+import '../../audio/audio_bar.dart';
+import '../../audio/quran_audio.dart';
 import '../widgets/word_meanings_panel.dart';
 import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
@@ -75,6 +77,22 @@ class _QuranScreenState extends State<QuranScreen> {
   /// change is neither counted nor saved again.
   bool _ignoreNextPageChange = false;
 
+  /// The ayah the recitation was last seen on, to follow it page by page.
+  int? _audioAyahId;
+
+  /// Measures the bottom bar, so the recitation bar sits just above it.
+  final _bottomBarKey = GlobalKey();
+  double _bottomBarHeight = 120;
+
+  /// Reads the bottom bar's height once it is laid out.
+  void _measureBottomBar(Duration _) {
+    if (!mounted) return;
+    final height = _bottomBarKey.currentContext?.size?.height;
+    if (height != null && height != _bottomBarHeight) {
+      setState(() => _bottomBarHeight = height);
+    }
+  }
+
   /// The reading position (and with it the khatma) moves only when the
   /// reader actually reads: moving forward past a page after reading it,
   /// or staying on a page. A glance, a search result or a slider jump moves
@@ -135,6 +153,59 @@ class _QuranScreenState extends State<QuranScreen> {
     }
 
     _startAutoCount();
+    QuranAudio.instance.addListener(_onAudio);
+  }
+
+  /// Follows the recitation: turns to the page of the ayah being recited
+  /// (without counting it as read) and says when it cannot be played.
+  void _onAudio() {
+    if (!mounted) return;
+    final audio = QuranAudio.instance;
+    final visible =
+        TickerMode.valuesOf(context).enabled &&
+        (ModalRoute.of(context)?.isCurrent ?? true);
+    if (audio.failed && visible) {
+      audio.failed = false;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.audioFailed, textAlign: TextAlign.center),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+    final ayah = audio.current;
+    if (ayah != null && ayah.id != _audioAyahId) {
+      _audioAyahId = ayah.id;
+      if (visible &&
+          ayah.page - 1 != _currentPageIndex &&
+          _pageController.hasClients) {
+        _ignoreNextPageChange = true;
+        _pageController.animateToPage(
+          ayah.page - 1,
+          duration: AppMotion.normal,
+          curve: AppMotion.emphasized,
+        );
+      }
+    }
+    if (ayah == null) _audioAyahId = null;
+    setState(() {});
+    _measureSoon();
+  }
+
+  /// Starts measuring the bottom bar once a recitation needs it.
+  void _measureSoon() =>
+      WidgetsBinding.instance.addPostFrameCallback(_measureBottomBar);
+
+  /// يبدأ التلاوة من الآية المحددة أو أول آية في الصفحة، أو يوقفها مؤقتاً.
+  void _toggleListening(int pageNumber) {
+    final audio = QuranAudio.instance;
+    if (audio.active) {
+      audio.toggle();
+      return;
+    }
+    final page = QuranRepository.instance.getPage(pageNumber);
+    if (page.ayahs.isEmpty) return;
+    audio.playFrom(_activeSelectedAyah ?? page.ayahs.first);
   }
 
   /// يحرر المؤقت ومتحكم الصفحات عند إغلاق الشاشة.
@@ -143,6 +214,7 @@ class _QuranScreenState extends State<QuranScreen> {
     if (widget.controlsVisible != null) {
       UserDataStore.instance.removeListener(_syncToSavedPosition);
     }
+    QuranAudio.instance.removeListener(_onAudio);
     _suppressTimer?.cancel();
     _autoCountTimer?.cancel();
     _pageController.dispose();
@@ -541,6 +613,26 @@ class _QuranScreenState extends State<QuranScreen> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // 1a. Listen from the chosen ayah, or the page's first.
+              ListenableBuilder(
+                listenable: QuranAudio.instance,
+                builder: (context, _) {
+                  final audio = QuranAudio.instance;
+                  return FuturisticIconButton(
+                    icon: audio.playing
+                        ? AppIcons.pauseFill
+                        : (audio.active
+                              ? AppIcons.headphonesFill
+                              : AppIcons.headphones),
+                    tooltip: audio.playing ? l10n.pauseAudio : l10n.listen,
+                    size: 38,
+                    iconSize: 20,
+                    iconColor: audio.active ? primary : null,
+                    onTap: () => _toggleListening(currentPageNumber),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
               // 1b. Focus mode: one verse at a time
               FuturisticIconButton(
                 icon: AppIcons.personSimpleTaiChi,
@@ -811,7 +903,9 @@ class _QuranScreenState extends State<QuranScreen> {
                               child: QuranPageView(
                                 page: page,
                                 pageNumber: pageNumber,
-                                selectedAyah: _activeSelectedAyah,
+                                selectedAyah:
+                                    _activeSelectedAyah ??
+                                    QuranAudio.instance.current,
                                 onAyahTap: _handleAyahTap,
                                 onAyahLongPress: _handleAyahLongPress,
                                 onAyahHighlight: _handleAyahHighlight,
@@ -830,7 +924,9 @@ class _QuranScreenState extends State<QuranScreen> {
                                 child: QuranPageView(
                                   page: repo.getPage(1),
                                   pageNumber: 1,
-                                  selectedAyah: _activeSelectedAyah,
+                                  selectedAyah:
+                                      _activeSelectedAyah ??
+                                      QuranAudio.instance.current,
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
@@ -857,7 +953,9 @@ class _QuranScreenState extends State<QuranScreen> {
                                 child: QuranPageView(
                                   page: repo.getPage(rightPageNum),
                                   pageNumber: rightPageNum,
-                                  selectedAyah: _activeSelectedAyah,
+                                  selectedAyah:
+                                      _activeSelectedAyah ??
+                                      QuranAudio.instance.current,
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
@@ -877,7 +975,9 @@ class _QuranScreenState extends State<QuranScreen> {
                                 child: QuranPageView(
                                   page: repo.getPage(leftPageNum),
                                   pageNumber: leftPageNum,
-                                  selectedAyah: _activeSelectedAyah,
+                                  selectedAyah:
+                                      _activeSelectedAyah ??
+                                      QuranAudio.instance.current,
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
@@ -944,9 +1044,29 @@ class _QuranScreenState extends State<QuranScreen> {
                           ? AppMotion.normal
                           : Duration.zero,
                       curve: AppMotion.standard,
-                      child: _buildBottomBar(context, currentPageNumber),
+                      child: KeyedSubtree(
+                        key: _bottomBarKey,
+                        child: _buildBottomBar(context, currentPageNumber),
+                      ),
                     ),
                   ),
+                ),
+              ),
+            ),
+
+            // The recitation, just above the bottom bar when it shows.
+            AnimatedPositioned(
+              duration: shouldAnimate ? AppMotion.normal : Duration.zero,
+              curve: AppMotion.emphasized,
+              left: 12,
+              right: 12,
+              bottom:
+                  MediaQuery.paddingOf(context).bottom +
+                  (_showTopBar ? _bottomBarHeight + 6 : 12),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: const AudioBar(),
                 ),
               ),
             ),

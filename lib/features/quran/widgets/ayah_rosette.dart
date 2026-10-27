@@ -14,6 +14,7 @@ import '../../../core/storage/user_data_store.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
 import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
+import '../../audio/quran_audio.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
 import '../data/quran_models.dart';
 import '../../settings/user_settings_model.dart';
@@ -268,8 +269,12 @@ class _RosetteState extends State<_Rosette>
           );
         },
       ),
-      // Kept for the next action.
-      null,
+      _Petal(
+        icon: AppIcons.headphones,
+        label: l10n.listen,
+        active: QuranAudio.instance.current?.id == _ayah.id,
+        run: () => QuranAudio.instance.playFrom(_ayah),
+      ),
     ];
   }
 

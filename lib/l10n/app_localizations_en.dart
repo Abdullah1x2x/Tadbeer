@@ -1764,4 +1764,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get qiblaWest => 'W';
+
+  @override
+  String get listen => 'Listen';
+
+  @override
+  String get listenFromHere => 'Listen from here';
+
+  @override
+  String get audioSettings => 'Recitation settings';
+
+  @override
+  String get reciterLabel => 'Reciter';
+
+  @override
+  String get lowerQuality => 'Lower quality';
+
+  @override
+  String get repeatEachAyah => 'Repeat each ayah';
+
+  @override
+  String get pauseAfterAyah => 'Pause to reflect after each ayah';
+
+  @override
+  String get noPause => 'No pause';
+
+  @override
+  String secondsShort(String n) {
+    return '${n}s';
+  }
+
+  @override
+  String get audioFailed =>
+      'Could not play the recitation. Check your internet connection';
+
+  @override
+  String get nextAyah => 'Next ayah';
+
+  @override
+  String get previousAyah => 'Previous ayah';
+
+  @override
+  String get playAudio => 'Play';
+
+  @override
+  String get pauseAudio => 'Pause';
+
+  @override
+  String get stopAudio => 'Stop recitation';
+
+  @override
+  String get resting => 'Pausing to reflect…';
+
+  @override
+  String get audioSource =>
+      'Recitations from Islamic Network (alquran.cloud); they need an internet connection';
 }

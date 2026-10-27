@@ -1762,4 +1762,58 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get qiblaWest => 'غ';
+
+  @override
+  String get listen => 'استماع';
+
+  @override
+  String get listenFromHere => 'استماع من هنا';
+
+  @override
+  String get audioSettings => 'إعدادات التلاوة';
+
+  @override
+  String get reciterLabel => 'القارئ';
+
+  @override
+  String get lowerQuality => 'جودة أقل';
+
+  @override
+  String get repeatEachAyah => 'تكرار كل آية';
+
+  @override
+  String get pauseAfterAyah => 'وقفة تدبر بعد كل آية';
+
+  @override
+  String get noPause => 'بلا وقفة';
+
+  @override
+  String secondsShort(String n) {
+    return '$n ث';
+  }
+
+  @override
+  String get audioFailed => 'تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت';
+
+  @override
+  String get nextAyah => 'الآية التالية';
+
+  @override
+  String get previousAyah => 'الآية السابقة';
+
+  @override
+  String get playAudio => 'تشغيل';
+
+  @override
+  String get pauseAudio => 'إيقاف مؤقت';
+
+  @override
+  String get stopAudio => 'إيقاف التلاوة';
+
+  @override
+  String get resting => 'وقفة تدبر…';
+
+  @override
+  String get audioSource =>
+      'التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت';
 }

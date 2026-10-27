@@ -1045,5 +1045,27 @@
   "qiblaNorth": "ش",
   "qiblaEast": "ق",
   "qiblaSouth": "ج",
-  "qiblaWest": "غ"
+  "qiblaWest": "غ",
+  "listen": "استماع",
+  "listenFromHere": "استماع من هنا",
+  "audioSettings": "إعدادات التلاوة",
+  "reciterLabel": "القارئ",
+  "lowerQuality": "جودة أقل",
+  "repeatEachAyah": "تكرار كل آية",
+  "pauseAfterAyah": "وقفة تدبر بعد كل آية",
+  "noPause": "بلا وقفة",
+  "secondsShort": "{n} ث",
+  "@secondsShort": {
+    "placeholders": {
+      "n": {"type": "String"}
+    }
+  },
+  "audioFailed": "تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت",
+  "nextAyah": "الآية التالية",
+  "previousAyah": "الآية السابقة",
+  "playAudio": "تشغيل",
+  "pauseAudio": "إيقاف مؤقت",
+  "stopAudio": "إيقاف التلاوة",
+  "resting": "وقفة تدبر…",
+  "audioSource": "التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت"
 }
