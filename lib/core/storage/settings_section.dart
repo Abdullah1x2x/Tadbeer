@@ -22,20 +22,12 @@ mixin _SettingsSection on _StoreState {
   Future<void> updateSettings(UserSettings newSettings) =>
       putSettings(newSettings);
 
-  /// حجم خط المصحف المعتمد حالياً في الإعدادات.
+  /// حجم خط المصحف المحفوظ من الإصدارات السابقة؛ المصحف اليوم يحدد حجمه
+  /// تلقائياً من الشاشة، ويبقى هذا لتوافق النسخ الاحتياطية.
   double get quranFontSize => _settings.quranFontSize;
 
   /// اسم عائلة خط المصحف المعتمدة حالياً في الإعدادات.
   String get quranFontFamily => _settings.quranFontFamilyName;
-
-  /// تغيير حجم خط المصحف ضمن الحدود المسموحة وحفظه.
-  Future<void> setQuranFontSize(double size) async {
-    final clamped = size.clamp(
-      UserSettings.minQuranFontSize,
-      UserSettings.maxQuranFontSize,
-    );
-    await updateSettings(_settings.copyWith(quranFontSize: clamped));
-  }
 
   /// حفظ اسم القارئ وإعادة جدولة التذكيرات لتناديه به.
   Future<void> setUserName(String name) async {

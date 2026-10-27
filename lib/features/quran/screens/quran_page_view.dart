@@ -110,6 +110,13 @@ class QuranPageView extends StatefulWidget {
   final bool showHeader;
   final bool showFooter;
 
+  /// Size of the flowing text for a page [width] wide: about 17 average
+  /// words' width per line on a phone, growing on wider screens up to a
+  /// comfortable reading size. The system's text scale still applies on
+  /// top, for readers who set larger text.
+  static double textSizeFor(double width) =>
+      width.isFinite ? (width / 17).clamp(18.0, 32.0) : 22.0;
+
   /// ينشئ ودجت عرض صفحة من صفحات المصحف الشريف.
   const QuranPageView({
     super.key,
@@ -347,12 +354,12 @@ class _QuranPageViewState extends State<QuranPageView> {
     final quranPage = widget.page ?? repo.getPage(pageNumber);
 
     // Rebuilt by _onStoreChanged only when this page's content changes.
-    return Builder(
-      builder: (context) {
+    return LayoutBuilder(
+      builder: (context, box) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final storage = UserDataStore.instance;
         final effectiveFontSize =
-            widget.fontSize ?? storage.settings.quranFontSize;
+            widget.fontSize ?? QuranPageView.textSizeFor(box.maxWidth);
         final palette = MushafPalette.of(
           isDark: isDark,
           tone: storage.settings.mushafPaperTone,
@@ -715,7 +722,11 @@ class _QuranPageViewState extends State<QuranPageView> {
         Expanded(
           child: QcfPageBody(
             pageNumber: pageNumber,
-            zoom: fontSize / UserSettings.defaultQuranFontSize,
+            // The printed page fits the screen by itself; only an explicit
+            // size (in tests) enlarges it.
+            zoom: widget.fontSize == null
+                ? 1
+                : fontSize / UserSettings.defaultQuranFontSize,
             textColor: palette.text,
             markerColor: isDark
                 ? AppColors.darkAccentGold
