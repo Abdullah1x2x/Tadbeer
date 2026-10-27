@@ -163,12 +163,16 @@ def editable_svg(fg, size=1024):
 def main():
     original = Image.open(
         os.path.join(ICONS, 'app_icon_foreground.original.png')).convert('RGBA')
-    fg = foreground(original)
+    art = foreground(original)
+    size = art.width
+    # The shadow travels with the arch and book: launchers shrink the
+    # foreground layer into their mask but not the background, so a
+    # shadow left behind would sit far below the stand.
+    fg = shadow(size)
+    fg.alpha_composite(art)
     fg.save(os.path.join(ICONS, 'app_icon_foreground.png'))
-    size = fg.width
     bg = background(size).convert('RGBA')
     bg.alpha_composite(pattern(size))
-    bg.alpha_composite(shadow(size))
     bg.convert('RGB').save(os.path.join(ICONS, 'app_icon_background.png'))
     full = bg.copy()
     full.alpha_composite(fg)
@@ -176,7 +180,7 @@ def main():
     full.convert('RGB').resize((512, 512), Image.LANCZOS).save(
         os.path.join(ICONS, 'app_logo.png'))
     with open(os.path.join(ICONS, 'logo_editable.svg'), 'w') as out:
-        out.write(editable_svg(fg))
+        out.write(editable_svg(art))
 
 
 if __name__ == '__main__':
