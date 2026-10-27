@@ -155,6 +155,42 @@ void main() {
       expect(find.text('متى نذكّرك بوردك يومياً؟'), findsOneWidget);
     });
 
+    testWidgets('the streak reminder switch shows when it is on', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(412, 1400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(app(const JourneyScreen()));
+      await tester.pumpAndSettle();
+      final tile = find.text('نبّهني قبل أن تنقطع السلسلة');
+      await tester.scrollUntilVisible(
+        tile,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      Switch toggle() => tester.widget<Switch>(find.byType(Switch));
+      expect(toggle().value, isFalse);
+
+      await tester.tap(find.byType(Switch));
+      await tester.pumpAndSettle();
+      expect(find.text('متى نذكّرك إن لم تقرأ في يومك؟'), findsOneWidget);
+      await tester.runAsync(() async {
+        await tester.tap(find.text('OK'));
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pumpAndSettle();
+      expect(toggle().value, isTrue);
+      expect(find.textContaining('كل مساء'), findsOneWidget);
+
+      await tester.runAsync(() async {
+        await tester.tap(find.byType(Switch));
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+      });
+      await tester.pumpAndSettle();
+      expect(toggle().value, isFalse);
+    });
+
     testWidgets('the monthly report takes the selected theme', (tester) async {
       Color glow() {
         final box = tester.widget<Container>(
