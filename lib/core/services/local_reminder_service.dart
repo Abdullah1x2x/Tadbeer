@@ -9,6 +9,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../../app/localization.dart';
 import '../../features/journey/portion_reminder.dart';
+import '../../features/journey/streak_reminder.dart';
 import '../../features/reminders/reminder_model.dart';
 import '../storage/user_data_store.dart';
 
@@ -282,6 +283,15 @@ class LocalReminderService {
         shouldFire = shouldFire && left > 0;
         title = _strings.toReader(_readerName, _strings.portionLeftTitle(left));
         body = _strings.portionLeftBody;
+      } else if (reminder.id == streakReminderId) {
+        // Only while today has no activity and there is a streak to keep.
+        final journey = UserDataStore.instance.journey;
+        shouldFire = shouldFire && journey.streakAtRisk(now);
+        title = _strings.toReader(
+          _readerName,
+          _strings.streakAtRiskTitle(journey.streak(now)),
+        );
+        body = _strings.streakAtRiskBody;
       }
 
       if (shouldFire) {
@@ -545,6 +555,13 @@ class LocalReminderService {
         } catch (_) {}
       }
     }
+    if (reminder.id == streakReminderId) {
+      for (int i = 0; i < 2; i++) {
+        try {
+          await _notificationsPlugin.cancel(id: _streakBaseId + i);
+        } catch (_) {}
+      }
+    }
   }
 
   /// Notification texts in the app's language.
@@ -557,6 +574,9 @@ class LocalReminderService {
 
   /// Ids of the khatma portion notices, above every hashed reminder id.
   static const int _portionBaseId = 100000000;
+
+  /// Ids of the streak notices, above the portion notices.
+  static const int _streakBaseId = 100000100;
 
   /// Cancels all scheduled notifications across the app.
   Future<void> cancelAll() async {
@@ -680,6 +700,10 @@ class LocalReminderService {
 
     if (reminder.id == portionReminderId) {
       await _schedulePortion(reminder, details, scheduleMode);
+      return;
+    }
+    if (reminder.id == streakReminderId) {
+      await _scheduleStreak(reminder, details, scheduleMode);
       return;
     }
 
@@ -813,6 +837,35 @@ class LocalReminderService {
           strings.portionLeftTitle(notices[i].pages),
         ),
         body: strings.portionLeftBody,
+        scheduledDate: tz.TZDateTime.from(notices[i].at, tz.local),
+        details: details,
+        preferredMode: scheduleMode,
+        payload: 'quran_resume',
+      );
+    }
+  }
+
+  /// السلسلة: إشعار الليلة إن لم يكن اليوم نشاط بعد، أو إشعار الغد.
+  Future<void> _scheduleStreak(
+    ReminderItem reminder,
+    NotificationDetails details,
+    AndroidScheduleMode scheduleMode,
+  ) async {
+    final strings = _strings;
+    final notices = streakNotices(
+      UserDataStore.instance.journey,
+      DateTime.now(),
+      hour: reminder.hour,
+      minute: reminder.minute,
+    );
+    for (var i = 0; i < notices.length; i++) {
+      await _zonedScheduleSafe(
+        id: _streakBaseId + i,
+        title: strings.toReader(
+          _readerName,
+          strings.streakAtRiskTitle(notices[i].streak),
+        ),
+        body: strings.streakAtRiskBody,
         scheduledDate: tz.TZDateTime.from(notices[i].at, tz.local),
         details: details,
         preferredMode: scheduleMode,

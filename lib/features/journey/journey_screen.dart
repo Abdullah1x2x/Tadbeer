@@ -18,6 +18,7 @@ import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_menu.dart';
 import '../../core/design_system/ornaments.dart';
 import 'portion_reminder.dart';
+import 'streak_reminder.dart';
 
 /// شاشة «رحلتي مع القرآن»: خطة الختمة، ورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
@@ -70,6 +71,8 @@ class JourneyScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   _StatsRow(journey: journey, now: now),
                   const SizedBox(height: 12),
+                  const _StreakReminderCard(),
+                  const SizedBox(height: 12),
                   _WeekChartCard(days: journey.lastSevenDays(now), now: now),
                 ],
               );
@@ -93,15 +96,24 @@ class _StartKhatmaCard extends StatefulWidget {
 
 class _StartKhatmaCardState extends State<_StartKhatmaCard> {
   /// Offers a daily reminder for the portion right after starting.
-  Future<void> _offerPortionReminder(BuildContext context) async {
-    final l10n = context.l10n;
+  ///
+  /// Starting the khatma replaces this card with the plan, so the picker
+  /// and the confirmation use the screen's navigator and messenger,
+  /// taken before the khatma starts.
+  static Future<void> _offerPortionReminder(
+    NavigatorState navigator,
+    ScaffoldMessengerState messenger,
+    AppStrings l10n,
+    int days,
+  ) async {
+    if (!navigator.mounted) return;
     final time = await showTimePicker(
-      context: context,
+      context: navigator.context,
       helpText: l10n.portionReminderPrompt,
       initialTime: const TimeOfDay(hour: 20, minute: 0),
     );
     if (time == null) return;
-    final pages = (mushafPageCount / _days).ceil();
+    final pages = (mushafPageCount / days).ceil();
     final reminder = ReminderItem(
       id: portionReminderId,
       title: l10n.portionReminderTitle(pages),
@@ -113,13 +125,11 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
     );
     await UserDataStore.instance.putReminder(reminder);
     await LocalReminderService.instance.scheduleReminder(reminder);
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.portionReminderSet, textAlign: TextAlign.center),
-        ),
-      );
-    }
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(l10n.portionReminderSet, textAlign: TextAlign.center),
+      ),
+    );
   }
 
   static const _options = [7, 15, 30, 60, 90];
@@ -200,13 +210,17 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
             FilledButton.icon(
               onPressed: () async {
                 HapticFeedback.mediumImpact();
+                final navigator = Navigator.of(context);
+                final messenger = ScaffoldMessenger.of(context);
+                final l10n = context.l10n;
+                final days = _days;
                 await UserDataStore.instance.startKhatma(
-                  _days,
+                  days,
                   startPage: _fromCurrent
                       ? UserDataStore.instance.readingPosition.page
                       : 1,
                 );
-                if (context.mounted) await _offerPortionReminder(context);
+                await _offerPortionReminder(navigator, messenger, l10n, days);
               },
               icon: const Icon(AppIcons.play),
               label: Text(l10n.startKhatma),
@@ -592,6 +606,87 @@ class _StatTile extends StatelessWidget {
   }
 }
 
+/// مفتاح تنبيه السلسلة: إشعار مسائي إن لم يكن في اليوم نشاط بعد.
+class _StreakReminderCard extends StatelessWidget {
+  const _StreakReminderCard();
+
+  ReminderItem? get _reminder => UserDataStore.instance.reminders
+      .where((r) => r.id == streakReminderId)
+      .firstOrNull;
+
+  /// Asks for the time, then saves and schedules the reminder.
+  Future<void> _pickTime(BuildContext context, ReminderItem? current) async {
+    final l10n = context.l10n;
+    final time = await showTimePicker(
+      context: context,
+      helpText: l10n.streakReminderPrompt,
+      initialTime: current == null
+          ? const TimeOfDay(hour: streakReminderDefaultHour, minute: 0)
+          : TimeOfDay(hour: current.hour, minute: current.minute),
+    );
+    if (time == null) return;
+    final reminder =
+        (current ??
+                ReminderItem(
+                  id: streakReminderId,
+                  title: l10n.streakReminder,
+                  hour: time.hour,
+                  minute: time.minute,
+                  repeatMode: ReminderRepeatMode.daily,
+                  alertType: ReminderAlertType.notification,
+                  createdAt: DateTime.now(),
+                ))
+            .copyWith(hour: time.hour, minute: time.minute, isEnabled: true);
+    await UserDataStore.instance.putReminder(reminder);
+    await LocalReminderService.instance.scheduleReminder(reminder);
+  }
+
+  Future<void> _turnOff(ReminderItem current) async {
+    final off = current.copyWith(isEnabled: false);
+    await UserDataStore.instance.putReminder(off);
+    await LocalReminderService.instance.cancelReminder(off);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final reminder = _reminder;
+    final on = reminder?.isEnabled ?? false;
+    final time = reminder == null
+        ? null
+        : TimeOfDay(hour: reminder.hour, minute: reminder.minute);
+    return Card(
+      margin: EdgeInsets.zero,
+      // The switch turns it on or off; a tap on the row, once it is on,
+      // changes the time.
+      child: ListTile(
+        onTap: on ? () => _pickTime(context, reminder) : null,
+        leading: const Icon(AppIcons.bellRinging, color: Color(0xFFE07A3F)),
+        title: Text(
+          l10n.streakReminder,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          on && time != null
+              ? l10n.streakReminderAt(time.format(context))
+              : l10n.streakReminderOff,
+        ),
+        trailing: Switch(
+          value: on,
+          onChanged: (value) {
+            HapticFeedback.selectionClick();
+            if (value) {
+              _pickTime(context, reminder);
+            } else if (reminder != null) {
+              _turnOff(reminder);
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
 /// مخطط أعمدة لصفحات آخر سبعة أيام.
 class _WeekChartCard extends StatelessWidget {
   final List<int> days;
@@ -661,11 +756,11 @@ class _WeekChartCard extends StatelessWidget {
                             const SizedBox(height: 6),
                             Text(
                               l10n.weekdayShort(
-                                today
-                                    .subtract(
-                                      Duration(days: days.length - 1 - i),
-                                    )
-                                    .weekday,
+                                DateTime(
+                                  today.year,
+                                  today.month,
+                                  today.day - (days.length - 1 - i),
+                                ).weekday,
                               ),
                               style: TextStyle(
                                 fontSize: 12,

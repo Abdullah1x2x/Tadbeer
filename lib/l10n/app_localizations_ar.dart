@@ -1247,8 +1247,17 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String daysCount(String d) {
-    return '$d يوماً';
+  String daysCount(int count, String d) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$d يوم',
+      many: '$d يومًا',
+      few: '$d أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1267,8 +1276,17 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String khatmaInDays(String n) {
-    return 'ختمة في $n يوماً';
+  String khatmaInDays(int count, String n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$n يوم',
+      many: '$n يومًا',
+      few: '$n أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return 'ختمة في $_temp0';
   }
 
   @override
@@ -1702,4 +1720,34 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String streakAtRiskTitle(int count, String n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'لا تقطع سلسلتك: $n يومًا متتاليًا',
+      few: 'لا تقطع سلسلتك: $n أيام متتالية',
+      two: 'لا تقطع سلسلتك: يومان متتاليان',
+      one: 'لا تقطع سلسلتك: يوم واحد حتى الآن',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get streakAtRiskBody => 'صفحة واحدة أو وقفة تدبر تكفي لتبقى السلسلة';
+
+  @override
+  String get streakReminder => 'نبّهني قبل أن تنقطع السلسلة';
+
+  @override
+  String get streakReminderOff => 'تنبيه مسائي إن لم تقرأ شيئًا في يومك';
+
+  @override
+  String streakReminderAt(String time) {
+    return 'كل مساء $time إن لم تقرأ بعد';
+  }
+
+  @override
+  String get streakReminderPrompt => 'متى نذكّرك إن لم تقرأ في يومك؟';
 }

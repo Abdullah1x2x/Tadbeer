@@ -388,11 +388,11 @@
   "juzLabel": "Juz {juz}",
   "myJuzTitle": "{name}’s juz",
   "chapterN": "Chapter {n}",
-  "daysCount": "{d} days",
+  "daysCount": "{count, plural, =1{1 day} other{{d} days}}",
   "pagesPerDayHint": "Daily portion: {n} pages",
   "completedKhatmas": "Khatmas completed: {n}",
   "behindBy": "{n} pages behind",
-  "khatmaInDays": "Khatma in {n} days",
+  "khatmaInDays": "Khatma in {count, plural, =1{1 day} other{{n} days}}",
   "pagesOfMushaf": "{n} of 604 pages",
   "dayOfPlan": "Day {d} of {total}",
   "pagesOfTarget": "{a} / {b} pages",
@@ -505,5 +505,22 @@
       "count": {"type": "int"},
       "shown": {"type": "String"}
     }
-  }
+  },
+  "streakAtRiskTitle": "{count, plural, =1{Keep your streak: 1 day so far} other{Keep your streak: {n} days in a row}}",
+  "@streakAtRiskTitle": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "n": {"type": "String"}
+    }
+  },
+  "streakAtRiskBody": "One page or one reflection keeps it going",
+  "streakReminder": "Remind me before my streak breaks",
+  "streakReminderOff": "An evening reminder if you have not read that day",
+  "streakReminderAt": "Every evening at {time} if you have not read yet",
+  "@streakReminderAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "streakReminderPrompt": "When should we remind you if you have not read?"
 }

@@ -9,6 +9,7 @@ import 'app/main_shell.dart';
 import 'features/duas/adhkar_repository.dart';
 import 'features/duas/morning_evening_adhkar_screen.dart';
 import 'features/journey/portion_reminder.dart';
+import 'features/journey/streak_reminder.dart';
 import 'features/tasbeeh/tasbeeh_model.dart';
 import 'features/widgets/home_widget_sync.dart';
 import 'features/widgets/widget_links.dart';
@@ -114,6 +115,8 @@ void main() async {
   );
   // Keeps the khatma reminder's "pages left today" current while reading.
   PortionReminderSync.attach();
+  // Warns in the evening before the streak of active days breaks.
+  StreakReminderSync.attach();
   // The home-screen widget follows the ayah of the day and the khatma.
   HomeWidgetSync.attach();
   // A completed tasbeeh round counts toward the reading streak.

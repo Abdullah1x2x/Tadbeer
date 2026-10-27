@@ -181,22 +181,30 @@ class ReadingJourney {
 
   /// عدد الأيام المتتالية التي فيها نشاط، حتى اليوم (أو حتى أمس إن لم يكن
   /// هناك نشاط اليوم بعد، كي لا تنقطع السلسلة صباحاً).
+  ///
+  /// Days are stepped back by the calendar, not by 24 hours, so a clock
+  /// change (daylight saving) never skips a day and breaks the streak.
   int streak(DateTime now) {
     var day = DateTime(now.year, now.month, now.day);
-    if (!isActiveOn(day)) day = day.subtract(const Duration(days: 1));
+    if (!isActiveOn(day)) day = DateTime(day.year, day.month, day.day - 1);
     var count = 0;
     while (isActiveOn(day)) {
       count++;
-      day = day.subtract(const Duration(days: 1));
+      day = DateTime(day.year, day.month, day.day - 1);
     }
     return count;
   }
+
+  /// Whether the streak still stands but today has no activity yet, so it
+  /// breaks at midnight unless the reader reads, reflects or memorizes.
+  bool streakAtRisk(DateTime now) => !isActiveOn(now) && streak(now) > 0;
 
   /// صفحات آخر سبعة أيام، من الأقدم إلى اليوم.
   List<int> lastSevenDays(DateTime now) {
     final today = DateTime(now.year, now.month, now.day);
     return [
-      for (var i = 6; i >= 0; i--) pagesOn(today.subtract(Duration(days: i))),
+      for (var i = 6; i >= 0; i--)
+        pagesOn(DateTime(today.year, today.month, today.day - i)),
     ];
   }
 
