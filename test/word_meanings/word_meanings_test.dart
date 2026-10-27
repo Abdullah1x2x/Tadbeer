@@ -90,7 +90,7 @@ void main() {
       final sarmad = list.firstWhere(
         (e) => (e['word'] as String).contains('سَرْمَدًا'),
       );
-      expect(sarmad['meaning'], equals('دائمًا لا ينقطع'));
+      expect(sarmad['meaning'], equals('دائما لا ينقطع'));
     });
 
     test('2. خلوّ الأصول من ملفات المراجعة المستبعدة: word_meanings_excluded.json is not bundled in assets', () {
@@ -174,9 +174,9 @@ void main() {
       expect(resMeaning.any((w) => w.meaning.contains('المرعى')), isTrue);
 
       // Search by distinctive meaning snippet
-      final resSarmad = repo.searchWordMeanings('دائمًا لا ينقطع');
+      final resSarmad = repo.searchWordMeanings('دائما لا ينقطع');
       expect(resSarmad, isNotEmpty);
-      expect(resSarmad.first.meaning, contains('دائمًا لا ينقطع'));
+      expect(resSarmad.first.meaning, contains('دائما لا ينقطع'));
     });
 
     test('6. التصفية حسب السورة: filter by surah number returns only words of that surah', () {
