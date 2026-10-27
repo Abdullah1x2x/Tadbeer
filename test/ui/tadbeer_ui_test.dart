@@ -392,9 +392,10 @@ void main() {
         // Only the selected tab (Home) shows its name in the bar.
         expect(find.text('المصحف'), findsOneWidget);
         expect(find.text('وقفاتي'), findsOneWidget);
-        expect(find.text('معاني الكلمات'), findsOneWidget);
         expect(find.text('الملاحظات'), findsOneWidget);
-        expect(find.text('روابط الآيات'), findsOneWidget);
+        // Word meanings and ayah links are reached from «المزيد».
+        expect(find.text('معاني الكلمات'), findsNothing);
+        expect(find.text('روابط الآيات'), findsNothing);
         expect(tester.takeException(), isNull);
 
         // Secondary tools live in the "More" tab.

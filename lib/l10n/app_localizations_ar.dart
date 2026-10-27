@@ -1689,4 +1689,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get defaultTextSize => 'الحجم الافتراضي';
+
+  @override
+  String reflectionsCount(int count, String shown) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$shown وقفة',
+      few: '$shown وقفات',
+      two: 'وقفتان',
+      one: 'وقفة واحدة',
+    );
+    return '$_temp0';
+  }
 }

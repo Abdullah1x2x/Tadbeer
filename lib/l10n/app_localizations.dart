@@ -3095,6 +3095,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الحجم الافتراضي'**
   String get defaultTextSize;
+
+  /// No description provided for @reflectionsCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =1{وقفة واحدة} =2{وقفتان} few{{shown} وقفات} other{{shown} وقفة}}'**
+  String reflectionsCount(int count, String shown);
 }
 
 class _AppLocalizationsDelegate

@@ -1016,5 +1016,12 @@
   "enlargeText": "حجم الخط",
   "textSmaller": "تصغير الخط",
   "textLarger": "تكبير الخط أكثر",
-  "defaultTextSize": "الحجم الافتراضي"
+  "defaultTextSize": "الحجم الافتراضي",
+  "reflectionsCount": "{count, plural, =1{وقفة واحدة} =2{وقفتان} few{{shown} وقفات} other{{shown} وقفة}}",
+  "@reflectionsCount": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "shown": {"type": "String"}
+    }
+  }
 }

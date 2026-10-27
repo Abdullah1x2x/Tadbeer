@@ -7,11 +7,10 @@ import '../../app/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../ayah_links/ayah_links_screen.dart';
 import '../books/books_screen.dart';
 import '../continue/continue_card.dart';
 import '../daily/ayah_of_day_card.dart';
-import '../journey/journey_summary_card.dart';
+import '../journey/journey_screen.dart';
 
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
@@ -23,24 +22,15 @@ import '../quran/screens/quran_screen.dart';
 import '../search/search_provider.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
-import '../tasbeeh/tasbeeh_screen.dart';
-import '../word_meanings/word_meanings_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// الشاشة الرئيسية لتطبيق تدبير وتضم لوحة الوصول السريع للمصحف وأدوات التدبر.
 ///
 /// Serene, elegant Islamic dashboard for Tadbeer (تَدْبِير).
 ///
-/// Features:
-/// - Distinctive Brand Header with 'IBMPlexSansArabic' calligraphy and subtle spiritual arch
-/// - Prominent Quran Hero Card with live reading resume status
-/// - 4 Core Contemplation & Quranic Grid Cards:
-///   1. الأدعية (أدعية من الكتاب والسنة)
-///   2. معاني كلمات القرآن (معجم غريب الألفاظ)
-///   3. الملاحظات (خواطرك وتدبراتك)
-///   4. روابط الآيات (العلاقات الموضوعية)
-/// - Balanced Secondary Tools:
-///   المحفوظات، المميزة، التذكيرات، النسخ الاحتياطي
+/// From the top: the ayah of the day, what the reader committed to, the
+/// Mushaf with the reading journey, where they left off, their reflections
+/// and notes, and the books. Everything else is in the bar or «المزيد».
 class HomeScreen extends StatelessWidget {
   /// ينشئ الشاشة الرئيسية للتطبيق.
   const HomeScreen({super.key});
@@ -157,36 +147,11 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: spaceHeroToCore),
 
-                          // رحلة القراءة: الأيام المتتالية وورد اليوم
-                          const JourneySummaryCard(),
-                          SizedBox(height: spaceHeroToCore),
-
                           // آخر أذكار وكتاب وحفظ ومسار (يختفي إن لم يوجد)
                           const ContinueCard(),
                           SizedBox(height: spaceHeroToCore),
 
-                          // 2. قسم استغفار وتسبيح (السبحة الإلكترونية ومحراب الذكر)
-                          _IstighfarTasbeehCard(
-                            onTap: () {
-                              if (MainShell.selectTab(
-                                context,
-                                ShellTab.tasbeeh,
-                              )) {
-                                return;
-                              }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const TasbeehScreen(),
-                                ),
-                              );
-                            },
-                            isCompact: isCompact,
-                            isVeryCompact: isVeryCompact,
-                          ),
-                          SizedBox(height: spaceHeroToCore),
-
-                          // 3. Core 2x2 Feature Cards Grid
+                          // 3. وقفاتي والملاحظات
                           _buildCoreFeaturesGrid(
                             context,
                             l10n,
@@ -517,7 +482,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني شبكة البطاقات الأربع الأساسية (الأدعية، معاني الكلمات، الملاحظات، روابط الآيات).
+  /// يبني صف «وقفاتي» و«الملاحظات»، قلب التدبر في الرئيسية.
   Widget _buildCoreFeaturesGrid(
     BuildContext context,
     AppStrings l10n,
@@ -527,15 +492,20 @@ class HomeScreen extends StatelessWidget {
   }) {
     final gap = isVeryCompact ? 8.0 : (isCompact ? 10.0 : 12.0);
 
-    return Column(
+    return Row(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _GridFeatureCard(
+        Expanded(
+          // Counts the reader's reflections as they write them.
+          child: ListenableBuilder(
+            listenable: UserDataStore.instance,
+            builder: (context, _) {
+              final count = UserDataStore.instance.tadbeerItems.length;
+              return _GridFeatureCard(
                 icon: AppIcons.flowerLotusFill,
                 title: l10n.myReflections,
-                subtitle: l10n.myReflectionsSubtitle,
+                subtitle: count == 0
+                    ? l10n.myReflectionsSubtitle
+                    : l10n.reflectionsCount(count, l10n.digits(count)),
                 accentColor: AppColors.accentGold(context),
                 badgeBackground: AppColors.accentGold(context)
                     .withValues(alpha: isDark ? 0.20 : 0.12),
@@ -549,75 +519,31 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 },
-              ),
-            ),
-            SizedBox(width: gap),
-            Expanded(
-              child: _GridFeatureCard(
-                icon: AppIcons.books,
-                title: l10n.wordMeanings,
-                subtitle: l10n.wordsOfQuran,
-                accentColor: AppColors.primary(context),
-                badgeBackground: AppColors.primary(context)
-                    .withValues(alpha: isDark ? 0.20 : 0.12),
-                isCompact: isCompact,
-                isVeryCompact: isVeryCompact,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const WordMeaningsScreen(),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ),
-        SizedBox(height: gap),
-        Row(
-          children: [
-            Expanded(
-              child: _GridFeatureCard(
-                icon: AppIcons.notePencil,
-                title: l10n.notes,
-                subtitle: l10n.yourThoughtsAndReflections,
-                accentColor: isDark
-                    ? AppColors.darkPrimary
-                    : AppColors.lightPrimary,
-                badgeBackground:
-                    (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
-                        .withValues(alpha: isDark ? 0.20 : 0.12),
-                isCompact: isCompact,
-                isVeryCompact: isVeryCompact,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const NotesScreen()),
-                  );
-                },
-              ),
-            ),
-            SizedBox(width: gap),
-            Expanded(
-              child: _GridFeatureCard(
-                icon: AppIcons.graphFill,
-                title: l10n.ayahLinks,
-                subtitle: l10n.connectionsAndThemes,
-                accentColor: AppColors.accentGold(context),
-                badgeBackground: AppColors.accentGold(context)
+        SizedBox(width: gap),
+        Expanded(
+          child: _GridFeatureCard(
+            icon: AppIcons.notePencil,
+            title: l10n.notes,
+            subtitle: l10n.yourThoughtsAndReflections,
+            accentColor: isDark
+                ? AppColors.darkPrimary
+                : AppColors.lightPrimary,
+            badgeBackground:
+                (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
                     .withValues(alpha: isDark ? 0.20 : 0.12),
-                isCompact: isCompact,
-                isVeryCompact: isVeryCompact,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AyahLinksScreen()),
-                  );
-                },
-              ),
-            ),
-          ],
+            isCompact: isCompact,
+            isVeryCompact: isVeryCompact,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotesScreen()),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -672,96 +598,189 @@ class _QuranHeroCard extends StatelessWidget {
       accentColor: goldAccent,
       borderRadius: AppTokens.radiusXl,
       padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Noble Quran Icon Badge with geometric futuristic styling
-          Container(
-            width: badgeDim,
-            height: badgeDim,
-            decoration: BoxDecoration(
-              color: AppColors.primary(context)
-                  .withValues(alpha: isDark ? 0.20 : 0.12),
-              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-              border: Border.all(
-                color: goldAccent.withValues(alpha: isDark ? 0.45 : 0.35),
-                width: AppTokens.borderRegular,
+          Row(
+            children: [
+              // Noble Quran Icon Badge with geometric futuristic styling
+              Container(
+                width: badgeDim,
+                height: badgeDim,
+                decoration: BoxDecoration(
+                  color: AppColors.primary(context)
+                      .withValues(alpha: isDark ? 0.20 : 0.12),
+                  borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                  border: Border.all(
+                    color: goldAccent.withValues(alpha: isDark ? 0.45 : 0.35),
+                    width: AppTokens.borderRegular,
+                  ),
+                  boxShadow: isDark
+                      ? [
+                          BoxShadow(
+                            color: goldAccent.withValues(alpha: 0.15),
+                            blurRadius: 8,
+                            spreadRadius: -2,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Icon(
+                  FlutterIslamicIcons.quran2,
+                  color: isDark ? goldAccent : AppColors.primary(context),
+                  size: iconDim,
+                ),
               ),
-              boxShadow: isDark
-                  ? [
-                      BoxShadow(
-                        color: goldAccent.withValues(alpha: 0.15),
-                        blurRadius: 8,
-                        spreadRadius: -2,
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Icon(
-              FlutterIslamicIcons.quran2,
-              color: isDark ? goldAccent : AppColors.primary(context),
-              size: iconDim,
-            ),
-          ),
-          SizedBox(width: isVeryCompact ? 10 : 14),
+              SizedBox(width: isVeryCompact ? 10 : 14),
 
-          // Title & Reading Position
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        context.l10n.quran,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: titleSize,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
+              // Title & Reading Position
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            context.l10n.quran,
+                            style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: titleSize,
+                              fontWeight: FontWeight.bold,
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: AppTokens.spaceXs),
+                          FuturisticBadge(
+                            label: UserDataStore.instance.readingNotStarted
+                                ? context.l10n.khatmaStartNow
+                                : context.l10n.resumeReading,
+                            color: goldAccent,
+                            showDot: true,
+                            isCompact: isVeryCompact,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: AppTokens.spaceXs),
-                      FuturisticBadge(
-                        label: UserDataStore.instance.readingNotStarted
-                            ? context.l10n.khatmaStartNow
-                            : context.l10n.resumeReading,
-                        color: goldAccent,
-                        showDot: true,
-                        isCompact: isVeryCompact,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      readingSubtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: subtitleSize,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  readingSubtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: subtitleSize,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
 
-          // Navigation Chevron
-          Icon(
-            AppIcons.caretLeft,
-            size: isVeryCompact ? 12 : 14,
-            color: goldAccent.withValues(alpha: 0.85),
+              // Navigation Chevron
+              Icon(
+                AppIcons.caretLeft,
+                size: isVeryCompact ? 12 : 14,
+                color: goldAccent.withValues(alpha: 0.85),
+              ),
+            ],
           ),
+          Divider(
+            height: isVeryCompact ? 14 : 20,
+            color: goldAccent.withValues(alpha: 0.18),
+          ),
+          _ReadingJourneyRow(isVeryCompact: isVeryCompact),
         ],
+      ),
+    );
+  }
+}
+
+/// سطر رحلة القراءة في بطاقة المصحف: الأيام المتتالية وورد اليوم وتقدم
+/// الختمة، ويفتح «رحلتي».
+class _ReadingJourneyRow extends StatelessWidget {
+  final bool isVeryCompact;
+
+  const _ReadingJourneyRow({required this.isVeryCompact});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final journey = UserDataStore.instance.journey;
+    final now = DateTime.now();
+    final plan = journey.plan;
+    final streak = journey.streak(now);
+    final secondary = AppColors.textSecondary(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const JourneyScreen()),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          children: [
+            Semantics(
+              label: '${l10n.digits(streak)} ${l10n.streakDays}',
+              excludeSemantics: true,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    AppIcons.fire,
+                    color: const Color(0xFFE07A3F),
+                    size: isVeryCompact ? 17 : 19,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    l10n.digits(streak),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    plan == null
+                        ? '${l10n.myJourney} · ${l10n.startKhatmaTitle}'
+                        : '${l10n.myJourney} · ${l10n.pagesOfTarget(journey.portionPagesOn(now), plan.pagesPerDay)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12.5, color: secondary),
+                  ),
+                  if (plan != null) ...[
+                    const SizedBox(height: 5),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: plan.progress,
+                        minHeight: 4,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(AppIcons.chartLineUp, size: 16, color: secondary),
+          ],
+        ),
       ),
     );
   }
@@ -870,130 +889,6 @@ class _GridFeatureCard extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// البطاقة البارزة لقسم الاستغفار والتسبيح بتصميم رقمي مستقبلي.
-class _IstighfarTasbeehCard extends StatelessWidget {
-  final VoidCallback onTap;
-  final bool isCompact;
-  final bool isVeryCompact;
-
-  /// ينشئ بطاقة الاستغفار والتسبيح للشاشة الرئيسية.
-  const _IstighfarTasbeehCard({
-    required this.onTap,
-    this.isCompact = false,
-    this.isVeryCompact = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final l10n = context.l10n;
-    final emeraldAccent = isDark ? AppColors.cyberEmerald : AppColors.olive;
-
-    final padH = isVeryCompact ? 12.0 : 16.0;
-    final padV = isVeryCompact ? 7.0 : (isCompact ? 9.5 : 12.5);
-    final badgeDim = isVeryCompact ? 36.0 : (isCompact ? 40.0 : 46.0);
-    final iconDim = isVeryCompact ? 19.0 : (isCompact ? 21.0 : 24.0);
-    final titleSize = isVeryCompact ? 15.5 : (isCompact ? 16.5 : 17.5);
-    final subtitleSize = isVeryCompact ? 11.0 : (isCompact ? 11.8 : 12.5);
-
-    return FuturisticCard(
-      onTap: onTap,
-      showTopAccentGlow: true,
-      accentColor: emeraldAccent,
-      borderRadius: AppTokens.radiusXl,
-      padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-      child: Row(
-        children: [
-          // Tasbeeh Icon Badge
-          Container(
-            width: badgeDim,
-            height: badgeDim,
-            decoration: BoxDecoration(
-              color: emeraldAccent.withValues(alpha: isDark ? 0.20 : 0.12),
-              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-              border: Border.all(
-                color: emeraldAccent.withValues(alpha: isDark ? 0.45 : 0.35),
-                width: AppTokens.borderRegular,
-              ),
-              boxShadow: isDark
-                  ? [
-                      BoxShadow(
-                        color: emeraldAccent.withValues(alpha: 0.15),
-                        blurRadius: 8,
-                        spreadRadius: -2,
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Icon(
-              FlutterIslamicIcons.tasbih2,
-              color: isDark ? emeraldAccent : AppColors.oliveDark,
-              size: iconDim,
-            ),
-          ),
-          SizedBox(width: isVeryCompact ? 10 : 14),
-
-          // Title & Subtitle
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        l10n.tasbeehAndIstighfar,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: titleSize,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: AppTokens.spaceXs),
-                      FuturisticBadge(
-                        label: l10n.dailyPortion,
-                        color: emeraldAccent,
-                        showDot: true,
-                        isCompact: isVeryCompact,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  l10n.tasbeehSubtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: subtitleSize,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Navigation Chevron
-          Icon(
-            AppIcons.caretLeft,
-            size: isVeryCompact ? 12 : 14,
-            color: emeraldAccent.withValues(alpha: 0.8),
           ),
         ],
       ),
