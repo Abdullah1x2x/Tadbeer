@@ -5,6 +5,61 @@ import 'qcf_fonts.dart';
 import 'qcf_layout.dart';
 import 'qcf_page_body.dart';
 
+/// حروف آية بخط مصحف المدينة جاهزة للرسم: رموزها واسم خط صفحتها.
+///
+/// The ayah's words are its glyphs in the Madinah Mushaf, ending with the
+/// printed ayah-number marker; every page there ends on a whole ayah, so
+/// they all come from the ayah's page, drawn in that page's font.
+class QcfGlyphs {
+  /// The glyph codes, words separated by spaces.
+  final String text;
+
+  final int page;
+
+  const QcfGlyphs._(this.text, this.page);
+
+  /// The [ayah]'s glyphs, or null until the layout and its page's font
+  /// are loaded (see [prepare]).
+  static QcfGlyphs? of(Ayah ayah) {
+    if (!QcfLayout.instance.isReady ||
+        !QcfFonts.instance.isPageLoaded(ayah.page)) {
+      return null;
+    }
+    final words = [
+      for (final line in QcfLayout.instance.page(ayah.page))
+        for (final word in line.words)
+          if (word.surah == ayah.surahNumber && word.ayah == ayah.ayahNumber)
+            word.code,
+    ];
+    return words.isEmpty ? null : QcfGlyphs._('${words.join(' ')} ', ayah.page);
+  }
+
+  /// Loads what [of] needs for [ayah]; true once its glyphs can be drawn.
+  static Future<bool> prepare(Ayah ayah) async {
+    await QcfLayout.instance.init();
+    return await QcfFonts.instance.ensurePage(ayah.page) && of(ayah) != null;
+  }
+
+  /// The look of the glyphs at [fontSize] of an ordinary page, with lines
+  /// [height] apart; opening pages are scaled to match.
+  TextStyle style({
+    required double fontSize,
+    required double height,
+    required Color color,
+    List<Shadow>? shadows,
+  }) {
+    final scale = QcfPageBody.glyphScale(page);
+    return TextStyle(
+      fontFamily: QcfFonts.familyFor(page),
+      fontSize: fontSize * scale,
+      height: height / scale,
+      wordSpacing: QcfPageBody.wordSpacingFor(page, fontSize * scale),
+      color: color,
+      shadows: shadows,
+    );
+  }
+}
+
 /// آية واحدة بخط مصحف المدينة، تلتف أسطرها حسب المساحة.
 ///
 /// The ayah's words are its glyphs in the Madinah Mushaf, ending with the
@@ -55,53 +110,33 @@ class _QcfAyahTextState extends State<QcfAyahText> {
     if (old.ayah.id != widget.ayah.id) _prepare();
   }
 
-  int get _page => widget.ayah.page;
-
   void _prepare() {
-    _ready = QcfLayout.instance.init().then(
-      (_) async =>
-          _words().isNotEmpty && await QcfFonts.instance.ensurePage(_page),
-    );
+    _ready = QcfGlyphs.prepare(widget.ayah);
   }
 
-  /// The ayah's glyphs, in reading order.
-  List<QcfWord> _words() => [
-    for (final line in QcfLayout.instance.page(_page))
-      for (final word in line.words)
-        if (word.surah == widget.ayah.surahNumber &&
-            word.ayah == widget.ayah.ayahNumber)
-          word,
-  ];
-
-  Widget _text() {
-    final scale = QcfPageBody.glyphScale(_page);
-    return Text(
-      '${_words().map((w) => w.code).join(' ')} ',
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.rtl,
-      style: TextStyle(
-        fontFamily: QcfFonts.familyFor(_page),
-        fontSize: widget.fontSize * scale,
-        height: widget.height / scale,
-        wordSpacing: QcfPageBody.wordSpacingFor(_page, widget.fontSize * scale),
-        color: widget.color,
-      ),
-    );
-  }
-
-  /// Whether the glyphs can be drawn right now, as when the ayah is opened
-  /// from its page in the Mushaf.
-  bool get _loaded =>
-      QcfLayout.instance.isReady &&
-      QcfFonts.instance.isPageLoaded(_page) &&
-      _words().isNotEmpty;
+  Widget _text(QcfGlyphs glyphs) => Text(
+    glyphs.text,
+    textAlign: TextAlign.center,
+    textDirection: TextDirection.rtl,
+    style: glyphs.style(
+      fontSize: widget.fontSize,
+      height: widget.height,
+      color: widget.color,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
-    if (_loaded) return _text();
+    // Drawn at once when the glyphs are already loaded, as when the ayah
+    // is opened from its page in the Mushaf.
+    final glyphs = QcfGlyphs.of(widget.ayah);
+    if (glyphs != null) return _text(glyphs);
     return FutureBuilder<bool>(
       future: _ready,
-      builder: (context, snap) => snap.data == true ? _text() : widget.fallback,
+      builder: (context, _) {
+        final glyphs = QcfGlyphs.of(widget.ayah);
+        return glyphs == null ? widget.fallback : _text(glyphs);
+      },
     );
   }
 }

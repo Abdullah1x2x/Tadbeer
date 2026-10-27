@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
+import 'package:tadbeer/features/quran/data/quran_models.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/daily/ayah_of_day_card.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
@@ -57,11 +59,17 @@ void main() {
     );
   }
 
+  /// The ayah on the card, written in the flowing font or, with the
+  /// Madinah Mushaf, in its glyphs.
   String shownText(WidgetTester tester) {
     final today = AyahOfTheDay.forDayAll(DateTime.now());
-    return today
-        .firstWhere((a) => find.textContaining(a.text).evaluate().isNotEmpty)
-        .text;
+    bool shown(Ayah a) {
+      final glyphs = QcfGlyphs.of(a);
+      return find.textContaining(a.text).evaluate().isNotEmpty ||
+          (glyphs != null && find.text(glyphs.text).evaluate().isNotEmpty);
+    }
+
+    return today.firstWhere(shown).text;
   }
 
   testWidgets('the card moves to the next ayah by itself', (tester) async {
