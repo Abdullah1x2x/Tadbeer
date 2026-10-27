@@ -1671,4 +1671,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unmarkAyah => 'إزالة العلامة';
+
+  @override
+  String get chooseSurah => 'اختر السورة';
+
+  @override
+  String get searchSurahHint => 'ابحث باسم السورة أو رقمها';
 }

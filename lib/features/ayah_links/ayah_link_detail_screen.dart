@@ -11,6 +11,7 @@ import 'widgets/add_verse_to_link_dialog.dart';
 import 'widgets/ayah_link_qr_dialog.dart';
 import 'widgets/create_link_dialog.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/app_menu.dart';
 
 /// شاشة عرض تفاصيل رابط الآيات عبر وضعي الشبكة التفاعلية والقائمة المرتبة.
 ///
@@ -312,7 +313,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                 ),
                 // Secondary actions popup menu
                 PopupMenuButton<String>(
-                  icon: const Icon(AppIcons.dotsThreeVertical),
+                  icon: appMenuIcon,
                   tooltip: l10n.more,
                   onSelected: (val) {
                     if (val == 'autolayout') {
@@ -325,45 +326,21 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                   },
                   itemBuilder: (ctx) => [
                     if (_activeViewMode == 'network')
-                      PopupMenuItem(
+                      appMenuItem(
                         value: 'autolayout',
-                        child: Row(
-                          children: [
-                            const Icon(
-                              AppIcons.squaresFour,
-                              size: 18,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(l10n.autoLayout),
-                          ],
-                        ),
+                        icon: AppIcons.squaresFour,
+                        label: l10n.autoLayout,
                       ),
-                    PopupMenuItem(
+                    appMenuItem(
                       value: 'edit',
-                      child: Row(
-                        children: [
-                          const Icon(AppIcons.pencilSimple, size: 18),
-                          const SizedBox(width: 8),
-                          Text(l10n.editTitleAndDescription),
-                        ],
-                      ),
+                      icon: AppIcons.pencilSimple,
+                      label: l10n.editTitleAndDescription,
                     ),
-                    PopupMenuItem(
+                    appMenuItem(
                       value: 'delete',
-                      child: Row(
-                        children: [
-                          const Icon(
-                            AppIcons.trash,
-                            color: Colors.redAccent,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.deleteAyahLink,
-                            style: const TextStyle(color: Colors.redAccent),
-                          ),
-                        ],
-                      ),
+                      icon: AppIcons.trash,
+                      label: l10n.deleteAyahLink,
+                      destructive: true,
                     ),
                   ],
                 ),

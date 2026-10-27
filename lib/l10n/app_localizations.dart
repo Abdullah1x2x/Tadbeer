@@ -3059,6 +3059,18 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إزالة العلامة'**
   String get unmarkAyah;
+
+  /// No description provided for @chooseSurah.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر السورة'**
+  String get chooseSurah;
+
+  /// No description provided for @searchSurahHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث باسم السورة أو رقمها'**
+  String get searchSurahHint;
 }
 
 class _AppLocalizationsDelegate

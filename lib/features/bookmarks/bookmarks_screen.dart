@@ -339,27 +339,16 @@ class _BookmarkTile extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
+            icon: appMenuIcon,
             onSelected: (val) {
               if (val == 'delete') onDelete();
             },
             itemBuilder: (_) => [
-              PopupMenuItem(
+              appMenuItem(
                 value: 'delete',
-                child: Row(
-                  children: [
-                    const Icon(
-                      AppIcons.trash,
-                      size: 18,
-                      color: Colors.redAccent,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      context.l10n.removeBookmark,
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                  ],
-                ),
+                icon: AppIcons.trash,
+                label: context.l10n.removeBookmark,
+                destructive: true,
               ),
             ],
           ),

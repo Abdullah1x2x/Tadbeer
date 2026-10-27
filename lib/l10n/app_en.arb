@@ -492,5 +492,7 @@
   "cardSaveDenied": "Allow Tadbeer to add photos in your device settings",
   "continueReflection": "Continue your reflection",
   "markAyah": "Bookmark",
-  "unmarkAyah": "Remove bookmark"
+  "unmarkAyah": "Remove bookmark",
+  "chooseSurah": "Choose a surah",
+  "searchSurahHint": "Search by surah name or number"
 }

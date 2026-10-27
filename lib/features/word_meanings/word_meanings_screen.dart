@@ -7,6 +7,7 @@ import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/app_select.dart';
 
 /// الشاشة الرئيسية المستقلة لقسم «معاني كلمات القرآن».
 ///
@@ -159,58 +160,31 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Surah Filter Dropdown
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? AppColors.darkSurfaceVariant
-                                : AppColors.comsilkLight,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder,
-                              width: 0.6,
-                            ),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<int?>(
-                              value: _selectedSurah,
-                              isExpanded: true,
-                              icon: const Icon(AppIcons.caretDown, size: 20),
-                              hint: Text(l10n.allSurahsWithCount),
-                              dropdownColor: isDark
-                                  ? AppColors.darkSurface
-                                  : AppColors.comsilkLight,
-                              items: [
-                                DropdownMenuItem<int?>(
-                                  value: null,
-                                  child: Text(l10n.allSurahsWithCount),
-                                ),
-                                ...surahs.map(
-                                  (s) => DropdownMenuItem<int?>(
-                                    value: s.number,
-                                    child: Text(
-                                      '${context.currentLanguage == AppLanguage.arabic ? "${ArabicSearchNormalizer.toArabicDigits(s.number)}. " : "${s.number}. "}${l10n.surahTitle(s.name)}',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedSurah = val;
-                                });
-                                _filterWords();
-                              },
-                            ),
-                          ),
-                        ),
+                  // Surah filter
+                  AppSelectField<int?>(
+                    title: l10n.chooseSurah,
+                    icon: AppIcons.bookOpenText,
+                    searchable: true,
+                    searchHint: l10n.searchSurahHint,
+                    value: _selectedSurah,
+                    options: [
+                      AppSelectOption(
+                        value: null,
+                        label: l10n.allSurahsWithCount,
                       ),
+                      for (final s in surahs)
+                        AppSelectOption(
+                          value: s.number,
+                          label:
+                              '${context.currentLanguage == AppLanguage.arabic ? "${ArabicSearchNormalizer.toArabicDigits(s.number)}. " : "${s.number}. "}${l10n.surahTitle(s.name)}',
+                        ),
                     ],
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedSurah = val;
+                      });
+                      _filterWords();
+                    },
                   ),
                 ],
               ),

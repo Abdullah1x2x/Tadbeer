@@ -1681,4 +1681,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unmarkAyah => 'Remove bookmark';
+
+  @override
+  String get chooseSurah => 'Choose a surah';
+
+  @override
+  String get searchSurahHint => 'Search by surah name or number';
 }

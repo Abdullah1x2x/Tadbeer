@@ -421,37 +421,15 @@ class _RemindersScreenState extends State<RemindersScreen> {
               icon: const Icon(AppIcons.bellRinging),
               onSelected: _sendTestAlert,
               itemBuilder: (_) => [
-                PopupMenuItem(
+                appMenuItem(
                   value: ReminderAlertType.notification,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(AppIcons.bell, size: 20),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          l10n.testNotificationNow,
-                          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-                        ),
-                      ),
-                    ],
-                  ),
+                  icon: AppIcons.bell,
+                  label: l10n.testNotificationNow,
                 ),
-                PopupMenuItem(
+                appMenuItem(
                   value: ReminderAlertType.alarm,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(AppIcons.alarmFill, size: 20),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          l10n.testAlarmNow,
-                          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-                        ),
-                      ),
-                    ],
-                  ),
+                  icon: AppIcons.alarmFill,
+                  label: l10n.testAlarmNow,
                 ),
               ],
             ),
@@ -833,38 +811,22 @@ class _ReminderCard extends StatelessWidget {
 
           // Secondary Actions (⋮)
           PopupMenuButton<String>(
-            icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
+            icon: appMenuIcon,
             onSelected: (val) {
               if (val == 'edit') onEdit();
               if (val == 'delete') onDelete();
             },
             itemBuilder: (_) => [
-              PopupMenuItem(
+              appMenuItem(
                 value: 'edit',
-                child: Row(
-                  children: [
-                    const Icon(AppIcons.pencilSimple, size: 18),
-                    const SizedBox(width: 8),
-                    Text(l10n.edit),
-                  ],
-                ),
+                icon: AppIcons.pencilSimple,
+                label: l10n.edit,
               ),
-              PopupMenuItem(
+              appMenuItem(
                 value: 'delete',
-                child: Row(
-                  children: [
-                    const Icon(
-                      AppIcons.trash,
-                      size: 18,
-                      color: Colors.redAccent,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.delete,
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                  ],
-                ),
+                icon: AppIcons.trash,
+                label: l10n.delete,
+                destructive: true,
               ),
             ],
           ),

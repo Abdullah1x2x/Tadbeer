@@ -373,7 +373,7 @@ class _NoteCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   PopupMenuButton<String>(
-                    icon: const Icon(AppIcons.dotsThree, size: 20),
+                    icon: appMenuIcon,
                     onSelected: (val) {
                       if (val == 'edit') onEdit();
                       if (val == 'pdf') onExportPdf();
@@ -381,46 +381,21 @@ class _NoteCard extends StatelessWidget {
                     },
                     itemBuilder: (_) => [
                       if (!note.isAyahNote)
-                        PopupMenuItem(
+                        appMenuItem(
                           value: 'edit',
-                          child: Row(
-                            children: [
-                              const Icon(AppIcons.pencilSimpleFill, size: 18),
-                              const SizedBox(width: 8),
-                              Text(l10n.edit),
-                            ],
-                          ),
+                          icon: AppIcons.pencilSimpleFill,
+                          label: l10n.edit,
                         ),
-                      PopupMenuItem(
+                      appMenuItem(
                         value: 'pdf',
-                        child: Row(
-                          children: [
-                            Icon(
-                              AppIcons.filePdfFill,
-                              size: 18,
-                              color: AppColors.olive,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(l10n.exportPdf),
-                          ],
-                        ),
+                        icon: AppIcons.filePdfFill,
+                        label: l10n.exportPdf,
                       ),
-                      PopupMenuItem(
+                      appMenuItem(
                         value: 'delete',
-                        child: Row(
-                          children: [
-                            const Icon(
-                              AppIcons.trash,
-                              size: 18,
-                              color: Colors.redAccent,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.delete,
-                              style: const TextStyle(color: Colors.redAccent),
-                            ),
-                          ],
-                        ),
+                        icon: AppIcons.trash,
+                        label: l10n.delete,
+                        destructive: true,
                       ),
                     ],
                   ),

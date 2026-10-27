@@ -10,6 +10,7 @@ import '../ayah_link_repository.dart';
 import '../../quran/data/quran_repository.dart';
 import '../../quran/screens/quran_screen.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../../core/design_system/app_menu.dart';
 
 /// واجهة عرض القائمة المرتبة لرابط الآيات للقراءة المتسلسلة الهادئة.
 ///
@@ -532,7 +533,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                           ],
                         ),
                         PopupMenuButton<String>(
-                          icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
+                          icon: appMenuIcon,
                           onSelected: (val) {
                             if (val == 'quran') {
                               Navigator.push(
@@ -552,42 +553,21 @@ class AyahLinkOrderedView extends StatelessWidget {
                             }
                           },
                           itemBuilder: (ctx) => [
-                            PopupMenuItem(
+                            appMenuItem(
                               value: 'quran',
-                              child: Row(
-                                children: [
-                                  const Icon(AppIcons.bookOpenFill, size: 18),
-                                  const SizedBox(width: 8),
-                                  Text(context.l10n.openInQuran),
-                                ],
-                              ),
+                              icon: AppIcons.bookOpenFill,
+                              label: context.l10n.openInQuran,
                             ),
-                            PopupMenuItem(
+                            appMenuItem(
                               value: 'note',
-                              child: Row(
-                                children: [
-                                  const Icon(AppIcons.notePencil, size: 18),
-                                  const SizedBox(width: 8),
-                                  Text(context.l10n.editVerseNote),
-                                ],
-                              ),
+                              icon: AppIcons.notePencil,
+                              label: context.l10n.editVerseNote,
                             ),
-                            PopupMenuItem(
+                            appMenuItem(
                               value: 'delete',
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    AppIcons.trash,
-                                    color: Colors.redAccent,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    context.l10n.removeVerseFromLink,
-                                    style: const TextStyle(color: Colors.redAccent),
-                                  ),
-                                ],
-                              ),
+                              icon: AppIcons.trash,
+                              label: context.l10n.removeVerseFromLink,
+                              destructive: true,
                             ),
                           ],
                         ),
@@ -751,7 +731,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                 ),
               ),
               PopupMenuButton<String>(
-                icon: const Icon(AppIcons.dotsThreeVertical, size: 20),
+                icon: appMenuIcon,
                 onSelected: (val) {
                   if (val == 'edit') {
                     onEdit();
@@ -762,44 +742,25 @@ class _AyahLinkNoteCard extends StatelessWidget {
                   }
                 },
                 itemBuilder: (ctx) => [
-                  PopupMenuItem(
+                  appMenuItem(
                     value: 'edit',
-                    child: Row(
-                      children: [
-                        const Icon(AppIcons.pencilSimple, size: 18),
-                        const SizedBox(width: 8),
-                        Text(
-                          context.l10n.isArabic ? 'تعديل الملاحظة' : 'Edit Note',
-                        ),
-                      ],
-                    ),
+                    icon: AppIcons.pencilSimple,
+                    label: context.l10n.isArabic
+                        ? 'تعديل الملاحظة'
+                        : 'Edit Note',
                   ),
-                  PopupMenuItem(
+                  appMenuItem(
                     value: 'copy',
-                    child: Row(
-                      children: [
-                        const Icon(AppIcons.copy, size: 18),
-                        const SizedBox(width: 8),
-                        Text(context.l10n.isArabic ? 'نسخ النص' : 'Copy Text'),
-                      ],
-                    ),
+                    icon: AppIcons.copy,
+                    label: context.l10n.isArabic ? 'نسخ النص' : 'Copy Text',
                   ),
-                  PopupMenuItem(
+                  appMenuItem(
                     value: 'delete',
-                    child: Row(
-                      children: [
-                        const Icon(
-                          AppIcons.trash,
-                          color: Colors.redAccent,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          context.l10n.isArabic ? 'حذف الملاحظة' : 'Delete Note',
-                          style: const TextStyle(color: Colors.redAccent),
-                        ),
-                      ],
-                    ),
+                    icon: AppIcons.trash,
+                    label: context.l10n.isArabic
+                        ? 'حذف الملاحظة'
+                        : 'Delete Note',
+                    destructive: true,
                   ),
                 ],
               ),
