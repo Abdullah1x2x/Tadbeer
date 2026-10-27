@@ -393,9 +393,9 @@ void main() {
         expect(find.text('المصحف'), findsOneWidget);
         expect(find.text('وقفاتي'), findsOneWidget);
         expect(find.text('الملاحظات'), findsOneWidget);
-        // Word meanings and ayah links are reached from «المزيد».
+        // Ayah links sit with the shortcuts; word meanings is in «المزيد».
         expect(find.text('معاني الكلمات'), findsNothing);
-        expect(find.text('روابط الآيات'), findsNothing);
+        expect(find.text('روابط الآيات'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         // Secondary tools live in the "More" tab.

@@ -138,7 +138,12 @@ void main() {
 
         // Every part is on screen, the last one included.
         if (extent(tester) == 0) {
-          for (final text in ['المصحف', 'وقفاتي', 'كتب وملازم']) {
+          for (final text in [
+            'المصحف',
+            'وقفاتي',
+            'روابط الآيات',
+            'كتب وملازم',
+          ]) {
             final rect = tester.getRect(find.text(text));
             expect(rect.bottom, lessThanOrEqualTo(entry.value.height));
           }
