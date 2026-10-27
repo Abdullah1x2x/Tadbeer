@@ -192,6 +192,29 @@ class AyahOfTheDayCard extends StatefulWidget {
   /// ينشئ بطاقة آيات التدبّر.
   const AyahOfTheDayCard({super.key});
 
+  /// Height of everything but the verse and the question: padding, the
+  /// title row, the gaps, the actions and the dots.
+  static const _chrome = 16 + 10 + 24 + 12 + 8 + 40 + 13.0;
+
+  /// The least height the card needs at [width] to show every one of
+  /// today's ayahs whole, with its actions; the question may step aside.
+  static double minHeight(BuildContext context, double width) {
+    final verses = [
+      for (final a in AyahOfTheDay.forDayAll(DateTime.now()))
+        _AyahOfTheDayCardState._verse(a),
+    ];
+    final style = DefaultTextStyle.of(context).style.merge(
+      _FittedVerse.styleAt(_FittedVerse.minSize, _FittedVerse.tightHeight),
+    );
+    return _chrome +
+        _tallest(
+          context,
+          verses,
+          style,
+          width - _AyahOfTheDayCardState._padH * 2,
+        );
+  }
+
   @override
   State<AyahOfTheDayCard> createState() => _AyahOfTheDayCardState();
 }
@@ -251,6 +274,9 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     if (_mayMove) setState(() => _index = (_index + 1) % _ayahs.length);
   }
 
+  /// Horizontal padding inside the card.
+  static const _padH = 18.0;
+
   static String _verse(Ayah a) =>
       '${a.text} ﴿${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}﴾';
 
@@ -268,12 +294,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     final motion = AppMotion.shouldAnimate(context);
     const gold = Color(0xFFD9B566);
-    final verseStyle = TextStyle(
-      fontFamily: UserDataStore.instance.quranFontFamily,
-      fontSize: 21,
-      height: 2,
-      color: const Color(0xFFF2EEE4),
-    );
+    final verseStyle = _FittedVerse.styleAt(21, 2);
     const questionStyle = TextStyle(
       color: gold,
       fontSize: 13.5,
@@ -312,142 +333,209 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
               borderRadius: BorderRadius.circular(AppTheme.cardRadius),
               onTap: () => FocusModeScreen.open(context, ayah),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(18, 16, 18, 10),
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: motion ? 450 : 0),
-                  switchInCurve: Curves.easeOutCubic,
-                  switchOutCurve: Curves.easeInCubic,
-                  layoutBuilder: (current, previous) => Stack(
-                    alignment: Alignment.topCenter,
-                    children: [...previous, ?current],
-                  ),
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: Tween(
-                        begin: const Offset(0, 0.04),
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: child,
-                    ),
-                  ),
-                  child: Column(
-                    key: ValueKey(ayah.id),
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(AppIcons.sunFill, color: gold, size: 18),
-                          const SizedBox(width: 6),
-                          Text(
-                            l10n.widgetAyahTitle,
-                            style: const TextStyle(
-                              color: gold,
-                              fontWeight: FontWeight.bold,
-                            ),
+                padding: const EdgeInsets.fromLTRB(_padH, 16, _padH, 10),
+                // Given a height (a page that fits the screen), the verse
+                // takes what is left; on a short card the question and
+                // then the actions step aside so the verse still shows.
+                child: LayoutBuilder(
+                  builder: (context, box) {
+                    final bounded = box.maxHeight.isFinite;
+                    // The question shows only if the verse still fits
+                    // whole beside it.
+                    var showQuestion = true;
+                    if (bounded) {
+                      final verse = _tallest(
+                        context,
+                        [for (final a in _ayahs) _verse(a)],
+                        DefaultTextStyle.of(context).style.merge(
+                          _FittedVerse.styleAt(
+                            _FittedVerse.minSize,
+                            _FittedVerse.tightHeight,
                           ),
-                          const SizedBox(width: 8),
-                          // Long surah names shrink instead of overflowing.
-                          Expanded(
-                            child: Text(
-                              l10n.ayahReference(surah.name, ayah.ayahNumber),
-                              textAlign: TextAlign.end,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12.5,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      _SteadyHeight(
-                        texts: [for (final a in _ayahs) _verse(a)],
-                        style: verseStyle,
-                        maxLines: 5,
-                        child: Text(
-                          _verse(ayah),
-                          textAlign: TextAlign.center,
-                          maxLines: 5,
-                          overflow: TextOverflow.ellipsis,
-                          style: verseStyle,
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      // Shows a check once this verse has been reflected on.
-                      _SteadyHeight(
-                        texts: [
+                        box.maxWidth,
+                      );
+                      final question = _tallest(
+                        context,
+                        [
                           for (var i = 0; i < _ayahs.length; i++)
                             AyahOfTheDay.questionFor(_day, i),
                         ],
-                        style: questionStyle,
-                        child: ListenableBuilder(
-                          listenable: UserDataStore.instance,
-                          builder: (context, _) {
-                            final done =
-                                UserDataStore.instance.getTadbeer(
-                                  ayah.surahNumber,
-                                  ayah.ayahNumber,
-                                ) !=
-                                null;
-                            return done
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        AppIcons.checkCircleFill,
-                                        color: gold,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        l10n.reflectedToday,
-                                        style: questionStyle,
-                                      ),
-                                    ],
-                                  )
-                                : Text(
-                                    AyahOfTheDay.questionFor(_day, _index),
-                                    textAlign: TextAlign.center,
-                                    style: questionStyle,
-                                  );
-                          },
+                        DefaultTextStyle.of(context).style.merge(questionStyle),
+                        box.maxWidth,
+                      );
+                      final free =
+                          box.maxHeight -
+                          (AyahOfTheDayCard._chrome - 26) -
+                          verse;
+                      showQuestion = free >= question + 6;
+                    }
+                    final showActions = !bounded || box.maxHeight >= 110;
+                    return AnimatedSwitcher(
+                      duration: Duration(milliseconds: motion ? 450 : 0),
+                      switchInCurve: Curves.easeOutCubic,
+                      switchOutCurve: Curves.easeInCubic,
+                      layoutBuilder: (current, previous) => Stack(
+                        alignment: Alignment.topCenter,
+                        children: [...previous, ?current],
+                      ),
+                      transitionBuilder: (child, animation) => FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween(
+                            begin: const Offset(0, 0.04),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          child: child,
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      // Wraps on narrow phones instead of overflowing.
-                      Wrap(
-                        alignment: WrapAlignment.center,
+                      child: Column(
+                        key: ValueKey(ayah.id),
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          _Action(
-                            icon: AppIcons.flowerLotusFill,
-                            label: l10n.reflectOnIt,
-                            onTap: () => TadbeerPauseSheet.show(
-                              context,
-                              ayah,
-                              initialQuestion: AyahOfTheDay.questionIndex(
-                                _day,
-                                _index,
+                          Row(
+                            children: [
+                              const Icon(
+                                AppIcons.sunFill,
+                                color: gold,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                l10n.widgetAyahTitle,
+                                style: const TextStyle(
+                                  color: gold,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              // Long surah names shrink instead of overflowing.
+                              Expanded(
+                                child: Text(
+                                  l10n.ayahReference(
+                                    surah.name,
+                                    ayah.ayahNumber,
+                                  ),
+                                  textAlign: TextAlign.end,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12.5,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          if (bounded)
+                            Expanded(
+                              child: _FittedVerse(
+                                texts: [for (final a in _ayahs) _verse(a)],
+                                text: _verse(ayah),
+                                style: verseStyle,
+                              ),
+                            )
+                          else
+                            _SteadyHeight(
+                              texts: [for (final a in _ayahs) _verse(a)],
+                              style: verseStyle,
+                              maxLines: 5,
+                              child: Text(
+                                _verse(ayah),
+                                textAlign: TextAlign.center,
+                                maxLines: 5,
+                                overflow: TextOverflow.ellipsis,
+                                style: verseStyle,
                               ),
                             ),
-                          ),
-                          _Action(
-                            icon: AppIcons.export,
-                            label: l10n.share,
-                            onTap: () => AyahShareSheet.show(context, ayah),
-                          ),
-                          _Action(
-                            icon: AppIcons.personSimpleTaiChi,
-                            label: l10n.focusMode,
-                            onTap: () => FocusModeScreen.open(context, ayah),
+                          const SizedBox(height: 8),
+                          // Shows a check once this verse has been reflected on.
+                          if (showQuestion)
+                            _SteadyHeight(
+                              texts: [
+                                for (var i = 0; i < _ayahs.length; i++)
+                                  AyahOfTheDay.questionFor(_day, i),
+                              ],
+                              style: questionStyle,
+                              child: ListenableBuilder(
+                                listenable: UserDataStore.instance,
+                                builder: (context, _) {
+                                  final done =
+                                      UserDataStore.instance.getTadbeer(
+                                        ayah.surahNumber,
+                                        ayah.ayahNumber,
+                                      ) !=
+                                      null;
+                                  return done
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const Icon(
+                                              AppIcons.checkCircleFill,
+                                              color: gold,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              l10n.reflectedToday,
+                                              style: questionStyle,
+                                            ),
+                                          ],
+                                        )
+                                      : Text(
+                                          AyahOfTheDay.questionFor(
+                                            _day,
+                                            _index,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          style: questionStyle,
+                                        );
+                                },
+                              ),
+                            ),
+                          if (showQuestion) const SizedBox(height: 6),
+                          // Wraps on narrow phones instead of overflowing.
+                          if (showActions)
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              children: [
+                                _Action(
+                                  icon: AppIcons.flowerLotusFill,
+                                  label: l10n.reflectOnIt,
+                                  onTap: () => TadbeerPauseSheet.show(
+                                    context,
+                                    ayah,
+                                    initialQuestion: AyahOfTheDay.questionIndex(
+                                      _day,
+                                      _index,
+                                    ),
+                                  ),
+                                ),
+                                _Action(
+                                  icon: AppIcons.export,
+                                  label: l10n.share,
+                                  onTap: () =>
+                                      AyahShareSheet.show(context, ayah),
+                                ),
+                                _Action(
+                                  icon: AppIcons.personSimpleTaiChi,
+                                  label: l10n.focusMode,
+                                  onTap: () =>
+                                      FocusModeScreen.open(context, ayah),
+                                ),
+                              ],
+                            ),
+                          _Dots(
+                            count: _ayahs.length,
+                            current: _index,
+                            color: gold,
                           ),
                         ],
                       ),
-                      _Dots(count: _ayahs.length, current: _index, color: gold),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -502,6 +590,90 @@ class _SteadyHeight extends StatelessWidget {
   }
 }
 
+/// Height of the tallest of [texts] laid out at [width] in [style].
+double _tallest(
+  BuildContext context,
+  List<String> texts,
+  TextStyle style,
+  double width,
+) {
+  final scaler = MediaQuery.textScalerOf(context);
+  final direction = Directionality.of(context);
+  var h = 0.0;
+  for (final t in texts) {
+    final painter = TextPainter(
+      text: TextSpan(text: t, style: style),
+      textAlign: TextAlign.center,
+      textDirection: direction,
+      textScaler: scaler,
+    )..layout(maxWidth: width);
+    h = math.max(h, painter.height);
+    painter.dispose();
+  }
+  return h;
+}
+
+/// The verse at the largest size, down to [minSize], at which every one
+/// of [texts] fits the height it is given, so the card keeps one size
+/// while the day's ayahs follow one another. At the smallest size the
+/// lines draw closer ([tightHeight]) before any line is cut.
+class _FittedVerse extends StatelessWidget {
+  final List<String> texts;
+  final String text;
+  final TextStyle style;
+
+  const _FittedVerse({
+    required this.texts,
+    required this.text,
+    required this.style,
+  });
+
+  /// Smallest size of the verse.
+  static const minSize = 15.0;
+
+  /// Line height at the smallest size, closer than the usual 2.
+  static const tightHeight = 1.7;
+
+  /// The verse's look at [size] with lines [height] apart.
+  static TextStyle styleAt(double size, double height) => TextStyle(
+    fontFamily: UserDataStore.instance.quranFontFamily,
+    fontSize: size,
+    height: height,
+    color: const Color(0xFFF2EEE4),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final base = DefaultTextStyle.of(context).style.merge(style);
+    final scaler = MediaQuery.textScalerOf(context);
+    return LayoutBuilder(
+      builder: (context, box) {
+        bool fits(TextStyle s) =>
+            _tallest(context, texts, s, box.maxWidth) <= box.maxHeight;
+
+        var fitted = base;
+        var size = base.fontSize ?? 21;
+        while (size > minSize && !fits(fitted)) {
+          size -= 1;
+          fitted = base.copyWith(fontSize: size);
+        }
+        if (!fits(fitted)) fitted = fitted.copyWith(height: tightHeight);
+        final lineHeight = scaler.scale(size) * (fitted.height ?? 1);
+        final lines = math.max(1, (box.maxHeight / lineHeight).floor());
+        return Center(
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            maxLines: lines,
+            overflow: TextOverflow.ellipsis,
+            style: fitted,
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// Where the shown ayah sits among the day's ayahs.
 class _Dots extends StatelessWidget {
   final int count;
@@ -549,7 +721,12 @@ class _Action extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      style: TextButton.styleFrom(foregroundColor: Colors.white),
+      // Snug, so the three sit in one row on a narrow phone.
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        visualDensity: VisualDensity.compact,
+      ),
       onPressed: onTap,
       icon: Icon(icon, size: 18),
       label: Text(label, style: const TextStyle(fontSize: 13)),

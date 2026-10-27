@@ -33,7 +33,7 @@ class CommitmentCard extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(bottom: gap),
           child: Container(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             decoration: BoxDecoration(
               color: AppColors.surface(context),
               borderRadius: BorderRadius.circular(AppTheme.cardRadius),
@@ -57,10 +57,10 @@ class CommitmentCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   '«${item.commitment}»',
-                  maxLines: 4,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 15.5,
@@ -68,7 +68,6 @@ class CommitmentCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 6),
                 Row(
                   children: [
                     Expanded(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
@@ -52,130 +53,107 @@ class HomeScreen extends StatelessWidget {
                 final isCompact = h < 740;
                 final isVeryCompact = h < 640;
 
-                // Spacing tokens
                 final paddingH = isVeryCompact
                     ? 14.0
                     : (isCompact ? 18.0 : 20.0);
-                final paddingV = isVeryCompact
-                    ? 6.0
-                    : (isCompact ? 10.0 : 14.0);
+                final paddingV = isVeryCompact ? 6.0 : 10.0;
+                final gap = isVeryCompact ? 8.0 : (isCompact ? 10.0 : 12.0);
 
-                final spaceTopBar = isVeryCompact
-                    ? 4.0
-                    : (isCompact ? 6.0 : 10.0);
-                final spaceBrandToSearch = isVeryCompact
-                    ? 6.0
-                    : (isCompact ? 10.0 : 14.0);
-                final spaceSearchToHero = isVeryCompact
-                    ? 8.0
-                    : (isCompact ? 12.0 : 16.0);
-                final spaceHeroToCore = isVeryCompact
-                    ? 8.0
-                    : (isCompact ? 10.0 : 14.0);
-
-                return SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: paddingH,
-                    vertical: paddingV,
-                  ),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 580),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          // Top App Bar with Settings round button
-                          _buildTopBar(
-                            context,
-                            l10n,
-                            isDark,
-                            isCompact: isCompact,
-                            isVeryCompact: isVeryCompact,
-                          ),
-                          SizedBox(height: spaceTopBar),
-
-                          // Serene Brand Header
-                          _buildBrandHeader(
-                            context,
-                            l10n,
-                            isDark,
-                            isCompact: isCompact,
-                            isVeryCompact: isVeryCompact,
-                          ),
-                          SizedBox(height: spaceBrandToSearch),
-
-                          // Prominent Global Search Entry Bar
-                          _buildGlobalSearchBar(
-                            context,
-                            l10n,
-                            isDark,
-                            isCompact: isCompact,
-                            isVeryCompact: isVeryCompact,
-                          ),
-                          SizedBox(height: spaceSearchToHero),
-
-                          // آية اليوم مع سؤال تدبر
-                          const AyahOfTheDayCard(),
-                          SizedBox(height: spaceHeroToCore),
-
-                          // سؤال عمّا التزم به القارئ في وقفة سابقة
-                          CommitmentCard(gap: spaceHeroToCore),
-
-                          // 1. Featured Quran Hero Card
-                          _QuranHeroCard(
-                            onTap: () {
-                              if (MainShell.selectTab(
+                // The page fits the screen and does not scroll: the ayah
+                // card takes whatever height the other cards leave. Only
+                // when that is too little for the day's longest ayah (a
+                // short screen with every card showing, or very large
+                // text) does the page grow past the screen and scroll.
+                return ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context)
+                      .copyWith(overscroll: false),
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: paddingH,
+                      vertical: paddingV,
+                    ),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: 580,
+                          minHeight: h - paddingV * 2,
+                        ),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              _buildTopBar(
                                 context,
-                                ShellTab.quran,
-                              )) {
-                                return;
-                              }
-                              final pos =
-                                  UserDataStore.instance.readingPosition;
-                              Navigator.push(
+                                l10n,
+                                isDark,
+                                isCompact: isCompact,
+                                isVeryCompact: isVeryCompact,
+                              ),
+                              SizedBox(height: gap * 0.6),
+                              _buildGlobalSearchBar(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      QuranScreen(initialPage: pos.page),
+                                l10n,
+                                isDark,
+                                isCompact: isCompact,
+                                isVeryCompact: isVeryCompact,
+                              ),
+                              SizedBox(height: gap),
+
+                              // آية اليوم مع سؤال تدبر، بما بقي من الارتفاع
+                              Expanded(
+                                child: _HeightFloor(
+                                  heightFor: (width) =>
+                                      AyahOfTheDayCard.minHeight(
+                                        context,
+                                        width,
+                                      ),
+                                  child: const AyahOfTheDayCard(),
                                 ),
-                              );
-                            },
-                            isCompact: isCompact,
-                            isVeryCompact: isVeryCompact,
-                          ),
-                          SizedBox(height: spaceHeroToCore),
+                              ),
+                              SizedBox(height: gap),
 
-                          // آخر أذكار وكتاب وحفظ ومسار (يختفي إن لم يوجد)
-                          const ContinueCard(),
-                          SizedBox(height: spaceHeroToCore),
+                              // سؤال عمّا التزم به القارئ في وقفة سابقة
+                              CommitmentCard(gap: gap),
 
-                          // 3. وقفاتي والملاحظات
-                          _buildCoreFeaturesGrid(
-                            context,
-                            l10n,
-                            isDark,
-                            isCompact: isCompact,
-                            isVeryCompact: isVeryCompact,
-                          ),
-                          SizedBox(height: spaceHeroToCore),
+                              // المصحف ورحلة القراءة
+                              _QuranHeroCard(
+                                onTap: () {
+                                  if (MainShell.selectTab(
+                                    context,
+                                    ShellTab.quran,
+                                  )) {
+                                    return;
+                                  }
+                                  final pos =
+                                      UserDataStore.instance.readingPosition;
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          QuranScreen(initialPage: pos.page),
+                                    ),
+                                  );
+                                },
+                                isCompact: isCompact,
+                                isVeryCompact: isVeryCompact,
+                              ),
+                              SizedBox(height: gap),
 
-                          // 4. قسم كتب وملازم (مكتبة الملازم التدبرية والكتب الإسلامية)
-                          _BooksHeroCard(
-                            onTap: () {
-                              Navigator.push(
+                              // آخر ما توقف عنده القارئ (يختفي إن لم يوجد)
+                              ContinueCard(limit: 1, gap: gap),
+
+                              // وقفاتي والملاحظات والكتب
+                              _buildShortcuts(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (_) => const BooksScreen(),
-                                ),
-                              );
-                            },
-                            isCompact: isCompact,
-                            isVeryCompact: isVeryCompact,
+                                l10n,
+                                isDark,
+                                gap: gap,
+                                slim: isVeryCompact,
+                              ),
+                            ],
                           ),
-                          SizedBox(height: isVeryCompact ? 4.0 : 8.0),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -188,7 +166,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني الشريط العلوي للشاشة مع زر الإعدادات الهندسي المستقبلي.
+  /// يبني الشريط العلوي: اسم التطبيق وزر الإعدادات.
   Widget _buildTopBar(
     BuildContext context,
     AppStrings l10n,
@@ -197,13 +175,26 @@ class HomeScreen extends StatelessWidget {
     required bool isVeryCompact,
   }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Settings Button with squircle futuristic styling
+        Expanded(
+          child: Text(
+            l10n.appName,
+            maxLines: 1,
+            style: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: isVeryCompact ? 22 : (isCompact ? 24 : 26),
+              fontWeight: FontWeight.bold,
+              height: 1.3,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightPrimary,
+            ),
+          ),
+        ),
         FuturisticIconButton(
           icon: AppIcons.gear,
           tooltip: l10n.settings,
-          size: isVeryCompact ? 36 : (isCompact ? 40 : 44),
+          size: isVeryCompact ? 36 : (isCompact ? 40 : 42),
           iconSize: isVeryCompact ? 18 : (isCompact ? 19 : 20),
           onTap: () {
             Navigator.push(
@@ -212,93 +203,6 @@ class HomeScreen extends StatelessWidget {
             );
           },
         ),
-      ],
-    );
-  }
-
-  /// يبني ترويسة هوية التطبيق مع القوس الزخرفي والشعار النصي.
-  Widget _buildBrandHeader(
-    BuildContext context,
-    AppStrings l10n,
-    bool isDark, {
-    required bool isCompact,
-    required bool isVeryCompact,
-  }) {
-    // Kept modest so the main cards appear without scrolling.
-    final titleSize = isVeryCompact ? 25.0 : (isCompact ? 28.0 : 32.0);
-    final taglineSize = isVeryCompact ? 12.0 : (isCompact ? 12.5 : 13.5);
-    final archW = isVeryCompact ? 110.0 : (isCompact ? 128.0 : 150.0);
-    final archH = isVeryCompact ? 40.0 : (isCompact ? 48.0 : 58.0);
-    final iconLeafSize = isVeryCompact ? 12.0 : (isCompact ? 13.5 : 15.0);
-
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            // Soft atmospheric arch in the background
-            CustomPaint(
-              size: Size(archW, archH),
-              painter: _ArchBackgroundPainter(
-                color: (isDark ? AppColors.darkAccentGold : AppColors.olive)
-                    .withValues(alpha: isDark ? 0.08 : 0.06),
-              ),
-            ),
-            // Brand Title
-            Padding(
-              padding: EdgeInsets.only(
-                top: isVeryCompact ? 4 : (isCompact ? 6 : 10),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.appName,
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: titleSize,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightPrimary,
-                      height: 1.25,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Icon(
-                      AppIcons.leaf,
-                      size: iconLeafSize,
-                      color:
-                          (isDark
-                                  ? AppColors.darkPrimary
-                                  : AppColors.lightPrimary)
-                              .withValues(alpha: 0.85),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 1),
-        Text(
-          l10n.appTagline,
-          style: TextStyle(
-            fontSize: taglineSize,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
-            letterSpacing: 0.2,
-          ),
-        ),
-        if (!isVeryCompact) ...[
-          const SizedBox(height: 4),
-          OrnamentDivider(width: isCompact ? 110 : 130, starSize: 5),
-        ],
       ],
     );
   }
@@ -482,16 +386,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني صف «وقفاتي» و«الملاحظات»، قلب التدبر في الرئيسية.
-  Widget _buildCoreFeaturesGrid(
+  /// يبني صف الاختصارات: وقفاتي والملاحظات وكتب وملازم.
+  Widget _buildShortcuts(
     BuildContext context,
     AppStrings l10n,
     bool isDark, {
-    required bool isCompact,
-    required bool isVeryCompact,
+    required double gap,
+    required bool slim,
   }) {
-    final gap = isVeryCompact ? 8.0 : (isCompact ? 10.0 : 12.0);
-
+    void open(Widget screen) =>
+        Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+    final gold = AppColors.accentGold(context);
+    final primary = AppColors.primary(context);
     return Row(
       children: [
         Expanded(
@@ -500,49 +406,39 @@ class HomeScreen extends StatelessWidget {
             listenable: UserDataStore.instance,
             builder: (context, _) {
               final count = UserDataStore.instance.tadbeerItems.length;
-              return _GridFeatureCard(
+              return _ShortcutTile(
                 icon: AppIcons.flowerLotusFill,
                 title: l10n.myReflections,
-                subtitle: count == 0
-                    ? l10n.myReflectionsSubtitle
-                    : l10n.reflectionsCount(count, l10n.digits(count)),
-                accentColor: AppColors.accentGold(context),
-                badgeBackground: AppColors.accentGold(context)
-                    .withValues(alpha: isDark ? 0.20 : 0.12),
-                isCompact: isCompact,
-                isVeryCompact: isVeryCompact,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MyReflectionsScreen(),
-                    ),
-                  );
-                },
+                count: count == 0 ? null : l10n.digits(count),
+                semanticsLabel: count == 0
+                    ? null
+                    : '${l10n.myReflections}، '
+                          '${l10n.reflectionsCount(count, l10n.digits(count))}',
+                accent: gold,
+                slim: slim,
+                onTap: () => open(const MyReflectionsScreen()),
               );
             },
           ),
         ),
         SizedBox(width: gap),
         Expanded(
-          child: _GridFeatureCard(
+          child: _ShortcutTile(
             icon: AppIcons.notePencil,
             title: l10n.notes,
-            subtitle: l10n.yourThoughtsAndReflections,
-            accentColor: isDark
-                ? AppColors.darkPrimary
-                : AppColors.lightPrimary,
-            badgeBackground:
-                (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
-                    .withValues(alpha: isDark ? 0.20 : 0.12),
-            isCompact: isCompact,
-            isVeryCompact: isVeryCompact,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const NotesScreen()),
-              );
-            },
+            accent: primary,
+            slim: slim,
+            onTap: () => open(const NotesScreen()),
+          ),
+        ),
+        SizedBox(width: gap),
+        Expanded(
+          child: _ShortcutTile(
+            icon: AppIcons.bookOpenTextFill,
+            title: l10n.booksAndBooklets,
+            accent: primary,
+            slim: slim,
+            onTap: () => open(const BooksScreen()),
           ),
         ),
       ],
@@ -693,7 +589,7 @@ class _QuranHeroCard extends StatelessWidget {
             ],
           ),
           Divider(
-            height: isVeryCompact ? 14 : 20,
+            height: isVeryCompact ? 12 : 16,
             color: goldAccent.withValues(alpha: 0.18),
           ),
           _ReadingJourneyRow(isVeryCompact: isVeryCompact),
@@ -786,272 +682,134 @@ class _ReadingJourneyRow extends StatelessWidget {
   }
 }
 
-/// بطاقة ميزة رئيسية ضمن الشبكة الرباعية بتصميم رقمي مستقبلي.
-class _GridFeatureCard extends StatelessWidget {
+/// اختصار صغير في أسفل الرئيسية: أيقونة واسم، وعدد إن وُجد.
+class _ShortcutTile extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String subtitle;
-  final Color accentColor;
-  final Color badgeBackground;
+  final Color accent;
   final VoidCallback onTap;
-  final bool isCompact;
-  final bool isVeryCompact;
 
-  /// ينشئ بطاقة ميزة رئيسية للشبكة.
-  const _GridFeatureCard({
+  /// A small count beside the icon, such as the reflections written.
+  final String? count;
+
+  /// What a screen reader says, when it differs from [title].
+  final String? semanticsLabel;
+
+  /// The icon beside the name rather than above it, for a short screen.
+  final bool slim;
+
+  const _ShortcutTile({
     required this.icon,
     required this.title,
-    required this.subtitle,
-    required this.accentColor,
-    required this.badgeBackground,
+    required this.accent,
     required this.onTap,
-    this.isCompact = false,
-    this.isVeryCompact = false,
+    this.count,
+    this.semanticsLabel,
+    this.slim = false,
   });
 
-  /// يبني واجهة بطاقة الميزة مع شارة الأيقونة والعنوان والوصف الفرعي.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final padH = isVeryCompact ? 10.0 : 12.0;
-    final padV = isVeryCompact ? 7.0 : (isCompact ? 9.0 : 12.0);
-    final badgeDim = isVeryCompact ? 34.0 : (isCompact ? 38.0 : 42.0);
-    final iconDim = isVeryCompact ? 18.0 : (isCompact ? 20.0 : 22.0);
-    final titleSize = isVeryCompact ? 13.5 : (isCompact ? 14.5 : 15.5);
-    final subtitleSize = isVeryCompact ? 10.0 : (isCompact ? 10.8 : 11.5);
-
-    return FuturisticCard(
-      onTap: onTap,
-      accentColor: accentColor,
-      borderRadius: AppTokens.radiusLg,
-      padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-      child: Row(
-        children: [
-          // Icon Illustration Badge with geometric squircle container
-          Container(
-            width: badgeDim,
-            height: badgeDim,
-            decoration: BoxDecoration(
-              color: badgeBackground,
-              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-              border: Border.all(
-                color: accentColor.withValues(alpha: isDark ? 0.35 : 0.25),
-                width: AppTokens.borderHairline,
-              ),
-              boxShadow: isDark
-                  ? [
-                      BoxShadow(
-                        color: accentColor.withValues(alpha: 0.12),
-                        blurRadius: 6,
-                        spreadRadius: -2,
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Center(
-              child: Icon(icon, color: accentColor, size: iconDim),
-            ),
-          ),
-          SizedBox(width: isVeryCompact ? 8 : 10),
-
-          // Title and Subtitle
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Semantics(
+      button: true,
+      label: semanticsLabel ?? title,
+      excludeSemantics: true,
+      child: FuturisticCard(
+        onTap: onTap,
+        accentColor: accent,
+        borderRadius: AppTokens.radiusLg,
+        padding: EdgeInsets.symmetric(horizontal: slim ? 4 : 6, vertical: 10),
+        child: Flex(
+          direction: slim ? Axis.horizontal : Axis.vertical,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    title,
+                // On a short screen a bare icon leaves the name room.
+                if (slim)
+                  Icon(icon, color: accent, size: 18)
+                else
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: isDark ? 0.20 : 0.12),
+                      borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+                    ),
+                    child: Icon(icon, color: accent, size: 19),
+                  ),
+                if (count != null) ...[
+                  const SizedBox(width: 6),
+                  Text(
+                    count!,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: titleSize,
                       fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      color: accent,
                     ),
                   ),
-                ),
-                const SizedBox(height: 1),
-                Text(
-                  subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: subtitleSize,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                ),
+                ],
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// البطاقة البارزة لقسم الكتب والملازم التدبرية بتصميم رقمي مستقبلي.
-class _BooksHeroCard extends StatelessWidget {
-  final VoidCallback onTap;
-  final bool isCompact;
-  final bool isVeryCompact;
-
-  /// ينشئ بطاقة الكتب والملازم للشاشة الرئيسية.
-  const _BooksHeroCard({
-    required this.onTap,
-    this.isCompact = false,
-    this.isVeryCompact = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
-    final l10n = context.l10n;
-
-    final padH = isVeryCompact ? 12.0 : 16.0;
-    final padV = isVeryCompact ? 7.0 : (isCompact ? 9.5 : 12.5);
-    final badgeDim = isVeryCompact ? 36.0 : (isCompact ? 40.0 : 46.0);
-    final iconDim = isVeryCompact ? 19.0 : (isCompact ? 21.0 : 24.0);
-    final titleSize = isVeryCompact ? 15.5 : (isCompact ? 16.5 : 17.5);
-    final subtitleSize = isVeryCompact ? 11.0 : (isCompact ? 11.8 : 12.5);
-
-    return FuturisticCard(
-      onTap: onTap,
-      showTopAccentGlow: true,
-      accentColor: primaryColor,
-      borderRadius: AppTokens.radiusXl,
-      padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
-      child: Row(
-        children: [
-          // Books Icon Badge
-          Container(
-            width: badgeDim,
-            height: badgeDim,
-            decoration: BoxDecoration(
-              color: primaryColor.withValues(alpha: isDark ? 0.20 : 0.12),
-              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-              border: Border.all(
-                color: primaryColor.withValues(alpha: isDark ? 0.45 : 0.35),
-                width: AppTokens.borderRegular,
+            SizedBox(width: slim ? 4 : 6, height: 6),
+            Flexible(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: slim ? 13.5 : 14.5,
+                  fontWeight: FontWeight.bold,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                ),
               ),
-              boxShadow: isDark
-                  ? [
-                      BoxShadow(
-                        color: primaryColor.withValues(alpha: 0.15),
-                        blurRadius: 8,
-                        spreadRadius: -2,
-                      ),
-                    ]
-                  : null,
             ),
-            child: Icon(
-              AppIcons.bookOpenTextFill,
-              color: primaryColor,
-              size: iconDim,
-            ),
-          ),
-          SizedBox(width: isVeryCompact ? 10 : 14),
-
-          // Title & Subtitle
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        l10n.booksAndBooklets,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: titleSize,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: AppTokens.spaceXs),
-                      FuturisticBadge(
-                        label: l10n.tadbeerLibrary,
-                        color: primaryColor,
-                        isCompact: isVeryCompact,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  l10n.booksSubtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: subtitleSize,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Navigation Chevron
-          Icon(
-            AppIcons.caretLeft,
-            size: isVeryCompact ? 12 : 14,
-            color:
-                (isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold)
-                    .withValues(alpha: 0.8),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-/// رسام مخصص لرسم قوس إسلامي هادئ خلف عنوان التطبيق في الشاشة الرئيسية.
-class _ArchBackgroundPainter extends CustomPainter {
-  final Color color;
+/// Reports [heightFor] at the given width as its child's intrinsic
+/// height, so an [IntrinsicHeight] page counts the ayah card at the least
+/// height it needs; the card itself fills whatever height it is given.
+class _HeightFloor extends SingleChildRenderObjectWidget {
+  final double Function(double width) heightFor;
 
-  /// ينشئ رسام القوس الخلفي باللون المحدد.
-  _ArchBackgroundPainter({required this.color});
+  const _HeightFloor({required this.heightFor, super.child});
 
-  /// يرسم مسار القوس الإسلامي على لوحة الرسم.
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderHeightFloor(heightFor);
 
-    final path = Path();
-    final w = size.width;
-    final h = size.height;
-
-    // Soft Islamic arch silhouette
-    path.moveTo(w * 0.1, h);
-    path.lineTo(w * 0.1, h * 0.55);
-    path.cubicTo(w * 0.1, h * 0.15, w * 0.35, 0, w * 0.5, 0);
-    path.cubicTo(w * 0.65, 0, w * 0.9, h * 0.15, w * 0.9, h * 0.55);
-    path.lineTo(w * 0.9, h);
-
-    canvas.drawPath(path, paint);
-  }
-
-  /// يحدد ما إذا كان يجب إعادة رسم القوس عند تغير اللون.
   @override
-  bool shouldRepaint(covariant _ArchBackgroundPainter oldDelegate) =>
-      oldDelegate.color != color;
+  void updateRenderObject(
+    BuildContext context,
+    _RenderHeightFloor renderObject,
+  ) => renderObject.heightFor = heightFor;
+}
+
+class _RenderHeightFloor extends RenderProxyBox {
+  _RenderHeightFloor(this.heightFor);
+
+  double Function(double width) heightFor;
+
+  @override
+  double computeMinIntrinsicHeight(double width) => heightFor(width);
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => heightFor(width);
+
+  @override
+  double computeMinIntrinsicWidth(double height) => 0;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => 0;
 }
