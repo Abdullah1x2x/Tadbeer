@@ -102,7 +102,7 @@ void main() {
     var last = 0.0;
     for (final width in const <double>[280, 320, 360, 412, 600, 800, 1280]) {
       final size = QuranPageView.textSizeFor(width);
-      expect(size, inInclusiveRange(18, 32), reason: '$width');
+      expect(size, inInclusiveRange(16, 28), reason: '$width');
       expect(size, greaterThanOrEqualTo(last), reason: '$width');
       last = size;
     }
@@ -144,13 +144,13 @@ void main() {
       () => UserDataStore.instance.setMushafStyle(MushafStyle.text),
     );
     for (final screen in [screens['small phone']!, screens['tablet']!]) {
-      await setScale(tester, 1.8);
+      await setScale(tester, 1.4);
       await pumpPage(tester, screen, page: 51);
       final family = UserDataStore.instance.settings.quranFontFamilyName;
       final page = tester.getSize(find.byType(QuranPageView)).width;
       expect(
         drawnSize(tester, family),
-        closeTo(QuranPageView.textSizeFor(page) * 1.8, 0.01),
+        closeTo(QuranPageView.textSizeFor(page) * 1.4, 0.01),
       );
       expect(tester.takeException(), isNull);
     }
@@ -159,7 +159,7 @@ void main() {
   testWidgets('the Madinah pages ignore the enlargement', (tester) async {
     await pumpPage(tester, screens['large phone']!);
     final before = drawnSize(tester, QcfFonts.familyFor(50));
-    await setScale(tester, 1.8);
+    await setScale(tester, 1.4);
     await pumpPage(tester, screens['large phone']!);
     expect(drawnSize(tester, QcfFonts.familyFor(50)), before);
   });
@@ -174,34 +174,40 @@ void main() {
     IconButton button(String tip) => tester.widget<IconButton>(
       find.ancestor(of: find.byTooltip(tip), matching: find.byType(IconButton)),
     );
-    // At the automatic size it cannot shrink further.
-    expect(button('تصغير الخط').onPressed, isNull);
-
-    for (var i = 0; i < 10; i++) {
-      await tester.runAsync(() async {
-        await tester.tap(find.byTooltip('تكبير الخط أكثر'));
-        await Future<void>.delayed(const Duration(milliseconds: 20));
-      });
-      await tester.pump();
+    Future<void> tap(String tip, int times) async {
+      for (var i = 0; i < times; i++) {
+        await tester.runAsync(() async {
+          await tester.tap(find.byTooltip(tip));
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        });
+        await tester.pump();
+      }
     }
-    expect(UserDataStore.instance.settings.flowingTextScale, 1.8);
-    expect(button('تكبير الخط أكثر').onPressed, isNull);
-    expect(find.text('١٨٠٪'), findsOneWidget);
 
-    await tester.runAsync(() async {
-      await tester.tap(find.byTooltip('تصغير الخط'));
-      await Future<void>.delayed(const Duration(milliseconds: 20));
-    });
-    await tester.pump();
-    expect(UserDataStore.instance.settings.flowingTextScale, 1.7);
+    await tap('تصغير الخط', 5);
+    expect(UserDataStore.instance.settings.flowingTextScale, 0.8);
+    expect(button('تصغير الخط').onPressed, isNull);
+    expect(find.text('٨٠٪'), findsOneWidget);
+
+    await tap('تكبير الخط أكثر', 10);
+    expect(UserDataStore.instance.settings.flowingTextScale, 1.4);
+    expect(button('تكبير الخط أكثر').onPressed, isNull);
+    expect(find.text('١٤٠٪'), findsOneWidget);
+
+    await tap('تصغير الخط', 1);
+    expect(UserDataStore.instance.settings.flowingTextScale, 1.3);
   });
 
   test('the enlargement is saved and kept within bounds', () {
-    final saved = const UserSettings().copyWith(flowingTextScale: 1.4);
-    expect(UserSettings.fromJson(saved.toJson()).flowingTextScale, 1.4);
+    final saved = const UserSettings().copyWith(flowingTextScale: 0.9);
+    expect(UserSettings.fromJson(saved.toJson()).flowingTextScale, 0.9);
     expect(
       UserSettings.fromJson({'flowingTextScale': 5}).flowingTextScale,
-      1.8,
+      1.4,
+    );
+    expect(
+      UserSettings.fromJson({'flowingTextScale': 0.1}).flowingTextScale,
+      0.8,
     );
     expect(UserSettings.fromJson({}).flowingTextScale, 1.0);
   });

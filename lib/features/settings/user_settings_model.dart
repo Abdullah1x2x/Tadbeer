@@ -171,11 +171,11 @@ class UserSettings {
   /// يعني ضعف حجم الصفحة الكاملة مع التفاف الأسطر.
   static const double maxQuranFontSize = 40.0;
 
-  /// أصغر تكبير للنص المتدفق: حجمه التلقائي كما هو.
-  static const double minFlowingTextScale = 1.0;
+  /// أصغر حجم للنص المتدفق نسبةً إلى حجمه التلقائي.
+  static const double minFlowingTextScale = 0.8;
 
   /// أكبر تكبير للنص المتدفق.
-  static const double maxFlowingTextScale = 1.8;
+  static const double maxFlowingTextScale = 1.4;
 
   /// وضع المظهر الحالي (فاتح، داكن، أو حسب النظام).
   final ThemeMode themeMode;
