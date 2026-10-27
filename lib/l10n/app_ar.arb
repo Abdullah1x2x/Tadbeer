@@ -509,9 +509,12 @@
       }
     }
   },
-  "daysCount": "{d} يوماً",
+  "daysCount": "{count, plural, =1{يوم واحد} =2{يومان} few{{d} أيام} many{{d} يومًا} other{{d} يوم}}",
   "@daysCount": {
     "placeholders": {
+      "count": {
+        "type": "int"
+      },
       "d": {
         "type": "String"
       }
@@ -541,9 +544,12 @@
       }
     }
   },
-  "khatmaInDays": "ختمة في {n} يوماً",
+  "khatmaInDays": "ختمة في {count, plural, =1{يوم واحد} =2{يومين} few{{n} أيام} many{{n} يومًا} other{{n} يوم}}",
   "@khatmaInDays": {
     "placeholders": {
+      "count": {
+        "type": "int"
+      },
       "n": {
         "type": "String"
       }
@@ -1023,5 +1029,22 @@
       "count": {"type": "int"},
       "shown": {"type": "String"}
     }
-  }
+  },
+  "streakAtRiskTitle": "{count, plural, =1{لا تقطع سلسلتك: يوم واحد حتى الآن} =2{لا تقطع سلسلتك: يومان متتاليان} few{لا تقطع سلسلتك: {n} أيام متتالية} other{لا تقطع سلسلتك: {n} يومًا متتاليًا}}",
+  "@streakAtRiskTitle": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "n": {"type": "String"}
+    }
+  },
+  "streakAtRiskBody": "صفحة واحدة أو وقفة تدبر تكفي لتبقى السلسلة",
+  "streakReminder": "نبّهني قبل أن تنقطع السلسلة",
+  "streakReminderOff": "تنبيه مسائي إن لم تقرأ شيئًا في يومك",
+  "streakReminderAt": "كل مساء {time} إن لم تقرأ بعد",
+  "@streakReminderAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "streakReminderPrompt": "متى نذكّرك إن لم تقرأ في يومك؟"
 }

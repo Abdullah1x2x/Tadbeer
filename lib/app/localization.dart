@@ -316,7 +316,7 @@ class AppStrings {
   String get startKhatmaTitle => _l.startKhatmaTitle;
   String get startKhatmaHint => _l.startKhatmaHint;
   String daysCount(int d) =>
-      _l.daysCount(digits(d));
+      _l.daysCount(d, digits(d));
   String pagesPerDayHint(int n) =>
       _l.pagesPerDayHint(digits(n));
   String get startKhatma => _l.startKhatma;
@@ -328,7 +328,7 @@ class AppStrings {
   String behindBy(int n) =>
       _l.behindBy(digits(n));
   String khatmaInDays(int n) =>
-      _l.khatmaInDays(digits(n));
+      _l.khatmaInDays(n, digits(n));
   String pagesOfMushaf(int n) =>
       _l.pagesOfMushaf(digits(n));
   String dayOfPlan(int d, int total) =>
@@ -371,6 +371,12 @@ class AppStrings {
   String get textSmaller => _l.textSmaller;
   String get textLarger => _l.textLarger;
   String get defaultTextSize => _l.defaultTextSize;
+  String streakAtRiskTitle(int n) => _l.streakAtRiskTitle(n, digits(n));
+  String get streakAtRiskBody => _l.streakAtRiskBody;
+  String get streakReminder => _l.streakReminder;
+  String get streakReminderOff => _l.streakReminderOff;
+  String streakReminderAt(String time) => _l.streakReminderAt(time);
+  String get streakReminderPrompt => _l.streakReminderPrompt;
   String reflectionsCount(int count, String shown) =>
       _l.reflectionsCount(count, shown);
   String get highlight => _l.highlight;

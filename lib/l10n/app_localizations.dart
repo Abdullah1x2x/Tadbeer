@@ -2429,8 +2429,8 @@ abstract class AppLocalizations {
   /// No description provided for @daysCount.
   ///
   /// In ar, this message translates to:
-  /// **'{d} يوماً'**
-  String daysCount(String d);
+  /// **'{count, plural, =1{يوم واحد} =2{يومان} few{{d} أيام} many{{d} يومًا} other{{d} يوم}}'**
+  String daysCount(int count, String d);
 
   /// No description provided for @pagesPerDayHint.
   ///
@@ -2453,8 +2453,8 @@ abstract class AppLocalizations {
   /// No description provided for @khatmaInDays.
   ///
   /// In ar, this message translates to:
-  /// **'ختمة في {n} يوماً'**
-  String khatmaInDays(String n);
+  /// **'ختمة في {count, plural, =1{يوم واحد} =2{يومين} few{{n} أيام} many{{n} يومًا} other{{n} يوم}}'**
+  String khatmaInDays(int count, String n);
 
   /// No description provided for @pagesOfMushaf.
   ///
@@ -3101,6 +3101,42 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'{count, plural, =1{وقفة واحدة} =2{وقفتان} few{{shown} وقفات} other{{shown} وقفة}}'**
   String reflectionsCount(int count, String shown);
+
+  /// No description provided for @streakAtRiskTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count, plural, =1{لا تقطع سلسلتك: يوم واحد حتى الآن} =2{لا تقطع سلسلتك: يومان متتاليان} few{لا تقطع سلسلتك: {n} أيام متتالية} other{لا تقطع سلسلتك: {n} يومًا متتاليًا}}'**
+  String streakAtRiskTitle(int count, String n);
+
+  /// No description provided for @streakAtRiskBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'صفحة واحدة أو وقفة تدبر تكفي لتبقى السلسلة'**
+  String get streakAtRiskBody;
+
+  /// No description provided for @streakReminder.
+  ///
+  /// In ar, this message translates to:
+  /// **'نبّهني قبل أن تنقطع السلسلة'**
+  String get streakReminder;
+
+  /// No description provided for @streakReminderOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه مسائي إن لم تقرأ شيئًا في يومك'**
+  String get streakReminderOff;
+
+  /// No description provided for @streakReminderAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل مساء {time} إن لم تقرأ بعد'**
+  String streakReminderAt(String time);
+
+  /// No description provided for @streakReminderPrompt.
+  ///
+  /// In ar, this message translates to:
+  /// **'متى نذكّرك إن لم تقرأ في يومك؟'**
+  String get streakReminderPrompt;
 }
 
 class _AppLocalizationsDelegate

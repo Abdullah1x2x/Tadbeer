@@ -140,11 +140,14 @@ class _MonthlyReportSheetState extends State<MonthlyReportSheet> {
   }
 }
 
-/// بطاقة تقرير الشهر بأسلوب بطاقات المشاركة الكحلية الذهبية.
+/// بطاقة تقرير الشهر بألوان السمة المختارة وذهبها، كبطاقة مشاركة الآية.
 class MonthlyReportCard extends StatelessWidget {
   final MonthStats stats;
   final String monthTitle;
   final double width;
+
+  /// السمة التي تأخذ البطاقة ألوانها منها؛ السمة المختارة إن لم تُحدَّد.
+  final AppColorTheme? colorTheme;
 
   /// ينشئ بطاقة تقرير الشهر.
   const MonthlyReportCard({
@@ -152,11 +155,13 @@ class MonthlyReportCard extends StatelessWidget {
     required this.stats,
     required this.monthTitle,
     required this.width,
+    this.colorTheme,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final p = ThemePalette.of(colorTheme ?? AppColors.theme);
     const gold = Color(0xFFD9B566);
     const text = Color(0xFFF2EEE4);
     Widget stat(IconData icon, String value, String label) => Column(
@@ -186,10 +191,11 @@ class MonthlyReportCard extends StatelessWidget {
         height: width * 1.25,
         padding: const EdgeInsets.all(26),
         decoration: BoxDecoration(
-          gradient: const RadialGradient(
-            center: Alignment(0, -0.4),
+          // The theme's hero colour glowing out of its night background.
+          gradient: RadialGradient(
+            center: const Alignment(0, -0.4),
             radius: 1.2,
-            colors: [Color(0xFF26497A), Color(0xFF0B1220)],
+            colors: [p.heroLightStart, p.darkBackground],
           ),
           border: Border.all(color: gold.withValues(alpha: 0.7), width: 1.4),
         ),

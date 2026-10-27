@@ -1251,8 +1251,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String daysCount(String d) {
-    return '$d days';
+  String daysCount(int count, String d) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$d days',
+      one: '1 day',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1271,8 +1277,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String khatmaInDays(String n) {
-    return 'Khatma in $n days';
+  String khatmaInDays(int count, String n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$n days',
+      one: '1 day',
+    );
+    return 'Khatma in $_temp0';
   }
 
   @override
@@ -1710,4 +1722,34 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String streakAtRiskTitle(int count, String n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Keep your streak: $n days in a row',
+      one: 'Keep your streak: 1 day so far',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get streakAtRiskBody => 'One page or one reflection keeps it going';
+
+  @override
+  String get streakReminder => 'Remind me before my streak breaks';
+
+  @override
+  String get streakReminderOff =>
+      'An evening reminder if you have not read that day';
+
+  @override
+  String streakReminderAt(String time) {
+    return 'Every evening at $time if you have not read yet';
+  }
+
+  @override
+  String get streakReminderPrompt =>
+      'When should we remind you if you have not read?';
 }
