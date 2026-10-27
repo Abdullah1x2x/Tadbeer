@@ -52,11 +52,20 @@ void main() {
         await tester.pumpWidget(const TadbeerApp());
         await tester.pumpAndSettle();
 
-        // Open Ayah Links from Home Dashboard
+        // Open Ayah Links from the «المزيد» tab
+        await tester.tap(find.byTooltip('المزيد'));
+        await tester.pumpAndSettle();
         final linksFinder = find.text('روابط الآيات');
-        expect(linksFinder, findsWidgets);
-        await tester.ensureVisible(linksFinder.first);
-        await tester.tap(linksFinder.first);
+        expect(linksFinder, findsOneWidget);
+        // Brought to the middle, clear of the floating bar.
+        await tester.runAsync(
+          () => Scrollable.ensureVisible(
+            tester.element(linksFinder),
+            alignment: 0.5,
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(linksFinder);
         await tester.pumpAndSettle();
 
         expect(find.byType(AyahLinksScreen), findsOneWidget);

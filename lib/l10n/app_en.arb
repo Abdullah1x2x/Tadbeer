@@ -498,5 +498,12 @@
   "enlargeText": "Text size",
   "textSmaller": "Smaller text",
   "textLarger": "Larger text",
-  "defaultTextSize": "Default size"
+  "defaultTextSize": "Default size",
+  "reflectionsCount": "{count, plural, =1{1 reflection} other{{shown} reflections}}",
+  "@reflectionsCount": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "shown": {"type": "String"}
+    }
+  }
 }

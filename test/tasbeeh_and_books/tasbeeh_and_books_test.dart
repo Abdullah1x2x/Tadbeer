@@ -629,17 +629,12 @@ void main() {
       await tester.pumpWidget(const TadbeerApp());
       await tester.pumpAndSettle();
 
-      // Check existence of sections on HomeScreen
-      expect(find.text('استغفار وتسبيح'), findsOneWidget);
+      // Istighfar lives in its bar tab; the books stay on Home.
+      expect(find.text('استغفار وتسبيح'), findsNothing);
       expect(find.text('كتب وملازم'), findsOneWidget);
 
-      // Ensure visible and tap on 'استغفار وتسبيح'
-      await tester.ensureVisible(find.text('استغفار وتسبيح'));
+      await tester.tap(find.byTooltip('الاستغفار'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('استغفار وتسبيح'));
-      await tester.pumpAndSettle();
-
-      // The card switches to the Istighfar tab.
       expect(find.byType(TasbeehScreen), findsOneWidget);
       expect(find.byType(FloatingNavBar), findsOneWidget);
 
