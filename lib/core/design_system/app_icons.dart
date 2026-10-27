@@ -761,4 +761,52 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
+
+  // Quran audio.
+  static const IconData headphones = IconData(
+    0xe2a6,
+    fontFamily: _regular,
+    fontPackage: _package,
+  );
+  static const IconData headphonesFill = IconData(
+    0xe2a6,
+    fontFamily: _fill,
+    fontPackage: _package,
+  );
+  static const IconData playFill = IconData(
+    0xe3d0,
+    fontFamily: _fill,
+    fontPackage: _package,
+  );
+  static const IconData pauseFill = IconData(
+    0xe39e,
+    fontFamily: _fill,
+    fontPackage: _package,
+  );
+
+  /// The next ayah: points the way the text reads.
+  static const IconData skipForwardFill = IconData(
+    0xe5a6,
+    fontFamily: _fill,
+    fontPackage: _package,
+    matchTextDirection: true,
+  );
+
+  /// The previous ayah: points back against the text.
+  static const IconData skipBackFill = IconData(
+    0xe5a4,
+    fontFamily: _fill,
+    fontPackage: _package,
+    matchTextDirection: true,
+  );
+  static const IconData repeat = IconData(
+    0xe3f6,
+    fontFamily: _regular,
+    fontPackage: _package,
+  );
+  static const IconData hourglassMedium = IconData(
+    0xe2b8,
+    fontFamily: _regular,
+    fontPackage: _package,
+  );
 }

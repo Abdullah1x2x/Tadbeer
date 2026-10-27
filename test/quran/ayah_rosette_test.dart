@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/features/audio/quran_audio.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
@@ -146,13 +147,23 @@ void main() {
     expect(find.byType(AyahActionSheet), findsOneWidget);
   });
 
-  testWidgets('the empty place chooses nothing', (tester) async {
+  testWidgets('the last petal listens from the ayah', (tester) async {
+    final engine = _SilentEngine();
+    final previous = QuranAudio.instance;
+    QuranAudio.instance = QuranAudio.withEngine(engine);
+    addTearDown(() => QuranAudio.instance = previous);
+
     await open(tester);
     AyahRosette.dragTo(petal(7));
     await tester.pump();
-    AyahRosette.releaseAt(petal(7));
+    expect(find.text('استماع'), findsWidgets);
+    await tester.runAsync(() async {
+      AyahRosette.releaseAt(petal(7));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
     await tester.pumpAndSettle();
-    expect(labelsShown(tester), isTrue);
+    expect(QuranAudio.instance.current?.ayahNumber, 255);
+    expect(engine.loaded, isTrue);
   });
 
   testWidgets('coming back to the heart opens the reflection', (tester) async {
@@ -267,4 +278,30 @@ void main() {
     await open(tester, screenReader: true);
     expect(find.byType(AyahActionSheet), findsOneWidget);
   });
+}
+
+/// A player that plays nothing, to see the petal start a recitation.
+class _SilentEngine implements AudioEngine {
+  bool loaded = false;
+
+  @override
+  Stream<int?> get index => const Stream.empty();
+  @override
+  Stream<bool> get playing => const Stream.empty();
+  @override
+  Stream<bool> get loading => const Stream.empty();
+  @override
+  Stream<void> get completed => const Stream.empty();
+  @override
+  Stream<Object> get errors => const Stream.empty();
+  @override
+  Future<void> load(List<Uri> urls, {int start = 0}) async => loaded = true;
+  @override
+  Future<void> play() async {}
+  @override
+  Future<void> pause() async {}
+  @override
+  Future<void> seekTo(int index) async {}
+  @override
+  Future<void> stop() async {}
 }

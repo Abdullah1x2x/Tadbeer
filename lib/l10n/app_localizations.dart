@@ -3155,6 +3155,108 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'غ'**
   String get qiblaWest;
+
+  /// No description provided for @listen.
+  ///
+  /// In ar, this message translates to:
+  /// **'استماع'**
+  String get listen;
+
+  /// No description provided for @listenFromHere.
+  ///
+  /// In ar, this message translates to:
+  /// **'استماع من هنا'**
+  String get listenFromHere;
+
+  /// No description provided for @audioSettings.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعدادات التلاوة'**
+  String get audioSettings;
+
+  /// No description provided for @reciterLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'القارئ'**
+  String get reciterLabel;
+
+  /// No description provided for @lowerQuality.
+  ///
+  /// In ar, this message translates to:
+  /// **'جودة أقل'**
+  String get lowerQuality;
+
+  /// No description provided for @repeatEachAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار كل آية'**
+  String get repeatEachAyah;
+
+  /// No description provided for @pauseAfterAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفة تدبر بعد كل آية'**
+  String get pauseAfterAyah;
+
+  /// No description provided for @noPause.
+  ///
+  /// In ar, this message translates to:
+  /// **'بلا وقفة'**
+  String get noPause;
+
+  /// No description provided for @secondsShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'{n} ث'**
+  String secondsShort(String n);
+
+  /// No description provided for @audioFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت'**
+  String get audioFailed;
+
+  /// No description provided for @nextAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآية التالية'**
+  String get nextAyah;
+
+  /// No description provided for @previousAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآية السابقة'**
+  String get previousAyah;
+
+  /// No description provided for @playAudio.
+  ///
+  /// In ar, this message translates to:
+  /// **'تشغيل'**
+  String get playAudio;
+
+  /// No description provided for @pauseAudio.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف مؤقت'**
+  String get pauseAudio;
+
+  /// No description provided for @stopAudio.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف التلاوة'**
+  String get stopAudio;
+
+  /// No description provided for @resting.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفة تدبر…'**
+  String get resting;
+
+  /// No description provided for @audioSource.
+  ///
+  /// In ar, this message translates to:
+  /// **'التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت'**
+  String get audioSource;
 }
 
 class _AppLocalizationsDelegate
