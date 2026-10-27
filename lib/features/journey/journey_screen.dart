@@ -15,6 +15,7 @@ import 'mushaf_map_screen.dart';
 import 'reading_journey.dart';
 import 'weekly_goals.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/app_menu.dart';
 import '../../core/design_system/ornaments.dart';
 import 'portion_reminder.dart';
 
@@ -316,18 +317,23 @@ class _KhatmaProgressCard extends StatelessWidget {
                 ),
                 PopupMenuButton<void>(
                   tooltip: l10n.options,
+                  icon: appMenuIcon,
                   itemBuilder: (_) => [
-                    PopupMenuItem(
+                    appMenuItem(
                       onTap: UserDataStore.instance.completeTodayPortion,
-                      child: Text(l10n.markPortionDone),
+                      icon: AppIcons.checkCircle,
+                      label: l10n.markPortionDone,
                     ),
-                    PopupMenuItem(
+                    appMenuItem(
                       onTap: () => _askMoveTo(context),
-                      child: Text(l10n.setKhatmaPosition),
+                      icon: AppIcons.crosshair,
+                      label: l10n.setKhatmaPosition,
                     ),
-                    PopupMenuItem(
+                    appMenuItem(
                       onTap: () => _confirmCancel(context),
-                      child: Text(l10n.cancelKhatma),
+                      icon: AppIcons.x,
+                      label: l10n.cancelKhatma,
+                      destructive: true,
                     ),
                   ],
                 ),

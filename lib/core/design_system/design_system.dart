@@ -4,6 +4,8 @@
 /// Exports design tokens, cards, buttons, badges, and motion helpers.
 library;
 
+export 'app_menu.dart';
+export 'app_select.dart';
 export 'app_tokens.dart';
 export 'empty_state.dart';
 export 'floating_nav_bar.dart';

@@ -988,14 +988,18 @@ class AppTheme {
         labelStyle: label(14),
         unselectedLabelStyle: label(14, weight: FontWeight.normal),
       ),
+      // Menus open under their button, rounded, with a hairline of gold.
       popupMenuTheme: PopupMenuThemeData(
         color: elevated,
         surfaceTintColor: Colors.transparent,
-        elevation: 6,
+        elevation: 10,
         shadowColor: shadow,
-        textStyle: label(14, weight: FontWeight.w600).copyWith(color: text),
+        position: PopupMenuPosition.under,
+        menuPadding: const EdgeInsets.symmetric(vertical: 6),
+        textStyle: label(14.5, weight: FontWeight.w600).copyWith(color: text),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(controlRadius),
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: gold.withValues(alpha: 0.28), width: 0.8),
         ),
       ),
       tooltipTheme: TooltipThemeData(

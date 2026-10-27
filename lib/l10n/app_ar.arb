@@ -1010,5 +1010,7 @@
   "cardSaveDenied": "اسمح لتدبير بإضافة الصور من إعدادات الجهاز",
   "continueReflection": "تابع وقفتك",
   "markAyah": "علامة",
-  "unmarkAyah": "إزالة العلامة"
+  "unmarkAyah": "إزالة العلامة",
+  "chooseSurah": "اختر السورة",
+  "searchSurahHint": "ابحث باسم السورة أو رقمها"
 }

@@ -306,10 +306,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                       ),
                                     ),
                                     PopupMenuButton<String>(
-                                      icon: const Icon(
-                                        AppIcons.dotsThreeVertical,
-                                        size: 20,
-                                      ),
+                                      icon: appMenuIcon,
                                       tooltip: l10n.removeHighlight,
                                       onSelected: (val) {
                                         if (val == 'delete') {
@@ -321,24 +318,11 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                         }
                                       },
                                       itemBuilder: (ctx) => [
-                                        PopupMenuItem(
+                                        appMenuItem(
                                           value: 'delete',
-                                          child: Row(
-                                            children: [
-                                              const Icon(
-                                                AppIcons.trash,
-                                                color: Colors.redAccent,
-                                                size: 20,
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                l10n.removeHighlight,
-                                                style: const TextStyle(
-                                                  color: Colors.redAccent,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                          icon: AppIcons.trash,
+                                          label: l10n.removeHighlight,
+                                          destructive: true,
                                         ),
                                       ],
                                     ),

@@ -9,6 +9,7 @@ import '../backup/backup_screen.dart';
 import '../reminders/reminders_screen.dart';
 import 'user_settings_model.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/app_select.dart';
 import '../quran/qcf/madinah_preview.dart';
 
 /// شاشة الإعدادات لإدارة المظهر ونوع وحجم خط المصحف واللغة وإعادة تعيين البيانات.
@@ -304,38 +305,27 @@ class SettingsScreen extends StatelessWidget {
                           const SizedBox(height: 10),
                           // A compact dropdown replaces the five large cards;
                           // the live preview below shows the chosen font.
-                          DropdownButtonFormField<QuranFontFamilyOption>(
-                            // Re-created when the setting changes elsewhere
-                            // (e.g. after restoring a backup).
-                            key: ValueKey(settings.quranFontFamily),
-                            initialValue: settings.quranFontFamily,
-                            isExpanded: true,
-                            borderRadius: BorderRadius.circular(16),
-                            items: [
+                          AppSelectField<QuranFontFamilyOption>(
+                            title: l10n.quranFontFamily,
+                            icon: AppIcons.textT,
+                            value: settings.quranFontFamily,
+                            options: [
+                              // Each font's name is written in that font.
                               for (final fontOpt
                                   in QuranFontFamilyOption.values)
-                                DropdownMenuItem(
+                                AppSelectOption(
                                   value: fontOpt,
-                                  child: Text(
-                                    fontOpt.getLabel(
-                                      context.currentLanguage ==
-                                          AppLanguage.arabic,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                    ),
+                                  label: fontOpt.getLabel(
+                                    context.currentLanguage ==
+                                        AppLanguage.arabic,
+                                  ),
+                                  style: TextStyle(
+                                    fontFamily: fontOpt.fontFamily,
                                   ),
                                 ),
                             ],
-                            onChanged: (fontOpt) {
-                              if (fontOpt == null) return;
-                              HapticFeedback.selectionClick();
-                              UserDataStore.instance.setQuranFontFamily(
-                                fontOpt,
-                              );
-                            },
+                            onChanged:
+                                UserDataStore.instance.setQuranFontFamily,
                           ),
                           const SizedBox(height: 6),
                           Padding(
@@ -607,29 +597,21 @@ class SettingsScreen extends StatelessWidget {
                                 : AppColors.daySubtitle,
                           ),
                         ),
-                        trailing: DropdownButton<String>(
+                        trailing: AppSelectField<String>(
+                          title: l10n.languageTitle,
+                          compact: true,
                           value: settings.languageCode,
-                          underline: const SizedBox(),
-                          onChanged: (code) {
-                            if (code != null) {
-                              UserDataStore.instance.updateSettings(
-                                settings.copyWith(languageCode: code),
-                              );
-                              AppLocalizationScope.of(
-                                context,
-                              ).onLanguageChanged(AppLanguage.fromCode(code));
-                            }
-                          },
-                          items: const [
-                            DropdownMenuItem(
-                              value: 'ar',
-                              child: Text('العربية'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'en',
-                              child: Text('English'),
-                            ),
+                          options: const [
+                            AppSelectOption(value: 'ar', label: 'العربية'),
+                            AppSelectOption(value: 'en', label: 'English'),
                           ],
+                          onChanged: (code) {
+                            UserDataStore.instance.updateSettings(
+                              settings.copyWith(languageCode: code),
+                            );
+                            AppLocalizationScope.of(context)
+                                .onLanguageChanged(AppLanguage.fromCode(code));
+                          },
                         ),
                       ),
                       const Divider(height: 1),

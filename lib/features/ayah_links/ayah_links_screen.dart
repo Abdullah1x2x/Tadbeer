@@ -13,6 +13,7 @@ import 'curated_pathways.dart';
 import 'widgets/ayah_link_qr_dialog.dart';
 import 'widgets/create_link_dialog.dart';
 import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/app_menu.dart';
 
 /// الشاشة الرئيسية لإدارة وعرض روابط الآيات التدبرية الخاصة بالمستخدم.
 ///
@@ -553,10 +554,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                           ),
                                         ),
                                         PopupMenuButton<String>(
-                                          icon: const Icon(
-                                            AppIcons.dotsThreeVertical,
-                                            size: 20,
-                                          ),
+                                          icon: appMenuIcon,
                                           onSelected: (val) {
                                             if (val == 'edit') {
                                               _editLink(link);
@@ -565,39 +563,17 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                             }
                                           },
                                           itemBuilder: (ctx) => [
-                                            PopupMenuItem(
+                                            appMenuItem(
                                               value: 'edit',
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    AppIcons.pencilSimple,
-                                                    size: 18,
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    l10n.editTitleAndDescription,
-                                                  ),
-                                                ],
-                                              ),
+                                              icon: AppIcons.pencilSimple,
+                                              label:
+                                                  l10n.editTitleAndDescription,
                                             ),
-                                            PopupMenuItem(
+                                            appMenuItem(
                                               value: 'delete',
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    AppIcons.trash,
-                                                    color: Colors.redAccent,
-                                                    size: 18,
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    l10n.deleteAyahLink,
-                                                    style: const TextStyle(
-                                                      color: Colors.redAccent,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                              icon: AppIcons.trash,
+                                              label: l10n.deleteAyahLink,
+                                              destructive: true,
                                             ),
                                           ],
                                         ),
