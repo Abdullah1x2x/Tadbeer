@@ -17,7 +17,13 @@ import '../../core/design_system/app_icons.dart';
 /// بطاقة «أكمل من حيث توقفت»: آخر أذكار وكتاب وحفظ ومسار في مكان واحد.
 class ContinueCard extends StatelessWidget {
   /// ينشئ بطاقة الاستكمال.
-  const ContinueCard({super.key});
+  const ContinueCard({super.key, this.limit = 3, this.gap = 0});
+
+  /// How many of the latest activities it lists.
+  final int limit;
+
+  /// Space below the card when it shows.
+  final double gap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,24 +34,31 @@ class ContinueCard extends StatelessWidget {
         final items = LastActivityStore.recent()
             .map((a) => _resolve(context, a))
             .whereType<_Entry>()
-            .take(3)
+            .take(limit)
             .toList();
         if (items.isEmpty) return const SizedBox.shrink();
+        final single = limit == 1;
         return Card(
-          margin: EdgeInsets.zero,
+          margin: EdgeInsetsDirectional.only(bottom: gap),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+            // A single row names the card in its subtitle instead of a
+            // heading, to stay one line tall.
+            padding: single
+                ? const EdgeInsets.symmetric(horizontal: 16, vertical: 2)
+                : const EdgeInsets.fromLTRB(16, 14, 16, 6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  l10n.continueWhereYouLeft,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                if (!single) ...[
+                  Text(
+                    l10n.continueWhereYouLeft,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
+                  const SizedBox(height: 4),
+                ],
                 for (final e in items)
                   ListTile(
                     contentPadding: EdgeInsets.zero,
@@ -66,7 +79,13 @@ class ContinueCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    subtitle: Text(e.subtitle),
+                    subtitle: Text(
+                      single
+                          ? '${l10n.continueWhereYouLeft} · ${e.subtitle}'
+                          : e.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     trailing: const Icon(AppIcons.caretRight),
                     onTap: () => Navigator.push(
                       context,
