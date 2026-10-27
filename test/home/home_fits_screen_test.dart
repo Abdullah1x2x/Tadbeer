@@ -13,6 +13,7 @@ import 'package:tadbeer/features/daily/ayah_of_day_card.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/journey/journey_screen.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 
 /// The Home page fits the screen without scrolling, and its Mushaf card
@@ -31,6 +32,12 @@ void main() {
     final scheherazade = FontLoader('ScheherazadeNew')
       ..addFont(rootBundle.load('assets/fonts/ScheherazadeNew-Regular.ttf'));
     await Future.wait([plex.load(), amiri.load(), scheherazade.load()]);
+    // With the Madinah Mushaf (the default) the card writes the day's
+    // ayahs in its glyphs; they load here, outside any test's clock.
+    await QuranRepository.instance.init();
+    for (final ayah in AyahOfTheDay.forDayAll(DateTime.now())) {
+      await QcfGlyphs.prepare(ayah);
+    }
   });
 
   /// Opens the store, with a commitment from two days ago when [busy], so
@@ -94,15 +101,17 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   }
 
-  /// Checks that no ayah of the day is cut short on the Home card.
+  /// Checks that no ayah of the day is cut short on the Home card, in the
+  /// flowing font or the Madinah glyphs: no text on the card is cut.
   void expectVerseWhole(WidgetTester tester) {
-    final verse = find.descendant(
+    final texts = find.descendant(
       of: find.byType(AyahOfTheDayCard),
-      matching: find.textContaining('﴿'),
+      matching: find.byType(RichText),
     );
-    expect(verse, findsOneWidget);
-    final paragraph = tester.renderObject<RenderParagraph>(verse);
-    expect(paragraph.didExceedMaxLines, isFalse);
+    expect(texts, findsWidgets);
+    for (final paragraph in tester.renderObjectList<RenderParagraph>(texts)) {
+      expect(paragraph.didExceedMaxLines, isFalse);
+    }
   }
 
   /// How far the Home page can scroll; 0 when it fits the screen.
@@ -172,6 +181,15 @@ void main() {
     await pumpHome(tester, const Size(360, 520));
     expect(tester.takeException(), isNull);
     expect(extent(tester), greaterThan(0));
+    expectVerseWhole(tester);
+  });
+
+  testWidgets('the card writes the ayah in the Madinah glyphs', (tester) async {
+    await tester.runAsync(() => openStore());
+    await pumpHome(tester, const Size(393, 770));
+    final first = AyahOfTheDay.forDayAll(DateTime.now()).first;
+    expect(find.text(QcfGlyphs.of(first)!.text), findsOneWidget);
+    expect(extent(tester), 0);
     expectVerseWhole(tester);
   });
 

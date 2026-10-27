@@ -19,6 +19,8 @@ import '../journey/reading_journey.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
 import 'widget_ayah_image.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
+import '../settings/user_settings_model.dart';
 
 class HomeWidgetSync {
   HomeWidgetSync._();
@@ -121,7 +123,7 @@ class HomeWidgetSync {
   }
 
   /// Bump when the drawn ayah's look changes, so every image is redrawn.
-  static const _imageStyle = 3;
+  static const _imageStyle = 4;
   static bool _rendering = false;
 
   /// Image key of an ayah; the widget reads the same key.
@@ -134,7 +136,11 @@ class HomeWidgetSync {
     if (_rendering) return;
     _rendering = true;
     try {
-      final stamp = '$_imageStyle-$language';
+      // The selected Mushaf's font: a change of it redraws every image.
+      final settings = UserDataStore.instance.settings;
+      final madinah = settings.mushafStyle == MushafStyle.madinah;
+      final font = UserDataStore.instance.quranFontFamily;
+      final stamp = '$_imageStyle-$language-${madinah ? 'madinah' : font}';
       final sameStyle =
           await HomeWidget.getWidgetData<String>('img_stamp') == stamp;
       final previous =
@@ -150,10 +156,19 @@ class HomeWidgetSync {
       var drew = 0;
       for (final MapEntry(key: key, value: ayah) in wanted.entries) {
         if (sameStyle && previous.contains(key)) continue;
+        // Without its glyphs (a font that failed to load) the ayah is
+        // drawn in the flowing text's font rather than not at all.
+        final glyphs = madinah && await QcfGlyphs.prepare(ayah)
+            ? QcfGlyphs.of(ayah)
+            : null;
         await HomeWidget.renderFlutterWidget(
-          WidgetAyahImage(ayah: ayah),
+          WidgetAyahImage(ayah: ayah, glyphs: glyphs, font: font),
           key: key,
-          logicalSize: WidgetAyahImage.sizeFor(ayah),
+          logicalSize: WidgetAyahImage.sizeFor(
+            ayah,
+            glyphs: glyphs,
+            font: font,
+          ),
           pixelRatio: 2.5,
         );
         // Show the first ones as soon as they exist.

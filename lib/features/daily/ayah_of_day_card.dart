@@ -13,6 +13,8 @@ import '../duas/quran_duas_repository.dart';
 import '../focus/focus_mode_screen.dart';
 import '../quran/data/quran_models.dart';
 import '../quran/data/quran_repository.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
+import '../settings/user_settings_model.dart';
 import '../share/ayah_share_sheet.dart';
 import '../tadbeer/tadbeer_model.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
@@ -199,20 +201,12 @@ class AyahOfTheDayCard extends StatefulWidget {
   /// The least height the card needs at [width] to show every one of
   /// today's ayahs whole, with its actions; the question may step aside.
   static double minHeight(BuildContext context, double width) {
-    final verses = [
-      for (final a in AyahOfTheDay.forDayAll(DateTime.now()))
-        _AyahOfTheDayCardState._verse(a),
-    ];
-    final style = DefaultTextStyle.of(context).style.merge(
-      _FittedVerse.styleAt(_FittedVerse.minSize, _FittedVerse.tightHeight),
-    );
+    final looks = _VerseLook.of(AyahOfTheDay.forDayAll(DateTime.now()));
     return _chrome +
-        _tallest(
-          context,
-          verses,
-          style,
-          width - _AyahOfTheDayCardState._padH * 2,
-        );
+        _tallest(context, [
+          for (final l in looks)
+            (l.text, l.at(_FittedVerse.minSize, _FittedVerse.tightHeight)),
+        ], width - _AyahOfTheDayCardState._padH * 2);
   }
 
   @override
@@ -228,11 +222,26 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   Timer? _timer;
   bool _held = false;
 
+  /// Whether the day's Madinah glyphs are being loaded.
+  bool _preparing = false;
+
   @override
   void initState() {
     super.initState();
     _load(DateTime.now());
     _restart();
+  }
+
+  /// Loads the Madinah glyphs of the day's ayahs when that Mushaf is
+  /// chosen; until then the verse shows in the flowing text's font.
+  void _prepareGlyphs() {
+    if (_preparing || !_VerseLook.madinah) return;
+    if (_ayahs.every((a) => QcfGlyphs.of(a) != null)) return;
+    _preparing = true;
+    Future.wait(_ayahs.map(QcfGlyphs.prepare)).whenComplete(() {
+      _preparing = false;
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -277,9 +286,6 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   /// Horizontal padding inside the card.
   static const _padH = 18.0;
 
-  static String _verse(Ayah a) =>
-      '${a.text} ﴿${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}﴾';
-
   void _step(int by) {
     setState(() => _index = (_index + by) % _ayahs.length);
     _restart();
@@ -294,7 +300,8 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     final motion = AppMotion.shouldAnimate(context);
     const gold = Color(0xFFD9B566);
-    final verseStyle = _FittedVerse.styleAt(21, 2);
+    _prepareGlyphs();
+    final looks = _VerseLook.of(_ayahs);
     const questionStyle = TextStyle(
       color: gold,
       fontSize: 13.5,
@@ -344,26 +351,24 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                     // whole beside it.
                     var showQuestion = true;
                     if (bounded) {
-                      final verse = _tallest(
-                        context,
-                        [for (final a in _ayahs) _verse(a)],
-                        DefaultTextStyle.of(context).style.merge(
-                          _FittedVerse.styleAt(
-                            _FittedVerse.minSize,
-                            _FittedVerse.tightHeight,
+                      final verse = _tallest(context, [
+                        for (final l in looks)
+                          (
+                            l.text,
+                            l.at(
+                              _FittedVerse.minSize,
+                              _FittedVerse.tightHeight,
+                            ),
                           ),
-                        ),
-                        box.maxWidth,
-                      );
-                      final question = _tallest(
-                        context,
-                        [
-                          for (var i = 0; i < _ayahs.length; i++)
+                      ], box.maxWidth);
+                      final question = _tallest(context, [
+                        for (var i = 0; i < _ayahs.length; i++)
+                          (
                             AyahOfTheDay.questionFor(_day, i),
-                        ],
-                        DefaultTextStyle.of(context).style.merge(questionStyle),
-                        box.maxWidth,
-                      );
+                            DefaultTextStyle.of(context).style
+                                .merge(questionStyle),
+                          ),
+                      ], box.maxWidth);
                       final free =
                           box.maxHeight -
                           (AyahOfTheDayCard._chrome - 26) -
@@ -431,33 +436,32 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                           if (bounded)
                             Expanded(
                               child: _FittedVerse(
-                                texts: [for (final a in _ayahs) _verse(a)],
-                                text: _verse(ayah),
-                                style: verseStyle,
+                                looks: looks,
+                                shown: looks[_index],
                               ),
                             )
                           else
                             _SteadyHeight(
-                              texts: [for (final a in _ayahs) _verse(a)],
-                              style: verseStyle,
-                              maxLines: 5,
+                              items: [
+                                for (final l in looks) (l.text, l.at(21, 2)),
+                              ],
                               child: Text(
-                                _verse(ayah),
+                                looks[_index].text,
                                 textAlign: TextAlign.center,
-                                maxLines: 5,
-                                overflow: TextOverflow.ellipsis,
-                                style: verseStyle,
+                                style: looks[_index].at(21, 2),
                               ),
                             ),
                           const SizedBox(height: 8),
                           // Shows a check once this verse has been reflected on.
                           if (showQuestion)
                             _SteadyHeight(
-                              texts: [
+                              items: [
                                 for (var i = 0; i < _ayahs.length; i++)
-                                  AyahOfTheDay.questionFor(_day, i),
+                                  (
+                                    AyahOfTheDay.questionFor(_day, i),
+                                    questionStyle,
+                                  ),
                               ],
-                              style: questionStyle,
                               child: ListenableBuilder(
                                 listenable: UserDataStore.instance,
                                 builder: (context, _) {
@@ -546,63 +550,39 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   }
 }
 
-/// Gives [child] the height of the tallest of [texts], so the card keeps
+/// Gives [child] the height of the tallest of [items], so the card keeps
 /// one size while the day's ayahs follow one another.
 class _SteadyHeight extends StatelessWidget {
-  final List<String> texts;
-  final TextStyle style;
-  final int? maxLines;
+  final List<(String, TextStyle)> items;
   final Widget child;
 
-  const _SteadyHeight({
-    required this.texts,
-    required this.style,
-    required this.child,
-    this.maxLines,
-  });
+  const _SteadyHeight({required this.items, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final merged = DefaultTextStyle.of(context).style.merge(style);
-    final scaler = MediaQuery.textScalerOf(context);
-    final direction = Directionality.of(context);
     return LayoutBuilder(
-      builder: (context, box) {
-        var tallest = 0.0;
-        for (final text in texts) {
-          final painter = TextPainter(
-            text: TextSpan(text: text, style: merged),
-            textAlign: TextAlign.center,
-            textDirection: direction,
-            textScaler: scaler,
-            maxLines: maxLines,
-            ellipsis: maxLines == null ? null : '…',
-          )..layout(maxWidth: box.maxWidth);
-          tallest = math.max(tallest, painter.height);
-          painter.dispose();
-        }
-        return SizedBox(
-          height: tallest,
-          child: Center(child: child),
-        );
-      },
+      builder: (context, box) => SizedBox(
+        height: _tallest(context, items, box.maxWidth),
+        child: Center(child: child),
+      ),
     );
   }
 }
 
-/// Height of the tallest of [texts] laid out at [width] in [style].
+/// Height of the tallest of [items], each a text in its style, laid out
+/// at [width].
 double _tallest(
   BuildContext context,
-  List<String> texts,
-  TextStyle style,
+  List<(String, TextStyle)> items,
   double width,
 ) {
   final scaler = MediaQuery.textScalerOf(context);
   final direction = Directionality.of(context);
+  final base = DefaultTextStyle.of(context).style;
   var h = 0.0;
-  for (final t in texts) {
+  for (final (text, style) in items) {
     final painter = TextPainter(
-      text: TextSpan(text: t, style: style),
+      text: TextSpan(text: text, style: base.merge(style)),
       textAlign: TextAlign.center,
       textDirection: direction,
       textScaler: scaler,
@@ -613,20 +593,67 @@ double _tallest(
   return h;
 }
 
+/// How one verse is written on the card: in the Madinah Mushaf's glyphs
+/// with its printed ayah marker when that Mushaf is chosen, or in the
+/// flowing text's font with the ayah number between brackets.
+class _VerseLook {
+  final String text;
+
+  /// The verse's style at [size] with lines [height] apart.
+  final TextStyle Function(double size, double height) at;
+
+  const _VerseLook(this.text, this.at);
+
+  static const _color = Color(0xFFF2EEE4);
+
+  /// Whether the reader chose the Madinah Mushaf.
+  static bool get madinah =>
+      UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
+
+  /// The looks of [ayahs]: all in Madinah glyphs once every one of them
+  /// is loaded, so the card never mixes the two.
+  static List<_VerseLook> of(List<Ayah> ayahs) {
+    if (madinah) {
+      final glyphs = [for (final a in ayahs) QcfGlyphs.of(a)];
+      if (glyphs.every((g) => g != null)) {
+        return [
+          for (final g in glyphs)
+            _VerseLook(
+              g!.text,
+              (size, height) =>
+                  g.style(fontSize: size, height: height, color: _color),
+            ),
+        ];
+      }
+    }
+    final font = UserDataStore.instance.quranFontFamily;
+    return [
+      for (final a in ayahs)
+        _VerseLook(
+          '${a.text} ﴿${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}﴾',
+          (size, height) => TextStyle(
+            fontFamily: font,
+            fontSize: size,
+            height: height,
+            color: _color,
+          ),
+        ),
+    ];
+  }
+}
+
 /// The verse at the largest size, down to [minSize], at which every one
-/// of [texts] fits the height it is given, so the card keeps one size
+/// of [looks] fits the height it is given, so the card keeps one size
 /// while the day's ayahs follow one another. At the smallest size the
 /// lines draw closer ([tightHeight]) before any line is cut.
 class _FittedVerse extends StatelessWidget {
-  final List<String> texts;
-  final String text;
-  final TextStyle style;
+  final List<_VerseLook> looks;
+  final _VerseLook shown;
 
-  const _FittedVerse({
-    required this.texts,
-    required this.text,
-    required this.style,
-  });
+  const _FittedVerse({required this.looks, required this.shown});
+
+  /// Largest size of the verse.
+  static const maxSize = 21.0;
 
   /// Smallest size of the verse.
   static const minSize = 15.0;
@@ -634,39 +661,36 @@ class _FittedVerse extends StatelessWidget {
   /// Line height at the smallest size, closer than the usual 2.
   static const tightHeight = 1.7;
 
-  /// The verse's look at [size] with lines [height] apart.
-  static TextStyle styleAt(double size, double height) => TextStyle(
-    fontFamily: UserDataStore.instance.quranFontFamily,
-    fontSize: size,
-    height: height,
-    color: const Color(0xFFF2EEE4),
-  );
-
   @override
   Widget build(BuildContext context) {
-    final base = DefaultTextStyle.of(context).style.merge(style);
     final scaler = MediaQuery.textScalerOf(context);
     return LayoutBuilder(
       builder: (context, box) {
-        bool fits(TextStyle s) =>
-            _tallest(context, texts, s, box.maxWidth) <= box.maxHeight;
+        bool fits(double size, double height) =>
+            _tallest(context, [
+              for (final l in looks) (l.text, l.at(size, height)),
+            ], box.maxWidth) <=
+            box.maxHeight;
 
-        var fitted = base;
-        var size = base.fontSize ?? 21;
-        while (size > minSize && !fits(fitted)) {
+        var size = maxSize;
+        var height = 2.0;
+        while (size > minSize && !fits(size, height)) {
           size -= 1;
-          fitted = base.copyWith(fontSize: size);
         }
-        if (!fits(fitted)) fitted = fitted.copyWith(height: tightHeight);
-        final lineHeight = scaler.scale(size) * (fitted.height ?? 1);
-        final lines = math.max(1, (box.maxHeight / lineHeight).floor());
+        if (!fits(size, height)) height = tightHeight;
+        final style = shown.at(size, height);
+        final lineHeight =
+            scaler.scale(style.fontSize ?? size) * (style.height ?? 1);
+        final lines = box.maxHeight.isFinite
+            ? math.max(1, (box.maxHeight / lineHeight).floor())
+            : null;
         return Center(
           child: Text(
-            text,
+            shown.text,
             textAlign: TextAlign.center,
             maxLines: lines,
-            overflow: TextOverflow.ellipsis,
-            style: fitted,
+            overflow: lines == null ? null : TextOverflow.ellipsis,
+            style: style,
           ),
         );
       },
