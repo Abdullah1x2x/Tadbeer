@@ -7,10 +7,22 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/app/theme.dart';
 import 'package:tadbeer/core/storage/user_data_store.dart';
 import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
+import 'package:tadbeer/features/settings/user_settings_model.dart';
 import 'package:tadbeer/features/share/ayah_share_sheet.dart';
 
 void main() {
   late Directory tempDir;
+
+  // The Madinah glyphs of the page shown (Al-Baqarah 255) load once here,
+  // outside any test's clock, as the reader would have them.
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await QcfLayout.instance.init();
+    await QcfFonts.instance.ensurePage(42);
+  });
 
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_share_test_');
@@ -50,6 +62,51 @@ void main() {
         });
       }
     }
+
+    testWidgets('writes the ayah in the selected Mushaf\'s font', (
+      tester,
+    ) async {
+      final ayah = QuranRepository.instance.getAyah(2, 255)!;
+      Future<void> pumpCard() async {
+        await tester.pumpWidget(
+          host(
+            AyahCard(
+              ayah: ayah,
+              style: AyahCardStyle.dark,
+              width: 360,
+              height: 360,
+            ),
+          ),
+        );
+        await tester.pump();
+      }
+
+      // The Madinah Mushaf: the ayah in its own glyphs.
+      await tester.runAsync(
+        () => UserDataStore.instance.setMushafStyle(MushafStyle.madinah),
+      );
+      await pumpCard();
+      expect(find.byType(QcfAyahText), findsOneWidget);
+
+      // Flowing text: the ayah in the font chosen for it.
+      await tester.runAsync(
+        () => UserDataStore.instance.setMushafStyle(MushafStyle.text),
+      );
+      await pumpCard();
+      expect(find.byType(QcfAyahText), findsNothing);
+      final verse = tester
+          .widgetList<RichText>(
+            find.descendant(
+              of: find.byType(AyahCard),
+              matching: find.byType(RichText),
+            ),
+          )
+          .firstWhere((t) => t.text.toPlainText().contains('﴿'));
+      expect(
+        verse.text.style!.fontFamily,
+        UserDataStore.instance.quranFontFamily,
+      );
+    });
 
     /// The colours the card's background is painted with.
     List<Color> backgroundOf(WidgetTester tester) {
@@ -153,7 +210,8 @@ void main() {
         (!granted && calls.any((c) => c.method == 'requestAccess'));
 
     Future<void> tapSave(WidgetTester tester) async {
-      // Drawing the image runs off the test clock.
+      // Drawing the image, and loading the Madinah glyphs it waits for,
+      // run off the test clock.
       await tester.runAsync(() async {
         await tester.tap(find.text('حفظ في الصور'));
         for (var i = 0; i < 40 && !settled(); i++) {
