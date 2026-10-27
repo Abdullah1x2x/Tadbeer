@@ -104,6 +104,48 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('the first page sets its words no further apart than others', (
+    tester,
+  ) async {
+    double gap(int page, double size) {
+      final g = String.fromCharCode(0xFB51);
+      double width(String text) {
+        final painter = TextPainter(
+          text: TextSpan(
+            text: text,
+            style: TextStyle(
+              fontFamily: QcfFonts.familyFor(page),
+              fontSize: size,
+              wordSpacing: QcfPageBody.wordSpacingFor(page, size),
+            ),
+          ),
+          textDirection: TextDirection.rtl,
+        )..layout();
+        return painter.width;
+      }
+
+      return width('$g $g') - width('$g$g');
+    }
+
+    for (final page in [1, 2, 3]) {
+      expect(gap(page, 100), closeTo(4, 1.2), reason: 'page $page');
+    }
+  });
+
+  for (final page in [1, 2]) {
+    testWidgets('page $page keeps its lines together', (tester) async {
+      await pumpPage(tester, size: const Size(412, 915), page: page);
+      final size = mushafFontSize(tester, page);
+      final tops = [
+        for (final line in mushafLines(tester, page: page))
+          line.localToGlobal(Offset.zero).dy,
+      ]..sort();
+      for (var i = 1; i < tops.length; i++) {
+        expect(tops[i] - tops[i - 1], closeTo(size * 1.9, 1), reason: '$i');
+      }
+    });
+  }
+
   for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
     testWidgets(
       'the opening pages read as large as the rest (${size.width.toInt()} wide)',

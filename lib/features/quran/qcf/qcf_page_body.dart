@@ -59,6 +59,16 @@ class QcfPageBody extends StatefulWidget {
   /// Mushaf: above 1 for the two opening pages, 1 elsewhere.
   static double glyphScale(int page) => _openingScale[page] ?? 1;
 
+  /// Width of a space per unit of font size, measured from the fonts:
+  /// 0.04 on every page but the first, whose font draws it 0.293.
+  static const _space = 0.04;
+  static const _wideSpace = {1: 0.293};
+
+  /// Word spacing that brings [page]'s spaces to the usual width at
+  /// [fontSize], so the first page's words are not set far apart.
+  static double wordSpacingFor(int page, double fontSize) =>
+      _space * fontSize - (_wideSpace[page] ?? _space) * fontSize;
+
   const QcfPageBody({
     super.key,
     required this.pageNumber,
@@ -207,13 +217,22 @@ class _QcfPageBodyState extends State<QcfPageBody> {
 
   /// The page as printed: every line on its own, centred, evenly spaced.
   Widget _printed(List<QcfLine> lines, double size, double height) {
-    final slot = math.max(size * _lineHeight, height / lines.length);
+    // An ordinary page's 15 lines spread to fill it; the opening pages'
+    // few lines keep their own height and sit together in the middle, as
+    // printed, instead of drifting apart.
+    final opening = QcfPageBody._openingScale.containsKey(widget.pageNumber);
+    final slot = opening
+        ? size * _lineHeight
+        : math.min(
+            math.max(size * _lineHeight, height / lines.length),
+            size * _lineHeight * 1.25,
+          );
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (final line in lines)
           SizedBox(
-            height: math.min(slot, size * _lineHeight * 1.25),
+            height: slot,
             child: Center(child: _line(line, size)),
           ),
       ],
@@ -344,6 +363,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         fontFamily: _family,
         fontSize: size,
         height: _lineHeight,
+        wordSpacing: QcfPageBody.wordSpacingFor(widget.pageNumber, size),
         color: widget.textColor,
       ),
       children: runs,
