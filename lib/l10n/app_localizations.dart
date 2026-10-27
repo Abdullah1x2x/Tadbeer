@@ -3075,7 +3075,7 @@ abstract class AppLocalizations {
   /// No description provided for @enlargeText.
   ///
   /// In ar, this message translates to:
-  /// **'تكبير الخط'**
+  /// **'حجم الخط'**
   String get enlargeText;
 
   /// No description provided for @textSmaller.

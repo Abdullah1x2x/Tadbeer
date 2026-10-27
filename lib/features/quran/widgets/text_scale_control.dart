@@ -9,8 +9,9 @@ import '../../settings/user_settings_model.dart';
 
 /// تكبير خط النص المتدفق: زرّا تصغير وتكبير بينهما النسبة الحالية.
 ///
-/// The flowing text sizes itself to the screen; this enlarges it from there
-/// in steps of 10%, up to [UserSettings.maxFlowingTextScale].
+/// The flowing text sizes itself to the screen; this makes it smaller or
+/// larger from there in steps of 10%, within
+/// [UserSettings.minFlowingTextScale]–[UserSettings.maxFlowingTextScale].
 class TextScaleControl extends StatelessWidget {
   /// ينشئ عنصر تكبير الخط.
   const TextScaleControl({super.key});

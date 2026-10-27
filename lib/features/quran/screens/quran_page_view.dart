@@ -110,12 +110,12 @@ class QuranPageView extends StatefulWidget {
   final bool showHeader;
   final bool showFooter;
 
-  /// Size of the flowing text for a page [width] wide: about 17 average
+  /// Size of the flowing text for a page [width] wide: about 21 average
   /// words' width per line on a phone, growing on wider screens up to a
   /// comfortable reading size. The system's text scale still applies on
   /// top, for readers who set larger text.
   static double textSizeFor(double width) =>
-      width.isFinite ? (width / 17).clamp(18.0, 32.0) : 22.0;
+      width.isFinite ? (width / 21).clamp(16.0, 28.0) : 20.0;
 
   /// ينشئ ودجت عرض صفحة من صفحات المصحف الشريف.
   const QuranPageView({

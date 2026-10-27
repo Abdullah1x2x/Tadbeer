@@ -1679,7 +1679,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchSurahHint => 'ابحث باسم السورة أو رقمها';
 
   @override
-  String get enlargeText => 'تكبير الخط';
+  String get enlargeText => 'حجم الخط';
 
   @override
   String get textSmaller => 'تصغير الخط';
