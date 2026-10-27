@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../app/theme.dart';
 import '../../core/storage/user_data_store.dart';
-import '../../core/utils/arabic_search_normalizer.dart';
 import '../backup/backup_screen.dart';
 import '../reminders/reminders_screen.dart';
 import 'user_settings_model.dart';
@@ -347,74 +346,6 @@ class SettingsScreen extends StatelessWidget {
                           ),
                         ],
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  AppIcons.textAa,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  madinah ? l10n.pageSize : l10n.fontSize,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              // Madinah pages zoom: 100% fits the screen.
-                              madinah
-                                  ? l10n.percent(
-                                      (settings.quranFontSize /
-                                              UserSettings
-                                                  .defaultQuranFontSize *
-                                              100)
-                                          .round(),
-                                    )
-                                  : l10n.fontSizePoints(
-                                      context.currentLanguage ==
-                                              AppLanguage.arabic
-                                          ? ArabicSearchNormalizer.toArabicDigits(
-                                              settings.quranFontSize.round(),
-                                            )
-                                          : settings.quranFontSize.round(),
-                                    ),
-                              style: TextStyle(
-                                fontFamily:
-                                    context.currentLanguage ==
-                                        AppLanguage.arabic
-                                    ? 'IBMPlexSansArabic'
-                                    : null,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Slider(
-                          value: settings.quranFontSize,
-                          min: UserSettings.minQuranFontSize,
-                          max: UserSettings.maxQuranFontSize,
-                          divisions: 24,
-                          label: madinah
-                              ? l10n.percent(
-                                  (settings.quranFontSize /
-                                          UserSettings.defaultQuranFontSize *
-                                          100)
-                                      .round(),
-                                )
-                              : '${settings.quranFontSize.round()}',
-                          onChanged: (newSize) {
-                            UserDataStore.instance.setQuranFontSize(newSize);
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
                           children: [
                             Icon(
                               AppIcons.bookOpenText,
@@ -485,9 +416,7 @@ class SettingsScreen extends StatelessWidget {
                           ),
                           child: madinah
                               ? MadinahPreview(
-                                  zoom:
-                                      settings.quranFontSize /
-                                      UserSettings.defaultQuranFontSize,
+                                  zoom: 1,
                                   color: MushafPalette.of(
                                     isDark: isDark,
                                     tone: settings.mushafPaperTone,
@@ -499,7 +428,7 @@ class SettingsScreen extends StatelessWidget {
                                   textDirection: TextDirection.rtl,
                                   style: TextStyle(
                                     fontFamily: settings.quranFontFamilyName,
-                                    fontSize: settings.quranFontSize,
+                                    fontSize: 20,
                                     height: 1.85,
                                     color: MushafPalette.of(
                                       isDark: isDark,
@@ -507,38 +436,6 @@ class SettingsScreen extends StatelessWidget {
                                     ).text,
                                   ),
                                 ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Flexible(
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: TextButton.icon(
-                                  onPressed:
-                                      settings.quranFontSize ==
-                                          UserSettings.defaultQuranFontSize
-                                      ? null
-                                      : () => UserDataStore.instance
-                                            .setQuranFontSize(
-                                              UserSettings.defaultQuranFontSize,
-                                            ),
-                                  icon: const Icon(
-                                    AppIcons.arrowClockwise,
-                                    size: 16,
-                                  ),
-                                  label: Text(
-                                    l10n.resetToDefaultWithVal(
-                                      madinah
-                                          ? l10n.percent(100)
-                                          : l10n.digits(20),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
                       ],
                     ),

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -145,7 +143,6 @@ class _QuranScreenState extends State<QuranScreen> {
       UserDataStore.instance.removeListener(_syncToSavedPosition);
     }
     _suppressTimer?.cancel();
-    _pinchFontSize.dispose();
     _autoCountTimer?.cancel();
     _pageController.dispose();
     super.dispose();
@@ -361,7 +358,6 @@ class _QuranScreenState extends State<QuranScreen> {
           listenable: UserDataStore.instance,
           builder: (ctx, _) {
             final settings = UserDataStore.instance.settings;
-            final currentSize = settings.quranFontSize;
             final currentFamily = settings.quranFontFamily;
             return SafeArea(
               child: Padding(
@@ -425,84 +421,44 @@ class _QuranScreenState extends State<QuranScreen> {
                         ],
                       ),
                       const SizedBox(height: 14),
-                    ],
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'حجم خط المصحف',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      // The chosen font, shown on the basmala.
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
                         ),
-                        Text(
-                          '${ArabicSearchNormalizer.toArabicDigits(currentSize.round())} نقطة',
-                          style: TextStyle(
-                            fontFamily: 'IBMPlexSansArabic',
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Slider(
-                      value: currentSize,
-                      min: UserSettings.minQuranFontSize,
-                      max: UserSettings.maxQuranFontSize,
-                      divisions: 16,
-                      label: '${currentSize.round()}',
-                      onChanged: (newSize) {
-                        UserDataStore.instance.setQuranFontSize(newSize);
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: MushafPalette.of(
-                          isDark: isDark,
-                          tone: settings.mushafPaperTone,
-                        ).outer,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder,
-                          width: 0.8,
-                        ),
-                      ),
-                      child: Text(
-                        'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
-                        textAlign: TextAlign.center,
-                        textDirection: TextDirection.rtl,
-                        style: TextStyle(
-                          fontFamily: settings.quranFontFamilyName,
-                          fontSize: currentSize,
+                        decoration: BoxDecoration(
                           color: MushafPalette.of(
                             isDark: isDark,
                             tone: settings.mushafPaperTone,
-                          ).text,
+                          ).outer,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Text(
+                          'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
+                          textAlign: TextAlign.center,
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(
+                            fontFamily: settings.quranFontFamilyName,
+                            fontSize: 22,
+                            color: MushafPalette.of(
+                              isDark: isDark,
+                              tone: settings.mushafPaperTone,
+                            ).text,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 12),
+                    ],
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TextButton(
-                          onPressed: () {
-                            UserDataStore.instance.setQuranFontSize(
-                              UserSettings.defaultQuranFontSize,
-                            );
-                          },
-                          child: const Text('إعادة للوضع الافتراضي (٢٠)'),
-                        ),
                         ElevatedButton(
                           onPressed: () => Navigator.pop(ctx),
                           child: const Text('تم'),
@@ -539,43 +495,6 @@ class _QuranScreenState extends State<QuranScreen> {
   }
 
   /// يبني الشريط العلوي العائم الذي يضم القائمة الجانبية والبحث ومعاني الكلمات وحجم الخط بتصميم مستقبلي.
-  /// The font size while a pinch is under way; null otherwise.
-  final ValueNotifier<double?> _pinchFontSize = ValueNotifier(null);
-  final Map<int, Offset> _pinchPointers = {};
-  double _pinchStartDistance = 0;
-  double _pinchStartSize = 0;
-
-  double get _pinchDistance {
-    final points = _pinchPointers.values.take(2).toList();
-    return (points[0] - points[1]).distance;
-  }
-
-  void _onPinchPointer(PointerEvent event) {
-    _pinchPointers[event.pointer] = event.position;
-    if (_pinchPointers.length < 2) return;
-    if (_pinchFontSize.value == null) {
-      _pinchStartDistance = math.max(_pinchDistance, 1);
-      _pinchStartSize = UserDataStore.instance.settings.quranFontSize;
-      _pinchFontSize.value = _pinchStartSize;
-      return;
-    }
-    _pinchFontSize.value =
-        (_pinchStartSize * _pinchDistance / _pinchStartDistance).clamp(
-          UserSettings.minQuranFontSize,
-          UserSettings.maxQuranFontSize,
-        );
-  }
-
-  void _onPinchPointerEnd(PointerEvent event) {
-    _pinchPointers.remove(event.pointer);
-    final size = _pinchFontSize.value;
-    if (size == null || _pinchPointers.length >= 2) return;
-    // Saved once when the fingers lift, not on every step.
-    UserDataStore.instance.setQuranFontSize(size);
-    _pinchFontSize.value = null;
-    _pinchPointers.clear();
-  }
-
   Widget _buildTopBar(BuildContext context, int currentPageNumber) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = context.l10n;
@@ -664,10 +583,10 @@ class _QuranScreenState extends State<QuranScreen> {
                 },
               ),
               const SizedBox(width: 8),
-              // 4. Quran font size button (Aa)
+              // 4. How the Mushaf is shown (Aa); its size is automatic.
               FuturisticIconButton(
                 icon: AppIcons.textAa,
-                tooltip: 'حجم الخط',
+                tooltip: l10n.mushafStyleTitle,
                 size: 38,
                 iconSize: 20,
                 onTap: _showFontSizeDialog,
@@ -875,115 +794,97 @@ class _QuranScreenState extends State<QuranScreen> {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final isWideSpread = constraints.maxWidth >= 900;
-                      return Listener(
-                        onPointerDown: _onPinchPointer,
-                        onPointerMove: _onPinchPointer,
-                        onPointerUp: _onPinchPointerEnd,
-                        onPointerCancel: _onPinchPointerEnd,
-                        child: ValueListenableBuilder<double?>(
-                          valueListenable: _pinchFontSize,
-                          builder: (context, pinchSize, _) => PageView.builder(
-                            controller: _pageController,
-                            // Two fingers resize the text instead of turning.
-                            physics: pinchSize != null
-                                ? const NeverScrollableScrollPhysics()
-                                : null,
-                            itemCount: 604,
-                            onPageChanged: _onPageChanged,
-                            itemBuilder: (context, index) {
-                              final pageNumber = index + 1;
-                              if (!isWideSpread) {
-                                final page = repo.getPage(pageNumber);
-                                // Own layer per page, so a swipe moves the
-                                // pages instead of repainting them.
-                                return RepaintBoundary(
-                                  child: QuranPageView(
-                                    fontSize: pinchSize,
-                                    page: page,
-                                    pageNumber: pageNumber,
-                                    selectedAyah: _activeSelectedAyah,
-                                    onAyahTap: _handleAyahTap,
-                                    onAyahLongPress: _handleAyahLongPress,
-                                    onAyahHighlight: _handleAyahHighlight,
-                                    onAyahHighlightClear:
-                                        _handleAyahHighlightClear,
-                                  ),
-                                );
-                              }
+                      return PageView.builder(
+                        controller: _pageController,
+                        itemCount: 604,
+                        onPageChanged: _onPageChanged,
+                        itemBuilder: (context, index) {
+                          final pageNumber = index + 1;
+                          if (!isWideSpread) {
+                            final page = repo.getPage(pageNumber);
+                            // Own layer per page, so a swipe moves the
+                            // pages instead of repainting them.
+                            return RepaintBoundary(
+                              child: QuranPageView(
+                                page: page,
+                                pageNumber: pageNumber,
+                                selectedAyah: _activeSelectedAyah,
+                                onAyahTap: _handleAyahTap,
+                                onAyahLongPress: _handleAyahLongPress,
+                                onAyahHighlight: _handleAyahHighlight,
+                                onAyahHighlightClear: _handleAyahHighlightClear,
+                              ),
+                            );
+                          }
 
-                              // Dual-page spread on wide tablets/screens (>= 900px)
-                              if (pageNumber == 1) {
-                                return Center(
-                                  child: ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 480,
-                                    ),
-                                    child: QuranPageView(
-                                      fontSize: pinchSize,
-                                      page: repo.getPage(1),
-                                      pageNumber: 1,
-                                      selectedAyah: _activeSelectedAyah,
-                                      onAyahTap: _handleAyahTap,
-                                      onAyahLongPress: _handleAyahLongPress,
-                                      onAyahHighlight: _handleAyahHighlight,
-                                      onAyahHighlightClear:
-                                          _handleAyahHighlightClear,
-                                    ),
-                                  ),
-                                );
-                              }
+                          // Dual-page spread on wide tablets/screens (>= 900px)
+                          if (pageNumber == 1) {
+                            return Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 480,
+                                ),
+                                child: QuranPageView(
+                                  page: repo.getPage(1),
+                                  pageNumber: 1,
+                                  selectedAyah: _activeSelectedAyah,
+                                  onAyahTap: _handleAyahTap,
+                                  onAyahLongPress: _handleAyahLongPress,
+                                  onAyahHighlight: _handleAyahHighlight,
+                                  onAyahHighlightClear:
+                                      _handleAyahHighlightClear,
+                                ),
+                              ),
+                            );
+                          }
 
-                              final int rightPageNum;
-                              final int leftPageNum;
-                              if (pageNumber.isEven) {
-                                leftPageNum = pageNumber;
-                                rightPageNum = (pageNumber + 1).clamp(1, 604);
-                              } else {
-                                rightPageNum = pageNumber;
-                                leftPageNum = (pageNumber - 1).clamp(1, 604);
-                              }
+                          final int rightPageNum;
+                          final int leftPageNum;
+                          if (pageNumber.isEven) {
+                            leftPageNum = pageNumber;
+                            rightPageNum = (pageNumber + 1).clamp(1, 604);
+                          } else {
+                            rightPageNum = pageNumber;
+                            leftPageNum = (pageNumber - 1).clamp(1, 604);
+                          }
 
-                              return Row(
-                                children: [
-                                  Expanded(
-                                    child: QuranPageView(
-                                      fontSize: pinchSize,
-                                      page: repo.getPage(rightPageNum),
-                                      pageNumber: rightPageNum,
-                                      selectedAyah: _activeSelectedAyah,
-                                      onAyahTap: _handleAyahTap,
-                                      onAyahLongPress: _handleAyahLongPress,
-                                      onAyahHighlight: _handleAyahHighlight,
-                                      onAyahHighlightClear:
-                                          _handleAyahHighlightClear,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 1.0,
-                                    color:
-                                        (isDark
-                                                ? AppColors.darkBorder
-                                                : AppColors.lightBorder)
-                                            .withValues(alpha: 0.5),
-                                  ),
-                                  Expanded(
-                                    child: QuranPageView(
-                                      fontSize: pinchSize,
-                                      page: repo.getPage(leftPageNum),
-                                      pageNumber: leftPageNum,
-                                      selectedAyah: _activeSelectedAyah,
-                                      onAyahTap: _handleAyahTap,
-                                      onAyahLongPress: _handleAyahLongPress,
-                                      onAyahHighlight: _handleAyahHighlight,
-                                      onAyahHighlightClear:
-                                          _handleAyahHighlightClear,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: QuranPageView(
+                                  page: repo.getPage(rightPageNum),
+                                  pageNumber: rightPageNum,
+                                  selectedAyah: _activeSelectedAyah,
+                                  onAyahTap: _handleAyahTap,
+                                  onAyahLongPress: _handleAyahLongPress,
+                                  onAyahHighlight: _handleAyahHighlight,
+                                  onAyahHighlightClear:
+                                      _handleAyahHighlightClear,
+                                ),
+                              ),
+                              Container(
+                                width: 1.0,
+                                color:
+                                    (isDark
+                                            ? AppColors.darkBorder
+                                            : AppColors.lightBorder)
+                                        .withValues(alpha: 0.5),
+                              ),
+                              Expanded(
+                                child: QuranPageView(
+                                  page: repo.getPage(leftPageNum),
+                                  pageNumber: leftPageNum,
+                                  selectedAyah: _activeSelectedAyah,
+                                  onAyahTap: _handleAyahTap,
+                                  onAyahLongPress: _handleAyahLongPress,
+                                  onAyahHighlight: _handleAyahHighlight,
+                                  onAyahHighlightClear:
+                                      _handleAyahHighlightClear,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
                   ),
