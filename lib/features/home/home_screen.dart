@@ -8,6 +8,7 @@ import '../../app/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
+import '../ayah_links/ayah_links_screen.dart';
 import '../books/books_screen.dart';
 import '../continue/continue_card.dart';
 import '../daily/ayah_of_day_card.dart';
@@ -386,7 +387,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني صف الاختصارات: وقفاتي والملاحظات وكتب وملازم.
+  /// يبني الاختصارات صفّين: وقفاتي والملاحظات، ثم روابط الآيات وكتب وملازم.
   Widget _buildShortcuts(
     BuildContext context,
     AppStrings l10n,
@@ -398,11 +399,18 @@ class HomeScreen extends StatelessWidget {
         Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
     final gold = AppColors.accentGold(context);
     final primary = AppColors.primary(context);
-    return Row(
+    Widget pair(Widget a, Widget b) => Row(
       children: [
-        Expanded(
+        Expanded(child: a),
+        SizedBox(width: gap),
+        Expanded(child: b),
+      ],
+    );
+    return Column(
+      children: [
+        pair(
           // Counts the reader's reflections as they write them.
-          child: ListenableBuilder(
+          ListenableBuilder(
             listenable: UserDataStore.instance,
             builder: (context, _) {
               final count = UserDataStore.instance.tadbeerItems.length;
@@ -420,10 +428,7 @@ class HomeScreen extends StatelessWidget {
               );
             },
           ),
-        ),
-        SizedBox(width: gap),
-        Expanded(
-          child: _ShortcutTile(
+          _ShortcutTile(
             icon: AppIcons.notePencil,
             title: l10n.notes,
             accent: primary,
@@ -431,9 +436,16 @@ class HomeScreen extends StatelessWidget {
             onTap: () => open(const NotesScreen()),
           ),
         ),
-        SizedBox(width: gap),
-        Expanded(
-          child: _ShortcutTile(
+        SizedBox(height: gap * 0.5),
+        pair(
+          _ShortcutTile(
+            icon: AppIcons.graphFill,
+            title: l10n.ayahLinks,
+            accent: gold,
+            slim: slim,
+            onTap: () => open(const AyahLinksScreen()),
+          ),
+          _ShortcutTile(
             icon: AppIcons.bookOpenTextFill,
             title: l10n.booksAndBooklets,
             accent: primary,
@@ -695,7 +707,7 @@ class _ShortcutTile extends StatelessWidget {
   /// What a screen reader says, when it differs from [title].
   final String? semanticsLabel;
 
-  /// The icon beside the name rather than above it, for a short screen.
+  /// A bare icon and less padding, for a short screen.
   final bool slim;
 
   const _ShortcutTile({
@@ -719,11 +731,9 @@ class _ShortcutTile extends StatelessWidget {
         onTap: onTap,
         accentColor: accent,
         borderRadius: AppTokens.radiusLg,
-        padding: EdgeInsets.symmetric(horizontal: slim ? 4 : 6, vertical: 10),
-        child: Flex(
-          direction: slim ? Axis.horizontal : Axis.vertical,
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: slim ? 5 : 6),
+        // The icon beside the name, so two tiles share a row.
+        child: Row(
           children: [
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -733,13 +743,13 @@ class _ShortcutTile extends StatelessWidget {
                   Icon(icon, color: accent, size: 18)
                 else
                   Container(
-                    width: 36,
-                    height: 36,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
                       color: accent.withValues(alpha: isDark ? 0.20 : 0.12),
                       borderRadius: BorderRadius.circular(AppTokens.radiusMd),
                     ),
-                    child: Icon(icon, color: accent, size: 19),
+                    child: Icon(icon, color: accent, size: 16),
                   ),
                 if (count != null) ...[
                   const SizedBox(width: 6),
@@ -753,13 +763,12 @@ class _ShortcutTile extends StatelessWidget {
                 ],
               ],
             ),
-            SizedBox(width: slim ? 4 : 6, height: 6),
-            Flexible(
+            const SizedBox(width: 8),
+            Expanded(
               child: Text(
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: slim ? 13.5 : 14.5,
