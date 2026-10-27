@@ -7,7 +7,8 @@ import '../../../core/design_system/app_icons.dart';
 import '../../../core/storage/user_data_store.dart';
 import '../../settings/user_settings_model.dart';
 
-/// تكبير خط النص المتدفق: زرّا تصغير وتكبير بينهما النسبة الحالية.
+/// حجم خط النص المتدفق: زرّا تصغير وتكبير بينهما النسبة الحالية، وزرّ
+/// يعيده إلى حجمه التلقائي.
 ///
 /// The flowing text sizes itself to the screen; this makes it smaller or
 /// larger from there in steps of 10%, within
@@ -36,6 +37,7 @@ class TextScaleControl extends StatelessWidget {
         final scale = UserDataStore.instance.settings.flowingTextScale;
         final canShrink = scale > UserSettings.minFlowingTextScale + 0.01;
         final canGrow = scale < UserSettings.maxFlowingTextScale - 0.01;
+        final isDefault = (scale - 1).abs() < 0.01;
         Widget button(IconData icon, String tip, VoidCallback? onTap) =>
             IconButton.filledTonal(
               tooltip: tip,
@@ -50,6 +52,20 @@ class TextScaleControl extends StatelessWidget {
               child: Text(
                 l10n.enlargeText,
                 style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            // Back to the automatic size; shown only once it has changed.
+            AnimatedOpacity(
+              opacity: isDefault ? 0 : 1,
+              duration: const Duration(milliseconds: 200),
+              child: IconButton(
+                tooltip: l10n.defaultTextSize,
+                onPressed: isDefault ? null : () => _set(1),
+                icon: Icon(
+                  AppIcons.arrowCounterClockwise,
+                  size: 20,
+                  color: primary,
+                ),
               ),
             ),
             button(

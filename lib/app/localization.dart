@@ -370,6 +370,7 @@ class AppStrings {
   String get enlargeText => _l.enlargeText;
   String get textSmaller => _l.textSmaller;
   String get textLarger => _l.textLarger;
+  String get defaultTextSize => _l.defaultTextSize;
   String get highlight => _l.highlight;
   String get removeHighlight => _l.removeHighlight;
   String get copy => _l.copy;
