@@ -14,14 +14,10 @@ import '../quran/qcf/madinah_preview.dart';
 
 part 'settings_widgets.dart';
 
-/// شاشة الإعدادات لإدارة المظهر ونوع وحجم خط المصحف واللغة وإعادة تعيين البيانات.
-///
-/// Settings screen for managing appearance, Quran font scale, language, and data reset.
+/// الإعدادات: المظهر، وخط المصحف، والتطبيق، والبيانات، وحول.
 class SettingsScreen extends StatelessWidget {
-  /// ينشئ شاشة الإعدادات.
   const SettingsScreen({super.key});
 
-  /// يبني واجهة شاشة الإعدادات مقسمة إلى بطاقات منظمة.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -46,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
             return ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               children: [
-                // 1. المظهر (Appearance)
+                // ١. المظهر
                 _buildSectionHeader(context, l10n.appearance),
                 _buildCard(
                   context: context,
@@ -163,7 +159,7 @@ class SettingsScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // Color theme: one swatch per palette.
+                        // ثيم الألوان: دائرة لكل ثيم.
                         Text(
                           l10n.appColorTheme,
                           style: const TextStyle(fontWeight: FontWeight.w600),
@@ -222,7 +218,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // 2. الخط والقراءة (Typography & Reading)
+                // ٢. الخط والقراءة
                 _buildSectionHeader(context, l10n.typographyAndReading),
                 _buildCard(
                   context: context,
@@ -231,8 +227,7 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Madinah pages first; flowing text is the
-                        // alternative that needs no download.
+                        // صفحات مصحف المدينة أولاً؛ والنص المتدفق بديل لا يحتاج تحميلاً.
                         Row(
                           children: [
                             Icon(
@@ -287,7 +282,7 @@ class SettingsScreen extends StatelessWidget {
                           ),
                         ],
                         const Divider(height: 28),
-                        // The font choice only applies to the flowing text.
+                        // اختيار الخط يخص النص المتدفق وحده.
                         if (!madinah) ...[
                           Row(
                             children: [
@@ -305,14 +300,13 @@ class SettingsScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          // A compact dropdown replaces the five large cards;
-                          // the live preview below shows the chosen font.
+                          // قائمة مختصرة بدل خمس بطاقات كبيرة، والمعاينة تحتها تُظهر الخط المختار.
                           AppSelectField<QuranFontFamilyOption>(
                             title: l10n.quranFontFamily,
                             icon: AppIcons.textT,
                             value: settings.quranFontFamily,
                             options: [
-                              // Each font's name is written in that font.
+                              // اسم كل خط مكتوب بالخط نفسه.
                               for (final fontOpt
                                   in QuranFontFamilyOption.values)
                                 AppSelectOption(
@@ -448,13 +442,13 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // 3. التطبيق (Application)
+                // ٣. التطبيق
                 _buildSectionHeader(context, l10n.applicationSection),
                 _buildCard(
                   context: context,
                   child: Column(
                     children: [
-                      // The name reminders address the reader by.
+                      // الاسم الذي تناديه به التذكيرات.
                       ListTile(
                         leading: Icon(
                           AppIcons.user,
@@ -548,7 +542,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // 4. البيانات (Data)
+                // ٤. البيانات
                 _buildSectionHeader(context, l10n.dataSection),
                 _buildCard(
                   context: context,
@@ -609,7 +603,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // 5. حول (About)
+                // ٥. حول
                 _buildSectionHeader(context, l10n.about),
                 _buildCard(
                   context: context,
@@ -753,7 +747,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// يعرض نافذة تأكيد لإعادة تعيين جميع بيانات المستخدم إلى الوضع الافتراضي.
+  /// يطلب التأكيد قبل مسح كل بيانات القارئ.
   Future<void> _confirmResetData(BuildContext context) async {
     final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
@@ -802,8 +796,7 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 
-  /// يبني عنوان قسم فرعي داخل شاشة الإعدادات.
-  /// Lets the reader change the name reminders address them by.
+  /// يغيّر الاسم الذي تناديه به التذكيرات.
   Future<void> _editName(BuildContext context, String current) async {
     final name = await showDialog<String>(
       context: context,
@@ -826,7 +819,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// يبني حاوية بطاقة موحدة المظهر لتجميع عناصر الإعدادات.
+  /// بطاقة موحّدة تجمع عناصر قسم.
   Widget _buildCard({required Widget child, required BuildContext context}) {
     return Material(
       color: AppColors.surface(context),
@@ -839,7 +832,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// يبني زراً تفاعلياً لأحد خيارات المظهر (السمة أو لون ورق المصحف).
+  /// زر لأحد خيارات المظهر (الوضع أو لون ورق المصحف).
   Widget _buildThemeOptionButton({
     required BuildContext context,
     required bool isSelected,
@@ -936,7 +929,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// إرجاع التسمية التوضيحية للسمة المفعّلة حالياً مع توضيح حالة مظهر الجهاز عند تفعيل الوضع التلقائي.
+  /// اسم الوضع الحالي، ومعه مظهر الجهاز حين يكون تلقائياً.
   String _getActiveThemeLabel(ThemeMode mode, bool isDark, bool isArabic) {
     switch (mode) {
       case ThemeMode.light:
@@ -951,7 +944,7 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 
-  /// إرجاع النص الإرشادي التوضيحي لمزايا السمة المحددة.
+  /// شرح الوضع المختار.
   String _getThemeExplanation(ThemeMode mode, bool isDark, bool isArabic) {
     if (mode == ThemeMode.light) {
       return isArabic
@@ -971,7 +964,7 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 
-  /// يعرض نافذة ميثاق وسياسة الخصوصية والأمان للمستخدم داخل التطبيق بدون إنترنت.
+  /// يعرض سياسة الخصوصية داخل التطبيق دون إنترنت.
   void _showPrivacyPolicyDialog(BuildContext context) {
     HapticFeedback.selectionClick();
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1164,7 +1157,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// عنصر توضيحي فردي داخل نافذة سياسة الخصوصية.
+  /// بند في نافذة سياسة الخصوصية.
   Widget _buildPrivacyTile({
     required IconData icon,
     required String title,

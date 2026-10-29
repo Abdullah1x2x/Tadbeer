@@ -10,26 +10,15 @@ import '../../core/theme/theme.dart';
 import 'backup_crypto_service.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// شاشة إنشاء واستعادة النسخ الاحتياطية المشفرة لبيانات المستخدم.
-///
-/// Screen for creating and restoring encrypted user backups (.quranbackup).
-///
-/// EDUCATIONAL NOTE:
-/// Backup Architecture:
-/// - Offline export with user-selected password using AES-256-CBC and SHA-256 payload checksum.
-/// - Gzip compression reduces size.
-/// - RESTORE CONTRACT: Restore strictly REPLACES current local data after verifying checksum.
-///   It never merges to ensure data integrity and avoid orphaned or duplicated records.
+/// إنشاء النسخ الاحتياطية المشفرة واستعادتها.
+/// التصدير على الجهاز بكلمة مرور يختارها القارئ (انظر [BackupCryptoService]). والاستعادة تستبدل الأقسام الموجودة في النسخة ولا تدمجها، فلا تتكرر سجلات.
 class BackupScreen extends StatefulWidget {
-  /// ينشئ شاشة النسخ الاحتياطي والاستعادة.
   const BackupScreen({super.key});
 
-  /// ينشئ حالة شاشة النسخ الاحتياطي.
   @override
   State<BackupScreen> createState() => _BackupScreenState();
 }
 
-/// الحالة الداخلية لشاشة النسخ الاحتياطي المسؤولة عن التصدير والمشاركة والاستعادة.
 class _BackupScreenState extends State<BackupScreen> {
   bool _includeNotes = true;
   bool _includeBookmarks = true;
@@ -40,14 +29,13 @@ class _BackupScreenState extends State<BackupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isProcessing = false;
 
-  /// يحرر موارد متحكم حقل كلمة المرور عند إغلاق الشاشة.
   @override
   void dispose() {
     _passwordController.dispose();
     super.dispose();
   }
 
-  /// ينشئ ملف النسخة الاحتياطية المشفرة في المجلد المؤقت ويعيد مساره.
+  /// ينشئ ملف النسخة المشفرة في المجلد المؤقت، ويعيد مساره.
   Future<String?> _generateBackupFile() async {
     final tempDir = await getTemporaryDirectory();
     final now = DateTime.now();
@@ -82,9 +70,7 @@ class _BackupScreenState extends State<BackupScreen> {
     return filePath;
   }
 
-  /// يصدر ويحفظ ملف النسخة الاحتياطية المشفرة مباشرة في ملفات الجهاز.
-  ///
-  /// Exports and saves the encrypted backup directly to the device storage/files.
+  /// يصدّر النسخة ويحفظها في ملفات الجهاز مباشرة.
   Future<void> _exportBackupToFiles() async {
     setState(() => _isProcessing = true);
     final l10n = context.l10n;
@@ -125,9 +111,7 @@ class _BackupScreenState extends State<BackupScreen> {
     }
   }
 
-  /// يصدر ويشارك ملف النسخة الاحتياطية عبر قائمة المشاركة في النظام.
-  ///
-  /// Exports and shares the backup file through system share sheet (WhatsApp, Telegram, Drive, etc.).
+  /// يصدّر النسخة ويشاركها عبر قائمة المشاركة في النظام.
   Future<void> _shareBackup() async {
     setState(() => _isProcessing = true);
 
@@ -148,7 +132,7 @@ class _BackupScreenState extends State<BackupScreen> {
     }
   }
 
-  /// يختار ملف نسخة احتياطية من الجهاز ويستعيد البيانات بعد تأكيد كلمة المرور.
+  /// يختار ملف نسخة ويستعيدها بعد إدخال كلمة المرور.
   Future<void> _pickAndRestore() async {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -163,7 +147,7 @@ class _BackupScreenState extends State<BackupScreen> {
 
     if (!mounted) return;
 
-    // Show Warning Dialog before restore
+    // تحذير قبل الاستعادة.
     final passwordRestoreController = TextEditingController();
     final shouldProceed = await showDialog<bool>(
       context: context,
@@ -294,7 +278,6 @@ class _BackupScreenState extends State<BackupScreen> {
     }
   }
 
-  /// يبني واجهة شاشة النسخ الاحتياطي ببطاقتي التصدير والاستعادة.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -317,7 +300,6 @@ class _BackupScreenState extends State<BackupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Export Section Card
               Material(
                 color: isDark ? AppColors.darkSurface : AppColors.comsilk,
                 shape: RoundedRectangleBorder(
@@ -364,7 +346,7 @@ class _BackupScreenState extends State<BackupScreen> {
                       const SizedBox(height: 8),
                       CheckboxListTile(
                         dense: true,
-                        // Keep each checkbox right beside its label.
+                        // كل مربع اختيار بجانب اسمه.
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: const EdgeInsetsDirectional.only(
                           start: 4,
@@ -381,7 +363,6 @@ class _BackupScreenState extends State<BackupScreen> {
                       ),
                       CheckboxListTile(
                         dense: true,
-                        // Keep each checkbox right beside its label.
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: const EdgeInsetsDirectional.only(
                           start: 4,
@@ -398,7 +379,6 @@ class _BackupScreenState extends State<BackupScreen> {
                       ),
                       CheckboxListTile(
                         dense: true,
-                        // Keep each checkbox right beside its label.
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: const EdgeInsetsDirectional.only(
                           start: 4,
@@ -415,7 +395,6 @@ class _BackupScreenState extends State<BackupScreen> {
                       ),
                       CheckboxListTile(
                         dense: true,
-                        // Keep each checkbox right beside its label.
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: const EdgeInsetsDirectional.only(
                           start: 4,
@@ -432,7 +411,6 @@ class _BackupScreenState extends State<BackupScreen> {
                       ),
                       CheckboxListTile(
                         dense: true,
-                        // Keep each checkbox right beside its label.
                         controlAffinity: ListTileControlAffinity.leading,
                         contentPadding: const EdgeInsetsDirectional.only(
                           start: 4,
@@ -544,7 +522,6 @@ class _BackupScreenState extends State<BackupScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Restore Section Card
               Material(
                 color: isDark ? AppColors.darkSurface : AppColors.comsilk,
                 shape: RoundedRectangleBorder(

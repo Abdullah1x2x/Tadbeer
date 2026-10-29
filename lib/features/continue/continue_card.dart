@@ -14,15 +14,14 @@ import '../../data/quran/quran_repository.dart';
 import 'last_activity.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// بطاقة «أكمل من حيث توقفت»: آخر أذكار وكتاب وحفظ ومسار في مكان واحد.
+/// بطاقة «أكمل من حيث توقفت»: آخر الأذكار والكتاب والحفظ والمسار في مكان واحد.
 class ContinueCard extends StatelessWidget {
-  /// ينشئ بطاقة الاستكمال.
   const ContinueCard({super.key, this.limit = 3, this.gap = 0});
 
-  /// How many of the latest activities it lists.
+  /// كم نشاطاً من الأحدث تعرض.
   final int limit;
 
-  /// Space below the card when it shows.
+  /// المسافة تحتها حين تظهر.
   final double gap;
 
   @override
@@ -41,8 +40,7 @@ class ContinueCard extends StatelessWidget {
         return Card(
           margin: EdgeInsetsDirectional.only(bottom: gap),
           child: Padding(
-            // A single row names the card in its subtitle instead of a
-            // heading, to stay one line tall.
+            // البطاقة ذات السطر الواحد تضع اسمها في سطرها بدل عنوان، لتبقى بارتفاع سطر.
             padding: single
                 ? const EdgeInsets.symmetric(horizontal: 16, vertical: 2)
                 : const EdgeInsets.fromLTRB(16, 14, 16, 6),
@@ -100,7 +98,7 @@ class ContinueCard extends StatelessWidget {
     );
   }
 
-  /// Turns a stored activity into a row, or null if its target is gone.
+  /// صف النشاط المحفوظ، أو null إن لم يعد موجوداً.
   _Entry? _resolve(BuildContext context, LastActivity a) {
     final l10n = context.l10n;
     switch (a.kind) {

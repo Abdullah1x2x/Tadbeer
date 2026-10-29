@@ -3,24 +3,18 @@ import 'package:flutter/material.dart';
 import '../../data/quran/quran_models.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
 
-/// آية اليوم كما تُرسم صورةً لودجت الشاشة الرئيسية.
-///
-/// Widgets cannot use the app's fonts, so the ayah is drawn here in the
-/// selected Mushaf's font and handed to the widget as a transparent image:
-/// the Madinah glyphs with their printed ayah marker when [glyphs] is
-/// given, or the flowing text's [font] between brackets. The image is
-/// exactly as tall as the text, so the widget can scale it to fill
-/// whatever space it has.
+/// الآية مرسومة صورةً لودجت الشاشة الرئيسية.
+/// الودجت لا يستطيع استخدام خطوط التطبيق، فتُرسم الآية هنا بخط المصحف المختار وتُعطى له صورة شفافة: خطوط مصحف المدينة بعلامة آيتها إن مُرّرت [glyphs]، وإلا خط [font] بين قوسين. ارتفاع الصورة بقدر النص تماماً، ليكبّرها الودجت بقدر مساحته.
 class WidgetAyahImage extends StatelessWidget {
   final Ayah ayah;
 
-  /// The ayah in the Madinah Mushaf's glyphs, when that Mushaf is chosen.
+  /// الآية بخطوط مصحف المدينة، حين يكون هو المختار.
   final QcfGlyphs? glyphs;
 
-  /// The flowing text's font, used without [glyphs].
+  /// خط النص المتدفق، يُستخدم دون [glyphs].
   final String font;
 
-  /// Width the text wraps at, in logical pixels.
+  /// العرض الذي يلتف عنده النص.
   static const width = 360.0;
 
   const WidgetAyahImage({
@@ -67,7 +61,7 @@ class WidgetAyahImage extends StatelessWidget {
     ],
   );
 
-  /// The canvas that fits [ayah]'s text.
+  /// اللوحة التي تتسع لنص [ayah].
   static Size sizeFor(Ayah ayah, {QcfGlyphs? glyphs, required String font}) {
     final painter = TextPainter(
       text: _span(ayah, glyphs, font),

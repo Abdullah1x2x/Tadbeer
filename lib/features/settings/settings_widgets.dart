@@ -1,6 +1,6 @@
 part of 'settings_screen.dart';
 
-/// دائرة معاينة لسمة ألوان: تدرّج لونها الأساسي مع لمسة ذهبية.
+/// دائرة معاينة لثيم: تدرج لونه الأساسي مع لمسة ذهبية.
 class _ColorThemeSwatch extends StatelessWidget {
   final AppColorTheme theme;
   final String label;
@@ -79,8 +79,7 @@ class _ColorThemeSwatch extends StatelessWidget {
   }
 }
 
-/// Edits the reader's name; owns its text controller so it outlives the
-/// dialog's closing animation.
+/// يعدّل اسم القارئ؛ يملك متحكم النص ليبقى حياً حتى انتهاء حركة إغلاق الحوار.
 class _NameDialog extends StatefulWidget {
   final String initial;
 

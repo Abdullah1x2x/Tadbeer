@@ -1,9 +1,6 @@
 /// تذكير ورد الختمة اليومي بعدد الصفحات المتبقية.
 ///
-/// A notification's text is fixed when it is scheduled, so instead of one
-/// repeating notification the portion reminder is a run of one-off
-/// notifications for the coming days. Each states the pages left on its day,
-/// and the run is rescheduled whenever today's reading or the plan changes.
+/// نص الإشعار يثبت عند جدولته، فبدل إشعار واحد متكرر يُجدول إشعار لكل يوم من الأيام القادمة يذكر صفحات يومه المتبقية، وتُعاد الجدولة كلما تغيّرت قراءة اليوم أو الخطة.
 library;
 
 import 'dart:math' as math;
@@ -12,10 +9,10 @@ import '../reminders/local_reminder_service.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../data/models/reading_journey.dart';
 
-/// Fixed id so a new khatma updates the same reminder instead of adding.
+/// معرّف ثابت، فتُحدّث الختمة الجديدة نفس التذكير بدل إضافة آخر.
 const portionReminderId = 'khatma_daily_portion';
 
-/// How many days of portion notifications are scheduled ahead.
+/// كم يوماً من إشعارات الورد يُجدول مسبقاً.
 const portionReminderDays = 14;
 
 /// إشعار ورد يوم واحد.
@@ -36,11 +33,8 @@ class PortionNotice {
   String toString() => 'PortionNotice($at, $pages)';
 }
 
-/// The portion notifications from [now] on, at [hour]:[minute] each day.
-///
-/// Today's notice says what is left of today's portion and is dropped once
-/// the portion is read or its time has passed. Later days expect a full
-/// portion, until the pages left in the khatma run out.
+/// إشعارات الورد من [now] فصاعداً، في [hour]:[minute] كل يوم.
+/// إشعار اليوم يذكر ما بقي من ورده، ويُسقط إن قُرئ الورد أو فات وقته. والأيام التالية تتوقع ورداً كاملاً حتى تنفد صفحات الختمة.
 List<PortionNotice> portionNotices(
   ReadingJourney journey,
   DateTime now, {
@@ -64,13 +58,13 @@ List<PortionNotice> portionNotices(
   return notices;
 }
 
-/// Keeps the portion notifications in step with the reading journey.
+/// يُبقي إشعارات الورد متوافقة مع رحلة القراءة.
 class PortionReminderSync {
   PortionReminderSync._();
 
   static String? _lastKey;
 
-  /// Starts listening to the store; call once after the store is ready.
+  /// يبدأ الاستماع للمخزن؛ يُستدعى مرة بعد جاهزيته.
   static void attach() {
     UserDataStore.instance.addListener(_onChange);
     _onChange();
@@ -87,8 +81,7 @@ class PortionReminderSync {
     }
     final now = DateTime.now();
     final journey = store.journey;
-    // Reminder edits reschedule on their own; this covers reading progress
-    // and the start of a new day.
+    // تعديل التذكير يعيد جدولته بنفسه؛ هذا لتقدّم القراءة وبداية يوم جديد.
     final key = [
       reminder.isEnabled,
       reminder.hour,
@@ -100,7 +93,7 @@ class PortionReminderSync {
     if (key == _lastKey) return;
     final first = _lastKey == null;
     _lastKey = key;
-    // At start-up main() has already synced every reminder.
+    // عند الإقلاع تكون كل التذكيرات قد جُدولت.
     if (first) return;
     LocalReminderService.instance.scheduleReminder(
       reminder,

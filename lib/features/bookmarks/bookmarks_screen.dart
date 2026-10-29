@@ -10,33 +10,24 @@ import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// شاشة عرض قائمة الإشارات المرجعية للانتقال السريع إلى مواضع الآيات في المصحف.
-///
-/// Screen listing all bookmarked ayahs for quick recitation navigation.
-///
-/// Supports instant local search filtering by Surah name, Ayah number, or verse text.
+/// الفواصل، للانتقال السريع إلى مواضعها، مع بحث فوري باسم السورة أو رقم الآية أو نصها.
 class BookmarksScreen extends StatefulWidget {
-  /// ينشئ شاشة الإشارات المرجعية.
   const BookmarksScreen({super.key});
 
-  /// ينشئ حالة شاشة الإشارات المرجعية.
   @override
   State<BookmarksScreen> createState() => _BookmarksScreenState();
 }
 
-/// الحالة الداخلية لشاشة الإشارات المرجعية المسؤولة عن البحث والتصفية الفورية.
 class _BookmarksScreenState extends State<BookmarksScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يبني واجهة شاشة الإشارات المرجعية مع حقل البحث وقائمة الفواصل.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -100,7 +91,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
 
             return Column(
               children: [
-                // Search Input Field
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -153,7 +143,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                   ),
                 ),
 
-                // Bookmarks List / Empty Query Results
                 Expanded(
                   child: bookmarks.isEmpty
                       ? Center(
@@ -234,7 +223,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   }
 }
 
-/// عنصر واجهة يمثل بطاقة إشارة مرجعية واحدة مع اسم السورة ومقتطف الآية.
+/// بطاقة فاصل: اسم السورة ومقتطف من الآية.
 class _BookmarkTile extends StatelessWidget {
   final BookmarkItem item;
   final String surahName;
@@ -242,7 +231,6 @@ class _BookmarkTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  /// ينشئ بطاقة الإشارة المرجعية.
   const _BookmarkTile({
     required this.item,
     required this.surahName,
@@ -251,7 +239,6 @@ class _BookmarkTile extends StatelessWidget {
     required this.onDelete,
   });
 
-  /// يبني بطاقة الإشارة المرجعية مع زر الحذف والانتقال للمصحف.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

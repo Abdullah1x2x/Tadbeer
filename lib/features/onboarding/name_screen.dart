@@ -7,12 +7,10 @@ import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
 import '../../data/storage/user_data_store.dart';
 
-/// يسأل القارئ عن اسمه عند فتح التطبيق أول مرة.
-///
-/// The name addresses the reader in reminders and notifications. It is
-/// optional, stays on the device, and can be changed in Settings.
+/// يسأل القارئ عن اسمه عند أول فتح، لتناديه به التذكيرات.
+/// الاسم اختياري، ويبقى على الجهاز، ويُغيّر من الإعدادات.
 class NameScreen extends StatefulWidget {
-  /// Where to go next.
+  /// الشاشة التالية.
   final WidgetBuilder next;
 
   const NameScreen({super.key, required this.next});

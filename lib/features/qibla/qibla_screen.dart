@@ -13,28 +13,23 @@ import '../../core/design_system/ornaments.dart';
 import 'qibla.dart';
 import 'qibla_location.dart';
 
-/// شاشة اتجاه القبلة: بوصلة تدور مع الجهاز وعليها علامة الكعبة.
-///
-/// The Qibla is computed from the reader's location, which is saved so
-/// the screen answers at once next time, even offline. Without a compass
-/// sensor the dial stays north-up and the bearing is given in degrees.
+/// اتجاه القبلة: بوصلة تدور مع الجهاز وعليها علامة الكعبة.
+/// يُحسب الاتجاه من موقع القارئ، ويُحفظ الموقع فتجيب الشاشة فوراً في المرة القادمة ولو دون اتصال. ودون مستشعر بوصلة يبقى الشمال أعلى، ويُذكر الاتجاه بالدرجات.
 class QiblaScreen extends StatefulWidget {
-  /// Where the location comes from; replaceable in tests.
+  /// مصدر الموقع؛ يُستبدل في الاختبارات.
   final QiblaLocator locator;
 
-  /// Compass headings in degrees from north; null for a device without a
-  /// compass. Defaults to the device's compass.
+  /// اتجاهات البوصلة بالدرجات من الشمال؛ null لجهاز بلا بوصلة. الافتراضي بوصلة الجهاز.
   final Stream<double>? headings;
 
-  /// Whether [headings] was given; the device's compass is used otherwise.
+  /// هل مُرّرت [headings]؛ وإلا تُستخدم بوصلة الجهاز.
   final bool hasHeadings;
 
-  /// ينشئ شاشة اتجاه القبلة.
   const QiblaScreen({super.key, this.locator = const QiblaLocator()})
     : headings = null,
       hasHeadings = false;
 
-  /// For tests: a given location source and heading stream.
+  /// للاختبارات: مصدر موقع واتجاهات معطاة.
   const QiblaScreen.withSources({
     super.key,
     required this.locator,
@@ -46,11 +41,10 @@ class QiblaScreen extends StatefulWidget {
 }
 
 class _QiblaScreenState extends State<QiblaScreen> {
-  /// Within this many degrees the reader faces the Qibla.
+  /// يُعدّ القارئ مستقبلاً القبلة ضمن هذه الدرجات.
   static const _aligned = 3.0;
 
-  /// The reader must turn this far away again before it counts as lost,
-  /// so the confirmation does not flicker at the edge.
+  /// يجب أن يبتعد هذا القدر قبل أن يُعدّ قد انحرف، فلا يرتعش التأكيد عند الحد.
   static const _lost = 6.0;
 
   QiblaLocated? _location;
@@ -60,10 +54,10 @@ class _QiblaScreenState extends State<QiblaScreen> {
   StreamSubscription<double>? _compass;
   Timer? _noCompassTimer;
 
-  /// Whether a heading has ever arrived; false shows the north-up dial.
+  /// هل وصل اتجاه ولو مرة؛ وإلا تُعرض البوصلة والشمال أعلى.
   bool _hasCompass = false;
 
-  /// The dial's angle, unwrapped so it never spins the long way round.
+  /// زاوية البوصلة دون التفاف، فلا تدور الطريق الأطول أبداً.
   double _dial = 0;
   bool _facing = false;
 
@@ -97,8 +91,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
     if (!mounted) return;
     setState(() {
       _hasCompass = true;
-      // Eases toward the new heading by the shortest turn, which also
-      // steadies the sensor's jitter.
+      // تقترب من الاتجاه الجديد بأقصر دوران، وهذا يهدّئ ارتعاش المستشعر أيضاً.
       final current = _dial % 360;
       _dial += turnTo(heading, current) * 0.35;
       final location = _location;
@@ -186,7 +179,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
         return ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
           children: [
-            // The turn to make, said in words as well as shown.
+            // الدوران المطلوب، بالكلمات أيضاً لا بالرسم وحده.
             Semantics(
               liveRegion: true,
               child: AnimatedContainer(
@@ -235,8 +228,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // The dial turns against the device, so north on it
-                      // stays north in the world.
+                      // البوصلة تدور عكس الجهاز، فيبقى شمالها شمالاً في الواقع.
                       Transform.rotate(
                         angle: -heading * math.pi / 180,
                         child: CustomPaint(
@@ -262,7 +254,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
                           ),
                         ),
                       ),
-                      // The Kaaba, on the ring where the Qibla lies.
+                      // الكعبة على الحلقة حيث تقع القبلة.
                       Transform.rotate(
                         angle: (bearing - heading) * math.pi / 180,
                         child: Align(
@@ -288,7 +280,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
                           ),
                         ),
                       ),
-                      // Where the top of the device points.
+                      // حيث يشير أعلى الجهاز.
                       Align(
                         alignment: Alignment.topCenter,
                         child: CustomPaint(
@@ -351,7 +343,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
   }
 }
 
-/// ما يظهر قبل معرفة الموقع: انتظار، أو سبب وتصرف.
+/// ما يظهر قبل معرفة الموقع: انتظار، أو سبب وما يُفعل.
 class _NoLocation extends StatelessWidget {
   final bool locating;
   final QiblaFix? problem;
@@ -459,7 +451,7 @@ class _Fact extends StatelessWidget {
   }
 }
 
-/// وجه البوصلة: حلقة بالدرجات والجهات الأربع وخط نحو القبلة.
+/// وجه البوصلة: حلقة الدرجات والجهات الأربع وخط نحو القبلة.
 class _DialPainter extends CustomPainter {
   final double bearing;
   final Color face;
@@ -494,7 +486,7 @@ class _DialPainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
     );
-    // Degree ticks, longer every 30°.
+    // علامات الدرجات، وأطول كل 30°.
     for (var d = 0; d < 360; d += 5) {
       final a = (d - 90) * math.pi / 180;
       final long = d % 30 == 0;
@@ -507,7 +499,7 @@ class _DialPainter extends CustomPainter {
           ..strokeWidth = long ? 2 : 1,
       );
     }
-    // North, east, south and west, with north in gold.
+    // الجهات الأربع، والشمال بالذهبي.
     for (var i = 0; i < 4; i++) {
       final a = (i * 90 - 90) * math.pi / 180;
       final painter = TextPainter(
@@ -525,7 +517,7 @@ class _DialPainter extends CustomPainter {
       canvas.restore();
       painter.dispose();
     }
-    // The line from the centre toward the Kaaba.
+    // الخط من المركز نحو الكعبة.
     final q = (bearing - 90) * math.pi / 180;
     canvas.drawLine(
       c,

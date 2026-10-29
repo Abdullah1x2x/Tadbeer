@@ -1,28 +1,25 @@
 import '../../data/storage/user_data_store.dart';
 import '../../data/models/reading_journey.dart' show dayKey;
 
-/// حالة حفظ آية واحدة في نظام صناديق لايتنر.
+/// حالة حفظ آية في نظام صناديق لايتنر.
 class HifzCard {
   /// الصندوق الحالي (٠ = جديدة).
   final int box;
 
-  /// تاريخ المراجعة المستحقة.
+  /// موعد المراجعة القادمة.
   final DateTime due;
 
-  /// ينشئ حالة حفظ لآية.
   const HifzCard({required this.box, required this.due});
 
-  /// Days until the next review for each box after a successful recall.
+  /// الأيام حتى المراجعة التالية لكل صندوق بعد تذكّر صحيح.
   static const intervals = [1, 3, 7, 14, 30];
 
-  /// أعلى صندوق.
   static int get maxBox => intervals.length;
 
-  /// تُعدّ الآية محفوظة عند بلوغ الصندوق الثالث.
+  /// الآية محفوظة متى بلغت الصندوق الثالث.
   bool get isMemorized => box >= 3;
 
-  /// Moves up a box on success (longer gap) or back to box 1 on failure
-  /// (review again tomorrow).
+  /// يرفعها صندوقاً عند التذكّر فتتباعد المراجعة، ويعيدها إلى الصندوق الأول عند النسيان فتُراجع غداً.
   HifzCard grade({required bool remembered, required DateTime now}) {
     final today = DateTime(now.year, now.month, now.day);
     final newBox = remembered ? (box + 1).clamp(1, maxBox) : 1;
@@ -40,7 +37,7 @@ class HifzCard {
   );
 }
 
-/// مخزن تقدم الحفظ ضمن حالة الميزات العامة.
+/// تقدّم الحفظ، محفوظ ضمن حالة الميزات.
 class HifzStore {
   HifzStore._();
 
@@ -48,16 +45,16 @@ class HifzStore {
 
   static String _id(int surah, int ayah) => '$surah:$ayah';
 
-  /// جميع الآيات المسجلة في الحفظ.
+  /// كل الآيات المضافة للحفظ.
   static Map<String, HifzCard> all() => {
     for (final e in UserDataStore.instance.featureState(_key).entries)
       e.key: HifzCard.fromJson(Map<String, dynamic>.from(e.value as Map)),
   };
 
-  /// حالة آية محددة إن وُجدت.
+  /// حالة حفظ الآية، أو null.
   static HifzCard? card(int surah, int ayah) => all()[_id(surah, ayah)];
 
-  /// يسجّل تقييم المستخدم لتذكّر الآية.
+  /// يسجّل تقييم القارئ لتذكّر الآية.
   static Future<void> grade(
     int surah,
     int ayah, {
@@ -74,14 +71,13 @@ class HifzStore {
         .toJson();
     return UserDataStore.instance
         .saveFeatureState(_key, state)
-        // A memorization session keeps the day streak going too.
+        // جلسة الحفظ تحفظ سلسلة الأيام أيضاً.
         .then((_) => UserDataStore.instance.markActiveDay(now: at));
   }
 
-  /// هل الآية مضافة للحفظ.
   static bool contains(int surah, int ayah) => card(surah, ayah) != null;
 
-  /// يضيف الآية للحفظ (مستحقة اليوم) أو يزيلها إن كانت مضافة.
+  /// يضيف الآية للحفظ (مستحقة اليوم)، أو يزيلها إن كانت مضافة.
   static Future<void> toggle(int surah, int ayah, {DateTime? now}) {
     final at = now ?? DateTime.now();
     final state = UserDataStore.instance.featureState(_key);
@@ -97,7 +93,7 @@ class HifzStore {
     return UserDataStore.instance.saveFeatureState(_key, state);
   }
 
-  /// الآيات المستحقة للمراجعة اليوم، مرتبة حسب المصحف.
+  /// الآيات المستحقة اليوم، بترتيب المصحف.
   static List<(int, int)> dueToday({DateTime? now}) {
     final at = now ?? DateTime.now();
     final today = DateTime(at.year, at.month, at.day);
@@ -113,7 +109,7 @@ class HifzStore {
   static int memorizedCount() =>
       all().values.where((c) => c.isMemorized).length;
 
-  /// عدد الآيات المحفوظة في سورة.
+  /// عدد الآيات المحفوظة في السورة [surah].
   static int memorizedInSurah(int surah) => all().entries
       .where((e) => e.key.startsWith('$surah:') && e.value.isMemorized)
       .length;

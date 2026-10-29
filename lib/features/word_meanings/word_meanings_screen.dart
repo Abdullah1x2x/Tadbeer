@@ -9,32 +9,22 @@ import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_select.dart';
 
-/// الشاشة الرئيسية المستقلة لقسم «معاني كلمات القرآن».
-///
-/// تتيح للمستخدم:
-/// 1. استعراض الكلمات القرآنية الصعبة المعتمدة.
-/// 2. البحث عن كلمة أو جزء منها أو معناها.
-/// 3. التصفية حسب السورة.
-/// 4. الانتقال إلى موضع الكلمة في المصحف الشريف بدقة.
-/// 5. الوصول إلى صفحة المصادر المعتمدة.
+/// معاني كلمات القرآن: استعراض الكلمات الغريبة والبحث فيها وتصفيتها بالسورة، والانتقال إلى موضع الكلمة في المصحف، والمصادر.
 class WordMeaningsScreen extends StatefulWidget {
   final int? initialSurahNumber;
 
-  /// ينشئ شاشة معاني كلمات القرآن مع إمكانية التصفية المبدئية بسورة محددة.
+  /// [initialSurahNumber] يبدأ مصفّى بسورة.
   const WordMeaningsScreen({super.key, this.initialSurahNumber});
 
-  /// ينشئ الحالة التفاعلية لشاشة معاني كلمات القرآن.
   @override
   State<WordMeaningsScreen> createState() => _WordMeaningsScreenState();
 }
 
-/// الحالة التفاعلية لشاشة استعراض والبحث في معاني كلمات القرآن الكريم.
 class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
   final TextEditingController _searchController = TextEditingController();
   int? _selectedSurah;
   List<QuranWordMeaning> _displayedWords = [];
 
-  /// يهيئ السورة المختارة وقائمة الكلمات المعروضة ويستمع لتغيرات حقل البحث.
   @override
   void initState() {
     super.initState();
@@ -43,7 +33,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     _searchController.addListener(_onSearchChanged);
   }
 
-  /// يزيل مستمع البحث ويحرر متحكم النص عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
@@ -51,12 +40,11 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     super.dispose();
   }
 
-  /// يعيد تصفية قائمة الكلمات المعروضة عند تغير نص البحث.
   void _onSearchChanged() {
     _filterWords();
   }
 
-  /// يصفي معاني الكلمات القرآنية بناءً على نص البحث والسورة المحددة.
+  /// يصفّي الكلمات بنص البحث والسورة المختارة.
   void _filterWords() {
     final repo = QuranRepository.instance;
     final query = _searchController.text.trim();
@@ -78,7 +66,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     });
   }
 
-  /// يبني واجهة شاشة معاني كلمات القرآن مع أدوات البحث والتصفية وقائمة النتائج.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -110,7 +97,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
         ),
         body: Column(
           children: [
-            // Top Filter and Search Bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
@@ -126,7 +112,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
               ),
               child: Column(
                 children: [
-                  // Search Field
                   TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
@@ -160,7 +145,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Surah filter
                   AppSelectField<int?>(
                     title: l10n.chooseSurah,
                     icon: AppIcons.bookOpenText,
@@ -190,7 +174,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
               ),
             ),
 
-            // Results count header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -241,7 +224,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
               ),
             ),
 
-            // Words List
             Expanded(
               child: _displayedWords.isEmpty
                   ? _buildEmptyState(context, isDark)
@@ -280,7 +262,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     );
   }
 
-  /// يبني واجهة الحالة الفارغة عند عدم العثور على كلمات مطابقة للبحث أو التصفية.
+  /// الحالة الفارغة حين لا يطابق البحث شيئاً.
   Widget _buildEmptyState(BuildContext context, bool isDark) {
     final l10n = context.l10n;
     return Center(
@@ -324,7 +306,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
   }
 }
 
-/// يعرض نافذة سفلية بتفاصيل معنى الكلمة القرآنية وموضعها ومصدرها المعتمد.
+/// لوحة بتفاصيل الكلمة: معناها وموضعها ومصدرها.
 void _showWordDetailsModal(
   BuildContext context,
   QuranWordMeaning item,
@@ -472,14 +454,13 @@ void _showWordDetailsModal(
   );
 }
 
-/// بطاقة عرض الكلمة القرآنية ومعناها مع زر الانتقال المباشر إلى موضعها في المصحف.
+/// بطاقة كلمة ومعناها، مع زر إلى موضعها في المصحف.
 class _WordCard extends StatelessWidget {
   final QuranWordMeaning item;
   final String surahName;
   final bool isDark;
   final VoidCallback onNavigateToMushaf;
 
-  /// ينشئ بطاقة عرض الكلمة القرآنية ومعناها.
   const _WordCard({
     required this.item,
     required this.surahName,
@@ -487,7 +468,6 @@ class _WordCard extends StatelessWidget {
     required this.onNavigateToMushaf,
   });
 
-  /// يبني واجهة بطاقة الكلمة القرآنية ومعناها المعجمي.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -523,11 +503,9 @@ class _WordCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Word & Surah/Ayah badge
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Quranic Word
                 Expanded(
                   child: Text(
                     item.word,
@@ -541,7 +519,6 @@ class _WordCard extends StatelessWidget {
                   ),
                 ),
 
-                // Surah & Ayah Badge
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -571,7 +548,6 @@ class _WordCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
 
-                // Jump to Mushaf Page Button
                 InkWell(
                   onTap: onNavigateToMushaf,
                   borderRadius: BorderRadius.circular(8),
@@ -614,7 +590,6 @@ class _WordCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // Arabic Lexical Meaning
             Text(
               item.meaning,
               textDirection: TextDirection.rtl,
@@ -633,12 +608,10 @@ class _WordCard extends StatelessWidget {
   }
 }
 
-/// صفحة «المصادر المعتمدة» لمعاني كلمات القرآن.
+/// صفحة المصادر المعتمدة لمعاني الكلمات.
 class WordMeaningsSourcesScreen extends StatelessWidget {
-  /// ينشئ شاشة المصادر المعتمدة لمعاني كلمات القرآن.
   const WordMeaningsSourcesScreen({super.key});
 
-  /// يبني واجهة شاشة المصادر المعتمدة وتفاصيل التوثيق والملكية الفكرية.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -668,7 +641,6 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Intro Callout Banner
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -705,7 +677,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // Source 1: Al-Mu'jam Al-Waseet (Primary)
+            // المصدر الأول: المعجم الوسيط (الأساسي).
             _SourceCard(
               title: 'المعجم الوسيط',
               badge: 'المصدر الأساسي المعتمد',
@@ -719,7 +691,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            // Source 2: Doha Historical Dictionary
+            // المصدر الثاني: معجم الدوحة التاريخي.
             _SourceCard(
               title: 'معجم الدوحة التاريخي للغة العربية',
               badge: 'مرجع التحقق للألفاظ القديمة',
@@ -733,7 +705,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            // Source 3: Quranpedia.net & Classical Lexicons
+            // المصدر الثالث: الموسوعة القرآنية والمعاجم التراثية.
             _SourceCard(
               title: 'الموسوعة القرآنية (Quranpedia.net) والمعاجم التراثية',
               badge: 'المصدر الرقمي والتراثي (نسخة 2026-10-10)',
@@ -744,7 +716,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            // Legal & Terms of Use Card
+            // شروط الاستخدام.
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -805,7 +777,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
   }
 }
 
-/// بطاقة تعرض بيانات مصدر معجمي معتمد (العنوان، الشارة، المؤلف، والتفاصيل).
+/// بطاقة مصدر معجمي: العنوان والشارة والمؤلف والتفاصيل.
 class _SourceCard extends StatelessWidget {
   final String title;
   final String badge;
@@ -814,7 +786,6 @@ class _SourceCard extends StatelessWidget {
   final bool isPrimary;
   final bool isDark;
 
-  /// ينشئ بطاقة تعريف بمصدر معجمي معتمد.
   const _SourceCard({
     required this.title,
     required this.badge,
@@ -824,7 +795,6 @@ class _SourceCard extends StatelessWidget {
     required this.isDark,
   });
 
-  /// يبني واجهة بطاقة المصدر المعجمي.
   @override
   Widget build(BuildContext context) {
     return Container(
