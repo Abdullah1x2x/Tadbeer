@@ -271,69 +271,14 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             widget.currentPage >= surah.pageStart &&
             widget.currentPage <= surah.pageEnd;
 
-        return ListTile(
-          dense: true,
-          selected: isCurrent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          selectedTileColor: AppColors.olive.withValues(alpha: 0.12),
-          leading: Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: isCurrent
-                  ? AppColors.olive
-                  : (isDark ? AppColors.darkSurface : AppColors.comsilk),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: isCurrent
-                    ? AppColors.olive
-                    : AppColors.olive.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Text(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(surah.number)
-                  : surah.number.toString(),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: isCurrent
-                    ? Colors.white
-                    : (isDark ? AppColors.comsilk : AppColors.oliveDark),
-              ),
-            ),
-          ),
-          title: Text(
-            surah.name,
-            style: TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
-            ),
-          ),
-          subtitle: Text(
-            '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(surah.ayahCount) : surah.ayahCount)}',
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
-            ),
-          ),
-          trailing: Text(
-            context.l10n.pageAbbr(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(surah.pageStart)
-                  : surah.pageStart,
-            ),
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: AppColors.olive,
-            ),
-          ),
+        return _IndexTile(
+          number: surah.number,
+          title: surah.name,
+          titleFontSize: 16,
+          subtitle:
+              '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(_digits(context, surah.ayahCount))}',
+          page: surah.pageStart,
+          isCurrent: isCurrent,
           onTap: () {
             Navigator.pop(context);
             widget.onPageSelected(surah.pageStart);
@@ -367,86 +312,113 @@ class _QuranSideMenuState extends State<QuranSideMenu>
         final surah = repo.getSurah(firstAyah.surahNumber);
         final isCurrent = repo.getPage(widget.currentPage).juzNumber == juzNum;
 
-        return ListTile(
-          dense: true,
-          selected: isCurrent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+        return _IndexTile(
+          number: juzNum,
+          title: context.l10n.juzAbbr(_digits(context, juzNum)),
+          titleFontSize: 14,
+          subtitle: context.l10n.ayahReference(
+            surah.name,
+            _digits(context, firstAyah.ayahNumber),
           ),
-          selectedTileColor: AppColors.olive.withValues(alpha: 0.12),
-          leading: Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: isCurrent
-                  ? AppColors.olive
-                  : (isDark ? AppColors.darkSurface : AppColors.comsilk),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: isCurrent
-                    ? AppColors.olive
-                    : AppColors.olive.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Text(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(juzNum)
-                  : juzNum.toString(),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: isCurrent
-                    ? Colors.white
-                    : (isDark ? AppColors.comsilk : AppColors.oliveDark),
-              ),
-            ),
-          ),
-          title: Text(
-            context.l10n.juzAbbr(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(juzNum)
-                  : juzNum,
-            ),
-            style: TextStyle(
-              fontFamily: context.currentLanguage == AppLanguage.arabic
-                  ? 'IBMPlexSansArabic'
-                  : null,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
-            ),
-          ),
-          subtitle: Text(
-            context.l10n.ayahReference(
-              surah.name,
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(firstAyah.ayahNumber)
-                  : firstAyah.ayahNumber,
-            ),
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
-            ),
-          ),
-          trailing: Text(
-            context.l10n.pageAbbr(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(startPage.pageNumber)
-                  : startPage.pageNumber,
-            ),
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: AppColors.olive,
-            ),
-          ),
+          page: startPage.pageNumber,
+          isCurrent: isCurrent,
           onTap: () {
             Navigator.pop(context);
             widget.onPageSelected(startPage.pageNumber);
           },
         );
       },
+    );
+  }
+}
+
+/// الرقم بأرقام الواجهة: عربية هندية في الواجهة العربية.
+Object _digits(BuildContext context, int n) =>
+    context.currentLanguage == AppLanguage.arabic
+    ? ArabicSearchNormalizer.toArabicDigits(n)
+    : n;
+
+/// سطر في فهرس السور أو الأجزاء: رقمه، واسمه، وصفحة بدايته.
+class _IndexTile extends StatelessWidget {
+  final int number;
+  final String title;
+  final double titleFontSize;
+  final String subtitle;
+  final int page;
+
+  /// هل الصفحة الحالية داخل هذا القسم.
+  final bool isCurrent;
+  final VoidCallback onTap;
+
+  const _IndexTile({
+    required this.number,
+    required this.title,
+    required this.titleFontSize,
+    required this.subtitle,
+    required this.page,
+    required this.isCurrent,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return ListTile(
+      dense: true,
+      selected: isCurrent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      selectedTileColor: AppColors.olive.withValues(alpha: 0.12),
+      leading: Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isCurrent
+              ? AppColors.olive
+              : (isDark ? AppColors.darkSurface : AppColors.comsilk),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isCurrent
+                ? AppColors.olive
+                : AppColors.olive.withValues(alpha: 0.3),
+          ),
+        ),
+        child: Text(
+          '${_digits(context, number)}',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+            color: isCurrent
+                ? Colors.white
+                : (isDark ? AppColors.comsilk : AppColors.oliveDark),
+          ),
+        ),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'IBMPlexSansArabic',
+          fontSize: titleFontSize,
+          fontWeight: FontWeight.bold,
+          color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(
+          fontSize: 12,
+          color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
+        ),
+      ),
+      trailing: Text(
+        context.l10n.pageAbbr(_digits(context, page)),
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          color: AppColors.olive,
+        ),
+      ),
+      onTap: onTap,
     );
   }
 }
