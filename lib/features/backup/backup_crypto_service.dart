@@ -9,7 +9,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 
 import '../../data/storage/user_data_store.dart';
 
-/// Represents the outcome of a backup export or restore operation.
+/// نتيجة تصدير نسخة احتياطية أو استعادتها.
 class BackupResult {
   final bool success;
   final String? filePath;
@@ -24,42 +24,26 @@ class BackupResult {
       filePath = null;
 }
 
-/// Service handling encrypted, compressed, and authenticated backups (.quranbackup).
+/// النسخ الاحتياطية المشفرة (.quranbackup)، على الجهاز فقط دون أي خادم.
+/// المفتاح يُشتق من كلمة المرور بـ PBKDF2-HMAC-SHA256 وملح عشوائي، بطيئاً عمداً ليصعب تخمينها. البيانات تُضغط بـ gzip، وتُشفّر بـ AES-256-CBC، ثم توقّع بـ HMAC-SHA256 على كل حقول الرأس والنص المشفّر (encrypt-then-MAC)؛ فكلمة مرور خاطئة أو بايت واحد معدّل يُفشل التحقق ولا يُستورد شيء. ودون كلمة مرور يكون الملف مموّهاً لا محمياً، ويسجّل الرأس ذلك في `passwordProtected`.
 ///
-/// EDUCATIONAL NOTE:
-/// 1. Backups are entirely offline and user-managed (no cloud, no server).
-/// 2. The key is derived from the password with PBKDF2-HMAC-SHA256 and a
-///    random salt (slow on purpose, so guessing passwords is expensive).
-/// 3. Data is gzip-compressed, encrypted with AES-256-CBC, then authenticated
-///    with HMAC-SHA256 over every header field and the ciphertext
-///    (encrypt-then-MAC). A wrong password or a single changed byte fails the
-///    MAC check and NOTHING is imported.
-/// 4. Without a password the file is only obfuscated, not protected: anyone
-///    with Tadbeer can open it. The header records this as `passwordProtected`.
-///
-/// IMPORTANT INVARIANT:
-/// Restore replaces the sections contained in the backup. Sections that were
-/// not exported are left untouched. If the backup is invalid, current user
-/// data remains 100% untouched.
+/// الاستعادة تستبدل الأقسام الموجودة في النسخة فقط، وإن كانت النسخة غير صالحة تبقى البيانات الحالية كما هي.
 class BackupCryptoService {
   BackupCryptoService._();
 
   static const String magicHeader = 'TADBEER_BACKUP';
 
-  /// v1: SHA-256(password + salt) key, AES-CBC, plaintext checksum in header.
-  ///     Kept for RESTORE ONLY so older backups still open.
-  /// v2: PBKDF2-HMAC-SHA256 key derivation, AES-256-CBC + HMAC-SHA256
-  ///     (encrypt-then-MAC). No plaintext data hash is exposed in the header.
+  /// v1: مفتاح SHA-256(كلمة المرور + الملح)، وAES-CBC، وبصمة النص الأصلي في الرأس؛ يبقى للاستعادة فقط.
+  /// v2: اشتقاق PBKDF2-HMAC-SHA256، وAES-256-CBC مع HMAC-SHA256؛ ولا بصمة للنص الأصلي في الرأس.
   static const int formatVersion = 2;
 
-  /// عدد تكرارات PBKDF2 (يُحفظ داخل الملف ليمكن رفعه مستقبلاً).
+  /// تكرارات PBKDF2؛ تُحفظ في الملف ليمكن رفعها مستقبلاً.
   static const int defaultKdfIterations = 100000;
 
-  /// Upper bound accepted from a file header, to avoid hostile files
-  /// making restore hang for minutes.
+  /// أقصى تكرارات تُقبل من رأس الملف، كي لا يعلّق ملف خبيث الاستعادة لدقائق.
   static const int _maxKdfIterations = 5000000;
 
-  /// توليد سلسلة بايتات عشوائية آمنة تشفيرياً لاستخدامها في التمليح (Salt) ومتجه التهيئة (IV).
+  /// بايتات عشوائية آمنة للملح ومتجه التهيئة.
   static Uint8List _generateRandomBytes(int length) {
     final rand = Random.secure();
     final bytes = Uint8List(length);
@@ -69,7 +53,7 @@ class BackupCryptoService {
     return bytes;
   }
 
-  /// PBKDF2-HMAC-SHA256 (RFC 8018) — returns [length] bytes.
+  /// PBKDF2-HMAC-SHA256 (RFC 8018)؛ يعيد [length] بايت.
   static Uint8List _pbkdf2(
     List<int> password,
     List<int> salt,
@@ -99,8 +83,7 @@ class BackupCryptoService {
     return Uint8List.sublistView(out.takeBytes(), 0, length);
   }
 
-  /// يشتق مفتاح تشفير (32 بايت) ومفتاح توقيع HMAC (32 بايت) في خيط منفصل
-  /// حتى لا تتجمد الواجهة أثناء الحساب.
+  /// يشتق مفتاح التشفير ومفتاح التوقيع (32 بايت لكل منهما) في خيط منفصل، فلا تتجمد الواجهة.
   static Future<({Uint8List encKey, Uint8List macKey})> _deriveKeysV2(
     String password,
     Uint8List salt,
@@ -117,7 +100,7 @@ class BackupCryptoService {
     );
   }
 
-  /// يحسب توقيع HMAC على كل حقول الملف الحساسة (encrypt-then-MAC).
+  /// توقيع HMAC على كل حقول الملف المهمة (encrypt-then-MAC).
   static String _computeMac(
     Uint8List macKey, {
     required int version,
@@ -133,7 +116,7 @@ class BackupCryptoService {
     return base64.encode(Hmac(sha256, macKey).convert(message).bytes);
   }
 
-  /// مقارنة بزمن ثابت لتجنب تسريب معلومات عبر التوقيت.
+  /// مقارنة بزمن ثابت، فلا يُسرّب التوقيت شيئاً.
   static bool _constantTimeEquals(String a, String b) {
     final x = utf8.encode(a);
     final y = utf8.encode(b);
@@ -145,16 +128,14 @@ class BackupCryptoService {
     return diff == 0;
   }
 
-  /// (v1 legacy) اشتقاق مفتاح تشفير AES-256 من كلمة المرور والملح عبر SHA-256.
-  /// يُستخدم فقط لاستعادة النسخ القديمة.
+  /// مفتاح v1 القديم: SHA-256 لكلمة المرور والملح؛ للاستعادة فقط.
   static enc.Key _deriveKeyV1(String password, Uint8List salt) {
-    // Key derivation using SHA-256(password + salt)
     final input = utf8.encode(password) + salt;
     final digest = sha256.convert(input);
     return enc.Key(Uint8List.fromList(digest.bytes));
   }
 
-  /// Exports an encrypted, compressed, versioned, and checksummed backup file.
+  /// يصدّر نسخة احتياطية مضغوطة ومشفّرة وموقّعة.
   static Future<BackupResult> createBackupFile({
     required String targetPath,
     String password = '',
@@ -182,17 +163,17 @@ class BackupCryptoService {
 
       final rawPayloadBytes = utf8.encode(jsonEncode(snapshot));
 
-      // 1. Gzip compression (reduces backup file size significantly)
+      // ١. الضغط.
       final compressedBytes = gzip.encode(rawPayloadBytes);
 
-      // 2. Key derivation (PBKDF2-HMAC-SHA256, random salt)
+      // ٢. اشتقاق المفتاح بملح عشوائي.
       final salt = _generateRandomBytes(16);
       final ivBytes = _generateRandomBytes(16);
       const iterations = defaultKdfIterations;
       final keys = await _deriveKeysV2(password, salt, iterations);
       final iv = enc.IV(ivBytes);
 
-      // 3. Encryption (AES-256-CBC) then authentication (HMAC-SHA256)
+      // ٣. التشفير ثم التوقيع.
       final encrypter = enc.Encrypter(
         enc.AES(enc.Key(keys.encKey), mode: enc.AESMode.cbc),
       );
@@ -211,7 +192,7 @@ class BackupCryptoService {
         cipherB64: cipherB64,
       );
 
-      // 4. Assemble container package (no plaintext data hash exposed)
+      // ٤. تجميع الملف، دون بصمة للنص الأصلي.
       final package = {
         'magic': magicHeader,
         'version': formatVersion,
@@ -235,11 +216,8 @@ class BackupCryptoService {
     }
   }
 
-  /// Validates and restores user data from a .quranbackup file.
-  ///
-  /// IMPORTANT:
-  /// If file is invalid or corrupt, NO data is touched.
-  /// Upon success, current data is COMPLETELY REPLACED.
+  /// يتحقق من ملف .quranbackup ثم يستعيده.
+  /// إن كان الملف غير صالح لا يُمس شيء؛ وعند النجاح تُستبدل الأقسام الموجودة فيه.
   static Future<BackupResult> restoreFromFile({
     required File file,
     String password = '',
@@ -252,12 +230,12 @@ class BackupCryptoService {
       final content = await file.readAsString();
       final package = jsonDecode(content) as Map<String, dynamic>;
 
-      // 1. Verify magic header
+      // ١. التحقق من توقيع نوع الملف.
       if (package['magic'] != magicHeader) {
         return const BackupResult.failure('Invalid backup file format');
       }
 
-      // 2. Verify schema version compatibility
+      // ٢. التحقق من توافق إصدار البيانات.
       final schemaVersion = package['schemaVersion'] as int? ?? 0;
       if (schemaVersion > UserDataStore.currentSchemaVersion) {
         return const BackupResult.failure(
@@ -279,7 +257,7 @@ class BackupCryptoService {
       final iv = enc.IV.fromBase64(ivB64);
       final cipher = enc.Encrypted.fromBase64(cipherB64);
 
-      // 3. Derive key (and verify authenticity for v2) then decrypt
+      // ٣. اشتقاق المفتاح (والتحقق من التوقيع في v2) ثم فك التشفير.
       final enc.Key key;
       String? expectedChecksum;
       if (fileVersion >= 2) {
@@ -299,14 +277,14 @@ class BackupCryptoService {
         );
         final actualMac = package['mac'] as String? ?? '';
         if (!_constantTimeEquals(expectedMac, actualMac)) {
-          // Wrong password or tampered/corrupt file: nothing is decrypted.
+          // كلمة مرور خاطئة أو ملف معدّل أو تالف: لا يُفك شيء.
           return const BackupResult.failure(
             'Incorrect password or corrupt file',
           );
         }
         key = enc.Key(keys.encKey);
       } else {
-        // Legacy v1 backups
+        // نسخ v1 القديمة.
         key = _deriveKeyV1(password, salt);
         expectedChecksum = package['checksum'] as String?;
       }
@@ -319,7 +297,7 @@ class BackupCryptoService {
         return const BackupResult.failure('Incorrect password or corrupt file');
       }
 
-      // 4. Decompress
+      // ٤. فك الضغط.
       List<int> decompressedBytes;
       try {
         decompressedBytes = gzip.decode(decryptedCompressed);
@@ -329,7 +307,7 @@ class BackupCryptoService {
         );
       }
 
-      // 5. Integrity Checksum Verification (v1 only; v2 is covered by the MAC)
+      // ٥. التحقق من البصمة (v1 فقط؛ التوقيع يغطي v2).
       if (fileVersion < 2) {
         final actualChecksum = sha256.convert(decompressedBytes).toString();
         if (actualChecksum != expectedChecksum) {
@@ -339,14 +317,14 @@ class BackupCryptoService {
         }
       }
 
-      // 6. Parse and Validate JSON structure
+      // ٦. قراءة JSON والتحقق من بنيته.
       final payloadJson =
           jsonDecode(utf8.decode(decompressedBytes)) as Map<String, dynamic>;
       if (payloadJson['app'] != 'Tadbeer') {
         return const BackupResult.failure('Invalid app identifier in backup');
       }
 
-      // 7. Atomic complete replacement
+      // ٧. الاستبدال الذرّي.
       await UserDataStore.instance.replaceAllUserData(payloadJson);
 
       return BackupResult.success(file.path);

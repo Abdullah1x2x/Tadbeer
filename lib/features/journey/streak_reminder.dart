@@ -1,27 +1,23 @@
 /// تنبيه قبل انقطاع سلسلة الأيام المتتالية.
 ///
-/// A notification's text is fixed when it is scheduled, so like the
-/// portion reminder this is a pair of one-off notifications: tonight's,
-/// when today has no activity yet, and tomorrow's, once today counts. Each
-/// names the streak it would save, and the pair is rescheduled whenever
-/// today's activity or the reminder changes.
+/// نص الإشعار يثبت عند جدولته، فهذا زوج من الإشعارات: الليلة إن لم يكن في اليوم نشاط بعد، والغد بعد أن يُحتسب اليوم. كل إشعار يذكر السلسلة التي يحفظها، ويُعاد جدولته كلما تغيّر نشاط اليوم أو التذكير.
 library;
 
 import '../reminders/local_reminder_service.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../data/models/reading_journey.dart';
 
-/// Fixed id of the streak reminder among the saved reminders.
+/// معرّف تذكير السلسلة الثابت بين التذكيرات المحفوظة.
 const streakReminderId = 'streak_guard';
 
-/// Hour the streak reminder starts at, late enough to be a last call.
+/// ساعة التذكير الافتراضية، متأخرة ليكون نداءً أخيراً.
 const streakReminderDefaultHour = 21;
 
-/// إشعار سلسلة ليوم واحد.
+/// إشعار السلسلة ليوم واحد.
 class StreakNotice {
   final DateTime at;
 
-  /// Days in the streak the notice asks the reader to keep.
+  /// أيام السلسلة التي يدعو الإشعار القارئ إلى حفظها.
   final int streak;
 
   const StreakNotice(this.at, this.streak);
@@ -37,12 +33,8 @@ class StreakNotice {
   String toString() => 'StreakNotice($at, $streak)';
 }
 
-/// The streak notices from [now] on, at [hour]:[minute].
-///
-/// Tonight's notice stands only while today has no activity and there is a
-/// streak to lose. Once today counts, tomorrow's notice guards the streak
-/// that includes today. Nothing further ahead: by then the streak would
-/// already have broken.
+/// إشعارات السلسلة من [now] فصاعداً، في [hour]:[minute].
+/// إشعار الليلة يبقى ما دام اليوم بلا نشاط وهناك سلسلة تضيع. فإذا احتُسب اليوم حرس إشعار الغد السلسلة التي تشمله. ولا شيء بعد ذلك، إذ تكون السلسلة قد انقطعت.
 List<StreakNotice> streakNotices(
   ReadingJourney journey,
   DateTime now, {
@@ -63,13 +55,13 @@ List<StreakNotice> streakNotices(
   return [if (today.isAfter(now)) StreakNotice(today, streak)];
 }
 
-/// Keeps the streak notifications in step with the reading journey.
+/// يُبقي إشعارات السلسلة متوافقة مع رحلة القراءة.
 class StreakReminderSync {
   StreakReminderSync._();
 
   static String? _lastKey;
 
-  /// Starts listening to the store; call once after the store is ready.
+  /// يبدأ الاستماع للمخزن؛ يُستدعى مرة بعد جاهزيته.
   static void attach() {
     UserDataStore.instance.addListener(_onChange);
     _onChange();
@@ -97,7 +89,7 @@ class StreakReminderSync {
     if (key == _lastKey) return;
     final first = _lastKey == null;
     _lastKey = key;
-    // At start-up main() has already synced every reminder.
+    // عند الإقلاع تكون كل التذكيرات قد جُدولت.
     if (first) return;
     LocalReminderService.instance.scheduleReminder(
       reminder,

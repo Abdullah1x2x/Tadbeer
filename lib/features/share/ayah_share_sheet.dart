@@ -31,26 +31,24 @@ enum AyahCardFormat {
   story,
 }
 
-/// نمط ألوان بطاقة المشاركة، من ألوان السمة المختارة.
+/// ألوان البطاقة، من الثيم المختار.
 enum AyahCardStyle {
-  /// خلفية داكنة من لون السمة بإطار ذهبي.
+  /// خلفية داكنة من لون الثيم بإطار ذهبي.
   dark,
 
-  /// خلفية فاتحة كورق السمة بنص من لونها.
+  /// خلفية فاتحة كورق الثيم بنص من لونه.
   light,
 }
 
-/// What became of saving the card to the gallery.
+/// نتيجة حفظ البطاقة في الصور.
 enum _SaveState { idle, saving, saved, denied, failed }
 
-/// لوحة سفلية تعرض معاينة بطاقة الآية وتشاركها كصورة عالية الدقة.
+/// لوحة تعرض بطاقة الآية وتشاركها صورة عالية الدقة.
 class AyahShareSheet extends StatefulWidget {
-  /// الآية المراد مشاركتها.
   final Ayah ayah;
 
   const AyahShareSheet._(this.ayah);
 
-  /// يفتح لوحة مشاركة الآية كبطاقة مصممة.
   static Future<void> show(BuildContext context, Ayah ayah) {
     return showModalBottomSheet<void>(
       context: context,
@@ -71,26 +69,24 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
   bool _sharing = false;
   _SaveState _save = _SaveState.idle;
 
-  /// Logical width of the card.
+  /// عرض البطاقة المنطقي.
   static const double _cardWidth = 360;
 
-  /// Width of the shared and saved image in pixels: sharp when zoomed in
-  /// or printed.
+  /// عرض الصورة المحفوظة والمشاركة بالبكسل: واضحة عند التكبير أو الطباعة.
   static const double imageWidth = 2160;
 
   String get _fileName =>
       'tadbeer_${widget.ayah.surahNumber}_${widget.ayah.ayahNumber}';
 
-  /// The card as shown, drawn at [imageWidth] pixels wide.
+  /// البطاقة كما تظهر، مرسومة بعرض [imageWidth] بكسل.
   Future<Uint8List?> _capture() async {
-    // The Madinah glyphs load with their page; wait for them, so the image
-    // never catches the plain font standing in.
+    // خطوط مصحف المدينة تُحمّل مع صفحتها؛ ننتظرها كي لا تلتقط الصورة الخط البديل.
     final page = widget.ayah.page;
     if (UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah &&
         !(QcfLayout.instance.isReady && QcfFonts.instance.isPageLoaded(page))) {
       await QcfLayout.instance.init();
       if (await QcfFonts.instance.ensurePage(page)) {
-        // One frame to draw the glyphs in place of the plain font.
+        // إطار واحد لترسم الخطوط مكان البديل.
         WidgetsBinding.instance.scheduleFrame();
         await WidgetsBinding.instance.endOfFrame.timeout(
           const Duration(milliseconds: 500),
@@ -182,7 +178,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
               ),
             ),
             const SizedBox(height: 14),
-            // The preview is the exact widget that gets captured, scaled to fit.
+            // المعاينة هي نفس الواجهة التي تُلتقط، مصغّرة لتتسع.
             SizedBox(
               height: previewHeight,
               child: FittedBox(
@@ -211,7 +207,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
                 ),
                 ButtonSegment(
                   value: AyahCardFormat.story,
-                  // Upright, the shape of a story.
+                  // طولية، بشكل القصة.
                   icon: const RotatedBox(
                     quarterTurns: 1,
                     child: Icon(AppIcons.rectangle),
@@ -278,8 +274,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
                 ),
               ],
             ),
-            // Says how saving went, under the buttons rather than in a
-            // snack bar hidden behind the sheet.
+            // نتيجة الحفظ تحت الأزرار، لا في رسالة تختفي خلف اللوحة.
             if (_saveMessage(l10n) case final message?)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -300,7 +295,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
   }
 }
 
-/// A small progress circle that fits in a button's icon slot.
+/// دائرة تقدّم صغيرة بحجم أيقونة الزر.
 class _Spinner extends StatelessWidget {
   const _Spinner();
 
@@ -312,18 +307,16 @@ class _Spinner extends StatelessWidget {
   );
 }
 
-/// البطاقة المصممة للآية: إطار ذهبي مزدوج، ونقش هندسي خفيف، واسم السورة،
-/// ونص الآية بخط المصحف المختار، وتوقيع التطبيق.
+/// بطاقة الآية: إطار ذهبي مزدوج، ونقش هندسي خفيف، واسم السورة، ونص الآية بخط المصحف المختار، وتوقيع التطبيق.
 class AyahCard extends StatelessWidget {
   final Ayah ayah;
   final AyahCardStyle style;
   final double width;
   final double height;
 
-  /// السمة التي تأخذ البطاقة ألوانها منها؛ السمة المختارة إن لم تُحدَّد.
+  /// الثيم الذي تأخذ البطاقة ألوانه؛ المختار إن لم يُحدَّد.
   final AppColorTheme? colorTheme;
 
-  /// ينشئ بطاقة الآية بالمقاس والنمط المحددين.
   const AyahCard({
     super.key,
     required this.ayah,
@@ -343,7 +336,7 @@ class AyahCard extends StatelessWidget {
     final textColor = night ? const Color(0xFFF2EEE4) : p.lightPrimaryDark;
     final metaColor = night ? gold : p.lightAccentGold;
     final ayahNumber = ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber);
-    // Taller story cards have room for larger text.
+    // بطاقة القصة الأطول تتسع لنص أكبر.
     final verseSize = height > width ? 28.0 : 24.0;
     final madinah =
         UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
@@ -373,8 +366,7 @@ class AyahCard extends StatelessWidget {
         height: height,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            // The theme's hero colour glowing out of its night background,
-            // or its paper with a breath of the hero colour at the foot.
+            // لون الثيم يتوهج من خلفيته الليلية، أو ورقه مع لمسة من لونه في الأسفل.
             gradient: night
                 ? RadialGradient(
                     center: const Alignment(0, -0.35),
@@ -399,7 +391,7 @@ class AyahCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(34, 34, 34, 26),
               child: Column(
                 children: [
-                  // Surah title between ornamental rules.
+                  // اسم السورة بين خطين زخرفيين.
                   Row(
                     children: [
                       Expanded(child: _Rule(color: metaColor)),
@@ -424,9 +416,7 @@ class AyahCard extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: width - 68),
-                          // In the Mushaf the reader chose: the Madinah
-                          // glyphs, with their own ayah marker, or the
-                          // flowing text's font.
+                          // بخط المصحف الذي اختاره القارئ: صفحات المدينة بعلامة آيتها، أو خط النص المتدفق.
                           child: madinah
                               ? QcfAyahText(
                                   ayah: ayah,
@@ -440,7 +430,7 @@ class AyahCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // App signature.
+                  // توقيع التطبيق.
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -500,7 +490,7 @@ class _Rule extends StatelessWidget {
   }
 }
 
-/// يرسم إطاراً ذهبياً مزدوجاً بزوايا مزخرفة ونقشاً هندسياً خفيفاً من النجوم الثمانية.
+/// إطار ذهبي مزدوج بزوايا مزخرفة، ونقش خفيف من النجوم الثمانية.
 class _CardOrnamentPainter extends CustomPainter {
   final Color gold;
   final double patternAlpha;
@@ -509,7 +499,7 @@ class _CardOrnamentPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Faint eight-pointed star lattice in the background.
+    // شبكة نجوم خافتة في الخلفية.
     final pattern = Paint()
       ..color = gold.withValues(alpha: patternAlpha)
       ..style = PaintingStyle.stroke
@@ -521,7 +511,7 @@ class _CardOrnamentPainter extends CustomPainter {
       }
     }
 
-    // Double frame.
+    // الإطار المزدوج.
     final outer = Paint()
       ..color = gold.withValues(alpha: 0.9)
       ..style = PaintingStyle.stroke
@@ -541,14 +531,14 @@ class _CardOrnamentPainter extends CustomPainter {
       inner,
     );
 
-    // Corner stars.
+    // نجوم الزوايا.
     final corner = Paint()..color = gold;
     for (final c in [r1.topLeft, r1.topRight, r1.bottomLeft, r1.bottomRight]) {
       _star(canvas, c, 6, corner..style = PaintingStyle.fill);
     }
   }
 
-  /// Eight-pointed star made of two overlapping squares.
+  /// نجمة ثمانية من مربعين متداخلين.
   void _star(Canvas canvas, Offset c, double r, Paint paint) {
     for (final angle in [0.0, math.pi / 4]) {
       final path = Path();

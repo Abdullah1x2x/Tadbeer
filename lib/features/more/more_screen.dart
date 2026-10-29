@@ -23,9 +23,8 @@ import '../word_meanings/word_meanings_screen.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
 
-/// تبويب «المزيد»: الأدوات الثانوية والإعدادات في قائمة واحدة واضحة.
+/// تبويب «المزيد»: الأدوات الثانوية والإعدادات في قائمة واحدة.
 class MoreScreen extends StatelessWidget {
-  /// ينشئ تبويب المزيد.
   const MoreScreen({super.key});
 
   @override
@@ -158,7 +157,7 @@ class MoreScreen extends StatelessWidget {
   }
 }
 
-/// مجموعة عناصر بعنوان قسم وبطاقة واحدة.
+/// مجموعة عناصر تحت عنوان قسم، في بطاقة واحدة.
 class _Group extends StatelessWidget {
   final String title;
   final List<Widget> children;
@@ -207,7 +206,7 @@ class _Group extends StatelessWidget {
   }
 }
 
-/// عنصر قائمة بأيقونة ذهبية دائرية وسهم دخول.
+/// عنصر بأيقونة ذهبية دائرية وسهم دخول.
 class _Tile extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -240,7 +239,7 @@ class _Tile extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      // Mirrors with text direction, so it points left in Arabic.
+      // يتبع اتجاه النص، فيشير لليسار في العربية.
       trailing: Icon(
         AppIcons.caretRight,
         color: AppColors.textSecondary(context),

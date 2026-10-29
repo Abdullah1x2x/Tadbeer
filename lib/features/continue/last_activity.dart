@@ -1,19 +1,19 @@
 import '../../data/storage/user_data_store.dart';
 
-/// نوع النشاط الأخير الذي يمكن استكماله.
+/// نوع النشاط الذي يُستكمل.
 enum ActivityKind { adhkar, book, hifz, pathway }
 
-/// آخر موضع في قسم من الأقسام لاستكماله من الرئيسية.
+/// آخر موضع في قسم، يُستكمل من الرئيسية.
 class LastActivity {
   final ActivityKind kind;
 
-  /// معرّف العنصر: فئة الأذكار، أو معرّف الكتاب، أو رقم السورة، أو معرّف المسار.
+  /// العنصر: فئة الأذكار، أو معرّف الكتاب، أو رقم السورة، أو معرّف المسار.
   final String ref;
 
-  /// عنوان للعرض (اسم الكتاب أو المسار...).
+  /// الاسم المعروض (اسم الكتاب أو المسار…).
   final String title;
 
-  /// موضع داخل العنصر (فصل الكتاب مثلاً).
+  /// الموضع داخل العنصر (فصل الكتاب مثلاً).
   final int position;
 
   final DateTime at;
@@ -43,7 +43,7 @@ class LastActivity {
       );
 }
 
-/// سجل آخر نشاط في كل قسم (عنصر واحد لكل نوع).
+/// آخر نشاط في كل قسم، نشاط واحد لكل نوع.
 class LastActivityStore {
   LastActivityStore._();
 
@@ -73,7 +73,7 @@ class LastActivityStore {
     return UserDataStore.instance.saveFeatureState(_key, state);
   }
 
-  /// أحدث الأنشطة أولاً.
+  /// الأنشطة، الأحدث أولاً.
   static List<LastActivity> recent() {
     final state = UserDataStore.instance.featureState(_key);
     return [

@@ -15,15 +15,11 @@ import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// وضع التأمل: آية واحدة في كل مرة على خلفية هادئة متحركة.
-///
-/// Full-screen, distraction-free reading. Swipe to move between verses, open
-/// the reflection questions for the current verse, or follow a breathing
-/// circle before reading.
+/// بلا مشتتات: يُسحب بين الآيات، وتُفتح أسئلة التدبر للآية، أو يُتّبع تمرين تنفس قبل القراءة.
 class FocusModeScreen extends StatefulWidget {
-  /// الآية التي يبدأ منها التأمل.
+  /// الآية التي يبدأ منها.
   final Ayah startAyah;
 
-  /// ينشئ شاشة وضع التأمل.
   const FocusModeScreen({super.key, required this.startAyah});
 
   /// يفتح وضع التأمل بانتقال تلاشٍ هادئ.
@@ -48,13 +44,13 @@ class _FocusModeScreenState extends State<FocusModeScreen>
   late final PageController _pages;
   late int _index;
 
-  /// Slow loop driving the drifting background and stars.
+  /// حلقة بطيئة تحرّك الخلفية والنجوم.
   late final AnimationController _ambient = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 24),
   );
 
-  /// 8 s breathing cycle (4 s in, 4 s out); runs only while shown.
+  /// دورة تنفس من ٨ ثوانٍ (٤ شهيق و٤ زفير)؛ تعمل فقط حين تظهر.
   late final AnimationController _breath = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 8),
@@ -77,7 +73,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Respect the system "reduce motion" setting for the ambient sky.
+    // تحترم إعداد "تقليل الحركة" في السماء المتحركة.
     if (AppMotion.shouldAnimate(context)) {
       if (!_ambient.isAnimating) _ambient.repeat();
     } else {
@@ -108,7 +104,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     const gold = Color(0xFFE8C878);
-    // The night sky takes the colours of the chosen theme.
+    // ألوان السماء من الثيم المختار.
     final deepest = Color.lerp(AppColors.darkBackground, Colors.black, 0.4)!;
     final sky = [
       AppColors.heroGradient(true).colors.first,
@@ -123,7 +119,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
         body: Stack(
           fit: StackFit.expand,
           children: [
-            // Drifting night gradient with slowly twinkling stars.
+            // تدرج ليلي ينجرف ونجوم تتلألأ ببطء.
             AnimatedBuilder(
               animation: _ambient,
               builder: (context, _) => CustomPaint(
@@ -135,8 +131,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
               itemCount: _ayahs.length,
               onPageChanged: (i) {
                 HapticFeedback.selectionClick();
-                // Moving on from the last verse of a Mushaf page counts that
-                // page as read, as in the Mushaf.
+                // الانتقال من آخر آية في صفحة المصحف يُحسب الصفحة مقروءة، كما في المصحف.
                 if (i == _index + 1 && _ayahs[i].page != _ayahs[_index].page) {
                   UserDataStore.instance.recordPageRead(_ayahs[_index].page);
                 }
@@ -149,7 +144,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
               IgnorePointer(
                 child: Center(child: _BreathingCircle(animation: _breath)),
               ),
-            // Top bar: close and breathing toggle.
+            // الشريط العلوي: الإغلاق وتمرين التنفس.
             Align(
               alignment: Alignment.topCenter,
               child: SafeArea(
@@ -177,7 +172,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
                 ),
               ),
             ),
-            // Bottom actions.
+            // إجراءات الأسفل.
             Align(
               alignment: Alignment.bottomCenter,
               child: SafeArea(
@@ -216,7 +211,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
   }
 }
 
-/// آية واحدة تظهر بتلاشٍ وتكبير هادئ عند وصولها.
+/// آية تظهر بتلاشٍ وتكبير هادئ عند وصولها.
 class _AyahPanel extends StatelessWidget {
   final Ayah ayah;
   final bool active;
@@ -306,7 +301,7 @@ class _BreathingCircle extends StatelessWidget {
       builder: (context, _) {
         final t = animation.value;
         final inhale = t < 0.5;
-        // Smooth in/out: 0 → 1 → 0 across the cycle.
+        // انتقال ناعم: من ٠ إلى ١ ثم إلى ٠ عبر الدورة.
         final phase = Curves.easeInOut.transform(inhale ? t * 2 : (1 - t) * 2);
         final size = 140 + 120 * phase;
         return Column(
@@ -338,11 +333,11 @@ class _BreathingCircle extends StatelessWidget {
   }
 }
 
-/// سماء ليلية: تدرج كحلي ينجرف ببطء ونجوم تتلألأ.
+/// سماء ليلية: تدرج ينجرف ببطء ونجوم تتلألأ.
 class _NightSkyPainter extends CustomPainter {
   final double t;
 
-  /// Sky colours from the centre of the glow outwards, from the app theme.
+  /// ألوان السماء من مركز الوهج إلى الأطراف، من ثيم التطبيق.
   final List<Color> sky;
 
   _NightSkyPainter({required this.t, required this.sky});

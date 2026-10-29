@@ -13,7 +13,7 @@ import '../../data/storage/user_data_store.dart';
 import '../memorization/memorization_model.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// إحصاءات شهر واحد لتقرير الشهر.
+/// إحصاءات شهر لتقرير الشهر.
 class MonthStats {
   final int pages;
   final int activeDays;
@@ -29,7 +29,7 @@ class MonthStats {
     required this.khatmas,
   });
 
-  /// يحسب إحصاءات الشهر الذي يقع فيه [month].
+  /// إحصاءات الشهر الذي يقع فيه [month].
   factory MonthStats.of(UserDataStore store, DateTime month) {
     final prefix =
         '${month.year.toString().padLeft(4, '0')}-${month.month.toString().padLeft(2, '0')}-';
@@ -64,7 +64,7 @@ class MonthStats {
 class MonthlyReportSheet extends StatefulWidget {
   const MonthlyReportSheet._();
 
-  /// يفتح لوحة تقرير الشهر الحالي.
+  /// يفتح تقرير الشهر الحالي.
   static Future<void> show(BuildContext context) => showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -140,16 +140,15 @@ class _MonthlyReportSheetState extends State<MonthlyReportSheet> {
   }
 }
 
-/// بطاقة تقرير الشهر بألوان السمة المختارة وذهبها، كبطاقة مشاركة الآية.
+/// بطاقة تقرير الشهر بألوان الثيم المختار وذهبه، كبطاقة مشاركة الآية.
 class MonthlyReportCard extends StatelessWidget {
   final MonthStats stats;
   final String monthTitle;
   final double width;
 
-  /// السمة التي تأخذ البطاقة ألوانها منها؛ السمة المختارة إن لم تُحدَّد.
+  /// الثيم الذي تأخذ البطاقة ألوانه؛ المختار إن لم يُحدَّد.
   final AppColorTheme? colorTheme;
 
-  /// ينشئ بطاقة تقرير الشهر.
   const MonthlyReportCard({
     super.key,
     required this.stats,
@@ -191,7 +190,7 @@ class MonthlyReportCard extends StatelessWidget {
         height: width * 1.25,
         padding: const EdgeInsets.all(26),
         decoration: BoxDecoration(
-          // The theme's hero colour glowing out of its night background.
+          // لون الثيم يتوهج من خلفيته الليلية.
           gradient: RadialGradient(
             center: const Alignment(0, -0.4),
             radius: 1.2,

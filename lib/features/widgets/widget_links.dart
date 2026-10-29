@@ -1,9 +1,5 @@
-/// فتح ما يطلبه المستخدم من ودجت الشاشة الرئيسية.
-///
-/// The widget's buttons open the app with a `tadbeer://` link:
-/// `ayah?s=&a=` shows the ayah in the Mushaf, `reflect?s=&a=` opens its
-/// reflection, `khatma` opens the Mushaf at the khatma page and `home` the
-/// home screen.
+/// يفتح ما يطلبه القارئ من أزرار الودجت.
+/// كل زر يفتح التطبيق برابط `tadbeer://`: `ayah?s=&a=` يعرض الآية في المصحف، و`reflect?s=&a=` يفتح التدبر عليها، و`khatma` يفتح المصحف على صفحة الختمة، و`home` الشاشة الرئيسية.
 library;
 
 import 'package:flutter/material.dart';
@@ -20,8 +16,7 @@ class WidgetLinks {
   static Uri? _lastUri;
   static DateTime? _lastAt;
 
-  /// Handles the link the app was launched with and any tapped later. Call
-  /// after the first frame, once the navigator exists.
+  /// يعالج الرابط الذي فُتح به التطبيق وأي رابط لاحق؛ يُستدعى بعد أول إطار حين يوجد الـ navigator.
   static void attach() {
     HomeWidget.initiallyLaunchedFromHomeWidget().then(open).catchError((_) {});
     HomeWidget.widgetClicked.listen(open, onError: (_) {});
@@ -29,7 +24,7 @@ class WidgetLinks {
 
   static void open(Uri? uri) {
     if (uri == null || uri.scheme != 'tadbeer') return;
-    // A cold start can report the same tap twice.
+    // الإقلاع البارد قد يبلّغ عن النقرة مرتين.
     final now = DateTime.now();
     if (uri == _lastUri &&
         _lastAt != null &&
@@ -49,7 +44,7 @@ class WidgetLinks {
       case 'khatma':
         MainShell.showFromOutside(ShellTab.quran);
       case 'ayah' when ayah != null:
-        // Shown on its own so viewing it leaves the reading position as is.
+        // تُعرض وحدها، فلا يتغيّر موضع القراءة بمجرد رؤيتها.
         MainShell.showFromOutside(ShellTab.home)?.push(
           MaterialPageRoute(
             builder: (_) => QuranScreen(

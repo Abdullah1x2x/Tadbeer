@@ -9,33 +9,24 @@ import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// شاشة عرض الآيات المميزة بالألوان مع دعم البحث الفوري.
-///
-/// Screen displaying all user-highlighted ayahs.
-///
-/// Supports instant local search filtering by Surah name, Ayah number, or verse text.
+/// الآيات المظلّلة، مع بحث فوري باسم السورة أو رقم الآية أو نصها.
 class HighlightsScreen extends StatefulWidget {
-  /// ينشئ شاشة الآيات المميزة.
   const HighlightsScreen({super.key});
 
-  /// ينشئ حالة شاشة التظليلات.
   @override
   State<HighlightsScreen> createState() => _HighlightsScreenState();
 }
 
-/// الحالة الداخلية لشاشة الآيات المميزة وإدارة تصفية البحث.
 class _HighlightsScreenState extends State<HighlightsScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يبني واجهة شاشة الآيات المميزة وقائمة النتائج القابلة للنقر.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -99,7 +90,6 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
 
             return Column(
               children: [
-                // Search Input Field
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -144,7 +134,6 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                   ),
                 ),
 
-                // Highlights List / Empty Search State
                 Expanded(
                   child: highlights.isEmpty
                       ? Center(

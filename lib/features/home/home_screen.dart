@@ -26,18 +26,11 @@ import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// الشاشة الرئيسية لتطبيق تدبير وتضم لوحة الوصول السريع للمصحف وأدوات التدبر.
-///
-/// Serene, elegant Islamic dashboard for Tadbeer (تَدْبِير).
-///
-/// From the top: the ayah of the day, what the reader committed to, the
-/// Mushaf with the reading journey, where they left off, their reflections
-/// and notes, and the books. Everything else is in the bar or «المزيد».
+/// الشاشة الرئيسية.
+/// من الأعلى: آية اليوم، وما التزم به القارئ، والمصحف مع رحلة القراءة، وآخر ما توقف عنده، ووقفاته وملاحظاته والكتب. وما سوى ذلك في الشريط أو «المزيد».
 class HomeScreen extends StatelessWidget {
-  /// ينشئ الشاشة الرئيسية للتطبيق.
   const HomeScreen({super.key});
 
-  /// يبني واجهة الشاشة الرئيسية المتجاوبة مع مختلف أحجام الشاشات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -60,11 +53,7 @@ class HomeScreen extends StatelessWidget {
                 final paddingV = isVeryCompact ? 6.0 : 10.0;
                 final gap = isVeryCompact ? 8.0 : (isCompact ? 10.0 : 12.0);
 
-                // The page fits the screen and does not scroll: the ayah
-                // card takes whatever height the other cards leave. Only
-                // when that is too little for the day's longest ayah (a
-                // short screen with every card showing, or very large
-                // text) does the page grow past the screen and scroll.
+                // الصفحة بقدر الشاشة ولا تُمرّر: بطاقة الآية تأخذ ما تتركه البطاقات الأخرى. ولا تتجاوز الشاشة وتُمرّر إلا إن قلّ ذلك عن أطول آية اليوم (شاشة قصيرة بكل البطاقات، أو نص كبير جداً).
                 return ScrollConfiguration(
                   behavior: ScrollConfiguration.of(context)
                       .copyWith(overscroll: false),
@@ -101,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: gap),
 
-                              // آية اليوم مع سؤال تدبر، بما بقي من الارتفاع
+                              // آية اليوم مع سؤال تدبر، بما بقي من الارتفاع.
                               Expanded(
                                 child: _HeightFloor(
                                   heightFor: (width) =>
@@ -114,10 +103,10 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: gap),
 
-                              // سؤال عمّا التزم به القارئ في وقفة سابقة
+                              // سؤال عمّا التزم به القارئ في وقفة سابقة.
                               CommitmentCard(gap: gap),
 
-                              // المصحف ورحلة القراءة
+                              // المصحف ورحلة القراءة.
                               _QuranHeroCard(
                                 onTap: () {
                                   if (MainShell.selectTab(
@@ -141,10 +130,10 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: gap),
 
-                              // آخر ما توقف عنده القارئ (يختفي إن لم يوجد)
+                              // آخر ما توقف عنده القارئ، ويختفي إن لم يوجد.
                               ContinueCard(limit: 1, gap: gap),
 
-                              // وقفاتي والملاحظات والكتب
+                              // وقفاتي والملاحظات والكتب.
                               _buildShortcuts(
                                 context,
                                 l10n,
@@ -167,7 +156,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني الشريط العلوي: اسم التطبيق وزر الإعدادات.
+  /// الشريط العلوي: اسم التطبيق وزر الإعدادات.
   Widget _buildTopBar(
     BuildContext context,
     AppStrings l10n,
@@ -208,7 +197,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني شريط الانتقال السريع إلى شاشة البحث الشامل مع زر تصفية تفاعلي وتصميم مستقبلي.
+  /// شريط يفتح البحث الشامل، مع زر لاختيار نوع البحث.
   Widget _buildGlobalSearchBar(
     BuildContext context,
     AppStrings l10n,
@@ -275,7 +264,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يعرض نافذة سفلية منبثقة لاختيار تصنيف البحث المطلوب مباشرة.
+  /// لوحة لاختيار نوع البحث مباشرة.
   void _showSearchFilterSheet(BuildContext context) {
     HapticFeedback.lightImpact();
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -387,7 +376,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// يبني الاختصارات صفّين: وقفاتي والملاحظات، ثم روابط الآيات وكتب وملازم.
+  /// الاختصارات في صفّين: وقفاتي والملاحظات، ثم روابط الآيات والكتب.
   Widget _buildShortcuts(
     BuildContext context,
     AppStrings l10n,
@@ -409,7 +398,7 @@ class HomeScreen extends StatelessWidget {
     return Column(
       children: [
         pair(
-          // Counts the reader's reflections as they write them.
+          // يعدّ وقفات القارئ أولاً بأول.
           ListenableBuilder(
             listenable: UserDataStore.instance,
             builder: (context, _) {
@@ -458,23 +447,21 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// البطاقة البارزة للمصحف الشريف بتصميم رقمي مستقبلي مع حالة استئناف القراءة.
+/// بطاقة المصحف: السورة والصفحة الحالية ورحلة القراءة.
 class _QuranHeroCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isCompact;
   final bool isVeryCompact;
 
-  /// ينشئ بطاقة المصحف البارزة في الشاشة الرئيسية.
   const _QuranHeroCard({
     required this.onTap,
     this.isCompact = false,
     this.isVeryCompact = false,
   });
 
-  /// يبني واجهة بطاقة المصحف ومعلومات السورة والصفحة الحالية.
   @override
   Widget build(BuildContext context) {
-    // Follows the reading position as it moves while reading.
+    // تتبع موضع القراءة وهو يتغير.
     return ListenableBuilder(
       listenable: UserDataStore.instance,
       builder: (context, _) => _build(context),
@@ -511,7 +498,6 @@ class _QuranHeroCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              // Noble Quran Icon Badge with geometric futuristic styling
               Container(
                 width: badgeDim,
                 height: badgeDim,
@@ -541,7 +527,6 @@ class _QuranHeroCard extends StatelessWidget {
               ),
               SizedBox(width: isVeryCompact ? 10 : 14),
 
-              // Title & Reading Position
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -592,7 +577,6 @@ class _QuranHeroCard extends StatelessWidget {
                 ),
               ),
 
-              // Navigation Chevron
               Icon(
                 AppIcons.caretLeft,
                 size: isVeryCompact ? 12 : 14,
@@ -611,8 +595,7 @@ class _QuranHeroCard extends StatelessWidget {
   }
 }
 
-/// سطر رحلة القراءة في بطاقة المصحف: الأيام المتتالية وورد اليوم وتقدم
-/// الختمة، ويفتح «رحلتي».
+/// سطر رحلة القراءة في بطاقة المصحف: السلسلة وورد اليوم وتقدّم الختمة، ويفتح «رحلتي».
 class _ReadingJourneyRow extends StatelessWidget {
   final bool isVeryCompact;
 
@@ -694,20 +677,20 @@ class _ReadingJourneyRow extends StatelessWidget {
   }
 }
 
-/// اختصار صغير في أسفل الرئيسية: أيقونة واسم، وعدد إن وُجد.
+/// اختصار صغير: أيقونة واسم، وعدد إن وُجد.
 class _ShortcutTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final Color accent;
   final VoidCallback onTap;
 
-  /// A small count beside the icon, such as the reflections written.
+  /// عدد صغير بجانب الأيقونة، كعدد الوقفات.
   final String? count;
 
-  /// What a screen reader says, when it differs from [title].
+  /// ما يقوله قارئ الشاشة حين يختلف عن [title].
   final String? semanticsLabel;
 
-  /// A bare icon and less padding, for a short screen.
+  /// أيقونة بلا خلفية وحشوة أقل، للشاشات القصيرة.
   final bool slim;
 
   const _ShortcutTile({
@@ -732,13 +715,13 @@ class _ShortcutTile extends StatelessWidget {
         accentColor: accent,
         borderRadius: AppTokens.radiusLg,
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: slim ? 5 : 6),
-        // The icon beside the name, so two tiles share a row.
+        // الأيقونة بجانب الاسم، ليتسع الصف لاختصارين.
         child: Row(
           children: [
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // On a short screen a bare icon leaves the name room.
+                // في الشاشة القصيرة تترك الأيقونة المجردة مكاناً للاسم.
                 if (slim)
                   Icon(icon, color: accent, size: 18)
                 else
@@ -786,9 +769,7 @@ class _ShortcutTile extends StatelessWidget {
   }
 }
 
-/// Reports [heightFor] at the given width as its child's intrinsic
-/// height, so an [IntrinsicHeight] page counts the ayah card at the least
-/// height it needs; the card itself fills whatever height it is given.
+/// يُعلن [heightFor] ارتفاعاً ذاتياً لابنه، فيحسب [IntrinsicHeight] بطاقة الآية بأقل ارتفاع تحتاجه، بينما تملأ البطاقة ما يُعطى لها.
 class _HeightFloor extends SingleChildRenderObjectWidget {
   final double Function(double width) heightFor;
 

@@ -11,25 +11,23 @@ import '../quran/screens/quran_screen.dart';
 import '../../data/models/reading_journey.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// مستوى نشاط الصفحة في خريطة المصحف.
+/// نشاط الصفحة في خريطة المصحف.
 enum PageActivity {
-  /// لم تُقرأ.
   none,
 
-  /// قُرئت.
   read,
 
-  /// فيها آية محفوظة أو مميزة.
+  /// فيها آية في الفواصل أو مظلّلة.
   marked,
 
-  /// فيها آية في الحفظ.
+  /// فيها آية قيد الحفظ.
   memorizing,
 
-  /// فيها وقفة تدبر أو ملاحظة.
+  /// فيها وقفة تدبر أو خاطرة.
   reflected,
 }
 
-/// يحسب نشاط كل صفحة من بيانات المستخدم (الفهرس ٠ = الصفحة ١).
+/// نشاط كل صفحة من بيانات القارئ (الفهرس ٠ = الصفحة ١).
 List<PageActivity> computePageActivity(UserDataStore store) {
   final repo = QuranRepository.instance;
   final levels = List.filled(mushafPageCount, PageActivity.none);
@@ -75,9 +73,8 @@ List<PageActivity> computePageActivity(UserDataStore store) {
   return levels;
 }
 
-/// شاشة خريطة المصحف وسجل التدبر.
+/// خريطة المصحف وسجل التدبر.
 class MushafMapScreen extends StatelessWidget {
-  /// ينشئ شاشة خريطة المصحف.
   const MushafMapScreen({super.key});
 
   @override
@@ -135,7 +132,7 @@ class _MapTab extends StatelessWidget {
     final repo = QuranRepository.instance;
     final touched = levels.where((l) => l != PageActivity.none).length;
 
-    // Group the pages by juz so each row reads as one juz.
+    // تُجمع الصفحات بالجزء، فيكون كل صف جزءاً.
     final byJuz = <int, List<int>>{};
     for (var p = 1; p <= mushafPageCount; p++) {
       byJuz.putIfAbsent(repo.getPage(p).juzNumber, () => []).add(p);
@@ -233,7 +230,7 @@ class _MapTab extends StatelessWidget {
   }
 }
 
-/// سجل زمني لوقفات التدبر والملاحظات المرتبطة بالآيات.
+/// سجل زمني لوقفات التدبر والخواطر على الآيات.
 class _ReflectionLogTab extends StatelessWidget {
   const _ReflectionLogTab();
 
@@ -284,7 +281,7 @@ class _ReflectionLogTab extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Timeline rail with a dot per entry.
+              // خط زمني بنقطة لكل عنصر.
               SizedBox(
                 width: 24,
                 child: Column(

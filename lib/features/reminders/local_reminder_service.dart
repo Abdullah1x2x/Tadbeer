@@ -13,13 +13,8 @@ import '../journey/streak_reminder.dart';
 import '../../data/models/reminder_model.dart';
 import '../../data/storage/user_data_store.dart';
 
-/// Local offline reminder service for Quran recitation and tadbeer alarms.
-///
-/// Supports two user-selectable alert modes:
-/// 1. [ReminderAlertType.notification] — Standard notification in the notification bar.
-/// 2. [ReminderAlertType.alarm] — Full alarm-style alert using the device alarm
-///    audio stream, default alarm ringtone, insistent continuous ringing flag,
-///    repeating vibration pattern, and full-screen lockscreen wake intent.
+/// تذكيرات القراءة على الجهاز دون إنترنت.
+/// نوعان يختار القارئ بينهما: [ReminderAlertType.notification] إشعار عادي، و[ReminderAlertType.alarm] منبه كامل: صوت المنبه بنغمته الافتراضية، ورنين مستمر، واهتزاز متكرر، وظهور على شاشة القفل.
 class LocalReminderService implements ReminderScheduler {
   static final LocalReminderService instance = LocalReminderService._internal();
   LocalReminderService._internal();
@@ -37,10 +32,10 @@ class LocalReminderService implements ReminderScheduler {
   static const int testNotificationId = 999998;
   static const int testAlarmId = 999999;
 
-  /// Android `Notification.FLAG_INSISTENT` = 4: repeats audio until dismissed or tapped.
+  /// `Notification.FLAG_INSISTENT` في أندرويد (4): يعيد الصوت حتى يُغلق الإشعار أو يُنقر.
   static final Int32List _insistentAlarmFlags = Int32List.fromList(const [4]);
 
-  /// Repeating vibration pattern for alarm mode (ms).
+  /// نمط اهتزاز المنبه المتكرر، بالمللي ثانية.
   static final Int64List _alarmVibrationPattern = Int64List.fromList(const [
     0,
     1000,
@@ -55,7 +50,6 @@ class LocalReminderService implements ReminderScheduler {
 
   bool _isInitialized = false;
 
-  /// ما إذا كانت خدمة التنبيهات والمنبهات قد تمت تهيئتها.
   bool get isInitialized => _isInitialized;
 
   Timer? _fallbackTimer;
@@ -63,7 +57,7 @@ class LocalReminderService implements ReminderScheduler {
 
   void Function(String? payload)? onNotificationTapped;
 
-  /// التحقق مما إذا كان التطبيق يعمل حالياً داخل بيئة اختبارات Flutter.
+  /// هل يعمل التطبيق داخل اختبارات Flutter؛ عندها لا تُستدعى الإضافة.
   bool get _isRunningInFlutterTest {
     try {
       final bindingType = WidgetsBinding.instance.runtimeType.toString();
@@ -74,8 +68,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// Initializes timezone data, native platform notification & alarm channels,
-  /// cold-start launch payloads, and fallback timers for desktop/Linux.
+  /// يهيّئ المناطق الزمنية وقنوات الإشعارات، ويقرأ إشعار الإقلاع، ويشغّل المؤقت البديل على سطح المكتب.
   Future<void> init({void Function(String? payload)? onTapped}) async {
     if (onTapped != null) {
       onNotificationTapped = onTapped;
@@ -135,7 +128,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// تهيئة قاعدة بيانات المناطق الزمنية وضبط المنطقة الزمنية المحلية للجهاز.
+  /// يحمّل قاعدة المناطق الزمنية ويضبط منطقة الجهاز.
   Future<void> _initializeTimeZone() async {
     try {
       tz.initializeTimeZones();
@@ -164,7 +157,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// إنشاء قناتي الإشعارات والمنبه الصوتي على نظام أندرويد.
+  /// ينشئ قناتي الإشعار العادي والمنبه في أندرويد.
   Future<void> _createAndroidNotificationChannels() async {
     try {
       final androidImplementation = _notificationsPlugin
@@ -172,7 +165,7 @@ class LocalReminderService implements ReminderScheduler {
             AndroidFlutterLocalNotificationsPlugin
           >();
       if (androidImplementation != null) {
-        // 1. Standard Notification Channel
+        // ١. قناة الإشعار العادي.
         const notificationChannel = AndroidNotificationChannel(
           notificationChannelId,
           notificationChannelName,
@@ -187,7 +180,7 @@ class LocalReminderService implements ReminderScheduler {
           notificationChannel,
         );
 
-        // 2. Alarm Channel (uses device Alarm volume stream & default alarm sound)
+        // ٢. قناة المنبه: بمستوى صوت المنبه ونغمته الافتراضية.
         final alarmChannel = AndroidNotificationChannel(
           alarmChannelId,
           alarmChannelName,
@@ -209,7 +202,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// التحقق مما إذا كان فتح التطبيق قد تم عبر النقر على إشعار أو منبه لتوجيه المستخدم.
+  /// إن فُتح التطبيق بنقر إشعار، يوجّه القارئ إلى وجهته.
   Future<void> _checkAppLaunchNotification() async {
     if (_isRunningInFlutterTest) return;
     try {
@@ -231,9 +224,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// Linux and Web do not support background OS `zonedSchedule`.
-  /// When running on those platforms, a lightweight timer checks once every
-  /// 20 seconds so active reminders still trigger while the app is open.
+  /// لينكس والويب لا يدعمان الجدولة في الخلفية، فيفحص مؤقت خفيف كل 20 ثانية لتعمل التذكيرات ما دام التطبيق مفتوحاً.
   void _startFallbackTimerIfNeeded() {
     if (_isRunningInFlutterTest) return;
     if (!kIsWeb && defaultTargetPlatform != TargetPlatform.linux) return;
@@ -245,7 +236,7 @@ class LocalReminderService implements ReminderScheduler {
     );
   }
 
-  /// فحص التنبيهات المجدولة دورياً داخل التطبيق للمنصات التي لا تدعم الجدولة الخلفية.
+  /// يفحص التذكيرات المستحقة داخل التطبيق، للمنصات التي لا تدعم الجدولة في الخلفية.
   Future<void> _checkInAppFallbackReminders() async {
     final now = DateTime.now();
     final minuteKey =
@@ -273,7 +264,7 @@ class LocalReminderService implements ReminderScheduler {
           : 'ورد القرآن الكريم';
       var body = _strings.toReader(_readerName, _strings.reminderQuranBody);
       if (reminder.id == portionReminderId) {
-        // Pages left today, or nothing once today's portion is read.
+        // الصفحات المتبقية اليوم، أو لا شيء بعد قراءة الورد.
         final store = UserDataStore.instance;
         final journey = store.journey;
         final plan = journey.plan;
@@ -284,7 +275,7 @@ class LocalReminderService implements ReminderScheduler {
         title = _strings.toReader(_readerName, _strings.portionLeftTitle(left));
         body = _strings.portionLeftBody;
       } else if (reminder.id == streakReminderId) {
-        // Only while today has no activity and there is a streak to keep.
+        // فقط ما دام اليوم بلا نشاط وهناك سلسلة تُحفظ.
         final journey = UserDataStore.instance.journey;
         shouldFire = shouldFire && journey.streakAtRisk(now);
         title = _strings.toReader(
@@ -311,8 +302,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// Explicitly requests notification and exact alarm permissions across
-  /// Android 13+/14+, iOS, macOS, and Web.
+  /// يطلب إذن الإشعارات والمنبهات الدقيقة (أندرويد 13 و14، وiOS وmacOS والويب).
   Future<bool> requestPermissions() async {
     if (_isRunningInFlutterTest) return true;
     try {
@@ -381,7 +371,7 @@ class LocalReminderService implements ReminderScheduler {
     return true;
   }
 
-  /// بناء إعدادات الإشعار أو المنبه الصوتي حسب نوع التنبيه المختار لكل منصة.
+  /// إعدادات الإشعار أو المنبه لكل منصة بحسب نوع التنبيه.
   NotificationDetails _buildNotificationDetails(ReminderAlertType alertType) {
     if (alertType == ReminderAlertType.alarm) {
       final androidAlarmDetails = AndroidNotificationDetails(
@@ -442,7 +432,7 @@ class LocalReminderService implements ReminderScheduler {
       );
     }
 
-    // Standard Notification Mode
+    // الإشعار العادي.
     const androidNotificationDetails = AndroidNotificationDetails(
       notificationChannelId,
       notificationChannelName,
@@ -481,7 +471,7 @@ class LocalReminderService implements ReminderScheduler {
     );
   }
 
-  /// Displays an immediate notification or alarm.
+  /// يعرض إشعاراً أو منبهاً فوراً.
   Future<bool> showImmediateNotification({
     int id = testNotificationId,
     required String title,
@@ -508,7 +498,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// Sends a test notification or alarm immediately after verifying permissions.
+  /// يرسل إشعاراً أو منبهاً تجريبياً فوراً، بعد التحقق من الإذن.
   Future<bool> showTestNotification({
     ReminderAlertType alertType = ReminderAlertType.notification,
     String? title,
@@ -534,12 +524,12 @@ class LocalReminderService implements ReminderScheduler {
     );
   }
 
-  /// توليد معرف رقمي أساسي للإشعارات الفرعية المرتبطة بمعرف التنبيه.
+  /// المعرّف الرقمي الأساسي لإشعارات التذكير الفرعية.
   int _baseNotificationId(String reminderId) {
     return (reminderId.hashCode.abs() % 10000000) * 10;
   }
 
-  /// Cancels all scheduled OS notification slots for a given reminder.
+  /// يلغي كل إشعارات التذكير المجدولة في النظام.
   Future<void> cancelReminder(ReminderItem reminder) async {
     if (_isRunningInFlutterTest) return;
     final baseId = _baseNotificationId(reminder.id);
@@ -564,21 +554,21 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// Notification texts in the app's language.
+  /// نصوص الإشعارات بلغة التطبيق.
   AppStrings get _strings => AppStrings(
     AppLanguage.fromCode(UserDataStore.instance.settings.languageCode),
   );
 
-  /// The name the reader gave, used to address reminders to them.
+  /// اسم القارئ، لتناديه به التذكيرات.
   String get _readerName => UserDataStore.instance.settings.userName;
 
-  /// Ids of the khatma portion notices, above every hashed reminder id.
+  /// معرّفات إشعارات ورد الختمة، فوق كل معرّفات التذكيرات المحسوبة.
   static const int _portionBaseId = 100000000;
 
-  /// Ids of the streak notices, above the portion notices.
+  /// معرّفات إشعارات السلسلة، فوق إشعارات الورد.
   static const int _streakBaseId = 100000100;
 
-  /// Cancels all scheduled notifications across the app.
+  /// يلغي كل إشعارات التطبيق المجدولة.
   @override
   Future<void> cancelAll() async {
     if (_isRunningInFlutterTest) return;
@@ -589,7 +579,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// Synchronizes all saved reminders with the host OS scheduler.
+  /// يطابق جدولة النظام مع التذكيرات المحفوظة.
   @override
   Future<void> syncAllReminders(List<ReminderItem> reminders) async {
     if (_isRunningInFlutterTest) return;
@@ -602,7 +592,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// تحديد نمط الجدولة المناسب على أندرويد (منبه دقيق أو إشعار احتياطي) حسب الصلاحيات الممنوحة.
+  /// نمط الجدولة في أندرويد: منبه دقيق إن أُذن به، وإلا غير دقيق.
   Future<AndroidScheduleMode> _resolveAndroidScheduleMode(
     ReminderAlertType alertType,
   ) async {
@@ -624,7 +614,7 @@ class LocalReminderService implements ReminderScheduler {
         : AndroidScheduleMode.exactAllowWhileIdle;
   }
 
-  /// جدولة إشعار أو منبه مرتبط بالمنطقة الزمنية مع التراجع الآمن عند غياب صلاحية الجدولة الدقيقة.
+  /// يجدول إشعاراً أو منبهاً بالمنطقة الزمنية، ويتراجع إلى الجدولة غير الدقيقة عند غياب الإذن.
   Future<void> _zonedScheduleSafe({
     required int id,
     required String title,
@@ -675,8 +665,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// Schedules a reminder based on its repeat mode (once, daily, or specific weekdays)
-  /// and its alert type (standard notification vs alarm).
+  /// يجدول تذكيراً بحسب تكراره (مرة، يومياً، أيام محددة) ونوع تنبيهه.
   Future<void> scheduleReminder(
     ReminderItem reminder, {
     bool requestPermissionIfNeeded = true,
@@ -712,7 +701,7 @@ class LocalReminderService implements ReminderScheduler {
     final title = reminder.title.trim().isNotEmpty
         ? reminder.title.trim()
         : 'ورد القرآن الكريم';
-    // Adhkar reminders open the adhkar instead of the Mushaf.
+    // تذكيرات الأذكار تفتح الأذكار بدل المصحف.
     final isAdhkar = reminder.id.startsWith('adhkar_');
     final strings = _strings;
     final body = strings.toReader(
@@ -727,8 +716,7 @@ class LocalReminderService implements ReminderScheduler {
       final now = tz.TZDateTime.now(tz.local);
 
       if (reminder.repeatMode == ReminderRepeatMode.once) {
-        // A one-time reminder whose scheduled moment already passed has
-        // fired: disable it instead of rescheduling it for tomorrow.
+        // تذكير "مرة واحدة" فات موعده قد رنّ: يُعطّل بدل جدولته للغد.
         if (reminder.hasOnceReminderFired()) {
           await _markOnceReminderFired(reminder);
           return;
@@ -737,7 +725,7 @@ class LocalReminderService implements ReminderScheduler {
         tz.TZDateTime scheduledDate;
         final existingTarget = reminder.scheduledFor;
         if (existingTarget != null) {
-          // Keep the originally scheduled moment (e.g. on app restart sync).
+          // يحتفظ بالموعد الأصلي (عند المزامنة بعد إعادة التشغيل مثلاً).
           scheduledDate = tz.TZDateTime.from(existingTarget, tz.local);
         } else {
           scheduledDate = tz.TZDateTime(
@@ -751,7 +739,7 @@ class LocalReminderService implements ReminderScheduler {
           if (!scheduledDate.isAfter(now)) {
             scheduledDate = scheduledDate.add(const Duration(days: 1));
           }
-          // Persist the exact target so later syncs can tell it has fired.
+          // يحفظ الموعد بدقة، لتعرف المزامنات اللاحقة أنه رنّ.
           await UserDataStore.instance.putReminder(
             reminder.copyWith(scheduledFor: scheduledDate.toLocal()),
           );
@@ -817,7 +805,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// ورد الختمة: إشعار لكل يوم يذكر الصفحات المتبقية من ورده.
+  /// ورد الختمة: إشعار لكل يوم بصفحاته المتبقية.
   Future<void> _schedulePortion(
     ReminderItem reminder,
     NotificationDetails details,
@@ -847,7 +835,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// السلسلة: إشعار الليلة إن لم يكن اليوم نشاط بعد، أو إشعار الغد.
+  /// السلسلة: إشعار الليلة إن لم يكن في اليوم نشاط بعد، أو إشعار الغد.
   Future<void> _scheduleStreak(
     ReminderItem reminder,
     NotificationDetails details,
@@ -876,14 +864,13 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// تعطيل تنبيه "مرة واحدة" بعد أن رنّ، وإلغاء أي إشعار متبقٍّ له.
+  /// يعطّل تذكير "مرة واحدة" بعد أن رنّ، ويلغي ما بقي من إشعاراته.
   Future<void> _markOnceReminderFired(ReminderItem reminder) async {
     await cancelReminder(reminder);
     final latest = UserDataStore.instance.reminders
         .where((r) => r.id == reminder.id)
         .firstOrNull;
-    // Only disable if the stored reminder still targets the same moment
-    // (the user may have edited it in the meantime).
+    // يُعطّل فقط إن كان التذكير المحفوظ ما زال على نفس الموعد، فقد يكون القارئ عدّله.
     if (latest != null &&
         latest.isEnabled &&
         latest.scheduledFor == reminder.scheduledFor) {
@@ -893,7 +880,7 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// حساب الموعد القادم ليوم محدد من أيام الأسبوع بالساعة والدقيقة المحددة.
+  /// الموعد القادم لـ[dayOfWeek] في [hour]:[minute].
   tz.TZDateTime _nextInstanceOfDayAndTime(int dayOfWeek, int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate = tz.TZDateTime(

@@ -14,13 +14,13 @@ import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// تقدم المسارات الموجّهة: الأيام المكتملة لكل مسار.
+/// تقدّم المسارات الموجّهة: الأيام المكتملة في كل مسار.
 class GuidedPathwayProgress {
   GuidedPathwayProgress._();
 
   static const _key = 'guided_pathways';
 
-  /// الأيام المكتملة (فهارس الآيات) في المسار.
+  /// الأيام المكتملة في المسار (أرقام آياتها).
   static Set<int> completedDays(String pathwayId) {
     final state = UserDataStore.instance.featureState(_key);
     return {
@@ -38,9 +38,8 @@ class GuidedPathwayProgress {
   }
 }
 
-/// قائمة المسارات التدبرية الموجّهة مع تقدم كل مسار.
+/// المسارات التدبرية الموجّهة وتقدّم كل منها.
 class GuidedPathwaysScreen extends StatelessWidget {
-  /// ينشئ شاشة المسارات الموجّهة.
   const GuidedPathwaysScreen({super.key});
 
   @override
@@ -151,12 +150,10 @@ class GuidedPathwaysScreen extends StatelessWidget {
   }
 }
 
-/// رحلة مسار واحد: يوم لكل آية، يُفتح كل يوم بعد إتمام الذي قبله.
+/// رحلة مسار: يوم لكل آية، يُفتح كل يوم بعد إتمام ما قبله.
 class PathwayJourneyScreen extends StatelessWidget {
-  /// المسار المعروض.
   final CuratedPathway pathway;
 
-  /// ينشئ شاشة رحلة المسار.
   const PathwayJourneyScreen({super.key, required this.pathway});
 
   @override
@@ -171,7 +168,7 @@ class PathwayJourneyScreen extends StatelessWidget {
           builder: (context, _) {
             final done = GuidedPathwayProgress.completedDays(pathway.id);
             final complete = done.length >= pathway.verses.length;
-            // The first unfinished day is today's; later days stay locked.
+            // أول يوم غير مكتمل هو يوم اليوم، وما بعده مقفل.
             final today = List.generate(
               pathway.verses.length,
               (i) => i,
@@ -286,7 +283,7 @@ class _DayCard extends StatelessWidget {
       );
     }
 
-    // Today's card: verse, insight, question and actions.
+    // بطاقة اليوم: الآية والفائدة والسؤال والإجراءات.
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.cardRadius),
@@ -353,8 +350,7 @@ class _DayCard extends StatelessWidget {
                               initialQuestion:
                                   day % TadbeerItem.questions.length,
                             );
-                            // Saving a reflection on today's verse completes
-                            // the day, so the reader doesn't tap twice.
+                            // حفظ تدبر على آية اليوم يُتم اليوم، فلا يحتاج القارئ نقرة ثانية.
                             final saved = UserDataStore.instance.getTadbeer(
                               ayah.surahNumber,
                               ayah.ayahNumber,
@@ -390,7 +386,7 @@ class _DayCard extends StatelessWidget {
   }
 }
 
-/// شارة إتمام المسار بظهور نابض.
+/// شارة إتمام المسار.
 class _CompletionBadge extends StatelessWidget {
   const _CompletionBadge();
 

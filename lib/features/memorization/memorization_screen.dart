@@ -11,9 +11,8 @@ import 'memorization_model.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// شاشة الحفظ: الإحصاءات، ومراجعة اليوم، واختيار سورة للحفظ.
+/// شاشة الحفظ: الإحصاءات، ومراجعة اليوم، واختيار سورة.
 class MemorizationScreen extends StatelessWidget {
-  /// ينشئ شاشة الحفظ.
   const MemorizationScreen({super.key});
 
   void _startSession(BuildContext context, List<(int, int)> verses) {
@@ -162,12 +161,11 @@ class MemorizationScreen extends StatelessWidget {
   }
 }
 
-/// جلسة حفظ أو مراجعة: آية مخفية تُكشف ثم يقيّم المستخدم تذكّره.
+/// جلسة حفظ أو مراجعة: آية مخفية تُكشف، ثم يقيّم القارئ تذكّره.
 class HifzSessionScreen extends StatefulWidget {
   /// الآيات بالترتيب (سورة، آية).
   final List<(int, int)> verses;
 
-  /// ينشئ جلسة حفظ.
   const HifzSessionScreen({super.key, required this.verses});
 
   @override
@@ -271,7 +269,7 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
                             : Column(
                                 key: const ValueKey('hidden'),
                                 children: [
-                                  // Only the first word is shown as a cue.
+                                  // تُعرض الكلمة الأولى فقط تلميحاً.
                                   Text(
                                     '${words.first} …',
                                     textAlign: TextAlign.center,

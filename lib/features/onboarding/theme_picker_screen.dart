@@ -7,13 +7,10 @@ import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
 import '../../data/storage/user_data_store.dart';
 
-/// اختيار مظهر التطبيق عند فتحه أول مرة.
-///
-/// Light, dark or automatic, and one of the five colour themes. Every
-/// choice applies to the whole app at once, this screen included, so the
-/// reader sees the real thing before starting.
+/// اختيار مظهر التطبيق عند أول فتح: فاتح أو داكن أو تلقائي، وأحد الثيمات الخمسة.
+/// كل اختيار يُطبّق فوراً على التطبيق كله وهذه الشاشة معه، فيرى القارئ النتيجة الحقيقية قبل أن يبدأ.
 class ThemePickerScreen extends StatelessWidget {
-  /// Where to go once the reader starts.
+  /// الشاشة التي تُفتح عند البدء.
   final WidgetBuilder next;
 
   const ThemePickerScreen({super.key, required this.next});
@@ -116,7 +113,7 @@ class ThemePickerScreen extends StatelessWidget {
                         const SizedBox(height: 12),
                         FilledButton.icon(
                           onPressed: () => _start(context),
-                          // Points forward: left in Arabic, right in English.
+                          // يشير إلى الأمام: لليسار في العربية، ولليمين في الإنجليزية.
                           icon: const Icon(AppIcons.arrowRight),
                           label: Text(l10n.themePickerStart),
                           style: FilledButton.styleFrom(
@@ -136,8 +133,7 @@ class ThemePickerScreen extends StatelessWidget {
   }
 }
 
-/// A theme as a miniature of the app: its page colour, a hero card in its
-/// gradient with gold lines, and a gold button.
+/// الثيم في صورة تطبيق مصغّر: لون صفحته، وبطاقة بتدرجه وخطوط ذهبية، وزر ذهبي.
 class _ThemeCard extends StatelessWidget {
   final AppColorTheme theme;
   final String name;
@@ -183,7 +179,7 @@ class _ThemeCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Miniature hero card.
+              // البطاقة المصغّرة.
               Container(
                 width: 92,
                 height: 58,
@@ -223,7 +219,7 @@ class _ThemeCard extends StatelessWidget {
                   ),
                 ),
               ),
-              // Miniature gold button, checked when chosen.
+              // الزر الذهبي المصغّر، وعليه علامة حين يُختار.
               Container(
                 width: 30,
                 height: 30,

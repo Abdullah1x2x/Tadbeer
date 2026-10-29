@@ -7,7 +7,7 @@ import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// أهداف الأسبوع المرنة: عدد صفحات وعدد وقفات تدبر.
+/// أهداف الأسبوع: عدد صفحات وعدد وقفات تدبر.
 class WeeklyGoals {
   final int pages;
   final int reflections;
@@ -16,7 +16,7 @@ class WeeklyGoals {
 
   static const _key = 'weekly_goals';
 
-  /// الأهداف المحفوظة أو الافتراضية.
+  /// الأهداف المحفوظة، أو الافتراضية.
   static WeeklyGoals load() {
     final s = UserDataStore.instance.featureState(_key);
     return WeeklyGoals(
@@ -30,15 +30,14 @@ class WeeklyGoals {
     'reflections': reflections,
   });
 
-  /// بداية الأسبوع (السبت) للتاريخ [now].
+  /// بداية الأسبوع (السبت) لـ[now].
   static DateTime weekStart(DateTime now) {
     final today = DateTime(now.year, now.month, now.day);
-    // DateTime.weekday: Monday = 1 ... Saturday = 6, Sunday = 7.
+    // DateTime.weekday: الإثنين = 1 … السبت = 6، والأحد = 7.
     final sinceSaturday = (today.weekday - DateTime.saturday + 7) % 7;
     return today.subtract(Duration(days: sinceSaturday));
   }
 
-  /// الصفحات المقروءة هذا الأسبوع.
   static int pagesThisWeek(UserDataStore store, DateTime now) {
     final start = weekStart(now);
     var total = 0;
@@ -50,7 +49,6 @@ class WeeklyGoals {
     return total;
   }
 
-  /// وقفات التدبر المحفوظة هذا الأسبوع.
   static int reflectionsThisWeek(UserDataStore store, DateTime now) {
     final start = weekStart(now);
     return store.tadbeerItems
@@ -63,7 +61,6 @@ class WeeklyGoals {
 class WeeklyGoalsCard extends StatelessWidget {
   final DateTime now;
 
-  /// ينشئ بطاقة أهداف الأسبوع.
   const WeeklyGoalsCard({super.key, required this.now});
 
   Future<void> _edit(BuildContext context, WeeklyGoals goals) async {

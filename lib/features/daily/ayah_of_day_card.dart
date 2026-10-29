@@ -22,26 +22,20 @@ import '../tadbeer/tadbeer_questions.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// آيات للتدبّر: القائمة المشتركة بين بطاقة الرئيسية والودجت.
-///
-/// The ayahs are those that read well on their own: the Quranic duas and
-/// the pathway verses first, then every ayah of a comfortable length that
-/// does not open mid-thought ("فـ", "ثم", "إلا"…), inside a story's
-/// dialogue ("قال"…), or with detailed rulings. Each day has its own set,
-/// the same for every reader.
+/// هي الآيات التي تُقرأ وحدها: أدعية القرآن وآيات المسارات أولاً، ثم كل آية بطول مريح لا تبدأ وسط فكرة ("فـ"، "ثم"، "إلا"…)، ولا داخل حوار قصة ("قال"…)، ولا في أحكام مفصّلة. لكل يوم مجموعته، وهي نفسها لكل القرّاء.
 class AyahOfTheDay {
   AyahOfTheDay._();
 
-  /// Ayahs shown on the Home card each day, one after another.
+  /// عدد آيات بطاقة الرئيسية في اليوم، تتتابع واحدة بعد أخرى.
   static const perDay = 12;
 
   static List<Ayah>? _pool;
   static List<Ayah>? _curated;
 
-  /// Every ayah that may be shown, in Mushaf order.
+  /// كل آية يمكن عرضها، بترتيب المصحف.
   static List<Ayah> get pool => _pool ??= _buildPool();
 
-  /// The hand-picked ayahs (Quranic duas and pathway verses); each day
-  /// opens with one of them.
+  /// الآيات المنتقاة (أدعية القرآن وآيات المسارات)؛ كل يوم يبدأ بإحداها.
   static List<Ayah> get curated => _curated ??= _buildCurated();
 
   static List<Ayah> _buildPool() {
@@ -73,8 +67,7 @@ class AyahOfTheDay {
     return picked.values.toList()..sort((x, y) => x.id.compareTo(y.id));
   }
 
-  /// Words that, opening an ayah, carry on the one before it or a
-  /// story's dialogue.
+  /// كلمات إن بدأت بها الآية فهي تكمل ما قبلها أو حوار قصة.
   static final Set<String> _openers = {
     for (final w in const [
       'ثم',
@@ -108,7 +101,7 @@ class AyahOfTheDay {
     'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
   );
 
-  /// Words of detailed rulings (marriage, divorce, inheritance, purity).
+  /// كلمات الأحكام المفصّلة (النكاح والطلاق والميراث والطهارة).
   static final List<String> _rulings = [
     for (final w in const [
       'تنكحوا',
@@ -128,19 +121,19 @@ class AyahOfTheDay {
       ArabicSearchNormalizer.normalize(w),
   ];
 
-  /// Whether [ayah] can be read and reflected on by itself.
+  /// هل تُقرأ [ayah] ويُتدبّر فيها وحدها.
   static bool readsAlone(Ayah ayah) {
     var text = ArabicSearchNormalizer.normalize(ayah.rawText).trim();
-    // A surah's first ayah carries the basmala in its text.
+    // أول آية في السورة تحمل البسملة في نصها.
     if (text.startsWith(_basmala)) {
       text = text.substring(_basmala.length).trim();
     }
-    // Letters only (no diacritics): from a line to a short paragraph.
+    // الحروف فقط دون تشكيل: من سطر إلى فقرة قصيرة.
     final letters = text.replaceAll(' ', '').length;
     if (letters < 25 || letters > 170) return false;
     final words = text.split(RegExp(r'\s+'));
     final first = words.first;
-    // "فـ" carries on (فقال، فلما…), but "في" is a preposition.
+    // "فـ" تكمل ما قبلها (فقال، فلما…)، أما "في" فحرف جر.
     if (first.startsWith('ف') && first != 'في') return false;
     if (_openers.contains(first)) return false;
     return !_rulings.any(text.contains);
@@ -152,31 +145,30 @@ class AyahOfTheDay {
     day.day,
   ).difference(DateTime.utc(2020)).inDays;
 
-  /// The ayahs of [day], in the order the Home card shows them.
+  /// آيات [day] بالترتيب الذي تعرضه بطاقة الرئيسية.
   static List<Ayah> forDayAll(DateTime day) {
     final p = pool;
     final c = curated;
     final index = _dayIndex(day);
     final first = c[(index * 7919) % c.length];
     final base = index * perDay;
-    // A large prime stride spreads them across the Mushaf.
+    // خطوة أولية كبيرة توزّعها على المصحف.
     final rest = [
       for (var i = 0; i < perDay; i++) p[((base + i) * 7919) % p.length],
     ].where((a) => a.id != first.id).take(perDay - 1);
     return [first, ...rest];
   }
 
-  /// The first ayah of [day].
+  /// أول آية في [day].
   static Ayah forDay(DateTime day) => forDayAll(day).first;
 
-  /// The reflection question shown with the [index]th ayah of [day].
+  /// سؤال التدبر مع الآية رقم [index] في [day].
   static String questionFor(DateTime day, int index) {
     final ayah = forDayAll(day)[index];
     return TadbeerQuestions.forAyah(ayah)[questionIndex(day, index)];
   }
 
-  /// Which of the ayah's four questions the card asks, so the reflection
-  /// opens on it.
+  /// أي الأسئلة الأربعة تطرحه البطاقة، ليفتح التدبر عليه.
   static int questionIndex(DateTime day, int index) =>
       (_dayIndex(day) + index) % TadbeerItem.questions.length;
 
@@ -185,21 +177,14 @@ class AyahOfTheDay {
 }
 
 /// بطاقة «آية للتدبّر» في الرئيسية: آيات اليوم تتتابع تلقائياً.
-///
-/// The day's ayahs follow one another every [_interval] while the card is
-/// on screen; a swipe moves by hand, and a finger on the card holds it.
-/// The sequence stays still with reduced motion or a screen reader, and
-/// moves to the new day's ayahs after midnight.
+/// تتتابع كل [_interval] ما دامت البطاقة ظاهرة؛ السحب ينقل باليد، والإصبع على البطاقة يوقفها. وتثبت مع "تقليل الحركة" أو قارئ الشاشة، وتنتقل إلى آيات اليوم الجديد بعد منتصف الليل.
 class AyahOfTheDayCard extends StatefulWidget {
-  /// ينشئ بطاقة آيات التدبّر.
   const AyahOfTheDayCard({super.key});
 
-  /// Height of everything but the verse and the question: padding, the
-  /// title row, the gaps, the actions and the dots.
+  /// ارتفاع ما عدا الآية والسؤال: الحشوة وسطر العنوان والفراغات والإجراءات والنقاط.
   static const _chrome = 16 + 10 + 24 + 12 + 8 + 40 + 13.0;
 
-  /// The least height the card needs at [width] to show every one of
-  /// today's ayahs whole, with its actions; the question may step aside.
+  /// أقل ارتفاع تحتاجه البطاقة بعرض [width] لتعرض كل آيات اليوم كاملة مع إجراءاتها؛ وقد يتنحى السؤال.
   static double minHeight(BuildContext context, double width) {
     final looks = _VerseLook.of(AyahOfTheDay.forDayAll(DateTime.now()));
     return _chrome +
@@ -222,7 +207,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   Timer? _timer;
   bool _held = false;
 
-  /// Whether the day's Madinah glyphs are being loaded.
+  /// هل خطوط مصحف المدينة لآيات اليوم قيد التحميل.
   bool _preparing = false;
 
   @override
@@ -232,8 +217,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     _restart();
   }
 
-  /// Loads the Madinah glyphs of the day's ayahs when that Mushaf is
-  /// chosen; until then the verse shows in the flowing text's font.
+  /// يحمّل خطوط مصحف المدينة لآيات اليوم إن كان هو المختار؛ وحتى ذلك تظهر الآية بخط النص المتدفق.
   void _prepareGlyphs() {
     if (_preparing || !_VerseLook.madinah) return;
     if (_ayahs.every((a) => QcfGlyphs.of(a) != null)) return;
@@ -261,11 +245,11 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     _timer = Timer.periodic(_interval, (_) => _tick());
   }
 
-  /// Whether the sequence may move by itself right now.
+  /// هل يجوز أن تتحرك السلسلة وحدها الآن.
   bool get _mayMove {
     if (!mounted || _held) return false;
     if (!TickerMode.valuesOf(context).enabled) return false;
-    // Hold still under a sheet or page opened on top, such as a reflection.
+    // تثبت تحت لوحة أو صفحة مفتوحة فوقها، كالتدبر.
     if (ModalRoute.isCurrentOf(context) == false) return false;
     if (MediaQuery.accessibleNavigationOf(context)) return false;
     return AppMotion.shouldAnimate(context);
@@ -283,7 +267,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     if (_mayMove) setState(() => _index = (_index + 1) % _ayahs.length);
   }
 
-  /// Horizontal padding inside the card.
+  /// الحشوة الأفقية داخل البطاقة.
   static const _padH = 18.0;
 
   void _step(int by) {
@@ -309,7 +293,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     );
 
     return Listener(
-      // A finger on the card holds the sequence.
+      // الإصبع على البطاقة يوقف السلسلة.
       onPointerDown: (_) => _held = true,
       onPointerUp: (_) => _held = false,
       onPointerCancel: (_) => _held = false,
@@ -317,7 +301,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
         onHorizontalDragEnd: (d) {
           final v = d.primaryVelocity ?? 0;
           if (v.abs() < 200) return;
-          // Swiping toward the reading direction's end shows the next one.
+          // السحب نحو نهاية اتجاه القراءة يعرض التالية.
           _step((v > 0) == rtl ? 1 : -1);
         },
         child: Container(
@@ -341,14 +325,11 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
               onTap: () => FocusModeScreen.open(context, ayah),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(_padH, 16, _padH, 10),
-                // Given a height (a page that fits the screen), the verse
-                // takes what is left; on a short card the question and
-                // then the actions step aside so the verse still shows.
+                // إن أُعطيت ارتفاعاً (صفحة بقدر الشاشة) تأخذ الآية ما بقي؛ وفي البطاقة القصيرة يتنحى السؤال ثم الإجراءات لتبقى الآية ظاهرة.
                 child: LayoutBuilder(
                   builder: (context, box) {
                     final bounded = box.maxHeight.isFinite;
-                    // The question shows only if the verse still fits
-                    // whole beside it.
+                    // لا يظهر السؤال إلا إن بقيت الآية كاملة بجانبه.
                     var showQuestion = true;
                     if (bounded) {
                       final verse = _tallest(context, [
@@ -414,7 +395,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              // Long surah names shrink instead of overflowing.
+                              // أسماء السور الطويلة تصغر بدل أن تفيض.
                               Expanded(
                                 child: Text(
                                   l10n.ayahReference(
@@ -452,7 +433,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                               ),
                             ),
                           const SizedBox(height: 8),
-                          // Shows a check once this verse has been reflected on.
+                          // علامة تظهر بعد التدبر في هذه الآية.
                           if (showQuestion)
                             _SteadyHeight(
                               items: [
@@ -500,7 +481,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                               ),
                             ),
                           if (showQuestion) const SizedBox(height: 6),
-                          // Wraps on narrow phones instead of overflowing.
+                          // تلتف في الهواتف الضيقة بدل أن تفيض.
                           if (showActions)
                             Wrap(
                               alignment: WrapAlignment.center,
@@ -550,8 +531,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   }
 }
 
-/// Gives [child] the height of the tallest of [items], so the card keeps
-/// one size while the day's ayahs follow one another.
+/// يعطي [child] ارتفاع أطول عناصر [items]، فتبقى البطاقة بحجم واحد وآيات اليوم تتتابع.
 class _SteadyHeight extends StatelessWidget {
   final List<(String, TextStyle)> items;
   final Widget child;
@@ -569,8 +549,7 @@ class _SteadyHeight extends StatelessWidget {
   }
 }
 
-/// Height of the tallest of [items], each a text in its style, laid out
-/// at [width].
+/// ارتفاع أطول [items]، كل نص بنمطه، مرصوفاً بعرض [width].
 double _tallest(
   BuildContext context,
   List<(String, TextStyle)> items,
@@ -593,25 +572,22 @@ double _tallest(
   return h;
 }
 
-/// How one verse is written on the card: in the Madinah Mushaf's glyphs
-/// with its printed ayah marker when that Mushaf is chosen, or in the
-/// flowing text's font with the ayah number between brackets.
+/// كيف تُكتب الآية على البطاقة: بخطوط مصحف المدينة وعلامة آيتها حين يكون هو المختار، أو بخط النص المتدفق ورقم الآية بين قوسين.
 class _VerseLook {
   final String text;
 
-  /// The verse's style at [size] with lines [height] apart.
+  /// نمط الآية بحجم [size] وتباعد أسطر [height].
   final TextStyle Function(double size, double height) at;
 
   const _VerseLook(this.text, this.at);
 
   static const _color = Color(0xFFF2EEE4);
 
-  /// Whether the reader chose the Madinah Mushaf.
+  /// هل اختار القارئ مصحف المدينة.
   static bool get madinah =>
       UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
 
-  /// The looks of [ayahs]: all in Madinah glyphs once every one of them
-  /// is loaded, so the card never mixes the two.
+  /// أشكال [ayahs]: كلها بخطوط المدينة متى حُمّلت جميعاً، فلا تخلط البطاقة بين الخطين.
   static List<_VerseLook> of(List<Ayah> ayahs) {
     if (madinah) {
       final glyphs = [for (final a in ayahs) QcfGlyphs.of(a)];
@@ -642,23 +618,20 @@ class _VerseLook {
   }
 }
 
-/// The verse at the largest size, down to [minSize], at which every one
-/// of [looks] fits the height it is given, so the card keeps one size
-/// while the day's ayahs follow one another. At the smallest size the
-/// lines draw closer ([tightHeight]) before any line is cut.
+/// الآية بأكبر حجم (حتى [minSize]) تتسع عنده كل [looks] في ارتفاعها، فتبقى البطاقة بحجم واحد. وعند أصغر حجم تتقارب الأسطر ([tightHeight]) قبل أن يُقص سطر.
 class _FittedVerse extends StatelessWidget {
   final List<_VerseLook> looks;
   final _VerseLook shown;
 
   const _FittedVerse({required this.looks, required this.shown});
 
-  /// Largest size of the verse.
+  /// أكبر حجم للآية.
   static const maxSize = 21.0;
 
-  /// Smallest size of the verse.
+  /// أصغر حجم للآية.
   static const minSize = 15.0;
 
-  /// Line height at the smallest size, closer than the usual 2.
+  /// تباعد الأسطر عند أصغر حجم، أقرب من 2 المعتاد.
   static const tightHeight = 1.7;
 
   @override
@@ -698,7 +671,7 @@ class _FittedVerse extends StatelessWidget {
   }
 }
 
-/// Where the shown ayah sits among the day's ayahs.
+/// موضع الآية المعروضة بين آيات اليوم.
 class _Dots extends StatelessWidget {
   final int count;
   final int current;
@@ -745,7 +718,7 @@ class _Action extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      // Snug, so the three sit in one row on a narrow phone.
+      // متقاربة، لتتسع الثلاثة في صف واحد على هاتف ضيق.
       style: TextButton.styleFrom(
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 8),

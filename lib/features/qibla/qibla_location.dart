@@ -17,7 +17,7 @@ final class QiblaLocated extends QiblaFix {
   final double latitude;
   final double longitude;
 
-  /// Whether this is the last saved location rather than a fresh one.
+  /// هل هذا آخر موقع محفوظ، لا موقع جديد.
   final bool saved;
 
   const QiblaLocated(this.latitude, this.longitude, {this.saved = false});
@@ -40,13 +40,13 @@ final class QiblaLocationFailed extends QiblaFix {
   const QiblaLocationFailed();
 }
 
-/// The location source behind the Qibla screen, replaceable in tests.
+/// مصدر الموقع لشاشة القبلة، ويُستبدل في الاختبارات.
 class QiblaLocator {
   const QiblaLocator();
 
   static const _key = 'qibla_location';
 
-  /// The last location saved from a fix, for an instant answer offline.
+  /// آخر موقع محفوظ، لإجابة فورية دون اتصال.
   QiblaLocated? saved() {
     final s = UserDataStore.instance.featureState(_key);
     final lat = (s['lat'] as num?)?.toDouble();
@@ -56,10 +56,8 @@ class QiblaLocator {
         : QiblaLocated(lat, lon, saved: true);
   }
 
-  /// Finds the reader's location, asking for permission when it may.
-  ///
-  /// A city-level fix is enough for the Qibla, so the coarse location is
-  /// used; it comes from GPS or the network without needing the internet.
+  /// يحدد موقع القارئ، ويطلب الإذن حين يمكنه ذلك.
+  /// دقة المدينة تكفي للقبلة، فيُستخدم الموقع التقريبي من GPS دون حاجة للإنترنت.
   Future<QiblaFix> locate() async {
     try {
       if (!await Geolocator.isLocationServiceEnabled()) {
@@ -97,9 +95,9 @@ class QiblaLocator {
     }
   }
 
-  /// Opens the system's location switch.
+  /// يفتح مفتاح الموقع في النظام.
   Future<void> openLocationSettings() => Geolocator.openLocationSettings();
 
-  /// Opens the app's settings, to allow a permission refused for good.
+  /// يفتح إعدادات التطبيق، للسماح بإذن رُفض نهائياً.
   Future<void> openAppSettings() => Geolocator.openAppSettings();
 }

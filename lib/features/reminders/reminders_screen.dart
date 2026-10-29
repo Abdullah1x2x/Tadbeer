@@ -11,23 +11,14 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/models/reminder_model.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// شاشة إدارة التذكيرات والمنبهات المحلية لقراءة الورد القرآني.
-///
-/// Reminders management screen for scheduling local Quran recitation alerts.
-///
-/// Supports two user-selectable alert types:
-/// - [ReminderAlertType.notification] (إشعار عادي)
-/// - [ReminderAlertType.alarm] (تنبيه كالمنبه)
+/// إدارة التذكيرات: إضافتها وتعديلها وتجربتها، بإشعار عادي أو منبه.
 class RemindersScreen extends StatefulWidget {
-  /// ينشئ شاشة إدارة التذكيرات.
   const RemindersScreen({super.key});
 
-  /// ينشئ حالة شاشة التذكيرات.
   @override
   State<RemindersScreen> createState() => _RemindersScreenState();
 }
 
-/// الحالة الداخلية لشاشة التذكيرات وإدارة الإضافة والتعديل والجدولة.
 class _RemindersScreenState extends State<RemindersScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -39,14 +30,13 @@ class _RemindersScreenState extends State<RemindersScreen> {
     LocalReminderService.instance.requestPermissions();
   }
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يفتح نافذة الحوار لإضافة تذكير جديد أو تعديل تذكير حالي.
+  /// يفتح حوار إضافة تذكير أو تعديل [existing].
   void _openReminderDialog([ReminderItem? existing]) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -84,7 +74,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Title Input
                   TextField(
                     controller: titleController,
                     textDirection: TextDirection.rtl,
@@ -105,7 +94,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Time Picker Button
                   ListTile(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -153,7 +141,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Alert Type Selector (إشعار vs تنبيه كالمنبه)
+                  // نوع التنبيه: إشعار أو منبه.
                   Text(
                     l10n.alertType,
                     style: TextStyle(
@@ -195,7 +183,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Repeat Mode Radio
                   Text(
                     l10n.repeatMode,
                     style: TextStyle(
@@ -249,7 +236,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     ),
                   ),
 
-                  // Days Selector if weekdays
+                  // اختيار الأيام، لتكرار "أيام محددة".
                   if (repeatMode == ReminderRepeatMode.weekdays) ...[
                     const SizedBox(height: 8),
                     Wrap(
@@ -377,7 +364,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
     );
   }
 
-  /// يبدل حالة اختيار يوم من أيام الأسبوع مع ضمان بقاء يوم واحد على الأقل محدداً.
+  /// يختار يوماً أو يلغيه، مع بقاء يوم واحد على الأقل.
   void _toggleDay(StateSetter setDialogState, List<int> days, int day) {
     setDialogState(() {
       if (days.contains(day)) {
@@ -388,7 +375,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
     });
   }
 
-  /// يرسل تنبيهاً أو منبهاً تجريبياً فورياً للتحقق من عمل الإشعارات على الجهاز.
+  /// يرسل تنبيهاً تجريبياً للتأكد من عمل الإشعارات على الجهاز.
   Future<void> _sendTestAlert(ReminderAlertType alertType) async {
     final sent = await LocalReminderService.instance.showTestNotification(
       alertType: alertType,
@@ -411,7 +398,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
     );
   }
 
-  /// يبني واجهة شاشة التذكيرات مع حقل البحث وقائمة التنبيهات المجدولة.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -485,7 +471,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
 
             return Column(
               children: [
-                // Search Input Field
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -538,7 +523,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   ),
                 ),
 
-                // Reminders List / Empty Query Results
                 Expanded(
                   child: reminders.isEmpty
                       ? Center(
@@ -593,7 +577,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
   }
 }
 
-/// بطاقة خيار لتحديد طريقة التنبيه (إشعار عادي أو منبه صوتي).
+/// بطاقة لاختيار نوع التنبيه.
 class _AlertTypeOptionCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -602,7 +586,6 @@ class _AlertTypeOptionCard extends StatelessWidget {
   final bool isDark;
   final VoidCallback onTap;
 
-  /// ينشئ بطاقة خيار نوع التنبيه.
   const _AlertTypeOptionCard({
     required this.icon,
     required this.title,
@@ -612,7 +595,6 @@ class _AlertTypeOptionCard extends StatelessWidget {
     required this.onTap,
   });
 
-  /// يبني واجهة بطاقة خيار نوع التنبيه.
   @override
   Widget build(BuildContext context) {
     final borderColor = selected ? AppColors.olive : AppColors.border(context);
@@ -671,14 +653,13 @@ class _AlertTypeOptionCard extends StatelessWidget {
   }
 }
 
-/// شريحة اختيار ليوم واحد من أيام الأسبوع عند ضبط التكرار المخصص.
+/// شريحة يوم من أيام الأسبوع.
 class _DayChip extends StatelessWidget {
   final int day;
   final String label;
   final bool selected;
   final VoidCallback onToggle;
 
-  /// ينشئ شريحة اختيار يوم الأسبوع.
   const _DayChip({
     required this.day,
     required this.label,
@@ -686,7 +667,6 @@ class _DayChip extends StatelessWidget {
     required this.onToggle,
   });
 
-  /// يبني واجهة شريحة اليوم القابلة للتحديد.
   @override
   Widget build(BuildContext context) {
     return FilterChip(
@@ -702,14 +682,13 @@ class _DayChip extends StatelessWidget {
   }
 }
 
-/// بطاقة عرض لتذكير واحد تتضمن الوقت ونوع التنبيه ومفتاح التفعيل.
+/// بطاقة تذكير: الوقت، ونوع التنبيه، ومفتاح التفعيل.
 class _ReminderCard extends StatelessWidget {
   final ReminderItem reminder;
   final VoidCallback onEdit;
   final ValueChanged<bool> onToggle;
   final VoidCallback onDelete;
 
-  /// ينشئ بطاقة عرض التذكير.
   const _ReminderCard({
     required this.reminder,
     required this.onEdit,
@@ -717,7 +696,6 @@ class _ReminderCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  /// يبني واجهة بطاقة التذكير وأزرار التحكم به.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -749,7 +727,6 @@ class _ReminderCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          // Time & Alert Type display
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -787,7 +764,6 @@ class _ReminderCard extends StatelessWidget {
           ),
           const SizedBox(width: 16),
 
-          // Title
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -812,7 +788,6 @@ class _ReminderCard extends StatelessWidget {
             ),
           ),
 
-          // Toggle Switch
           Switch(
             value: reminder.isEnabled,
             activeThumbColor: AppColors.cyberEmerald,
@@ -820,7 +795,6 @@ class _ReminderCard extends StatelessWidget {
             onChanged: onToggle,
           ),
 
-          // Secondary Actions (⋮)
           PopupMenuButton<String>(
             icon: appMenuIcon,
             onSelected: (val) {

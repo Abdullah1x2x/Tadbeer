@@ -20,9 +20,8 @@ import '../../core/design_system/ornaments.dart';
 import 'portion_reminder.dart';
 import 'streak_reminder.dart';
 
-/// شاشة «رحلتي مع القرآن»: خطة الختمة، ورد اليوم، والإحصاءات.
+/// «رحلتي مع القرآن»: خطة الختمة، وورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
-  /// ينشئ شاشة رحلة القراءة.
   const JourneyScreen({super.key});
 
   @override
@@ -84,7 +83,7 @@ class JourneyScreen extends StatelessWidget {
   }
 }
 
-/// بطاقة بدء ختمة جديدة باختيار المدة.
+/// بطاقة بدء ختمة باختيار مدتها.
 class _StartKhatmaCard extends StatefulWidget {
   final int completed;
 
@@ -95,11 +94,8 @@ class _StartKhatmaCard extends StatefulWidget {
 }
 
 class _StartKhatmaCardState extends State<_StartKhatmaCard> {
-  /// Offers a daily reminder for the portion right after starting.
-  ///
-  /// Starting the khatma replaces this card with the plan, so the picker
-  /// and the confirmation use the screen's navigator and messenger,
-  /// taken before the khatma starts.
+  /// يعرض تذكيراً يومياً بالورد بعد البدء مباشرة.
+  /// بدء الختمة يستبدل هذه البطاقة بالخطة، فيُؤخذ الـ navigator والـ messenger من الشاشة قبل البدء.
   static Future<void> _offerPortionReminder(
     NavigatorState navigator,
     ScaffoldMessengerState messenger,
@@ -240,7 +236,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
   }
 }
 
-/// حلقة تقدم الختمة مع حالة الالتزام بالخطة.
+/// حلقة تقدم الختمة، ومدى الالتزام بالخطة.
 class _KhatmaProgressCard extends StatelessWidget {
   final KhatmaPlan plan;
   final DateTime now;
@@ -378,7 +374,7 @@ class _KhatmaProgressCard extends StatelessWidget {
                             color: AppColors.textPrimary(context),
                           ),
                         ),
-                        // Same page as the "continue" button below.
+                        // نفس صفحة زر "أكمل" تحتها.
                         Text(
                           l10n.reachedPage(plan.currentPage),
                           style: TextStyle(
@@ -418,7 +414,7 @@ class _KhatmaProgressCard extends StatelessWidget {
   }
 }
 
-/// بطاقة ورد اليوم وزر المتابعة من أول صفحة غير مقروءة.
+/// ورد اليوم، وزر المتابعة من أول صفحة لم تُقرأ.
 class _TodayPortionCard extends StatelessWidget {
   final KhatmaPlan plan;
   final ReadingJourney journey;
@@ -488,7 +484,7 @@ class _TodayPortionCard extends StatelessWidget {
               label: Text(
                 done
                     ? l10n.keepReading
-                    // Nothing read yet: there is nothing to continue.
+                    // لم يُقرأ شيء بعد: لا شيء يُكمل.
                     : plan.advanced == 0
                     ? l10n.khatmaStartNow
                     : l10n.continueFromPage(plan.currentPage),
@@ -501,7 +497,7 @@ class _TodayPortionCard extends StatelessWidget {
   }
 }
 
-/// صف الإحصاءات: الأيام المتتالية، إجمالي الصفحات، الختمات المكتملة.
+/// صف الإحصاءات: السلسلة، وإجمالي الصفحات، والختمات المكتملة.
 class _StatsRow extends StatelessWidget {
   final ReadingJourney journey;
   final DateTime now;
@@ -614,7 +610,7 @@ class _StreakReminderCard extends StatelessWidget {
       .where((r) => r.id == streakReminderId)
       .firstOrNull;
 
-  /// Asks for the time, then saves and schedules the reminder.
+  /// يطلب الوقت، ثم يحفظ التذكير ويجدوله.
   Future<void> _pickTime(BuildContext context, ReminderItem? current) async {
     final l10n = context.l10n;
     final time = await showTimePicker(
@@ -649,8 +645,7 @@ class _StreakReminderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Its own listener: the card is const, so the screen's rebuild alone
-    // would not refresh it when the reminder is saved.
+    // مستمع خاص: البطاقة ثابتة (const)، فإعادة بناء الشاشة وحدها لا تحدّثها عند حفظ التذكير.
     return ListenableBuilder(
       listenable: UserDataStore.instance,
       builder: (context, _) => _build(context),
@@ -666,8 +661,7 @@ class _StreakReminderCard extends StatelessWidget {
         : TimeOfDay(hour: reminder.hour, minute: reminder.minute);
     return Card(
       margin: EdgeInsets.zero,
-      // The switch turns it on or off; a tap on the row, once it is on,
-      // changes the time.
+      // المفتاح يشغّله أو يطفئه؛ والنقر على الصف بعد تشغيله يغيّر الوقت.
       child: ListTile(
         onTap: on ? () => _pickTime(context, reminder) : null,
         leading: const Icon(AppIcons.bellRinging, color: Color(0xFFE07A3F)),
@@ -696,7 +690,7 @@ class _StreakReminderCard extends StatelessWidget {
   }
 }
 
-/// مخطط أعمدة لصفحات آخر سبعة أيام.
+/// أعمدة صفحات آخر سبعة أيام.
 class _WeekChartCard extends StatelessWidget {
   final List<int> days;
   final DateTime now;
@@ -747,8 +741,7 @@ class _WeekChartCard extends StatelessWidget {
                               duration: Duration(milliseconds: 500 + i * 70),
                               curve: Curves.easeOutBack,
                               builder: (context, v, _) => Container(
-                                // easeOutBack overshoots; the tallest bar must
-                                // not outgrow the chart while it bounces.
+                                // easeOutBack يتجاوز الهدف، فلا يجوز أن يتخطى أطول عمود حدود المخطط أثناء ارتداده.
                                 height: (100 * v).clamp(4.0, 100.0),
                                 decoration: BoxDecoration(
                                   gradient: i == days.length - 1
