@@ -13,33 +13,24 @@ import 'app.dart';
 import 'localization.dart';
 import '../core/design_system/app_icons.dart';
 
-/// تبويبات الشريط السفلي بترتيب ظهورها.
 enum ShellTab { home, quran, tasbeeh, duas, more }
 
-/// الهيكل الرئيسي للتطبيق مع شريط التنقل السفلي.
-///
-/// The main sections sit side by side behind a bottom [NavigationBar], so the
-/// reader can move between the Mushaf, Istighfar and Duas in one tap. Tabs are
-/// built lazily on first visit and kept alive afterwards to preserve their
-/// state. While the Mushaf tab is being read the bar slides away, and it
-/// returns when the reader taps the page to show the Mushaf controls.
+/// الهيكل الرئيسي: الأقسام متجاورة خلف شريط التنقل السفلي.
+/// كل تبويب يُبنى عند أول زيارة ثم يُحفظ بحالته. ويختفي الشريط أثناء قراءة المصحف، ويعود بالنقر على الصفحة.
 class MainShell extends StatefulWidget {
-  /// التبويب الذي يفتح عليه الهيكل.
   final ShellTab initialTab;
 
-  /// ينشئ الهيكل الرئيسي للتطبيق.
   const MainShell({super.key, this.initialTab = ShellTab.home});
 
-  /// Whether a shell is currently mounted (false while the intro shows).
+  /// هل الهيكل معروض الآن؛ لا يكون كذلك أثناء شاشة الترحيب.
   static bool get isMounted => _mountedCount > 0;
   static int _mountedCount = 0;
 
-  /// Tab requests from outside the widget tree (e.g. a tapped notification).
+  /// طلبات التبويب من خارج الواجهة، كالنقر على إشعار.
   static final ValueNotifier<ShellTab?> requestedTab = ValueNotifier(null);
 
-  /// Shows [tab] when the request comes from outside the app's screens (a
-  /// notification or the home-screen widget), closing any page above the
-  /// shell. Returns the app's navigator, or null before the app is built.
+  /// يعرض [tab] لطلب آتٍ من خارج الشاشات (إشعار أو ودجت)، ويغلق ما فوق الهيكل.
+  /// يعيد الـ navigator، أو null قبل بناء التطبيق.
   static NavigatorState? showFromOutside(ShellTab tab) {
     final navigator = appNavigatorKey.currentState;
     if (navigator == null) return null;
@@ -54,11 +45,9 @@ class MainShell extends StatefulWidget {
     return navigator;
   }
 
-  /// Switches to [tab] when [context] is inside the shell. Returns false
-  /// otherwise (e.g. a screen shown on its own), so callers can fall back to
-  /// pushing a page.
+  /// ينتقل إلى [tab] إن كان [context] داخل الهيكل، وإلا يعيد false ليفتح المستدعي صفحة بدلها.
   static bool selectTab(BuildContext context, ShellTab tab) {
-    // Called from tap handlers, so look up without registering a dependency.
+    // يُستدعى من معالجات النقر، فلا يسجّل اعتماداً على الـ InheritedWidget.
     final scope = context.getInheritedWidgetOfExactType<_ShellScope>();
     if (scope == null) return false;
     scope.select(tab);
@@ -88,10 +77,10 @@ class _MainShellState extends State<MainShell>
     _select(tab);
   }
 
-  /// Mirrors the Mushaf tab's controls; the bar hides while they are hidden.
+  /// يعكس ظهور أدوات المصحف؛ يختفي الشريط باختفائها.
   final ValueNotifier<bool> _quranControlsVisible = ValueNotifier(true);
 
-  /// Drives the incoming tab's slide and the veil fading off it.
+  /// يحرّك انزلاق التبويب القادم وتلاشي الستار عنه.
   late final AnimationController _switch = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 300),
@@ -103,7 +92,7 @@ class _MainShellState extends State<MainShell>
     curve: Curves.easeOutCubic,
   );
 
-  /// +1 when the incoming tab enters from the right, -1 from the left.
+  /// اتجاه دخول التبويب: 1 من اليمين، و-1 من اليسار.
   double _travel = 1;
 
   @override
@@ -134,8 +123,7 @@ class _MainShellState extends State<MainShell>
   void _select(ShellTab tab) {
     if (tab == _tab) return;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
-    // Tabs further along the bar sit to the left in RTL, so the new page
-    // slides in from the side of the tab the user moved toward.
+    // في RTL تقع التبويبات اللاحقة يساراً، فتدخل الصفحة من جهة التبويب الذي اتجه إليه المستخدم.
     final forward = tab.index > _tab.index;
     setState(() {
       _travel = (forward ? 1.0 : -1.0) * (isRtl ? -1.0 : 1.0);
@@ -149,13 +137,8 @@ class _MainShellState extends State<MainShell>
     }
   }
 
-  /// Every visited tab keeps the same wrapper chain, so switching only changes
-  /// parameters and never rebuilds a tab's state.
-  ///
-  /// The switch fades through the page colour: the outgoing tab goes at once
-  /// and the incoming one slides in under a veil of the background colour
-  /// that fades away. Fading one flat colour is nearly free, where fading
-  /// whole pages made every frame redraw them off-screen.
+  /// كل تبويب يبقى في نفس سلسلة الأغلفة، فالتبديل يغيّر المعاملات فقط ولا يعيد بناء حالته.
+  /// يمر التبديل عبر لون الخلفية: القديم يختفي فوراً، والجديد ينزلق تحت ستار بلون الخلفية يتلاشى. تلاشي لون واحد شبه مجاني، أما تلاشي صفحات كاملة فكان يعيد رسمها كل إطار.
   Widget _tabLayer(ShellTab tab) {
     final isCurrent = tab == _tab;
     final position = isCurrent
@@ -166,7 +149,7 @@ class _MainShellState extends State<MainShell>
         : const AlwaysStoppedAnimation(Offset.zero);
 
     return Offstage(
-      // Keyed so tabs keep their state when a newly visited tab is inserted.
+      // المفتاح يحفظ حالة التبويبات عند إدراج تبويب جديد.
       key: ValueKey(tab),
       offstage: !isCurrent,
       child: TickerMode(
@@ -211,7 +194,7 @@ class _MainShellState extends State<MainShell>
         label: l10n.isArabic ? 'المصحف' : 'Mushaf',
       ),
       FloatingNavItem(
-        // Prayer beads, so it never looks like the duas tab.
+        // السبحة، حتى لا يشبه تبويب الأدعية.
         icon: FlutterIslamicIcons.tasbih2,
         selectedIcon: FlutterIslamicIcons.solidTasbih2,
         label: l10n.isArabic ? 'الاستغفار' : 'Istighfar',
@@ -231,11 +214,11 @@ class _MainShellState extends State<MainShell>
     return _ShellScope(
       select: _select,
       child: PopScope(
-        // Back from any other tab returns to Home before leaving the app.
+        // الرجوع من أي تبويب يعود إلى الرئيسية قبل مغادرة التطبيق.
         canPop: _tab == ShellTab.home,
         onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
-          // An open rosette of ayah actions goes first.
+          // وردة إجراءات الآية المفتوحة تُغلق أولاً.
           if (AyahRosette.dismissIfOpen()) return;
           _select(ShellTab.home);
         },
@@ -251,8 +234,7 @@ class _MainShellState extends State<MainShell>
             valueListenable: _quranControlsVisible,
             builder: (context, controlsVisible, bar) {
               final hidden = _tab == ShellTab.quran && !controlsVisible;
-              // Slides down and fades while collapsing, so reading the
-              // Mushaf gets the full screen.
+              // ينزلق ويتلاشى أثناء الانطواء، فتأخذ قراءة المصحف الشاشة كاملة.
               return TweenAnimationBuilder<double>(
                 tween: Tween(end: hidden ? 0 : 1),
                 duration: AppMotion.duration(context, AppMotion.slow),
@@ -285,7 +267,7 @@ class _MainShellState extends State<MainShell>
   }
 }
 
-/// Lets descendants switch tabs without holding a reference to the shell.
+/// يتيح للأبناء تبديل التبويب دون الاحتفاظ بمرجع للهيكل.
 class _ShellScope extends InheritedWidget {
   final ValueChanged<ShellTab> select;
 

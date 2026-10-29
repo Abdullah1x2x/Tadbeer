@@ -1,60 +1,43 @@
 import 'package:flutter/material.dart';
 
-/// نظام موحد لمحددات الحركة والانتقالات وتجربة التفاعل في تطبيق تَدْبِير.
-///
-/// Centralized motion design system for Tadbeer (تَدْبِير).
-/// Provides standardized durations, easing curves, reduce-motion accessibility
-/// helpers, smooth dialog transitions, and interactive micro-animation wrappers.
+/// قيم الحركة الموحّدة: المدد والمنحنيات، واحترام "تقليل الحركة"، وانتقال الحوارات.
 class AppMotion {
   AppMotion._();
 
-  // ---------------------------------------------------------------------------
-  // ⏱️ MOTION TOKENS: DURATIONS
-  // ---------------------------------------------------------------------------
+  // المدد
 
-  /// مدة حركة فائقة السرعة (120ms) للاستجابات الدقيقة مثل نقر الأزرار واللمس.
+  /// للاستجابات الدقيقة كنقر الأزرار.
   static const Duration fast = Duration(milliseconds: 120);
 
-  /// مدة حركة قياسية معتدلة (200ms) لانتقالات التبويبات وظهور اللوحات وتلاشي الأشرطة.
+  /// لتبديل التبويبات وظهور اللوحات.
   static const Duration normal = Duration(milliseconds: 200);
 
-  /// مدة حركة متمهلة ومستقرة (350ms) لانتقالات الصفحات وتحريك المنظور والشبكة.
+  /// لانتقالات الصفحات وحركة الشبكة.
   static const Duration slow = Duration(milliseconds: 350);
 
-  // ---------------------------------------------------------------------------
-  // 📐 MOTION TOKENS: EASING CURVES
-  // ---------------------------------------------------------------------------
+  // المنحنيات
 
-  /// منحنى تسارع أساسي متزن وناعم لخروج العناصر وتفاعلات اللمس.
+  /// لخروج العناصر وتفاعلات اللمس.
   static const Curve emphasized = Curves.easeOutCubic;
 
-  /// منحنى تسارع ناعم للتحولات الداخلية وتبديل التبويبات والحالات.
+  /// للتحولات الداخلية وتبديل الحالات.
   static const Curve standard = Curves.easeInOutCubic;
 
-  // ---------------------------------------------------------------------------
-  // ♿ ACCESSIBILITY: REDUCE MOTION
-  // ---------------------------------------------------------------------------
+  // تقليل الحركة
 
-  /// يتحقق مما إذا كانت الحركات مسموحاً بها بحسب إعدادات إمكانية الوصول في نظام المستخدم.
-  ///
-  /// يرجع `false` عندما يفعل المستخدم خيار "تقليل الحركة" (Reduce Motion) في النظام،
-  /// مما يوجب جعل الحركات فورية لتجنب الصداع الحركي أو الإجهاد البصري.
+  /// هل يُسمح بالحركة؛ false حين يفعّل المستخدم "تقليل الحركة" في النظام، فتصبح الحركات فورية.
   static bool shouldAnimate(BuildContext context) {
     return !MediaQuery.disableAnimationsOf(context);
   }
 
-  /// إرجاع المدة المناسبة: المدة القياسية إذا كانت الحركة مفعلة، أو `Duration.zero` إذا كان تقليل الحركة مفعلاً.
+  /// [standardDuration]، أو صفر عند تقليل الحركة.
   static Duration duration(BuildContext context, Duration standardDuration) {
     return shouldAnimate(context) ? standardDuration : Duration.zero;
   }
 
-  // ---------------------------------------------------------------------------
-  // 🪟 SMOOTH DIALOG TRANSITIONS
-  // ---------------------------------------------------------------------------
+  // انتقال الحوارات
 
-  /// يعرض نافذة حوار منبثقة بانتقال ناعم متزن يجمع بين التلاشي والتكبير الخفيف.
-  ///
-  /// مستوحى من انتقال نافذة إجراءات الآية المتقنة ([AyahActionSheet]).
+  /// يعرض حواراً بانتقال يجمع التلاشي والتكبير الخفيف، كنافذة إجراءات الآية.
   static Future<T?> showSmoothDialog<T>({
     required BuildContext context,
     required WidgetBuilder builder,
@@ -90,25 +73,19 @@ class AppMotion {
   }
 }
 
-/// ودجت خفيفة تضفي استجابة ضغط مرنة وملموسة (`Scale on Press`) على الأزرار والبطاقات.
-///
-/// EDUCATIONAL NOTE:
-/// تستخدم [Listener] لرصد إيماءات المؤشر دون حجزها أو تعطيل حركات السحب والتمرير
-/// أو استجابة [InkWell] الأساسية داخل البطاقة.
+/// يصغّر الزر أو البطاقة قليلاً عند الضغط ثم يرتد.
+/// يستخدم [Listener] فيرصد اللمس دون أن يحجزه، فيبقى السحب والتمرير و[InkWell] الداخلي يعملون.
 class ScaleOnPress extends StatefulWidget {
-  /// المحتوى التفاعلي المغلف.
   final Widget child;
 
-  /// مقدار التصغير عند الضغط (افتراضياً 0.985 لإحساس لمسي هادئ ورصين).
+  /// مقدار التصغير عند الضغط.
   final double pressedScale;
 
-  /// مدة الانتقال بين حالتي الضغط والارتداد.
+  /// مدة الانتقال بين الضغط والارتداد.
   final Duration duration;
 
-  /// هل التفاعل مفعل حالياً.
   final bool enabled;
 
-  /// ينشئ ودجت استجابة الضغط المرنة.
   const ScaleOnPress({
     super.key,
     required this.child,
@@ -142,7 +119,7 @@ class _ScaleOnPressState extends State<ScaleOnPress> {
       onPointerCancel: (_) => _setPressed(false),
       child: AnimatedScale(
         scale: _isPressed ? widget.pressedScale : 1.0,
-        // Press in quickly, then spring back with a slight overshoot.
+        // ينضغط بسرعة، ثم يرتد مع تجاوز خفيف.
         duration: _isPressed ? widget.duration : AppMotion.normal,
         curve: _isPressed ? AppMotion.emphasized : Curves.easeOutBack,
         child: widget.child,

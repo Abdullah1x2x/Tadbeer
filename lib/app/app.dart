@@ -10,18 +10,14 @@ import '../l10n/app_localizations.dart';
 import '../features/onboarding/theme_picker_screen.dart';
 import '../features/onboarding/name_screen.dart';
 
-/// مفتاح التنقل العام للتطبيق لفتح الشاشات عند النقر على الإشعارات أو المنبهات.
+/// يفتح الشاشات من خارج شجرة الواجهة، كالنقر على إشعار.
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
-/// مفتاح عرض الرسائل العامة (مثل فشل حفظ البيانات) من أي مكان في التطبيق.
+/// يعرض رسائل عامة من أي مكان، كفشل حفظ البيانات.
 final GlobalKey<ScaffoldMessengerState> appScaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
 
-/// Root application widget for Tadbeer.
-///
-/// EDUCATIONAL NOTE:
-/// Listens to [UserDataStore] to reactively update themes, font scales,
-/// or language settings without restarting the application.
+/// جذر التطبيق: يطبّق الثيم واللغة المحفوظين ويتبعهما دون إعادة تشغيل.
 class TadbeerApp extends StatefulWidget {
   const TadbeerApp({super.key});
 
@@ -29,17 +25,15 @@ class TadbeerApp extends StatefulWidget {
   State<TadbeerApp> createState() => _TadbeerAppState();
 }
 
-/// حالة التطبيق الجذرية المسؤولة عن اللغة المفعّلة وشاشة البداية.
 class _TadbeerAppState extends State<TadbeerApp> {
   late AppLanguage _currentLanguage;
   late bool _initialHideIntro;
   late bool _initialThemeChosen;
 
-  /// What opens after the theme picker (or first, once a theme is chosen).
+  /// الشاشة التالية لاختيار الثيم: الترحيب، أو الشاشة الرئيسية لمن أخفاه.
   Widget _afterThemePicker(BuildContext context) =>
       _initialHideIntro ? const MainShell() : const TadbeerIntroScreen();
 
-  /// تهيئة لغة التطبيق وحالة إخفاء الشاشة الترحيبية من الإعدادات المحفوظة.
   @override
   void initState() {
     super.initState();
@@ -49,13 +43,13 @@ class _TadbeerAppState extends State<TadbeerApp> {
         UserDataStore.instance.settings.hideTadbeerIntroPermanently;
     _initialThemeChosen = UserDataStore.instance.settings.themeChosen;
     UserDatabase.instance.lastIssue.addListener(_scheduleDatabaseIssue);
-    // Issues that happened during startup (before this widget existed).
+    // مشكلات حدثت أثناء الإقلاع، قبل وجود هذه الواجهة.
     if (UserDatabase.instance.lastIssue.value != null) {
       _scheduleDatabaseIssue();
     }
   }
 
-  /// يؤجل عرض الرسالة إلى ما بعد الإطار الحالي لتجنب أي تعارض مع البناء.
+  /// يؤجّل رسالة قاعدة البيانات إلى ما بعد الإطار الحالي، فلا تتعارض مع البناء.
   void _scheduleDatabaseIssue() {
     if (UserDatabase.instance.lastIssue.value == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -70,7 +64,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
     super.dispose();
   }
 
-  /// يُظهر للمستخدم رسالة واضحة عند فشل حفظ البيانات أو قراءتها بدلاً من الصمت.
+  /// يُعلم المستخدم بفشل حفظ البيانات أو قراءتها بدل أن يفشل بصمت.
   void _onDatabaseIssue() {
     final issue = UserDatabase.instance.lastIssue.value;
     final messenger = appScaffoldMessengerKey.currentState;
@@ -95,7 +89,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
     UserDatabase.instance.lastIssue.value = null;
   }
 
-  /// Marks every element dirty so the next frame rebuilds all widgets.
+  /// يعيد بناء الشجرة كلها مع الحفاظ على حالتها.
   void _rebuildAll(BuildContext context) {
     void mark(Element element) {
       element.markNeedsBuild();
@@ -105,22 +99,19 @@ class _TadbeerAppState extends State<TadbeerApp> {
     (context as Element).visitChildren(mark);
   }
 
-  /// تحديث لغة واجهة التطبيق عند تغييرها من قِبل المستخدم.
   void _onLanguageChanged(AppLanguage newLang) {
     setState(() {
       _currentLanguage = newLang;
     });
   }
 
-  /// بناء شجرة التطبيق مع ربط السمة واللغة المحددة.
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: UserDataStore.instance.settingsNotifier,
       builder: (context, _) {
         final settings = UserDataStore.instance.settingsNotifier.value;
-        // A new color theme changes values that widgets read directly from
-        // AppColors, so rebuild the whole tree once (state is kept).
+        // ألوان الثيم تُقرأ مباشرة من [AppColors]، فتغييرها يتطلب إعادة بناء الشجرة كلها مرة واحدة.
         if (AppColors.use(settings.colorTheme)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) _rebuildAll(this.context);
@@ -140,8 +131,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
             darkTheme: AppTheme.darkTheme,
             themeMode: settings.themeMode,
             locale: Locale(_currentLanguage.code),
-            // Arabic and English for the app strings and for Material's own
-            // widgets (time picker, dialogs, buttons).
+            // العربية والإنجليزية لنصوص التطبيق ولعناصر Material نفسها (منتقي الوقت والحوارات).
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
@@ -152,7 +142,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
             },
             home: _initialThemeChosen
                 ? _afterThemePicker(context)
-                // First launch: the reader's name, then the look.
+                // الإقلاع الأول: اسم القارئ، ثم اختيار الثيم.
                 : NameScreen(
                     next: (_) => ThemePickerScreen(next: _afterThemePicker),
                   ),

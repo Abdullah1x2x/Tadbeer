@@ -2,85 +2,67 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-/// محددات نظام التصميم المستقبلي لتطبيق تَدْبِير.
-///
-/// Centralized Design Tokens for the Tadbeer Futuristic Digital Experience.
-/// Contains standardized spacing, radii, border styles, glows, gradients,
-/// and responsive layout constraints.
+/// قيم التصميم الموحّدة: المسافات والانحناءات وسماكة الإطارات والظلال والتدرجات.
 class AppTokens {
   AppTokens._();
 
-  // ---------------------------------------------------------------------------
-  // 📏 SPACING & INSETS (8-point geometric scale)
-  // ---------------------------------------------------------------------------
-  /// 2.0px - مسافة مجهرية
+  // المسافات (على مقياس 8 نقاط)
   static const double spaceMicro = 2.0;
 
-  /// 4.0px - مسافة فائقة الصغر
   static const double spaceXxs = 4.0;
 
-  /// 8.0px - مسافة صغيرة جداً
   static const double spaceXs = 8.0;
 
-  /// 12.0px - مسافة صغيرة متوازنة
   static const double spaceSm = 12.0;
 
-  /// 16.0px - المسافة القياسية المعتمدة
+  /// المسافة القياسية.
   static const double spaceMd = 16.0;
 
-  /// 20.0px - مسافة واسعة مريحة
   static const double spaceLg = 20.0;
 
-  /// 24.0px - مسافة قسم رئيسي
+  /// مسافة بين الأقسام.
   static const double spaceXl = 24.0;
 
-  /// 32.0px - مسافة فواصل عريضة
   static const double spaceXxl = 32.0;
 
-  // ---------------------------------------------------------------------------
-  // 🔘 CORNER RADII (High-tech curved geometry)
-  // ---------------------------------------------------------------------------
-  /// 6.0px - انحناء خفيف للشارات الدقيقة
+  // انحناء الزوايا
+  /// للشارات الصغيرة.
   static const double radiusXs = 6.0;
 
-  /// 10.0px - انحناء معتدل للأزرار والشرائح
+  /// للأزرار والشرائح.
   static const double radiusSm = 10.0;
 
-  /// 14.0px - انحناء قياسي للأدوات وعناصر القوائم
+  /// للأدوات وعناصر القوائم.
   static const double radiusMd = 14.0;
 
-  /// 18.0px - انحناء ناعم للبطاقات التفاعلية
+  /// للبطاقات التفاعلية.
   static const double radiusLg = 18.0;
 
-  /// 24.0px - انحناء رحب للبطاقات البارزة والحوارات
+  /// للبطاقات البارزة والحوارات.
   static const double radiusXl = 24.0;
 
-  /// 30.0px - انحناء الحاويات الكبرى واللوحات السفلية
+  /// للحاويات الكبيرة واللوحات السفلية.
   static const double radiusXxl = 30.0;
 
-  /// 999.0px - شكل كبسولي كامل (Pill)
+  /// كبسولة كاملة.
   static const double radiusPill = 999.0;
 
-  // ---------------------------------------------------------------------------
-  // 📐 BORDER THICKNESS (Precision stroke styling)
-  // ---------------------------------------------------------------------------
-  /// 0.8px - خط شعري بالغ الدقة
+  // سماكة الإطارات
+  /// خط شعري.
   static const double borderHairline = 0.8;
 
-  /// 1.2px - خط الحدود الافتراضي للبطاقات
+  /// إطار البطاقات الافتراضي.
   static const double borderRegular = 1.2;
 
-  /// 1.8px - خط مؤكد للحالات النشطة والمركّزة
+  /// للحالات النشطة والمركّزة.
   static const double borderEmphasized = 1.8;
 
-  /// 2.2px - خط عريض للتحديد المميز
+  /// للتحديد البارز.
   static const double borderActive = 2.2;
 
-  // ---------------------------------------------------------------------------
-  // 🌌 FUTURISTIC GLOWS & AMBIENT SHADOWS
-  // ---------------------------------------------------------------------------
+  // الظلال والوهج
 
-  /// يولد ظلاً هادئاً متعدد الطبقات مع وهج محيطي خفيف يعكس طابع المستقبل.
+  /// ظل هادئ متعدد الطبقات للبطاقات.
   static List<BoxShadow> cardShadow({
     required bool isDark,
     Color? glowColor,
@@ -119,7 +101,7 @@ class AppTokens {
     }
   }
 
-  /// وهج مركّز للبطاقات البارزة (Hero Cards) يعطي عمقاً رقمياً جذاباً.
+  /// وهج أقوى للبطاقات البارزة.
   static List<BoxShadow> heroGlow({
     required bool isDark,
     required Color accentColor,
@@ -139,7 +121,7 @@ class AppTokens {
     ];
   }
 
-  /// وهج نابض للحالات النشطة ومؤشرات الحالة الرقمية.
+  /// وهج لمؤشرات الحالة النشطة.
   static List<BoxShadow> pulseGlow({required Color color}) {
     return [
       BoxShadow(
@@ -150,11 +132,9 @@ class AppTokens {
     ];
   }
 
-  // ---------------------------------------------------------------------------
-  // 🎨 FUTURISTIC DIGITAL GRADIENTS
-  // ---------------------------------------------------------------------------
+  // التدرجات
 
-  /// تدرج خلفية ناعم للبطاقات يمنح إحساساً بالسطح المصقول الرقمي.
+  /// تدرج خفيف لسطح البطاقات.
   static LinearGradient subtleSurfaceGradient({
     required bool isDark,
     Color? baseColor,
@@ -175,7 +155,7 @@ class AppTokens {
     );
   }
 
-  /// تدرج حواف هندسي مستقبلي لإطارات البطاقات.
+  /// تدرج لإطارات البطاقات.
   static LinearGradient borderGradient({
     required bool isDark,
     required Color accentColor,

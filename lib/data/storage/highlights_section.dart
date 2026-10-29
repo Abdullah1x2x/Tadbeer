@@ -1,21 +1,17 @@
 part of 'user_data_store.dart';
 
-/// HIGHLIGHTS
+/// قسم التظليل.
 mixin _HighlightsSection on _StoreState {
-  // ==========================================
-  // HIGHLIGHTS
-  // ==========================================
-
-  /// البحث الفوري عن تظليل الآية المحددة إن وُجد.
+  /// تظليل الآية، أو null؛ فوري من الفهرس.
   HighlightItem? findHighlight(int surahNumber, int ayahNumber) {
     return _highlightLookup['$surahNumber:$ayahNumber'];
   }
 
-  /// استرجاع تظليل الآية المحددة.
+  /// الاسم القديم لـ[findHighlight].
   HighlightItem? getHighlight(int surahNumber, int ayahNumber) =>
       findHighlight(surahNumber, ayahNumber);
 
-  /// حفظ تظليل آية أو تحديث لونه في الذاكرة وقاعدة البيانات.
+  /// يحفظ تظليلاً، أو يغيّر لونه.
   Future<void> putHighlight(HighlightItem highlight) async {
     final key = highlight.ayahKey;
     final existing = _highlightLookup[key];
@@ -36,7 +32,7 @@ mixin _HighlightsSection on _StoreState {
     await saveToDisk();
   }
 
-  /// تعيين لون التظليل لآية محددة وحفظه.
+  /// يظلّل الآية بـ[colorIndex].
   Future<void> setHighlight(Ayah ayah, int colorIndex) async {
     final existing = findHighlight(ayah.surahNumber, ayah.ayahNumber);
     final item = HighlightItem(
@@ -51,7 +47,6 @@ mixin _HighlightsSection on _StoreState {
     await putHighlight(item);
   }
 
-  /// إزالة التظليل عن الآية المحددة.
   Future<void> removeHighlight(int surahNumber, int ayahNumber) async {
     final key = '$surahNumber:$ayahNumber';
     final existing = _highlightLookup.remove(key);

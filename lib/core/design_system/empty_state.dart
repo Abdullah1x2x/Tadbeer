@@ -3,30 +3,21 @@ import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 import 'app_icons.dart';
 
-/// حالة فارغة موحدة تشرح للمستخدم كيف يبدأ، مع زر إجراء اختياري.
-///
-/// Shared empty state: a soft icon badge, a title, a one-line hint on how to
-/// fill the screen, and an optional call-to-action button.
+/// حالة فارغة موحّدة: أيقونة، وعنوان، وسطر يشرح كيف تبدأ، وزر إجراء اختياري.
 class EmptyState extends StatelessWidget {
-  /// أيقونة الحالة الفارغة.
   final IconData icon;
 
-  /// العنوان الرئيسي.
   final String title;
 
-  /// شرح مختصر لكيفية إضافة أول عنصر.
+  /// سطر يشرح كيف يُضاف أول عنصر.
   final String? hint;
 
-  /// نص زر الإجراء.
   final String? actionLabel;
 
-  /// أيقونة زر الإجراء.
   final IconData? actionIcon;
 
-  /// ما يحدث عند الضغط على زر الإجراء.
   final VoidCallback? onAction;
 
-  /// ينشئ حالة فارغة موحدة.
   const EmptyState({
     super.key,
     required this.icon,

@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'app_icons.dart';
 
-/// عنصر موحّد في قوائم «⋮»: أيقونة في دائرة ملوّنة خفيفة واسم بجانبها،
-/// وبالأحمر لما يحذف.
-///
-/// The menus' look comes from the theme's PopupMenuThemeData; this keeps
-/// every item the same height, spacing and icon treatment.
+/// عنصر موحّد في قوائم «⋮»: أيقونة في دائرة ملونة واسم بجانبها، وبالأحمر لما يحذف.
+/// شكل القائمة نفسه من PopupMenuThemeData في الثيم؛ هذا يوحّد ارتفاع العناصر ومسافاتها.
 PopupMenuItem<T> appMenuItem<T>({
   T? value,
   VoidCallback? onTap,
@@ -49,5 +46,5 @@ PopupMenuItem<T> appMenuItem<T>({
   );
 }
 
-/// The «⋮» button that opens such a menu, the same everywhere.
+/// زر «⋮» الذي يفتح هذه القوائم، بنفس الشكل في كل مكان.
 const appMenuIcon = Icon(AppIcons.dotsThreeVertical, size: 22);

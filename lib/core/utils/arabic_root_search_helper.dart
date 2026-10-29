@@ -1,42 +1,31 @@
 import 'arabic_search_normalizer.dart';
 
-/// Helper utility for authentic root and morphological Quran search.
-///
-/// EDUCATIONAL NOTE:
-/// Arabic is a root-and-pattern (semitic) language where most words derive
-/// from a 3-letter (triliteral) root. Searching by root enables uncovering
-/// all morphological expressions of a Quranic concept (e.g., `ص-ب-ر` ->
-/// `صابر`, `اصبر`, `اصطبر`, `صبورا`, `الصابرين`, `صبرا`).
-///
-/// This utility provides:
-/// 1. Prefix detection for queries like `جذر:صبر` or `جذر صبر`.
-/// 2. Curated morphological mappings for high-frequency Quranic roots.
-/// 3. Algorithmic morphological derivation for arbitrary 3-letter roots.
-/// 4. 100% offline execution with zero latency overhead.
+/// البحث بالجذر: `جذر:صبر` يجد كل الصيغ المشتقة (صابر، اصبر، اصطبر، الصابرين…).
+/// الصيغ من قائمة منتقاة للجذور الشائعة في القرآن، ومن أوزان تُولَّد لأي جذر ثلاثي.
 class ArabicRootSearchHelper {
   ArabicRootSearchHelper._();
 
-  /// Prefix patterns indicating root-targeted searches.
+  /// بادئات تعلن أن البحث بالجذر (`جذر:` أو `جذر `).
   static final RegExp _rootPrefixRegex = RegExp(
     r'^(جذر\s*:\s*|جذر\s+|root\s*:\s*|root\s+|#جذر\s*)',
     caseSensitive: false,
   );
 
-  /// Checks if a search query is intended as a root search.
+  /// هل [query] بحث بالجذر.
   static bool isRootQuery(String query) {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return false;
     return _rootPrefixRegex.hasMatch(trimmed);
   }
 
-  /// Extracts the clean, normalized root from a query string.
+  /// الجذر من [query] بعد حذف البادئة وتطبيعه.
   static String extractRoot(String query) {
     final trimmed = query.trim();
     final stripped = trimmed.replaceFirst(_rootPrefixRegex, '').trim();
     return ArabicSearchNormalizer.normalize(stripped);
   }
 
-  /// Curated expansions for the most prominent roots in Tadbeer and the Holy Quran.
+  /// صيغ منتقاة لأشهر جذور القرآن.
   static const Map<String, List<String>> _curatedRootForms = {
     'صبر': [
       'صبر',
@@ -479,7 +468,7 @@ class ArabicRootSearchHelper {
     ],
   };
 
-  /// Generates rule-based morphological patterns for an arbitrary 3-character Arabic root.
+  /// صيغ مولّدة من أوزان شائعة لأي جذر ثلاثي.
   static List<String> _generateMorphologicalForms(String root) {
     if (root.length != 3) {
       return [root];
@@ -491,32 +480,32 @@ class ArabicRootSearchHelper {
 
     final forms = <String>{
       root,
-      // Active participle: فاعل
+      // اسم الفاعل: فاعل
       '$c1ا$c2$c3',
       '$c1ا$c2$c3ين',
       '$c1ا$c2$c3ون',
       '$c1ا$c2$c3ة',
-      // Present verbs: يفعل، تفعل، نفعل، أفعل
+      // المضارع: يفعل، تفعل، نفعل، أفعل
       'ي$c1$c2$c3',
       'ت$c1$c2$c3',
       'ن$c1$c2$c3',
       'ا$c1$c2$c3',
       'ي$c1$c2$c3ون',
       'ت$c1$c2$c3ون',
-      // Passive participle: مفعول
+      // اسم المفعول: مفعول
       'م$c1$c2و$c3',
       'م$c1$c2و$c3ين',
-      // Intensive / adjective: فعيل، فعول
+      // صيغ المبالغة والصفة: فعيل، فعول
       '$c1$c2ي$c3',
       '$c1$c2و$c3',
-      // Form II: تفعيل
+      // الوزن الثاني: تفعيل
       'ت$c1$c2ي$c3',
-      // Form VIII: افتعل / Form X: استفعل
+      // الوزن الثامن: افتعل، والعاشر: استفعل
       'ا$c1ت$c2$c3',
       'ي$c1ت$c2$c3',
       'است$c1$c2$c3',
       'يست$c1$c2$c3',
-      // Past plural
+      // الماضي للجمع
       '$c1$c2$c3وا',
       '$c1$c2$c3نا',
       '$c1$c2$c3تم',
@@ -525,14 +514,13 @@ class ArabicRootSearchHelper {
     return forms.toList();
   }
 
-  /// Returns all search forms (curated + generated) for a given root.
+  /// كل صيغ البحث لجذر: المنتقاة أولاً ثم المولّدة.
   static List<String> getRootForms(String root) {
     final normalized = ArabicSearchNormalizer.normalize(root);
     if (normalized.isEmpty) return const [];
 
     final formsSet = <String>{};
 
-    // 1. Add curated forms if available
     final curated = _curatedRootForms[normalized];
     if (curated != null) {
       for (final f in curated) {
@@ -540,7 +528,6 @@ class ArabicRootSearchHelper {
       }
     }
 
-    // 2. Generate algorithmic morphological variations
     final generated = _generateMorphologicalForms(normalized);
     for (final f in generated) {
       formsSet.add(ArabicSearchNormalizer.normalize(f));

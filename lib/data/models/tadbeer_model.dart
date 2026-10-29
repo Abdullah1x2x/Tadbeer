@@ -1,51 +1,31 @@
-/// يمثل جلسة "وقفة تدبر" تأملية للمستخدم حول آية قرآنية محددة.
-///
-/// Represents a user's reflective Tadbeer Pause session for an individual Ayah.
-///
-/// EDUCATIONAL NOTE:
-/// Tadbeer encourages contemplation (تدبر) through 4 guiding questions:
-/// what stopped you, what the ayah says to you, what it stirred in you,
-/// and what you will do with it today. Some ayahs swap one of them, see
-/// `TadbeerQuestions`.
-///
-/// Offline-first principles:
-/// - Stored locally via stable Ayah ID (`surahNumber:ayahNumber`).
-/// - Re-opens with previous answers populated for that Ayah.
-/// - Empty answers are never stored.
-/// - Unifies seamlessly with the Ayah Links network and notes display.
+/// وقفة تدبر للقارئ عند آية: إجاباته عن الأسئلة الأربعة، وما التزم به.
+/// الأسئلة: ما الذي استوقفك، وماذا تقول لك الآية، وماذا حرّكت فيك، وما الذي ستفعله بها اليوم؛ وبعض الآيات تبدّل سؤالاً منها (انظر `TadbeerQuestions`). الإجابات الفارغة لا تُحفظ.
 class TadbeerItem {
-  /// المعرّف الفريد لوقفة التدبر.
   final String id;
 
-  /// رقم السورة التي تنتمي إليها الآية.
   final int surahNumber;
 
-  /// رقم الآية داخل السورة.
   final int ayahNumber;
 
-  /// المعرّف الموحد للآية (إن وجد).
+  /// رقم الآية في المصحف كله، إن عُرف.
   final int? ayahId;
 
-  /// خريطة إجابات المستخدم مربوطة بمفتاح السؤال من [questionKeys].
+  /// الإجابات بمفاتيح [questionKeys].
   final Map<int, String> answers;
 
-  /// تاريخ ووقت إنشاء وقفة التدبر.
   final DateTime createdAt;
 
-  /// تاريخ ووقت آخر تحديث لوقفة التدبر.
   final DateTime updatedAt;
 
-  /// متى كُتب ما التزم به القارئ (جواب «ما الذي ستفعله بها اليوم؟»)
-  /// أو تغيّر آخر مرة.
+  /// متى كُتب الالتزام (جواب «ما الذي ستفعله بها اليوم؟») أو تغيّر آخر مرة.
   final DateTime? commitmentAt;
 
-  /// ما إذا قال القارئ إنه فعل ما التزم به.
+  /// هل قال القارئ إنه فعل ما التزم به.
   final bool commitmentDone;
 
-  /// ما إذا سُئل عن التزامه في الرئيسية فقال «ليس بعد»، فلا يُسأل ثانية.
+  /// هل سُئل عن التزامه في الرئيسية فقال «ليس بعد»، فلا يُسأل ثانية.
   final bool commitmentAsked;
 
-  /// ينشئ كائن وقفة تدبر جديد.
   const TadbeerItem({
     required this.id,
     required this.surahNumber,
@@ -62,24 +42,20 @@ class TadbeerItem {
   /// مفتاح جواب «ما الذي ستفعله بها اليوم؟».
   static const int commitmentKey = 3;
 
-  /// ما التزم به القارئ عند هذه الآية، أو null إن لم يكتب شيئاً.
+  /// ما التزم به القارئ عند هذه الآية، أو null.
   String? get commitment {
     final text = answers[commitmentKey]?.trim() ?? '';
     return text.isEmpty ? null : text;
   }
 
-  /// المفتاح المركب للآية بصيغة (رقم السورة:رقم الآية).
+  /// مفتاح الآية "سورة:آية".
   String get ayahKey => '$surahNumber:$ayahNumber';
 
   /// مفاتيح الإجابات بترتيب عرض الأسئلة.
-  ///
-  /// Answers are keyed by what a question asks, so earlier saves keep their
-  /// place: 1 what stopped you, 2 what the ayah says to you, 5 what it
-  /// stirred, 3 what you will do. Key 4 held a retired question about the
-  /// ayah before; [TadbeerItem.fromJson] folds it into 2.
+  /// المفتاح يدل على السؤال، فتبقى الإجابات القديمة في مكانها: 1 ما استوقفك، 2 ماذا تقول لك، 5 ماذا حرّكت، 3 ما ستفعله. المفتاح 4 كان لسؤال أُلغي، ويُدمج في 2 عند القراءة.
   static const List<int> questionKeys = [1, 2, 5, 3];
 
-  /// الأسئلة التوجيهية الأربعة العامة لوقفة التدبر، بترتيب [questionKeys].
+  /// الأسئلة الأربعة العامة، بترتيب [questionKeys].
   static const List<String> questions = [
     'أيّ كلمة أو عبارة توقّفت عندها؟',
     'ماذا تقول لك هذه الآية؟',
@@ -87,12 +63,10 @@ class TadbeerItem {
     'ما الذي ستفعله بها اليوم؟',
   ];
 
-  /// ما إذا كانت جميع إجابات وقفة التدبر فارغة.
+  /// هل كل الإجابات فارغة.
   bool get isEmpty => answers.values.every((v) => v.trim().isEmpty);
 
-  /// يجمع جميع الإجابات غير الفارغة في ملخص نصي منسق.
-  ///
-  /// Formats all non-empty answers into a clean, peaceful reflection summary.
+  /// الإجابات غير الفارغة في نص واحد منسّق.
   String get combinedSummary {
     final buffer = StringBuffer();
     for (final key in questionKeys) {
@@ -105,7 +79,6 @@ class TadbeerItem {
     return buffer.toString();
   }
 
-  /// يحول كائن وقفة التدبر إلى خريطة بيانات JSON للحفظ المحلي.
   Map<String, dynamic> toJson() => {
     'id': id,
     'surahNumber': surahNumber,
@@ -119,7 +92,6 @@ class TadbeerItem {
     if (commitmentAsked) 'commitmentAsked': true,
   };
 
-  /// ينشئ كائن وقفة تدبر من خريطة بيانات JSON المحفوظة.
   factory TadbeerItem.fromJson(Map<String, dynamic> json) {
     final rawAnswers = json['answers'] as Map<String, dynamic>? ?? {};
     final parsedAnswers = <int, String>{};
@@ -129,7 +101,7 @@ class TadbeerItem {
         parsedAnswers[key] = entry.value as String;
       }
     }
-    // The retired question about the ayah before joins what the ayah says.
+    // السؤال الملغى (مفتاح 4) يُدمج في "ماذا تقول لك الآية".
     final retired = parsedAnswers.remove(4)?.trim() ?? '';
     if (retired.isNotEmpty) {
       final said = parsedAnswers[2]?.trim() ?? '';
@@ -149,7 +121,6 @@ class TadbeerItem {
     );
   }
 
-  /// ينشئ نسخة محدثة من وقفة التدبر مع تعديل الإجابات أو تاريخ التحديث.
   TadbeerItem copyWith({
     Map<int, String>? answers,
     DateTime? updatedAt,
@@ -171,7 +142,5 @@ class TadbeerItem {
   }
 }
 
-/// اسم بديل متوافق مع الإصدارات السابقة لنموذج وقفة التدبر.
-///
-/// Backward compatibility typedef
+/// الاسم القديم، يبقى للتوافق.
 typedef TadabburItem = TadbeerItem;

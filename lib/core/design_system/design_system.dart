@@ -1,7 +1,4 @@
-/// نظام التصميم المستقبلي الشامل لتطبيق تَدْبِير.
-///
-/// Tadbeer Futuristic Digital Experience Design System.
-/// Exports design tokens, cards, buttons, badges, and motion helpers.
+/// نظام تصميم تدبير: يصدّر الرموز والبطاقات والأزرار والشارات وأدوات الحركة.
 library;
 
 export 'app_logo.dart';

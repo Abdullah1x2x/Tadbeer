@@ -1,20 +1,15 @@
 part of 'user_data_store.dart';
 
-/// READING JOURNEY (الختمة والإحصاءات)
+/// قسم رحلة القراءة والختمة.
 mixin _JourneySection on _StoreState {
-  // ==========================================
-  // READING JOURNEY (الختمة والإحصاءات)
-  // ==========================================
-
-  /// Whether the Mushaf offers to start rather than resume: a khatma not
-  /// begun yet, or, without one, nothing read so far.
+  /// هل يعرض المصحف "ابدأ" بدل "أكمل": ختمة لم تبدأ، أو لا قراءة أصلاً إن لم توجد ختمة.
   bool get readingNotStarted {
     final plan = _journey.plan;
     if (plan != null) return plan.advanced == 0;
     return _journey.totalPages == 0 && readingPosition.page == 1;
   }
 
-  /// يسجل قراءة صفحة اليوم ويحدّث تقدم الختمة.
+  /// يسجّل قراءة صفحة اليوم ويقدّم الختمة.
   Future<void> recordPageRead(int page, {DateTime? now}) async {
     if (page < 1 || page > mushafPageCount) return;
     final at = now ?? DateTime.now();
@@ -24,8 +19,7 @@ mixin _JourneySection on _StoreState {
     await _saveJourney(_journey.recordPage(page, at));
   }
 
-  /// يبدأ ختمة جديدة خلال [days] يوماً من [startPage]، ويجعلها موضع القراءة
-  /// كي يفتح المصحف والرئيسية على الصفحة نفسها.
+  /// يبدأ ختمة في [days] يوماً من [startPage]، ويجعلها موضع القراءة ليفتح المصحف والرئيسية على نفس الصفحة.
   Future<void> startKhatma(int days, {int startPage = 1}) async {
     await _saveJourney(
       _journey.startPlan(days, DateTime.now(), startPage: startPage),
@@ -33,7 +27,7 @@ mixin _JourneySection on _StoreState {
     await _moveReadingPositionTo(startPage);
   }
 
-  /// يضبط موضع الختمة يدوياً (ويجعله موضع القراءة).
+  /// ينقل الختمة يدوياً، ويجعلها موضع القراءة.
   Future<void> moveKhatmaTo(int page) async {
     await _saveJourney(_journey.moveKhatmaTo(page));
     await _moveReadingPositionTo(page);
@@ -46,8 +40,7 @@ mixin _JourneySection on _StoreState {
     if (plan != null) await _moveReadingPositionTo(plan.currentPage);
   }
 
-  /// الختمة تتبع موضع القراءة: صفحتها هي الصفحة التي يقف عندها القارئ،
-  /// والمنجز ما قبلها منذ بدايتها، كالعلامة في المصحف الورقي.
+  /// الختمة تتبع موضع القراءة: صفحتها حيث يقف القارئ، والمنجز ما قبلها منذ بدايتها، كالعلامة في المصحف الورقي.
   @override
   Future<void> followReadingPosition(int page) async {
     final plan = _journey.plan;
@@ -55,7 +48,7 @@ mixin _JourneySection on _StoreState {
     await _saveJourney(_journey.moveKhatmaTo(page));
   }
 
-  /// يسجّل يوماً فيه نشاط تدبر أو حفظ (للأيام المتتالية).
+  /// يسجّل يوماً فيه تدبر أو حفظ في السلسلة.
   @override
   Future<void> markActiveDay({DateTime? now}) async {
     final next = _journey.markActive(now ?? DateTime.now());
@@ -72,7 +65,7 @@ mixin _JourneySection on _StoreState {
     );
   }
 
-  /// يلغي الختمة الحالية مع الإبقاء على سجل القراءة.
+  /// يلغي الختمة، ويبقى سجل القراءة.
   Future<void> cancelKhatma() => _saveJourney(_journey.cancelPlan());
 
   Future<void> _saveJourney(ReadingJourney journey) async {

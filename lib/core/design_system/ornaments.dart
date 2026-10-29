@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-/// Builds an eight-pointed star (two overlapping squares) centred on [c].
+/// نجمة ثمانية (مربعان متداخلان) مركزها [c].
 Path eightPointStar(Offset c, double radius) {
   final path = Path();
   for (var i = 0; i < 16; i++) {
@@ -16,14 +16,12 @@ Path eightPointStar(Offset c, double radius) {
   return path..close();
 }
 
-/// A faint lattice of eight-pointed stars behind a screen's content.
-///
-/// The pattern is strongest at the top and fades out by mid-screen, so it
-/// decorates the header without competing with cards or text.
+/// شبكة خافتة من النجوم الثمانية خلف محتوى الشاشة.
+/// أقوى في الأعلى وتتلاشى عند منتصف الشاشة، فتزيّن الرأس دون أن تزاحم البطاقات والنصوص.
 class PatternBackground extends StatelessWidget {
   final Widget child;
 
-  /// How far down the screen the pattern reaches, as a fraction of height.
+  /// إلى أين تمتد الزخرفة، كنسبة من الارتفاع.
   final double reach;
 
   const PatternBackground({super.key, required this.child, this.reach = 0.45});
@@ -64,18 +62,18 @@ class _StarLatticePainter extends CustomPainter {
       ..strokeWidth = 1;
     final dot = Paint();
     final end = size.height * reach;
-    // Centred horizontally so the lattice is symmetric in both directions.
+    // في المنتصف أفقياً لتتناظر الشبكة من الجهتين.
     final columns = (size.width / _cell).ceil() + 1;
     final startX = (size.width - (columns - 1) * _cell) / 2;
     for (var row = 0; row * _cell < end; row++) {
-      // Each row is fainter than the one above, gone by [reach].
+      // كل صف أخفت من الذي فوقه، ويختفي عند [reach].
       final fade = 1 - (row * _cell) / end;
       paint.color = color.withValues(alpha: color.a * fade);
       dot.color = paint.color;
       for (var col = 0; col < columns; col++) {
         final c = Offset(startX + col * _cell, _cell / 2 + row * _cell);
         canvas.drawPath(eightPointStar(c, _cell * 0.3), paint);
-        // Small diamonds where four cells meet.
+        // معيّنات صغيرة حيث تلتقي أربع خلايا.
         canvas.drawCircle(c + const Offset(_cell / 2, _cell / 2), 1.4, dot);
       }
     }
@@ -86,8 +84,7 @@ class _StarLatticePainter extends CustomPainter {
       old.color != color || old.reach != reach;
 }
 
-/// A thin gold line with a small star in the middle, used under headers and
-/// between sections.
+/// خط ذهبي رفيع بنجمة صغيرة في وسطه، تحت العناوين وبين الأقسام.
 class OrnamentDivider extends StatelessWidget {
   final double width;
   final double starSize;
@@ -130,7 +127,7 @@ class OrnamentDivider extends StatelessWidget {
   }
 }
 
-/// A small gold eight-pointed star with a hollow centre.
+/// نجمة ثمانية ذهبية صغيرة مجوّفة.
 class OrnamentStar extends StatelessWidget {
   final double size;
 

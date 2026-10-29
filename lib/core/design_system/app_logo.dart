@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
 
-/// شعار التطبيق بإطاره وظله، بالشكل نفسه في كل مكان وكل ثيم.
-///
-/// A hairline of the arch's bronze (a faint gold in dark mode) edges the
-/// picture on the launcher icon's squircle. Standing on its own
-/// ([elevated]) it also has a soft warm shadow and, a little apart, a ring
-/// in the theme's colour.
+/// شعار التطبيق بإطاره وظله، بنفس الشكل في كل مكان وكل ثيم.
+/// يحيط به خط رفيع بلون البرونز (ذهبي خافت في الوضع الداكن). وحين يقف وحده ([elevated]) يأخذ ظلاً دافئاً وحلقة بلون الثيم.
 class AppLogo extends StatelessWidget {
-  /// Width and height of the logo.
+  /// عرض الشعار وارتفاعه.
   final double size;
 
-  /// Casts a soft shadow, for a logo standing on its own; off for a small
-  /// mark beside a name.
+  /// ظل ناعم لشعار يقف وحده؛ يُطفأ للشعار الصغير بجانب الاسم.
   final bool elevated;
 
-  /// ينشئ شعار التطبيق.
   const AppLogo({super.key, required this.size, this.elevated = true});
 
   static const _asset = 'assets/icons/app_logo.png';
 
-  /// The arch's bronze in the logo.
+  /// لون البرونز في قوس الشعار.
   static const _bronze = Color(0xFF946C33);
   static const _shadow = Color(0xFF5E401C);
   static const _gold = Color(0xFFE3C06A);
@@ -30,7 +24,7 @@ class AppLogo extends StatelessWidget {
     final ring = Theme.of(context).colorScheme.primary;
     final gap = (size * 0.045).clamp(3.0, 7.0);
     final ringWidth = (size * 0.025).clamp(1.5, 3.0);
-    // As rounded as the launcher icon, with its smooth corners.
+    // بانحناء أيقونة التطبيق نفسه.
     final radius = BorderRadius.circular(size * 0.22);
     final shape = RoundedSuperellipseBorder(borderRadius: radius);
     final edge = RoundedSuperellipseBorder(
@@ -56,7 +50,7 @@ class AppLogo extends StatelessWidget {
               ]
             : null,
       ),
-      // The edge is drawn over the picture, so it sits on its rim.
+      // الحافة تُرسم فوق الصورة لتقع على طرفها.
       position: DecorationPosition.background,
       child: DecoratedBox(
         decoration: ShapeDecoration(shape: edge),
@@ -77,7 +71,7 @@ class AppLogo extends StatelessWidget {
       image: true,
       label: 'تدبير',
       child: elevated
-          // The theme's ring, set off from the logo by a thin gap.
+          // حلقة الثيم، تفصلها عن الشعار مسافة رفيعة.
           ? DecoratedBox(
               decoration: ShapeDecoration(
                 shape: RoundedSuperellipseBorder(

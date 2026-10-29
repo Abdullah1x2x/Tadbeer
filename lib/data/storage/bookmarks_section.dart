@@ -1,21 +1,16 @@
 part of 'user_data_store.dart';
 
-/// BOOKMARKS
+/// قسم الفواصل.
 mixin _BookmarksSection on _StoreState {
-  // ==========================================
-  // BOOKMARKS
-  // ==========================================
-
-  /// التحقق الفوري مما إذا كانت الآية محفوظة في الإشارات المرجعية.
+  /// هل الآية محفوظة في الفواصل؛ فوري من الفهرس.
   bool hasBookmark(int surahNumber, int ayahNumber) {
     return _bookmarkLookup.containsKey('$surahNumber:$ayahNumber');
   }
 
-  /// التحقق مما إذا كانت الآية محفوظة في الفواصل المرجعية.
+  /// الاسم القديم لـ[hasBookmark].
   bool isBookmarked(int surahNumber, int ayahNumber) =>
       hasBookmark(surahNumber, ayahNumber);
 
-  /// حفظ إشارة مرجعية في الذاكرة وقاعدة البيانات.
   Future<void> putBookmark(BookmarkItem bookmark) async {
     final idx = _bookmarks.indexWhere((b) => b.id == bookmark.id);
     if (idx != -1) {
@@ -32,7 +27,7 @@ mixin _BookmarksSection on _StoreState {
     await saveToDisk();
   }
 
-  /// تبديل حالة حفظ الآية (إضافة إشارة مرجعية أو إزالتها إن كانت موجودة).
+  /// يضيف الفاصل أو يحذفه، ويعيد true إن صارت الآية محفوظة.
   Future<bool> toggleBookmark(Ayah ayah) async {
     final currentlyBookmarked = hasBookmark(ayah.surahNumber, ayah.ayahNumber);
     if (currentlyBookmarked) {
@@ -57,7 +52,6 @@ mixin _BookmarksSection on _StoreState {
     }
   }
 
-  /// إزالة إشارة مرجعية بواسطة معرفها الفريد.
   Future<void> removeBookmark(String id) async {
     final idx = _bookmarks.indexWhere((b) => b.id == id);
     if (idx != -1) {

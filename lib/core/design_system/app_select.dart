@@ -5,39 +5,33 @@ import '../theme/theme.dart';
 import '../utils/arabic_search_normalizer.dart';
 import 'app_icons.dart';
 
-/// خيار في حقل الاختيار.
 class AppSelectOption<T> {
   final T value;
   final String label;
 
-  /// How the option's name is drawn, such as a font shown in itself.
+  /// نمط اسم الخيار، كعرض الخط باسمه نفسه.
   final TextStyle? style;
 
   const AppSelectOption({required this.value, required this.label, this.style});
 }
 
-/// حقل اختيار موحّد: يعرض القيمة الحالية، ويفتح قائمة الخيارات في لوحة
-/// سفلية.
-///
-/// The app's one look for picking a value: a filled field with an icon,
-/// the current choice and a caret, opening a sheet that marks the current
-/// choice, scrolls to it and, for long lists, can be searched.
+/// حقل الاختيار الموحّد: يعرض القيمة الحالية ويفتح الخيارات في لوحة سفلية.
+/// اللوحة تحدد الخيار الحالي وتمرّر إليه، ويمكن البحث فيها للقوائم الطويلة.
 class AppSelectField<T> extends StatelessWidget {
-  /// Title of the sheet, and the field's name for screen readers.
+  /// عنوان اللوحة، واسم الحقل لقارئ الشاشة.
   final String title;
   final List<AppSelectOption<T>> options;
   final T value;
   final ValueChanged<T> onChanged;
   final IconData? icon;
 
-  /// Shows a search box in the sheet.
+  /// يُظهر مربع بحث في اللوحة.
   final bool searchable;
   final String? searchHint;
 
-  /// A small pill for the end of a list tile, rather than a full field.
+  /// كبسولة صغيرة لطرف عنصر القائمة بدل حقل كامل.
   final bool compact;
 
-  /// ينشئ حقل الاختيار.
   const AppSelectField({
     super.key,
     required this.title,
@@ -172,7 +166,7 @@ class _SelectSheetState<T> extends State<_SelectSheet<T>> {
 
   String _query = '';
   late final ScrollController _scroll = ScrollController(
-    // Opens on the current choice, a couple of rows below the top.
+    // تفتح على الخيار الحالي، أسفل الأعلى بصفين.
     initialScrollOffset: () {
       final i = widget.options.indexWhere((o) => o.value == widget.value);
       return i <= 2 ? 0.0 : (i - 2) * _rowHeight;
@@ -185,8 +179,7 @@ class _SelectSheetState<T> extends State<_SelectSheet<T>> {
     super.dispose();
   }
 
-  /// Text compared in search: letters normalised, digits in one script,
-  /// so «2» finds «٢. البقرة».
+  /// نص المقارنة في البحث: حروف موحّدة وأرقام بنظام واحد، فيجد «2» «٢. البقرة».
   static String _key(String text) => ArabicSearchNormalizer.normalize(
     ArabicSearchNormalizer.convertDigits(text),
   );

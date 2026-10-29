@@ -2,35 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/theme.dart';
 
-/// خيارات حجم خط المصحف الثلاثة القياسية (صغير، متوسط، كبير).
-///
-/// Exactly three Quran font-size options as required by Tadbeer typography specifications:
-/// 1. صغير (Small: 19.0pt, fewer pages than 604)
-/// 2. متوسط (Medium: 23.0pt, baseline reproducing 604 Medina Mushaf pages)
-/// 3. كبير (Large: 28.0pt, more pages than 604)
+/// أحجام خط المصحف الثلاثة: صغير 15.5، ومتوسط 18.5 (يطابق مصحف المدينة)، وكبير 22.
 enum QuranFontSizeOption {
-  /// حجم خط صغير.
   small,
 
-  /// حجم خط متوسط (القياسي لمصحف المدينة).
   medium,
 
-  /// حجم خط كبير.
   large;
 
-  /// قيمة حجم الخط بالنقاط المقابلة للخيار المحدد.
+  /// الحجم بالنقاط.
   double get fontSize {
     switch (this) {
       case QuranFontSizeOption.small:
         return 15.5;
       case QuranFontSizeOption.medium:
-        return 18.5; // Reference Medina Mushaf layout
+        return 18.5; // يطابق تخطيط مصحف المدينة
       case QuranFontSizeOption.large:
         return 22.0;
     }
   }
 
-  /// التسمية العربية لخيار حجم الخط.
   String get labelArabic {
     switch (this) {
       case QuranFontSizeOption.small:
@@ -43,26 +34,19 @@ enum QuranFontSizeOption {
   }
 }
 
-/// خيارات عائلات الخطوط القرآنية مفتوحة المصدر المدمجة محلياً في التطبيق.
-///
-/// Open-source Quranic fonts bundled offline in Tadbeer.
+/// خطوط المصحف المفتوحة المصدر المضمّنة في التطبيق.
 enum QuranFontFamilyOption {
-  /// خط شهرزاد الجديد.
   scheherazade,
 
-  /// خط نوتو نسخ العربي.
   notoNaskh,
 
-  /// خط هرمتان القرآني.
   harmattan,
 
-  /// خط لطيف القرآني.
   lateef,
 
-  /// خط أميري القرآني.
   amiriQuran;
 
-  /// المعرّف البرمجي لعائلة الخط المسجل في التطبيق.
+  /// اسم الخط كما سُجّل في pubspec.
   String get fontFamily {
     switch (this) {
       case QuranFontFamilyOption.scheherazade:
@@ -78,7 +62,6 @@ enum QuranFontFamilyOption {
     }
   }
 
-  /// الاسم العربي المعروض لعائلة الخط في شاشة الإعدادات.
   String get labelArabic {
     switch (this) {
       case QuranFontFamilyOption.scheherazade:
@@ -94,7 +77,6 @@ enum QuranFontFamilyOption {
     }
   }
 
-  /// الاسم المعروض باللغة الإنجليزية لعائلة الخط.
   String get labelEnglish {
     switch (this) {
       case QuranFontFamilyOption.scheherazade:
@@ -110,10 +92,10 @@ enum QuranFontFamilyOption {
     }
   }
 
-  /// يعيد اسم عائلة الخط المناسب بناءً على لغة التطبيق.
+  /// اسم الخط بلغة الواجهة.
   String getLabel(bool isArabic) => isArabic ? labelArabic : labelEnglish;
 
-  /// الوصف التوضيحي لمزايا عائلة الخط باللغة العربية.
+  /// ما يميّز الخط، بالعربية.
   String get subtitleArabic {
     switch (this) {
       case QuranFontFamilyOption.scheherazade:
@@ -129,7 +111,7 @@ enum QuranFontFamilyOption {
     }
   }
 
-  /// الوصف التوضيحي لمزايا عائلة الخط باللغة الإنجليزية.
+  /// ما يميّز الخط، بالإنجليزية.
   String get subtitleEnglish {
     switch (this) {
       case QuranFontFamilyOption.scheherazade:
@@ -145,93 +127,76 @@ enum QuranFontFamilyOption {
     }
   }
 
-  /// يعيد الوصف التوضيحي للخط بناءً على لغة التطبيق.
+  /// ما يميّز الخط، بلغة الواجهة.
   String getSubtitle(bool isArabic) =>
       isArabic ? subtitleArabic : subtitleEnglish;
 }
 
 /// طريقة عرض المصحف.
 enum MushafStyle {
-  /// صفحات مصحف المدينة بخط مجمع الملك فهد كما في المطبوع (الأساسية).
+  /// صفحات مصحف المدينة بخط مجمع الملك فهد كما في المطبوع؛ العرض الأساسي.
   madinah,
 
-  /// نص عثماني متدفق بالخط المختار (الثانوية، لا تحتاج تحميلاً).
+  /// نص عثماني متدفق بالخط المختار؛ لا يحتاج تحميلاً.
   text,
 }
 
-/// إعدادات المستخدم المحفوظة محلياً (المظهر، اللغة، الخطوط، وخيارات القراءة).
+/// إعدادات القارئ المحفوظة على الجهاز: المظهر واللغة والخطوط والقراءة.
 class UserSettings {
-  /// الحجم الافتراضي لخط المصحف بالنقاط (20.0pt).
+  /// حجم خط المصحف الافتراضي بالنقاط.
   static const double defaultQuranFontSize = 20.0;
 
-  /// الحد الأدنى المسموح به لحجم خط المصحف (16.0pt) لضمان وضوح التشكيل والوقفات.
+  /// أصغر حجم، يبقى معه التشكيل وعلامات الوقف واضحة.
   static const double minQuranFontSize = 16.0;
 
-  /// الحد الأقصى المسموح به لحجم خط المصحف (40.0pt)؛ في مصحف المدينة
-  /// يعني ضعف حجم الصفحة الكاملة مع التفاف الأسطر.
+  /// أكبر حجم؛ في مصحف المدينة يعني ضعف الصفحة مع التفاف الأسطر.
   static const double maxQuranFontSize = 40.0;
 
-  /// أصغر حجم للنص المتدفق نسبةً إلى حجمه التلقائي.
+  /// أصغر تصغير للنص المتدفق، نسبةً إلى حجمه التلقائي.
   static const double minFlowingTextScale = 0.8;
 
   /// أكبر تكبير للنص المتدفق.
   static const double maxFlowingTextScale = 1.4;
 
-  /// وضع المظهر الحالي (فاتح، داكن، أو حسب النظام).
   final ThemeMode themeMode;
 
-  /// رمز لغة واجهة التطبيق (مثل 'ar' أو 'en').
+  /// رمز لغة الواجهة ('ar' أو 'en').
   final String languageCode;
 
-  /// ما إذا كان المستخدم قد اختار إخفاء شاشة الترحيب بالتدبر نهائياً.
-  ///
-  /// Whether the user has chosen to permanently dismiss the Tadbeer Intro.
-  /// IMPORTANT:
-  /// Once set to true, the introduction is NEVER shown again, and no option
-  /// is provided to re-enable it, as specified in the Tadbeer requirements.
+  /// أخفى القارئ شاشة الترحيب نهائياً؛ لا تعود ولا يوجد خيار لإظهارها.
   final bool hideTadbeerIntroPermanently;
 
-  /// خاصية توافقية مع الإصدارات السابقة لإخفاء شاشة الترحيب.
-  ///
-  /// Backward compatibility getter
+  /// الاسم القديم، يبقى للتوافق.
   bool get hideTadabburIntroPermanently => hideTadbeerIntroPermanently;
 
-  /// خيار حجم خط المصحف القياسي (صغير: 15.5، متوسط: 18.5، كبير: 22.0).
   final QuranFontSizeOption quranFontOption;
 
-  /// عائلة خط المصحف المختارة (شهرزاد، نوتو نسخ، هرمتان، لطيف، أميري).
   final QuranFontFamilyOption quranFontFamily;
 
-  /// حجم خط المصحف المخصص بالنقاط.
+  /// حجم خط المصحف بالنقاط.
   final double quranFontSize;
 
-  /// تكبير القارئ لخط النص المتدفق فوق حجمه التلقائي (١ = بلا تكبير).
+  /// تكبير القارئ للنص المتدفق فوق حجمه التلقائي (١ = بلا تكبير).
   final double flowingTextScale;
 
-  /// حجم خط عرض الآيات في شاشة روابط الآيات (الافتراضي 18.0pt).
+  /// حجم خط الآيات في شاشة روابط الآيات.
   final double ayahLinkFontSize;
 
-  /// لون ورق المصحف المختار (كلاسيكي أو سيبيا).
   final MushafPaperTone mushafPaperTone;
 
-  /// سمة الألوان المختارة (الكحلي افتراضياً).
   final AppColorTheme colorTheme;
 
-  /// طريقة عرض المصحف (مصحف المدينة افتراضياً).
   final MushafStyle mushafStyle;
 
-  /// Whether the reader has picked a look; until then a new install opens
-  /// on the theme picker. Settings saved before it existed count as picked.
+  /// هل اختار القارئ ثيماً؛ قبل ذلك يفتح التثبيت الجديد على منتقي الثيم. الإعدادات المحفوظة قبل وجود هذا الحقل تُعدّ اختياراً.
   final bool themeChosen;
 
-  /// What the reader asked to be called in reminders; empty when not given.
-  /// Kept on the device only.
+  /// الاسم الذي يناديه به التذكير؛ فارغ إن لم يكتبه. يبقى على الجهاز فقط.
   final String userName;
 
-  /// اسم عائلة خط المصحف المختارة للاستخدام المباشر في الأنماط النصية.
+  /// اسم خط المصحف للاستخدام المباشر في أنماط النص.
   String get quranFontFamilyName => quranFontFamily.fontFamily;
 
-  /// ينشئ كائن إعدادات المستخدم بالقيم المحددة أو الافتراضية.
   const UserSettings({
     this.themeMode = ThemeMode.light,
     this.languageCode = 'ar',
@@ -250,7 +215,6 @@ class UserSettings {
   }) : hideTadbeerIntroPermanently =
            hideTadabburIntroPermanently ?? hideTadbeerIntroPermanently;
 
-  /// يحول إعدادات المستخدم إلى خريطة بيانات JSON للحفظ المحلي.
   Map<String, dynamic> toJson() => {
     'themeMode': themeMode.name,
     'languageCode': languageCode,
@@ -268,7 +232,6 @@ class UserSettings {
     'userName': userName,
   };
 
-  /// ينشئ كائن إعدادات المستخدم من خريطة بيانات JSON المحفوظة.
   factory UserSettings.fromJson(Map<String, dynamic> json) {
     ThemeMode mode;
     switch (json['themeMode'] as String?) {
@@ -339,7 +302,6 @@ class UserSettings {
     );
   }
 
-  /// ينشئ نسخة محدثة من إعدادات المستخدم مع تعديل الحقول الممررة.
   UserSettings copyWith({
     ThemeMode? themeMode,
     String? languageCode,

@@ -31,13 +31,8 @@ part 'ayah_links_section.dart';
 part 'journey_section.dart';
 part 'tadbeer_section.dart';
 
-/// المنسق المركزي لإدارة وتخزين بيانات المستخدم محلياً في تطبيق تدبّر.
-///
-/// ملاحظة معمارية:
-/// - نعتمد مبدأ Offline-First الكامل: لا ترسل أي بيانات لخادم خارجي إطلاقاً.
-/// - نستخدم خرائط بحث في الذاكرة (In-memory HashMaps مثل `_bookmarkLookup` و `_highlightLookup`)
-///   لتكون استعلامات حالة الآيات O(1) وفورية تماماً أثناء رسم صفحات المصحف دون استعلام SQLite في كل إطار.
-/// - يتم حفظ التغييرات ذرياً (Atomic writes) لضمان عدم تلف البيانات عند إغلاق التطبيق فجأة.
+/// مخزن بيانات القارئ على الجهاز، ومصدرها الوحيد في التطبيق.
+/// يحفظ في SQLite، ويبقي في الذاكرة فهارس للفواصل والتظليل فتُسأل أثناء رسم المصحف دون استعلام كل إطار. الحفظ ذرّي، فلا تتلف البيانات إن أُغلق التطبيق فجأة.
 class UserDataStore extends _StoreState
     with
         _ReadingPositionSection,
@@ -52,12 +47,11 @@ class UserDataStore extends _StoreState
   static final UserDataStore instance = UserDataStore._internal();
   UserDataStore._internal();
 
-  /// Current schema version for user data and backups.
+  /// إصدار بنية البيانات في التخزين والنسخ الاحتياطية.
   static const int currentSchemaVersion = 1;
   static const String fileName = 'tadbeer_user_data.json';
 
-  /// Initializes the local storage engine.
-  /// Accepts an optional [testFile] for deterministic, isolated unit tests.
+  /// يفتح التخزين ويحمّل البيانات؛ [testFile] و[testDbPath] لعزل الاختبارات.
   Future<void> init([File? testFile, String? testDbPath]) async {
     if (_isInitialized && testFile == null) return;
 
@@ -155,7 +149,7 @@ class UserDataStore extends _StoreState
         settingsNotifier.value = dbSettings;
       }
 
-      // Migrate from JSON file if SQLite was fresh but JSON file already exists
+      // ترحيل من ملف JSON القديم إن كانت قاعدة SQLite جديدة وفارغة.
       if (_notes.isEmpty &&
           _bookmarks.isEmpty &&
           _highlights.isEmpty &&
@@ -172,7 +166,7 @@ class UserDataStore extends _StoreState
     notifyListeners();
   }
 
-  /// قراءة بيانات المستخدم من ملف JSON المحلي عند الترحيل أو عدم توفر SQLite.
+  /// يقرأ البيانات من ملف JSON، عند الترحيل أو حين لا تتوفر SQLite.
   Future<void> _loadFromFile() async {
     if (_dataFile == null || !await _dataFile!.exists()) {
       return;
@@ -189,14 +183,8 @@ class UserDataStore extends _StoreState
     }
   }
 
-  /// تفريغ البيانات المستخرجة من خريطة JSON إلى القوائم والفهارس في الذاكرة.
-  ///
-  /// IMPORTANT: Only sections that are PRESENT in [data] are replaced.
-  /// A partial backup (e.g. exported without notes) must never wipe the
-  /// user's existing data for the sections it does not contain.
-  ///
-  /// Parsing happens into temporary collections first, so a malformed
-  /// section throws before anything in memory is modified.
+  /// يضع بيانات [data] في الذاكرة.
+  /// لا يستبدل إلا الأقسام الموجودة في [data]، فنسخة احتياطية جزئية لا تمسح ما ليس فيها. ويقرأ كل شيء أولاً، فقسم تالف يرمي خطأ قبل أن يتغير أي شيء.
   void _applyData(Map<String, dynamic> data) {
     ReadingPosition? newPosition;
     if (data['readingPosition'] is Map) {
@@ -282,7 +270,7 @@ class UserDataStore extends _StoreState
       );
     }
 
-    // ---- Everything parsed successfully: apply present sections only ----
+    // قُرئ كل شيء بنجاح: نطبّق الأقسام الموجودة فقط.
     if (newPosition != null) _readingPosition = newPosition;
     if (newJourney != null) _journey = newJourney;
     if (newFeatureState != null) {
@@ -342,8 +330,7 @@ class UserDataStore extends _StoreState
     }
   }
 
-  /// Persists all in-memory collections into the SQLite user database within
-  /// a single atomic transaction (all-or-nothing). Returns `false` on failure.
+  /// يكتب كل البيانات في SQLite في معاملة واحدة (كلها أو لا شيء)، ويعيد false عند الفشل.
   Future<bool> _persistAllToSQLite() async {
     final userDb = UserDatabase.instance;
     if (!userDb.isOpen) return false;
@@ -363,7 +350,7 @@ class UserDataStore extends _StoreState
     );
   }
 
-  /// Flushes current state to disk using an atomic JSON file pattern.
+  /// يكتب الحالة في ملف JSON بكتابة ذرّية.
   @override
   Future<void> saveToDisk() async {
     if (_dataFile == null) return;
@@ -395,11 +382,7 @@ class UserDataStore extends _StoreState
     }
   }
 
-  // ==========================================
-  // DATA INTEGRITY & RESET
-  // ==========================================
-
-  /// إعادة ضبط ومسح جميع بيانات المستخدم وإلغاء جميع المنبهات المجدولة.
+  /// يمسح كل بيانات القارئ ويلغي التذكيرات المجدولة.
   Future<void> resetAllData() async {
     _readingPosition = ReadingPosition.defaultPosition();
     _journey = const ReadingJourney();
@@ -424,14 +407,10 @@ class UserDataStore extends _StoreState
     await saveToDisk();
   }
 
-  /// مسح جميع بيانات المستخدم وإعادتها للوضع الافتراضي.
+  /// الاسم القديم لـ[resetAllData].
   Future<void> resetAllUserData() => resetAllData();
 
-  // ==========================================
-  // SNAPSHOT EXPORT / RESTORE
-  // ==========================================
-
-  /// تصدير لقطة كاملة أو مخصصة من بيانات المستخدم إلى خريطة JSON للنسخ الاحتياطي.
+  /// لقطة من بيانات القارئ للنسخ الاحتياطي، كاملة أو لأقسام مختارة.
   Map<String, dynamic> exportSnapshot({
     bool notes = true,
     bool bookmarks = true,
@@ -451,7 +430,7 @@ class UserDataStore extends _StoreState
       'readingPosition': _readingPosition.toJson(),
       if (journey) ...{
         'readingJourney': _journey.toJson(),
-        // A copy, so the snapshot stays intact if the live state changes.
+        // نسخة، فلا تتغير اللقطة إن تغيّرت الحالة الحية.
         'featureState': {
           for (final e in _featureState.entries)
             e.key: Map<String, dynamic>.from(e.value),
@@ -470,16 +449,12 @@ class UserDataStore extends _StoreState
     };
   }
 
-  /// IMPORTANT:
-  /// Restore replaces every section CONTAINED in [data] (never merges inside a
-  /// section). Sections absent from [data] are left untouched.
-  ///
-  /// Throws [StateError] if the database could not be written; in that case
-  /// the in-memory state is rolled back so nothing changes for the user.
+  /// يستعيد نسخة احتياطية: يستبدل كل قسم موجود في [data] كاملاً، ويترك الأقسام الغائبة.
+  /// يرمي [StateError] إن فشلت الكتابة في قاعدة البيانات، وتعود الذاكرة كما كانت فلا يتغير شيء.
   Future<void> replaceAllUserData(Map<String, dynamic> data) async {
     final previous = exportSnapshot();
 
-    // Parses everything first: throws before modifying anything if invalid.
+    // يقرأ كل شيء أولاً: يرمي خطأ قبل أي تعديل إن كانت البيانات غير صالحة.
     _applyData(data);
 
     final userDb = UserDatabase.instance;
