@@ -3,34 +3,28 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/motion/app_motion.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../features/quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import 'search_provider.dart';
+import '../../core/design_system/app_icons.dart';
 
-/// شاشة البحث الشامل والفوري بدون إنترنت عبر جميع أقسام تطبيق تدبير.
+/// البحث الشامل الفوري دون إنترنت في كل أقسام التطبيق.
 ///
-/// Instant, offline unified search across all searchable sections in Tadbeer.
-///
-/// Features:
-/// - Extensible [SearchRegistry] querying all registered [SearchProvider]s concurrently.
-/// - Section filter chips ("الكل", "المصحف", "الملاحظات", "التدبر", etc.).
-/// - Graceful error isolation per provider.
-/// - Deep linking and navigation into Quran pages, notes, links, and reminders.
-/// - Direct Ayah selection support when [returnToCaller] is true.
+/// يسأل كل المزوّدات معاً، مع تصفية بالقسم، وينتقل إلى وجهة النتيجة؛ أو يعيد
+/// الآية المختارة إن كان [returnToCaller].
 class SearchScreen extends StatefulWidget {
-  /// ما إذا كان يجب إرجاع الآية المختارة إلى الشاشة المستدعية بدلاً من فتح المصحف.
+  /// يعيد الآية المختارة إلى الشاشة المستدعية بدل فتح المصحف.
   final bool returnToCaller;
 
-  /// معرّف مزود البحث المحدد مبدئياً عند فتح الشاشة إن وجد.
+  /// القسم المختار عند الفتح.
   final String? initialProviderId;
 
-  /// نص الاستعلام المبدئي عند فتح الشاشة إن وجد.
+  /// نص البحث عند الفتح.
   final String? initialQuery;
 
-  /// ينشئ شاشة البحث الشامل مع خيارات التصفية والاستعلام المبدئي.
   const SearchScreen({
     super.key,
     this.returnToCaller = false,
@@ -38,12 +32,10 @@ class SearchScreen extends StatefulWidget {
     this.initialQuery,
   });
 
-  /// ينشئ حالة شاشة البحث الشامل.
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-/// الحالة الداخلية لشاشة البحث الشامل وإدارة التصفية وتنفيذ الاستعلامات.
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
   Timer? _debounceTimer;
@@ -54,7 +46,6 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _isLoading = false;
   List<SearchResultItem> _results = [];
 
-  /// يهيئ المتحكمات والقيم المبدئية ويبدأ الاستعلام إذا تم تمرير قيم مبدئية.
   @override
   void initState() {
     super.initState();
@@ -72,7 +63,6 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  /// يلغي مؤقت الانتظار ويحرر متحكم النص عند إغلاق الشاشة.
   @override
   void dispose() {
     _debounceTimer?.cancel();
@@ -80,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  /// يتعامل مع تغير نص البحث مع تأخير زمني قصير لمنع الاستعلامات المتكررة أثناء الكتابة.
+  /// يؤخّر البحث قليلاً أثناء الكتابة، فلا يتكرر مع كل حرف.
   void _onSearchChanged(String query) {
     if (mounted) setState(() {});
     _debounceTimer?.cancel();
@@ -89,7 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  /// ينفذ عملية البحث في السجل المركزي ويحدث قائمة النتائج المعروضة مع دعم التحديث الإجباري.
+  /// يبحث ويحدّث النتائج؛ [force] يعيد البحث ولو لم يتغير النص.
   Future<void> _executeSearch(String query, {bool force = false}) async {
     final trimmed = query.trim();
     if (!force &&
@@ -131,9 +121,9 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  /// يغير فلتر القسم المحدد ويعيد تنفيذ البحث فورياً.
+  /// يغيّر القسم المختار ويعيد البحث.
   void _onSelectFilter(String? providerId) {
-    // التبديل بين القسم المحدد والكل
+    // النقر على القسم المختار يعيد إلى "الكل".
     final newId = (_selectedProviderId == providerId) ? null : providerId;
     setState(() {
       _selectedProviderId = newId;
@@ -141,7 +131,7 @@ class _SearchScreenState extends State<SearchScreen> {
     _executeSearch(_controller.text, force: true);
   }
 
-  /// يعالج النقر على نتيجة البحث إما بإرجاع الآية للمستدعي أو فتح الوجهة المرتبطة.
+  /// عند النقر: يعيد الآية للمستدعي، أو يفتح وجهة النتيجة.
   void _handleItemTap(SearchResultItem item) {
     if (widget.returnToCaller &&
         item.surahNumber != null &&
@@ -159,7 +149,6 @@ class _SearchScreenState extends State<SearchScreen> {
     item.onTap?.call(context);
   }
 
-  /// يبني واجهة شاشة البحث الشامل مع شرائح التصفية وقائمة النتائج.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -175,14 +164,13 @@ class _SearchScreenState extends State<SearchScreen> {
           title: Text(
             l10n.search,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         body: Column(
           children: [
-            // Futuristic Search Input Field
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
               child: Container(
@@ -203,21 +191,30 @@ class _SearchScreenState extends State<SearchScreen> {
                   onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     hintText: _selectedProviderId != null
-                        ? (l10n.isArabic
-                              ? 'ابحث في ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...'
-                              : 'Search in ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...')
+                        ? (l10n.searchInSection(
+                            providers
+                                .firstWhere(
+                                  (p) => p.id == _selectedProviderId,
+                                  orElse: () => providers.first,
+                                )
+                                .getSectionTitle(context),
+                          ))
                         : l10n.searchGlobalPlaceholder,
                     hintStyle: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       color: isDark
                           ? AppColors.nightSubtitle
                           : AppColors.daySubtitle,
                     ),
-                    prefixIcon: Icon(Icons.search_rounded, color: primaryColor),
+                    prefixIcon: Icon(
+                      AppIcons.magnifyingGlass,
+                      color: primaryColor,
+                    ),
                     suffixIcon: _controller.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, size: 20),
+                            tooltip: context.l10n.clearText,
+                            icon: const Icon(AppIcons.x, size: 20),
                             onPressed: () {
                               _controller.clear();
                               _executeSearch('', force: true);
@@ -235,24 +232,19 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
 
-            // Filter Chips Carousel
-            SizedBox(
-              height: 50,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
+            // شرائح التصفية تلتف إلى سطر ثانٍ بدل أن تُقص عند حافة الشاشة.
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+              child: Wrap(
+                runSpacing: 8,
                 children: [
-                  // "الكل" Filter Chip
                   Padding(
                     padding: const EdgeInsetsDirectional.only(end: 8),
                     child: FilterChip(
                       label: Text(
                         l10n.searchAll,
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 13,
                           fontWeight: _selectedProviderId == null
                               ? FontWeight.bold
@@ -285,7 +277,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
 
-                  // Per-section filter chips
                   ...providers.map((p) {
                     final isSelected = _selectedProviderId == p.id;
                     return Padding(
@@ -305,7 +296,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         label: Text(
                           p.getSectionTitle(context),
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 13,
                             fontWeight: isSelected
                                 ? FontWeight.bold
@@ -344,7 +335,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
             const Divider(height: 1),
 
-            // Search Content / Results Body
             Expanded(
               child: AnimatedSwitcher(
                 duration: AppMotion.shouldAnimate(context)
@@ -372,7 +362,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.search_rounded,
+                                  AppIcons.magnifyingGlass,
                                   size: 64,
                                   color: AppColors.border(context),
                                 ),
@@ -381,7 +371,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   l10n.searchGlobalPlaceholder,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontFamily: 'Amiri',
+                                    fontFamily: 'IBMPlexSansArabic',
                                     fontSize: 15,
                                     color: isDark
                                         ? AppColors.nightSubtitle
@@ -415,7 +405,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.search_off_rounded,
+                                  AppIcons.magnifyingGlassMinus,
                                   size: 56,
                                   color: isDark
                                       ? AppColors.nightSubtitle
@@ -425,16 +415,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                 Text(
                                   _selectedProviderId != null && !hasQuery
                                       ? (_selectedProviderId == 'quran'
-                                            ? (l10n.isArabic
-                                                  ? 'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)'
-                                                  : 'Type a word, surah name, or search by root (e.g. root:sbr)')
-                                            : (l10n.isArabic
-                                                  ? 'لا توجد عناصر محفوظة في هذا القسم بعد'
-                                                  : 'No saved items in this section yet'))
+                                            ? (l10n.searchEmptyHint)
+                                            : (l10n.sectionHasNoItems))
                                       : l10n.noSearchResults,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontFamily: 'Amiri',
+                                    fontFamily: 'IBMPlexSansArabic',
                                     fontSize: 15,
                                     color: isDark
                                         ? AppColors.nightSubtitle
@@ -446,7 +432,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   const SizedBox(height: 16),
                                   FuturisticButton.secondary(
                                     onPressed: () => _onSelectFilter(null),
-                                    icon: Icons.travel_explore_rounded,
+                                    icon: AppIcons.globe,
                                     label: l10n.searchInAllSections,
                                   ),
                                 ],
@@ -464,14 +450,13 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  /// يبني قائمة نتائج البحث مجمعة حسب القسم أو لقسم واحد محدد.
+  /// النتائج مجمّعة بالقسم، أو لقسم واحد مختار.
   Widget _buildResultsList(
     BuildContext context,
     bool isDark,
     List<SearchProvider> providers,
   ) {
     if (_selectedProviderId != null) {
-      // Single section results
       final provider = providers.firstWhere(
         (p) => p.id == _selectedProviderId,
         orElse: () => providers.first,
@@ -491,7 +476,6 @@ class _SearchScreenState extends State<SearchScreen> {
       );
     }
 
-    // Grouped results by provider
     final Map<String, List<SearchResultItem>> grouped = {};
     for (final item in _results) {
       grouped.putIfAbsent(item.providerId, () => []).add(item);
@@ -518,7 +502,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  /// يبني ترويسة مجموعة نتائج لقسم معين مع عداد النتائج الرقمي.
+  /// ترويسة مجموعة قسم مع عدد نتائجها.
   Widget _buildGroupHeader({
     required String title,
     required int count,
@@ -555,7 +539,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  /// يبني بطاقة عرض لنتيجة بحث مفردة بتصميم رقمي مستقبلي.
+  /// بطاقة نتيجة بحث.
   Widget _buildResultCard(
     BuildContext context,
     SearchResultItem item,
@@ -589,7 +573,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Text(
                     item.title,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14.5,
                       fontWeight: FontWeight.bold,
                       color: isDark

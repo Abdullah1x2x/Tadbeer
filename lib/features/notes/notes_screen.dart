@@ -1,50 +1,40 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../core/utils/note_pdf_exporter.dart';
-import '../../core/utils/tadbeer_journal_exporter.dart';
-import '../../features/notes/note_model.dart';
-import '../../features/quran/data/quran_repository.dart';
+import 'note_pdf_exporter.dart';
+import 'tadbeer_journal_exporter.dart';
+import '../../data/models/note_model.dart';
+import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import 'note_editor_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
-/// شاشة عرض وإدارة الخواطر المرتبطة بالآيات والملاحظات الحرة في قائمة موحدة.
+/// الخواطر كلها في قائمة واحدة، خواطر الآيات والحرة معاً، الأحدث أولاً.
 ///
-/// Notes screen displaying both Ayah Notes and Free Notes in a unified stream.
-///
-/// EDUCATIONAL NOTE:
-/// Unified Stream Architecture:
-/// - Displays both Ayah Reflections (tied to stable Ayah IDs) and Free Notes.
-/// - Sorts newest first.
-/// - Supports quick full-text search matching normalized Arabic content.
-/// - Individual notes can be exported to formatted A4 PDF documents with Amiri fonts.
-/// - Complete periodic reflection journals can be exported to PDF/Markdown.
+/// فيها بحث في النص، وتصدير الخاطرة PDF، وتصدير دفتر التدبر لفترة PDF أو
+/// Markdown.
 class NotesScreen extends StatefulWidget {
-  /// ينشئ شاشة الملاحظات والخواطر.
   const NotesScreen({super.key});
 
-  /// ينشئ حالة شاشة الملاحظات.
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }
 
-/// الحالة الداخلية لشاشة الملاحظات وإدارة البحث والتصدير والحذف.
 class _NotesScreenState extends State<NotesScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يفتح شاشة محرر الملاحظات لإنشاء ملاحظة جديدة أو تعديل ملاحظة قائمة.
+  /// يفتح المحرر لخاطرة جديدة، أو لتعديل [existing].
   void _openFreeNoteEditor([NoteItem? existing]) {
     Navigator.push(
       context,
@@ -54,7 +44,6 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  /// يبني واجهة شاشة الملاحظات مع شريط البحث وقائمة البطاقات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -67,7 +56,7 @@ class _NotesScreenState extends State<NotesScreen> {
           title: Text(
             l10n.notes,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -75,7 +64,7 @@ class _NotesScreenState extends State<NotesScreen> {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: FuturisticIconButton(
-                icon: Icons.auto_stories_rounded,
+                icon: AppIcons.bookOpenTextFill,
                 tooltip: l10n.exportTadbeerJournal,
                 size: 40,
                 iconSize: 20,
@@ -88,18 +77,17 @@ class _NotesScreenState extends State<NotesScreen> {
           onPressed: () => _openFreeNoteEditor(),
           backgroundColor: AppColors.olive,
           foregroundColor: Colors.white,
-          icon: const Icon(Icons.add),
+          icon: const Icon(AppIcons.plus),
           label: Text(
             l10n.newFreeNote,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
         body: Column(
           children: [
-            // Search field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Container(
@@ -120,19 +108,20 @@ class _NotesScreenState extends State<NotesScreen> {
                   decoration: InputDecoration(
                     hintText: l10n.searchNotesHint,
                     hintStyle: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       color: isDark
                           ? AppColors.nightSubtitle
                           : AppColors.daySubtitle,
                     ),
                     prefixIcon: Icon(
-                      Icons.search_rounded,
+                      AppIcons.magnifyingGlass,
                       color: isDark ? AppColors.darkPrimary : AppColors.olive,
                     ),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, size: 20),
+                            tooltip: context.l10n.clearText,
+                            icon: const Icon(AppIcons.x, size: 20),
                             onPressed: () {
                               _searchController.clear();
                               setState(() => _query = '');
@@ -150,7 +139,6 @@ class _NotesScreenState extends State<NotesScreen> {
               ),
             ),
 
-            // Notes List
             Expanded(
               child: ListenableBuilder(
                 listenable: UserDataStore.instance,
@@ -176,7 +164,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.edit_note,
+                            AppIcons.notePencil,
                             size: 64,
                             color: AppColors.border(context),
                           ),
@@ -186,7 +174,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                 ? l10n.noNotesYet
                                 : l10n.noSearchResults,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 16,
                               color: isDark
                                   ? AppColors.nightSubtitle
@@ -242,7 +230,7 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  /// يصدر الملاحظة المحددة إلى ملف PDF ويفتح نافذة المشاركة.
+  /// يصدّر الخاطرة PDF ويفتح المشاركة.
   void _exportNotePdf(NoteItem note) async {
     try {
       await NotePdfExporter.exportAndShareNote(note);
@@ -252,7 +240,7 @@ class _NotesScreenState extends State<NotesScreen> {
           SnackBar(
             content: Text(
               'تعذر تصدير الملاحظة إلى PDF: $e',
-              style: const TextStyle(fontFamily: 'Amiri'),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
           ),
         );
@@ -260,7 +248,7 @@ class _NotesScreenState extends State<NotesScreen> {
     }
   }
 
-  /// يعرض نافذة حوار لتأكيد حذف الملاحظة المختارة.
+  /// يطلب التأكيد قبل حذف الخاطرة.
   void _showDeleteConfirmDialog(NoteItem note) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -274,20 +262,20 @@ class _NotesScreenState extends State<NotesScreen> {
         title: Text(
           l10n.deleteConfirmTitle,
           style: const TextStyle(
-            fontFamily: 'Amiri',
+            fontFamily: 'IBMPlexSansArabic',
             fontWeight: FontWeight.bold,
           ),
         ),
         content: Text(
           l10n.deleteConfirmMessage,
-          style: const TextStyle(fontFamily: 'Amiri'),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               l10n.cancel,
-              style: const TextStyle(fontFamily: 'Amiri'),
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
           ),
           ElevatedButton(
@@ -299,7 +287,7 @@ class _NotesScreenState extends State<NotesScreen> {
             child: Text(
               l10n.delete,
               style: const TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -311,7 +299,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 }
 
-/// بطاقة عرض لملاحظة واحدة (سواء كانت مرتبطة بآية أو ملاحظة حرة).
+/// بطاقة خاطرة، على آية أو حرة.
 class _NoteCard extends StatelessWidget {
   final NoteItem note;
   final VoidCallback onTap;
@@ -319,7 +307,6 @@ class _NoteCard extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onExportPdf;
 
-  /// ينشئ بطاقة عرض الملاحظة.
   const _NoteCard({
     required this.note,
     required this.onTap,
@@ -328,7 +315,6 @@ class _NoteCard extends StatelessWidget {
     required this.onExportPdf,
   });
 
-  /// يبني واجهة بطاقة الملاحظة مع قائمة الخيارات السريعة.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -345,7 +331,7 @@ class _NoteCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header Row: Type badge + date + actions menu
+          // الرأس: نوع الخاطرة والتاريخ وقائمة الإجراءات.
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -371,7 +357,7 @@ class _NoteCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_horiz, size: 20),
+                    icon: appMenuIcon,
                     onSelected: (val) {
                       if (val == 'edit') onEdit();
                       if (val == 'pdf') onExportPdf();
@@ -379,46 +365,21 @@ class _NoteCard extends StatelessWidget {
                     },
                     itemBuilder: (_) => [
                       if (!note.isAyahNote)
-                        PopupMenuItem(
+                        appMenuItem(
                           value: 'edit',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.edit, size: 18),
-                              const SizedBox(width: 8),
-                              Text(l10n.edit),
-                            ],
-                          ),
+                          icon: AppIcons.pencilSimpleFill,
+                          label: l10n.edit,
                         ),
-                      PopupMenuItem(
+                      appMenuItem(
                         value: 'pdf',
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.picture_as_pdf,
-                              size: 18,
-                              color: AppColors.olive,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(l10n.exportPdf),
-                          ],
-                        ),
+                        icon: AppIcons.filePdfFill,
+                        label: l10n.exportPdf,
                       ),
-                      PopupMenuItem(
+                      appMenuItem(
                         value: 'delete',
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.delete_outline,
-                              size: 18,
-                              color: Colors.redAccent,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.delete,
-                              style: const TextStyle(color: Colors.redAccent),
-                            ),
-                          ],
-                        ),
+                        icon: AppIcons.trash,
+                        label: l10n.delete,
+                        destructive: true,
                       ),
                     ],
                   ),
@@ -428,7 +389,7 @@ class _NoteCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Ayah Note Quote Preview
+          // مقتطف الآية في خواطر الآيات.
           if (note.isAyahNote && note.ayahText != null) ...[
             Container(
               padding: const EdgeInsets.all(12),
@@ -468,7 +429,7 @@ class _NoteCard extends StatelessWidget {
                           style: TextStyle(
                             fontFamily:
                                 context.currentLanguage == AppLanguage.arabic
-                                ? 'Amiri'
+                                ? 'IBMPlexSansArabic'
                                 : null,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -498,14 +459,13 @@ class _NoteCard extends StatelessWidget {
             const SizedBox(height: 10),
           ],
 
-          // Free Note Title
           if (!note.isAyahNote &&
               note.title != null &&
               note.title!.isNotEmpty) ...[
             Text(
               note.title!,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: isDark
@@ -516,11 +476,10 @@ class _NoteCard extends StatelessWidget {
             const SizedBox(height: 6),
           ],
 
-          // Content preview
           Text(
             note.content,
             style: TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontSize: 14,
               height: 1.5,
               color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
@@ -536,7 +495,7 @@ class _NoteCard extends StatelessWidget {
               child: Text(
                 l10n.goToAyah,
                 style: TextStyle(
-                  fontFamily: 'Amiri',
+                  fontFamily: 'IBMPlexSansArabic',
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: accent,

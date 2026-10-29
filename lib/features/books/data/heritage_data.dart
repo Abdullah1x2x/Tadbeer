@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../book_model.dart';
-import '../curated_books.dart' show BookConfig, BookSectionConfig;
+import 'book_model.dart';
+import 'curated_books.dart' show BookConfig, BookSectionConfig;
 import 'sahifah_sajjadiyah_data.dart';
+import '../../../core/design_system/app_icons.dart';
 
 export 'sahifah_sajjadiyah_data.dart';
 
-// =============================================================================
-// 📚 أمهات كتب التراث الإسلامي وعلوم القرآن — المخصصة للمطور
-// =============================================================================
-//
-// 💡 كيف تضيف كتاباً أو فصلاً جديداً؟
-// -------------------------------------------------------------
-// - لإضافة فصول جديدة لكتاب موجود (مثل تحف العقول)، أضف [BookChapter] إلى قائمة [chapters].
-// - لإضافة كتاب تراثي جديد، أنشئ كائن [BookConfig] مع الفصول [BookChapter] أو [assetPath].
-// - أضف الكتاب إلى قسم 'تراث وأدعية أهل البيت' أو 'علوم وتدبر القرآن' في [curated_books.dart].
-// =============================================================================
+// كتب التراث وعلوم القرآن. لإضافة فصل أضف [BookChapter] إلى [chapters] الكتاب،
+// ولإضافة كتاب أنشئ [BookConfig] وأضفه إلى قسمه في curated_books.dart.
 
-/// كتاب نهج البلاغة الجامع لكبرى خطب ورسائل وعهود وحكم أمير المؤمنين علي بن أبي طالب عليه السلام.
+/// نهج البلاغة: خطب أمير المؤمنين علي بن أبي طالب عليه السلام ورسائله وحكمه.
 const nahjAlBalaghaBook = BookConfig(
   id: 'heritage_nahj_al_balagha',
   title: 'نهج البلاغة — روائع الخطب والعهود والحكم',
@@ -25,9 +18,9 @@ const nahjAlBalaghaBook = BookConfig(
   author: 'أمير المؤمنين علي بن أبي طالب عليه السلام',
   assetPath: null,
   estimatedMinutes: 50,
-  icon: Icons.auto_stories_rounded,
+  icon: AppIcons.bookOpenTextFill,
   badgeText: 'كبرى الخطب والرسائل والحكم',
-  badgeColor: Color(0xFF2E6F4D),
+  badgeColor: Color(0xFF2C4F7C),
   chapters: [
     BookChapter(
       title: 'الخطبة الأولى: في ابتداء خلق السماء والأرض، وخلق آدم',
@@ -70,7 +63,8 @@ const nahjAlBalaghaBook = BookConfig(
     ),
     BookChapter(
       title: 'الخطبة الشقشقية (الخطبة الثالثة)',
-      summary: 'البيان التاريخي الصادق في مسار الخلافة والأمة والصبر على المكاره',
+      summary:
+          'البيان التاريخي الصادق في مسار الخلافة والأمة والصبر على المكاره',
       content: '''أَمَا وَاللَّهِ لَقَدْ تَقَمَّصَهَا فُلاَنٌ وَإِنَّهُ لَيَعْلَمُ أَنَّ مَحَلِّي مِنْهَا مَحَلُّ الْقُطْبِ مِنَ الرَّحَى. يَنْحَدِرُ عَنِّي السَّيْلُ وَلاَ يَرْقَى إِلَيَّ الطَّيْرُ. فَسَدَلْتُ دُونَهَا ثَوْباً وَطَوَيْتُ عَنْهَا كَشْحاً. وَطَفِقْتُ أَرْتَئِي بَيْنَ أَنْ أَصُولَ بِيَدٍ جَذَّاءَ أَوْ أَصْبِرَ عَلَى طِخْيَةٍ عَمْيَاءَ يَهْرَمُ فِيهَا الْكَبِيرُ. وَيَشِيبُ فِيهَا الصَّغِيرُ. وَيَكْدَحُ فِيهاَ مُؤْمِنٌ حَتَّى يَلْقى رَبَّهُ فَرَأَيْتُ أَنَّ الصَّبْرَ عَلَى هَاتَا أَحْجَى فَصَبَرْتُ وَفِي الْعَيْنِ قَذًى. وَفِي الْحَلْقِ شَجاً أَرَى تُرَاثِي نَهْباً حَتَّى مَضَى الأَوَّلُ لِسَبِيلِهِ فَأَدْلَى بِهَا إِلَى فُلاَنٍ بَعْدَهُ 
 
 (ثُمَّ تَمَثَّلَ بِقَوْلِ الأَعْشَى):
@@ -202,21 +196,20 @@ const nahjAlBalaghaBook = BookConfig(
 • وَقَالَ عَلَيْهِ السَّلَامُ: أَشْرَفُ الْغِنَى تَرْكُ الْمُنَى.
 • وَقَالَ عَلَيْهِ السَّلَامُ: مَنْ أَصْلَحَ مَا بَيْنَهُ وَبَيْنَ اللَّهِ، أَصْلَحَ اللَّهُ مَا بَيْنَهُ وَبَيْنَ النَّاسِ، وَمَنْ أَصْلَحَ أَمْرَ آخِرَتِهِ، أَصْلَحَ اللَّهُ لَهُ أَمْرَ دُنْيَاهُ، وَمَنْ كَانَ لَهُ مِنْ نَفْسِهِ وَاعِظٌ، كَانَ عَلَيْهِ مِنَ اللَّهِ حَافِظٌ.''',
     ),
-],
+  ],
 );
 
-/// كتاب رسالة الحقوق الكاملة للإمام علي بن الحسين زين العابدين عليه السلام.
+/// رسالة الحقوق للإمام علي بن الحسين زين العابدين عليه السلام.
 const risalatAlHuquqBook = BookConfig(
   id: 'heritage_risalat_al_huquq',
   title: 'رسالة الحقوق',
-  subtitle:
-      'المنظومة الأخلاقية والإنسانية الكاملة في حقوق الله والنفس والجوارح والناس',
+  subtitle: 'المنظومة الأخلاقية والإنسانية الكاملة في حقوق الله والنفس والجوارح والناس',
   author: 'الإمام علي بن الحسين (زين العابدين) عليه السلام',
   assetPath: null,
   estimatedMinutes: 35,
-  icon: Icons.balance_rounded,
+  icon: AppIcons.scales,
   badgeText: 'رسالة الحقوق (٥٠ حقاً)',
-  badgeColor: Color(0xFF2E6F4D),
+  badgeColor: Color(0xFF2C4F7C),
   chapters: [
     BookChapter(
       title: 'مقدمة الرسالة وبيان أقسام الحقوق',
@@ -339,20 +332,21 @@ const risalatAlHuquqBook = BookConfig(
 
 فَهَذِهِ خَمْسُونَ حَقّاً مُحِيطَةً بِكَ لَا تَخْرُجُ مِنْهَا فِي حَالٍ مِنَ الْأَحْوَالِ، يَجِبُ عَلَيْكَ رِعَايَتُهَا وَالْعَمَلُ فِي تَأْدِيَتِهَا، وَاللَّهُ الْمُسْتَعَانُ وَعَلَيْهِ التُّكْلَانُ.''',
     ),
-],
+  ],
 );
 
-/// كتاب تحف العقول عن آل الرسول للحراني.
+/// تحف العقول عن آل الرسول، للحرّاني.
 const tuhafAlUqulBook = BookConfig(
   id: 'heritage_tuhaf_al_uqul',
   title: 'تحف العقول عن آل الرسول',
   subtitle: 'جامع مواعظ ووصايا وحكم النبي الأكرم وأئمة أهل البيت عليهم السلام',
-  author: 'أبي محمد الحسن بن علي بن الحسين بن شعبة الحراني (القرن الرابع الهجري)',
+  author:
+      'أبي محمد الحسن بن علي بن الحسين بن شعبة الحراني (القرن الرابع الهجري)',
   assetPath: null,
   estimatedMinutes: 45,
-  icon: Icons.auto_stories_rounded,
+  icon: AppIcons.bookOpenTextFill,
   badgeText: 'جامع مواعظ ووصايا المعصومين',
-  badgeColor: Color(0xFF2E6F4D),
+  badgeColor: Color(0xFF2C4F7C),
   chapters: [
     BookChapter(
       title: 'مواعظ وحكم النبي محمد صلى الله عليه وآله',
@@ -393,14 +387,13 @@ const tuhafAlUqulBook = BookConfig(
   ],
 );
 
-/// قسم تراث وأدعية أهل البيت (عليهم السلام) - يضم أمهات الكتب الكاملة دون قيود نشر.
+/// قسم تراث وأدعية أهل البيت (عليهم السلام): أمهات الكتب كاملة.
 const ahlulbaytHeritageSection = BookSectionConfig(
   name: 'تراث وأدعية أهل البيت (عليهم السلام)',
-  description:
-      'أشرف كتب ومناجاة وأدعية أئمة الهدى ومختارات البلاغة والتربية الإيمانية الكاملة',
-  icon: Icons.mosque_rounded,
-  color: Color(0xFF2E6F4D),
-  countLabel: 'أمهات كتب كاملة • 54 دعاء و50 حقاً',
+  description: 'أشرف كتب ومناجاة وأدعية أئمة الهدى ومختارات البلاغة والتربية الإيمانية الكاملة',
+  icon: AppIcons.mosque,
+  color: Color(0xFF2C4F7C),
+  countLabel: 'أمهات كتب كاملة • ٥٤ دعاء و٥٠ حقاً',
   books: [
     sahifahSajjadiyahBook,
     nahjAlBalaghaBook,
@@ -409,12 +402,13 @@ const ahlulbaytHeritageSection = BookSectionConfig(
   ],
 );
 
-/// قسم علوم وتدبر القرآن الكريم.
+/// قسم علوم وتدبر القرآن.
 const quranSciencesSection = BookSectionConfig(
   name: 'علوم وتدبر القرآن الكريم',
-  description: 'أمهات كتب آداب التلاوة وقواعد التدبر الإيماني وأخلاق حملة القرآن',
-  icon: Icons.menu_book_rounded,
-  color: Color(0xFF2C7A7B),
+  description:
+      'أمهات كتب آداب التلاوة وقواعد التدبر الإيماني وأخلاق حملة القرآن',
+  icon: AppIcons.bookOpenFill,
+  color: Color(0xFF3A6EA5),
   countLabel: 'كتب تدبرية وتفسيرية',
   books: [
     BookConfig(
@@ -424,7 +418,7 @@ const quranSciencesSection = BookSectionConfig(
       author: 'الإمام أبي بكر محمد بن الحسين الآجري (ت 360 هـ)',
       assetPath: 'assets/books/akhlaq_hamalat_quran.pdf',
       estimatedMinutes: 20,
-      icon: Icons.import_contacts_rounded,
+      icon: AppIcons.bookOpen,
       chapters: [
         BookChapter(
           title: 'فضل حملة القرآن الكريم وقارئيه',
@@ -457,12 +451,11 @@ const quranSciencesSection = BookSectionConfig(
     BookConfig(
       id: 'heritage_qawaid_tadabbur_quran',
       title: 'قواعد وأصول في تدبر القرآن الكريم',
-      subtitle:
-          'المنهج العلمي والروحي لفهم كلام رب العالمين واستلهام هدايته',
+      subtitle: 'المنهج العلمي والروحي لفهم كلام رب العالمين واستلهام هدايته',
       author: 'دراسة جامعة محققة من أصول التفسير والتدبر',
       assetPath: 'assets/books/qawaid_tadabbur_quran.pdf',
       estimatedMinutes: 25,
-      icon: Icons.lightbulb_rounded,
+      icon: AppIcons.lightbulbFill,
       chapters: [
         BookChapter(
           title: 'القاعدة الأولى: حقيقة التدبر القرآني وغايته',
@@ -500,7 +493,7 @@ const quranSciencesSection = BookSectionConfig(
       author: 'الإمام يحيى بن شرف النووي (ت 676 هـ)',
       assetPath: 'assets/books/al_tibyan.pdf',
       estimatedMinutes: 25,
-      icon: Icons.menu_book_rounded,
+      icon: AppIcons.bookOpenFill,
       chapters: [
         BookChapter(
           title: 'فضل تلاوة القرآن وسالكي طريقه',

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/app/theme.dart';
+import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/core/design_system/design_system.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   group('FuturisticBadge Tests', () {
     testWidgets('renders label and custom color', (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
             body: Center(
               child: FuturisticBadge(
@@ -31,7 +32,7 @@ void main() {
             body: Center(
               child: FuturisticBadge(
                 label: 'مباشر',
-                icon: Icons.flash_on,
+                icon: AppIcons.lightning,
                 showDot: true,
               ),
             ),
@@ -40,7 +41,7 @@ void main() {
       );
 
       expect(find.text('مباشر'), findsOneWidget);
-      expect(find.byIcon(Icons.flash_on), findsOneWidget);
+      expect(find.byIcon(AppIcons.lightning), findsOneWidget);
     });
   });
 
@@ -54,7 +55,7 @@ void main() {
             body: Center(
               child: FuturisticButton(
                 label: 'حفظ التغييرات',
-                icon: Icons.check,
+                icon: AppIcons.check,
                 onPressed: () {
                   tapped = true;
                 },
@@ -65,7 +66,7 @@ void main() {
       );
 
       expect(find.text('حفظ التغييرات'), findsOneWidget);
-      expect(find.byIcon(Icons.check), findsOneWidget);
+      expect(find.byIcon(AppIcons.check), findsOneWidget);
 
       await tester.tap(find.byType(FuturisticButton));
       await tester.pump();
@@ -125,7 +126,7 @@ void main() {
           home: Scaffold(
             body: Center(
               child: FuturisticIconButton(
-                icon: Icons.bookmark,
+                icon: AppIcons.bookmarkSimpleFill,
                 tooltip: 'إشارة',
                 onTap: () {
                   tapped = true;
@@ -136,7 +137,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(Icons.bookmark), findsOneWidget);
+      expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsOneWidget);
 
       await tester.tap(find.byType(FuturisticIconButton));
       await tester.pump();
@@ -154,7 +155,7 @@ void main() {
           home: Scaffold(
             body: Center(
               child: FuturisticIconButton(
-                icon: Icons.chevron_left,
+                icon: AppIcons.caretLeft,
                 tooltip: 'السابق',
                 isEnabled: false,
                 onTap: () {

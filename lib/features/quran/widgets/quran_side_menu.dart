@@ -1,46 +1,42 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../../settings/settings_screen.dart';
+
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
-/// Side drawer menu providing direct jump navigation across Surahs and Juzs,
-/// as well as fast access to Home and Settings.
-/// القائمة الجانبية للمصحف للتنقل المباشر بين السور والأجزاء والوصول السريع للرئيسية والإعدادات.
+import '../../../core/design_system/app_icons.dart';
+
+/// القائمة الجانبية للمصحف: الانتقال إلى السور والأجزاء، والرئيسية والإعدادات.
 class QuranSideMenu extends StatefulWidget {
   final int currentPage;
   final ValueChanged<int> onPageSelected;
 
-  /// ينشئ ودجت القائمة الجانبية للمصحف الشريف.
   const QuranSideMenu({
     super.key,
     required this.currentPage,
     required this.onPageSelected,
   });
 
-  /// ينشئ الحالة التفاعلية للقائمة الجانبية.
   @override
   State<QuranSideMenu> createState() => _QuranSideMenuState();
 }
 
-/// الحالة التفاعلية للقائمة الجانبية للمصحف الشريف.
 class _QuranSideMenuState extends State<QuranSideMenu>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _filter = '';
 
-  /// يهيئ متحكم التبويبات بين قائمتي السور والأجزاء.
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  /// يحرر متحكم التبويبات وحقل البحث عند إغلاق القائمة.
   @override
   void dispose() {
     _tabController.dispose();
@@ -48,20 +44,17 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     super.dispose();
   }
 
-  /// يغلق القائمة الجانبية ويعود إلى الشاشة الرئيسية للتطبيق.
   void _navigateToHome(BuildContext context) {
     Navigator.of(context).pop(); // close drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  /// يغلق القائمة الجانبية ويفتح شاشة الإعدادات.
   void _navigateToSettings(BuildContext context) {
     Navigator.of(context).pop(); // close drawer
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
   }
 
-  /// يبني واجهة القائمة الجانبية مع التبويبات وحقل تصفية السور.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -75,10 +68,9 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       child: SafeArea(
         child: Column(
           children: [
-            // Top App Bar / Drawer Header
             _buildDrawerHeader(context, isDark, l10n),
 
-            // Tab bar: Surahs / Juzs
+            // التبويب: السور / الأجزاء.
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
@@ -113,7 +105,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               ),
             ),
 
-            // Search filter for surahs
+            // تصفية السور.
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: TextField(
@@ -127,14 +119,15 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                         ? AppColors.nightSubtitle
                         : AppColors.daySubtitle,
                   ),
-                  prefixIcon: const Icon(
-                    Icons.search,
+                  prefixIcon: Icon(
+                    AppIcons.magnifyingGlass,
                     size: 18,
                     color: AppColors.olive,
                   ),
                   suffixIcon: _filter.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.clear, size: 16),
+                          tooltip: context.l10n.clearText,
+                          icon: const Icon(AppIcons.x, size: 16),
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _filter = '');
@@ -161,7 +154,6 @@ class _QuranSideMenuState extends State<QuranSideMenu>
 
             const SizedBox(height: 4),
 
-            // Tab View
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -177,7 +169,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     );
   }
 
-  /// يبني ترويسة القائمة الجانبية التي تعرض اسم التطبيق وأزرار الرئيسية والإعدادات.
+  /// ترويسة القائمة: اسم التطبيق وزرّا الرئيسية والإعدادات.
   Widget _buildDrawerHeader(
     BuildContext context,
     bool isDark,
@@ -204,7 +196,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               color: AppColors.olive.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               FlutterIslamicIcons.quran2,
               color: AppColors.olive,
               size: 20,
@@ -227,7 +219,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                 Text(
                   l10n.offlineQuranAndReflection,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: isDark
                         ? AppColors.nightSubtitle
                         : AppColors.daySubtitle,
@@ -236,16 +228,14 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               ],
             ),
           ),
-          // Home Button
           IconButton(
-            icon: const Icon(Icons.home_outlined),
+            icon: const Icon(AppIcons.house),
             tooltip: l10n.home,
             color: AppColors.olive,
             onPressed: () => _navigateToHome(context),
           ),
-          // Settings Button
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(AppIcons.gear),
             tooltip: l10n.settings,
             color: AppColors.olive,
             onPressed: () => _navigateToSettings(context),
@@ -255,7 +245,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     );
   }
 
-  /// يبني قائمة سور القرآن الكريم القابلة للتصفية والانتقال المباشر.
+  /// السور، مع تصفية وانتقال مباشر.
   Widget _buildSurahsList(
     BuildContext context,
     QuranRepository repo,
@@ -281,69 +271,14 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             widget.currentPage >= surah.pageStart &&
             widget.currentPage <= surah.pageEnd;
 
-        return ListTile(
-          dense: true,
-          selected: isCurrent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          selectedTileColor: AppColors.olive.withValues(alpha: 0.12),
-          leading: Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: isCurrent
-                  ? AppColors.olive
-                  : (isDark ? AppColors.darkSurface : AppColors.comsilk),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: isCurrent
-                    ? AppColors.olive
-                    : AppColors.olive.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Text(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(surah.number)
-                  : surah.number.toString(),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: isCurrent
-                    ? Colors.white
-                    : (isDark ? AppColors.comsilk : AppColors.oliveDark),
-              ),
-            ),
-          ),
-          title: Text(
-            surah.name,
-            style: TextStyle(
-              fontFamily: 'Amiri',
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
-            ),
-          ),
-          subtitle: Text(
-            '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(surah.ayahCount) : surah.ayahCount)}',
-            style: TextStyle(
-              fontSize: 11,
-              color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
-            ),
-          ),
-          trailing: Text(
-            context.l10n.pageAbbr(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(surah.pageStart)
-                  : surah.pageStart,
-            ),
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: AppColors.olive,
-            ),
-          ),
+        return _IndexTile(
+          number: surah.number,
+          title: surah.name,
+          titleFontSize: 16,
+          subtitle:
+              '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(_digits(context, surah.ayahCount))}',
+          page: surah.pageStart,
+          isCurrent: isCurrent,
           onTap: () {
             Navigator.pop(context);
             widget.onPageSelected(surah.pageStart);
@@ -353,7 +288,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     );
   }
 
-  /// يبني قائمة أجزاء القرآن الكريم الثلاثين للانتقال المباشر إلى بداية كل جزء.
+  /// الأجزاء الثلاثون، تنقل إلى بداية كل جزء.
   Widget _buildJuzsList(
     BuildContext context,
     QuranRepository repo,
@@ -377,84 +312,113 @@ class _QuranSideMenuState extends State<QuranSideMenu>
         final surah = repo.getSurah(firstAyah.surahNumber);
         final isCurrent = repo.getPage(widget.currentPage).juzNumber == juzNum;
 
-        return ListTile(
-          dense: true,
-          selected: isCurrent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+        return _IndexTile(
+          number: juzNum,
+          title: context.l10n.juzAbbr(_digits(context, juzNum)),
+          titleFontSize: 14,
+          subtitle: context.l10n.ayahReference(
+            surah.name,
+            _digits(context, firstAyah.ayahNumber),
           ),
-          selectedTileColor: AppColors.olive.withValues(alpha: 0.12),
-          leading: Container(
-            width: 32,
-            height: 32,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: isCurrent
-                  ? AppColors.olive
-                  : (isDark ? AppColors.darkSurface : AppColors.comsilk),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: isCurrent
-                    ? AppColors.olive
-                    : AppColors.olive.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Text(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(juzNum)
-                  : juzNum.toString(),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: isCurrent
-                    ? Colors.white
-                    : (isDark ? AppColors.comsilk : AppColors.oliveDark),
-              ),
-            ),
-          ),
-          title: Text(
-            context.l10n.juzAbbr(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(juzNum)
-                  : juzNum,
-            ),
-            style: TextStyle(
-              fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
-            ),
-          ),
-          subtitle: Text(
-            context.l10n.ayahReference(
-              surah.name,
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(firstAyah.ayahNumber)
-                  : firstAyah.ayahNumber,
-            ),
-            style: TextStyle(
-              fontSize: 11,
-              color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
-            ),
-          ),
-          trailing: Text(
-            context.l10n.pageAbbr(
-              context.currentLanguage == AppLanguage.arabic
-                  ? ArabicSearchNormalizer.toArabicDigits(startPage.pageNumber)
-                  : startPage.pageNumber,
-            ),
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: AppColors.olive,
-            ),
-          ),
+          page: startPage.pageNumber,
+          isCurrent: isCurrent,
           onTap: () {
             Navigator.pop(context);
             widget.onPageSelected(startPage.pageNumber);
           },
         );
       },
+    );
+  }
+}
+
+/// الرقم بأرقام الواجهة: عربية هندية في الواجهة العربية.
+Object _digits(BuildContext context, int n) =>
+    context.currentLanguage == AppLanguage.arabic
+    ? ArabicSearchNormalizer.toArabicDigits(n)
+    : n;
+
+/// سطر في فهرس السور أو الأجزاء: رقمه، واسمه، وصفحة بدايته.
+class _IndexTile extends StatelessWidget {
+  final int number;
+  final String title;
+  final double titleFontSize;
+  final String subtitle;
+  final int page;
+
+  /// هل الصفحة الحالية داخل هذا القسم.
+  final bool isCurrent;
+  final VoidCallback onTap;
+
+  const _IndexTile({
+    required this.number,
+    required this.title,
+    required this.titleFontSize,
+    required this.subtitle,
+    required this.page,
+    required this.isCurrent,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return ListTile(
+      dense: true,
+      selected: isCurrent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      selectedTileColor: AppColors.olive.withValues(alpha: 0.12),
+      leading: Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isCurrent
+              ? AppColors.olive
+              : (isDark ? AppColors.darkSurface : AppColors.comsilk),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isCurrent
+                ? AppColors.olive
+                : AppColors.olive.withValues(alpha: 0.3),
+          ),
+        ),
+        child: Text(
+          '${_digits(context, number)}',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+            color: isCurrent
+                ? Colors.white
+                : (isDark ? AppColors.comsilk : AppColors.oliveDark),
+          ),
+        ),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'IBMPlexSansArabic',
+          fontSize: titleFontSize,
+          fontWeight: FontWeight.bold,
+          color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(
+          fontSize: 12,
+          color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
+        ),
+      ),
+      trailing: Text(
+        context.l10n.pageAbbr(_digits(context, page)),
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          color: AppColors.olive,
+        ),
+      ),
+      onTap: onTap,
     );
   }
 }

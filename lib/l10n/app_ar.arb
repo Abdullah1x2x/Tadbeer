@@ -1,0 +1,1329 @@
+{
+  "@@locale": "ar",
+  "appName": "تَدْبِير",
+  "appTagline": "قراءة وتدبّر القرآن الكريم",
+  "home": "الرئيسية",
+  "quran": "المصحف",
+  "notes": "الملاحظات",
+  "bookmarks": "المحفوظات",
+  "highlights": "المميزة",
+  "search": "البحث",
+  "settings": "الإعدادات",
+  "reminders": "التنبيهات",
+  "ayahLinks": "روابط الآيات",
+  "backup": "النسخ الاحتياطي",
+  "duas": "الأدعية",
+  "quranDuas": "أدعية من القرآن",
+  "tasbeehAndIstighfar": "استغفار وتسبيح",
+  "tasbeehSubtitle": "سبحة إلكترونية وأوراد الاستغفار والتسبيح",
+  "booksAndBooklets": "كتب وملازم",
+  "booksSubtitle": "مكتبة الملازم التدبرية ومختصرات علوم القرآن",
+  "about": "عن تَدْبِير",
+  "more": "المزيد",
+  "tadbeerVerseRef": "سورة محمد · آية ٢٤",
+  "tadbeerMessage": "عِش مع القرآن، وتأمّل آياته، وتدبّر معانيها، واربط بين الآيات، ودوّن خواطرك، واستلهم هدايته.",
+  "surahs": "السور",
+  "juzs": "الأجزاء",
+  "jumpToPage": "الانتقال إلى صفحة",
+  "go": "انتقال",
+  "cancel": "إلغاء",
+  "options": "خيارات",
+  "mushafMap": "خريطة المصحف",
+  "mapTab": "الخريطة",
+  "reflectionLog": "سجل التدبر",
+  "noReflectionsYet": "لا توجد وقفات تدبر بعد",
+  "reflectionsEmptyHint": "اضغط مطولاً على آية واختر «وقفة تدبر» لتبدأ سجلك.",
+  "guidedPathways": "مسارات التدبر",
+  "guidedPathwaysHint": "رحلات قصيرة: آية كل يوم مع إضاءة وسؤال تدبر. أتمّ اليوم ليُفتح التالي.",
+  "completeDay": "أتممت اليوم",
+  "pathwayUnlockHint": "أتمّ يوم اليوم ليُفتح الذي بعده",
+  "pathwayComplete": "أتممت المسار، بارك الله فيك",
+  "memorization": "الحفظ والمراجعة",
+  "memorizationHint": "اختر سورة: تظهر الآية مخفية إلا كلمتها الأولى، استحضرها ثم اكشفها وقيّم نفسك. نعيد عليك ما تحتاجه في الوقت المناسب.",
+  "nothingDueToday": "لا مراجعة مستحقة اليوم",
+  "chooseSurahToMemorize": "اختر سورة للحفظ",
+  "tapToReveal": "اضغط لكشف الآية",
+  "needsReview": "أحتاج مراجعة",
+  "mastered": "أتقنتها",
+  "sessionDone": "أحسنت! انتهت الجلسة",
+  "ayahOfTheDay": "آية اليوم",
+  "reflectOnIt": "تدبّرها",
+  "fromMushafStart": "من أول المصحف",
+  "setKhatmaPosition": "تعديل موضعي في الختمة",
+  "pageNumberLabel": "رقم الصفحة",
+  "markPortionDone": "أتممت ورد اليوم",
+  "reflectionsThisMonth": "تدبرات هذا الشهر",
+  "portionReminderPrompt": "متى نذكّرك بوردك يومياً؟",
+  "portionReminderSet": "سنذكّرك بوردك كل يوم",
+  "reflectedToday": "تدبّرتها اليوم، بارك الله فيك",
+  "addToMemorization": "أضف للحفظ",
+  "memorizedDone": "تم الحفظ",
+  "journeyBackupSection": "الختمة والإحصاءات والحفظ والمسارات",
+  "dailyJourney": "رحلة يومية",
+  "adhkarReminders": "تذكير الأذكار",
+  "morningAdhkarReminder": "أذكار الصباح",
+  "eveningAdhkarReminder": "أذكار المساء",
+  "monthlyReport": "تقرير الشهر",
+  "activeDaysLabel": "يوم نشاط",
+  "reflectionsLabel": "وقفة تدبر",
+  "memorizedLabel": "آية محفوظة",
+  "continueWhereYouLeft": "أكمل من حيث توقفت",
+  "adhkarKind": "الأذكار",
+  "weeklyGoals": "أهداف الأسبوع",
+  "editGoals": "تعديل الأهداف",
+  "pagesGoal": "صفحات",
+  "reflectionsGoal": "وقفات تدبر",
+  "focusMode": "وضع التأمل",
+  "breathe": "تنفّس بهدوء",
+  "breatheIn": "شهيق…",
+  "breatheOut": "زفير…",
+  "swipeForNextAyah": "اسحب للآية التالية",
+  "myJourney": "رحلتي مع القرآن",
+  "startKhatmaTitle": "ابدأ ختمتك",
+  "startKhatmaHint": "اختر المدة، وسنقسّم المصحف إلى ورد يومي ونتابع تقدمك تلقائياً.",
+  "startKhatma": "ابدأ الختمة",
+  "cancelKhatma": "إلغاء الختمة",
+  "cancelKhatmaConfirm": "سيُحذف تقدم هذه الختمة، ويبقى سجل قراءتك وإحصاءاتك.",
+  "onTrack": "ملتزم بالخطة",
+  "todayPortion": "ورد اليوم",
+  "keepReading": "واصل القراءة",
+  "streakDays": "أيام متتالية",
+  "totalPagesRead": "صفحة مقروءة",
+  "khatmasLabel": "ختمات",
+  "lastSevenDays": "آخر ٧ أيام",
+  "close": "إغلاق",
+  "clearText": "مسح",
+  "decrease": "إنقاص",
+  "increase": "زيادة",
+  "sajdah": "سجدة تلاوة",
+  "addNote": "ملاحظة",
+  "saveBookmark": "حفظ",
+  "removeBookmark": "إزالة الحفظ",
+  "highlight": "تمييز",
+  "removeHighlight": "إزالة التمييز",
+  "copy": "نسخ",
+  "share": "مشاركة",
+  "shareAsImage": "مشاركة الآية كبطاقة",
+  "shareImage": "مشاركة الصورة",
+  "cardSquare": "منشور",
+  "cardStory": "قصة",
+  "cardDark": "داكن",
+  "cardLight": "فاتح",
+  "copiedToClipboard": "تم نسخ الآية إلى الحافظة",
+  "newNote": "ملاحظة جديدة",
+  "newFreeNote": "ملاحظة حرة",
+  "noteTitle": "عنوان الملاحظة",
+  "noteContent": "اكتب تدبرك أو ملاحظتك هنا...",
+  "save": "حفظ",
+  "delete": "حذف",
+  "deleteConfirmTitle": "تأكيد الحذف",
+  "deleteConfirmMessage": "هل أنت متأكد من رغبتك في الحذف؟ لا يمكن التراجع عن هذا الإجراء.",
+  "exportPdf": "تصدير PDF",
+  "noNotesYet": "لا توجد ملاحظات بعد",
+  "freeNoteLabel": "ملاحظة حرة",
+  "ayahNoteLabel": "تدبر آية",
+  "goToAyah": "الذهاب إلى الآية",
+  "noBookmarksYet": "لا توجد آيات محفوظة بعد",
+  "noHighlightsYet": "لا توجد آيات مميزة بعد",
+  "bookmarksEmptyHint": "اضغط مطولاً على أي آية في المصحف واختر «حفظ» لتجدها هنا.",
+  "highlightsEmptyHint": "اضغط مطولاً على أي آية في المصحف واختر «تمييز» لتلوينها.",
+  "openMushaf": "فتح المصحف",
+  "searchGlobalPlaceholder": "ابحث في القرآن، الملاحظات، التدبر، والمزيد...",
+  "searchAll": "الكل",
+  "searchBookmarksHint": "ابحث في الآيات المحفوظة...",
+  "searchHighlightsHint": "ابحث في الآيات المميزة...",
+  "searchRemindersHint": "ابحث في التنبيهات...",
+  "searchNotesHint": "ابحث في الملاحظات...",
+  "tadbeerSectionTitle": "التدبر",
+  "wordMeanings": "معاني الكلمات",
+  "wordMeaningsScreenTitle": "معاني كلمات القرآن",
+  "approvedSourcesTitle": "المصادر المعتمدة",
+  "searchInAllSections": "البحث في جميع الأقسام",
+  "filterSearchTitle": "تصفية نطاق البحث",
+  "selectSearchSection": "اختر القسم المطلوب للبحث فيه مباشرة",
+  "noSearchResults": "لا توجد نتائج مطابقة",
+  "addReminder": "إضافة تنبيه",
+  "editReminder": "تعديل التنبيه",
+  "reminderTitle": "عنوان التنبيه (اختياري)",
+  "defaultReminderTitle": "ورد القرآن الكريم",
+  "reminderTime": "وقت التنبيه",
+  "repeatDaily": "تكرار يومي",
+  "repeatOnce": "مرة واحدة",
+  "selectDays": "أيام التكرار",
+  "noRemindersYet": "لا توجد تنبيهات قراءة مضافة",
+  "remindersEmptyHint": "أضف تنبيهاً يذكّرك بوِردك اليومي من زر «إضافة تنبيه» في الأسفل.",
+  "newAyahLink": "إنشاء رابط آيات",
+  "addToAyahLink": "إضافة إلى رابط آيات",
+  "networkView": "شبكة",
+  "orderedView": "مرتب",
+  "autoLayout": "إعادة الترتيب تلقائيًا",
+  "linkTitle": "عنوان الرابط / الفكرة",
+  "linkTitleHint": "مثال: الصبر عند الشدة",
+  "linkDescription": "الملاحظة العامة / الفكرة (اختيارية)",
+  "linkDescriptionHint": "سجل تأملك أو الفكرة التي تجمع هذه الآيات...",
+  "addVerse": "إضافة آية",
+  "resetToCenter": "العودة إلى الوسط",
+  "noAyahLinksYet": "لا توجد روابط آيات بعد",
+  "ayahLinksSubtitle": "خريطة شخصية لربط الآيات واستكشاف العلاقات التدبرية",
+  "exportBackup": "تصدير نسخة احتياطية",
+  "restoreBackup": "استعادة نسخة احتياطية",
+  "restoreWarningTitle": "تنبيه هام قبل الاستعادة",
+  "restoreWarningMessage": "استعادة النسخة الاحتياطية ستستبدل بياناتك الحالية بالكامل ولن تدمجها. هل ترغب بالاستمرار؟",
+  "confirmRestore": "استبدال واستعادة",
+  "saveToDeviceFiles": "حفظ في ملفات الجهاز",
+  "shareViaApps": "مشاركة عبر التطبيقات",
+  "backupSavedSuccess": "تم حفظ النسخة الاحتياطية في الملفات بنجاح",
+  "restoreSuccess": "تمت استعادة البيانات بنجاح",
+  "corruptBackupError": "الملف غير صالح أو كلمة المرور غير صحيحة. تم إلغاء الاستعادة لحماية بياناتك.",
+  "dataSaveFailed": "تعذّر حفظ بعض بياناتك على الجهاز. أعد المحاولة، وإن تكررت المشكلة فصدّر نسخة احتياطية.",
+  "dataLoadFailed": "تعذّر قراءة بعض بياناتك المحفوظة. لم يُحذف شيء؛ صدّر نسخة احتياطية احتياطاً.",
+  "corruptItemsSkipped": "تم تخطي عناصر محفوظة تالفة ولم تُحذف من الجهاز.",
+  "enterBackupPassword": "كلمة مرور التشفير (بدونها يستطيع أي شخص فتح الملف)",
+  "appearance": "المظهر",
+  "themeMode": "السمة",
+  "light": "فاتح",
+  "dark": "داكن",
+  "system": "تلقائي (حسب النظام)",
+  "languageTitle": "اللغة",
+  "fontSize": "حجم خط المصحف",
+  "mushafPaperTone": "لون ورق المصحف",
+  "paperClassic": "كلاسيكي",
+  "paperSepia": "سيبيا دافئ",
+  "aboutContent": "تدبير مشروع قرآني يهدف إلى تعزيز التدبّر في آيات الله، ومساعدة المسلم على التأمل في معاني القرآن الكريم، والتفكّر في هداياته، واستحضار أثر آياته في الحياة والعمل بها، لتكون علاقتنا بالقرآن قائمة على التدبّر والفهم والاهتداء، لا على التلاوة وحدها.",
+  "resumeReading": "استئناف القراءة",
+  "additionalTools": "أدوات إضافية",
+  "quranAndSunnahDuas": "أدعية الكتاب والسنة",
+  "quranDuasTitle": "أدعية من القرآن",
+  "quranDuasSubtitle": "أدعية الأنبياء والصالحين وخواتيم السور المأثورة في كتاب الله",
+  "morningEveningAdhkarTitle": "أذكار الصباح والمساء",
+  "morningEveningAdhkarSubtitle": "أذكار اليوم والليلة وحصن المسلم مع عدادات تفاعلية",
+  "ahlulbaytDuasTitle": "أدعية مأثورة عن أهل البيت",
+  "ahlulbaytDuasSubtitle": "الصحيفة السجادية ومناجاة وأدعية الأئمة الأطهار",
+  "sunnahDuasTitle": "أدعية من السنة النبوية",
+  "sunnahDuasSubtitle": "أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب",
+  "jawamiDuasTitle": "جوامع الدعاء والرجاء",
+  "jawamiDuasSubtitle": "أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية",
+  "wordsOfQuran": "غريب ألفاظ القرآن",
+  "yourThoughtsAndReflections": "خواطرك وتدبراتك",
+  "connectionsAndThemes": "الربط والعلاقات",
+  "dailyPortion": "الورد اليومي",
+  "tadbeerLibrary": "مكتبة المتدبر",
+  "offlineQuranAndReflection": "مصحف وتدبّر بدون إنترنت",
+  "meccan": "مكية",
+  "medinan": "مدنية",
+  "searchSurahsHint": "بحث في السور...",
+  "searchWordMeaningsHint": "ابحث عن كلمة قرآنية أو معناها...",
+  "allSurahsWithCount": "جميع السور (١١٤ سورة)",
+  "noWordsFound": "لا توجد كلمات مطابقة لبحثك",
+  "noWordsFoundSubtitle": "جرب البحث بكلمة أخرى أو قم بإلغاء التصفية لتصفح جميع الكلمات.",
+  "lexicalMeaningTitle": "المعنى اللغوي المعجمي:",
+  "verifiedDocumentation": "توثيق معتمد",
+  "edit": "تعديل",
+  "editNote": "تعديل الملاحظة",
+  "tadbeerPause": "وقفة تدبر",
+  "ayahLink": "رابط آيات",
+  "exportTadbeerJournal": "تصدير دفتر التدبر والخواطر",
+  "continueLabel": "متابعة",
+  "doNotShowAgain": "لا تظهر لي هذه النافذة مرة أخرى",
+  "curatedPathways": "المسارات التدبرية المقترحة",
+  "importFromQrCode": "استيراد رابط آيات عبر الرمز",
+  "searchAyahLinksHint": "ابحث في روابط الآيات أو السور...",
+  "noAyahLinkSearchResults": "لا توجد نتائج مطابقة لبحثك",
+  "tryAnotherAyahLinkSearch": "جرّب البحث بكلمة أخرى أو اسم سورة",
+  "importPathway": "استيراد المسار",
+  "editTitleAndDescription": "تعديل العنوان والوصف",
+  "deleteAyahLink": "حذف الرابط",
+  "typographyAndReading": "الخط والقراءة",
+  "quranFontFamily": "نوع خط المصحف",
+  "resetToDefault": "إعادة للوضع الافتراضي",
+  "applicationSection": "التطبيق",
+  "dataSection": "البيانات",
+  "dailyRemindersSubtitle": "تنبيهات الورد اليومي ومواعيد القراءة",
+  "backupSubtitle": "تصدير واستعادة ملفات مشفرة بدون اتصال",
+  "resetData": "إعادة تعيين البيانات",
+  "resetDataSubtitle": "حذف الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية",
+  "confirmReset": "تأكيد إعادة التعيين",
+  "resetSuccess": "تمت إعادة تعيين البيانات بنجاح",
+  "resetWarningMessage": "هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.",
+  "versionInfo": "الإصدار ١.٠.٠ · مجاني وبدون إعلانات أو إنترنت",
+  "sourcesAndCredits": "المصادر والتوثيق المعتمد:",
+  "openSourceLicenses": "تراخيص المصادر المفتوحة",
+  "privacyPolicy": "سياسة الخصوصية",
+  "privacyPolicyTitle": "ميثاق الخصوصية والأمان",
+  "privacyPolicySubtitle": "التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)",
+  "alertType": "طريقة التنبيه:",
+  "notificationAlert": "إشعار",
+  "notificationSubtitle": "إشعار عادي في الشريط",
+  "alarmAlert": "منبه",
+  "alarmSubtitle": "رنين مستمر كالمنبه",
+  "repeatMode": "نوع التكرار:",
+  "daySat": "سبت",
+  "daySun": "أحد",
+  "dayMon": "إثنين",
+  "dayTue": "ثلاثاء",
+  "dayWed": "أربعاء",
+  "dayThu": "خميس",
+  "dayFri": "جمعة",
+  "testAlertTooltip": "تجربة الإشعار أو المنبه الآن",
+  "testNotificationNow": "تجربة إشعار الآن",
+  "testAlarmNow": "تجربة منبه الآن",
+  "testAlarmSentSuccess": "تم إطلاق منبه تجريبي الآن — تفقد الإشعارات لإيقافه",
+  "testNotificationSentSuccess": "تم إرسال إشعار تجريبي الآن — تفقد شريط الإشعارات",
+  "testAlertPermissionError": "تعذر إرسال التنبيه، يرجى التأكد من تفعيل أذونات الإشعارات في إعدادات الجهاز",
+  "specificDays": "أيام محددة",
+  "exportBackupSubtitle": "اختر البيانات التي ترغب بتضمينها في النسخة المشفرة (.quranbackup):",
+  "restoreBackupSubtitle": "استعادة البيانات من ملف .quranbackup محفوظ سابقًا. تُستبدل البيانات الحالية بالكامل بعد التحقق من سلامة التشفير وصحة الملف.",
+  "restoreFailed": "فشلت الاستعادة",
+  "selectBackupLocation": "اختر موقع حفظ النسخة الاحتياطية",
+  "backupCreateFailed": "فشل إنشاء النسخة الاحتياطية",
+  "viewAyah": "عرض الآية",
+  "duaCopiedSuccess": "تم نسخ نص الدعاء بنجاح",
+  "searchDuasHint": "ابحث في أدعية القرآن الكريم بالكلمة أو السورة...",
+  "noDuasFound": "لا توجد أدعية مطابقة لبحثك",
+  "allDuasFilter": "الكل",
+  "morningAdhkar": "أذكار الصباح",
+  "eveningAdhkar": "أذكار المساء",
+  "resetCounters": "إعادة ضبط العدادات",
+  "adhkarCountersResetSuccess": "تمت إعادة ضبط عدادات الأذكار",
+  "dhikrCopiedSuccess": "تم نسخ نص الذكر الشريف بنجاح",
+  "copyDhikr": "نسخ نص الذكر",
+  "completed": "اكتمل",
+  "once": "مرة واحدة",
+  "searchAhlulbaytHint": "ابحث في أدعية أهل البيت والصحيفة السجادية...",
+  "ahlulbaytDuasScreenTitle": "أدعية أهل البيت عليهم السلام",
+  "copyFullDua": "نسخ الدعاء كاملاً",
+  "fullDuaCopiedSuccess": "تم نسخ نص الدعاء كاملاً إلى الحافظة",
+  "decreaseFontSize": "تصغير الخط",
+  "increaseFontSize": "تكبير الخط",
+  "fullAuthenticText": "نص كامل ومأثور",
+  "copyDuaTooltip": "نسخ نص الدعاء",
+  "tableOfContents": "فهرس المباحث",
+  "previousSection": "المبحث السابق",
+  "nextSection": "المبحث التالي",
+  "previousDua": "الدعاء السابق",
+  "nextDua": "الدعاء التالي",
+  "shareFile": "مشاركة الملف",
+  "copyContent": "نسخ المحتوى",
+  "preparingDocument": "جاري تجهيز وعرض الملزمة...",
+  "retry": "إعادة المحاولة",
+  "openAndReadPdf": "فتح ومطالعة ملف PDF",
+  "noTextContentAvailable": "لا يتوفر محتوى نصي لهذه الملزمة حالياً.",
+  "verifiedPamphletPdf": "ملزمة موثقة • PDF",
+  "directTextReading": "قراءة نصية مباشرة",
+  "textCopied": "تم نسخ النص إلى الحافظة بنجاح.",
+  "fileNotFound": "الملف غير موجود على الجهاز.",
+  "noTextContent": "لا يوجد محتوى نصي.",
+  "textFile": "ملف نصي",
+  "openInQuran": "فتح في المصحف",
+  "editVerseNote": "تعديل الملاحظة",
+  "removeVerseFromLink": "إزالة من الرابط",
+  "removeAyahFromLinkTitle": "إزالة الآية من الرابط",
+  "reflectionNote": "ملاحظة التدبر",
+  "reflectionNoteColon": "ملاحظة التدبر:",
+  "ayahReflectionNoteTitle": "ملاحظة التدبر على الآية",
+  "ayahReflectionNoteHint": "اكتب تدبرك أو الرابط الذي لاحظته...",
+  "noAyahsAddedToLink": "لم تتم إضافة أي آيات لهذا الرابط بعد",
+  "addAyahsToBuildMap": "أضف الآيات التي لاحظت ارتباطها لبناء خريطتك التدبرية",
+  "addAyah": "إضافة آية",
+  "previous": "السابق",
+  "next": "التالي",
+  "allCategories": "الكل",
+  "istighfar": "الاستغفار",
+  "tasbeeh": "التسبيح",
+  "browseAllFormulas": "استعراض كل الصيغ",
+  "resetCycleCounter": "تصفير عداد الدورة",
+  "resetCycleCounterTitle": "تصفير عداد الدورة؟",
+  "resetCycleCounterConfirm": "سيتم إعادة عداد الدورة الحالية إلى الصفر مع الحفاظ التام على مجموعك الإجمالي المحفوظ.",
+  "resetCycleAction": "تصفير الدورة",
+  "tapAnywhereToCount": "انقر في أي مكان للعدّ",
+  "freeCount": "عدّ حر",
+  "countSettings": "ضبط العدّ",
+  "freeCountOpen": "عدّ حر (مفتوح)",
+  "autoAdvanceUponCompletion": "التبديل التلقائي عند اكتمال الورد",
+  "lifetimeTotalCount": "المجموع الكلي المحفوظ",
+  "copyDhikrTooltip": "نسخ نص الذكر",
+  "dhikrCopied": "تم نسخ نص الذكر إلى الحافظة بنجاح.",
+  "tasbeehAndIstighfarFormulas": "صيغ الاستغفار والتسبيح",
+  "searchDhikrHint": "ابحث في نصوص الأذكار...",
+  "noMatchingFormulas": "لا توجد صيغ مطابقة للبحث",
+  "swipeOrTapToChange": "اسحب أفقياً أو انقر للتبديل",
+  "nextDhikr": "الذكر التالي",
+  "previousDhikr": "الذكر السابق",
+  "autoCount": "عدّ تلقائي",
+  "stopAutoCount": "إيقاف",
+  "decreasePace": "تسريع الوتيرة",
+  "increasePace": "إبطاء الوتيرة",
+  "booksSectionEmpty": "قسم الكتب والملازم فارغ حالياً",
+  "booksSectionEmptyDescription": "لم تتم إضافة أي أقسام أو كتب في ملفات التطبيق حتى الآن.",
+  "pageNumber": "صفحة {page}",
+  "@pageNumber": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "juzNumber": "الجزء {juz}",
+  "@juzNumber": {
+    "placeholders": {
+      "juz": {
+        "type": "String"
+      }
+    }
+  },
+  "hizbNumber": "الحزب {hizb}",
+  "@hizbNumber": {
+    "placeholders": {
+      "hizb": {
+        "type": "String"
+      }
+    }
+  },
+  "pagesTouched": "صفحات لك فيها أثر: {n} من ٦٠٤",
+  "@pagesTouched": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "daysOfTotal": "{a} / {b} أيام",
+  "@daysOfTotal": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "dayN": "اليوم {n}",
+  "@dayN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "versesMemorized": "آيات محفوظة: {n}",
+  "@versesMemorized": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewToday": "مراجعة اليوم ({n})",
+  "@reviewToday": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "versesOfTotal": "{a} / {b}",
+  "@versesOfTotal": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionSummary": "أتقنت {a} من {b} آية. سنعيد عليك الباقي غداً.",
+  "@sessionSummary": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "fromMyPosition": "من موضعي (ص {page})",
+  "@fromMyPosition": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "reachedPage": "وصلت إلى صفحة {page}",
+  "@reachedPage": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "portionReminderTitle": "ورد الختمة: {pages} صفحة",
+  "@portionReminderTitle": {
+    "placeholders": {
+      "pages": {
+        "type": "String"
+      }
+    }
+  },
+  "chapterN": "الفصل {n}",
+  "@chapterN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "daysCount": "{count, plural, =1{يوم واحد} =2{يومان} few{{d} أيام} many{{d} يومًا} other{{d} يوم}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "d": {
+        "type": "String"
+      }
+    }
+  },
+  "pagesPerDayHint": "وردك اليومي: {n} صفحة",
+  "@pagesPerDayHint": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "completedKhatmas": "أتممت {n} ختمة، بارك الله فيك",
+  "@completedKhatmas": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "behindBy": "متأخر {n} صفحة",
+  "@behindBy": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "khatmaInDays": "ختمة في {count, plural, =1{يوم واحد} =2{يومين} few{{n} أيام} many{{n} يومًا} other{{n} يوم}}",
+  "@khatmaInDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "pagesOfMushaf": "{n} من ٦٠٤ صفحة",
+  "@pagesOfMushaf": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "dayOfPlan": "اليوم {d} من {total}",
+  "@dayOfPlan": {
+    "placeholders": {
+      "d": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "pagesOfTarget": "{a} / {b} صفحة",
+  "@pagesOfTarget": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "continueFromPage": "أكمل من صفحة {p}",
+  "@continueFromPage": {
+    "placeholders": {
+      "p": {
+        "type": "String"
+      }
+    }
+  },
+  "ayahCount": "{count} آية",
+  "@ayahCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "versesCount": "{count} آيات",
+  "@versesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "duasCountBadge": "{count} دعاء",
+  "@duasCountBadge": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "adhkarCountBadge": "{count} ذكر",
+  "@adhkarCountBadge": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "readingPosition": "سورة {surahName} · صفحة {page}",
+  "@readingPosition": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "ayahReference": "سورة {surahName} · الآية {ayahNumber}",
+  "@ayahReference": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "surahTitle": "سورة {surahName}",
+  "@surahTitle": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      }
+    }
+  },
+  "ayahTitle": "الآية {ayahNumber}",
+  "@ayahTitle": {
+    "placeholders": {
+      "ayahNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "pageAbbr": "ص {page}",
+  "@pageAbbr": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "juzAbbr": "ج {juz}",
+  "@juzAbbr": {
+    "placeholders": {
+      "juz": {
+        "type": "String"
+      }
+    }
+  },
+  "ayahsCount": "{count} آية",
+  "@ayahsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "wordSearchResultsCount": "النتائج: {count} كلمة",
+  "@wordSearchResultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "surahAyahPageReference": "سورة {surahName} · آية {ayahNumber} · ص {page}",
+  "@surahAyahPageReference": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahNumber": {
+        "type": "String"
+      },
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "linkedAyahsCount": "{count} آيات مرتبطة",
+  "@linkedAyahsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "fontSizePoints": "{points} نقطة",
+  "@fontSizePoints": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "resetToDefaultWithVal": "إعادة للوضع الافتراضي ({val})",
+  "@resetToDefaultWithVal": {
+    "placeholders": {
+      "val": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderScheduledSuccess": "تم حفظ وجدولة التنبيه ({mode}) بنجاح",
+  "@reminderScheduledSuccess": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "errorSavingFile": "خطأ أثناء حفظ الملف: {err}",
+  "@errorSavingFile": {
+    "placeholders": {
+      "err": {
+        "type": "String"
+      }
+    }
+  },
+  "dhikrIndex": "ذكر {index}",
+  "@dhikrIndex": {
+    "placeholders": {
+      "index": {
+        "type": "String"
+      }
+    }
+  },
+  "remainingCount": "باقٍ {count}",
+  "@remainingCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "ahlulbaytDuasCountBadge": "{count} دعاء مأثور",
+  "@ahlulbaytDuasCountBadge": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "searchGeneralDuasHint": "ابحث في {title}...",
+  "@searchGeneralDuasHint": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "generalDuasCountBadge": "{count} دعاء مبارك",
+  "@generalDuasCountBadge": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "duaIndex": "دعاء {index}",
+  "@duaIndex": {
+    "placeholders": {
+      "index": {
+        "type": "String"
+      }
+    }
+  },
+  "bookIndexPrefix": "فهرس: {title}",
+  "@bookIndexPrefix": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "pageOfTotal": "صفحة {page} من {total}",
+  "@pageOfTotal": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionOfTotal": "المبحث {section} من {total}",
+  "@sectionOfTotal": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSectionHint": "ابحث في محتويات وعناوين {name}...",
+  "@searchSectionHint": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "fullSectionsCount": "{count} مباحث كاملة",
+  "@fullSectionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "fileShareError": "تعذر مشاركة أو فتح الملف: {error}",
+  "@fileShareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfReadError": "تعذر قراءة ملف الـ PDF: {error}",
+  "@pdfReadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fileContentReadError": "تعذر قراءة محتوى الملف: {error}",
+  "@fileContentReadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "removeAyahFromLinkConfirm": "هل تريد إزالة الآية {ayah} من سورة {surah} من هذا الرابط؟",
+  "@removeAyahFromLinkConfirm": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      },
+      "surah": {
+        "type": "String"
+      }
+    }
+  },
+  "targetCount": "الهدف: {target}",
+  "@targetCount": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "countTimes": "{count} مرة",
+  "@countTimes": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "formulaXOfY": "صيغة {current} من {total}",
+  "@formulaXOfY": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "allFormulasCount": "كل الصيغ ({total})",
+  "@allFormulasCount": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "targetReachedAuto": "ما شاء الله! أتممت الورد ({target}). تم الانتقال تلقائياً إلى الذكر التالي.",
+  "@targetReachedAuto": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "targetReached": "ما شاء الله! أتممت الورد المستهدف ({target}) بنجاح.",
+  "@targetReached": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "smartPaceSeconds": "إيقاع {seconds} ث",
+  "@smartPaceSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "portionLeftTitle": "بقي من وردك اليوم {pages} صفحة",
+  "@portionLeftTitle": {
+    "placeholders": {
+      "pages": {
+        "type": "String"
+      }
+    }
+  },
+  "portionLeftBody": "أكمل ختمتك من حيث توقفت",
+  "adhkarSetCompleted": "أتممت الأذكار، واحتُسب يومك في رحلتك",
+  "mushafStyleTitle": "طريقة عرض المصحف",
+  "mushafStyleMadinah": "مصحف المدينة",
+  "mushafStyleText": "نص متدفق",
+  "qcfAttribution": "خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف",
+  "widgetPortionLeft": "ورد اليوم: بقي {left} من {portion} صفحة",
+  "@widgetPortionLeft": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "portion": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetPortionDone": "أتممت ورد اليوم",
+  "widgetAyahTitle": "آية للتدبّر",
+  "themePickerTitle": "اختر مظهر التطبيق",
+  "themePickerHint": "يمكنك تغييره متى شئت من الإعدادات",
+  "themePickerStart": "ابدأ",
+  "themeAuto": "تلقائي",
+  "addVerseTitle": "إضافة آية إلى الرابط",
+  "addVerseSearchHint": "ابحث بنص الآية أو اكتب: البقرة ٢٥٥",
+  "addVerseFromSaved": "من محفوظاتك",
+  "addVersePickBySurah": "اختيار بالسورة ورقم الآية",
+  "addVerseSurah": "السورة",
+  "addVerseAyah": "الآية",
+  "addVerseNote": "ملاحظة (اختيارية)",
+  "addVerseAlready": "مضافة إلى هذا الرابط",
+  "addVerseAction": "إضافة إلى الرابط",
+  "addVerseChange": "تغيير",
+  "addVerseNoResults": "لا توجد نتائج",
+  "addVerseSearchSurah": "ابحث باسم السورة أو رقمها",
+  "mushafStyleMadinahHint": "صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.",
+  "mushafStyleTextHint": "نص متدفق بالخط الذي تختاره.",
+  "pageSize": "حجم الصفحة",
+  "khatmaStartNow": "ابدأ الآن",
+  "askNameTitle": "ما اسمك؟",
+  "askNameHint": "نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.",
+  "askNameField": "اسمك",
+  "skipStep": "تخطّي",
+  "yourName": "اسمك",
+  "yourNameNotSet": "لم يُحدَّد",
+  "reminderQuranBody": "حان وقت تلاوة وتدبّر القرآن الكريم",
+  "reminderAdhkarBody": "حان وقت الأذكار، ذكّر قلبك بالله",
+  "myReflections": "وقفاتي",
+  "myReflectionsSubtitle": "ما كتبته عند الآيات",
+  "reflectionsAll": "الكل",
+  "reflectionsCommitments": "ما التزمت به",
+  "noReflectionsHint": "اضغط على آية في المصحف واختر «وقفة تدبر».",
+  "noCommitmentsYet": "ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.",
+  "commitmentDid": "فعلته",
+  "commitmentNotYet": "ليس بعد",
+  "commitmentPending": "باقٍ",
+  "commitmentSaidAt": "قلتَ عند {reference}:",
+  "@commitmentSaidAt": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "commitmentQuestion": "هل فعلته؟",
+  "saveToPhotos": "حفظ في الصور",
+  "cardSaved": "حُفظت البطاقة في الصور",
+  "cardSaveFailed": "تعذّر حفظ البطاقة",
+  "cardSaveDenied": "اسمح لتدبير بإضافة الصور من إعدادات الجهاز",
+  "continueReflection": "تابع وقفتك",
+  "markAyah": "علامة",
+  "unmarkAyah": "إزالة العلامة",
+  "chooseSurah": "اختر السورة",
+  "searchSurahHint": "ابحث باسم السورة أو رقمها",
+  "enlargeText": "حجم الخط",
+  "textSmaller": "تصغير الخط",
+  "textLarger": "تكبير الخط أكثر",
+  "defaultTextSize": "الحجم الافتراضي",
+  "reflectionsCount": "{count, plural, =1{وقفة واحدة} =2{وقفتان} few{{shown} وقفات} other{{shown} وقفة}}",
+  "@reflectionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "shown": {
+        "type": "String"
+      }
+    }
+  },
+  "streakAtRiskTitle": "{count, plural, =1{لا تقطع سلسلتك: يوم واحد حتى الآن} =2{لا تقطع سلسلتك: يومان متتاليان} few{لا تقطع سلسلتك: {n} أيام متتالية} other{لا تقطع سلسلتك: {n} يومًا متتاليًا}}",
+  "@streakAtRiskTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "streakAtRiskBody": "صفحة واحدة أو وقفة تدبر تكفي لتبقى السلسلة",
+  "streakReminder": "نبّهني قبل أن تنقطع السلسلة",
+  "streakReminderOff": "تنبيه مسائي إن لم تقرأ شيئًا في يومك",
+  "streakReminderAt": "كل مساء {time} إن لم تقرأ بعد",
+  "@streakReminderAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "streakReminderPrompt": "متى نذكّرك إن لم تقرأ في يومك؟",
+  "qibla": "اتجاه القبلة",
+  "qiblaUpdateLocation": "تحديث موقعي",
+  "qiblaLocating": "نحدد موقعك…",
+  "qiblaFacing": "أنت متجه إلى القبلة",
+  "qiblaTurnRight": "استدر يمينًا {deg}°",
+  "@qiblaTurnRight": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      }
+    }
+  },
+  "qiblaTurnLeft": "استدر يسارًا {deg}°",
+  "@qiblaTurnLeft": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      }
+    }
+  },
+  "qiblaFromNorth": "من الشمال",
+  "qiblaKmToMakkah": "كم إلى مكة المكرمة",
+  "qiblaFromHere": "حسب موقعك الحالي",
+  "qiblaFromLastLocation": "حسب آخر موقع معروف لك",
+  "qiblaNoCompass": "لا توجد بوصلة في جهازك: وجّه أعلى الجهاز نحو الشمال، والقبلة حيث علامة الكعبة",
+  "qiblaCalibrate": "إن بدا الاتجاه غير دقيق فحرّك الجهاز في الهواء على شكل ٨، وابتعد عن المعادن والأجهزة",
+  "qiblaLocationOff": "خدمة الموقع متوقفة في جهازك. شغّلها لنحسب اتجاه القبلة",
+  "qiblaTurnOnLocation": "تشغيل الموقع",
+  "qiblaNeedsLocation": "نحتاج موقعك التقريبي لنحسب اتجاه القبلة، ولا يُرسل إلى أي مكان",
+  "qiblaAllowLocation": "السماح بالموقع",
+  "qiblaOpenSettings": "فتح الإعدادات",
+  "qiblaLocationFailed": "تعذّر تحديد موقعك. تأكد من تشغيل الموقع وحاول مرة أخرى",
+  "qiblaNorth": "ش",
+  "qiblaEast": "ق",
+  "qiblaSouth": "ج",
+  "qiblaWest": "غ",
+  "listen": "استماع",
+  "listenFromHere": "استماع من هنا",
+  "audioSettings": "إعدادات التلاوة",
+  "reciterLabel": "القارئ",
+  "lowerQuality": "جودة أقل",
+  "repeatEachAyah": "تكرار كل آية",
+  "pauseAfterAyah": "وقفة تدبر بعد كل آية",
+  "noPause": "بلا وقفة",
+  "secondsShort": "{n} ث",
+  "@secondsShort": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "audioFailed": "تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت",
+  "nextAyah": "الآية التالية",
+  "previousAyah": "الآية السابقة",
+  "playAudio": "تشغيل",
+  "pauseAudio": "إيقاف مؤقت",
+  "stopAudio": "إيقاف التلاوة",
+  "resting": "وقفة تدبر…",
+  "audioSource": "التلاوات من شبكة Islamic Network ‏(alquran.cloud)، وتحتاج اتصالًا بالإنترنت",
+  "recitationDownloads": "تنزيل التلاوات",
+  "downloadForOffline": "تنزيل للاستماع دون إنترنت",
+  "downloadedLabel": "منزّلة على جهازك",
+  "downloadFailed": "تعذّر التنزيل، حاول مرة أخرى",
+  "downloadSurah": "تنزيل السورة",
+  "cancelDownload": "إيقاف التنزيل",
+  "deleteDownload": "حذف التنزيل",
+  "deleteAllDownloads": "حذف كل التنزيلات",
+  "deleteAllDownloadsConfirm": "ستُحذف كل سور {name} المنزّلة من جهازك.",
+  "@deleteAllDownloadsConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadsSize": "على جهازك: {size} ميجابايت",
+  "@downloadsSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadJuzAmma": "تنزيل جزء عمّ",
+  "downloadsHint": "السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.",
+  "mushaf": "المصحف",
+  "appColorTheme": "لون التطبيق",
+  "sourcesAndCreditsDetails": "• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.",
+  "unsavedChanges": "تغييرات غير محفوظة",
+  "discardChangesConfirm": "هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟",
+  "discard": "تجاهل والخروج",
+  "cannotSaveAnEmptyNote": "لا يمكن حفظ ملاحظة فارغة",
+  "editAyahReflection": "تعديل تدبر الآية",
+  "unsaved": "غير محفوظ",
+  "saved": "محفوظ",
+  "reflectionTitleOptional": "عنوان التدبر (اختياري)...",
+  "instantSecureLocalSave": "حفظ محلي فوري وآمن",
+  "bookmarkRemoved": "تم حذف الفاصلة المرجعية",
+  "undo": "تراجع",
+  "booksBooklets": "الملازم والكتب",
+  "searchEmptyHint": "اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)",
+  "sectionHasNoItems": "لا توجد عناصر محفوظة في هذا القسم بعد",
+  "systemTheme": "تلقائي",
+  "lightThemeExplanation": "الوضع النهاري: خلفية ورقية هادئة مع لمسات كحلية وذهبية لقراءة نهارية مريحة وواضحة.",
+  "darkThemeExplanation": "الوضع الليلي: ألوان كحلية ليلية مع لمسات ذهبية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.",
+  "privacyOfflineTitle": "عمل محلي تام دون إنترنت (100% Offline-First)",
+  "privacyOfflineBody": "لا يطلب التطبيق إذن الإنترنت (android.permission.INTERNET) في ملف التكوين، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.",
+  "privacyNoDataTitle": "عدم جمع أي بيانات شخصية (Zero Data Collection)",
+  "privacyNoDataBody": "لا يجمع التطبيق ولا يسجل ولا يشارك أي بيانات شخصية، أو معرّفات أجهزة، أو سجلات قراءة، أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق.",
+  "privacyStorageTitle": "تخزين محلي وتشفير عالي (AES-256)",
+  "privacyStorageBody": "تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.",
+  "privacyPermissionsTitle": "استخدام حصري ومحدد للأذونات (Device Permissions)",
+  "privacyPermissionsBody": "تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.",
+  "privacyNoAdsTitle": "خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)",
+  "privacyNoAdsBody": "التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.",
+  "privacyOpenSourceBody": "تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.",
+  "createLinkWithVerseHint": "إنشاء رابط جديد وربط هذه الآية به مباشرة",
+  "alreadyAdded": "مضافة بالفعل",
+  "shareAyahLinkOffline": "مشاركة رابط الآيات دون إنترنت",
+  "qrScanHint": "يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.",
+  "linkDataCopiedToClipboard": "تم نسخ بيانات الرابط إلى الحافظة",
+  "copyData": "نسخ البيانات",
+  "importAyahLink": "استيراد رابط آيات",
+  "importLinkHint": "الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:",
+  "importLinkFieldHint": "الصق الرابط أو النص الممسوح هنا...",
+  "pasteFromClipboard": "لصق من الحافظة",
+  "importNow": "استيراد الآن",
+  "editAyahLink": "تعديل رابط الآيات",
+  "titleRequired": "يرجى إدخال عنوان الرابط",
+  "create": "إنشاء",
+  "reflectionNoteCard": "كرت ملاحظة تدبرية",
+  "noteCopiedToClipboard": "تم نسخ نص الملاحظة إلى الحافظة",
+  "copyText": "نسخ النص",
+  "deleteNote": "حذف الملاحظة",
+  "myNote": "ملاحظتي",
+  "reflectionNoteLabel": "كرت ملاحظة تدبرية",
+  "remove": "إزالة",
+  "editNoteCard": "تعديل كرت الملاحظة",
+  "titleOptional": "عنوان الملاحظة (اختياري)",
+  "noteContentHint": "نص الملاحظة...",
+  "deleteNoteCard": "حذف كرت الملاحظة",
+  "deleteNoteCardConfirm": "هل أنت متأكد من حذف كرت هذه الملاحظة؟",
+  "addNoteCard": "إضافة كرت ملاحظة",
+  "addNoteCardHint": "سجّل ملاحظتك أو تدبرك ككرت مستقل في هذا الرابط:",
+  "noteTitleOptional": "عنوان الملاحظة (اختياري)",
+  "noteCardAddedSuccessfully": "تمت إضافة كرت الملاحظة بنجاح",
+  "linkNotFound": "الرابط غير موجود أو تم حذفه",
+  "shareViaQrCode": "مشاركة عبر رمز الاستجابة السريعة (QR)",
+  "addNoteShort": "إضافة ملاحظة",
+  "searchQuranicSupplications": "ابحث في أدعية القرآن الكريم...",
+  "clearedEmptyAnswersSuccessfully": "تم مسح الإجابات الفارغة بنجاح",
+  "tadbeerPauseSavedSuccessfully": "تم حفظ وقفة التدبر بنجاح",
+  "reflectionAnswerHint": "اكتب ما خطر ببالك...",
+  "doneAndSave": "تم وحفظ",
+  "saveAndFinish": "حفظ ما كتبت الآن وإنهاء",
+  "noMatchingBooks": "لا توجد نتائج مطابقة لبحثك",
+  "booksSectionIsEmpty": "هذا القسم فارغ حالياً",
+  "noSearchResultsHint": "جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.",
+  "emptySectionHint": "لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.",
+  "sectionsTitle": "الأقسام",
+  "myVersesSection": "آياتي",
+  "toolsSection": "الأدوات",
+  "appSection": "التطبيق",
+  "systemThemeLabel": "تلقائي ({mode})",
+  "@systemThemeLabel": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "systemThemeExplanation": "الوضع التلقائي: يتزامن مظهر التطبيق آلياً مع إعدادات هاتفك (المظهر المفعّل حالياً في جهازك: {mode}).",
+  "@systemThemeExplanation": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "exportNoteFailed": "تعذر تصدير الملاحظة: {error}",
+  "@exportNoteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWordCharCount": "{words} كلمة · {chars} حرف",
+  "@noteWordCharCount": {
+    "placeholders": {
+      "words": {
+        "type": "String"
+      },
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "searchInSection": "ابحث في {section}...",
+  "@searchInSection": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "verseAddedToLink": "تمت إضافة الآية إلى رابط «{title}»",
+  "@verseAddedToLink": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "linkIncludesVerses": "يتضمن {count} آيات مرتبطة",
+  "@linkIncludesVerses": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "importedLinkTitle": "العنوان: {title}",
+  "@importedLinkTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "importedVersesCount": "الآيات المتضمنة: {count} آية",
+  "@importedVersesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "reflectionNotesCount": "كروت الملاحظات والتدبرات ({count})",
+  "@reflectionNotesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "connectedVersesCount": "الآيات المرتبطة ({count})",
+  "@connectedVersesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteLinkConfirm": "هل أنت متأكد من رغبتك في حذف رابط «{title}»؟",
+  "@deleteLinkConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "linkDeleted": "تم حذف رابط «{title}»",
+  "@linkDeleted": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "itemCopied": "تم نسخ {title} إلى الحافظة بنجاح",
+  "@itemCopied": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "duaAlert": "تنبيه: {text}",
+  "@duaAlert": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "questionOfTotal": "السؤال {number} من {total}",
+  "@questionOfTotal": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "permissionsTitle": "أذونات التطبيق",
+  "permissionsBody": "يحتاج تدبير إذن الإشعارات والمنبهات ليذكّرك بوردك وأذكارك في وقتها، ولو كان التطبيق مغلقاً. لا يُرسَل شيء خارج جهازك.",
+  "permissionsAllow": "سماح",
+  "permissionsLater": "لاحقاً"
+}

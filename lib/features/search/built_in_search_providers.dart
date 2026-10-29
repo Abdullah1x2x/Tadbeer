@@ -1,41 +1,37 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_root_search_helper.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../features/ayah_links/ayah_link_detail_screen.dart';
-import '../../features/ayah_links/ayah_link_repository.dart';
-import '../../features/books/book_reader_screen.dart';
-import '../../features/books/book_repository.dart';
-import '../../features/duas/quran_duas_repository.dart';
+import '../ayah_links/screens/ayah_link_detail_screen.dart';
+import '../ayah_links/data/ayah_link_repository.dart';
+import '../ayah_links/data/curated_pathways.dart';
+import '../../features/pathways/guided_pathways_screen.dart';
+import '../books/screens/book_reader_screen.dart';
+import '../books/data/book_repository.dart';
+import '../duas/data/quran_duas_repository.dart';
 import '../../features/notes/note_editor_screen.dart';
-import '../../features/quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import '../../features/quran/screens/quran_screen.dart';
-import '../../features/reminders/reminder_model.dart';
+import '../../data/models/reminder_model.dart';
 import '../../features/reminders/reminders_screen.dart';
 import 'search_provider.dart';
+import '../../core/design_system/app_icons.dart';
 
-/// مزود البحث في آيات القرآن الكريم (بالنص المطبع أو بالجذر اللغوي).
-///
-/// Search provider for authentic Quranic Ayahs.
+/// البحث في الآيات، بالنص أو بالجذر.
 class QuranSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في القرآن الكريم.
   const QuranSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث القرآن.
   @override
   String get id => 'quran';
 
-  /// يعيد عنوان قسم المصحف حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.quran;
 
-  /// أيقونة قسم المصحف الشريف.
   @override
-  IconData get icon => Icons.menu_book_rounded;
+  IconData get icon => AppIcons.bookOpenFill;
 
-  /// يبحث في آيات القرآن الكريم ويعيد النتائج المطابقة مع إمكانية الانتقال لصفحة المصحف.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -83,26 +79,19 @@ class QuranSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في ملاحظات وخواطر المستخدم المحفوظة.
-///
-/// Search provider for user notes and reflections.
+/// البحث في الخواطر: عناوينها ونصوصها والآيات المرتبطة بها.
 class NotesSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في الملاحظات.
   const NotesSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث الملاحظات.
   @override
   String get id => 'notes';
 
-  /// يعيد عنوان قسم الملاحظات حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.notes;
 
-  /// أيقونة قسم الملاحظات.
   @override
-  IconData get icon => Icons.edit_note_rounded;
+  IconData get icon => AppIcons.notePencil;
 
-  /// يبحث في عناوين ومحتوى الملاحظات والنصوص القرآنية المرتبطة بها.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -153,27 +142,20 @@ class NotesSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في وقفات التدبر الموجهة بالأسئلة الأربعة.
-///
-/// Search provider for Tadbeer pauses (guided 4-question reflections).
+/// البحث في وقفات التدبر: إجاباتها وأسماء سورها ونصوص آياتها.
 class TadbeerSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في وقفات التدبر.
   const TadbeerSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث وقفات التدبر.
   @override
   String get id => 'tadbeer';
 
-  /// يعيد عنوان قسم التدبر حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) =>
       context.l10n.tadbeerSectionTitle;
 
-  /// أيقونة قسم وقفات التدبر.
   @override
-  IconData get icon => Icons.auto_awesome_rounded;
+  IconData get icon => AppIcons.sparkleFill;
 
-  /// يبحث في إجابات وقفات التدبر وأسماء السور ونصوص الآيات المرتبطة بها.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -253,26 +235,19 @@ class TadbeerSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في العلامات المرجعية (المحفوظات).
-///
-/// Search provider for bookmarked reading markers.
+/// البحث في الفواصل باسم السورة أو رقم الآية أو نصها.
 class BookmarksSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في المحفوظات.
   const BookmarksSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث المحفوظات.
   @override
   String get id => 'bookmarks';
 
-  /// يعيد عنوان قسم المحفوظات حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.bookmarks;
 
-  /// أيقونة قسم المحفوظات.
   @override
-  IconData get icon => Icons.bookmark_rounded;
+  IconData get icon => AppIcons.bookmarkSimpleFill;
 
-  /// يبحث في الآيات المحفوظة حسب اسم السورة أو رقم الآية أو نصها.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -280,20 +255,11 @@ class BookmarksSearchProvider implements SearchProvider {
   ) async {
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
     final bookmarks = UserDataStore.instance.bookmarks.where((b) {
-      final surah = QuranRepository.instance.getSurah(b.surahNumber);
-      final ayah = QuranRepository.instance.getAyah(
+      return QuranRepository.instance.ayahMatches(
         b.surahNumber,
         b.ayahNumber,
+        normalizedQuery,
       );
-      final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
-      final ayahTextNorm = ayah != null
-          ? ArabicSearchNormalizer.normalize(ayah.text)
-          : '';
-      final ayahNumStr = b.ayahNumber.toString();
-
-      return surahNorm.contains(normalizedQuery) ||
-          ayahTextNorm.contains(normalizedQuery) ||
-          ayahNumStr.contains(normalizedQuery);
     }).toList();
 
     return bookmarks.map((b) {
@@ -332,26 +298,19 @@ class BookmarksSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في الآيات المميزة بالألوان.
-///
-/// Search provider for highlighted Quran verses.
+/// البحث في الآيات المظلّلة باسم السورة أو رقم الآية أو نصها.
 class HighlightsSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في الآيات المميزة.
   const HighlightsSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث التظليلات.
   @override
   String get id => 'highlights';
 
-  /// يعيد عنوان قسم الآيات المميزة حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.highlights;
 
-  /// أيقونة قسم الآيات المميزة.
   @override
-  IconData get icon => Icons.palette_outlined;
+  IconData get icon => AppIcons.palette;
 
-  /// يبحث في الآيات المميزة بالألوان حسب اسم السورة أو رقم الآية أو نصها.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -359,20 +318,11 @@ class HighlightsSearchProvider implements SearchProvider {
   ) async {
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
     final highlights = UserDataStore.instance.highlights.where((h) {
-      final surah = QuranRepository.instance.getSurah(h.surahNumber);
-      final ayah = QuranRepository.instance.getAyah(
+      return QuranRepository.instance.ayahMatches(
         h.surahNumber,
         h.ayahNumber,
+        normalizedQuery,
       );
-      final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
-      final ayahTextNorm = ayah != null
-          ? ArabicSearchNormalizer.normalize(ayah.text)
-          : '';
-      final ayahNumStr = h.ayahNumber.toString();
-
-      return surahNorm.contains(normalizedQuery) ||
-          ayahTextNorm.contains(normalizedQuery) ||
-          ayahNumStr.contains(normalizedQuery);
     }).toList();
 
     return highlights.map((h) {
@@ -411,26 +361,19 @@ class HighlightsSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في خرائط روابط الآيات الموضوعية.
-///
-/// Search provider for interconnected Ayah Links maps.
+/// البحث في روابط الآيات: عناوينها ووصفها وآياتها.
 class AyahLinksSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في روابط الآيات.
   const AyahLinksSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث روابط الآيات.
   @override
   String get id => 'ayah_links';
 
-  /// يعيد عنوان قسم روابط الآيات حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.ayahLinks;
 
-  /// أيقونة قسم روابط الآيات.
   @override
-  IconData get icon => Icons.hub_outlined;
+  IconData get icon => AppIcons.graph;
 
-  /// يبحث في عناوين ووصف خرائط روابط الآيات والآيات المتصلة بها.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -463,26 +406,19 @@ class AyahLinksSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في الأدعية القرآنية الموثقة.
-///
-/// Search provider for authentic Quranic supplications (الأدعية).
+/// البحث في أدعية القرآن: نصوصها وعناوينها وتصنيفاتها.
 class DuasSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في الأدعية القرآنية.
   const DuasSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث الأدعية.
   @override
   String get id => 'duas';
 
-  /// يعيد عنوان قسم الأدعية حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.quranDuas;
 
-  /// أيقونة قسم الأدعية.
   @override
-  IconData get icon => Icons.front_hand_outlined;
+  IconData get icon => AppIcons.hand;
 
-  /// يبحث في نصوص وعناوين وتصنيفات الأدعية القرآنية.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -521,26 +457,19 @@ class DuasSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في تذكيرات القراءة المجدولة.
-///
-/// Search provider for user reading reminders.
+/// البحث في عناوين التذكيرات.
 class RemindersSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في التذكيرات.
   const RemindersSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث التذكيرات.
   @override
   String get id => 'reminders';
 
-  /// يعيد عنوان قسم التذكيرات حسب لغة الواجهة.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.reminders;
 
-  /// أيقونة قسم التذكيرات.
   @override
-  IconData get icon => Icons.alarm_outlined;
+  IconData get icon => AppIcons.alarm;
 
-  /// يبحث في عناوين تذكيرات الورد القرآني المحفوظة.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -578,26 +507,19 @@ class RemindersSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في معجم معاني كلمات القرآن الكريم.
-///
-/// Search provider for authentic Quranic word meanings (معاني كلمات القرآن).
+/// البحث في معاني الكلمات.
 class WordMeaningsSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في معاني كلمات القرآن.
   const WordMeaningsSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث معاني الكلمات.
   @override
   String get id => 'word_meanings';
 
-  /// يعيد عنوان قسم معاني الكلمات.
   @override
   String getSectionTitle(BuildContext context) => context.l10n.wordMeanings;
 
-  /// أيقونة قسم معاني الكلمات.
   @override
-  IconData get icon => Icons.auto_stories_rounded;
+  IconData get icon => AppIcons.bookOpenTextFill;
 
-  /// يبحث في الكلمات القرآنية ومعانيها الموثقة ويعيد النتائج المطابقة.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -637,27 +559,20 @@ class WordMeaningsSearchProvider implements SearchProvider {
   }
 }
 
-/// مزود البحث في مكتبة الملازم والكتب التدبرية.
-///
-/// Search provider for curated and personal books, booklets, and pamphlets.
+/// البحث في الكتب والملازم: العنوان والسلسلة والمؤلف والفصول والوصف، بأكثر من
+/// كلمة.
 class BooksSearchProvider implements SearchProvider {
-  /// ينشئ مزود البحث في الملازم والكتب.
   const BooksSearchProvider();
 
-  /// المعرّف الفريد لمزود بحث الكتب والملازم.
   @override
   String get id => 'books';
 
-  /// يعيد عنوان قسم الملازم والكتب.
   @override
-  String getSectionTitle(BuildContext context) =>
-      context.l10n.isArabic ? 'الملازم والكتب' : 'Books & Booklets';
+  String getSectionTitle(BuildContext context) => context.l10n.booksBooklets;
 
-  /// أيقونة قسم الكتب والملازم.
   @override
-  IconData get icon => Icons.auto_stories_rounded;
+  IconData get icon => AppIcons.bookOpenTextFill;
 
-  /// يبحث في عناوين الملازم، وأسماء السلاسل، والمؤلفين، والفصول، والوصف مع دعم البحث المرن وتعدد الكلمات.
   @override
   Future<List<SearchResultItem>> search(
     String query,
@@ -672,7 +587,10 @@ class BooksSearchProvider implements SearchProvider {
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
     if (normalizedQuery.isEmpty) return const [];
 
-    final tokens = normalizedQuery.split(' ').where((w) => w.isNotEmpty).toList();
+    final tokens = normalizedQuery
+        .split(' ')
+        .where((w) => w.isNotEmpty)
+        .toList();
     if (tokens.isEmpty) return const [];
 
     final results = <SearchResultItem>[];
@@ -686,7 +604,7 @@ class BooksSearchProvider implements SearchProvider {
 
       bool match = false;
 
-      // ١. المطابقة المباشرة في البيانات الأساسية للملزمة
+      // ١. مطابقة مباشرة في بيانات الملزمة.
       if (titleNorm.contains(normalizedQuery) ||
           subtitleNorm.contains(normalizedQuery) ||
           authorNorm.contains(normalizedQuery) ||
@@ -694,8 +612,9 @@ class BooksSearchProvider implements SearchProvider {
           badgeNorm.contains(normalizedQuery)) {
         match = true;
       } else if (tokens.length > 1) {
-        // ٢. مطابقة الكلمات المتعددة عبر حقول الملزمة مع مرونة السوابق
-        final combined = '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
+        // ٢. كل الكلمات عبر حقول الملزمة، دون اشتراط "ال".
+        final combined =
+            '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
         match = tokens.every((token) {
           if (combined.contains(token)) return true;
           if (token.startsWith('ال') && token.length >= 4) {
@@ -703,16 +622,19 @@ class BooksSearchProvider implements SearchProvider {
           }
           return false;
         });
-      } else if (tokens.length == 1 && tokens.first.startsWith('ال') && tokens.first.length >= 4) {
-        // كلمة مفردة بمرونة "ال" التعريف
+      } else if (tokens.length == 1 &&
+          tokens.first.startsWith('ال') &&
+          tokens.first.length >= 4) {
+        // كلمة واحدة، دون اشتراط "ال".
         final withoutAl = tokens.first.substring(2);
-        final combined = '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
+        final combined =
+            '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
         if (combined.contains(withoutAl)) {
           match = true;
         }
       }
 
-      // ٣. فحص عناوين الفصول إن وجدت
+      // ٣. عناوين الفصول.
       if (!match && book.chapters.isNotEmpty) {
         for (final ch in book.chapters) {
           final chTitleNorm = ArabicSearchNormalizer.normalize(ch.title);
@@ -720,7 +642,8 @@ class BooksSearchProvider implements SearchProvider {
             match = true;
             break;
           }
-          if (tokens.length > 1 && tokens.every((t) => chTitleNorm.contains(t))) {
+          if (tokens.length > 1 &&
+              tokens.every((t) => chTitleNorm.contains(t))) {
             match = true;
             break;
           }
@@ -731,10 +654,10 @@ class BooksSearchProvider implements SearchProvider {
         final snippet = book.subtitle.isNotEmpty
             ? book.subtitle
             : (book.author.isNotEmpty
-                ? 'المؤلف: ${book.author}'
-                : (book.badgeText != null && book.badgeText!.isNotEmpty
-                    ? book.badgeText!
-                    : book.category));
+                  ? 'المؤلف: ${book.author}'
+                  : (book.badgeText != null && book.badgeText!.isNotEmpty
+                        ? book.badgeText!
+                        : book.category));
 
         final badge = book.isPdf ? 'ملزمة PDF' : 'كتاب نصي';
 
@@ -750,9 +673,7 @@ class BooksSearchProvider implements SearchProvider {
             onTap: (ctx) {
               Navigator.push(
                 ctx,
-                MaterialPageRoute(
-                  builder: (_) => BookReaderScreen(book: book),
-                ),
+                MaterialPageRoute(builder: (_) => BookReaderScreen(book: book)),
               );
             },
           ),
@@ -764,3 +685,49 @@ class BooksSearchProvider implements SearchProvider {
   }
 }
 
+/// البحث في مسارات التدبر: العنوان والوصف وفوائد الآيات.
+class PathwaysSearchProvider implements SearchProvider {
+  const PathwaysSearchProvider();
+
+  @override
+  String get id => 'pathways';
+
+  @override
+  String getSectionTitle(BuildContext context) => context.l10n.guidedPathways;
+
+  @override
+  IconData get icon => AppIcons.path;
+
+  @override
+  Future<List<SearchResultItem>> search(
+    String query,
+    BuildContext context,
+  ) async {
+    final q = ArabicSearchNormalizer.normalize(query);
+    if (q.isEmpty) return const [];
+    bool matches(String text) =>
+        ArabicSearchNormalizer.normalize(text).contains(q);
+
+    return [
+      for (final p in CuratedPathwaysRegistry.pathways)
+        if (matches(p.title) ||
+            matches(p.description) ||
+            p.verses.any((v) => matches(v.note)))
+          SearchResultItem(
+            id: 'pathway_${p.id}',
+            providerId: id,
+            sectionTitle: getSectionTitle(context),
+            title: p.title,
+            snippet: p.description,
+            badge: p.category,
+            icon: icon,
+            onTap: (ctx) => Navigator.push(
+              ctx,
+              MaterialPageRoute(
+                builder: (_) => PathwayJourneyScreen(pathway: p),
+              ),
+            ),
+          ),
+    ];
+  }
+}

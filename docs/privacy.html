@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="light"
+      data-title-ar="سياسة الخصوصية | تَدْبِير Tadbeer" data-title-en="Privacy Policy | Tadbeer"
+      data-desc-ar="سياسة خصوصية تطبيق تَدْبِير: ما يُحفظ على جهازك، ومتى يُستخدم الإنترنت، ولماذا يُطلب كل إذن."
+      data-desc-en="Tadbeer privacy policy: what stays on your device, when the internet is used, and why each permission is requested.">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    (function() {
+      try {
+        const storedTheme = localStorage.getItem("tadbeer-theme");
+        if (storedTheme === "dark" || storedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", storedTheme);
+        } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+
+        const storedLang = localStorage.getItem("tadbeer-lang");
+        if (storedLang === "en" || storedLang === "ar") {
+          document.documentElement.setAttribute("lang", storedLang);
+          document.documentElement.setAttribute("dir", storedLang === "ar" ? "rtl" : "ltr");
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <meta name="theme-color" content="#1E3A5F" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="سياسة خصوصية تطبيق تَدْبِير: ما يُحفظ على جهازك، ومتى يُستخدم الإنترنت، ولماذا يُطلب كل إذن.">
+  <link rel="icon" type="image/png" href="./assets/icons/app_logo.png">
+  <title>سياسة الخصوصية | تَدْبِير Tadbeer</title>
+
+  <link rel="stylesheet" href="./site.css">
+</head>
+
+<body>
+  <!-- -----------------------------------------------------------------------
+       HEADER & NAVIGATION
+       ----------------------------------------------------------------------- -->
+  <header>
+    <nav class="container" aria-label="Main Navigation">
+      <a class="brand-wrap" href="./index.html">
+        <img class="brand-logo" src="./assets/icons/app_logo.png" alt="Tadbeer Logo" width="42" height="42">
+        <div class="brand-text">
+          <span class="brand-title">
+            <span data-lang="ar">تَدْبِير</span>
+            <span data-lang="en">Tadbeer</span>
+          </span>
+          <span class="brand-tagline">
+            <span data-lang="ar">رفيق رحلة التدبر</span>
+            <span data-lang="en">Quran Contemplation</span>
+          </span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <ul class="nav-menu">
+          <li>
+            <a href="./index.html#features">
+              <span data-lang="ar">المميزات</span>
+              <span data-lang="en">Features</span>
+            </a>
+          </li>
+          <li>
+            <a href="./index.html#about">
+              <span data-lang="ar">عن التطبيق</span>
+              <span data-lang="en">About</span>
+            </a>
+          </li>
+          <li>
+            <a href="./index.html#privacy">
+              <span data-lang="ar">الخصوصية</span>
+              <span data-lang="en">Privacy</span>
+            </a>
+          </li>
+          <li>
+            <a href="./index.html#licenses">
+              <span data-lang="ar">التراخيص</span>
+              <span data-lang="en">Licenses</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Language Toggle Button (Arabic <-> English) -->
+        <button id="langToggleBtn" class="lang-toggle-btn" type="button" aria-label="Switch Language / تغيير اللغة" title="English / العربية">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span data-lang="ar">EN</span>
+          <span data-lang="en">العربية</span>
+        </button>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="تبديل وضع المظهر (فاتح / داكن)" title="Toggle Theme">
+          <!-- Sun Icon for switching to light -->
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <!-- Moon Icon for switching to dark -->
+          <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- GitHub Repo Button -->
+        <a class="btn-github" href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener" aria-label="GitHub Repository">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="privacy">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">
+            <span data-lang="ar">الخصوصية بالتصميم</span>
+            <span data-lang="en">Privacy by Design</span>
+          </span>
+          <h1 class="section-title">
+            <span data-lang="ar">سياسة الخصوصية · Privacy Policy</span>
+            <span data-lang="en">Privacy Policy</span>
+          </h1>
+          <p class="section-subtitle">
+            <span data-lang="ar">التزام كامل وصارم بحماية خصوصية المستخدم، معتمد للنشر على كافة المتاجر الرسمية.</span>
+            <span data-lang="en">Strict, uncompromising commitment to user privacy, compliant with Google Play and Apple App Store standards.</span>
+          </p>
+        </div>
+
+        <div class="privacy-card">
+          <div class="privacy-meta">
+            <span data-lang="ar">تاريخ السريان: أكتوبر 2026 · متوافق مع معايير Google Play &amp; App Store</span>
+            <span data-lang="en">Effective Date: October 2026 · Compliant with Google Play &amp; Apple App Store</span>
+          </div>
+
+          <!-- Arabic Privacy Details -->
+          <ul class="privacy-list" data-lang="ar">
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>عدم جمع أي بيانات شخصية (Zero Data Collection):</strong>
+                لا يجمع التطبيق ولا يرسل ولا يشارك أي بيانات شخصية أو معرّفات أجهزة أو سجلات قراءة أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق. ولا يتصل بأي خادم إلا لتنزيل التلاوة المسموعة حين تطلبها، كما في البند التالي.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>يعمل دون إنترنت، والإنترنت للتلاوة المسموعة فقط (Offline-First):</strong>
+                المصحف والمعاني والتدبر والملاحظات وكل ميزات التطبيق تعمل دون اتصال. يطلب التطبيق إذن الإنترنت (<code>android.permission.INTERNET</code>) لغرض واحد: تشغيل التلاوة المسموعة أو تنزيلها حين تطلبها أنت، من خادم <code>cdn.islamic.network</code>. يصل إلى هذا الخادم عنوان IP الخاص بجهازك واسم الملف الصوتي المطلوب (رقم الآية والقارئ) كما في أي تنزيل من الإنترنت، ولا يُرسَل معه أي شيء من بياناتك. وبعد تنزيل السورة تُسمع من جهازك دون اتصال.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>التخزين المحلي والتشفير القياسي (Local Storage &amp; AES-256):</strong>
+                تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً على جهازك في قاعدة بيانات SQLite. وعند تصدير نسخة احتياطية (<code>.quranbackup</code>)، تُشفّر بياناتك محلياً بمعيار <strong>AES-256-CBC</strong> بكلمة مرور تختارها أنت مع ضغط Gzip وفحص سلامة SHA-256.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>الأذونات المستخدمة والغرض الحصري منها (Device Permissions):</strong>
+                <ul class="privacy-sublist">
+                  <li><strong>الإشعارات والمنبهات</strong> (<code>POST_NOTIFICATIONS</code>، <code>SCHEDULE_EXACT_ALARM</code>، <code>RECEIVE_BOOT_COMPLETED</code>، <code>VIBRATE</code>): لتذكيرات الورد والختمة والالتزام اليومي التي تجدولها أنت فقط، ولا تُستخدم لأي غرض ترويجي.</li>
+                  <li><strong>الموقع التقريبي</strong> (<code>ACCESS_COARSE_LOCATION</code>): اختياري، ويُطلب فقط حين تفتح اتجاه القبلة. يُحدَّد من GPS بدقة منخفضة، ويُحسب اتجاه القبلة على جهازك، ويُحفظ آخر موقع على جهازك فقط ولا يُرسل إلى أي جهة.</li>
+                  <li><strong>الإنترنت</strong> (<code>INTERNET</code>): للتلاوة المسموعة فقط، كما في البند السابق.</li>
+                  <li><strong>التشغيل في الخلفية</strong> (<code>FOREGROUND_SERVICE</code>، <code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code>، <code>WAKE_LOCK</code>): لتستمر التلاوة حين تغلق الشاشة، مع أزرار التحكم في الإشعار.</li>
+                  <li><strong>التخزين</strong> (<code>WRITE_EXTERNAL_STORAGE</code>، لأندرويد 10 وما قبله فقط): لحفظ بطاقة الآية في الصور حين تطلب ذلك.</li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>خلو تام من الإعلانات والمتتبعات (Zero Ads &amp; Trackers):</strong>
+                التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.
+              </div>
+            </li>
+          </ul>
+
+          <!-- English Privacy Details -->
+          <ul class="privacy-list" data-lang="en">
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>Zero Personal Data Collection:</strong>
+                Tadbeer does not collect, transmit, store on servers, or share any personal information, device identifiers, reading habits, or analytics with any third party. It contacts no server except to fetch audio recitation when you ask for it, as described below.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>Offline-First, with Internet Used Only for Audio Recitation:</strong>
+                The Mushaf, word meanings, reflections, notes and every other feature work without a connection. The app requests internet permission (<code>android.permission.INTERNET</code>) for one purpose only: streaming or downloading audio recitation, when you ask for it, from <code>cdn.islamic.network</code>. As with any download, that server receives your device's IP address and the name of the requested audio file (the ayah number and reciter). None of your data is sent with it. Once a surah is downloaded, it plays from your device offline.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>Local Persistence &amp; Military-Grade AES-256 Backups:</strong>
+                All reflections, bookmarks, notes, and verse links reside exclusively within your device's local SQLite database. Backups (<code>.quranbackup</code>) are encrypted locally using <strong>AES-256-CBC</strong> with a user-chosen password, Gzip compression, and SHA-256 checksum integrity.
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>Device Permissions Disclosure:</strong>
+                <ul class="privacy-sublist">
+                  <li><strong>Notifications &amp; alarms</strong> (<code>POST_NOTIFICATIONS</code>, <code>SCHEDULE_EXACT_ALARM</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>VIBRATE</code>): only for the reading, khatma and streak reminders you schedule. Never promotional.</li>
+                  <li><strong>Approximate location</strong> (<code>ACCESS_COARSE_LOCATION</code>): optional, requested only when you open the Qibla direction. It is read from GPS at low accuracy, the Qibla bearing is computed on your device, and the last location is saved on your device only. It is never sent anywhere.</li>
+                  <li><strong>Internet</strong> (<code>INTERNET</code>): only for audio recitation, as described above.</li>
+                  <li><strong>Background playback</strong> (<code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code>, <code>WAKE_LOCK</code>): keeps recitation playing with the screen off, with controls in the notification.</li>
+                  <li><strong>Storage</strong> (<code>WRITE_EXTERNAL_STORAGE</code>, Android 10 and earlier only): saves an ayah card to Photos when you ask.</li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <div class="privacy-bullet">✓</div>
+              <div>
+                <strong>Zero Advertisements &amp; Zero Trackers:</strong>
+                The app is completely free from third-party advertising SDKs, marketing trackers, or external analytics frameworks.
+              </div>
+            </li>
+          </ul>
+
+          <!-- English Policy Summary Box for Store Reviewers (shown in Arabic mode as a compliance reference) -->
+          <div class="privacy-en-box" data-lang="ar">
+            <h4>Official Store Reviewer Privacy Summary (English)</h4>
+            <p>
+              <strong>Tadbeer</strong> is an open-source, offline-first Quran contemplation application built with Flutter, strictly adhering to global privacy standards:
+            </p>
+            <ul>
+              <li><strong>Zero Data Collection:</strong> Tadbeer does not collect, track, transmit, rent, or sell any personal data, usage analytics, or device identifiers.</li>
+              <li><strong>Network Use:</strong> The application declares <code>android.permission.INTERNET</code> solely to stream or download audio recitation, on the user's request, from <code>cdn.islamic.network</code>. That server receives the device's IP address and the requested audio file name only. No user data, identifiers or analytics are transmitted. All other functionality executes locally on-device.</li>
+              <li><strong>Location:</strong> Approximate location (<code>ACCESS_COARSE_LOCATION</code>) is optional and requested only for the Qibla direction. It is processed and stored on-device only and never transmitted.</li>
+              <li><strong>Local Persistence &amp; AES-256 Backups:</strong> All user notes, reflections, bookmarks, highlights, and verse links reside exclusively within the local SQLite database. User-initiated backups (<code>.quranbackup</code>) are encrypted locally using AES-256-CBC with a user-supplied password.</li>
+              <li><strong>Permissions:</strong> Notification and alarm permissions (<code>POST_NOTIFICATIONS</code>, <code>SCHEDULE_EXACT_ALARM</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>VIBRATE</code>) trigger local, user-scheduled reminders only. Foreground-service permissions (<code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code>, <code>WAKE_LOCK</code>) keep audio recitation playing in the background. <code>WRITE_EXTERNAL_STORAGE</code> (Android 10 and earlier) saves ayah cards to Photos on request.</li>
+              <li><strong>Zero Third-Party SDKs:</strong> Contains no third-party telemetry, no analytics frameworks, and no advertising SDKs.</li>
+              <li><strong>Inquiries &amp; Support:</strong> For privacy inquiries, please open an issue on our official GitHub repository: <a href="https://github.com/Abdullah-Alshami/Tadbeer/issues" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: underline;">github.com/Abdullah-Alshami/Tadbeer/issues</a>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- -----------------------------------------------------------------------
+       FOOTER
+       ----------------------------------------------------------------------- -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="./assets/icons/app_logo.png" alt="Tadbeer Logo" width="32" height="32" style="border-radius: 8px;">
+          <strong>تَدْبِير · Tadbeer</strong>
+        </div>
+
+        <ul class="footer-links">
+          <li>
+            <a href="./index.html#features">
+              <span data-lang="ar">المميزات</span>
+              <span data-lang="en">Features</span>
+            </a>
+          </li>
+          <li>
+            <a href="./index.html#about">
+              <span data-lang="ar">عن التطبيق</span>
+              <span data-lang="en">About</span>
+            </a>
+          </li>
+          <li>
+            <a href="./privacy.html">
+              <span data-lang="ar">سياسة الخصوصية</span>
+              <span data-lang="en">Privacy Policy</span>
+            </a>
+          </li>
+          <li>
+            <a href="./index.html#licenses">
+              <span data-lang="ar">التراخيص</span>
+              <span data-lang="en">Licenses</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">
+              <span data-lang="ar">مستودع GitHub</span>
+              <span data-lang="en">GitHub Repo</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-copy">
+        <span data-lang="ar">حقوق النشر © 2026 مساهمو مشروع تَدْبِير (Tadbeer Contributors) · مرخّص بموجب رخصة MIT الحرة</span>
+        <span data-lang="en">Copyright © 2026 Tadbeer Contributors · Open source under the MIT License</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./site.js"></script>
+</body>
+</html>

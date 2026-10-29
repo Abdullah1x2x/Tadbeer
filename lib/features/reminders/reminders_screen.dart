@@ -2,31 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/motion/app_motion.dart';
-import '../../core/services/local_reminder_service.dart';
-import '../../core/storage/user_data_store.dart';
+import 'local_reminder_service.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../features/reminders/reminder_model.dart';
+import '../../data/models/reminder_model.dart';
+import '../../core/design_system/app_icons.dart';
 
-/// شاشة إدارة التذكيرات والمنبهات المحلية لقراءة الورد القرآني.
-///
-/// Reminders management screen for scheduling local Quran recitation alerts.
-///
-/// Supports two user-selectable alert types:
-/// - [ReminderAlertType.notification] (إشعار عادي)
-/// - [ReminderAlertType.alarm] (تنبيه كالمنبه)
+/// إدارة التذكيرات: إضافتها وتعديلها وتجربتها، بإشعار عادي أو منبه.
 class RemindersScreen extends StatefulWidget {
-  /// ينشئ شاشة إدارة التذكيرات.
   const RemindersScreen({super.key});
 
-  /// ينشئ حالة شاشة التذكيرات.
   @override
   State<RemindersScreen> createState() => _RemindersScreenState();
 }
 
-/// الحالة الداخلية لشاشة التذكيرات وإدارة الإضافة والتعديل والجدولة.
 class _RemindersScreenState extends State<RemindersScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -38,14 +30,13 @@ class _RemindersScreenState extends State<RemindersScreen> {
     LocalReminderService.instance.requestPermissions();
   }
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يفتح نافذة الحوار لإضافة تذكير جديد أو تعديل تذكير حالي.
+  /// يفتح حوار إضافة تذكير أو تعديل [existing].
   void _openReminderDialog([ReminderItem? existing]) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -74,7 +65,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
               existing == null ? l10n.addReminder : l10n.editReminder,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -83,14 +74,15 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Title Input
                   TextField(
                     controller: titleController,
                     textDirection: TextDirection.rtl,
-                    style: const TextStyle(fontFamily: 'Amiri'),
+                    style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                     decoration: InputDecoration(
                       labelText: l10n.reminderTitle,
-                      labelStyle: const TextStyle(fontFamily: 'Amiri'),
+                      labelStyle: const TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                      ),
                       filled: true,
                       fillColor: isDark
                           ? AppColors.darkSurface
@@ -102,7 +94,6 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Time Picker Button
                   ListTile(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -111,20 +102,20 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     tileColor: isDark
                         ? AppColors.darkSurface
                         : AppColors.comsilk,
-                    leading: const Icon(
-                      Icons.access_time,
-                      color: AppColors.olive,
-                    ),
+                    leading: Icon(AppIcons.clock, color: AppColors.olive),
                     title: Text(
                       l10n.reminderTime,
-                      style: const TextStyle(fontFamily: 'Amiri', fontSize: 14),
+                      style: const TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                        fontSize: 14,
+                      ),
                     ),
                     trailing: Text(
                       ReminderItem.formatTime12Hour(
                         selectedTime.hour,
                         selectedTime.minute,
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -150,11 +141,11 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Alert Type Selector (إشعار vs تنبيه كالمنبه)
+                  // نوع التنبيه: إشعار أو منبه.
                   Text(
                     l10n.alertType,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: isDark ? AppColors.comsilk : AppColors.oliveDark,
@@ -165,7 +156,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     children: [
                       Expanded(
                         child: _AlertTypeOptionCard(
-                          icon: Icons.notifications_none_rounded,
+                          icon: AppIcons.bell,
                           title: l10n.notificationAlert,
                           subtitle: l10n.notificationSubtitle,
                           selected: alertType == ReminderAlertType.notification,
@@ -178,7 +169,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: _AlertTypeOptionCard(
-                          icon: Icons.alarm_rounded,
+                          icon: AppIcons.alarmFill,
                           title: l10n.alarmAlert,
                           subtitle: l10n.alarmSubtitle,
                           selected: alertType == ReminderAlertType.alarm,
@@ -192,11 +183,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Repeat Mode Radio
                   Text(
                     l10n.repeatMode,
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: isDark ? AppColors.comsilk : AppColors.oliveDark,
@@ -217,7 +207,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.repeatDaily,
-                            style: const TextStyle(fontFamily: 'Amiri'),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSansArabic',
+                            ),
                           ),
                         ),
                         RadioListTile<ReminderRepeatMode>(
@@ -225,7 +217,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.repeatOnce,
-                            style: const TextStyle(fontFamily: 'Amiri'),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSansArabic',
+                            ),
                           ),
                         ),
                         RadioListTile<ReminderRepeatMode>(
@@ -233,14 +227,16 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.selectDays,
-                            style: const TextStyle(fontFamily: 'Amiri'),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSansArabic',
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  // Days Selector if weekdays
+                  // اختيار الأيام، لتكرار "أيام محددة".
                   if (repeatMode == ReminderRepeatMode.weekdays) ...[
                     const SizedBox(height: 8),
                     Wrap(
@@ -308,7 +304,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 onPressed: () => Navigator.pop(dialogCtx),
                 child: Text(
                   l10n.cancel,
-                  style: const TextStyle(fontFamily: 'Amiri'),
+                  style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                 ),
               ),
               ElevatedButton(
@@ -340,7 +336,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       SnackBar(
                         content: Text(
                           l10n.reminderScheduledSuccess(modeLabel),
-                          style: const TextStyle(fontFamily: 'Amiri'),
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
                         ),
                         duration: const Duration(seconds: 2),
                       ),
@@ -354,7 +352,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 child: Text(
                   l10n.save,
                   style: const TextStyle(
-                    fontFamily: 'Amiri',
+                    fontFamily: 'IBMPlexSansArabic',
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -366,7 +364,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
     );
   }
 
-  /// يبدل حالة اختيار يوم من أيام الأسبوع مع ضمان بقاء يوم واحد على الأقل محدداً.
+  /// يختار يوماً أو يلغيه، مع بقاء يوم واحد على الأقل.
   void _toggleDay(StateSetter setDialogState, List<int> days, int day) {
     setDialogState(() {
       if (days.contains(day)) {
@@ -377,7 +375,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
     });
   }
 
-  /// يرسل تنبيهاً أو منبهاً تجريبياً فورياً للتحقق من عمل الإشعارات على الجهاز.
+  /// يرسل تنبيهاً تجريبياً للتأكد من عمل الإشعارات على الجهاز.
   Future<void> _sendTestAlert(ReminderAlertType alertType) async {
     final sent = await LocalReminderService.instance.showTestNotification(
       alertType: alertType,
@@ -393,14 +391,13 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     ? l10n.testAlarmSentSuccess
                     : l10n.testNotificationSentSuccess)
               : l10n.testAlertPermissionError,
-          style: const TextStyle(fontFamily: 'Amiri'),
+          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
         ),
         duration: const Duration(seconds: 3),
       ),
     );
   }
 
-  /// يبني واجهة شاشة التذكيرات مع حقل البحث وقائمة التنبيهات المجدولة.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -413,47 +410,25 @@ class _RemindersScreenState extends State<RemindersScreen> {
           title: Text(
             l10n.reminders,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
           actions: [
             PopupMenuButton<ReminderAlertType>(
               tooltip: l10n.testAlertTooltip,
-              icon: const Icon(Icons.notifications_active_outlined),
+              icon: const Icon(AppIcons.bellRinging),
               onSelected: _sendTestAlert,
               itemBuilder: (_) => [
-                PopupMenuItem(
+                appMenuItem(
                   value: ReminderAlertType.notification,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.notifications_none_rounded, size: 20),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          l10n.testNotificationNow,
-                          style: const TextStyle(fontFamily: 'Amiri'),
-                        ),
-                      ),
-                    ],
-                  ),
+                  icon: AppIcons.bell,
+                  label: l10n.testNotificationNow,
                 ),
-                PopupMenuItem(
+                appMenuItem(
                   value: ReminderAlertType.alarm,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.alarm_rounded, size: 20),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          l10n.testAlarmNow,
-                          style: const TextStyle(fontFamily: 'Amiri'),
-                        ),
-                      ),
-                    ],
-                  ),
+                  icon: AppIcons.alarmFill,
+                  label: l10n.testAlarmNow,
                 ),
               ],
             ),
@@ -463,11 +438,11 @@ class _RemindersScreenState extends State<RemindersScreen> {
           onPressed: () => _openReminderDialog(),
           backgroundColor: AppColors.olive,
           foregroundColor: Colors.white,
-          icon: const Icon(Icons.alarm_add),
+          icon: const Icon(AppIcons.alarm),
           label: Text(
             l10n.addReminder,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -478,28 +453,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
             final allReminders = UserDataStore.instance.reminders;
 
             if (allReminders.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.alarm,
-                      size: 64,
-                      color: AppColors.border(context),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.noRemindersYet,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 16,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
-                      ),
-                    ),
-                  ],
-                ),
+              return EmptyState(
+                icon: AppIcons.alarmFill,
+                title: l10n.noRemindersYet,
+                hint: l10n.remindersEmptyHint,
               );
             }
 
@@ -514,66 +471,27 @@ class _RemindersScreenState extends State<RemindersScreen> {
 
             return Column(
               children: [
-                // Search Input Field
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                      borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-                      border: Border.all(
-                        color: AppColors.border(context),
-                        width: AppTokens.borderHairline,
-                      ),
-                      boxShadow: AppTokens.cardShadow(isDark: isDark),
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: (val) =>
-                          setState(() => _searchQuery = val.trim()),
-                      decoration: InputDecoration(
-                        hintText: l10n.searchRemindersHint,
-                        hintStyle: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 14,
-                          color: isDark
-                              ? AppColors.nightSubtitle
-                              : AppColors.daySubtitle,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search_rounded,
-                          color: AppColors.cyberEmerald,
-                        ),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear_rounded, size: 20),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                      ),
-                    ),
+                  child: AppSearchField(
+                    controller: _searchController,
+                    hintText: l10n.searchRemindersHint,
+                    clearTooltip: l10n.clearText,
+                    onChanged: (val) =>
+                        setState(() => _searchQuery = val.trim()),
                   ),
                 ),
 
-                // Reminders List / Empty Query Results
                 Expanded(
                   child: reminders.isEmpty
                       ? Center(
                           child: Text(
                             l10n.noSearchResults,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 15,
                               color: isDark
                                   ? AppColors.nightSubtitle
@@ -621,7 +539,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
   }
 }
 
-/// بطاقة خيار لتحديد طريقة التنبيه (إشعار عادي أو منبه صوتي).
+/// بطاقة لاختيار نوع التنبيه.
 class _AlertTypeOptionCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -630,7 +548,6 @@ class _AlertTypeOptionCard extends StatelessWidget {
   final bool isDark;
   final VoidCallback onTap;
 
-  /// ينشئ بطاقة خيار نوع التنبيه.
   const _AlertTypeOptionCard({
     required this.icon,
     required this.title,
@@ -640,7 +557,6 @@ class _AlertTypeOptionCard extends StatelessWidget {
     required this.onTap,
   });
 
-  /// يبني واجهة بطاقة خيار نوع التنبيه.
   @override
   Widget build(BuildContext context) {
     final borderColor = selected ? AppColors.olive : AppColors.border(context);
@@ -673,7 +589,7 @@ class _AlertTypeOptionCard extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: selected
@@ -687,8 +603,8 @@ class _AlertTypeOptionCard extends StatelessWidget {
               subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Amiri',
-                fontSize: 11,
+                fontFamily: 'IBMPlexSansArabic',
+                fontSize: 12,
                 color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
               ),
             ),
@@ -699,14 +615,13 @@ class _AlertTypeOptionCard extends StatelessWidget {
   }
 }
 
-/// شريحة اختيار ليوم واحد من أيام الأسبوع عند ضبط التكرار المخصص.
+/// شريحة يوم من أيام الأسبوع.
 class _DayChip extends StatelessWidget {
   final int day;
   final String label;
   final bool selected;
   final VoidCallback onToggle;
 
-  /// ينشئ شريحة اختيار يوم الأسبوع.
   const _DayChip({
     required this.day,
     required this.label,
@@ -714,13 +629,12 @@ class _DayChip extends StatelessWidget {
     required this.onToggle,
   });
 
-  /// يبني واجهة شريحة اليوم القابلة للتحديد.
   @override
   Widget build(BuildContext context) {
     return FilterChip(
       label: Text(
         label,
-        style: const TextStyle(fontFamily: 'Amiri', fontSize: 12),
+        style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 12),
       ),
       selected: selected,
       selectedColor: AppColors.olive.withValues(alpha: 0.25),
@@ -730,14 +644,13 @@ class _DayChip extends StatelessWidget {
   }
 }
 
-/// بطاقة عرض لتذكير واحد تتضمن الوقت ونوع التنبيه ومفتاح التفعيل.
+/// بطاقة تذكير: الوقت، ونوع التنبيه، ومفتاح التفعيل.
 class _ReminderCard extends StatelessWidget {
   final ReminderItem reminder;
   final VoidCallback onEdit;
   final ValueChanged<bool> onToggle;
   final VoidCallback onDelete;
 
-  /// ينشئ بطاقة عرض التذكير.
   const _ReminderCard({
     required this.reminder,
     required this.onEdit,
@@ -745,7 +658,6 @@ class _ReminderCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  /// يبني واجهة بطاقة التذكير وأزرار التحكم به.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -766,9 +678,7 @@ class _ReminderCard extends StatelessWidget {
 
     final isAlarm = reminder.alertType == ReminderAlertType.alarm;
     final alertTypeLabel = isAlarm ? l10n.alarmAlert : l10n.notificationAlert;
-    final alertTypeIcon = isAlarm
-        ? Icons.alarm_on_rounded
-        : Icons.notifications_none_rounded;
+    final alertTypeIcon = isAlarm ? AppIcons.alarm : AppIcons.bell;
     final accent = reminder.isEnabled
         ? AppColors.cyberEmerald
         : AppColors.olive.withValues(alpha: 0.5);
@@ -779,7 +689,6 @@ class _ReminderCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          // Time & Alert Type display
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -804,7 +713,7 @@ class _ReminderCard extends StatelessWidget {
                   Text(
                     '$alertTypeLabel • $repeatSubtitle',
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 12,
                       color: isDark
                           ? AppColors.nightSubtitle
@@ -817,7 +726,6 @@ class _ReminderCard extends StatelessWidget {
           ),
           const SizedBox(width: 16),
 
-          // Title
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -842,7 +750,6 @@ class _ReminderCard extends StatelessWidget {
             ),
           ),
 
-          // Toggle Switch
           Switch(
             value: reminder.isEnabled,
             activeThumbColor: AppColors.cyberEmerald,
@@ -850,40 +757,23 @@ class _ReminderCard extends StatelessWidget {
             onChanged: onToggle,
           ),
 
-          // Secondary Actions (⋮)
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, size: 20),
+            icon: appMenuIcon,
             onSelected: (val) {
               if (val == 'edit') onEdit();
               if (val == 'delete') onDelete();
             },
             itemBuilder: (_) => [
-              PopupMenuItem(
+              appMenuItem(
                 value: 'edit',
-                child: Row(
-                  children: [
-                    const Icon(Icons.edit_outlined, size: 18),
-                    const SizedBox(width: 8),
-                    Text(l10n.edit),
-                  ],
-                ),
+                icon: AppIcons.pencilSimple,
+                label: l10n.edit,
               ),
-              PopupMenuItem(
+              appMenuItem(
                 value: 'delete',
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.delete_outline,
-                      size: 18,
-                      color: Colors.redAccent,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.delete,
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                  ],
-                ),
+                icon: AppIcons.trash,
+                label: l10n.delete,
+                destructive: true,
               ),
             ],
           ),

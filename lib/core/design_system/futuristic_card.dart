@@ -1,45 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 import '../motion/app_motion.dart';
 import 'app_tokens.dart';
 
-/// بطاقة رقمية مستقبلية متقدمة لتطبيق تَدْبِير.
-///
-/// Futuristic Card component with precision borders, dual-layer glow,
-/// refined surface gradients, and integrated tactile interaction.
+/// بطاقة التطبيق: سطح بتدرج خفيف وإطار وظل، تنكمش قليلاً عند الضغط.
 class FuturisticCard extends StatefulWidget {
-  /// محتوى البطاقة الداخلي
   final Widget child;
 
-  /// إجراء النقر عند الضغط على البطاقة
   final VoidCallback? onTap;
 
-  /// إجراء اختياري عند الضغط المطول
   final VoidCallback? onLongPress;
 
-  /// اللون المميز لحواف البطاقة والوهج المحيطي
+  /// لون الإطار والوهج المحيط بدل لون الثيم.
   final Color? accentColor;
 
-  /// لون خلفية اختياري مخصص
   final Color? backgroundColor;
 
-  /// نصف قطر انحناء الزوايا
   final double? borderRadius;
 
-  /// حشوة داخلية للبطاقة
   final EdgeInsetsGeometry? padding;
 
-  /// مقياس الضغط اللمسي (الافتراضي 0.985)
+  /// مقدار الانكماش عند الضغط (1 بلا انكماش).
   final double pressedScale;
 
-  /// هل البطاقة محددة حالياً
+  /// يبرز الإطار ويضيء الحافة العلوية.
   final bool isSelected;
 
-  /// هل يظهر وهج الحافة العلوية المميز
+  /// خط مضيء على الحافة العلوية.
   final bool showTopAccentGlow;
 
-  /// ينشئ بطاقة مستقبلية تفاعلية.
   const FuturisticCard({
     super.key,
     required this.child,
@@ -49,7 +40,7 @@ class FuturisticCard extends StatefulWidget {
     this.backgroundColor,
     this.borderRadius,
     this.padding,
-    this.pressedScale = 0.985,
+    this.pressedScale = 0.97,
     this.isSelected = false,
     this.showTopAccentGlow = false,
   });
@@ -71,11 +62,9 @@ class _FuturisticCardState extends State<FuturisticCard> {
     final accent = widget.accentColor ?? defaultAccent;
     final radius = widget.borderRadius ?? AppTokens.radiusLg;
 
-    // Background calculation
     final defaultBg = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final baseBg = widget.backgroundColor ?? defaultBg;
 
-    // Border color logic based on hover / focus / selected states
     Color borderColor;
     double borderWidth = AppTokens.borderRegular;
 
@@ -89,7 +78,6 @@ class _FuturisticCardState extends State<FuturisticCard> {
       borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
     }
 
-    // Shadow & ambient glow
     List<BoxShadow> shadows;
     if (_isHovered || widget.isSelected) {
       shadows = AppTokens.heroGlow(isDark: isDark, accentColor: accent);
@@ -120,7 +108,6 @@ class _FuturisticCardState extends State<FuturisticCard> {
           borderRadius: BorderRadius.circular(radius - borderWidth),
           child: Stack(
             children: [
-              // Subtle top-edge neon illumination line if requested
               if (widget.showTopAccentGlow || widget.isSelected)
                 Positioned(
                   top: 0,
@@ -140,11 +127,15 @@ class _FuturisticCardState extends State<FuturisticCard> {
                   ),
                 ),
 
-              // Main child content
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: widget.onTap,
+                  onTap: widget.onTap == null
+                      ? null
+                      : () {
+                          HapticFeedback.selectionClick();
+                          widget.onTap!();
+                        },
                   onLongPress: widget.onLongPress,
                   onHover: (hovered) => setState(() => _isHovered = hovered),
                   onFocusChange: (focused) =>
@@ -155,7 +146,8 @@ class _FuturisticCardState extends State<FuturisticCard> {
                   focusColor: accent.withValues(alpha: 0.08),
                   child: Padding(
                     padding:
-                        widget.padding ?? const EdgeInsets.all(AppTokens.spaceMd),
+                        widget.padding ??
+                        const EdgeInsets.all(AppTokens.spaceMd),
                     child: widget.child,
                   ),
                 ),

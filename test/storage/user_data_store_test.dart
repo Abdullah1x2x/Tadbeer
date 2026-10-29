@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/notes/note_model.dart';
-import 'package:tadbeer/features/quran/data/quran_models.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/models/note_model.dart';
+import 'package:tadbeer/data/quran/quran_models.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -148,14 +148,14 @@ void main() {
       final updated = store.settings.copyWith(
         themeMode: ThemeMode.dark,
         languageCode: 'en',
-        hideTadabburIntroPermanently: true,
+        hideTadbeerIntroPermanently: true,
         quranFontSize: 28.0,
       );
 
       await store.updateSettings(updated);
       expect(store.settings.themeMode, equals(ThemeMode.dark));
       expect(store.settings.languageCode, equals('en'));
-      expect(store.settings.hideTadabburIntroPermanently, isTrue);
+      expect(store.settings.hideTadbeerIntroPermanently, isTrue);
       expect(store.settings.quranFontSize, equals(28.0));
     });
   });

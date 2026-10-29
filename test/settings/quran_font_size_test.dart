@@ -3,24 +3,30 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
-import 'package:tadbeer/features/settings/user_settings_model.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Quran Font Size & Family Model Tests', () {
-    test('Default Quran font size is strictly 20.0 and family is ScheherazadeNew', () {
-      const settings = UserSettings();
-      expect(settings.quranFontSize, equals(20.0));
-      expect(UserSettings.defaultQuranFontSize, equals(20.0));
-      expect(settings.quranFontFamily, equals(QuranFontFamilyOption.scheherazade));
-      expect(settings.quranFontFamilyName, equals('ScheherazadeNew'));
-    });
+    test(
+      'Default Quran font size is strictly 20.0 and family is ScheherazadeNew',
+      () {
+        const settings = UserSettings();
+        expect(settings.quranFontSize, equals(20.0));
+        expect(UserSettings.defaultQuranFontSize, equals(20.0));
+        expect(
+          settings.quranFontFamily,
+          equals(QuranFontFamilyOption.scheherazade),
+        );
+        expect(settings.quranFontFamilyName, equals('ScheherazadeNew'));
+      },
+    );
 
     test('JSON serialization roundtrip maintains font size and family', () {
       const settings = UserSettings(
@@ -82,24 +88,33 @@ void main() {
       }
     });
 
-    testWidgets(
-      'SettingsScreen renders Quran font family and font size sections',
-      (tester) async {
-        await tester.pumpWidget(
-          AppLocalizationScope(
-            currentLanguage: AppLanguage.arabic,
-            strings: const AppStrings(AppLanguage.arabic),
-            onLanguageChanged: (_) {},
-            child: const MaterialApp(home: SettingsScreen()),
-          ),
-        );
-        await tester.pumpAndSettle();
+    testWidgets('SettingsScreen offers the font family but no manual size', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        AppLocalizationScope(
+          currentLanguage: AppLanguage.arabic,
+          strings: const AppStrings(AppLanguage.arabic),
+          onLanguageChanged: (_) {},
+          child: const MaterialApp(home: SettingsScreen()),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
 
-        expect(find.text('نوع خط المصحف'), findsOneWidget);
-        expect(find.text('حجم خط المصحف'), findsOneWidget);
-        expect(find.byType(Slider), findsOneWidget);
-      },
-    );
+      // Madinah pages fit the screen by themselves.
+      expect(find.text('نوع خط المصحف'), findsNothing);
+      expect(find.text('حجم الصفحة'), findsNothing);
+      expect(find.byType(Slider), findsNothing);
+
+      // Flowing text: the font choice, and still no size to set.
+      await tester.runAsync(
+        () => UserDataStore.instance.setMushafStyle(MushafStyle.text),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('نوع خط المصحف'), findsOneWidget);
+      expect(find.text('حجم خط المصحف'), findsNothing);
+      expect(find.byType(Slider), findsNothing);
+    });
 
     testWidgets(
       'QuranPageView renders with configured font family from UserDataStore',
@@ -110,7 +125,9 @@ void main() {
             currentLanguage: AppLanguage.arabic,
             strings: const AppStrings(AppLanguage.arabic),
             onLanguageChanged: (_) {},
-            child: MaterialApp(home: Scaffold(body: QuranPageView(page: page1))),
+            child: MaterialApp(
+              home: Scaffold(body: QuranPageView(page: page1)),
+            ),
           ),
         );
         await tester.pumpAndSettle();

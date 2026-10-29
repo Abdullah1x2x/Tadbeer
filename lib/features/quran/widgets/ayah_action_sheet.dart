@@ -2,40 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
-import '../../../core/storage/user_data_store.dart';
+import '../../../core/theme/theme.dart';
+import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../../notes/note_model.dart';
-import '../data/quran_models.dart';
-import '../data/quran_repository.dart';
+import '../../../data/models/note_model.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
+import '../qcf/qcf_ayah_text.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
+import '../../../data/models/user_settings_model.dart';
+import '../../memorization/memorization_model.dart';
+import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
+import '../../../core/design_system/app_icons.dart';
 
-/// Modal action sheet for interacting with an individual Ayah.
-///
-/// EDUCATIONAL NOTE:
-/// Offers quick actions:
-/// 1. Tadbeer reflection note (linked to this ayah via stable ID)
-/// 2. Bookmark toggle (pinning verse for recitation)
-/// 3. Color highlight (4 calm, non-distracting colors)
-/// 4. Copying authentic Quranic verse with reference
-/// نافذة إجراءات منبثقة للتفاعل مع الآية القرآنية (وقفة تدبر، ربط آيات، ملاحظة، علامة مرجعية، تظليل، نسخ).
+/// نافذة إجراءات الآية: التدبر، والربط، والخاطرة، والفاصل، والتظليل، والنسخ.
 class AyahActionSheet extends StatefulWidget {
   final Ayah ayah;
 
-  /// ينشئ نافذة إجراءات الآية القرآنية المحددة.
-  const AyahActionSheet({super.key, required this.ayah});
+  /// ما تفتح عليه: كل الإجراءات، أو أحد محرريها مباشرة.
+  final AyahSheetMode mode;
 
-  /// Displays the Ayah action sheet as a smooth, responsive modal dialog.
-  /// يعرض نافذة إجراءات الآية كحوار منبثق سلس ومتجاوب.
-  static Future<void> show(BuildContext context, Ayah ayah) {
+  const AyahActionSheet({
+    super.key,
+    required this.ayah,
+    this.mode = AyahSheetMode.actions,
+  });
+
+  /// يعرض النافذة كحوار.
+  static Future<void> show(
+    BuildContext context,
+    Ayah ayah, {
+    AyahSheetMode mode = AyahSheetMode.actions,
+  }) {
     return showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Dismiss',
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 180),
-      pageBuilder: (context, anim1, anim2) => AyahActionSheet(ayah: ayah),
+      pageBuilder: (context, anim1, anim2) =>
+          AyahActionSheet(ayah: ayah, mode: mode),
       transitionBuilder: (context, anim1, anim2, child) {
         final curved = CurvedAnimation(
           parent: anim1,
@@ -53,23 +60,28 @@ class AyahActionSheet extends StatefulWidget {
     );
   }
 
-  /// ينشئ الحالة التفاعلية لنافذة إجراءات الآية.
   @override
   State<AyahActionSheet> createState() => _AyahActionSheetState();
 }
 
-/// Backward compatibility alias for AyahActionSheet
-/// اسم بديل متوافق مع الإصدارات السابقة لنافذة إجراءات الآية.
-typedef AyahActionDialog = AyahActionSheet;
+/// ما تفتح عليه نافذة الآية.
+enum AyahSheetMode {
+  actions,
 
-/// الحالة التفاعلية لنافذة إجراءات الآية القرآنية.
+  /// محرر خاطرة الآية.
+  note,
+
+  /// اختيار لون التظليل.
+  highlight,
+}
+
 class _AyahActionSheetState extends State<AyahActionSheet> {
-  bool _isNoteEditorOpen = false;
-  bool _isHighlightPickerOpen = false;
+  late bool _isNoteEditorOpen = widget.mode == AyahSheetMode.note;
+  late bool _isHighlightPickerOpen = widget.mode == AyahSheetMode.highlight;
   late TextEditingController _noteController;
   String? _existingNoteId;
 
-  /// يهيئ حقل الملاحظة بالبيانات المحفوظة مسبقاً للآية إن وجدت.
+  /// يملأ الخاطرة بالمحفوظ للآية إن وُجد.
   @override
   void initState() {
     super.initState();
@@ -87,14 +99,13 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
     }
   }
 
-  /// يحرر متحكم النص عند إغلاق النافذة.
   @override
   void dispose() {
     _noteController.dispose();
     super.dispose();
   }
 
-  /// يحفظ ملاحظة المستخدم المرتبطة بالآية أو يحذفها إذا كان النص فارغاً.
+  /// يحفظ الخاطرة، أو يحذفها إن صار النص فارغاً.
   Future<void> _saveNote() async {
     final text = _noteController.text.trim();
     if (text.isEmpty && _existingNoteId != null) {
@@ -111,12 +122,9 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
         ayahText: widget.ayah.text,
       );
     }
-    if (mounted) {
-      setState(() => _isNoteEditorOpen = false);
-    }
+    // تُغلق النافذة بعد الحفظ، فلا تعود إلى الإجراءات.
   }
 
-  /// يبني واجهة نافذة إجراءات الآية وأوضاع تحرير الملاحظة أو اختيار لون التظليل.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -131,6 +139,27 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
       widget.ayah.surahNumber,
       widget.ayah.ayahNumber,
     );
+    final quranText = isDark
+        ? AppColors.nightQuranText
+        : AppColors.dayQuranText;
+    final plainAyah = Text(
+      '﴿ ${widget.ayah.text} ﴾',
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.rtl,
+      style: TextStyle(
+        fontFamily: storage.quranFontFamily,
+        fontSize: 19,
+        height: 1.8,
+        color: quranText,
+      ),
+    );
+    final inHifz = HifzStore.contains(
+      widget.ayah.surahNumber,
+      widget.ayah.ayahNumber,
+    );
+    final hasReflection =
+        storage.getTadbeer(widget.ayah.surahNumber, widget.ayah.ayahNumber) !=
+        null;
 
     return Center(
       child: Material(
@@ -154,7 +183,6 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Header: Surah and Ayah reference
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -176,12 +204,17 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         context.l10n.ayahReference(
                           surah.name,
                           context.currentLanguage == AppLanguage.arabic
-                              ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.ayahNumber)
+                              ? ArabicSearchNormalizer.toArabicDigits(
+                                  widget.ayah.ayahNumber,
+                                )
                               : widget.ayah.ayahNumber,
                         ),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
+                          fontFamily:
+                              context.currentLanguage == AppLanguage.arabic
+                              ? 'IBMPlexSansArabic'
+                              : null,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: isDark
@@ -194,7 +227,10 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                     Text(
                       '${context.l10n.pageAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.page) : widget.ayah.page)} · ${context.l10n.juzAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.juz) : widget.ayah.juz)}',
                       style: TextStyle(
-                        fontFamily: context.currentLanguage == AppLanguage.arabic ? 'Amiri' : null,
+                        fontFamily:
+                            context.currentLanguage == AppLanguage.arabic
+                            ? 'IBMPlexSansArabic'
+                            : null,
                         fontSize: 13,
                         color: isDark
                             ? AppColors.nightSubtitle
@@ -205,30 +241,26 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                 ),
               ),
 
-              // Selected Ayah text preview
+              // الآية كما يراها القارئ في المصحف: بخط المدينة، أو بخطه في النص
+              // المتدفق.
               ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 180),
+                constraints: const BoxConstraints(maxHeight: 200),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Text(
-                    '﴿ ${widget.ayah.text} ﴾',
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      fontFamily: storage.quranFontFamily,
-                      fontSize: 19,
-                      height: 1.8,
-                      color: isDark
-                          ? AppColors.nightQuranText
-                          : AppColors.dayQuranText,
-                    ),
-                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                  child: storage.settings.mushafStyle == MushafStyle.madinah
+                      ? QcfAyahText(
+                          ayah: widget.ayah,
+                          fontSize: 23,
+                          color: quranText,
+                          fallback: plainAyah,
+                        )
+                      : plainAyah,
                 ),
               ),
 
               const Divider(height: 1),
 
-              // Note Editor Mode
+              // محرر الخاطرة.
               if (_isNoteEditorOpen) ...[
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -286,8 +318,11 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            onPressed: () =>
-                                setState(() => _isNoteEditorOpen = false),
+                            // إن فُتحت على المحرر وحده، يُغلقها الإلغاء بدل عرض
+                            // باقي الإجراءات.
+                            onPressed: () => widget.mode == AyahSheetMode.note
+                                ? Navigator.of(context).pop()
+                                : setState(() => _isNoteEditorOpen = false),
                             child: Text(
                               l10n.cancel,
                               style: TextStyle(
@@ -312,7 +347,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            icon: const Icon(Icons.check, size: 16),
+                            icon: const Icon(AppIcons.check, size: 16),
                             label: Text(
                               l10n.save,
                               style: const TextStyle(
@@ -326,7 +361,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                   ),
                 ),
               ] else if (_isHighlightPickerOpen) ...[
-                // Highlight Color Picker Mode
+                // اختيار لون التظليل.
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -374,7 +409,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                                   ),
                                   child: isSelected
                                       ? Icon(
-                                          Icons.check,
+                                          AppIcons.check,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .primary,
@@ -398,7 +433,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                             if (context.mounted) Navigator.of(context).pop();
                           },
                           icon: const Icon(
-                            Icons.delete_outline,
+                            AppIcons.trash,
                             size: 18,
                             color: Colors.redAccent,
                           ),
@@ -412,111 +447,106 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                   ),
                 ),
               ] else ...[
-                // Main Actions Row: Tadbeer Pause, Ayah Links, Note, Bookmark, Highlight, Copy
-                // Distributed equally and centered without horizontal scroll or RTL bias
+                // التدبر أولاً لأنه غاية التطبيق، وباقي الإجراءات في شبكة من
+                // أربعة يتسع صفها لإجراء آخر.
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 6,
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+                  child: _ReflectButton(
+                    label: hasReflection
+                        ? l10n.continueReflection
+                        : l10n.tadbeerPause,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      TadbeerPauseSheet.show(context, widget.ayah);
+                    },
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 6, 8, 12),
+                  child: _ActionGrid(
                     children: [
-                      // Tadbeer Pause action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: Icons.spa_rounded,
-                          label: l10n.tadbeerPause,
-                          hasActiveIndicator:
-                              storage.getTadbeer(
-                                widget.ayah.surahNumber,
-                                widget.ayah.ayahNumber,
-                              ) !=
-                              null,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            TadbeerPauseSheet.show(context, widget.ayah);
-                          },
-                        ),
+                      _ActionButton(
+                        icon: AppIcons.graphFill,
+                        label: l10n.ayahLink,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          AyahLinkPickerDialog.show(context, widget.ayah);
+                        },
                       ),
-
-                      // Ayah Links action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: Icons.hub_rounded,
-                          label: l10n.ayahLink,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            AyahLinkPickerDialog.show(context, widget.ayah);
-                          },
-                        ),
+                      _ActionButton(
+                        icon: AppIcons.notePencil,
+                        label: l10n.addNote,
+                        onTap: () => setState(() => _isNoteEditorOpen = true),
+                        hasActiveIndicator: _existingNoteId != null,
                       ),
-
-                      // Note action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: Icons.edit_note_rounded,
-                          label: l10n.addNote,
-                          onTap: () => setState(() => _isNoteEditorOpen = true),
-                          hasActiveIndicator: _existingNoteId != null,
-                        ),
+                      _ActionButton(
+                        icon: isBookmarked
+                            ? AppIcons.bookmarkSimpleFill
+                            : AppIcons.bookmarkSimple,
+                        label: isBookmarked ? l10n.unmarkAyah : l10n.markAyah,
+                        iconColor: isBookmarked
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                        onTap: () async {
+                          await storage.toggleBookmark(widget.ayah);
+                          if (context.mounted) Navigator.of(context).pop();
+                        },
                       ),
-
-                      // Bookmark action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: isBookmarked
-                              ? Icons.bookmark_rounded
-                              : Icons.bookmark_border_rounded,
-                          label: isBookmarked
-                              ? l10n.removeBookmark
-                              : l10n.saveBookmark,
-                          iconColor: isBookmarked
-                              ? Theme.of(context).colorScheme.primary
-                              : null,
-                          onTap: () async {
-                            await storage.toggleBookmark(widget.ayah);
-                            if (context.mounted) Navigator.of(context).pop();
-                          },
-                        ),
+                      _ActionButton(
+                        icon: AppIcons.highlighterCircle,
+                        label: l10n.highlight,
+                        iconColor: currentHighlight != null
+                            ? AppColors.highlightColors[currentHighlight
+                                  .colorIndex]
+                            : null,
+                        onTap: () =>
+                            setState(() => _isHighlightPickerOpen = true),
                       ),
-
-                      // Highlight action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: Icons.highlight_rounded,
-                          label: l10n.highlight,
-                          iconColor: currentHighlight != null
-                              ? AppColors.highlightColors[currentHighlight
-                                    .colorIndex]
-                              : null,
-                          onTap: () =>
-                              setState(() => _isHighlightPickerOpen = true),
-                        ),
+                      _ActionButton(
+                        icon: inHifz ? AppIcons.brainFill : AppIcons.brain,
+                        label: inHifz
+                            ? l10n.memorizedDone
+                            : l10n.addToMemorization,
+                        iconColor: inHifz
+                            ? AppColors.accentGold(context)
+                            : null,
+                        onTap: () async {
+                          HapticFeedback.selectionClick();
+                          await HifzStore.toggle(
+                            widget.ayah.surahNumber,
+                            widget.ayah.ayahNumber,
+                          );
+                          if (mounted) setState(() {});
+                        },
                       ),
-
-                      // Copy action
-                      Expanded(
-                        child: _ActionButton(
-                          icon: Icons.content_copy_rounded,
-                          label: l10n.copy,
-                          onTap: () {
-                            final shareText =
-                                '﴿${widget.ayah.text}﴾ [سورة ${surah.name}: ${widget.ayah.ayahNumber}]';
-                            Clipboard.setData(ClipboardData(text: shareText));
-                            Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  l10n.copiedToClipboard,
-                                  textAlign: TextAlign.center,
-                                ),
-                                duration: const Duration(seconds: 2),
-                                behavior: SnackBarBehavior.floating,
+                      _ActionButton(
+                        icon: AppIcons.export,
+                        label: l10n.share,
+                        onTap: () {
+                          final ayah = widget.ayah;
+                          Navigator.of(context).pop();
+                          AyahShareSheet.show(context, ayah);
+                        },
+                      ),
+                      _ActionButton(
+                        icon: AppIcons.copy,
+                        label: l10n.copy,
+                        onTap: () {
+                          final shareText =
+                              '﴿${widget.ayah.text}﴾ [سورة ${surah.name}: ${widget.ayah.ayahNumber}]';
+                          Clipboard.setData(ClipboardData(text: shareText));
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                l10n.copiedToClipboard,
+                                textAlign: TextAlign.center,
                               ),
-                            );
-                          },
-                        ),
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -530,7 +560,61 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
   }
 }
 
-/// زر إجراء فردي يعرض أيقونة وتسمية ومؤشر حالة نشط داخل نافذة إجراءات الآية.
+/// إجراءات الآية، أربعة في الصف؛ والصف غير المكتمل في الوسط، فإضافة إجراء لا
+/// تحتاج إلا ابناً جديداً.
+class _ActionGrid extends StatelessWidget {
+  final List<Widget> children;
+
+  const _ActionGrid({required this.children});
+
+  static const _perRow = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, box) {
+        final width = box.maxWidth / _perRow;
+        return Wrap(
+          alignment: WrapAlignment.center,
+          runSpacing: 4,
+          children: [
+            for (final child in children) SizedBox(width: width, child: child),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// زر التدبر البارز في رأس الإجراءات.
+class _ReflectButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _ReflectButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return FilledButton.icon(
+      onPressed: onTap,
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.accentGold(context),
+        // النص الداكن على الذهبي واضح في الوضعين.
+        foregroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightPrimaryDark,
+        minimumSize: const Size.fromHeight(50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      icon: const Icon(AppIcons.flowerLotusFill, size: 22),
+      label: Text(label),
+    );
+  }
+}
+
+/// زر إجراء: أيقونة في دائرة وتسمية تحتها، ونقطة ذهبية إن كان للآية ما يخصّه.
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -538,7 +622,6 @@ class _ActionButton extends StatelessWidget {
   final Color? iconColor;
   final bool hasActiveIndicator;
 
-  /// ينشئ زر إجراء لنافذة إجراءات الآية.
   const _ActionButton({
     required this.icon,
     required this.label,
@@ -547,20 +630,17 @@ class _ActionButton extends StatelessWidget {
     this.hasActiveIndicator = false,
   });
 
-  /// يبني واجهة زر الإجراء مع الأيقونة والنص ونقطة التنبيه عند التفعيل.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final gold = AppColors.accentGold(context);
     final color =
         iconColor ??
         (isDark ? AppColors.darkTextPrimary : AppColors.lightPrimaryDark);
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      hoverColor: isDark
-          ? AppColors.darkBorder
-          : Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
         child: Column(
@@ -569,37 +649,50 @@ class _ActionButton extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Icon(icon, size: 22, color: color),
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary
+                        .withValues(alpha: isDark ? 0.18 : 0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 24, color: color),
+                ),
                 if (hasActiveIndicator)
                   Positioned(
-                    top: -2,
-                    right: -2,
+                    top: 0,
+                    right: 0,
                     child: Container(
-                      width: 8,
-                      height: 8,
+                      width: 9,
+                      height: 9,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: gold,
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkSurfaceElevated
+                              : Colors.white,
+                          width: 1.5,
+                        ),
                       ),
                     ),
                   ),
               ],
             ),
             const SizedBox(height: 6),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: isDark
-                      ? AppColors.nightQuranText
-                      : AppColors.dayQuranText,
-                ),
+            // سطران على الأكثر، فيلتف الاسم الطويل بدل أن يصغر.
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.25,
+                fontWeight: FontWeight.w600,
+                color: isDark
+                    ? AppColors.nightQuranText
+                    : AppColors.dayQuranText,
               ),
             ),
           ],

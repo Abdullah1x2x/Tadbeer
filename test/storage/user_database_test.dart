@@ -1,17 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/settings/user_settings_model.dart';
-import 'package:tadbeer/features/ayah_links/ayah_link_model.dart';
-import 'package:tadbeer/features/bookmarks/bookmark_model.dart';
-import 'package:tadbeer/features/highlights/highlight_model.dart';
-import 'package:tadbeer/features/notes/note_model.dart';
-import 'package:tadbeer/features/tadbeer/tadbeer_model.dart';
-import 'package:tadbeer/features/quran/data/quran_models.dart';
-import 'package:tadbeer/features/reminders/reminder_model.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
+import 'package:tadbeer/data/models/ayah_link_model.dart';
+import 'package:tadbeer/data/models/bookmark_model.dart';
+import 'package:tadbeer/data/models/highlight_model.dart';
+import 'package:tadbeer/data/models/note_model.dart';
+import 'package:tadbeer/data/models/tadbeer_model.dart';
+import 'package:tadbeer/data/quran/quran_models.dart';
+import 'package:tadbeer/data/models/reminder_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -207,6 +208,52 @@ void main() {
       expect(items.isEmpty, isTrue);
     });
 
+    test(
+      'upgrading moves legacy tadabbur_items rows and drops the table',
+      () async {
+        await db.close();
+        final path = '${tempDir.path}/legacy.db';
+        final item = TadbeerItem(
+          id: '2:255',
+          surahNumber: 2,
+          ayahNumber: 255,
+          ayahId: 262,
+          answers: const {1: 'من الجدول القديم'},
+          createdAt: DateTime(2025, 1, 1),
+          updatedAt: DateTime(2025, 1, 1),
+        );
+        final old = await openDatabase(
+          path,
+          version: 2,
+          onCreate: (d, _) async {
+            for (final table in ['tadbeer_items', 'tadabbur_items']) {
+              await d.execute(
+                'CREATE TABLE $table (id TEXT PRIMARY KEY, '
+                'surah_number INTEGER NOT NULL, ayah_number INTEGER NOT NULL, '
+                'data TEXT NOT NULL, updated_at TEXT NOT NULL)',
+              );
+            }
+            await d.insert('tadabbur_items', {
+              'id': item.id,
+              'surah_number': 2,
+              'ayah_number': 255,
+              'data': jsonEncode(item.toJson()),
+              'updated_at': item.updatedAt.toIso8601String(),
+            });
+          },
+        );
+        await old.close();
+
+        await db.init(path);
+        final items = await db.loadTadbeerItems();
+        expect(items.single.answers[1], equals('من الجدول القديم'));
+        final legacy = await db.db.rawQuery(
+          "SELECT name FROM sqlite_master WHERE name='tadabbur_items'",
+        );
+        expect(legacy, isEmpty);
+      },
+    );
+
     test('UserSettings Save and Load', () async {
       const settings = UserSettings(
         themeMode: ThemeMode.dark,
@@ -218,7 +265,7 @@ void main() {
       final loaded = await db.loadSettings();
       expect(loaded, isNotNull);
       expect(loaded!.themeMode, equals(ThemeMode.dark));
-      expect(loaded.hideTadabburIntroPermanently, isTrue);
+      expect(loaded.hideTadbeerIntroPermanently, isTrue);
     });
 
     test('Clear All User Data', () async {
@@ -246,6 +293,85 @@ void main() {
       final bms = await db.loadBookmarks();
       expect(pos, isNull);
       expect(bms.isEmpty, isTrue);
+    });
+
+    test(
+      'A corrupt row is skipped instead of hiding the whole table',
+      () async {
+        final now = DateTime(2026, 10, 1);
+        await db.insertOrUpdateNote(
+          NoteItem(
+            id: 'good-note',
+            type: NoteType.free,
+            content: 'سليمة',
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+        // Simulate a damaged row written by a crash / disk issue.
+        await db.db.insert('notes', {
+          'id': 'broken-note',
+          'type': 'free',
+          'data': '{not valid json',
+          'created_at': now.toIso8601String(),
+          'updated_at': now.toIso8601String(),
+        });
+
+        db.lastIssue.value = null;
+        final notes = await db.loadNotes();
+        expect(notes.map((n) => n.id), equals(['good-note']));
+        expect(
+          db.lastIssue.value?.kind,
+          equals(UserDatabaseIssueKind.corruptRowsSkipped),
+        );
+
+        // The damaged row is kept on disk (never silently deleted).
+        final raw = await db.db.query('notes');
+        expect(raw.length, equals(2));
+      },
+    );
+
+    test('replaceAllUserData swaps all tables in one transaction', () async {
+      final now = DateTime(2026, 10, 1);
+      await db.insertBookmark(
+        BookmarkItem(
+          id: 'old-bm',
+          ayahId: 1,
+          surahNumber: 1,
+          ayahNumber: 1,
+          page: 1,
+          createdAt: now,
+        ),
+      );
+
+      final ok = await db.replaceAllUserData(
+        readingPosition: ReadingPosition(
+          page: 3,
+          surahNumber: 2,
+          ayahNumber: 10,
+          updatedAt: now,
+        ),
+        notes: [
+          NoteItem(
+            id: 'new-note',
+            type: NoteType.free,
+            content: 'جديدة',
+            createdAt: now,
+            updatedAt: now,
+          ),
+        ],
+        bookmarks: const [],
+        highlights: const [],
+        reminders: const [],
+        ayahLinks: const [],
+        tadbeerItems: const [],
+        settings: const UserSettings(),
+      );
+
+      expect(ok, isTrue);
+      expect((await db.loadBookmarks()).isEmpty, isTrue);
+      expect((await db.loadNotes()).single.id, equals('new-note'));
+      expect((await db.loadReadingPosition())!.page, equals(3));
     });
   });
 }
