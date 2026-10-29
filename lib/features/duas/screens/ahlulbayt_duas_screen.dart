@@ -7,6 +7,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import 'ahlulbayt_dua_reader_screen.dart';
 import '../data/ahlulbayt_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../../core/design_system/app_search_field.dart';
 
 /// أدعية أهل البيت (عليهم السلام) والصحيفة السجادية، مع بحث وتصنيفات.
 class AhlulbaytDuasScreen extends StatefulWidget {
@@ -114,56 +115,11 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkSurface
-                        : AppColors.lightSurface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                    ),
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (val) => setState(() => _searchQuery = val),
-                    style: const TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
-                      fontSize: 14,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: l10n.searchAhlulbaytHint,
-                      hintStyle: TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                        fontSize: 13,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      ),
-                      prefixIcon: Icon(
-                        AppIcons.magnifyingGlass,
-                        size: 20,
-                        color: isDark ? AppColors.darkAccentGold : primaryColor,
-                      ),
-                      suffixIcon: _searchQuery.isNotEmpty
-                          ? IconButton(
-                              tooltip: context.l10n.clearText,
-                              icon: const Icon(AppIcons.x, size: 18),
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() => _searchQuery = '');
-                              },
-                            )
-                          : null,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
+                child: AppSearchField(
+                  controller: _searchController,
+                  hintText: l10n.searchAhlulbaytHint,
+                  clearTooltip: l10n.clearText,
+                  onChanged: (val) => setState(() => _searchQuery = val),
                 ),
               ),
 
