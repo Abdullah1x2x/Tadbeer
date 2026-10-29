@@ -113,7 +113,7 @@ class NoteRepository {
 
   /// خواطر آية محددة.
   List<NoteItem> getNotesForAyah(int surahNumber, int ayahNumber) {
-    return _store.findNotesForAyah(surahNumber, ayahNumber);
+    return _store.getNotesForAyah(surahNumber, ayahNumber);
   }
 
   /// يحفظ خاطرة جديدة، أو يعدّل الموجودة إن مُرّر [id].
@@ -161,6 +161,6 @@ class NoteRepository {
   }
 
   Future<void> deleteNote(String id) async {
-    await _store.removeNote(id);
+    await _store.deleteNote(id);
   }
 }

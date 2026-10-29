@@ -254,7 +254,7 @@ void main() {
         expect(res.success, isTrue);
 
         // Clear local store
-        await store.resetAllUserData();
+        await store.resetAllData();
         expect(store.ayahLinks, isEmpty);
 
         // Restore

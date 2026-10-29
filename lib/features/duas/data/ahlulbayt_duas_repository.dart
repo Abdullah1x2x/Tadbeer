@@ -17,12 +17,6 @@ class AhlulbaytDua {
   /// النص الكامل متصلاً دون تقطيع.
   final String content;
 
-  /// الاسم القديم لـ[content].
-  String get fullText => content;
-
-  /// النص كفقرة واحدة، للتوافق.
-  List<String> get paragraphs => [content];
-
   const AhlulbaytDua({
     required this.id,
     required this.title,

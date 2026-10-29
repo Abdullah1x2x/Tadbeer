@@ -95,7 +95,7 @@ abstract class _StoreState extends ChangeNotifier {
   });
 
   /// خواطر آية محددة (قسم الملاحظات).
-  List<NoteItem> findNotesForAyah(int surahNumber, int ayahNumber);
+  List<NoteItem> getNotesForAyah(int surahNumber, int ayahNumber);
 
   /// يسجّل يوم نشاط في السلسلة (قسم رحلة القراءة).
   Future<void> markActiveDay({DateTime? now});

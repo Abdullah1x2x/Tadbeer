@@ -167,9 +167,6 @@ class UserSettings {
   /// أخفى القارئ شاشة الترحيب نهائياً؛ لا تعود ولا يوجد خيار لإظهارها.
   final bool hideTadbeerIntroPermanently;
 
-  /// الاسم القديم، يبقى للتوافق.
-  bool get hideTadabburIntroPermanently => hideTadbeerIntroPermanently;
-
   final QuranFontSizeOption quranFontOption;
 
   final QuranFontFamilyOption quranFontFamily;
@@ -202,8 +199,7 @@ class UserSettings {
   const UserSettings({
     this.themeMode = ThemeMode.light,
     this.languageCode = 'ar',
-    bool hideTadbeerIntroPermanently = false,
-    bool? hideTadabburIntroPermanently,
+    this.hideTadbeerIntroPermanently = false,
     this.quranFontOption = QuranFontSizeOption.medium,
     this.quranFontFamily = QuranFontFamilyOption.scheherazade,
     this.quranFontSize = defaultQuranFontSize,
@@ -214,14 +210,12 @@ class UserSettings {
     this.mushafStyle = MushafStyle.madinah,
     this.themeChosen = false,
     this.userName = '',
-  }) : hideTadbeerIntroPermanently =
-           hideTadabburIntroPermanently ?? hideTadbeerIntroPermanently;
+  });
 
   Map<String, dynamic> toJson() => {
     'themeMode': themeMode.name,
     'languageCode': languageCode,
     'hideTadbeerIntroPermanently': hideTadbeerIntroPermanently,
-    'hideTadabburIntroPermanently': hideTadbeerIntroPermanently,
     'quranFontOption': quranFontOption.name,
     'quranFontFamily': quranFontFamily.name,
     'quranFontSize': quranFontSize,
@@ -279,6 +273,7 @@ class UserSettings {
       languageCode: json['languageCode'] as String? ?? 'ar',
       hideTadbeerIntroPermanently:
           json['hideTadbeerIntroPermanently'] as bool? ??
+          // المفتاح القديم في بيانات الإصدارات السابقة.
           json['hideTadabburIntroPermanently'] as bool? ??
           false,
       quranFontOption: fontOpt,
@@ -308,7 +303,6 @@ class UserSettings {
     ThemeMode? themeMode,
     String? languageCode,
     bool? hideTadbeerIntroPermanently,
-    bool? hideTadabburIntroPermanently,
     QuranFontSizeOption? quranFontOption,
     QuranFontFamilyOption? quranFontFamily,
     double? quranFontSize,
@@ -328,9 +322,7 @@ class UserSettings {
       themeMode: themeMode ?? this.themeMode,
       languageCode: languageCode ?? this.languageCode,
       hideTadbeerIntroPermanently:
-          hideTadbeerIntroPermanently ??
-          hideTadabburIntroPermanently ??
-          this.hideTadbeerIntroPermanently,
+          hideTadbeerIntroPermanently ?? this.hideTadbeerIntroPermanently,
       quranFontOption: quranFontOption ?? this.quranFontOption,
       quranFontFamily: quranFontFamily ?? this.quranFontFamily,
       quranFontSize: newQuranFontSize,

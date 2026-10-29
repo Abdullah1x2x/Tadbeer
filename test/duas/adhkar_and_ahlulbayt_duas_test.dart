@@ -126,7 +126,7 @@ void main() {
       );
       expect(makarim.attributedTo, contains('زين العابدين'));
       expect(
-        makarim.fullText,
+        makarim.content,
         contains('بَلِّغْ بِإِيمَانِي أَكْمَلَ الإِيمَانِ'),
       );
 
@@ -134,7 +134,7 @@ void main() {
       expect(titles, anyElement(contains('الثغور')));
       final thughoor = allDuas.firstWhere((d) => d.title.contains('الثغور'));
       expect(
-        thughoor.fullText,
+        thughoor.content,
         contains('حَصِّنْ ثُغُورَ الْمُسْلِمِينَ بِعِزَّتِكَ'),
       );
 
@@ -142,7 +142,7 @@ void main() {
       expect(titles, anyElement(contains('كميل')));
       final kumayl = allDuas.firstWhere((d) => d.title.contains('كميل'));
       expect(
-        kumayl.fullText,
+        kumayl.content,
         contains(
           'اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ الَّتِي وَسِعَتْ كُلَّ شَيْءٍ',
         ),
@@ -151,20 +151,20 @@ void main() {
       // 4. دعاء الندبة
       expect(titles, anyElement(contains('الندبة')));
       final nudba = allDuas.firstWhere((d) => d.title.contains('الندبة'));
-      expect(nudba.fullText, contains('أَيْنَ بَقِيَّةُ اللَّهِ'));
+      expect(nudba.content, contains('أَيْنَ بَقِيَّةُ اللَّهِ'));
 
       // 5. دعاء التوسل
       expect(titles, anyElement(contains('التوسل')));
       final tawassul = allDuas.firstWhere((d) => d.title.contains('التوسل'));
       expect(
-        tawassul.fullText,
+        tawassul.content,
         contains('يَا وَجِيهاً عِنْدَ اللَّهِ اشْفَعْ لَنَا عِنْدَ اللَّهِ'),
       );
 
       // 6. دعاء الإمام الحسين (يوم عرفة)
       expect(titles, anyElement(contains('عرفة')));
       final arafah = allDuas.firstWhere((d) => d.title.contains('عرفة'));
-      expect(arafah.fullText, contains('مَاذَا وَجَدَ مَنْ فَقَدَكَ'));
+      expect(arafah.content, contains('مَاذَا وَجَدَ مَنْ فَقَدَكَ'));
 
       // 7. دعاء الجوشن الكبير
       expect(titles, anyElement(contains('الجوشن الكبير')));
@@ -172,24 +172,21 @@ void main() {
         (d) => d.title.contains('الجوشن الكبير'),
       );
       expect(
-        jawshan.fullText,
+        jawshan.content,
         contains('سُبْحَانَكَ يَا لا إِلَهَ إِلا أَنْتَ، الْغَوْثَ الْغَوْثَ'),
       );
 
       // 8. دعاء الإمام الصادق لقضاء الحوائج
       expect(titles, anyElement(contains('الصادق')));
       final sadiq = allDuas.firstWhere((d) => d.title.contains('الصادق'));
-      expect(
-        sadiq.fullText,
-        contains('اللّهُمَّ اجْعَلْني أخْشاكَ كأني أراكَ'),
-      );
-      expect(sadiq.fullText, contains('وَأسْعِدْني بِتَقْواكَ'));
+      expect(sadiq.content, contains('اللّهُمَّ اجْعَلْني أخْشاكَ كأني أراكَ'));
+      expect(sadiq.content, contains('وَأسْعِدْني بِتَقْواكَ'));
 
       // 9. دعاء السيدة فاطمة الزهراء (عليها السلام)
       expect(titles, anyElement(contains('الزهراء')));
       final zahra = allDuas.firstWhere((d) => d.title.contains('الزهراء'));
       expect(
-        zahra.fullText,
+        zahra.content,
         contains('يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ'),
       );
 

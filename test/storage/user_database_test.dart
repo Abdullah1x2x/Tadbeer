@@ -218,7 +218,7 @@ void main() {
       final loaded = await db.loadSettings();
       expect(loaded, isNotNull);
       expect(loaded!.themeMode, equals(ThemeMode.dark));
-      expect(loaded.hideTadabburIntroPermanently, isTrue);
+      expect(loaded.hideTadbeerIntroPermanently, isTrue);
     });
 
     test('Clear All User Data', () async {

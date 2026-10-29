@@ -4,17 +4,12 @@ part of 'user_data_store.dart';
 mixin _NotesSection on _StoreState {
   /// خواطر آية محددة.
   @override
-  List<NoteItem> findNotesForAyah(int surahNumber, int ayahNumber) {
+  List<NoteItem> getNotesForAyah(int surahNumber, int ayahNumber) {
     return _notes
         .where(
           (n) => n.surahNumber == surahNumber && n.ayahNumber == ayahNumber,
         )
         .toList();
-  }
-
-  /// الاسم القديم لـ[findNotesForAyah].
-  List<NoteItem> getNotesForAyah(int surahNumber, int ayahNumber) {
-    return findNotesForAyah(surahNumber, ayahNumber);
   }
 
   /// يضيف خاطرة أو يعدّلها.
@@ -77,7 +72,7 @@ mixin _NotesSection on _StoreState {
     return newNote;
   }
 
-  Future<void> removeNote(String id) async {
+  Future<void> deleteNote(String id) async {
     _notes.removeWhere((n) => n.id == id);
     notifyListeners();
     final userDb = UserDatabase.instance;
@@ -86,7 +81,4 @@ mixin _NotesSection on _StoreState {
     }
     await saveToDisk();
   }
-
-  /// الاسم القديم لـ[removeNote].
-  Future<void> deleteNote(String id) => removeNote(id);
 }

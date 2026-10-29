@@ -103,7 +103,4 @@ class QuranDua {
         )
         .join(' ');
   }
-
-  /// الاسم القديم لـ[duaText].
-  String get text => duaText;
 }

@@ -786,7 +786,7 @@ class SettingsScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      await UserDataStore.instance.resetAllUserData();
+      await UserDataStore.instance.resetAllData();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
