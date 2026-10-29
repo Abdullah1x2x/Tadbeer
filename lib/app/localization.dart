@@ -780,6 +780,17 @@ class AppStrings {
   String get booksSectionEmptyDescription => _l.booksSectionEmptyDescription;
 
   // نصوص الشاشات
+  String get myReflectionsCardHint => _l.myReflectionsCardHint;
+  String get notesCardHint => _l.notesCardHint;
+  String get memorizationCardHint => _l.memorizationCardHint;
+  String get searchCardHint => _l.searchCardHint;
+  String get wordMeaningsCardHint => _l.wordMeaningsCardHint;
+  String get ayahLinksCardHint => _l.ayahLinksCardHint;
+  String get guidedPathwaysCardHint => _l.guidedPathwaysCardHint;
+  String get booksAndBookletsCardHint => _l.booksAndBookletsCardHint;
+  String get continuousRecitation => _l.continuousRecitation;
+  String get singleAyahRecitation => _l.singleAyahRecitation;
+  String get ayahFinished => _l.ayahFinished;
   String get permissionsTitle => _l.permissionsTitle;
   String get permissionsBody => _l.permissionsBody;
   String get permissionsAllow => _l.permissionsAllow;

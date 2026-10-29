@@ -2205,4 +2205,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get permissionsLater => 'لاحقاً';
+
+  @override
+  String get continuousRecitation => 'متابعة التلاوة (اضغط لآية واحدة)';
+
+  @override
+  String get singleAyahRecitation => 'آية واحدة (اضغط للمتابعة)';
+
+  @override
+  String get ayahFinished => 'انتهت الآية · اضغط تشغيل لإعادتها';
+
+  @override
+  String get myReflectionsCardHint => 'وقفات التدبر التي كتبتها';
+
+  @override
+  String get notesCardHint => 'خواطرك على الآيات';
+
+  @override
+  String get memorizationCardHint => 'احفظ وراجع في وقته';
+
+  @override
+  String get searchCardHint => 'في القرآن وكل ما حفظت';
+
+  @override
+  String get wordMeaningsCardHint => 'معاني الكلمات بترتيب المصحف';
+
+  @override
+  String get ayahLinksCardHint => 'اربط الآيات بموضوع واحد';
+
+  @override
+  String get guidedPathwaysCardHint => 'رحلات تدبر يومًا بيوم';
+
+  @override
+  String get booksAndBookletsCardHint => 'الملازم والكتب للقراءة';
 }

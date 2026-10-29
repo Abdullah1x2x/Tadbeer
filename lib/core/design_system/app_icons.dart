@@ -771,6 +771,11 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
+  static const IconData repeatOnce = IconData(
+    0xe3f8,
+    fontFamily: _regular,
+    fontPackage: _package,
+  );
   static const IconData hourglassMedium = IconData(
     0xe2b8,
     fontFamily: _regular,

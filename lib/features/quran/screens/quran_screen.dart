@@ -832,9 +832,10 @@ class _QuranScreenState extends State<QuranScreen> {
               curve: AppMotion.emphasized,
               left: 12,
               right: 12,
+              // مرفوع قليلاً عن الحافة؛ لا يلاصق أسفل الشاشة ولا الشريط.
               bottom:
                   MediaQuery.paddingOf(context).bottom +
-                  (_showTopBar ? _bottomBarHeight + 6 : 12),
+                  (_showTopBar ? _bottomBarHeight + 16 : 32),
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 560),

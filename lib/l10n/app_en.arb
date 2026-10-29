@@ -697,5 +697,16 @@
   "permissionsTitle": "App permissions",
   "permissionsBody": "Tadbeer needs notification and alarm permissions to remind you of your portion and adhkar on time, even when the app is closed. Nothing leaves your device.",
   "permissionsAllow": "Allow",
-  "permissionsLater": "Later"
+  "permissionsLater": "Later",
+  "continuousRecitation": "Continuous recitation (tap for one ayah)",
+  "singleAyahRecitation": "One ayah (tap to continue)",
+  "ayahFinished": "Ayah finished · press play to repeat",
+  "myReflectionsCardHint": "Reflection pauses you wrote",
+  "notesCardHint": "Your thoughts on the ayahs",
+  "memorizationCardHint": "Memorize, review on time",
+  "searchCardHint": "The Quran and all you saved",
+  "wordMeaningsCardHint": "Word meanings in Mushaf order",
+  "ayahLinksCardHint": "Link ayahs by theme",
+  "guidedPathwaysCardHint": "Day-by-day reflection journeys",
+  "booksAndBookletsCardHint": "Booklets and books to read"
 }

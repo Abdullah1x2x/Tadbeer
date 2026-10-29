@@ -2207,4 +2207,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionsLater => 'Later';
+
+  @override
+  String get continuousRecitation => 'Continuous recitation (tap for one ayah)';
+
+  @override
+  String get singleAyahRecitation => 'One ayah (tap to continue)';
+
+  @override
+  String get ayahFinished => 'Ayah finished · press play to repeat';
+
+  @override
+  String get myReflectionsCardHint => 'Reflection pauses you wrote';
+
+  @override
+  String get notesCardHint => 'Your thoughts on the ayahs';
+
+  @override
+  String get memorizationCardHint => 'Memorize, review on time';
+
+  @override
+  String get searchCardHint => 'The Quran and all you saved';
+
+  @override
+  String get wordMeaningsCardHint => 'Word meanings in Mushaf order';
+
+  @override
+  String get ayahLinksCardHint => 'Link ayahs by theme';
+
+  @override
+  String get guidedPathwaysCardHint => 'Day-by-day reflection journeys';
+
+  @override
+  String get booksAndBookletsCardHint => 'Booklets and books to read';
 }
