@@ -7,27 +7,20 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../../data/models/ayah_link_model.dart';
 
-/// مستودع إدارة روابط الآيات (شبكة التدبر والموضوعات القرآنية المشتركة).
-///
-/// ملاحظة معمارية:
-/// تتيح روابط الآيات للمتدبر ربط آيات متعددة من سور مختلفة بموضوع تدبري واحد،
-/// مع حفظ إحداثيات كل عقدة في الخريطة الذهنية التفاعلية دون أي تكرار للنص القرآني في التخزين.
+/// روابط الآيات: يربط القارئ آيات من سور مختلفة بموضوع واحد.
+/// تُحفظ مواضع العقد على الخريطة، دون تكرار نص القرآن في التخزين.
 class AyahLinkRepository {
   final UserDataStore _store;
 
-  /// ينشئ مستودع روابط الآيات بالاعتماد على مخزن بيانات المستخدم.
+  /// [store] للاختبارات؛ الافتراضي هو المخزن العام.
   AyahLinkRepository([UserDataStore? store])
     : _store = store ?? UserDataStore.instance;
 
-  /// يعيد قائمة جميع روابط الآيات المحفوظة للمستخدم.
   List<AyahLinkItem> get allLinks => _store.ayahLinks;
 
-  /// يجلب رابط آيات محدد بواسطة معرّفه الفريد.
   AyahLinkItem? getLink(String id) => _store.getAyahLink(id);
 
-  /// ينشئ رابط آيات جديد بالعنوان والوصف الاختياري ويحفظه.
-  ///
-  /// Creates a new Ayah Link with title and optional description.
+  /// ينشئ رابطاً بعنوان ووصف اختياري.
   Future<AyahLinkItem> createLink({
     required String title,
     String? description,
@@ -46,23 +39,15 @@ class AyahLinkRepository {
     return link;
   }
 
-  /// يحدّث بيانات رابط آيات موجود.
-  ///
-  /// Updates an existing Ayah Link.
   Future<void> updateLink(AyahLinkItem link) async {
     await _store.saveAyahLink(link.copyWith(updatedAt: DateTime.now()));
   }
 
-  /// يحذف رابط آيات بواسطة معرّفه.
-  ///
-  /// Deletes an Ayah Link by id.
   Future<void> deleteLink(String id) async {
     await _store.deleteAyahLink(id);
   }
 
-  /// يضيف آية قرآنية إلى رابط آيات موجود.
-  ///
-  /// Adds a verse to an existing Ayah Link.
+  /// يضيف آية إلى الرابط.
   Future<void> addVerseToLink(
     String linkId, {
     required int ayahId,
@@ -82,9 +67,7 @@ class AyahLinkRepository {
     await _store.addVerseToLink(linkId, verse);
   }
 
-  /// يزيل آية قرآنية من رابط آيات محدد.
-  ///
-  /// Removes a verse from an Ayah Link.
+  /// يزيل آية من الرابط.
   Future<void> removeVerseFromLink(
     String linkId,
     int surahNumber,
@@ -93,9 +76,7 @@ class AyahLinkRepository {
     await _store.removeVerseFromLink(linkId, surahNumber, ayahNumber);
   }
 
-  /// يحدّث ملاحظة التدبر الخاصة بآية داخل رابط محدد.
-  ///
-  /// Updates personal reflection note on an ayah within a link.
+  /// يعدّل خاطرة آية داخل الرابط.
   Future<void> updateVerseNote(
     String linkId,
     int surahNumber,
@@ -105,7 +86,7 @@ class AyahLinkRepository {
     await _store.updateVerseNote(linkId, surahNumber, ayahNumber, note);
   }
 
-  /// يضيف بطاقة ملاحظة تدبرية جديدة إلى الرابط.
+  /// يضيف بطاقة خاطرة إلى الرابط.
   Future<AyahLinkNote> addNoteToLink(
     String linkId, {
     required String content,
@@ -144,7 +125,7 @@ class AyahLinkRepository {
     return note;
   }
 
-  /// يحدّث محتوى أو عنوان بطاقة ملاحظة داخل الرابط.
+  /// يعدّل عنوان بطاقة خاطرة أو نصها.
   Future<void> updateNoteInLink(
     String linkId,
     String noteId, {
@@ -169,7 +150,6 @@ class AyahLinkRepository {
     }
   }
 
-  /// يحذف بطاقة ملاحظة من الرابط.
   Future<void> deleteNoteFromLink(String linkId, String noteId) async {
     final link = getLink(linkId);
     if (link != null) {
@@ -187,9 +167,7 @@ class AyahLinkRepository {
     }
   }
 
-  /// يحدّث إحداثيات مواضع العقد في لوحة الشبكة وحالة الترتيب اليدوي.
-  ///
-  /// Updates positions of nodes in canvas and whether layout is manual.
+  /// يحفظ مواضع العقد على الشبكة، وهل رتّبها القارئ بيده.
   Future<void> updatePositions(
     String linkId,
     Map<String, LinkNodePosition> positions,
@@ -198,9 +176,7 @@ class AyahLinkRepository {
     await _store.updateLinkPositions(linkId, positions, isManual);
   }
 
-  /// يحدّث حالة العرض للرابط مثل نمط العرض والإزاحة ومستوى التكبير.
-  ///
-  /// Updates view state (viewMode, panX, panY, zoomScale).
+  /// يحفظ حالة العرض: الطريقة والإزاحة والتكبير.
   Future<void> updateViewState(
     String linkId, {
     String? viewMode,
@@ -217,16 +193,12 @@ class AyahLinkRepository {
     );
   }
 
-  /// يعيد جميع روابط الآيات التي تتضمن آية محددة.
-  ///
-  /// Finds all Ayah Links that contain a specific ayah.
+  /// الروابط التي تضم الآية.
   List<AyahLinkItem> getLinksForAyah(int surahNumber, int ayahNumber) {
     return _store.getLinksForAyah(surahNumber, ayahNumber);
   }
 
-  /// يبحث في روابط الآيات حسب العنوان أو الوصف أو أسماء السور والملاحظات.
-  ///
-  /// Searches links by title, description, or contained verses/surahs.
+  /// يبحث في الروابط: العنوان والوصف وأسماء السور والخواطر.
   List<AyahLinkItem> searchLinks(String rawQuery) {
     final normalized = ArabicSearchNormalizer.normalize(rawQuery).trim();
     if (normalized.isEmpty) return allLinks;
@@ -240,7 +212,7 @@ class AyahLinkRepository {
         if (normDesc.contains(normalized)) return true;
       }
 
-      // Check contained surah names
+      // أسماء سور الآيات.
       for (final v in link.verses) {
         final surah = QuranRepository.instance.getSurah(v.surahNumber);
         final normSurah = ArabicSearchNormalizer.normalize(surah.name);
@@ -252,7 +224,7 @@ class AyahLinkRepository {
         }
       }
 
-      // Check attached reflection card notes
+      // بطاقات الخواطر.
       for (final n in link.notes) {
         final normContent = ArabicSearchNormalizer.normalize(n.content);
         if (normContent.contains(normalized)) return true;

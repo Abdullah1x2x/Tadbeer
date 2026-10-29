@@ -11,9 +11,7 @@ import '../../../core/design_system/app_icons.dart';
 
 export 'book_section_screen.dart';
 
-/// شاشة دليل أقسام مكتبة الكتب والملازم التدبرية.
-/// تعرض الأقسام الرئيسية فقط في بطاقات مميزة، وينتقل المستخدم إلى داخل كل قسم
-/// لتصفح وقراءة الكتب والملازم التابعة له.
+/// دليل أقسام المكتبة: بطاقة لكل قسم، تفتح كتبه.
 class BooksScreen extends StatefulWidget {
   final String? initialSection;
 
@@ -32,7 +30,7 @@ class _BooksScreenState extends State<BooksScreen> {
     _repo.init();
     _repo.addListener(_onRepoChanged);
 
-    // إذا تم تمرير قسم مبدئي، يتم الانتقال إليه بعد اكتمال بناء الشاشة
+    // يفتح القسم المبدئي بعد اكتمال بناء الشاشة.
     if (widget.initialSection != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -176,7 +174,7 @@ class _BooksScreenState extends State<BooksScreen> {
   }
 }
 
-/// بطاقة عرض القسم في شاشة دليل الأقسام الرئيسية.
+/// بطاقة قسم في الدليل.
 class _SectionDirectoryCard extends StatelessWidget {
   final BookSection section;
   final int bookCount;
@@ -288,7 +286,6 @@ class _SectionDirectoryCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 1. أيقونة القسم في بداية البطاقة
               Container(
                 width: 52,
                 height: 52,
@@ -306,7 +303,6 @@ class _SectionDirectoryCard extends StatelessWidget {
               ),
               const SizedBox(width: 14),
 
-              // 2. تفاصيل القسم واسمه
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,7 +362,7 @@ class _SectionDirectoryCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
 
-              // 3. سهم الدخول في طرف البطاقة (ينعكس تلقائياً مع اتجاه اللغة)
+              // سهم الدخول، ينعكس مع اتجاه اللغة.
               Icon(
                 AppIcons.caretRight,
                 color: isDark

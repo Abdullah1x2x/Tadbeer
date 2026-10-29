@@ -2,27 +2,24 @@ import 'package:flutter/material.dart';
 
 import '../../../core/design_system/app_icons.dart';
 
-/// فصل أو مبحث ضمن الملزمة أو الكتاب التدبري.
+/// فصل أو مبحث في كتاب أو ملزمة.
 class BookChapter {
   final String title;
   final String summary;
   final String content;
 
-  /// ينشئ فصلاً أو مبحثاً تدبرياً.
   const BookChapter({
     required this.title,
     this.summary = '',
     required this.content,
   });
 
-  /// تحويل الفصل إلى خريطة JSON للتخزين.
   Map<String, dynamic> toJson() => {
     'title': title,
     'summary': summary,
     'content': content,
   };
 
-  /// إنشاء فصل من خريطة JSON.
   factory BookChapter.fromJson(Map<String, dynamic> json) => BookChapter(
     title: json['title'] as String? ?? '',
     summary: json['summary'] as String? ?? '',
@@ -30,7 +27,7 @@ class BookChapter {
   );
 }
 
-/// قسم تصنيفي للملازم والكتب (مثال: ملازم التدبر، علوم القرآن، كتب التفسير).
+/// قسم في المكتبة (ملازم التدبر، علوم القرآن…).
 class BookSection {
   final String id;
   final String name;
@@ -41,7 +38,6 @@ class BookSection {
   final List<String> seriesFilterList;
   final DateTime? createdAt;
 
-  /// ينشئ قسماً جديداً للكتب والملازم.
   const BookSection({
     required this.id,
     required this.name,
@@ -53,7 +49,6 @@ class BookSection {
     this.createdAt,
   });
 
-  /// تحويل القسم إلى خريطة JSON.
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
@@ -64,7 +59,6 @@ class BookSection {
     'createdAt': (createdAt ?? DateTime.now()).toIso8601String(),
   };
 
-  /// إنشاء قسم من خريطة JSON.
   factory BookSection.fromJson(Map<String, dynamic> json) => BookSection(
     id: json['id'] as String? ?? '',
     name: json['name'] as String? ?? '',
@@ -82,7 +76,7 @@ class BookSection {
   );
 }
 
-/// نموذج بيانات الكتاب أو الملزمة مع دعم الملفات المرفقة (PDF، نصوص) والفصول.
+/// كتاب أو ملزمة: فصول مكتوبة، أو ملف مرفق (PDF أو نص).
 class BookModel {
   final String id;
   final String title;
@@ -100,7 +94,6 @@ class BookModel {
   final Color? badgeColor;
   final DateTime? createdAt;
 
-  /// ينشئ ملزمة أو كتاباً.
   const BookModel({
     required this.id,
     required this.title,
@@ -119,16 +112,15 @@ class BookModel {
     this.createdAt,
   });
 
-  /// ما إذا كان الكتاب يحتوي على ملف مرفق من الهاتف أو الأصول.
+  /// هل للكتاب ملف مرفق، من الهاتف أو من الأصول.
   bool get hasAttachedFile => filePath != null && filePath!.isNotEmpty;
 
-  /// ما إذا كان الملف المرفق بصيغة PDF.
   bool get isPdf =>
       fileType == 'pdf' ||
       (fileName?.toLowerCase().endsWith('.pdf') ?? false) ||
       (filePath?.toLowerCase().endsWith('.pdf') ?? false);
 
-  /// ما إذا كان الملف المرفق بصيغة نصية أو Markdown.
+  /// هل الملف المرفق نص أو Markdown.
   bool get isText =>
       fileType == 'text' ||
       fileType == 'markdown' ||
@@ -137,7 +129,7 @@ class BookModel {
       (filePath?.toLowerCase().endsWith('.txt') ?? false) ||
       (filePath?.toLowerCase().endsWith('.md') ?? false);
 
-  /// حجم الملف بصيغة نصية مقروءة للمستخدم.
+  /// حجم الملف بصيغة مقروءة.
   String get formattedFileSize {
     if (fileSizeBytes <= 0) return '';
     if (fileSizeBytes < 1024) return '$fileSizeBytes B';
@@ -147,7 +139,6 @@ class BookModel {
     return '${(fileSizeBytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 
-  /// تحويل الكتاب إلى خريطة JSON للتخزين المحلي.
   Map<String, dynamic> toJson() => {
     'id': id,
     'title': title,
@@ -165,7 +156,6 @@ class BookModel {
     'createdAt': (createdAt ?? DateTime.now()).toIso8601String(),
   };
 
-  /// إنشاء كتاب من خريطة JSON.
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
     id: json['id'] as String? ?? '',
     title: json['title'] as String? ?? '',
@@ -191,6 +181,6 @@ class BookModel {
         DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
   );
 
-  /// مكتبة الكتب الافتراضية المدمجة (فارغة تلبية لرغبة المستخدم في بدء مكتبة مخصصة).
+  /// الكتب المدمجة الافتراضية؛ فارغة، فيبدأ القارئ مكتبته بنفسه.
   static const List<BookModel> defaultBooks = [];
 }

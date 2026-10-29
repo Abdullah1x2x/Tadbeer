@@ -13,11 +13,11 @@ import '../../../data/models/ayah_link_model.dart';
 import '../data/ayah_link_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// أدوات مشاركة واستيراد روابط الآيات دون اتصال بالإنترنت عبر رمز الاستجابة السريعة (QR).
+/// مشاركة الروابط واستيرادها برمز QR، دون إنترنت.
 class AyahLinkQrDialog {
   AyahLinkQrDialog._();
 
-  /// يشفر رابط الآيات إلى نص مضغوط صالح للتضمين في رمز QR.
+  /// يحوّل الرابط إلى نص مضغوط يتسع في رمز QR.
   static String encodeLink(AyahLinkItem link) {
     final payload = {
       'v': 1, // format version
@@ -37,7 +37,7 @@ class AyahLinkQrDialog {
     return 'tadbeer://link?data=${base64Url.encode(utf8.encode(jsonEncode(payload)))}';
   }
 
-  /// يفك تشفير نص الرابط المستورد إلى نموذج بيانات.
+  /// يفك نص الرابط المستورد، أو null إن لم يكن صالحاً.
   static Map<String, dynamic>? decodeLink(String raw) {
     try {
       String encoded = raw.trim();
@@ -55,7 +55,7 @@ class AyahLinkQrDialog {
     }
   }
 
-  /// يعرض نافذة رمز QR لمشاركة الرابط دون إنترنت.
+  /// يعرض رمز QR لمشاركة الرابط.
   static Future<void> showShareDialog(BuildContext context, AyahLinkItem link) {
     final qrData = encodeLink(link);
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -195,7 +195,7 @@ class AyahLinkQrDialog {
     );
   }
 
-  /// يعرض نافذة استيراد رابط آيات عبر إدخال أو لصق رمز QR.
+  /// يستورد رابطاً بلصق نص رمز QR.
   static Future<void> showImportDialog(
     BuildContext context, {
     AyahLinkRepository? repo,

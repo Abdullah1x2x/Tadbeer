@@ -6,19 +6,14 @@ import '../../../data/models/ayah_link_model.dart';
 import '../data/ayah_link_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// نافذة حوار مبسطة لإنشاء رابط آيات جديد أو تعديل رابط موجود.
-///
-/// Minimal dialog to create or edit an Ayah Link.
-///
-/// Keeps fields minimal: Title is required, Description/Idea is optional.
+/// حوار إنشاء رابط أو تعديله: العنوان مطلوب، والوصف اختياري.
 class CreateLinkDialog extends StatefulWidget {
-  /// رابط الآيات المراد تعديله في حال وجوده، أو فارغ عند الإنشاء الجديد.
+  /// الرابط المعدّل، أو null لرابط جديد.
   final AyahLinkItem? existingLink;
 
-  /// ينشئ نافذة حوار إنشاء أو تعديل رابط الآيات.
   const CreateLinkDialog({super.key, this.existingLink});
 
-  /// يعرض نافذة حوار إنشاء أو تعديل رابط الآيات ويعيد العنصر الناتج.
+  /// يعرض الحوار ويعيد الرابط الناتج.
   static Future<AyahLinkItem?> show(
     BuildContext context, {
     AyahLinkItem? existingLink,
@@ -29,19 +24,16 @@ class CreateLinkDialog extends StatefulWidget {
     );
   }
 
-  /// ينشئ حالة نافذة حوار إنشاء أو تعديل رابط الآيات.
   @override
   State<CreateLinkDialog> createState() => _CreateLinkDialogState();
 }
 
-/// الحالة الداخلية لنافذة إنشاء أو تعديل رابط الآيات.
 class _CreateLinkDialogState extends State<CreateLinkDialog> {
   late final TextEditingController _titleController;
   late final TextEditingController _descController;
   final _formKey = GlobalKey<FormState>();
   bool _isSaving = false;
 
-  /// يهيئ حقول العنوان والوصف بالقيم الحالية عند التعديل.
   @override
   void initState() {
     super.initState();
@@ -53,7 +45,6 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     );
   }
 
-  /// يحرر موارد متحكمات النصوص عند إغلاق النافذة.
   @override
   void dispose() {
     _titleController.dispose();
@@ -61,7 +52,7 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     super.dispose();
   }
 
-  /// يتحقق من صحة المدخلات ويحفظ رابط الآيات الجديد أو المحدث.
+  /// يتحقق من المدخلات ويحفظ الرابط.
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -96,7 +87,6 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     }
   }
 
-  /// يبني نموذج إدخال عنوان ووصف رابط الآيات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;

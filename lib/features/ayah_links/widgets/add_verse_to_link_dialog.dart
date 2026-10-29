@@ -9,28 +9,21 @@ import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../data/ayah_link_repository.dart';
 
-/// نافذة إضافة آية إلى رابط الآيات.
-///
-/// One search field finds an ayah by its words or by surah and number
-/// ("البقرة ٢٥٥"); with nothing typed it lists the reader's saved and
-/// highlighted ayahs, and picking by surah and number is one tap away.
-/// Nothing is chosen until the reader picks an ayah, then an optional note
-/// and a single "Add to link" button follow.
+/// إضافة آية إلى رابط.
+/// حقل بحث واحد يجد الآية بكلماتها أو بالسورة والرقم ("البقرة ٢٥٥")؛ وفارغاً يعرض الآيات المحفوظة والمظلّلة، والاختيار بالسورة والرقم على بعد نقرة. ولا يُختار شيء حتى يختار القارئ آية، ثم تأتي خاطرة اختيارية وزر "أضف إلى الرابط".
 class AddVerseToLinkDialog extends StatefulWidget {
-  /// معرّف رابط الآيات المراد إضافة الآية إليه.
   final String linkId;
 
-  /// معرّفات الآيات المضافة مسبقاً في هذا الرابط لتفادي التكرار.
+  /// آيات الرابط الحالية، لتجنب تكرارها.
   final List<int> existingAyahIds;
 
-  /// ينشئ نافذة إضافة آية إلى الرابط.
   const AddVerseToLinkDialog({
     super.key,
     required this.linkId,
     this.existingAyahIds = const [],
   });
 
-  /// يعرض النافذة كلوحة سفلية تتكيف مع لوحة المفاتيح.
+  /// يعرضها لوحةً سفلية تتكيف مع لوحة المفاتيح.
   static Future<bool?> show(
     BuildContext context, {
     required String linkId,
@@ -58,10 +51,10 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   List<Ayah> _results = const [];
 
-  /// The chosen ayah; nothing until the reader picks one.
+  /// الآية المختارة؛ لا شيء حتى يختار القارئ.
   Ayah? _selected;
 
-  /// Whether the surah-and-number picker is open.
+  /// هل منتقي السورة والرقم مفتوح.
   bool _byNumber = false;
   int _surah = 1;
   int _ayah = 1;
@@ -94,7 +87,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   void _choose(Ayah? ayah) => setState(() => _selected = ayah);
 
-  /// Saved and highlighted ayahs, newest kinds first, each once.
+  /// الآيات المحفوظة والمظلّلة، كل آية مرة واحدة.
   List<Ayah> get _savedAyahs {
     final repo = QuranRepository.instance;
     final store = UserDataStore.instance;
@@ -139,7 +132,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
     return Directionality(
       textDirection: context.currentLanguage.direction,
-      // A Material, so the list rows' tap ripples show on it.
+      // Material ليظهر أثر النقر على صفوف القائمة.
       child: Material(
         color: Theme.of(context).scaffoldBackgroundColor,
         shape: const RoundedRectangleBorder(
@@ -194,7 +187,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     );
   }
 
-  /// Search, saved ayahs and the surah-and-number picker.
+  /// البحث، والآيات المحفوظة، ومنتقي السورة والرقم.
   List<Widget> _choosing(BuildContext context, AppStrings l10n) {
     final query = _searchController.text.trim();
     final saved = query.isEmpty && !_byNumber ? _savedAyahs : const <Ayah>[];
@@ -259,7 +252,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     ];
   }
 
-  /// The chosen ayah, a way to change it and the optional note.
+  /// الآية المختارة، وطريقة لتغييرها، والخاطرة الاختيارية.
   List<Widget> _chosen(BuildContext context, AppStrings l10n, Ayah ayah) {
     final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
     final added = _isAdded(ayah);
@@ -409,7 +402,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     );
   }
 
-  /// A searchable list of the 114 surahs; returns the chosen number.
+  /// قائمة السور الـ114 مع بحث؛ يعيد رقم المختارة.
   Future<int?> _pickSurah(BuildContext context, AppStrings l10n) {
     final surahs = QuranRepository.instance.surahs;
     return showModalBottomSheet<int>(
@@ -541,7 +534,7 @@ class _SectionTitle extends StatelessWidget {
   );
 }
 
-/// One ayah in a list: its reference and the start of its text.
+/// آية في قائمة: مرجعها وبداية نصها.
 class _AyahTile extends StatelessWidget {
   final Ayah ayah;
   final bool added;

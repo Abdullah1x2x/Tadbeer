@@ -9,8 +9,7 @@ import 'book_reader_screen.dart';
 import '../data/book_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// شاشة استعراض محتويات قسم محدد من أقسام المكتبة.
-/// تعرض قائمة الملازم أو الكتب التابعة لهذا القسم فقط مع تصفية وبحث موضعي.
+/// كتب قسم واحد، مع تصفية بالسلسلة وبحث داخل القسم.
 class BookSectionScreen extends StatefulWidget {
   final BookSection section;
 
@@ -54,7 +53,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
   List<BookModel> get _filteredBooks {
     var list = _allSectionBooks;
 
-    // تصفية السلاسل التابعة للقسم في حال وجودها
+    // تصفية بالسلسلة، إن كان للقسم سلاسل.
     if (_hasSeriesFilter && _selectedMalazemSeries != 'الكل') {
       list = list.where((b) {
         if (_selectedMalazemSeries ==
@@ -181,7 +180,6 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // شريط البحث الموضعي داخل هذا القسم
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                 child: Container(
@@ -231,7 +229,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                 ),
               ),
 
-              // شرائح السلاسل (تظهر للأقسام التي تحدد سلاسل تصنيفية)
+              // شرائح السلاسل، للأقسام التي تحددها.
               if (_hasSeriesFilter && allBooks.isNotEmpty)
                 Container(
                   color: (widget.section.color ?? primaryColor).withValues(
@@ -282,7 +280,6 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                   ),
                 ),
 
-              // قائمة كتب أو ملازم القسم
               Expanded(
                 child: filtered.isEmpty
                     ? _buildEmptyState(isDark, primaryColor)
@@ -472,7 +469,7 @@ class _SectionBookCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 1. تفاصيل الكتاب وعنوانه (تبدأ من أقصى اليمين بأريحية كاملة)
+            // ١. تفاصيل الكتاب وعنوانه.
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -556,7 +553,7 @@ class _SectionBookCard extends StatelessWidget {
             ),
             const SizedBox(width: 12),
 
-            // 2. أيقونة الكتاب وسهم الدخول (على أقصى اليسار)
+            // ٢. أيقونة الكتاب وسهم الدخول.
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -577,7 +574,7 @@ class _SectionBookCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Icon(
-                  // Mirrors with text direction, so it points left in Arabic.
+                  // يتبع اتجاه النص، فيشير لليسار في العربية.
                   AppIcons.caretRight,
                   size: 18,
                   color: isDark

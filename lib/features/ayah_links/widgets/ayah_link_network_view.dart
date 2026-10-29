@@ -15,38 +15,24 @@ import '../../../core/design_system/app_icons.dart';
 
 part 'ayah_link_network_nodes.dart';
 
-/// واجهة عرض الشبكة التفاعلية لرابط الآيات مع عقدة المحور المركزية وعقد الآيات المحيطة.
-///
-/// Flagship interactive Network Canvas View for an Ayah Link.
-///
-/// Features:
-/// - Virtual canvas with central theme node and surrounding verse nodes.
-/// - Deterministic radial auto-layout preventing node collisions.
-/// - Drag-and-drop manual positioning with state persistence.
-/// - Pan & pinch-to-zoom navigation via [InteractiveViewer].
-/// - Centering action and smooth animated camera navigation.
-/// - Smooth animated camera focus when tapping an ayah.
-/// - Detailed verse inspector bottom sheet.
+/// شبكة الرابط: عقدة المحور في المركز والآيات حولها.
+/// ترتيب دائري تلقائي لا تتداخل فيه العقد، وسحب يدوي يُحفظ، وتحريك وتكبير بـ[InteractiveViewer]، وتركيز سلس على الآية المنقورة مع لوحة تفاصيلها.
 class AyahLinkNetworkView extends StatefulWidget {
-  /// بيانات رابط الآيات المعروض في الشبكة.
   final AyahLinkItem link;
 
-  /// دالة الاستدعاء عند الضغط على زر إضافة آية.
+  /// عند الضغط على زر إضافة آية.
   final VoidCallback onAddVerse;
 
-  /// ينشئ واجهة عرض الشبكة التفاعلية لرابط الآيات.
   const AyahLinkNetworkView({
     super.key,
     required this.link,
     required this.onAddVerse,
   });
 
-  /// ينشئ حالة واجهة الشبكة التفاعلية لرابط الآيات.
   @override
   State<AyahLinkNetworkView> createState() => AyahLinkNetworkViewState();
 }
 
-/// حالة واجهة الشبكة التفاعلية التي تدير مواضع العقد وحركة الكاميرا والتفاعل.
 class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     with SingleTickerProviderStateMixin {
   static const double _canvasSize = 3000.0;
@@ -56,12 +42,11 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
   late AnimationController _animController;
   Animation<Matrix4>? _matrixAnimation;
 
-  // Local mutable positions for real-time drag responsiveness
+  // مواضع محلية تتحدث فوراً أثناء السحب.
   final Map<String, Offset> _positions = {};
 
   final AyahLinkRepository _repo = AyahLinkRepository();
 
-  /// يهيئ متحكمات التحويل والحركة ويستعيد مواضع العقد والمنظور.
   @override
   void initState() {
     super.initState();
@@ -78,7 +63,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     });
   }
 
-  /// يزامن مواضع العقد عند تغير قائمة الآيات أو إعدادات الترتيب في الرابط.
+  /// يعيد مزامنة المواضع حين تتغير الآيات أو الترتيب.
   @override
   void didUpdateWidget(covariant AyahLinkNetworkView oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -90,7 +75,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يحرر موارد متحكمات التحويل والحركة عند التخلص من الواجهة.
   @override
   void dispose() {
     _transformController.dispose();
@@ -98,14 +82,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     super.dispose();
   }
 
-  /// يزامن مواضع العقد المحلية مع المواضع المحفوظة أو يعيد حساب الترتيب التلقائي.
+  /// يأخذ المواضع المحفوظة، أو يحسب الترتيب التلقائي.
   void _syncPositionsFromLink() {
     final existing = widget.link.positions;
     final verses = widget.link.verses;
     final notes = widget.link.notes;
 
     if (!widget.link.isManualLayout || existing.isEmpty) {
-      // Compute radial auto layout for verses and notes
       _computeAutoLayoutPositions(verses, notes);
     } else {
       _positions.clear();
@@ -121,13 +104,12 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           _positions[n.noteKey] = Offset(pos.dx, pos.dy);
         }
       }
-      // For any newly added items without saved position, assign auto-slot
+      // العناصر الجديدة بلا موضع محفوظ تأخذ موضعاً تلقائياً.
       _assignMissingPositions(verses, notes);
     }
   }
 
-  /// يحسب المواضع الدائرية التلقائية للعقد حول المركز، مع دعم حلقات متحدة المركز
-  /// وتعديل نصف القطر وفق مقياس الخط لتفادي تداخل الكروت.
+  /// مواضع دائرية حول المركز في حلقات متحدة المركز، ونصف القطر يتبع حجم الخط فلا تتداخل البطاقات.
   void _computeAutoLayoutPositions(
     List<AyahLinkVerse> verses,
     List<AyahLinkNote> notes,
@@ -171,13 +153,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         _positions[allKeys[innerCount + i]] = Offset(x, y);
       }
     } else {
-      // Concentric rings with minimum angular distance
+      // حلقات متحدة المركز بحد أدنى للمسافة الزاوية.
       int assigned = 0;
       int ringIndex = 0;
 
       while (assigned < count) {
         final radius = (280.0 + (ringIndex * 210.0)) * scaleRatio;
-        // Estimate how many nodes fit comfortably on this circumference
+        // كم عقدة تتسع براحة على هذا المحيط.
         final circumference = 2 * math.pi * radius;
         final capacity = math.max(
           6,
@@ -199,7 +181,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يعين مواضع افتراضية لأي آيات أو ملاحظات مضافة حديثاً لا تملك موضعاً محفوظاً بعد.
+  /// يعطي موضعاً افتراضياً لكل آية أو خاطرة جديدة بلا موضع محفوظ.
   void _assignMissingPositions(
     List<AyahLinkVerse> verses,
     List<AyahLinkNote> notes,
@@ -221,7 +203,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يهيئ منظور الكاميرا باستعادة الإزاحة والتكبير المحفوظين أو توسيط اللوحة.
+  /// يستعيد الإزاحة والتكبير المحفوظين، أو يوسّط اللوحة.
   void _initOrRestoreViewport() {
     if (!mounted) return;
     final size = MediaQuery.of(context).size;
@@ -234,12 +216,11 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         ..scale2D(widget.link.zoomScale!);
       _transformController.value = matrix;
     } else {
-      // Center on (_centerCoord, _centerCoord)
       _centerViewport(size, animate: false);
     }
   }
 
-  /// يضبط مصفوفة التحويل لتوسيط لوحة الشبكة داخل مساحة العرض المتاحة.
+  /// يوسّط اللوحة في مساحة العرض.
   void _centerViewport(Size viewportSize, {bool animate = true}) {
     const scale = 0.95;
     final targetX = (viewportSize.width / 2) - (_centerCoord * scale);
@@ -256,7 +237,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يحرك منظور الكاميرا بسلاسة نحو مصفوفة التحويل المستهدفة.
+  /// يحرّك الكاميرا بسلاسة إلى [target].
   void _animateToMatrix(Matrix4 target) {
     _matrixAnimation?.removeListener(_onMatrixAnim);
     _animController.reset();
@@ -273,16 +254,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     _animController.forward();
   }
 
-  /// يحدّث قيمة متحكم التحويل أثناء تقدم حركة الكاميرا.
   void _onMatrixAnim() {
     if (_matrixAnimation != null) {
       _transformController.value = _matrixAnimation!.value;
     }
   }
 
-  /// يعيد توسيط منظور الشبكة نحو العقدة المركزية بحركة سلسة ويحفظ الحالة.
-  ///
-  /// Smoothly animates the canvas viewport back to its initial center.
+  /// يعيد الكاميرا إلى العقدة المركزية بحركة سلسة، ويحفظ الحالة.
   void centerView() {
     if (!mounted) return;
     final size = MediaQuery.of(context).size;
@@ -298,9 +276,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     );
   }
 
-  /// يعيد ترتيب عقد الآيات تلقائياً حول المركز ويحفظ المواضع الجديدة.
-  ///
-  /// Public action called to trigger automatic re-layout
+  /// يعيد ترتيب العقد تلقائياً حول المركز، ويحفظ المواضع.
   Future<void> autoLayout() async {
     setState(() {
       _computeAutoLayoutPositions(widget.link.verses, widget.link.notes);
@@ -324,9 +300,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يوجه الكاميرا نحو عقدة الآية المختارة ثم يفتح اللوحة التفصيلية للآية.
-  ///
-  /// Smoothly zooms and centers on a selected Ayah node, then opens inspector
+  /// يقرّب الكاميرا من عقدة الآية، ثم يفتح لوحة تفاصيلها.
   void _focusAyahNode(AyahLinkVerse verse) {
     final pos = _positions[verse.ayahKey];
     if (pos == null) return;
@@ -334,7 +308,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     final viewportSize = MediaQuery.of(context).size;
     const focusScale = 1.15;
 
-    // We offset the target center slightly above viewport center so the bottom sheet has room
+    // المركز فوق منتصف الشاشة قليلاً، لتتسع اللوحة السفلية.
     final targetCenterY = viewportSize.height * 0.42;
 
     final targetX = (viewportSize.width / 2) - (pos.dx * focusScale);
@@ -346,7 +320,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
     _animateToMatrix(targetMatrix);
 
-    // Open verse inspector sheet
     Future.delayed(const Duration(milliseconds: 250), () {
       if (mounted) {
         _showVerseInspectorSheet(verse);
@@ -354,7 +327,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     });
   }
 
-  /// يعرض نافذة سفلية تتضمن النص الكامل للآية وملاحظة التدبر وخيارات الإجراءات.
+  /// لوحة الآية: نصها الكامل وخاطرتها والإجراءات.
   void _showVerseInspectorSheet(AyahLinkVerse verse) {
     final surah = QuranRepository.instance.getSurah(verse.surahNumber);
     final ayah = QuranRepository.instance.getAyah(
@@ -392,7 +365,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Handle
                     Center(
                       child: Container(
                         width: 40,
@@ -405,7 +377,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                       ),
                     ),
 
-                    // Header
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -434,14 +405,12 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     ),
                     const SizedBox(height: 12),
 
-                    // Scrollable content for Verse & Reflection Note
                     Flexible(
                       child: SingleChildScrollView(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Full Verse Text
                             if (ayah != null)
                               Container(
                                 padding: const EdgeInsets.all(14),
@@ -466,7 +435,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                               ),
                             const SizedBox(height: 12),
 
-                            // Reflection note (if any, from link, note or tadbeer)
+                            // الخاطرة: من الرابط، أو خاطرة القارئ، أو وقفة التدبر.
                             () {
                               final effectiveNote = verse.getEffectiveNote();
                               if (effectiveNote != null &&
@@ -532,10 +501,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     ),
                     const SizedBox(height: 12),
 
-                    // Action Buttons Row
                     Row(
                       children: [
-                        // Open in Mushaf
                         Expanded(
                           child: ElevatedButton.icon(
                             onPressed: () {
@@ -570,7 +537,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         ),
                         const SizedBox(width: 8),
 
-                        // Edit note button
                         IconButton.filledTonal(
                           icon: const Icon(AppIcons.notePencil, size: 20),
                           tooltip: context.l10n.reflectionNote,
@@ -581,7 +547,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         ),
                         const SizedBox(width: 6),
 
-                        // Remove verse from link button
                         IconButton.filledTonal(
                           icon: const Icon(
                             AppIcons.trash,
@@ -606,7 +571,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     );
   }
 
-  /// يفتح نافذة حوار لتعديل ملاحظة التدبر الخاصة بآية داخل الرابط.
+  /// يعدّل خاطرة الآية داخل الرابط.
   Future<void> _showEditNoteDialog(AyahLinkVerse verse) async {
     final controller = TextEditingController(text: verse.note ?? '');
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -657,7 +622,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يعرض نافذة تأكيد لإزالة آية محددة من رابط الآيات.
+  /// يطلب التأكيد قبل إزالة الآية من الرابط.
   Future<void> _confirmRemoveVerse(AyahLinkVerse verse) async {
     final surah = QuranRepository.instance.getSurah(verse.surahNumber);
     final confirmed = await showDialog<bool>(
@@ -693,7 +658,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يركز الكاميرا بنعومة على عقدة كرت الملاحظة المحددة ويعرض تفاصيلها في نافذة سفلية.
+  /// يقرّب الكاميرا من بطاقة الخاطرة، ويعرض تفاصيلها.
   void _focusNoteNode(AyahLinkNote note) {
     final pos = _positions[note.noteKey];
     if (pos == null) return;
@@ -718,7 +683,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     });
   }
 
-  /// يعرض نافذة سفلية تتضمن النص الكامل لكرت الملاحظة وخيارات التعديل والنسخ والحذف.
+  /// لوحة بطاقة الخاطرة: نصها الكامل والتعديل والنسخ والحذف.
   void _showNoteInspectorSheet(AyahLinkNote note) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasTitle = note.title != null && note.title!.trim().isNotEmpty;
@@ -752,7 +717,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Handle
                     Center(
                       child: Container(
                         width: 40,
@@ -765,7 +729,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                       ),
                     ),
 
-                    // Header
                     Row(
                       children: [
                         Container(
@@ -801,7 +764,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     ),
                     const SizedBox(height: 12),
 
-                    // Scrollable content for Note
                     Flexible(
                       child: SingleChildScrollView(
                         child: Container(
@@ -827,10 +789,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     ),
                     const SizedBox(height: 14),
 
-                    // Actions Row
                     Row(
                       children: [
-                        // Copy Note
                         Expanded(
                           child: ElevatedButton.icon(
                             onPressed: () {
@@ -871,7 +831,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         ),
                         const SizedBox(width: 8),
 
-                        // Edit Note Button
                         IconButton.filledTonal(
                           icon: const Icon(AppIcons.notePencil, size: 20),
                           tooltip: context.l10n.isArabic
@@ -884,7 +843,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                         ),
                         const SizedBox(width: 6),
 
-                        // Delete Note Button
                         IconButton.filledTonal(
                           icon: const Icon(
                             AppIcons.trash,
@@ -911,7 +869,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     );
   }
 
-  /// يفتح نافذة حوار لتعديل كرت الملاحظة في الرابط.
+  /// يعدّل بطاقة الخاطرة.
   Future<void> _showEditNoteCardDialog(AyahLinkNote note) async {
     final titleController = TextEditingController(text: note.title ?? '');
     final contentController = TextEditingController(text: note.content);
@@ -1001,7 +959,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يعرض نافذة تأكيد لحذف كرت الملاحظة من الرابط.
+  /// يطلب التأكيد قبل حذف بطاقة الخاطرة.
   Future<void> _confirmDeleteNoteCard(AyahLinkNote note) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -1036,7 +994,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// يحفظ مواضع العقد المعدلة يدوياً بعد انتهاء عملية السحب.
+  /// يحفظ المواضع بعد انتهاء السحب.
   void _persistManualPositions() {
     final map = <String, LinkNodePosition>{};
     for (final entry in _positions.entries) {
@@ -1045,7 +1003,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     _repo.updatePositions(widget.link.id, map, true);
   }
 
-  /// يبني لوحة الشبكة التفاعلية وعقد الآيات وواجهة الحالة الفارغة.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1055,7 +1012,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
     return Stack(
       children: [
-        // Interactive Canvas
         InteractiveViewer(
           transformationController: _transformController,
           constrained: false,
@@ -1063,7 +1019,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           maxScale: 2.5,
           boundaryMargin: const EdgeInsets.all(500),
           onInteractionEnd: (details) {
-            // Save pan / zoom view state
+            // يحفظ الإزاحة والتكبير.
             final translation = _transformController.value.getTranslation();
             final scale = _transformController.value.getMaxScaleOnAxis();
             _repo.updateViewState(
@@ -1079,7 +1035,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                // Custom Connections Painter
                 CustomPaint(
                   size: const Size(_canvasSize, _canvasSize),
                   painter: _NetworkConnectionsPainter(
@@ -1089,7 +1044,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   ),
                 ),
 
-                // Center Theme Node
                 Positioned(
                   left: _centerCoord - 100,
                   top: _centerCoord - 50,
@@ -1101,7 +1055,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   ),
                 ),
 
-                // Verse Nodes
                 for (final verse in verses)
                   if (_positions.containsKey(verse.ayahKey))
                     Positioned(
@@ -1121,7 +1074,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                       ),
                     ),
 
-                // Note Nodes
                 for (final note in widget.link.notes)
                   if (_positions.containsKey(note.noteKey))
                     Positioned(
@@ -1145,7 +1097,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           ),
         ),
 
-        // Empty state overlay if no verses and no notes yet
+        // حالة فارغة حين لا آيات ولا خواطر.
         if (verses.isEmpty && widget.link.notes.isEmpty)
           Center(
             child: Container(
@@ -1205,14 +1157,12 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
   }
 }
 
-/// دوال مساعدة لتحريك وتكبير مصفوفة التحويل ثنائية الأبعاد.
+/// إزاحة وتكبير ثنائيا الأبعاد لمصفوفة التحويل.
 extension on Matrix4 {
-  /// يطبق إزاحة ثنائية الأبعاد على مصفوفة التحويل.
   void translate2D(double x, double y) {
     translateByDouble(x, y, 0.0, 1.0);
   }
 
-  /// يطبق تكبيراً متماثلاً ثنائي الأبعاد على مصفوفة التحويل.
   void scale2D(double s) {
     scaleByDouble(s, s, 1.0, 1.0);
   }
