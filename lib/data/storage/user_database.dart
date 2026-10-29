@@ -51,7 +51,7 @@ class UserDatabase {
   UserDatabase._internal();
 
   static const String databaseFileName = 'tadbeer_user_data.db';
-  static const int databaseVersion = 2;
+  static const int databaseVersion = 3;
 
   Database? _database;
 
@@ -162,7 +162,36 @@ class UserDatabase {
         'CREATE INDEX IF NOT EXISTS idx_tadbeer_ayah ON tadbeer_items (surah_number, ayah_number)',
       );
     }
+    if (oldVersion < 3) await _mergeLegacyTadbeerTable(db);
   }
+
+  /// ينقل ما بقي في جدول الوقفات القديم إلى الجديد ثم يحذفه.
+  ///
+  /// كانت الوقفات تُكتب في الجدولين معاً، فما في الجديد أحدث ولا يُستبدل.
+  static Future<void> _mergeLegacyTadbeerTable(Database db) async {
+    final legacy = await db.rawQuery(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='tadabbur_items'",
+    );
+    if (legacy.isEmpty) return;
+    await db.transaction((txn) async {
+      await txn.execute(_tadbeerTableSql);
+      await txn.execute(
+        'INSERT OR IGNORE INTO tadbeer_items SELECT id, surah_number, '
+        'ayah_number, data, updated_at FROM tadabbur_items',
+      );
+      await txn.execute('DROP TABLE tadabbur_items');
+    });
+  }
+
+  static const _tadbeerTableSql = '''
+      CREATE TABLE IF NOT EXISTS tadbeer_items (
+        id TEXT PRIMARY KEY,
+        surah_number INTEGER NOT NULL,
+        ayah_number INTEGER NOT NULL,
+        data TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''';
 
   /// ينفّذ عمليات عدة في معاملة واحدة ذرّية.
   Future<T> transaction<T>(Future<T> Function(Transaction txn) action) async {
@@ -243,24 +272,7 @@ class UserDatabase {
     ''');
 
     // ٧. إجابات وقفات التدبر
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS tadbeer_items (
-        id TEXT PRIMARY KEY,
-        surah_number INTEGER NOT NULL,
-        ayah_number INTEGER NOT NULL,
-        data TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      )
-    ''');
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS tadabbur_items (
-        id TEXT PRIMARY KEY,
-        surah_number INTEGER NOT NULL,
-        ayah_number INTEGER NOT NULL,
-        data TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      )
-    ''');
+    await db.execute(_tadbeerTableSql);
 
     // ٨. الإعدادات
     await db.execute('''
@@ -566,20 +578,10 @@ class UserDatabase {
 
   // وقفات التدبر
 
-  /// كل وقفات التدبر، ومنها ما حُفظ في الجدول القديم.
   Future<List<TadbeerItem>> loadTadbeerItems() async {
     if (!isOpen) return [];
     try {
-      var rows = await db.query('tadbeer_items', orderBy: 'updated_at DESC');
-      if (rows.isEmpty) {
-        final legacyRows = await db.query(
-          'tadabbur_items',
-          orderBy: 'updated_at DESC',
-        );
-        if (legacyRows.isNotEmpty) {
-          rows = legacyRows;
-        }
-      }
+      final rows = await db.query('tadbeer_items', orderBy: 'updated_at DESC');
       return _decodeRows(rows, TadbeerItem.fromJson, 'TadbeerItem');
     } catch (e) {
       _reportIssue(UserDatabaseIssueKind.readFailed, 'loadTadbeerItems', e);
@@ -590,19 +592,11 @@ class UserDatabase {
   Future<void> insertOrUpdateTadbeer(TadbeerItem item) async {
     if (!isOpen) return;
     try {
-      final values = _tadbeerRow(item);
       await db.insert(
         'tadbeer_items',
-        values,
+        _tadbeerRow(item),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      try {
-        await db.insert(
-          'tadabbur_items',
-          values,
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      } catch (_) {}
     } catch (e) {
       _reportIssue(
         UserDatabaseIssueKind.writeFailed,
@@ -616,9 +610,6 @@ class UserDatabase {
     if (!isOpen) return;
     try {
       await db.delete('tadbeer_items', where: 'id = ?', whereArgs: [id]);
-      try {
-        await db.delete('tadabbur_items', where: 'id = ?', whereArgs: [id]);
-      } catch (_) {}
     } catch (e) {
       _reportIssue(UserDatabaseIssueKind.writeFailed, 'deleteTadbeer', e);
     }
@@ -681,9 +672,6 @@ class UserDatabase {
       await db.delete('ayah_links');
       await db.delete('tadbeer_items');
       await db.delete('app_state');
-      try {
-        await db.delete('tadabbur_items');
-      } catch (_) {}
       await db.delete('user_settings');
     } catch (e) {
       _reportIssue(UserDatabaseIssueKind.writeFailed, 'clearAllUserData', e);
@@ -707,12 +695,6 @@ class UserDatabase {
     if (!isOpen) return false;
     try {
       await db.transaction((txn) async {
-        // الجدول القديم قد لا يوجد في بعض التثبيتات القديمة.
-        final legacy = await txn.rawQuery(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='tadabbur_items'",
-        );
-        final hasLegacyTable = legacy.isNotEmpty;
-
         for (final table in [
           'reading_position',
           'notes',
@@ -721,7 +703,6 @@ class UserDatabase {
           'reminders',
           'ayah_links',
           'tadbeer_items',
-          if (hasLegacyTable) 'tadabbur_items',
           'user_settings',
         ]) {
           await txn.delete(table);
@@ -766,11 +747,11 @@ class UserDatabase {
           );
         }
         for (final t in tadbeerItems) {
-          final row = _tadbeerRow(t);
-          batch.insert('tadbeer_items', row, conflictAlgorithm: replace);
-          if (hasLegacyTable) {
-            batch.insert('tadabbur_items', row, conflictAlgorithm: replace);
-          }
+          batch.insert(
+            'tadbeer_items',
+            _tadbeerRow(t),
+            conflictAlgorithm: replace,
+          );
         }
         for (final row in _settingsRows(settings)) {
           batch.insert('user_settings', row, conflictAlgorithm: replace);

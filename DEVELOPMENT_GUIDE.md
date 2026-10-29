@@ -116,7 +116,7 @@ lib/
 - **Highlighting:** Multi-word continuous highlights are rendered behind text using custom painter `AyahHighlightPainter`.
 
 ### 4.2. Local Database & Storage (`lib/data/storage/`)
-Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersion = 1`):
+Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersion = 3`):
 1. `reading_position`: Stores current page, surah, and ayah (single row invariant: `id = 1`).
 2. `notes`: Reflection notes keyed by UUID.
 3. `bookmarks`: Verses bookmarked for quick access.
@@ -124,8 +124,7 @@ Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersio
 5. `reminders`: Scheduled reading reminder configurations.
 6. `ayah_links`: Thematic verse link networks and metadata.
 7. `tadbeer_items`: 4-prompt structured reflection responses.
-8. `tadabbur_items`: Dual-write fallback compatibility table.
-9. `user_settings`: Key-value application preferences.
+8. `user_settings`: Key-value application preferences.
 
 ### 4.3. Encrypted Backup Container (`.quranbackup`)
 Managed by `BackupCryptoService`:

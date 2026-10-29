@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -206,6 +207,52 @@ void main() {
       items = await db.loadTadbeerItems();
       expect(items.isEmpty, isTrue);
     });
+
+    test(
+      'upgrading moves legacy tadabbur_items rows and drops the table',
+      () async {
+        await db.close();
+        final path = '${tempDir.path}/legacy.db';
+        final item = TadbeerItem(
+          id: '2:255',
+          surahNumber: 2,
+          ayahNumber: 255,
+          ayahId: 262,
+          answers: const {1: 'من الجدول القديم'},
+          createdAt: DateTime(2025, 1, 1),
+          updatedAt: DateTime(2025, 1, 1),
+        );
+        final old = await openDatabase(
+          path,
+          version: 2,
+          onCreate: (d, _) async {
+            for (final table in ['tadbeer_items', 'tadabbur_items']) {
+              await d.execute(
+                'CREATE TABLE $table (id TEXT PRIMARY KEY, '
+                'surah_number INTEGER NOT NULL, ayah_number INTEGER NOT NULL, '
+                'data TEXT NOT NULL, updated_at TEXT NOT NULL)',
+              );
+            }
+            await d.insert('tadabbur_items', {
+              'id': item.id,
+              'surah_number': 2,
+              'ayah_number': 255,
+              'data': jsonEncode(item.toJson()),
+              'updated_at': item.updatedAt.toIso8601String(),
+            });
+          },
+        );
+        await old.close();
+
+        await db.init(path);
+        final items = await db.loadTadbeerItems();
+        expect(items.single.answers[1], equals('من الجدول القديم'));
+        final legacy = await db.db.rawQuery(
+          "SELECT name FROM sqlite_master WHERE name='tadabbur_items'",
+        );
+        expect(legacy, isEmpty);
+      },
+    );
 
     test('UserSettings Save and Load', () async {
       const settings = UserSettings(
