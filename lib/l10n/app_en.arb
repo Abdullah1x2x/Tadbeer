@@ -700,7 +700,7 @@
   "permissionsLater": "Later",
   "continuousRecitation": "Continuous recitation (tap for one ayah)",
   "singleAyahRecitation": "One ayah (tap to continue)",
-  "ayahFinished": "Ayah finished · press play to repeat",
+  "ayahFinished": "Ayah finished",
   "myReflectionsCardHint": "Reflection pauses you wrote",
   "notesCardHint": "Your thoughts on the ayahs",
   "memorizationCardHint": "Memorize, review on time",

@@ -1328,7 +1328,7 @@
   "permissionsLater": "لاحقاً",
   "continuousRecitation": "متابعة التلاوة (اضغط لآية واحدة)",
   "singleAyahRecitation": "آية واحدة (اضغط للمتابعة)",
-  "ayahFinished": "انتهت الآية · اضغط تشغيل لإعادتها",
+  "ayahFinished": "انتهت الآية",
   "myReflectionsCardHint": "وقفات التدبر التي كتبتها",
   "notesCardHint": "خواطرك على الآيات",
   "memorizationCardHint": "احفظ وراجع في وقته",

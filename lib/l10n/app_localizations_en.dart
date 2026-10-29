@@ -2215,7 +2215,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get singleAyahRecitation => 'One ayah (tap to continue)';
 
   @override
-  String get ayahFinished => 'Ayah finished · press play to repeat';
+  String get ayahFinished => 'Ayah finished';
 
   @override
   String get myReflectionsCardHint => 'Reflection pauses you wrote';
