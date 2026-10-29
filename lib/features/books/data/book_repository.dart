@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 import 'curated_books.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// مستودع إدارة حالة وتخزين أقسام وملازم وكتب المكتبة التدبرية محلياً.
+/// أقسام المكتبة وكتبها، محفوظة على الجهاز.
 class BookRepository extends ChangeNotifier {
   static final BookRepository instance = BookRepository._internal();
   BookRepository._internal();
@@ -25,24 +25,21 @@ class BookRepository extends ChangeNotifier {
 
   bool _disableDiskPersistence = false;
 
-  /// قائمة الأقسام الحالية المتاحة.
   List<BookSection> get sections => List.unmodifiable(_sections);
 
-  /// قائمة جميع الكتب والملازم المضافة.
   List<BookModel> get books => List.unmodifiable(_books);
 
-  /// ما إذا كان المستودع قد أتم قراءة البيانات من القرص.
+  /// هل قُرئت البيانات من القرص.
   bool get isInitialized => _initialized;
 
-  /// أسماء الأقسام الحالية بالإضافة إلى خيار "الكل".
+  /// أسماء الأقسام، يسبقها "الكل".
   List<String> get categoryNames {
     final names = _sections.map((s) => s.name).toList();
     return ['الكل', ...names];
   }
 
-  /// تهيئة المستودع وقراءة الأقسام والكتب المحفوظة محلياً.
-  /// يمكن تمرير [storageFile] و [booksDirectory] في بيئة الاختبارات أو التخصيص.
-  /// [disableDisk] يسمح بتشغيل المستودع كلياً في الذاكرة أثناء الاختبارات لتفادي بطء القرص.
+  /// يقرأ الأقسام والكتب المحفوظة.
+  /// [storageFile] و[booksDirectory] للاختبارات، و[disableDisk] يُبقي كل شيء في الذاكرة.
   Future<void> init({
     File? storageFile,
     Directory? booksDirectory,
@@ -61,7 +58,7 @@ class BookRepository extends ChangeNotifier {
     _sections.clear();
     _books.clear();
 
-    // 1. قراءة الأقسام والكتب المحددة برمجياً في curated_books.dart
+    // ١. الأقسام والكتب المعرّفة في curated_books.dart.
     _loadCuratedBooks();
 
     if (_disableDiskPersistence) {
@@ -70,7 +67,7 @@ class BookRepository extends ChangeNotifier {
       return;
     }
 
-    // 2. قراءة كتالوج JSON إن وُجد في مجلد الأصول assets
+    // ٢. كتالوج JSON في الأصول، إن وُجد.
     await _loadCatalogJson();
 
     try {
@@ -106,7 +103,7 @@ class BookRepository extends ChangeNotifier {
         }
       }
     } catch (e) {
-      // السقوط الآمن في بيئات الاختبار
+      // في الاختبارات قد يتعذّر القرص، فيُكمل بما في الذاكرة.
       debugPrint('BookRepository init error: $e');
     }
 
@@ -203,17 +200,17 @@ class BookRepository extends ChangeNotifier {
         }
       }
     } catch (_) {
-      // التجاهل الآمن
+      // يُتجاهل الفشل في الاختبارات.
     }
   }
 
-  /// الحصول على الكتب التابعة لقسم محدد (أو الكل).
+  /// كتب [sectionName]، أو كل الكتب.
   List<BookModel> getBooksBySection(String sectionName) {
     if (sectionName == 'الكل') return books;
     return _books.where((b) => b.category == sectionName).toList();
   }
 
-  /// إضافة قسم جديد للكتب والملازم.
+  /// يضيف قسماً.
   Future<BookSection> addSection({
     required String name,
     String description = '',
@@ -224,7 +221,7 @@ class BookRepository extends ChangeNotifier {
       throw ArgumentError('اسم القسم لا يمكن أن يكون فارغاً');
     }
 
-    // التحقق من عدم وجود قسم بنفس الاسم مسبقاً
+    // لا يُكرَّر قسم بنفس الاسم.
     final existing = _sections.where((s) => s.name == cleanName).firstOrNull;
     if (existing != null) {
       return existing;
@@ -244,7 +241,7 @@ class BookRepository extends ChangeNotifier {
     return newSection;
   }
 
-  /// حذف قسم محدد وحذف الكتب التابعة له.
+  /// يحذف القسم وكتبه.
   Future<void> deleteSection(String sectionId) async {
     final index = _sections.indexWhere((s) => s.id == sectionId);
     if (index == -1) return;
@@ -252,7 +249,7 @@ class BookRepository extends ChangeNotifier {
     final targetSection = _sections[index];
     _sections.removeAt(index);
 
-    // حذف ملفات وكتب هذا القسم من الذاكرة والقرص
+    // يحذف كتب القسم وملفاتها من الذاكرة والقرص.
     final booksToDelete = _books
         .where((b) => b.category == targetSection.name)
         .toList();
@@ -265,7 +262,7 @@ class BookRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// إضافة كتاب أو ملزمة مع إمكانية إرفاق ملف من الهاتف (PDF أو نصي).
+  /// يضيف كتاباً أو ملزمة، مع ملف مرفق من الهاتف اختيارياً (PDF أو نص).
   Future<BookModel> addBook({
     required String title,
     required String sectionName,
@@ -280,7 +277,7 @@ class BookRepository extends ChangeNotifier {
       throw ArgumentError('عنوان الكتاب لا يمكن أن يكون فارغاً');
     }
 
-    // التأكد من وجود القسم في قائمة الأقسام
+    // ينشئ القسم إن لم يوجد.
     if (!_sections.any((s) => s.name == sectionName.trim())) {
       await addSection(name: sectionName.trim());
     }
@@ -334,7 +331,7 @@ class BookRepository extends ChangeNotifier {
     return newBook;
   }
 
-  /// حذف كتاب أو ملزمة وملفه المرفق من القرص.
+  /// يحذف الكتاب وملفه المرفق.
   Future<void> deleteBook(String bookId) async {
     final index = _books.indexWhere((b) => b.id == bookId);
     if (index == -1) return;
@@ -347,7 +344,7 @@ class BookRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// مسح كافة الكتب والأقسام وتصفير المكتبة بالكامل.
+  /// يمسح كل الكتب والأقسام.
   Future<void> clearAll() async {
     for (final book in _books) {
       await _deleteAttachedFileSilently(book.filePath);
@@ -407,7 +404,7 @@ class BookRepository extends ChangeNotifier {
       };
       await file.writeAsString(jsonEncode(data), flush: true);
     } catch (_) {
-      // التجاهل الآمن في بيئات الاختبار
+      // يُتجاهل الفشل في الاختبارات.
     }
   }
 }

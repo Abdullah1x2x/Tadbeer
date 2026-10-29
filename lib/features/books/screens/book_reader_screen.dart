@@ -14,12 +14,12 @@ import '../../continue/last_activity.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/utils/text_direction.dart';
 
-/// شاشة قراءة واستعراض الملازم والكتب التدبرية (فصول، نصوص، أو مستندات PDF).
+/// قراءة الكتب والملازم: فصول، أو نص، أو PDF.
 class BookReaderScreen extends StatefulWidget {
   final BookModel book;
   final int initialChapterIndex;
 
-  /// The PDF page (from 0) to open a PDF book at.
+  /// صفحة PDF التي يُفتح عليها (من 0).
   final int initialPdfPage;
 
   const BookReaderScreen({
@@ -179,8 +179,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     }
   }
 
-  /// Remembers the chapter, or the PDF page for a PDF book, so "continue
-  /// where you left off" returns to it.
+  /// يحفظ الفصل، أو صفحة PDF، ليعود إليه "أكمل من حيث توقفت".
   void _recordActivity() => LastActivityStore.record(
     ActivityKind.book,
     ref: widget.book.id,
@@ -497,17 +496,17 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   }
 
   Widget _buildBody(bool isDark, Color primaryColor) {
-    // 1. إذا كان الكتاب مبنياً على فصول ومباحث نصية (استعراض القراءة المباشرة)
+    // ١. فصول مكتوبة: تُقرأ مباشرة.
     if (widget.book.chapters.isNotEmpty) {
       return _buildChaptersView(isDark, primaryColor);
     }
 
-    // 2. إذا كان الكتاب ملف PDF مرفق (للمطالعة والمشاركة الخارجية)
+    // ٢. ملف PDF مرفق.
     if (widget.book.isPdf) {
       return _buildPdfView(isDark, primaryColor);
     }
 
-    // 3. إذا كان الكتاب ملفاً نصياً يجري تحميله
+    // ٣. ملف نصي يُحمّل.
     if (widget.book.hasAttachedFile && widget.book.isText) {
       if (_isLoadingFile) {
         return const Center(child: CircularProgressIndicator());
@@ -531,7 +530,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       );
     }
 
-    // 4. لا يوجد محتوى
+    // ٤. لا محتوى.
     return _buildEmptyContentView(isDark);
   }
 
@@ -688,7 +687,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       }
     }
 
-    // Fallback for non-mobile platforms (Desktop / Web / Test environment)
+    // بديل للمنصات غير المحمولة (سطح المكتب والويب والاختبارات).
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -820,7 +819,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
     return Column(
       children: [
-        // شريط التقدم بين الفصول والتحكم في حجم الخط
+        // التقدم بين الفصول وحجم الخط.
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
@@ -883,7 +882,6 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
           ),
         ),
 
-        // المحتوى النصي للمبحث
         Expanded(
           child: SingleChildScrollView(
             controller: _scrollController,
@@ -937,7 +935,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                       ),
                     ],
                     const SizedBox(height: 20),
-                    // The book's language decides, not the interface's.
+                    // لغة الكتاب تحدد الاتجاه، لا لغة الواجهة.
                     SelectableText(
                       chapter.content,
                       textDirection: directionOfText(chapter.content),
@@ -951,7 +949,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    // أزرار التنقل بين المباحث / الأدعية
+                    // التنقل بين المباحث أو الأدعية.
                     Row(
                       children: [
                         if (_currentChapterIndex > 0)
@@ -1009,7 +1007,6 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   }) {
     return Column(
       children: [
-        // شريط حجم الخط
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(

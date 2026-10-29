@@ -9,18 +9,12 @@ import '../../../data/quran/quran_repository.dart';
 import 'create_link_dialog.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// لوحة سفلية تتيح للمستخدم ربط آية قرآنية من المصحف برابط آيات موجود أو جديد.
-///
-/// Modal bottom sheet allowing user to link an Ayah from the Mushaf action sheet
-/// into an existing Ayah Link or newly created Ayah Link.
+/// لوحة لإضافة آية من المصحف إلى رابط موجود أو جديد.
 class AyahLinkPickerDialog extends StatefulWidget {
-  /// الآية القرآنية المراد إضافتها إلى رابط الآيات.
   final Ayah ayah;
 
-  /// ينشئ لوحة اختيار رابط الآيات.
   const AyahLinkPickerDialog({super.key, required this.ayah});
 
-  /// يعرض اللوحة السفلية لاختيار رابط الآيات.
   static Future<void> show(BuildContext context, Ayah ayah) {
     return showModalBottomSheet(
       context: context,
@@ -30,16 +24,14 @@ class AyahLinkPickerDialog extends StatefulWidget {
     );
   }
 
-  /// ينشئ حالة لوحة اختيار رابط الآيات.
   @override
   State<AyahLinkPickerDialog> createState() => _AyahLinkPickerDialogState();
 }
 
-/// الحالة الداخلية للوحة اختيار رابط الآيات وإدارة الإضافة والإنشاء السريع.
 class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
   final AyahLinkRepository _repo = AyahLinkRepository();
 
-  /// يضيف الآية الحالية إلى الرابط المحدد ثم يغلق اللوحة ويعرض إشعار التأكيد.
+  /// يضيف الآية إلى الرابط، ثم يغلق ويؤكد.
   Future<void> _addVerseToLink(String linkId, String linkTitle) async {
     await _repo.addVerseToLink(
       linkId,
@@ -66,7 +58,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
     }
   }
 
-  /// يفتح نافذة إنشاء رابط آيات جديد ثم يضيف الآية الحالية إليه مباشرة.
+  /// ينشئ رابطاً جديداً ويضيف الآية إليه.
   Future<void> _createNewLinkAndAdd() async {
     final created = await CreateLinkDialog.show(context);
     if (created != null && mounted) {
@@ -74,7 +66,6 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
     }
   }
 
-  /// يبني واجهة اللوحة السفلية مع قائمة روابط الآيات المتاحة.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -104,7 +95,6 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Handle bar
                   Center(
                     child: Container(
                       width: 40,
@@ -117,7 +107,6 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                     ),
                   ),
 
-                  // Header
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
@@ -148,7 +137,6 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                     ),
                   ),
 
-                  // Verse info pill
                   Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 20,
@@ -176,7 +164,6 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
 
                   const Divider(height: 1),
 
-                  // New Link Button
                   ListTile(
                     leading: Container(
                       padding: const EdgeInsets.all(6),
@@ -209,7 +196,6 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
 
                   const Divider(height: 1),
 
-                  // Links List
                   if (allLinks.isEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(

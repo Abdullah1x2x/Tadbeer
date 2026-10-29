@@ -1,19 +1,17 @@
 part of 'ayah_link_network_view.dart';
 
-/// رسام خطوط الشبكة لربط العقدة المركزية بالعقد الفرعية بمنحنيات بيزييه ناعمة.
+/// يرسم منحنيات ناعمة من العقدة المركزية إلى العقد الفرعية.
 class _NetworkConnectionsPainter extends CustomPainter {
   final Offset center;
   final Map<String, Offset> positions;
   final bool isDark;
 
-  /// ينشئ رسام خطوط الشبكة.
   const _NetworkConnectionsPainter({
     required this.center,
     required this.positions,
     required this.isDark,
   });
 
-  /// يرسم المسارات المنحنية ونقاط الارتباط على لوحة الشبكة.
   @override
   void paint(Canvas canvas, Size size) {
     final linePaint = Paint()
@@ -30,7 +28,6 @@ class _NetworkConnectionsPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     for (final pos in positions.values) {
-      // Subtle smooth curve toward center
       final path = Path();
       path.moveTo(center.dx, center.dy);
 
@@ -40,28 +37,23 @@ class _NetworkConnectionsPainter extends CustomPainter {
       path.quadraticBezierTo(controlX, controlY, pos.dx, pos.dy);
       canvas.drawPath(path, linePaint);
 
-      // Decorative mini junction dot
       canvas.drawCircle(pos, 3.5, dotPaint);
     }
   }
 
-  /// يحدد ما إذا كان يجب إعادة رسم الخطوط عند تغير المواضع أو السمة.
   @override
   bool shouldRepaint(covariant _NetworkConnectionsPainter oldDelegate) {
     return oldDelegate.positions != positions || oldDelegate.isDark != isDark;
   }
 }
 
-/// العقدة المركزية التي تمثل عنوان ومحور رابط الآيات.
-///
-/// Central Node representing the overall Ayah Link theme/title.
+/// العقدة المركزية: عنوان الرابط وعدد آياته.
 class _CenterThemeNode extends StatelessWidget {
   final String title;
   final String? description;
   final int versesCount;
   final bool isDark;
 
-  /// ينشئ العقدة المركزية لرابط الآيات.
   const _CenterThemeNode({
     required this.title,
     this.description,
@@ -69,7 +61,6 @@ class _CenterThemeNode extends StatelessWidget {
     required this.isDark,
   });
 
-  /// يبني بطاقة العقدة المركزية مع عنوان الرابط وعدد الآيات المرتبطة.
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -168,9 +159,7 @@ class _CenterThemeNode extends StatelessWidget {
   }
 }
 
-/// عقدة آية تفاعلية قابلة للسحب والضغط داخل لوحة الشبكة.
-///
-/// Interactive Verse Node on the Canvas with draggable gestures.
+/// عقدة آية تُسحب وتُنقر على الشبكة.
 class _VerseCanvasNode extends StatelessWidget {
   final AyahLinkVerse verse;
   final bool isDark;
@@ -178,7 +167,6 @@ class _VerseCanvasNode extends StatelessWidget {
   final ValueChanged<Offset> onPanUpdate;
   final VoidCallback onPanEnd;
 
-  /// ينشئ عقدة آية تفاعلية على لوحة الشبكة.
   const _VerseCanvasNode({
     required this.verse,
     required this.isDark,
@@ -187,7 +175,6 @@ class _VerseCanvasNode extends StatelessWidget {
     required this.onPanEnd,
   });
 
-  /// يبني بطاقة عقدة الآية مع مقتطف النص وملاحظة التدبر.
   @override
   Widget build(BuildContext context) {
     final surah = QuranRepository.instance.getSurah(verse.surahNumber);
@@ -230,7 +217,6 @@ class _VerseCanvasNode extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Node Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -254,7 +240,6 @@ class _VerseCanvasNode extends StatelessWidget {
             ),
             const SizedBox(height: 6),
 
-            // Full verse text
             if (ayah != null)
               Text(
                 '﴿ ${ayah.text} ﴾',
@@ -269,7 +254,7 @@ class _VerseCanvasNode extends StatelessWidget {
                 ),
               ),
 
-            // Note snippet under verse (if present, compact otherwise)
+            // خاطرة الآية تحت نصها إن وُجدت.
             if (hasNote) ...[
               const SizedBox(height: 8),
               Divider(height: 1, color: AppColors.border(context)),
@@ -311,7 +296,7 @@ class _VerseCanvasNode extends StatelessWidget {
   }
 }
 
-/// عقدة كرت ملاحظة تفاعلية قابلة للسحب والضغط داخل لوحة الشبكة.
+/// عقدة بطاقة خاطرة تُسحب وتُنقر على الشبكة.
 class _NoteCanvasNode extends StatelessWidget {
   final AyahLinkNote note;
   final bool isDark;
@@ -319,7 +304,6 @@ class _NoteCanvasNode extends StatelessWidget {
   final ValueChanged<Offset> onPanUpdate;
   final VoidCallback onPanEnd;
 
-  /// ينشئ عقدة كرت ملاحظة تفاعلية على لوحة الشبكة.
   const _NoteCanvasNode({
     required this.note,
     required this.isDark,
@@ -328,7 +312,6 @@ class _NoteCanvasNode extends StatelessWidget {
     required this.onPanEnd,
   });
 
-  /// يبني واجهة عقدة كرت الملاحظة على لوحة الشبكة.
   @override
   Widget build(BuildContext context) {
     final fontSize = UserDataStore.instance.settings.ayahLinkFontSize;
@@ -361,7 +344,6 @@ class _NoteCanvasNode extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Node Header
             Row(
               children: [
                 Icon(
@@ -392,7 +374,6 @@ class _NoteCanvasNode extends StatelessWidget {
             Divider(height: 1, color: AppColors.border(context)),
             const SizedBox(height: 6),
 
-            // Note Content
             Text(
               note.content,
               style: TextStyle(

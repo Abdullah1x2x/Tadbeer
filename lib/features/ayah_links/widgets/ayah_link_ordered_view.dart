@@ -12,26 +12,20 @@ import '../../quran/screens/quran_screen.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_menu.dart';
 
-/// واجهة عرض القائمة المرتبة لرابط الآيات للقراءة المتسلسلة الهادئة.
-///
-/// Calm, serene ordered list view of an Ayah Link.
-///
-/// Designed for peaceful reading and linear recitation of connected verses.
+/// قائمة الرابط المرتبة، لقراءة الآيات المترابطة بتتابع هادئ.
 class AyahLinkOrderedView extends StatelessWidget {
-  /// بيانات رابط الآيات المعروض.
   final AyahLinkItem link;
 
-  /// دالة الاستدعاء عند الضغط على زر إضافة آية.
+  /// عند الضغط على زر إضافة آية.
   final VoidCallback onAddVerse;
 
-  /// ينشئ واجهة العرض المرتب لرابط الآيات.
   const AyahLinkOrderedView({
     super.key,
     required this.link,
     required this.onAddVerse,
   });
 
-  /// يفتح نافذة حوار لتعديل ملاحظة التدبر الخاصة بآية ضمن الرابط.
+  /// يعدّل خاطرة الآية داخل الرابط.
   Future<void> _editNote(
     BuildContext context,
     AyahLinkVerse verse,
@@ -84,7 +78,7 @@ class AyahLinkOrderedView extends StatelessWidget {
     }
   }
 
-  /// يعرض نافذة تأكيد لإزالة آية محددة من الرابط.
+  /// يطلب التأكيد قبل إزالة الآية من الرابط.
   Future<void> _confirmRemove(BuildContext context, AyahLinkVerse verse) async {
     final surah = QuranRepository.instance.getSurah(verse.surahNumber);
     final confirmed = await showDialog<bool>(
@@ -120,7 +114,7 @@ class AyahLinkOrderedView extends StatelessWidget {
     }
   }
 
-  /// يفتح نافذة حوار لتعديل كرت الملاحظة في الرابط.
+  /// يعدّل بطاقة الخاطرة.
   Future<void> _editNoteCard(
     BuildContext context,
     AyahLinkNote note,
@@ -223,7 +217,7 @@ class AyahLinkOrderedView extends StatelessWidget {
     }
   }
 
-  /// يعرض نافذة تأكيد لحذف كرت الملاحظة من الرابط.
+  /// يطلب التأكيد قبل حذف بطاقة الخاطرة.
   Future<void> _confirmDeleteNoteCard(
     BuildContext context,
     AyahLinkNote note,
@@ -261,7 +255,6 @@ class AyahLinkOrderedView extends StatelessWidget {
     }
   }
 
-  /// ينسخ نص الملاحظة التدبرية إلى الحافظة.
   void _copyNoteCard(BuildContext context, AyahLinkNote note) {
     Clipboard.setData(ClipboardData(text: note.content));
     ScaffoldMessenger.of(context).showSnackBar(
@@ -277,7 +270,6 @@ class AyahLinkOrderedView extends StatelessWidget {
     );
   }
 
-  /// يبني قائمة الآيات المرتبة مع بطاقة العنوان وملاحظات التدبر.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -289,7 +281,7 @@ class AyahLinkOrderedView extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         children: [
-          // Header Card (Title & Description)
+          // بطاقة العنوان والوصف.
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
@@ -342,7 +334,7 @@ class AyahLinkOrderedView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Note Cards Section (if any)
+          // بطاقات الخواطر.
           if (notes.isNotEmpty) ...[
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -379,7 +371,7 @@ class AyahLinkOrderedView extends StatelessWidget {
             const SizedBox(height: 12),
           ],
 
-          // Verses Section Header if notes also present
+          // عنوان قسم الآيات، حين توجد خواطر أيضاً.
           if (verses.isNotEmpty && notes.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -406,7 +398,6 @@ class AyahLinkOrderedView extends StatelessWidget {
               ),
             ),
 
-          // Verses Stream or Empty States
           if (verses.isEmpty && notes.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 40),
@@ -486,7 +477,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Item Header: Order Number, Surah info, Actions menu
+                    // رأس العنصر: الترتيب والسورة والإجراءات.
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -574,7 +565,6 @@ class AyahLinkOrderedView extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
 
-                    // Verse Text
                     if (ayah != null)
                       InkWell(
                         onTap: () {
@@ -603,7 +593,6 @@ class AyahLinkOrderedView extends StatelessWidget {
                         ),
                       ),
 
-                    // Reflection note (if any)
                     if (hasNote) ...[
                       const SizedBox(height: 12),
                       Container(
@@ -652,7 +641,7 @@ class AyahLinkOrderedView extends StatelessWidget {
   }
 }
 
-/// بطاقة كرت ملاحظة تدبرية مستقلة داخل رابط الآيات.
+/// بطاقة خاطرة مستقلة في الرابط.
 class _AyahLinkNoteCard extends StatelessWidget {
   final AyahLinkNote note;
   final bool isDark;
@@ -660,7 +649,6 @@ class _AyahLinkNoteCard extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onCopy;
 
-  /// ينشئ كرت الملاحظة التدبرية المستقلة.
   const _AyahLinkNoteCard({
     required this.note,
     required this.isDark,
@@ -669,7 +657,6 @@ class _AyahLinkNoteCard extends StatelessWidget {
     required this.onCopy,
   });
 
-  /// يبني واجهة كرت الملاحظة مع العنوان والنص وخيارات التحكم.
   @override
   Widget build(BuildContext context) {
     final title = note.title;
@@ -696,7 +683,6 @@ class _AyahLinkNoteCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header: Icon + Title + Menu
           Row(
             children: [
               Container(
@@ -767,7 +753,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
           const SizedBox(height: 8),
           Divider(height: 1, color: AppColors.border(context)),
           const SizedBox(height: 10),
-          // Content - fully untruncated
+          // النص كاملاً دون قص.
           SelectableText(
             note.content,
             style: TextStyle(

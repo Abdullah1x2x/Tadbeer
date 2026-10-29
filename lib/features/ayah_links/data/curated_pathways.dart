@@ -2,18 +2,15 @@ import '../../../data/quran/quran_repository.dart';
 import '../../../data/models/ayah_link_model.dart';
 import 'ayah_link_repository.dart';
 
-/// نموذج يمثل آية قرآنية واحدة وملاحظتها التدبرية ضمن مسار تدبري مقترح.
+/// آية في مسار مقترح، مع فائدتها التدبرية.
 class CuratedPathwayVerse {
-  /// رقم السورة.
   final int surah;
 
-  /// رقم الآية داخل السورة.
   final int ayah;
 
-  /// الملاحظة التدبرية المرفقة بالآية.
+  /// الفائدة التدبرية.
   final String note;
 
-  /// ينشئ عنصر آية ضمن مسار تدبري مقترح.
   const CuratedPathwayVerse({
     required this.surah,
     required this.ayah,
@@ -21,24 +18,19 @@ class CuratedPathwayVerse {
   });
 }
 
-/// نموذج يمثل مساراً تدبرياً مقترحاً يجمع آيات مترابطة حول موضوع واحد.
+/// مسار تدبري مقترح: آيات مترابطة حول موضوع واحد.
 class CuratedPathway {
-  /// المعرّف الفريد للمسار التدبري.
   final String id;
 
-  /// عنوان المسار التدبري.
   final String title;
 
-  /// وصف موجز لموضوع المسار التدبري.
   final String description;
 
-  /// التصنيف الموضوعي للمسار.
+  /// التصنيف الموضوعي.
   final String category;
 
-  /// قائمة الآيات المرتبطة ضمن هذا المسار.
   final List<CuratedPathwayVerse> verses;
 
-  /// ينشئ مساراً تدبرياً مقترحاً.
   const CuratedPathway({
     required this.id,
     required this.title,
@@ -48,20 +40,12 @@ class CuratedPathway {
   });
 }
 
-/// مكتبة المسارات التدبرية المقترحة المعتمدة في تطبيق تَدْبِير.
+/// المسارات التدبرية المقترحة.
 class CuratedPathwaysRegistry {
   CuratedPathwaysRegistry._();
 
-  // ===========================================================================
-  // 💡 كيف تضيف مساراً تدبرياً جديداً يربط بين الآيات؟
-  // -------------------------------------------------------------
-  // أضف عنصراً جديداً إلى قائمة [pathways] أدناه باستخدام [CuratedPathway]:
-  // - حدد عنوان المسار ووصفه وتصنيفه الموضوعي.
-  // - أضف الآيات المترابطة مع ملاحظاتها التدبرية عبر [CuratedPathwayVerse].
-  // يظهر المسار تلقائياً في شاشة روابط الآيات ويمكن للمستخدمين استعراضه واستيراده.
-  // ===========================================================================
+  // لإضافة مسار أضف [CuratedPathway] إلى [pathways]: العنوان والوصف والتصنيف، والآيات بفوائدها عبر [CuratedPathwayVerse]. يظهر المسار في روابط الآيات ويمكن استيراده.
 
-  /// قائمة المسارات التدبرية المقترحة الجاهزة للاستيراد.
   static const List<CuratedPathway> pathways = [
     CuratedPathway(
       id: 'names_of_allah',
@@ -183,7 +167,7 @@ class CuratedPathwaysRegistry {
     ),
   ];
 
-  /// يستورد مساراً تدبرياً مقترحاً إلى قائمة روابط الآيات الخاصة بالمستخدم.
+  /// ينسخ المسار إلى روابط القارئ.
   static Future<AyahLinkItem> importPathway(
     CuratedPathway pathway, {
     AyahLinkRepository? repo,

@@ -15,32 +15,26 @@ import '../widgets/create_link_dialog.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_menu.dart';
 
-/// الشاشة الرئيسية لإدارة وعرض روابط الآيات التدبرية الخاصة بالمستخدم.
-///
-/// Main screen managing the user's personal Ayah Links (روابط الآيات).
+/// روابط الآيات للقارئ: بحث وإنشاء واستيراد.
 class AyahLinksScreen extends StatefulWidget {
-  /// ينشئ الشاشة الرئيسية لروابط الآيات.
   const AyahLinksScreen({super.key});
 
-  /// ينشئ حالة شاشة روابط الآيات.
   @override
   State<AyahLinksScreen> createState() => _AyahLinksScreenState();
 }
 
-/// الحالة الداخلية لشاشة روابط الآيات المسؤولة عن البحث والإنشاء والاستيراد.
 class _AyahLinksScreenState extends State<AyahLinksScreen> {
   final AyahLinkRepository _repo = AyahLinkRepository();
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يفتح نافذة إنشاء رابط آيات جديد وينتقل لتفاصيله فور إنشائه.
+  /// ينشئ رابطاً ويفتح تفاصيله.
   Future<void> _createLink() async {
     final created = await CreateLinkDialog.show(context);
     if (created != null && mounted) {
@@ -53,12 +47,11 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
     }
   }
 
-  /// يفتح نافذة تعديل بيانات رابط آيات موجود.
   Future<void> _editLink(AyahLinkItem link) async {
     await CreateLinkDialog.show(context, existingLink: link);
   }
 
-  /// يعرض نافذة تأكيد لحذف رابط الآيات المحدد.
+  /// يطلب التأكيد قبل حذف الرابط.
   Future<void> _confirmDelete(AyahLinkItem link) async {
     final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
@@ -105,12 +98,12 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
     }
   }
 
-  /// يفتح نافذة استيراد رابط آيات عبر رمز الاستجابة السريعة.
+  /// يستورد رابطاً من رمز QR.
   Future<void> _importFromQr() async {
     await AyahLinkQrDialog.showImportDialog(context, repo: _repo);
   }
 
-  /// يعرض اللوحة السفلية للمسارات التدبرية المقترحة الجاهزة للاستيراد.
+  /// لوحة المسارات المقترحة الجاهزة للاستيراد.
   void _showCuratedPathwaysSheet() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).colorScheme.primary;
@@ -220,8 +213,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              // Wraps on narrow phones now that it holds
-                              // two actions.
+                              // تلتف في الهواتف الضيقة، فهي تحمل إجراءين.
                               Wrap(
                                 alignment: WrapAlignment.spaceBetween,
                                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -242,7 +234,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                           : AppColors.daySubtitle,
                                     ),
                                   ),
-                                  // The same pathway as a day-by-day journey.
+                                  // نفس المسار كرحلة يوماً بيوم.
                                   TextButton.icon(
                                     onPressed: () {
                                       Navigator.pop(sheetCtx);
@@ -318,7 +310,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
     );
   }
 
-  /// يبني واجهة شاشة روابط الآيات مع شريط البحث وقائمة الروابط.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -355,7 +346,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
 
             return Column(
               children: [
-                // Search Input
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                   child: TextField(
@@ -401,7 +391,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                   ),
                 ),
 
-                // Content
                 Expanded(
                   child: links.isEmpty
                       ? Center(
@@ -494,7 +483,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Title & Options
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -583,7 +571,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                       ],
                                     ),
 
-                                    // Description snippet (if any)
                                     if (link.description != null &&
                                         link.description!.isNotEmpty) ...[
                                       const SizedBox(height: 10),
@@ -599,7 +586,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                                       ),
                                     ],
 
-                                    // Surahs Chips (if any)
                                     if (uniqueSurahs.isNotEmpty) ...[
                                       const SizedBox(height: 12),
                                       Wrap(
