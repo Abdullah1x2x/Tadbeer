@@ -8,18 +8,16 @@ import 'data/curated_dhikrs.dart';
 
 export 'data/curated_dhikrs.dart';
 
-/// أقسام أذكار السبحة والمحراب (استغفار وتسبيح).
+/// قسما السبحة.
 enum DhikrSection {
-  /// قسم الاستغفار والتوبة.
   istighfar,
 
-  /// قسم التسبيح والتحميد والذكر.
+  /// التسبيح والتحميد والتكبير.
   tasbeeh,
 }
 
-/// امتداد مساعد لقسم الذكر يوفر المسميات العربية البسيطة والمباشرة.
+/// عناوين الأقسام.
 extension DhikrSectionX on DhikrSection {
-  /// عنوان القسم.
   String get title {
     switch (this) {
       case DhikrSection.istighfar:
@@ -29,11 +27,11 @@ extension DhikrSectionX on DhikrSection {
     }
   }
 
-  /// العنوان القصير للعرض في الأزرار والتبويبات.
+  /// العنوان القصير للأزرار والتبويبات.
   String get shortTitle => title;
 }
 
-/// نموذج بيانات الأذكار والاستغفار والتسبيح للسبحة الإلكترونية.
+/// ذكر في السبحة: نصه وفضله وهدفه الافتراضي وقسمه.
 class TasbeehDhikr {
   final String id;
   final String arabicText;
@@ -43,11 +41,9 @@ class TasbeehDhikr {
   final int defaultTarget;
   final DhikrSection section;
 
-  /// مدة الإيقاع الزمني المخصصة للعد التلقائي بالثواني (اختيارية للمطور).
-  /// إذا تُركت فارغة أو null، تُحسب تلقائياً بذكاء بحسب طول الذكر وعدد كلماته.
+  /// مدة كل عَدّة في العد التلقائي، بالثواني؛ إن تُركت null تُحسب من طول الذكر.
   final double? paceSeconds;
 
-  /// ينشئ ذكراً أو صيغة استغفار وتسبيح.
   const TasbeehDhikr({
     required this.id,
     required this.arabicText,
@@ -59,52 +55,45 @@ class TasbeehDhikr {
     this.paceSeconds,
   });
 
-  /// مدة الإيقاع بالثواني لكل عَدّة (تُحسب تلقائياً من طول الذكر ما لم تُحدد يدوياً).
+  /// مدة كل عَدّة بالثواني: [paceSeconds] إن حُدّدت، وإلا تُحسب من طول الذكر.
   double get estimatedPaceSeconds {
     if (paceSeconds != null && paceSeconds! > 0) {
       return paceSeconds!;
     }
-    // حساب عدد الكلمات العربية بدقة
     final words = arabicText.trim().split(RegExp(r'\s+')).length;
-    // معادلة إيقاع التدبر الهادئ: 800 ملي ثانية وقفة تأمل + 320 ملي ثانية لكل كلمة
+    // وقفة تأمل 800 مللي ثانية، و320 لكل كلمة.
     final totalMillis = 800 + (words * 320);
     final clampedSeconds = (totalMillis / 1000.0).clamp(1.2, 7.0);
     return double.parse(clampedSeconds.toStringAsFixed(1));
   }
 
-  /// مدة الإيقاع الزمني المحسوبة ككائن [Duration] مناسب للمؤقتات التلقائية.
+  /// [estimatedPaceSeconds] كـ[Duration] للمؤقتات.
   Duration get estimatedPaceDuration =>
       Duration(milliseconds: (estimatedPaceSeconds * 1000).round());
 
-  /// ما إذا كان الذكر يتبع لقسم الاستغفار.
   bool get isIstighfar => section == DhikrSection.istighfar;
 
-  /// ما إذا كان الذكر يتبع لقسم التسبيح.
   bool get isTasbeeh => section == DhikrSection.tasbeeh;
 
-  /// التصنيفات المعتمدة: استغفار وتسبيح فقط دون أي تعقيد.
+  /// تصنيفات التصفية.
   static const List<String> categories = ['الكل', 'استغفار', 'تسبيح'];
 
-  /// قائمة صيغ الاستغفار فقط.
   static List<TasbeehDhikr> get istighfarDhikrs =>
       defaultDhikrs.where((d) => d.section == DhikrSection.istighfar).toList();
 
-  /// قائمة صيغ التسبيح فقط.
   static List<TasbeehDhikr> get tasbeehDhikrs =>
       defaultDhikrs.where((d) => d.section == DhikrSection.tasbeeh).toList();
 
-  /// باقة الأذكار والصيغ المعتمدة (49 صيغة موثقة: 20 استغفار و 29 تسبيح).
-  /// يمكن للمطور إضافة أو تعديل الأذكار في ملف: [curatedDhikrs]
+  /// الأذكار المعتمدة: 49 صيغة (20 استغفار و29 تسبيح)، وتُضاف في [curatedDhikrs].
   static const List<TasbeehDhikr> defaultDhikrs = curatedDhikrs;
 }
 
-/// مستودع إدارة حالة السبحة الإلكترونية والورد اليومي من الاستغفار والتسبيح.
+/// حالة السبحة وورد اليوم، محفوظة على الجهاز.
 class TasbeehRepository extends ChangeNotifier {
   static final TasbeehRepository instance = TasbeehRepository._internal();
   TasbeehRepository._internal();
 
-  /// Called when a round reaches its target; the app uses it to count the
-  /// day toward the reading streak.
+  /// يُستدعى عند بلوغ هدف الدورة؛ يستخدمه التطبيق لاحتساب اليوم في سلسلة القراءة.
   VoidCallback? onTargetReached;
 
   bool _initialized = false;
@@ -116,31 +105,29 @@ class TasbeehRepository extends ChangeNotifier {
   String _lastDateIso = '';
   bool _autoAdvanceEnabled = true;
 
-  /// الذكر الفعال حالياً في السبحة.
+  /// الذكر الجاري.
   TasbeehDhikr get activeDhikr => _activeDhikr;
 
-  /// القسم الفعال حالياً في السبحة (استغفار أو تسبيح).
   DhikrSection get activeSection => _activeDhikr.section;
 
-  /// العدد الحالي في الدورة الراهنة.
+  /// العدد في الدورة الحالية.
   int get currentCount => _currentCount;
 
-  /// الهدف المحدد للدورة الحالية (0 تعني عدّاً حراً غير محدود).
+  /// هدف الدورة (0 = عدّ حر بلا حد).
   int get targetCount => _targetCount;
 
-  /// ما إذا كان التبديل التلقائي إلى الصيغة التالية مفعلاً عند بلوغ الهدف.
+  /// هل ينتقل إلى الذكر التالي تلقائياً عند بلوغ الهدف.
   bool get autoAdvanceEnabled => _autoAdvanceEnabled;
 
-  /// المجموع التراكمي الكلي لمرات الاستغفار والتسبيح منذ تثبيت التطبيق.
+  /// مجموع العدّ منذ تثبيت التطبيق.
   int get lifetimeTotalCount => _lifetimeTotalCount;
 
-  /// المجموع المحقق لليوم الحالي.
+  /// مجموع اليوم.
   int get todayTotalCount => _todayTotalCount;
 
-  /// ما إذا كان المستودع قد أتم تحميل البيانات المحفوظة.
   bool get isInitialized => _initialized;
 
-  /// تهيئة المستودع وقراءة الإحصائيات المحفوظة محلياً.
+  /// يقرأ الحالة والإحصاءات المحفوظة.
   Future<void> init() async {
     if (_initialized) return;
     final today = _getTodayDateIso();
@@ -178,7 +165,7 @@ class TasbeehRepository extends ChangeNotifier {
         _targetCount = _activeDhikr.defaultTarget;
       }
     } catch (e) {
-      // السقوط الآمن إلى الحالة الافتراضية في بيئات الاختبار أو عند تعذر الوصول للملف
+      // عند تعذّر القراءة (كالاختبارات) تبدأ من الحالة الافتراضية.
       _targetCount = _activeDhikr.defaultTarget;
     }
 
@@ -186,9 +173,7 @@ class TasbeehRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// زيادة العداد بمقدار نقرة واحدة.
-  ///
-  /// تعيد `true` إذا تم بلوغ الهدف المحدد للدورة الحالية.
+  /// يزيد العدّ بواحد، ويعيد true إن بلغ هدف الدورة.
   bool increment() {
     _checkDateRollover();
     _currentCount++;
@@ -196,21 +181,21 @@ class TasbeehRepository extends ChangeNotifier {
     _todayTotalCount++;
 
     final targetReached = _targetCount > 0 && _currentCount == _targetCount;
-    // A completed round counts the day toward the reading streak.
+    // إتمام الدورة يحتسب اليوم في سلسلة القراءة.
     if (targetReached) onTargetReached?.call();
     _persistDebounced();
     notifyListeners();
     return targetReached;
   }
 
-  /// تصفير عداد الدورة الحالية مع الحفاظ على المجموع التراكمي.
+  /// يصفّر الدورة الحالية، ويبقى المجموع.
   void resetCurrentCount() {
     _currentCount = 0;
     _persistDebounced();
     notifyListeners();
   }
 
-  /// ضبط الهدف المطلوب للدورة (33 أو 100 أو 0 للعد الحر).
+  /// هدف الدورة: 33 أو 100 أو 0 للعدّ الحر.
   void setTarget(int target) {
     if (_targetCount == target) return;
     _targetCount = target;
@@ -218,14 +203,13 @@ class TasbeehRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// تفعيل أو تعطيل التبديل التلقائي إلى الذكر التالي عند إتمام الورد المستهدف.
+  /// يشغّل الانتقال التلقائي للذكر التالي أو يطفئه.
   void toggleAutoAdvance() {
     _autoAdvanceEnabled = !_autoAdvanceEnabled;
     _persistDebounced();
     notifyListeners();
   }
 
-  /// ضبط التبديل التلقائي بقيمة محددة.
   void setAutoAdvance(bool enabled) {
     if (_autoAdvanceEnabled == enabled) return;
     _autoAdvanceEnabled = enabled;
@@ -233,7 +217,7 @@ class TasbeehRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// تغيير الذكر الفعال حالياً والبدء بدورة جديدة.
+  /// يغيّر الذكر الجاري ويبدأ دورة جديدة.
   void setActiveDhikr(TasbeehDhikr dhikr) {
     _activeDhikr = dhikr;
     _currentCount = 0;
@@ -242,7 +226,7 @@ class TasbeehRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// التبديل إلى قسم محدد (استغفار أو تسبيح) واختيار أول ذكر فيه إذا لم يكن الذكر الحالي من نفس القسم.
+  /// ينتقل إلى [section]، ويختار أول ذكر فيه إن لم يكن الجاري منه.
   void setActiveSection(DhikrSection section) {
     if (_activeDhikr.section == section) return;
     final targetDhikrs = section == DhikrSection.istighfar
@@ -253,7 +237,7 @@ class TasbeehRepository extends ChangeNotifier {
     }
   }
 
-  /// الانتقال إلى الذكر التالي ضمن قائمة محددة (أو القائمة الافتراضية).
+  /// الذكر التالي في [pool] أو في كل الأذكار.
   void nextDhikr({List<TasbeehDhikr>? pool}) {
     final list = (pool != null && pool.isNotEmpty)
         ? pool
@@ -263,7 +247,7 @@ class TasbeehRepository extends ChangeNotifier {
     setActiveDhikr(list[nextIndex]);
   }
 
-  /// الانتقال إلى الذكر السابق ضمن قائمة محددة (أو القائمة الافتراضية).
+  /// الذكر السابق في [pool] أو في كل الأذكار.
   void previousDhikr({List<TasbeehDhikr>? pool}) {
     final list = (pool != null && pool.isNotEmpty)
         ? pool
@@ -275,7 +259,7 @@ class TasbeehRepository extends ChangeNotifier {
     setActiveDhikr(list[prevIndex]);
   }
 
-  /// التحقق من تبدل اليوم لتصفير عداد اليوم.
+  /// يصفّر عدّ اليوم إن تبدّل التاريخ.
   void _checkDateRollover() {
     final today = _getTodayDateIso();
     if (_lastDateIso != today) {
@@ -317,7 +301,7 @@ class TasbeehRepository extends ChangeNotifier {
       });
       await file.writeAsString(payload, flush: true);
     } catch (_) {
-      // التجاهل الآمن في بيئات الاختبار
+      // يُتجاهل الفشل في بيئات الاختبار.
     }
   }
 }

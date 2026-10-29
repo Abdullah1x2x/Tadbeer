@@ -11,12 +11,10 @@ import '../../core/design_system/ornaments.dart';
 
 part 'tasbeeh_widgets.dart';
 
-/// شاشة الاستغفار والتسبيح (سبحة إلكترونية مبسطة ومحراب هادئ للذكر).
-///
-/// تفصل ببساطة ودون مبالغة بين قسمي "الاستغفار" و"التسبيح"
-/// مع تثبيت تام لحجم مربع عرض الذكر لمنع اهتزاز أو قفز الشاشة أثناء التقليب.
+/// الاستغفار والتسبيح: سبحة بسيطة بقسمين.
+/// مربع الذكر ثابت الحجم، فلا تقفز الشاشة عند تقليب الأذكار.
 class TasbeehScreen extends StatefulWidget {
-  /// القسم المبدئي المراد فتحه عند الدخول (اختياري).
+  /// القسم الذي تُفتح عليه.
   final DhikrSection? initialSection;
 
   const TasbeehScreen({super.key, this.initialSection});
@@ -31,13 +29,13 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   late AnimationController _pulseController;
   late Animation<double> _scaleAnimation;
 
-  /// حالة تفعيل وضع العدّ التلقائي الهادئ.
+  /// هل العدّ التلقائي يعمل.
   bool _isAutoCounting = false;
 
-  /// المؤقت الزمني المسؤول عن تكرار العدّ التلقائي بحسب إيقاع الذكر.
+  /// مؤقت العدّ التلقائي، بإيقاع الذكر.
   Timer? _autoCountTimer;
 
-  /// فارق زمني مخصص (بالثواني) لضبط الوتيرة يدوياً حسب رغبة المستخدم (+ أو -).
+  /// تعديل القارئ على الإيقاع بالثواني، زيادة أو نقصاً.
   double _paceOffsetSeconds = 0.0;
 
   @override
@@ -70,14 +68,14 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     if (mounted) setState(() {});
   }
 
-  /// حساب الوتيرة الزمنية الحالية (بالثواني) لكل عَدّة بعد احتساب التعديل اليدوي.
+  /// إيقاع كل عَدّة بالثواني بعد تعديل القارئ.
   double get _currentPaceSeconds {
     final basePace = _repo.activeDhikr.estimatedPaceSeconds;
     final total = basePace + _paceOffsetSeconds;
     return double.parse(total.clamp(0.8, 10.0).toStringAsFixed(1));
   }
 
-  /// بدء أو إعادة ضبط مؤقت العد التلقائي بحسب الوتيرة الحالية.
+  /// يبدأ مؤقت العدّ التلقائي بالإيقاع الحالي، أو يعيد ضبطه.
   void _startAutoCountTimer() {
     _autoCountTimer?.cancel();
     final duration = Duration(
@@ -89,7 +87,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     });
   }
 
-  /// إيقاف وضع العدّ التلقائي وإلغاء المؤقت الفعال.
   void _stopAutoCount() {
     _autoCountTimer?.cancel();
     _autoCountTimer = null;
@@ -100,7 +97,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     }
   }
 
-  /// التبديل بين تشغيل العدّ التلقائي وإيقافه مؤقتاً.
   void _toggleAutoCount() {
     HapticFeedback.mediumImpact();
     setState(() {
@@ -114,7 +110,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     });
   }
 
-  /// تسريع وتيرة العدّ التلقائي بمقدار 0.2 ثانية.
+  /// يسرّع العدّ التلقائي 0.2 ثانية.
   void _speedUpPace() {
     HapticFeedback.selectionClick();
     setState(() {
@@ -127,7 +123,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     });
   }
 
-  /// إبطاء وتيرة العدّ التلقائي بمقدار 0.2 ثانية لمزيد من التدبر الهادئ.
+  /// يبطئ العدّ التلقائي 0.2 ثانية.
   void _slowDownPace() {
     HapticFeedback.selectionClick();
     setState(() {
@@ -140,17 +136,15 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     });
   }
 
-  /// القسم الفعال حالياً في السبحة.
   DhikrSection get _currentSection => _repo.activeSection;
 
-  /// الأذكار المفلترة بحسب القسم النشط فقط (استغفار أو تسبيح).
+  /// أذكار القسم الجاري.
   List<TasbeehDhikr> get _filteredDhikrs {
     return _currentSection == DhikrSection.istighfar
         ? TasbeehDhikr.istighfarDhikrs
         : TasbeehDhikr.tasbeehDhikrs;
   }
 
-  /// التبديل المباشر بين الاستغفار والتسبيح.
   void _onSectionSelected(DhikrSection section) {
     if (_repo.activeSection == section) return;
     HapticFeedback.selectionClick();
@@ -161,7 +155,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     }
   }
 
-  /// الانتقال إلى الذكر التالي ضمن باقة القسم الفعال.
   void _nextDhikr() {
     HapticFeedback.selectionClick();
     _repo.nextDhikr(pool: _filteredDhikrs);
@@ -171,7 +164,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     }
   }
 
-  /// الانتقال إلى الذكر السابق ضمن باقة القسم الفعال.
   void _previousDhikr() {
     HapticFeedback.selectionClick();
     _repo.previousDhikr(pool: _filteredDhikrs);
@@ -181,7 +173,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     }
   }
 
-  /// معالجة نقرة التسبيح وتشغيل الأثر الحركي والحسي.
+  /// نقرة التسبيح، مع أثرها الحركي والاهتزاز.
   void _handleTap() {
     _pulseController.forward().then((_) {
       if (mounted) _pulseController.reverse();
@@ -243,7 +235,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     }
   }
 
-  /// نسخ نص الذكر الشريف إلى الحافظة.
   void _copyDhikrText(String text) {
     Clipboard.setData(ClipboardData(text: text));
     HapticFeedback.selectionClick();
@@ -262,7 +253,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
-  /// حوار تأكيد تصفير عداد الدورة الحالية.
+  /// يطلب التأكيد قبل تصفير الدورة.
   void _confirmReset() {
     HapticFeedback.selectionClick();
     final l10n = context.l10n;
@@ -314,7 +305,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
-  /// فتح نافذة استعراض واختيار الصيغ المبسطة.
+  /// لوحة لاستعراض الأذكار واختيار أحدها.
   void _showDhikrPickerSheet() {
     HapticFeedback.lightImpact();
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -395,7 +386,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         ),
                         const SizedBox(height: 12),
 
-                        // مفتاح تبديل الأقسام داخل النافذة
+                        // التبديل بين القسمين.
                         Container(
                           padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
@@ -454,7 +445,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         ),
                         const SizedBox(height: 10),
 
-                        // حقل البحث
                         TextField(
                           onChanged: (val) {
                             setSheetState(() {
@@ -483,7 +473,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                         ),
                         const SizedBox(height: 10),
 
-                        // قائمة النتائج
                         Expanded(
                           child: filtered.isEmpty
                               ? Center(
@@ -611,9 +600,9 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final isCompact = constraints.maxHeight < 680;
-                // The counter is the screen's main action, so it gets the most room.
+                // العدّاد هو الإجراء الأساسي، فيأخذ أكبر مساحة.
                 final circleSize = isCompact ? 205.0 : 250.0;
-                // تثبيت صارم لارتفاع مربع عرض الذكر لمنع أي قفز أو تغير في حجمه
+                // ارتفاع ثابت لمربع الذكر، فلا يقفز.
                 final cardHeight = isCompact ? 180.0 : 205.0;
 
                 return SingleChildScrollView(
@@ -628,11 +617,11 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // 1. مفتاح التبديل المباشر بين الاستغفار والتسبيح (بدون مبالغة)
+                          // ١. التبديل بين الاستغفار والتسبيح.
                           _buildSectionSwitcher(isDark, primaryColor),
                           const SizedBox(height: 12),
 
-                          // 2. مربع عرض الذكر ذو الحجم الثابت تماماً
+                          // ٢. مربع الذكر الثابت.
                           _buildFixedDhikrCard(
                             dhikr,
                             isDark,
@@ -641,7 +630,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           ),
                           SizedBox(height: isCompact ? 14 : 18),
 
-                          // 3. الدائرة التفاعلية للتسبيح والعدّ
+                          // ٣. دائرة العدّ.
                           Center(
                             child: ScaleTransition(
                               scale: _scaleAnimation,
@@ -679,7 +668,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                   child: Stack(
                                     alignment: Alignment.center,
                                     children: [
-                                      // مؤشر التقدم الدائري
+                                      // حلقة التقدم.
                                       SizedBox(
                                         width: circleSize - 16,
                                         height: circleSize - 16,
@@ -700,7 +689,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                                               ),
                                         ),
                                       ),
-                                      // الرقم والهدف ورسالة النقر
+                                      // الرقم والهدف وتلميح النقر.
                                       Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
@@ -766,11 +755,11 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                           ),
                           SizedBox(height: isCompact ? 10 : 14),
 
-                          // 4. شريط كبسولة العدّ التلقائي الهادئ والتحكم بالوتيرة
+                          // ٤. العدّ التلقائي والتحكم بإيقاعه.
                           _buildAutoCountBar(isDark, primaryColor),
                           SizedBox(height: isCompact ? 10 : 14),
 
-                          // 6. شريط الإحصائيات (اليوم والإجمالي)
+                          // ٥. إحصاءات اليوم والإجمالي.
                           _buildStatsRow(isDark, primaryColor),
                           const SizedBox(height: 16),
                         ],
@@ -786,7 +775,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
-  /// شريط كبسولة العدّ التلقائي الهادئ مع التحكم بالوتيرة الزمنية.
+  /// شريط العدّ التلقائي مع التحكم بإيقاعه.
   Widget _buildAutoCountBar(bool isDark, Color primaryColor) {
     final l10n = context.l10n;
     final pace = _currentPaceSeconds;
@@ -817,7 +806,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // زر التشغيل والإيقاف المؤقت للعد التلقائي
             InkWell(
               onTap: _toggleAutoCount,
               borderRadius: BorderRadius.circular(18),
@@ -861,7 +849,6 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             ),
             const SizedBox(width: 8),
 
-            // فاصل عمودي ناعم
             Container(
               height: 18,
               width: 1,
@@ -869,7 +856,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             ),
             const SizedBox(width: 6),
 
-            // زر تسريع الوتيرة (-)
+            // تسريع (-).
             IconButton(
               tooltip: l10n.decreasePace,
               icon: const Icon(AppIcons.minus, size: 16),
@@ -882,7 +869,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
               onPressed: _speedUpPace,
             ),
 
-            // عرض الوتيرة الحالية بالثواني
+            // الإيقاع الحالي بالثواني.
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(
@@ -911,7 +898,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
               ),
             ),
 
-            // زر إبطاء الوتيرة (+)
+            // إبطاء (+).
             IconButton(
               tooltip: l10n.increasePace,
               icon: const Icon(AppIcons.plus, size: 16),
@@ -929,7 +916,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
-  /// مفتاح التبديل المباشر بين الاستغفار والتسبيح.
+  /// التبديل بين الاستغفار والتسبيح.
   Widget _buildSectionSwitcher(bool isDark, Color primaryColor) {
     final activeSection = _repo.activeSection;
     final istighfarCount = TasbeehDhikr.istighfarDhikrs.length;
@@ -981,7 +968,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
-  /// مربع عرض الذكر ذو الحجم الثابت تماماً (لا يكبر ولا يصغر بتغير النص).
+  /// مربع الذكر بحجم ثابت لا يتغير بطول النص.
   Widget _buildFixedDhikrCard(
     TasbeehDhikr dhikr,
     bool isDark,
@@ -994,7 +981,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         ? context.l10n.formulaXOfY(currentIndex + 1, pool.length)
         : context.l10n.allFormulasCount(pool.length);
 
-    // ضبط حجم الخط العربي ليتناسب مع طول النص ضمن المساحة الثابتة
+    // حجم الخط بحسب طول النص، ليتسع في المساحة الثابتة.
     final textLength = dhikr.arabicText.length;
     final double textFontSize = textLength > 120
         ? 15.5
@@ -1005,7 +992,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     return GestureDetector(
       onHorizontalDragEnd: (details) {
         final velocity = details.primaryVelocity ?? 0;
-        // في الاتجاه العربي (RTL): السحب لليسار يعني التالي والسحب لليمين يعني السابق
+        // في RTL: السحب لليسار للتالي، ولليمين للسابق.
         if (velocity < -200) {
           _nextDhikr();
         } else if (velocity > 200) {
@@ -1032,7 +1019,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           ),
           child: Column(
             children: [
-              // 1. شريط الرأس ذو الارتفاع الثابت (28 بكسل)
+              // ١. الرأس بارتفاع ثابت.
               SizedBox(
                 height: 28,
                 child: Row(
@@ -1120,7 +1107,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                 ),
               ),
 
-              // 2. منطقة النص المتمددة رأسياً ذات الارتفاع الثابت
+              // ٢. النص، ويملأ الارتفاع الباقي.
               Expanded(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1192,7 +1179,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                 ),
               ),
 
-              // 3. شريط الفضيلة أو التوجيه (يظهر النص كاملاً بدون قص وبانسيابية تامة)
+              // ٣. الفضل، كاملاً دون قص.
               if (dhikr.virtue.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -1270,8 +1257,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
-  /// بطاقة ضبط الهدف المطلوب وتفعيل التبديل التلقائي.
-  /// يفتح لوحة سفلية لضبط الهدف والتبديل التلقائي، بعيداً عن شاشة العدّ.
+  /// لوحة لضبط الهدف والانتقال التلقائي، بعيداً عن شاشة العدّ.
   void _showCountSettingsSheet(bool isDark, Color primaryColor) {
     showModalBottomSheet<void>(
       context: context,
@@ -1438,7 +1424,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     );
   }
 
-  /// شريط إحصائيات الاستغفار والتسبيح اليومي والإجمالي.
+  /// إحصاءات اليوم والإجمالي.
   Widget _buildStatsRow(bool isDark, Color primaryColor) {
     return Row(
       children: [

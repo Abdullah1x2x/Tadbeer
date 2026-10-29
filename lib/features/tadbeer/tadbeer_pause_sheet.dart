@@ -10,33 +10,21 @@ import '../../data/models/tadbeer_model.dart';
 import 'tadbeer_questions.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// نافذة سفلية تفاعلية لـ "وقفة تدبر" موجهة بأربعة أسئلة متدرجة حول الآية.
-///
-/// Modal sheet for "🌿 وقفة تدبر" (Tadbeer Pause).
-///
-/// EDUCATIONAL NOTE:
-/// Offers a focused, contemplative pause directly on an Ayah:
-/// - 4 authentic, sequential reflection questions shown ONE at a time.
-/// - The user can skip, write, or save at any point without obligation to finish all questions.
-/// - Empty answers are never stored.
-/// - Preserves answers across sessions via stable Ayah ID.
+/// لوحة "وقفة تدبر" على آية: أربعة أسئلة تظهر واحداً واحداً.
+/// يستطيع القارئ أن يتخطى أو يكتب أو يحفظ في أي لحظة دون إكمالها كلها. الإجابات الفارغة لا تُحفظ، والمحفوظة تعود حين يفتح الآية ثانية.
 class TadbeerPauseSheet extends StatefulWidget {
-  /// الآية القرآنية المستهدفة بوقفة التدبر.
   final Ayah ayah;
 
-  /// السؤال الذي تبدأ منه النافذة (من 0 إلى 3).
+  /// السؤال الذي تبدأ منه (0..3).
   final int initialQuestion;
 
-  /// ينشئ نافذة وقفة التدبر للآية المحددة.
   const TadbeerPauseSheet({
     super.key,
     required this.ayah,
     this.initialQuestion = 0,
   });
 
-  /// يعرض نافذة وقفة التدبر كبطاقة سفلية منبثقة.
-  ///
-  /// Displays the Tadbeer Pause sheet as a modal bottom sheet.
+  /// يفتح وقفة التدبر لوحةً سفلية.
   static Future<void> show(
     BuildContext context,
     Ayah ayah, {
@@ -51,28 +39,23 @@ class TadbeerPauseSheet extends StatefulWidget {
     );
   }
 
-  /// ينشئ حالة نافذة وقفة التدبر.
   @override
   State<TadbeerPauseSheet> createState() => _TadbeerPauseSheetState();
 }
 
-/// اسم بديل متوافق مع الإصدارات السابقة لنافذة وقفة التدبر.
-///
-/// Backward compatibility alias
+/// الاسم القديم، يبقى للتوافق.
 typedef TadabburPauseSheet = TadbeerPauseSheet;
 
-/// الحالة الداخلية لنافذة وقفة التدبر وإدارة التنقل بين الأسئلة وحفظ الإجابات.
 class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
   int _currentQuestionIndex = 0; // 0..3, see TadbeerItem.questionKeys
   late final List<String> _questions = TadbeerQuestions.forAyah(widget.ayah);
   final Map<int, TextEditingController> _controllers = {};
   bool _isSaving = false;
 
-  /// يحمل الإجابات السابقة للآية إن وجدت ويهيئ متحكمات الإدخال.
   @override
   void initState() {
     super.initState();
-    // Load existing answers if user previously reflected on this ayah
+    // إجابات سابقة إن تدبّر القارئ هذه الآية من قبل.
     final existingTadbeer = UserDataStore.instance.getTadbeer(
       widget.ayah.surahNumber,
       widget.ayah.ayahNumber,
@@ -88,7 +71,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     );
   }
 
-  /// يحرر جميع متحكمات النصوص عند إغلاق النافذة.
   @override
   void dispose() {
     for (final c in _controllers.values) {
@@ -97,7 +79,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     super.dispose();
   }
 
-  /// يحفظ الإجابات غير الفارغة في التخزين المحلي ويغلق النافذة.
+  /// يحفظ الإجابات غير الفارغة ويغلق اللوحة.
   Future<void> _saveAndClose() async {
     if (_isSaving) return;
     setState(() => _isSaving = true);
@@ -140,7 +122,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     }
   }
 
-  /// ينتقل إلى السؤال التالي أو يحفظ وينهي عند الوصول للسؤال الأخير.
+  /// السؤال التالي، أو الحفظ والإنهاء بعد الأخير.
   void _nextQuestion() {
     if (_currentQuestionIndex < _questions.length - 1) {
       setState(() {
@@ -151,7 +133,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     }
   }
 
-  /// يعود إلى السؤال السابق في وقفة التدبر.
   void _previousQuestion() {
     if (_currentQuestionIndex > 0) {
       setState(() {
@@ -160,7 +141,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     }
   }
 
-  /// يبني واجهة نافذة وقفة التدبر مع نص الآية ومؤشر التقدم وحقل الإجابة.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -192,7 +172,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Top drag handle
                 Center(
                   child: Container(
                     width: 44,
@@ -205,7 +184,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                   ),
                 ),
 
-                // Sheet Title & Close
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -246,7 +224,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 ),
                 const SizedBox(height: 6),
 
-                // Ayah Header & Snippet
+                // الآية.
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -315,7 +293,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 ),
                 const SizedBox(height: 16),
 
-                // Question Stepper indicator: dots and label
+                // مؤشر الأسئلة: نقاط واسم السؤال.
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -357,7 +335,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 ),
                 const SizedBox(height: 10),
 
-                // Question Card
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
@@ -380,7 +357,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 ),
                 const SizedBox(height: 12),
 
-                // Reflection Input
                 TextField(
                   controller: activeController,
                   maxLines: 4,
@@ -421,10 +397,8 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 ),
                 const SizedBox(height: 16),
 
-                // Stepper Action Buttons
                 Row(
                   children: [
-                    // Previous button (if > 0)
                     if (_currentQuestionIndex > 0) ...[
                       OutlinedButton.icon(
                         onPressed: _previousQuestion,
@@ -447,7 +421,6 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                       const SizedBox(width: 8),
                     ],
 
-                    // Next button
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: _nextQuestion,
@@ -477,7 +450,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 ),
                 const SizedBox(height: 10),
 
-                // Save & finish at any stage button
+                // الحفظ والإنهاء متاح في أي سؤال.
                 if (_currentQuestionIndex < _questions.length - 1)
                   Center(
                     child: TextButton.icon(

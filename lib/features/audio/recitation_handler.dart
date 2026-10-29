@@ -1,9 +1,6 @@
 /// التلاوة خارج التطبيق: إشعار التشغيل وأزرار شاشة القفل.
 ///
-/// audio_service keeps the recitation playing once the app leaves the
-/// screen. This handler shows the player's state in the notification and
-/// passes the notification's buttons back to the player, as
-/// just_audio_background did before it.
+/// يُبقي audio_service التلاوة تعمل بعد خروج التطبيق من الشاشة. وهذا الوسيط يعرض حالة المشغّل في الإشعار، ويعيد أزرار الإشعار إلى المشغّل.
 library;
 
 import 'dart:async';
@@ -14,20 +11,16 @@ import 'package:just_audio/just_audio.dart';
 /// يربط مشغّل التلاوة بإشعار النظام.
 class RecitationHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
-  /// The handler made at startup, or null where the platform has no
-  /// background playback (desktop, tests).
+  /// الوسيط المنشأ عند الإقلاع، أو null حيث لا تشغيل في الخلفية (سطح المكتب والاختبارات).
   static RecitationHandler? instance;
 
   AudioPlayer? _player;
   final _subscriptions = <StreamSubscription<Object?>>[];
 
-  /// Ends the recitation in the app, as its own close button does. Without
-  /// it, a stop from the notification left the app holding a stopped
-  /// player that a later play could not restart.
+  /// ينهي التلاوة في التطبيق كما يفعل زر الإغلاق فيه؛ بدونه كان الإيقاف من الإشعار يترك مشغّلاً متوقفاً لا يعود بالتشغيل.
   Future<void> Function()? onStop;
 
-  /// Follows [player] from now on. The player is made on first use, so the
-  /// handler exists before it does.
+  /// يتبع [player] من الآن. المشغّل يُنشأ عند أول استخدام، فالوسيط يسبقه.
   void attach(AudioPlayer player) {
     for (final s in _subscriptions) {
       s.cancel();
@@ -35,7 +28,7 @@ class RecitationHandler extends BaseAudioHandler
     _subscriptions
       ..clear()
       ..addAll([
-        // Errors reach the app through the player's errorStream.
+        // الأخطاء تصل التطبيق عبر errorStream في المشغّل.
         player.playbackEventStream.listen(
           (_) => _broadcast(),
           onError: (Object _, StackTrace _) {},
@@ -46,7 +39,7 @@ class RecitationHandler extends BaseAudioHandler
     _player = player;
   }
 
-  /// What the notification shows for each item of the queue just loaded.
+  /// ما يعرضه الإشعار لكل عنصر في القائمة التي حُمّلت للتو.
   void setItems(List<MediaItem> items) {
     queue.add(items);
     _showItem(_player?.currentIndex);
@@ -77,7 +70,7 @@ class RecitationHandler extends BaseAudioHandler
           MediaAction.seekForward,
           MediaAction.seekBackward,
         },
-        // Every button but stop shows in the compact notification.
+        // كل الأزرار إلا الإيقاف تظهر في الإشعار المصغّر.
         androidCompactActionIndices: [
           for (final (i, c) in controls.indexed)
             if (c.action != MediaAction.stop) i,
@@ -103,13 +96,12 @@ class RecitationHandler extends BaseAudioHandler
 
   @override
   Future<void> play() async {
-    // A stopped player has nothing to resume: a play key then does nothing
-    // rather than wait on audio that will not come.
+    // المشغّل المتوقف لا شيء فيه يُستأنف: زر التشغيل عندها لا يفعل شيئاً بدل أن ينتظر صوتاً لن يأتي.
     final player = _player;
     if (player == null || player.processingState == ProcessingState.idle) {
       return;
     }
-    // As in the app, starts playing without waiting for the end.
+    // كما في التطبيق: يبدأ التشغيل دون انتظار نهايته.
     unawaited(player.play());
   }
 

@@ -1,9 +1,6 @@
 /// تنزيل التلاوات للاستماع دون إنترنت، سورةً سورة لكل قارئ.
 ///
-/// Files live in the app's own storage as `recitations/<reciter>/<n>.mp3`,
-/// one per ayah numbered as in the Mushaf, so the folder itself says what
-/// is downloaded. A surah needs its ayahs and, unless it is al-Fatiha or
-/// at-Tawbah, the basmala (ayah 1's file), which it shares with the others.
+/// الملفات في مساحة التطبيق الخاصة باسم `recitations/<القارئ>/<n>.mp3`، ملف لكل آية برقمها في المصحف، فالمجلد نفسه يقول ما نُزّل. والسورة تحتاج آياتها، والبسملة (ملف الآية ١) إلا الفاتحة والتوبة، وتشترك فيها مع غيرها.
 library;
 
 import 'dart:async';
@@ -15,10 +12,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../data/quran/quran_repository.dart';
 import 'reciters.dart';
 
-/// Fetches [url] into [to]; throws when it cannot.
+/// ينزّل [url] إلى [to]، ويرمي خطأ إن لم يستطع.
 typedef AudioFetch = Future<void> Function(Uri url, File to);
 
-/// مدير تنزيل التلاوات.
 class AudioDownloads extends ChangeNotifier {
   AudioDownloads._(this._root, this._fetch);
 
@@ -29,14 +25,14 @@ class AudioDownloads extends ChangeNotifier {
     _httpFetch,
   );
 
-  /// The app's downloads.
+  /// تنزيلات التطبيق.
   static AudioDownloads get instance => _instance;
 
-  /// Downloads kept in [root] and fetched with [fetch], for tests.
+  /// للاختبارات: تنزيلات في [root] بجالب [fetch].
   @visibleForTesting
   static set instance(AudioDownloads downloads) => _instance = downloads;
 
-  /// A manager over [root] that fetches with [fetch], for tests.
+  /// للاختبارات: مدير على [root] بجالب [fetch].
   @visibleForTesting
   factory AudioDownloads.at(Directory root, AudioFetch fetch) =>
       AudioDownloads._(() async => root, fetch);
@@ -47,17 +43,17 @@ class AudioDownloads extends ChangeNotifier {
   Directory? _dir;
   Future<void>? _ready;
 
-  /// The ayah files on disk, by reciter.
+  /// ملفات الآيات على الجهاز، لكل قارئ.
   final _have = <String, Set<int>>{};
 
-  /// Surahs being downloaded and how far along they are, 0 to 1.
+  /// السور قيد التنزيل ونسبة تقدّمها (0..1).
   final _progress = <(String, int), double>{};
   final _cancelled = <(String, int)>{};
 
-  /// Surahs whose last download failed, until they are tried again.
+  /// السور التي فشل آخر تنزيل لها، حتى تُجرّب ثانية.
   final failed = <(String, int)>{};
 
-  /// Reads what is on disk once; everything else follows from it.
+  /// يقرأ ما على الجهاز مرة واحدة، وكل ما بعده يُبنى عليه.
   Future<void> ready() => _ready ??= () async {
     final dir = _dir = await _root();
     if (!dir.existsSync()) return;
@@ -76,17 +72,16 @@ class AudioDownloads extends ChangeNotifier {
   File _file(Reciter r, int ayahId) =>
       File('${_dir!.path}/${r.id}/$ayahId.mp3');
 
-  /// Whether [reciter]'s file of the ayah numbered [ayahId] is on the device.
+  /// هل ملف الآية [ayahId] بصوت [reciter] على الجهاز.
   bool has(Reciter reciter, int ayahId) =>
       _have[reciter.id]?.contains(ayahId) ?? false;
 
-  /// Where to play the ayah numbered [ayahId] from: its downloaded file, or
-  /// the internet.
+  /// مصدر تشغيل الآية [ayahId]: ملفها المنزّل، أو الإنترنت.
   Uri sourceFor(Reciter reciter, int ayahId) => has(reciter, ayahId)
       ? _file(reciter, ayahId).uri
       : reciter.urlFor(ayahId);
 
-  /// The files [surah] needs: its basmala, then its ayahs.
+  /// الملفات التي تحتاجها [surah]: البسملة ثم آياتها.
   static List<int> filesOf(int surah) {
     final repo = QuranRepository.instance;
     final first = repo.getAyah(surah, 1)!.id;
@@ -96,15 +91,15 @@ class AudioDownloads extends ChangeNotifier {
     ];
   }
 
-  /// Whether all of [surah] by [reciter] can play without the internet.
+  /// هل تُشغّل [surah] بصوت [reciter] كاملة دون إنترنت.
   bool isDownloaded(Reciter reciter, int surah) =>
       filesOf(surah).every((id) => has(reciter, id));
 
-  /// How far [surah]'s download has come, or null when none is running.
+  /// تقدّم تنزيل [surah]، أو null إن لم يكن جارياً.
   double? progressOf(Reciter reciter, int surah) =>
       _progress[(reciter.id, surah)];
 
-  /// يُنزّل سورة بصوت [reciter]؛ يعيد true إذا اكتملت.
+  /// ينزّل [surah] بصوت [reciter]، ويعيد true إن اكتملت.
   Future<bool> downloadSurah(Reciter reciter, int surah) async {
     await ready();
     final key = (reciter.id, surah);
@@ -120,7 +115,7 @@ class AudioDownloads extends ChangeNotifier {
     await folder.create(recursive: true);
     final have = _have.putIfAbsent(reciter.id, () => <int>{});
     try {
-      // A few at a time: quick, without crowding a slow connection.
+      // بضعة ملفات معاً: سريع، دون إثقال الاتصال البطيء.
       for (var i = 0; i < missing.length; i += 4) {
         if (_cancelled.contains(key)) return false;
         await Future.wait([
@@ -148,18 +143,17 @@ class AudioDownloads extends ChangeNotifier {
     }
   }
 
-  /// Stops [surah]'s download after the files already on their way.
+  /// يوقف تنزيل [surah] بعد الملفات التي بدأت فعلاً.
   void cancel(Reciter reciter, int surah) {
     _cancelled.add((reciter.id, surah));
   }
 
-  /// يحذف سورة؛ وتبقى البسملة ما دامت سورة أخرى منزّلة تحتاجها.
+  /// يحذف سورة، وتبقى البسملة ما دامت سورة أخرى منزّلة تحتاجها.
   Future<void> deleteSurah(Reciter reciter, int surah) async {
     await ready();
     final have = _have[reciter.id];
     if (have == null) return;
-    // A surah keeps the basmala only while one of its own ayahs is here;
-    // the basmala alone (al-Fatiha's first ayah too) holds nothing back.
+    // تحتفظ السورة بالبسملة ما دامت إحدى آياتها هنا؛ والبسملة وحدها (وهي أول الفاتحة أيضاً) لا تمنع الحذف.
     final shared = <int>{
       for (var s = 1; s <= 114; s++)
         if (s != surah && filesOf(s).any((id) => id != 1 && has(reciter, id)))
@@ -183,7 +177,7 @@ class AudioDownloads extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The space [reciter]'s downloads take, in bytes.
+  /// المساحة التي تشغلها تنزيلات [reciter]، بالبايت.
   Future<int> bytesOf(Reciter reciter) async {
     await ready();
     final folder = Directory('${_dir!.path}/${reciter.id}');
@@ -196,7 +190,7 @@ class AudioDownloads extends ChangeNotifier {
   }
 }
 
-/// Downloads [url] into [to] over HTTPS.
+/// ينزّل [url] إلى [to] عبر HTTPS.
 Future<void> _httpFetch(Uri url, File to) async {
   final client = HttpClient()..connectionTimeout = const Duration(seconds: 20);
   try {

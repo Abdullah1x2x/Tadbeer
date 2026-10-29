@@ -10,13 +10,8 @@ import '../../data/models/note_model.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 
-/// Service for exporting an individual Tadbeer note (Ayah Note or Free Note) to PDF.
-///
-/// EDUCATIONAL NOTE:
-/// PDF export is intended for personal sharing and printing, NOT as a backup format.
-/// To render Arabic typography correctly in PDF documents, TrueType font files
-/// (Amiri-Regular, Amiri-Bold, and AmiriQuran) are embedded directly, and the
-/// page text direction is explicitly set to RTL.
+/// يصدّر خاطرة واحدة PDF للمشاركة أو الطباعة، لا للنسخ الاحتياطي.
+/// تُضمَّن خطوط أميري وأميري قرآني في الملف، ويُضبط اتجاه الصفحة من اليمين لليسار، ليظهر العربي صحيحاً.
 class NotePdfExporter {
   NotePdfExporter._();
 
@@ -24,19 +19,16 @@ class NotePdfExporter {
   static pw.Font? _cachedBold;
   static pw.Font? _cachedQuran;
 
-  /// الخط العربي العادي المحمّل في الذاكرة لتصدير ملفات PDF.
   static pw.Font? get regularFont => _cachedRegular;
 
-  /// الخط العربي العريض المحمّل في الذاكرة لتصدير ملفات PDF.
   static pw.Font? get boldFont => _cachedBold;
 
-  /// خط المصحف القرآني المحمّل في الذاكرة لتصدير الآيات داخل PDF.
+  /// خط المصحف المحمّل، لآيات الملف.
   static pw.Font? get quranFont => _cachedQuran;
 
-  /// Ensures Arabic TrueType fonts (Amiri-Regular, Amiri-Bold, AmiriQuran) are cached in memory.
+  /// يحمّل خطوط أميري وأميري قرآني في الذاكرة مرة واحدة.
   static Future<void> ensureFontsLoaded() => _ensureFontsLoaded();
 
-  /// تحميل خطوط TrueType العربية من أصول التطبيق وحفظها في الذاكرة المؤقتة.
   static Future<void> _ensureFontsLoaded() async {
     if (_cachedRegular == null) {
       final fontData = await rootBundle.load('assets/fonts/Amiri-Regular.ttf');
@@ -54,7 +46,7 @@ class NotePdfExporter {
     }
   }
 
-  /// Generates a PDF file for a single note and writes it to cache storage.
+  /// ينشئ ملف PDF للخاطرة في مجلد الكاش.
   static Future<File> generateNotePdf(NoteItem note) async {
     await _ensureFontsLoaded();
     final pdf = pw.Document();
@@ -76,7 +68,7 @@ class NotePdfExporter {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.stretch,
               children: [
-                // Header Banner
+                // الترويسة.
                 pw.Container(
                   padding: const pw.EdgeInsets.only(bottom: 16),
                   decoration: const pw.BoxDecoration(
@@ -112,7 +104,7 @@ class NotePdfExporter {
                 pw.SizedBox(height: 24),
 
                 if (isAyahNote) ...[
-                  // Surah & Ayah Info
+                  // السورة والآية.
                   pw.Container(
                     padding: const pw.EdgeInsets.symmetric(
                       vertical: 8,
@@ -163,7 +155,7 @@ class NotePdfExporter {
                   ),
                   pw.SizedBox(height: 16),
 
-                  // Quran Verse Box
+                  // صندوق الآية.
                   if (note.ayahText != null && note.ayahText!.isNotEmpty)
                     pw.Container(
                       padding: const pw.EdgeInsets.all(16),
@@ -187,7 +179,7 @@ class NotePdfExporter {
                     ),
                   pw.SizedBox(height: 24),
                 ] else ...[
-                  // Free Note Title
+                  // عنوان الخاطرة الحرة.
                   if (note.title != null && note.title!.isNotEmpty) ...[
                     pw.Text(
                       note.title!,
@@ -201,7 +193,6 @@ class NotePdfExporter {
                   ],
                 ],
 
-                // Note Content Title
                 pw.Text(
                   isAyahNote ? 'تدبّر الآية وملاحظاتي:' : 'المحتوى:',
                   style: pw.TextStyle(
@@ -212,7 +203,7 @@ class NotePdfExporter {
                 ),
                 pw.SizedBox(height: 8),
 
-                // Note Content Body
+                // نص الخاطرة.
                 pw.Container(
                   padding: const pw.EdgeInsets.all(16),
                   decoration: pw.BoxDecoration(
@@ -232,7 +223,7 @@ class NotePdfExporter {
 
                 pw.Spacer(),
 
-                // Footer
+                // التذييل.
                 pw.Container(
                   alignment: pw.Alignment.center,
                   padding: const pw.EdgeInsets.only(top: 16),
@@ -268,7 +259,7 @@ class NotePdfExporter {
     return file;
   }
 
-  /// Exports and invokes the platform share sheet for the note PDF.
+  /// يصدّر الخاطرة PDF ويفتح قائمة المشاركة.
   static Future<void> exportAndShareNote(NoteItem note) async {
     final file = await generateNotePdf(note);
     await SharePlus.instance.share(

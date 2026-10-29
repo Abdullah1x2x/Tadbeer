@@ -1,6 +1,6 @@
 part of 'tasbeeh_screen.dart';
 
-/// زر تبويب أنيق ومباشر للاختيار بين الاستغفار والتسبيح.
+/// تبويب للاختيار بين الاستغفار والتسبيح.
 class _SectionTab extends StatelessWidget {
   final String title;
   final int count;
@@ -70,7 +70,7 @@ class _SectionTab extends StatelessWidget {
   }
 }
 
-/// تبويب فرعي داخل نافذة استعراض الصيغ.
+/// تبويب داخل لوحة استعراض الأذكار.
 class _SheetSectionTab extends StatelessWidget {
   final String title;
   final bool isSelected;
@@ -120,7 +120,7 @@ class _SheetSectionTab extends StatelessWidget {
   }
 }
 
-/// بطاقة إحصاءات مصغرة ذات تصميم هادئ.
+/// بطاقة إحصاء صغيرة.
 class _StatCard extends StatelessWidget {
   final String label;
   final int count;

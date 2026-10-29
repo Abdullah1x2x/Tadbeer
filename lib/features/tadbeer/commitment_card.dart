@@ -7,15 +7,11 @@ import '../../data/storage/user_data_store.dart';
 import '../../data/quran/quran_repository.dart';
 
 /// بطاقة في الرئيسية تسأل القارئ عمّا التزم به في وقفة سابقة.
-///
-/// Shows the latest commitment written before today (see
-/// `UserDataStore.pendingCommitment`), once: «فعلته» marks it done and
-/// «ليس بعد» puts it away without a word. Nothing shows when there is none.
+/// تعرض أحدث التزام كُتب قبل اليوم (انظر `UserDataStore.pendingCommitment`) مرة واحدة: «فعلته» يسجّله منجزاً، و«ليس بعد» يطويه بلا تعليق. ولا تظهر إن لم يوجد التزام.
 class CommitmentCard extends StatelessWidget {
   /// المسافة تحت البطاقة حين تظهر.
   final double gap;
 
-  /// ينشئ بطاقة السؤال عن الالتزام.
   const CommitmentCard({super.key, this.gap = 0});
 
   @override
