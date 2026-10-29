@@ -285,7 +285,7 @@ class AppStrings {
   String get pagesGoal => _l.pagesGoal;
   String get reflectionsGoal => _l.reflectionsGoal;
 
-  String get appColorTheme => isArabic ? 'لون التطبيق' : 'App color';
+  String get appColorTheme => _l.appColorTheme;
 
   /// اسم [AppColorTheme] بحسب ترتيبه.
   String colorThemeName(int i) => isArabic
@@ -608,23 +608,7 @@ class AppStrings {
   String get versionInfo => _l.versionInfo;
   String get sourcesAndCredits => _l.sourcesAndCredits;
 
-  String get sourcesAndCreditsDetails => isArabic
-      ? '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n'
-            '• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n'
-            '• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n'
-            '• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n'
-            '• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n'
-            '• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n'
-            '• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n'
-            '• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.'
-      : '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n'
-            '• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n'
-            '• Quran Vocabulary Lexicon: Quranic Encyclopedia (Quranpedia.net — release 2026-10-10) and classical & modern Arabic dictionaries (Lisan al-Arab, Maqayis al-Lughah, Al-Tibyan, Tadhkirat al-Arib, Mufradat al-Raghib, and Al-Mu\'jam al-Wasit).\n'
-            '• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n'
-            '• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n'
-            '• Application License: 100% free and open-source project licensed under the MIT License.\n'
-            '• Madinah Mushaf script: page fonts (QCF) by the King Fahd Glorious Quran Printing Complex, with line layout from Quran.com data.\n'
-            '• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
+  String get sourcesAndCreditsDetails => _l.sourcesAndCreditsDetails;
   String get openSourceLicenses => _l.openSourceLicenses;
 
   String get privacyPolicy => _l.privacyPolicy;
@@ -794,6 +778,106 @@ class AppStrings {
   // الكتب
   String get booksSectionEmpty => _l.booksSectionEmpty;
   String get booksSectionEmptyDescription => _l.booksSectionEmptyDescription;
+
+  // نصوص الشاشات
+  String exportNoteFailed(Object error) => _l.exportNoteFailed('$error');
+  String noteWordCharCount(int words, int chars) =>
+      _l.noteWordCharCount(digits(words), digits(chars));
+  String searchInSection(String section) => _l.searchInSection(section);
+  String verseAddedToLink(String title) => _l.verseAddedToLink(title);
+  String linkIncludesVerses(int count) => _l.linkIncludesVerses(digits(count));
+  String importedLinkTitle(String title) => _l.importedLinkTitle(title);
+  String importedVersesCount(int count) =>
+      _l.importedVersesCount(digits(count));
+  String reflectionNotesCount(int count) =>
+      _l.reflectionNotesCount(digits(count));
+  String connectedVersesCount(int count) =>
+      _l.connectedVersesCount(digits(count));
+  String deleteLinkConfirm(String title) => _l.deleteLinkConfirm(title);
+  String linkDeleted(String title) => _l.linkDeleted(title);
+  String itemCopied(String title) => _l.itemCopied(title);
+  String duaAlert(String text) => _l.duaAlert(text);
+  String questionOfTotal(int number, int total) =>
+      _l.questionOfTotal(digits(number), digits(total));
+  String systemThemeLabel(String mode) => _l.systemThemeLabel(mode);
+  String systemThemeExplanation(String mode) => _l.systemThemeExplanation(mode);
+  String get mushaf => _l.mushaf;
+  String get unsavedChanges => _l.unsavedChanges;
+  String get discardChangesConfirm => _l.discardChangesConfirm;
+  String get discard => _l.discard;
+  String get cannotSaveAnEmptyNote => _l.cannotSaveAnEmptyNote;
+  String get editAyahReflection => _l.editAyahReflection;
+  String get unsaved => _l.unsaved;
+  String get saved => _l.saved;
+  String get reflectionTitleOptional => _l.reflectionTitleOptional;
+  String get instantSecureLocalSave => _l.instantSecureLocalSave;
+  String get bookmarkRemoved => _l.bookmarkRemoved;
+  String get undo => _l.undo;
+  String get booksBooklets => _l.booksBooklets;
+  String get searchEmptyHint => _l.searchEmptyHint;
+  String get sectionHasNoItems => _l.sectionHasNoItems;
+  String get systemTheme => _l.systemTheme;
+  String get lightThemeExplanation => _l.lightThemeExplanation;
+  String get darkThemeExplanation => _l.darkThemeExplanation;
+  String get privacyOfflineTitle => _l.privacyOfflineTitle;
+  String get privacyOfflineBody => _l.privacyOfflineBody;
+  String get privacyNoDataTitle => _l.privacyNoDataTitle;
+  String get privacyNoDataBody => _l.privacyNoDataBody;
+  String get privacyStorageTitle => _l.privacyStorageTitle;
+  String get privacyStorageBody => _l.privacyStorageBody;
+  String get privacyPermissionsTitle => _l.privacyPermissionsTitle;
+  String get privacyPermissionsBody => _l.privacyPermissionsBody;
+  String get privacyNoAdsTitle => _l.privacyNoAdsTitle;
+  String get privacyNoAdsBody => _l.privacyNoAdsBody;
+  String get privacyOpenSourceBody => _l.privacyOpenSourceBody;
+  String get createLinkWithVerseHint => _l.createLinkWithVerseHint;
+  String get alreadyAdded => _l.alreadyAdded;
+  String get shareAyahLinkOffline => _l.shareAyahLinkOffline;
+  String get qrScanHint => _l.qrScanHint;
+  String get linkDataCopiedToClipboard => _l.linkDataCopiedToClipboard;
+  String get copyData => _l.copyData;
+  String get importAyahLink => _l.importAyahLink;
+  String get importLinkHint => _l.importLinkHint;
+  String get importLinkFieldHint => _l.importLinkFieldHint;
+  String get pasteFromClipboard => _l.pasteFromClipboard;
+  String get importNow => _l.importNow;
+  String get editAyahLink => _l.editAyahLink;
+  String get titleRequired => _l.titleRequired;
+  String get create => _l.create;
+  String get reflectionNoteCard => _l.reflectionNoteCard;
+  String get noteCopiedToClipboard => _l.noteCopiedToClipboard;
+  String get copyText => _l.copyText;
+  String get deleteNote => _l.deleteNote;
+  String get myNote => _l.myNote;
+  String get reflectionNoteLabel => _l.reflectionNoteLabel;
+  String get remove => _l.remove;
+  String get editNoteCard => _l.editNoteCard;
+  String get titleOptional => _l.titleOptional;
+  String get noteContentHint => _l.noteContentHint;
+  String get deleteNoteCard => _l.deleteNoteCard;
+  String get deleteNoteCardConfirm => _l.deleteNoteCardConfirm;
+  String get addNoteCard => _l.addNoteCard;
+  String get addNoteCardHint => _l.addNoteCardHint;
+  String get noteTitleOptional => _l.noteTitleOptional;
+  String get noteCardAddedSuccessfully => _l.noteCardAddedSuccessfully;
+  String get linkNotFound => _l.linkNotFound;
+  String get shareViaQrCode => _l.shareViaQrCode;
+  String get addNoteShort => _l.addNoteShort;
+  String get searchQuranicSupplications => _l.searchQuranicSupplications;
+  String get clearedEmptyAnswersSuccessfully =>
+      _l.clearedEmptyAnswersSuccessfully;
+  String get tadbeerPauseSavedSuccessfully => _l.tadbeerPauseSavedSuccessfully;
+  String get reflectionAnswerHint => _l.reflectionAnswerHint;
+  String get doneAndSave => _l.doneAndSave;
+  String get saveAndFinish => _l.saveAndFinish;
+  String get noMatchingBooks => _l.noMatchingBooks;
+  String get booksSectionIsEmpty => _l.booksSectionIsEmpty;
+  String get noSearchResultsHint => _l.noSearchResultsHint;
+  String get emptySectionHint => _l.emptySectionHint;
+  String get sectionsTitle => _l.sectionsTitle;
+  String get myVersesSection => _l.myVersesSection;
+  String get toolsSection => _l.toolsSection;
+  String get appSection => _l.appSection;
 }
 
 /// يوفّر اللغة الحالية ونصوصها لكل الواجهة، ويعيد البناء عند تغيّر اللغة.

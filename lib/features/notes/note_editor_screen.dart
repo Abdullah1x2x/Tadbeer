@@ -58,14 +58,10 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          l10n.isArabic ? 'تغييرات غير محفوظة' : 'Unsaved Changes',
+          l10n.unsavedChanges,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        content: Text(
-          l10n.isArabic
-              ? 'هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟'
-              : 'Do you want to discard your unsaved changes and leave?',
-        ),
+        content: Text(l10n.discardChangesConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -77,7 +73,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.isArabic ? 'تجاهل والخروج' : 'Discard'),
+            child: Text(l10n.discard),
           ),
         ],
       ),
@@ -110,9 +106,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n.isArabic
-                ? 'لا يمكن حفظ ملاحظة فارغة'
-                : 'Cannot save an empty note',
+            l10n.cannotSaveAnEmptyNote,
             textAlign: TextAlign.center,
           ),
         ),
@@ -173,15 +167,8 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     } catch (e) {
       if (mounted) {
         final l10n = context.l10n;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              l10n.isArabic
-                  ? 'تعذر تصدير الملاحظة: $e'
-                  : 'Failed to export note: $e',
-            ),
-          ),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.exportNoteFailed(e))));
       }
     }
   }
@@ -214,9 +201,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     existing == null
                         ? l10n.newFreeNote
                         : (isAyahNote
-                              ? (l10n.isArabic
-                                    ? 'تعديل تدبر الآية'
-                                    : 'Edit Ayah Reflection')
+                              ? (l10n.editAyahReflection)
                               : l10n.editNote),
                     style: const TextStyle(
                       fontSize: 17,
@@ -227,9 +212,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 ),
                 const SizedBox(width: 8),
                 FuturisticBadge(
-                  label: _hasUnsavedChanges
-                      ? (l10n.isArabic ? 'غير محفوظ' : 'Unsaved')
-                      : (l10n.isArabic ? 'محفوظ' : 'Saved'),
+                  label: _hasUnsavedChanges ? (l10n.unsaved) : (l10n.saved),
                   color: _hasUnsavedChanges
                       ? AppColors.statusWarning
                       : AppColors.cyberEmerald,
@@ -365,9 +348,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                           ),
                           decoration: InputDecoration(
                             hintText: isAyahNote
-                                ? (l10n.isArabic
-                                      ? 'عنوان التدبر (اختياري)...'
-                                      : 'Reflection title (optional)...')
+                                ? (l10n.reflectionTitleOptional)
                                 : l10n.noteTitle,
                             hintStyle: TextStyle(
                               fontSize: 16,
@@ -450,9 +431,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        l10n.isArabic
-                            ? '${ArabicSearchNormalizer.toArabicDigits(_wordCount)} كلمة · ${ArabicSearchNormalizer.toArabicDigits(_charCount)} حرف'
-                            : '$_wordCount words · $_charCount chars',
+                        l10n.noteWordCharCount(_wordCount, _charCount),
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark
@@ -461,9 +440,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                         ),
                       ),
                       Text(
-                        l10n.isArabic
-                            ? 'حفظ محلي فوري وآمن'
-                            : 'Instant & secure local save',
+                        l10n.instantSecureLocalSave,
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark

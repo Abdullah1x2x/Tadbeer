@@ -83,9 +83,9 @@ class SettingsScreen extends StatelessWidget {
                               ),
                               child: Text(
                                 _getActiveThemeLabel(
+                                  context,
                                   settings.themeMode,
                                   isDark,
-                                  context.currentLanguage == AppLanguage.arabic,
                                 ),
                                 style: TextStyle(
                                   fontSize: 12,
@@ -140,11 +140,7 @@ class SettingsScreen extends StatelessWidget {
                                 context: context,
                                 isSelected:
                                     settings.themeMode == ThemeMode.system,
-                                label:
-                                    context.currentLanguage ==
-                                        AppLanguage.arabic
-                                    ? 'تلقائي'
-                                    : 'System',
+                                label: context.l10n.systemTheme,
                                 icon: AppIcons.circleHalf,
                                 isDark: isDark,
                                 onSelect: () {
@@ -199,9 +195,9 @@ class SettingsScreen extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 _getThemeExplanation(
+                                  context,
                                   settings.themeMode,
                                   isDark,
-                                  context.currentLanguage == AppLanguage.arabic,
                                 ),
                                 style: TextStyle(
                                   fontSize: 12.0,
@@ -932,38 +928,35 @@ class SettingsScreen extends StatelessWidget {
   }
 
   /// اسم الوضع الحالي، ومعه مظهر الجهاز حين يكون تلقائياً.
-  String _getActiveThemeLabel(ThemeMode mode, bool isDark, bool isArabic) {
-    switch (mode) {
-      case ThemeMode.light:
-        return isArabic ? 'فاتح' : 'Light';
-      case ThemeMode.dark:
-        return isArabic ? 'داكن' : 'Dark';
-      case ThemeMode.system:
-        final resolved = isDark
-            ? (isArabic ? 'داكن' : 'Dark')
-            : (isArabic ? 'فاتح' : 'Light');
-        return isArabic ? 'تلقائي ($resolved)' : 'System ($resolved)';
-    }
+  String _getActiveThemeLabel(
+    BuildContext context,
+    ThemeMode mode,
+    bool isDark,
+  ) {
+    final l10n = context.l10n;
+    return switch (mode) {
+      ThemeMode.light => l10n.light,
+      ThemeMode.dark => l10n.dark,
+      ThemeMode.system => l10n.systemThemeLabel(
+        isDark ? l10n.dark : l10n.light,
+      ),
+    };
   }
 
   /// شرح الوضع المختار.
-  String _getThemeExplanation(ThemeMode mode, bool isDark, bool isArabic) {
-    if (mode == ThemeMode.light) {
-      return isArabic
-          ? 'الوضع النهاري: خلفية ورقية هادئة مع لمسات كحلية وذهبية لقراءة نهارية مريحة وواضحة.'
-          : 'Light Mode: Calm paper tones with navy and gold accents for comfortable daytime reading.';
-    } else if (mode == ThemeMode.dark) {
-      return isArabic
-          ? 'الوضع الليلي: ألوان كحلية ليلية مع لمسات ذهبية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.'
-          : 'Dark Mode: Deep night-navy tones with gold accents, engineered to minimize eye fatigue during extended nighttime reading.';
-    } else {
-      final current = isDark
-          ? (isArabic ? 'داكن' : 'Dark')
-          : (isArabic ? 'فاتح' : 'Light');
-      return isArabic
-          ? 'الوضع التلقائي: يتزامن مظهر التطبيق آلياً مع إعدادات هاتفك (المظهر المفعّل حالياً في جهازك: $current).'
-          : 'System Mode: Automatically synchronizes with your device settings (Currently active: $current).';
-    }
+  String _getThemeExplanation(
+    BuildContext context,
+    ThemeMode mode,
+    bool isDark,
+  ) {
+    final l10n = context.l10n;
+    return switch (mode) {
+      ThemeMode.light => l10n.lightThemeExplanation,
+      ThemeMode.dark => l10n.darkThemeExplanation,
+      ThemeMode.system => l10n.systemThemeExplanation(
+        isDark ? l10n.dark : l10n.light,
+      ),
+    };
   }
 
   /// يعرض سياسة الخصوصية داخل التطبيق دون إنترنت.
@@ -971,7 +964,6 @@ class SettingsScreen extends StatelessWidget {
     HapticFeedback.selectionClick();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
-    final isArabic = context.currentLanguage == AppLanguage.arabic;
 
     showModalBottomSheet(
       context: context,
@@ -1064,56 +1056,36 @@ class SettingsScreen extends StatelessWidget {
                         children: [
                           _buildPrivacyTile(
                             icon: AppIcons.cloudSlash,
-                            title: isArabic
-                                ? 'عمل محلي تام دون إنترنت (100% Offline-First)'
-                                : '100% Offline-First by Architecture',
-                            description: isArabic
-                                ? 'لا يطلب التطبيق إذن الإنترنت (android.permission.INTERNET) في ملف التكوين، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.'
-                                : 'The application does not request internet permission and operates completely independently on your local device without external servers.',
+                            title: context.l10n.privacyOfflineTitle,
+                            description: context.l10n.privacyOfflineBody,
                             isDark: isDark,
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
                             icon: AppIcons.userMinus,
-                            title: isArabic
-                                ? 'عدم جمع أي بيانات شخصية (Zero Data Collection)'
-                                : 'Zero Personal Data Collection',
-                            description: isArabic
-                                ? 'لا يجمع التطبيق ولا يسجل ولا يشارك أي بيانات شخصية، أو معرّفات أجهزة، أو سجلات قراءة، أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق.'
-                                : 'Tadbeer does not collect, record, transmit, or share any personal identity information, usage habits, or device identifiers.',
+                            title: context.l10n.privacyNoDataTitle,
+                            description: context.l10n.privacyNoDataBody,
                             isDark: isDark,
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
                             icon: AppIcons.lockKey,
-                            title: isArabic
-                                ? 'تخزين محلي وتشفير عالي (AES-256)'
-                                : 'Local Storage & AES-256 Encryption',
-                            description: isArabic
-                                ? 'تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.'
-                                : 'All reflections and notes reside strictly in on-device SQLite storage. Exported backups are encrypted locally with AES-256-CBC and verified via SHA-256.',
+                            title: context.l10n.privacyStorageTitle,
+                            description: context.l10n.privacyStorageBody,
                             isDark: isDark,
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
                             icon: AppIcons.bellRingingFill,
-                            title: isArabic
-                                ? 'استخدام حصري ومحدد للأذونات (Device Permissions)'
-                                : 'Strictly Scoped Device Permissions',
-                            description: isArabic
-                                ? 'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.'
-                                : 'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.',
+                            title: context.l10n.privacyPermissionsTitle,
+                            description: context.l10n.privacyPermissionsBody,
                             isDark: isDark,
                             primaryColor: primaryColor,
                           ),
                           _buildPrivacyTile(
                             icon: AppIcons.prohibit,
-                            title: isArabic
-                                ? 'خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)'
-                                : 'Zero Advertisements & Trackers',
-                            description: isArabic
-                                ? 'التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.'
-                                : 'The app is completely free from advertising SDKs, marketing trackers, and analytics frameworks.',
+                            title: context.l10n.privacyNoAdsTitle,
+                            description: context.l10n.privacyNoAdsBody,
                             isDark: isDark,
                             primaryColor: primaryColor,
                           ),
@@ -1132,9 +1104,7 @@ class SettingsScreen extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              isArabic
-                                  ? 'تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.'
-                                  : 'Tadbeer is an open-source project licensed under MIT, fully accessible for public review and audit on GitHub.',
+                              context.l10n.privacyOpenSourceBody,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12,

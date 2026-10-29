@@ -568,8 +568,7 @@ class BooksSearchProvider implements SearchProvider {
   String get id => 'books';
 
   @override
-  String getSectionTitle(BuildContext context) =>
-      context.l10n.isArabic ? 'الملازم والكتب' : 'Books & Booklets';
+  String getSectionTitle(BuildContext context) => context.l10n.booksBooklets;
 
   @override
   IconData get icon => AppIcons.bookOpenTextFill;

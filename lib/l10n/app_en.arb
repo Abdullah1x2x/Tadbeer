@@ -483,15 +483,23 @@
   "reflectionsCount": "{count, plural, =1{1 reflection} other{{shown} reflections}}",
   "@reflectionsCount": {
     "placeholders": {
-      "count": {"type": "int"},
-      "shown": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "shown": {
+        "type": "String"
+      }
     }
   },
   "streakAtRiskTitle": "{count, plural, =1{Keep your streak: 1 day so far} other{Keep your streak: {n} days in a row}}",
   "@streakAtRiskTitle": {
     "placeholders": {
-      "count": {"type": "int"},
-      "n": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "n": {
+        "type": "String"
+      }
     }
   },
   "streakAtRiskBody": "One page or one reflection keeps it going",
@@ -500,7 +508,9 @@
   "streakReminderAt": "Every evening at {time} if you have not read yet",
   "@streakReminderAt": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "streakReminderPrompt": "When should we remind you if you have not read?",
@@ -511,13 +521,17 @@
   "qiblaTurnRight": "Turn right {deg}°",
   "@qiblaTurnRight": {
     "placeholders": {
-      "deg": {"type": "String"}
+      "deg": {
+        "type": "String"
+      }
     }
   },
   "qiblaTurnLeft": "Turn left {deg}°",
   "@qiblaTurnLeft": {
     "placeholders": {
-      "deg": {"type": "String"}
+      "deg": {
+        "type": "String"
+      }
     }
   },
   "qiblaFromNorth": "from north",
@@ -547,7 +561,9 @@
   "secondsShort": "{n}s",
   "@secondsShort": {
     "placeholders": {
-      "n": {"type": "String"}
+      "n": {
+        "type": "String"
+      }
     }
   },
   "audioFailed": "Could not play the recitation. Check your internet connection",
@@ -569,15 +585,113 @@
   "deleteAllDownloadsConfirm": "Every downloaded surah by {name} will be removed from your device.",
   "@deleteAllDownloadsConfirm": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "downloadsSize": "On your device: {size} MB",
   "@downloadsSize": {
     "placeholders": {
-      "size": {"type": "String"}
+      "size": {
+        "type": "String"
+      }
     }
   },
   "downloadJuzAmma": "Download Juz Amma",
-  "downloadsHint": "Downloaded surahs play offline; the rest stream when you are connected."
+  "downloadsHint": "Downloaded surahs play offline; the rest stream when you are connected.",
+  "mushaf": "Mushaf",
+  "appColorTheme": "App color",
+  "sourcesAndCreditsDetails": "• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia (Quranpedia.net — release 2026-10-10) and classical & modern Arabic dictionaries (Lisan al-Arab, Maqayis al-Lughah, Al-Tibyan, Tadhkirat al-Arib, Mufradat al-Raghib, and Al-Mu'jam al-Wasit).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Madinah Mushaf script: page fonts (QCF) by the King Fahd Glorious Quran Printing Complex, with line layout from Quran.com data.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.",
+  "unsavedChanges": "Unsaved Changes",
+  "discardChangesConfirm": "Do you want to discard your unsaved changes and leave?",
+  "discard": "Discard",
+  "cannotSaveAnEmptyNote": "Cannot save an empty note",
+  "editAyahReflection": "Edit Ayah Reflection",
+  "unsaved": "Unsaved",
+  "saved": "Saved",
+  "reflectionTitleOptional": "Reflection title (optional)...",
+  "instantSecureLocalSave": "Instant & secure local save",
+  "bookmarkRemoved": "Bookmark removed",
+  "undo": "Undo",
+  "booksBooklets": "Books & Booklets",
+  "searchEmptyHint": "Type a word, surah name, or search by root (e.g. root:sbr)",
+  "sectionHasNoItems": "No saved items in this section yet",
+  "systemTheme": "System",
+  "lightThemeExplanation": "Light Mode: Calm paper tones with navy and gold accents for comfortable daytime reading.",
+  "darkThemeExplanation": "Dark Mode: Deep night-navy tones with gold accents, engineered to minimize eye fatigue during extended nighttime reading.",
+  "privacyOfflineTitle": "100% Offline-First by Architecture",
+  "privacyOfflineBody": "The application does not request internet permission and operates completely independently on your local device without external servers.",
+  "privacyNoDataTitle": "Zero Personal Data Collection",
+  "privacyNoDataBody": "Tadbeer does not collect, record, transmit, or share any personal identity information, usage habits, or device identifiers.",
+  "privacyStorageTitle": "Local Storage & AES-256 Encryption",
+  "privacyStorageBody": "All reflections and notes reside strictly in on-device SQLite storage. Exported backups are encrypted locally with AES-256-CBC and verified via SHA-256.",
+  "privacyPermissionsTitle": "Strictly Scoped Device Permissions",
+  "privacyPermissionsBody": "Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.",
+  "privacyNoAdsTitle": "Zero Advertisements & Trackers",
+  "privacyNoAdsBody": "The app is completely free from advertising SDKs, marketing trackers, and analytics frameworks.",
+  "privacyOpenSourceBody": "Tadbeer is an open-source project licensed under MIT, fully accessible for public review and audit on GitHub.",
+  "createLinkWithVerseHint": "Create a new link and add this verse directly",
+  "alreadyAdded": "Already added",
+  "shareAyahLinkOffline": "Share Ayah Link Offline",
+  "qrScanHint": "This code can be scanned from another Tadbeer device to import the link offline.",
+  "linkDataCopiedToClipboard": "Link data copied to clipboard",
+  "copyData": "Copy Data",
+  "importAyahLink": "Import Ayah Link",
+  "importLinkHint": "Paste the share code or link data below to import it into your links:",
+  "importLinkFieldHint": "Paste link or scanned text here...",
+  "pasteFromClipboard": "Paste from clipboard",
+  "importNow": "Import Now",
+  "editAyahLink": "Edit Ayah Link",
+  "titleRequired": "Please enter a title",
+  "create": "Create",
+  "reflectionNoteCard": "Reflection Note Card",
+  "noteCopiedToClipboard": "Note copied to clipboard",
+  "copyText": "Copy Text",
+  "deleteNote": "Delete Note",
+  "myNote": "My note",
+  "reflectionNoteLabel": "Reflection Note",
+  "remove": "Remove",
+  "editNoteCard": "Edit Note Card",
+  "titleOptional": "Title (optional)",
+  "noteContentHint": "Note content...",
+  "deleteNoteCard": "Delete Note Card",
+  "deleteNoteCardConfirm": "Are you sure you want to delete this note card?",
+  "addNoteCard": "Add Note Card",
+  "addNoteCardHint": "Record your reflection as an independent card in this link:",
+  "noteTitleOptional": "Note title (optional)",
+  "noteCardAddedSuccessfully": "Note card added successfully",
+  "linkNotFound": "Link not found or has been deleted",
+  "shareViaQrCode": "Share via QR Code",
+  "addNoteShort": "Add Note",
+  "searchQuranicSupplications": "Search Quranic supplications...",
+  "clearedEmptyAnswersSuccessfully": "Cleared empty answers successfully",
+  "tadbeerPauseSavedSuccessfully": "Tadbeer pause saved successfully",
+  "reflectionAnswerHint": "Write your thoughts here...",
+  "doneAndSave": "Done & Save",
+  "saveAndFinish": "Save reflections & finish",
+  "noMatchingBooks": "No results match your search",
+  "booksSectionIsEmpty": "This section is currently empty",
+  "noSearchResultsHint": "Try searching with another word or choose a different category.",
+  "emptySectionHint": "No pamphlets or books have been added to this section yet.",
+  "sectionsTitle": "Sections",
+  "myVersesSection": "My verses",
+  "toolsSection": "Tools",
+  "appSection": "App",
+  "systemThemeLabel": "System ({mode})",
+  "systemThemeExplanation": "System Mode: Automatically synchronizes with your device settings (Currently active: {mode}).",
+  "exportNoteFailed": "Failed to export note: {error}",
+  "noteWordCharCount": "{words} words · {chars} chars",
+  "searchInSection": "Search in {section}...",
+  "verseAddedToLink": "Verse added to link \"{title}\"",
+  "linkIncludesVerses": "Includes {count} linked verses",
+  "importedLinkTitle": "Title: {title}",
+  "importedVersesCount": "Included verses: {count} verses",
+  "reflectionNotesCount": "Reflection Notes ({count})",
+  "connectedVersesCount": "Connected Verses ({count})",
+  "deleteLinkConfirm": "Are you sure you want to delete the link \"{title}\"?",
+  "linkDeleted": "Link \"{title}\" deleted",
+  "itemCopied": "{title} copied to clipboard",
+  "duaAlert": "Note: {text}",
+  "questionOfTotal": "Question {number} of {total}"
 }

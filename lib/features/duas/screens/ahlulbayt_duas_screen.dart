@@ -73,9 +73,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.isArabic
-              ? 'تم نسخ ${dua.title} إلى الحافظة بنجاح'
-              : '${dua.title} copied to clipboard',
+          context.l10n.itemCopied(dua.title),
           textAlign: TextAlign.center,
           style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),

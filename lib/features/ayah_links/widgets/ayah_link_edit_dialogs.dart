@@ -89,7 +89,7 @@ Future<void> confirmRemoveAyahLinkVerse(
             foregroundColor: Colors.white,
           ),
           onPressed: () => Navigator.pop(dialogCtx, true),
-          child: Text(context.l10n.isArabic ? 'إزالة' : 'Remove'),
+          child: Text(context.l10n.remove),
         ),
       ],
     ),
@@ -130,7 +130,7 @@ Future<void> editAyahLinkNoteCard(
           ),
           const SizedBox(width: 8),
           Text(
-            context.l10n.isArabic ? 'تعديل كرت الملاحظة' : 'Edit Note Card',
+            context.l10n.editNoteCard,
             style: const TextStyle(
               fontFamily: 'Amiri',
               fontSize: 18,
@@ -146,9 +146,7 @@ Future<void> editAyahLinkNoteCard(
             TextField(
               controller: titleController,
               decoration: InputDecoration(
-                hintText: context.l10n.isArabic
-                    ? 'عنوان الملاحظة (اختياري)'
-                    : 'Title (optional)',
+                hintText: context.l10n.titleOptional,
                 filled: true,
                 fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                 border: OutlineInputBorder(
@@ -162,9 +160,7 @@ Future<void> editAyahLinkNoteCard(
               minLines: 3,
               maxLines: 8,
               decoration: InputDecoration(
-                hintText: context.l10n.isArabic
-                    ? 'نص الملاحظة...'
-                    : 'Note content...',
+                hintText: context.l10n.noteContentHint,
                 filled: true,
                 fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                 border: OutlineInputBorder(
@@ -217,14 +213,8 @@ Future<void> confirmDeleteAyahLinkNoteCard(
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogCtx) => AlertDialog(
-      title: Text(
-        context.l10n.isArabic ? 'حذف كرت الملاحظة' : 'Delete Note Card',
-      ),
-      content: Text(
-        context.l10n.isArabic
-            ? 'هل أنت متأكد من حذف كرت هذه الملاحظة؟'
-            : 'Are you sure you want to delete this note card?',
-      ),
+      title: Text(context.l10n.deleteNoteCard),
+      content: Text(context.l10n.deleteNoteCardConfirm),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogCtx, false),

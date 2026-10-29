@@ -115,9 +115,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                                   : AppColors.lightTextPrimary,
                             ),
                             decoration: InputDecoration(
-                              hintText: l10n.isArabic
-                                  ? 'ابحث في أدعية القرآن الكريم...'
-                                  : 'Search Quranic supplications...',
+                              hintText: l10n.searchQuranicSupplications,
                               hintStyle: TextStyle(
                                 fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 14,
