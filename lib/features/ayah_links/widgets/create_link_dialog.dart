@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
-import '../ayah_link_model.dart';
-import '../ayah_link_repository.dart';
+import '../../../core/theme/theme.dart';
+import '../../../data/models/ayah_link_model.dart';
+import '../data/ayah_link_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
 /// نافذة حوار مبسطة لإنشاء رابط آيات جديد أو تعديل رابط موجود.

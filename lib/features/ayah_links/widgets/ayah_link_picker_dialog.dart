@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
-import '../../../core/storage/user_data_store.dart';
-import '../ayah_link_repository.dart';
-import '../../quran/data/quran_models.dart';
-import '../../quran/data/quran_repository.dart';
+import '../../../core/theme/theme.dart';
+import '../../../data/storage/user_data_store.dart';
+import '../data/ayah_link_repository.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
 import 'create_link_dialog.dart';
 import '../../../core/design_system/app_icons.dart';
 

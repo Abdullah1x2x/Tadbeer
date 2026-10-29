@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
-import 'package:tadbeer/features/quran/data/quran_models.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_models.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/daily/ayah_of_day_card.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 
 void main() {
   late Directory tempDir;

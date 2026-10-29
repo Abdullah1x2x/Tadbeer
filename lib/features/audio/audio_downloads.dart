@@ -12,7 +12,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import 'reciters.dart';
 
 /// Fetches [url] into [to]; throws when it cannot.

@@ -3,7 +3,7 @@ import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import '../core/design_system/design_system.dart';
 import '../core/motion/app_motion.dart';
-import '../features/duas/duas_screen.dart';
+import '../features/duas/screens/duas_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/more/more_screen.dart';
 import '../features/quran/screens/quran_screen.dart';

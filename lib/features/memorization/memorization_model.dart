@@ -1,5 +1,5 @@
-import '../../core/storage/user_data_store.dart';
-import '../journey/reading_journey.dart' show dayKey;
+import '../../data/storage/user_data_store.dart';
+import '../../data/models/reading_journey.dart' show dayKey;
 
 /// حالة حفظ آية واحدة في نظام صناديق لايتنر.
 class HifzCard {

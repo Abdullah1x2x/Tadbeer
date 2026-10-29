@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
 
@@ -73,14 +73,20 @@ void main() {
         await tester.pumpAndSettle();
 
         // Default should be Light
-        expect(UserDataStore.instance.settings.themeMode, equals(ThemeMode.light));
+        expect(
+          UserDataStore.instance.settings.themeMode,
+          equals(ThemeMode.light),
+        );
 
         // Tap the Dark theme button
         await tester.tap(find.byIcon(AppIcons.moon));
         await tester.pumpAndSettle();
 
         // Verify UserDataStore updated to dark
-        expect(UserDataStore.instance.settings.themeMode, equals(ThemeMode.dark));
+        expect(
+          UserDataStore.instance.settings.themeMode,
+          equals(ThemeMode.dark),
+        );
       },
     );
 
@@ -102,13 +108,19 @@ void main() {
         await tester.pumpAndSettle();
 
         // Verify UserDataStore updated to system
-        expect(UserDataStore.instance.settings.themeMode, equals(ThemeMode.system));
+        expect(
+          UserDataStore.instance.settings.themeMode,
+          equals(ThemeMode.system),
+        );
 
         // Tap back to Light
         await tester.tap(find.byIcon(AppIcons.sun));
         await tester.pumpAndSettle();
 
-        expect(UserDataStore.instance.settings.themeMode, equals(ThemeMode.light));
+        expect(
+          UserDataStore.instance.settings.themeMode,
+          equals(ThemeMode.light),
+        );
       },
     );
 

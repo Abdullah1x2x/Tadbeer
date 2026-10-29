@@ -147,4 +147,3 @@ class ArabicSearchNormalizer {
     return result;
   }
 }
-

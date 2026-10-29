@@ -13,14 +13,14 @@ import 'package:flutter/foundation.dart';
 import 'package:home_widget/home_widget.dart';
 
 import '../../app/localization.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../daily/ayah_of_day_card.dart';
-import '../journey/reading_journey.dart';
-import '../quran/data/quran_models.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/models/reading_journey.dart';
+import '../../data/quran/quran_models.dart';
+import '../../data/quran/quran_repository.dart';
 import 'widget_ayah_image.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
-import '../settings/user_settings_model.dart';
+import '../../data/models/user_settings_model.dart';
 
 class HomeWidgetSync {
   HomeWidgetSync._();

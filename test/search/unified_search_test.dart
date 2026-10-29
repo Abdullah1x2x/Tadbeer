@@ -3,17 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/ayah_links/ayah_link_repository.dart';
-import 'package:tadbeer/features/bookmarks/bookmark_model.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/features/ayah_links/data/ayah_link_repository.dart';
+import 'package:tadbeer/data/models/bookmark_model.dart';
 import 'package:tadbeer/features/bookmarks/bookmarks_screen.dart';
-import 'package:tadbeer/features/highlights/highlight_model.dart';
+import 'package:tadbeer/data/models/highlight_model.dart';
 import 'package:tadbeer/features/highlights/highlights_screen.dart';
-import 'package:tadbeer/features/books/book_repository.dart';
+import 'package:tadbeer/features/books/data/book_repository.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
-import 'package:tadbeer/features/notes/note_model.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
-import 'package:tadbeer/features/reminders/reminder_model.dart';
+import 'package:tadbeer/data/models/note_model.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
+import 'package:tadbeer/data/models/reminder_model.dart';
 import 'package:tadbeer/features/reminders/reminders_screen.dart';
 import 'package:tadbeer/features/search/search_provider.dart';
 import 'package:tadbeer/features/search/search_screen.dart';
@@ -66,7 +66,9 @@ void main() {
   late File dataFile;
 
   setUpAll(() async {
-    tempDir = await Directory.systemTemp.createTemp('tadbeer_unified_search_test_');
+    tempDir = await Directory.systemTemp.createTemp(
+      'tadbeer_unified_search_test_',
+    );
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
     await QuranRepository.instance.init();
@@ -124,60 +126,52 @@ void main() {
       expect(registry.providers.length, equals(11));
     });
 
-    testWidgets('Extensible: Custom provider integrates seamlessly into searchAll', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SizedBox()));
-      final context = tester.element(find.byType(SizedBox));
+    testWidgets(
+      'Extensible: Custom provider integrates seamlessly into searchAll',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        final context = tester.element(find.byType(SizedBox));
 
-      final registry = SearchRegistry.instance;
-      registry.register(const _CustomTestSearchProvider());
+        final registry = SearchRegistry.instance;
+        registry.register(const _CustomTestSearchProvider());
 
-      final results = await registry.searchAll('تجريبي', context);
-      expect(
-        results.any((r) => r.providerId == 'custom_test'),
-        isTrue,
-      );
-    });
+        final results = await registry.searchAll('تجريبي', context);
+        expect(results.any((r) => r.providerId == 'custom_test'), isTrue);
+      },
+    );
 
-    testWidgets('Error isolation: A failing provider does not abort other providers', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SizedBox()));
-      final context = tester.element(find.byType(SizedBox));
+    testWidgets(
+      'Error isolation: A failing provider does not abort other providers',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        final context = tester.element(find.byType(SizedBox));
 
-      final registry = SearchRegistry.instance;
-      registry.register(
-        const _CustomTestSearchProvider(shouldThrow: true),
-      );
+        final registry = SearchRegistry.instance;
+        registry.register(const _CustomTestSearchProvider(shouldThrow: true));
 
-      final results = await registry.searchAll('الله', context);
-      expect(results.isNotEmpty, isTrue);
-      expect(
-        results.any((r) => r.providerId == 'quran'),
-        isTrue,
-      );
-    });
+        final results = await registry.searchAll('الله', context);
+        expect(results.isNotEmpty, isTrue);
+        expect(results.any((r) => r.providerId == 'quran'), isTrue);
+      },
+    );
 
-    testWidgets('Targeted provider search: providerId filter restricts execution', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SizedBox()));
-      final context = tester.element(find.byType(SizedBox));
+    testWidgets(
+      'Targeted provider search: providerId filter restricts execution',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        final context = tester.element(find.byType(SizedBox));
 
-      final registry = SearchRegistry.instance;
-      final results = await registry.searchAll(
-        'الله',
-        context,
-        providerId: 'quran',
-      );
+        final registry = SearchRegistry.instance;
+        final results = await registry.searchAll(
+          'الله',
+          context,
+          providerId: 'quran',
+        );
 
-      expect(results.isNotEmpty, isTrue);
-      expect(
-        results.every((r) => r.providerId == 'quran'),
-        isTrue,
-      );
-    });
+        expect(results.isNotEmpty, isTrue);
+        expect(results.every((r) => r.providerId == 'quran'), isTrue);
+      },
+    );
   });
 
   group('Built-in Providers Unit & Normalization Tests', () {
@@ -202,31 +196,27 @@ void main() {
       expect(results.any((r) => r.id == 'note_test_note_search'), isTrue);
     });
 
-    testWidgets('TadbeerSearchProvider finds reflections by answered questions', (
-      WidgetTester tester,
-    ) async {
-      await tester.runAsync(() async {
-        await UserDataStore.instance.saveTadbeer(
-          surahNumber: 1,
-          ayahNumber: 1,
-          answers: {
-            1: 'البسملة مفتاح لكل بركة وخير',
-            2: '',
-            3: '',
-            4: '',
-          },
-        );
-      });
+    testWidgets(
+      'TadbeerSearchProvider finds reflections by answered questions',
+      (WidgetTester tester) async {
+        await tester.runAsync(() async {
+          await UserDataStore.instance.saveTadbeer(
+            surahNumber: 1,
+            ayahNumber: 1,
+            answers: {1: 'البسملة مفتاح لكل بركة وخير', 2: '', 3: '', 4: ''},
+          );
+        });
 
-      await tester.pumpWidget(buildTestWidget(const SizedBox()));
-      final context = tester.element(find.byType(SizedBox));
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        final context = tester.element(find.byType(SizedBox));
 
-      final provider = SearchRegistry.instance.getProvider('tadbeer')!;
-      final results = await provider.search('مفتاح لكل بركة', context);
-      expect(results.isNotEmpty, isTrue);
-      expect(results.first.surahNumber, equals(1));
-      expect(results.first.ayahNumber, equals(1));
-    });
+        final provider = SearchRegistry.instance.getProvider('tadbeer')!;
+        final results = await provider.search('مفتاح لكل بركة', context);
+        expect(results.isNotEmpty, isTrue);
+        expect(results.first.surahNumber, equals(1));
+        expect(results.first.ayahNumber, equals(1));
+      },
+    );
 
     testWidgets('BookmarksSearchProvider finds bookmark by surah and ayah', (
       WidgetTester tester,
@@ -323,83 +313,86 @@ void main() {
       expect(results.first.title, contains('سورة الكهف'));
     });
 
-    testWidgets('BooksSearchProvider finds books and booklets by flexible title/keywords', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SizedBox()));
-      final context = tester.element(find.byType(SizedBox));
+    testWidgets(
+      'BooksSearchProvider finds books and booklets by flexible title/keywords',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        final context = tester.element(find.byType(SizedBox));
 
-      final provider = SearchRegistry.instance.getProvider('books')!;
-      final results = await provider.search('معرفة الله', context);
-      expect(results.isNotEmpty, isTrue);
-      expect(results.first.providerId, equals('books'));
+        final provider = SearchRegistry.instance.getProvider('books')!;
+        final results = await provider.search('معرفة الله', context);
+        expect(results.isNotEmpty, isTrue);
+        expect(results.first.providerId, equals('books'));
 
-      final resultsFlexible = await provider.search('الله معرفه', context);
-      expect(resultsFlexible.isNotEmpty, isTrue);
-    });
+        final resultsFlexible = await provider.search('الله معرفه', context);
+        expect(resultsFlexible.isNotEmpty, isTrue);
+      },
+    );
 
-    testWidgets('QuranSearchProvider supports direct verse references and multi-token matching', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SizedBox()));
-      final context = tester.element(find.byType(SizedBox));
+    testWidgets(
+      'QuranSearchProvider supports direct verse references and multi-token matching',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        final context = tester.element(find.byType(SizedBox));
 
-      final provider = SearchRegistry.instance.getProvider('quran')!;
+        final provider = SearchRegistry.instance.getProvider('quran')!;
 
-      final directResults = await provider.search('البقرة 255', context);
-      expect(directResults.isNotEmpty, isTrue);
-      expect(directResults.first.surahNumber, equals(2));
-      expect(directResults.first.ayahNumber, equals(255));
+        final directResults = await provider.search('البقرة 255', context);
+        expect(directResults.isNotEmpty, isTrue);
+        expect(directResults.first.surahNumber, equals(2));
+        expect(directResults.first.ayahNumber, equals(255));
 
-      final colonResults = await provider.search('2:255', context);
-      expect(colonResults.isNotEmpty, isTrue);
-      expect(colonResults.first.surahNumber, equals(2));
-      expect(colonResults.first.ayahNumber, equals(255));
+        final colonResults = await provider.search('2:255', context);
+        expect(colonResults.isNotEmpty, isTrue);
+        expect(colonResults.first.surahNumber, equals(2));
+        expect(colonResults.first.ayahNumber, equals(255));
 
-      final multiTokenResults = await provider.search('موسى فرعون', context);
-      expect(multiTokenResults.isNotEmpty, isTrue);
+        final multiTokenResults = await provider.search('موسى فرعون', context);
+        expect(multiTokenResults.isNotEmpty, isTrue);
 
-      final surahResults = await provider.search('سورة الكهف', context);
-      expect(surahResults.isNotEmpty, isTrue);
-      expect(surahResults.first.surahNumber, equals(18));
-      expect(surahResults.first.ayahNumber, equals(1));
-    });
+        final surahResults = await provider.search('سورة الكهف', context);
+        expect(surahResults.isNotEmpty, isTrue);
+        expect(surahResults.first.surahNumber, equals(18));
+        expect(surahResults.first.ayahNumber, equals(1));
+      },
+    );
   });
 
   group('UI Flow & Section Search Tests', () {
-    testWidgets('SearchScreen renders input, filter chips, and executes query', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SearchScreen()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'SearchScreen renders input, filter chips, and executes query',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SearchScreen()));
+        await tester.pumpAndSettle();
 
-      // Verify search input field exists
-      final textFieldFinder = find.byType(TextField);
-      expect(textFieldFinder, findsOneWidget);
+        // Verify search input field exists
+        final textFieldFinder = find.byType(TextField);
+        expect(textFieldFinder, findsOneWidget);
 
-      // Verify filter chips exist
-      expect(find.text('الكل'), findsOneWidget);
-      expect(find.text('المصحف'), findsOneWidget);
-      expect(find.text('الملاحظات'), findsOneWidget);
-      expect(find.text('التدبر'), findsOneWidget);
+        // Verify filter chips exist
+        expect(find.text('الكل'), findsOneWidget);
+        expect(find.text('المصحف'), findsOneWidget);
+        expect(find.text('الملاحظات'), findsOneWidget);
+        expect(find.text('التدبر'), findsOneWidget);
 
-      // Enter query "الرحمن"
-      await tester.enterText(textFieldFinder, 'الرحمن');
-      await tester.pump(const Duration(milliseconds: 250));
-      await tester.pumpAndSettle();
+        // Enter query "الرحمن"
+        await tester.enterText(textFieldFinder, 'الرحمن');
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.pumpAndSettle();
 
-      // Should show results
-      expect(find.byType(Card), findsWidgets);
+        // Should show results
+        expect(find.byType(Card), findsWidgets);
 
-      // Clear search via clear icon
-      final clearIconFinder = find.byIcon(AppIcons.x);
-      expect(clearIconFinder, findsOneWidget);
-      await tester.tap(clearIconFinder);
-      await tester.pumpAndSettle();
+        // Clear search via clear icon
+        final clearIconFinder = find.byIcon(AppIcons.x);
+        expect(clearIconFinder, findsOneWidget);
+        await tester.tap(clearIconFinder);
+        await tester.pumpAndSettle();
 
-      // Results should be cleared
-      expect(find.byType(Card), findsNothing);
-    });
+        // Results should be cleared
+        expect(find.byType(Card), findsNothing);
+      },
+    );
 
     testWidgets('BookmarksScreen local search filters bookmarks', (
       WidgetTester tester,
@@ -465,7 +458,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Prominent search entry bar is rendered
-      final searchBarFinder = find.text('ابحث في القرآن، الملاحظات، التدبر، والمزيد...');
+      final searchBarFinder = find.text(
+        'ابحث في القرآن، الملاحظات، التدبر، والمزيد...',
+      );
       expect(searchBarFinder, findsOneWidget);
 
       // Tap global search bar
@@ -503,73 +498,75 @@ void main() {
       expect(find.text('تصفية نطاق البحث'), findsOneWidget);
     });
 
-    testWidgets('SearchScreen switching filter chips dynamically updates results', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SearchScreen()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'SearchScreen switching filter chips dynamically updates results',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SearchScreen()));
+        await tester.pumpAndSettle();
 
-      final textFieldFinder = find.byType(TextField);
-      await tester.enterText(textFieldFinder, 'الرحمن');
-      await tester.pump(const Duration(milliseconds: 250));
-      await tester.pumpAndSettle();
+        final textFieldFinder = find.byType(TextField);
+        await tester.enterText(textFieldFinder, 'الرحمن');
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.pumpAndSettle();
 
-      expect(find.byType(Card), findsWidgets);
+        expect(find.byType(Card), findsWidgets);
 
-      // Tap "المصحف" FilterChip to filter by Quran
-      final quranChipFinder = find.widgetWithText(FilterChip, 'المصحف');
-      expect(quranChipFinder, findsOneWidget);
-      await tester.tap(quranChipFinder);
-      await tester.pumpAndSettle();
+        // Tap "المصحف" FilterChip to filter by Quran
+        final quranChipFinder = find.widgetWithText(FilterChip, 'المصحف');
+        expect(quranChipFinder, findsOneWidget);
+        await tester.tap(quranChipFinder);
+        await tester.pumpAndSettle();
 
-      // Results still show Quran matches under single section
-      expect(find.byType(Card), findsWidgets);
+        // Results still show Quran matches under single section
+        expect(find.byType(Card), findsWidgets);
 
-      // Tap "المصحف" again to deselect back to All
-      await tester.tap(quranChipFinder);
-      await tester.pumpAndSettle();
+        // Tap "المصحف" again to deselect back to All
+        await tester.tap(quranChipFinder);
+        await tester.pumpAndSettle();
 
-      expect(find.byType(Card), findsWidgets);
-    });
+        expect(find.byType(Card), findsWidgets);
+      },
+    );
 
-    testWidgets('SearchScreen opens with initialProviderId and populates section', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(
-        buildTestWidget(const SearchScreen(initialProviderId: 'notes')),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'SearchScreen opens with initialProviderId and populates section',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          buildTestWidget(const SearchScreen(initialProviderId: 'notes')),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.byType(SearchScreen), findsOneWidget);
-      final notesChip = tester.widget<FilterChip>(
-        find.widgetWithText(FilterChip, 'الملاحظات'),
-      );
-      expect(notesChip.selected, isTrue);
-    });
+        expect(find.byType(SearchScreen), findsOneWidget);
+        final notesChip = tester.widget<FilterChip>(
+          find.widgetWithText(FilterChip, 'الملاحظات'),
+        );
+        expect(notesChip.selected, isTrue);
+      },
+    );
 
-    testWidgets('SearchScreen renders full Quran ayah snippet without maxLines truncation', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const SearchScreen()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'SearchScreen renders full Quran ayah snippet without maxLines truncation',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const SearchScreen()));
+        await tester.pumpAndSettle();
 
-      final textFieldFinder = find.byType(TextField);
-      await tester.enterText(textFieldFinder, 'بعوضة');
-      await tester.pump(const Duration(milliseconds: 250));
-      await tester.pumpAndSettle();
+        final textFieldFinder = find.byType(TextField);
+        await tester.enterText(textFieldFinder, 'بعوضة');
+        await tester.pump(const Duration(milliseconds: 250));
+        await tester.pumpAndSettle();
 
-      // Find Surah Al-Baqarah Ayah 26
-      expect(find.textContaining('سورة البقرة · الآية ٢٦'), findsOneWidget);
+        // Find Surah Al-Baqarah Ayah 26
+        expect(find.textContaining('سورة البقرة · الآية ٢٦'), findsOneWidget);
 
-      // Verify the ayah snippet Text widget has no maxLines truncation constraint
-      final ayah = QuranRepository.instance.getAyah(2, 26);
-      expect(ayah, isNotNull);
-      final snippetFinder = find.text('﴿ ${ayah!.text} ﴾');
-      expect(snippetFinder, findsOneWidget);
+        // Verify the ayah snippet Text widget has no maxLines truncation constraint
+        final ayah = QuranRepository.instance.getAyah(2, 26);
+        expect(ayah, isNotNull);
+        final snippetFinder = find.text('﴿ ${ayah!.text} ﴾');
+        expect(snippetFinder, findsOneWidget);
 
-      final textWidget = tester.widget<Text>(snippetFinder);
-      expect(textWidget.maxLines, isNull);
-    });
+        final textWidget = tester.widget<Text>(snippetFinder);
+        expect(textWidget.maxLines, isNull);
+      },
+    );
   });
 }
-

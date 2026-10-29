@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 import '../utils/arabic_search_normalizer.dart';
 import 'app_icons.dart';
 

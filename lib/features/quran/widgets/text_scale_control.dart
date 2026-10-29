@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/design_system/app_icons.dart';
-import '../../../core/storage/user_data_store.dart';
-import '../../settings/user_settings_model.dart';
+import '../../../data/storage/user_data_store.dart';
+import '../../../data/models/user_settings_model.dart';
 
 /// حجم خط النص المتدفق: زرّا تصغير وتكبير بينهما النسبة الحالية، وزرّ
 /// يعيده إلى حجمه التلقائي.

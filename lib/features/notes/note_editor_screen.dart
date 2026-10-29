@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/motion/app_motion.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../core/utils/note_pdf_exporter.dart';
-import '../../features/notes/note_model.dart';
-import '../../features/quran/data/quran_repository.dart';
+import 'note_pdf_exporter.dart';
+import '../../data/models/note_model.dart';
+import '../../data/quran/quran_repository.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// شاشة محرر الملاحظات والخواطر التدبرية بملء الشاشة.

@@ -5,7 +5,7 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 
 /// نتيجة محاولة تحديد الموقع.
 sealed class QiblaFix {

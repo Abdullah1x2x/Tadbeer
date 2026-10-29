@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/settings/user_settings_model.dart';
-import 'package:tadbeer/features/ayah_links/ayah_link_model.dart';
-import 'package:tadbeer/features/bookmarks/bookmark_model.dart';
-import 'package:tadbeer/features/highlights/highlight_model.dart';
-import 'package:tadbeer/features/notes/note_model.dart';
-import 'package:tadbeer/features/tadbeer/tadbeer_model.dart';
-import 'package:tadbeer/features/quran/data/quran_models.dart';
-import 'package:tadbeer/features/reminders/reminder_model.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
+import 'package:tadbeer/data/models/ayah_link_model.dart';
+import 'package:tadbeer/data/models/bookmark_model.dart';
+import 'package:tadbeer/data/models/highlight_model.dart';
+import 'package:tadbeer/data/models/note_model.dart';
+import 'package:tadbeer/data/models/tadbeer_model.dart';
+import 'package:tadbeer/data/quran/quran_models.dart';
+import 'package:tadbeer/data/models/reminder_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -248,38 +248,41 @@ void main() {
       expect(bms.isEmpty, isTrue);
     });
 
-    test('A corrupt row is skipped instead of hiding the whole table', () async {
-      final now = DateTime(2026, 10, 1);
-      await db.insertOrUpdateNote(
-        NoteItem(
-          id: 'good-note',
-          type: NoteType.free,
-          content: 'سليمة',
-          createdAt: now,
-          updatedAt: now,
-        ),
-      );
-      // Simulate a damaged row written by a crash / disk issue.
-      await db.db.insert('notes', {
-        'id': 'broken-note',
-        'type': 'free',
-        'data': '{not valid json',
-        'created_at': now.toIso8601String(),
-        'updated_at': now.toIso8601String(),
-      });
+    test(
+      'A corrupt row is skipped instead of hiding the whole table',
+      () async {
+        final now = DateTime(2026, 10, 1);
+        await db.insertOrUpdateNote(
+          NoteItem(
+            id: 'good-note',
+            type: NoteType.free,
+            content: 'سليمة',
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+        // Simulate a damaged row written by a crash / disk issue.
+        await db.db.insert('notes', {
+          'id': 'broken-note',
+          'type': 'free',
+          'data': '{not valid json',
+          'created_at': now.toIso8601String(),
+          'updated_at': now.toIso8601String(),
+        });
 
-      db.lastIssue.value = null;
-      final notes = await db.loadNotes();
-      expect(notes.map((n) => n.id), equals(['good-note']));
-      expect(
-        db.lastIssue.value?.kind,
-        equals(UserDatabaseIssueKind.corruptRowsSkipped),
-      );
+        db.lastIssue.value = null;
+        final notes = await db.loadNotes();
+        expect(notes.map((n) => n.id), equals(['good-note']));
+        expect(
+          db.lastIssue.value?.kind,
+          equals(UserDatabaseIssueKind.corruptRowsSkipped),
+        );
 
-      // The damaged row is kept on disk (never silently deleted).
-      final raw = await db.db.query('notes');
-      expect(raw.length, equals(2));
-    });
+        // The damaged row is kept on disk (never silently deleted).
+        final raw = await db.db.query('notes');
+        expect(raw.length, equals(2));
+      },
+    );
 
     test('replaceAllUserData swaps all tables in one transaction', () async {
       final now = DateTime(2026, 10, 1);

@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/app/theme.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/ayah_links/curated_pathways.dart';
+import 'package:tadbeer/core/theme/theme.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/features/ayah_links/data/curated_pathways.dart';
 import 'package:tadbeer/features/pathways/guided_pathways_screen.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {

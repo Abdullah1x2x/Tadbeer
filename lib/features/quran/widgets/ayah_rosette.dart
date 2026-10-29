@@ -6,19 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/ornaments.dart';
 import '../../../core/motion/app_motion.dart';
-import '../../../core/storage/user_data_store.dart';
+import '../../../data/storage/user_data_store.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
 import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
 import '../../audio/quran_audio.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
-import '../data/quran_models.dart';
-import '../../settings/user_settings_model.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/models/user_settings_model.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../qcf/qcf_ayah_text.dart';
 import 'ayah_action_sheet.dart';
 

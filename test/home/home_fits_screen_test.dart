@@ -6,13 +6,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/app/theme.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/core/theme/theme.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/continue/last_activity.dart';
 import 'package:tadbeer/features/daily/ayah_of_day_card.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/journey/journey_screen.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 

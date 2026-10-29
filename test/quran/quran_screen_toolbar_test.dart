@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
@@ -49,52 +49,55 @@ void main() {
   }
 
   group('QuranScreen Toolbar Layout & Interaction Tests', () {
-    testWidgets('Toolbar & bottom navigation bar are hidden by default and toggle on tap', (
-      tester,
-    ) async {
-      await tester.pumpWidget(buildTestScreen());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'Toolbar & bottom navigation bar are hidden by default and toggle on tap',
+      (tester) async {
+        await tester.pumpWidget(buildTestScreen());
+        await tester.pumpAndSettle();
 
-      final topBarOpacityFinder = find.descendant(
-        of: find.byType(SafeArea),
-        matching: find.byType(AnimatedOpacity),
-      ).first;
+        final topBarOpacityFinder = find
+            .descendant(
+              of: find.byType(SafeArea),
+              matching: find.byType(AnimatedOpacity),
+            )
+            .first;
 
-      // 1. Hidden by default
-      AnimatedOpacity opacityWidget = tester.widget(topBarOpacityFinder);
-      expect(opacityWidget.opacity, 0.0);
+        // 1. Hidden by default
+        AnimatedOpacity opacityWidget = tester.widget(topBarOpacityFinder);
+        expect(opacityWidget.opacity, 0.0);
 
-      // 2. Tap page to reveal toolbar and bottom navigation bar
-      await tester.tap(find.byType(QuranScreen));
-      await tester.pumpAndSettle();
+        // 2. Tap page to reveal toolbar and bottom navigation bar
+        await tester.tap(find.byType(QuranScreen));
+        await tester.pumpAndSettle();
 
-      opacityWidget = tester.widget(topBarOpacityFinder);
-      expect(opacityWidget.opacity, 1.0);
+        opacityWidget = tester.widget(topBarOpacityFinder);
+        expect(opacityWidget.opacity, 1.0);
 
-      // 3. Tap page again to hide them
-      await tester.tap(find.byType(QuranScreen));
-      await tester.pumpAndSettle();
+        // 3. Tap page again to hide them
+        await tester.tap(find.byType(QuranScreen));
+        await tester.pumpAndSettle();
 
-      opacityWidget = tester.widget(topBarOpacityFinder);
-      expect(opacityWidget.opacity, 0.0);
-    });
+        opacityWidget = tester.widget(topBarOpacityFinder);
+        expect(opacityWidget.opacity, 0.0);
+      },
+    );
 
     testWidgets('Swipe does NOT show toolbar automatically', (tester) async {
       await tester.pumpWidget(buildTestScreen());
       await tester.pumpAndSettle();
 
-      final topBarOpacityFinder = find.descendant(
-        of: find.byType(SafeArea),
-        matching: find.byType(AnimatedOpacity),
-      ).first;
+      final topBarOpacityFinder = find
+          .descendant(
+            of: find.byType(SafeArea),
+            matching: find.byType(AnimatedOpacity),
+          )
+          .first;
 
       // Swipe horizontally to next page
       await tester.drag(find.byType(PageView), const Offset(-300, 0));
       await tester.pumpAndSettle();
 
-      final opacityWidget = tester.widget<AnimatedOpacity>(
-        topBarOpacityFinder,
-      );
+      final opacityWidget = tester.widget<AnimatedOpacity>(topBarOpacityFinder);
       expect(opacityWidget.opacity, 0.0);
     });
 
@@ -183,10 +186,12 @@ void main() {
         await tester.pumpAndSettle();
 
         // Window dismisses
-        final panelFinder = find.descendant(
-          of: find.byType(QuranScreen),
-          matching: find.byType(AnimatedOpacity),
-        ).last;
+        final panelFinder = find
+            .descendant(
+              of: find.byType(QuranScreen),
+              matching: find.byType(AnimatedOpacity),
+            )
+            .last;
         final panelOpacity = tester.widget<AnimatedOpacity>(panelFinder);
         expect(panelOpacity.opacity, 0.0);
       },

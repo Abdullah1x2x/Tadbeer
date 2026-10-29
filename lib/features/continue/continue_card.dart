@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
-import '../../core/storage/user_data_store.dart';
-import '../ayah_links/curated_pathways.dart';
-import '../books/book_reader_screen.dart';
-import '../books/book_repository.dart';
-import '../duas/adhkar_repository.dart';
-import '../duas/morning_evening_adhkar_screen.dart';
+import '../../core/theme/theme.dart';
+import '../../data/storage/user_data_store.dart';
+import '../ayah_links/data/curated_pathways.dart';
+import '../books/screens/book_reader_screen.dart';
+import '../books/data/book_repository.dart';
+import '../duas/data/adhkar_repository.dart';
+import '../duas/screens/morning_evening_adhkar_screen.dart';
 import '../memorization/memorization_screen.dart';
 import '../pathways/guided_pathways_screen.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import 'last_activity.dart';
 import '../../core/design_system/app_icons.dart';
 

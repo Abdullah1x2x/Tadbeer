@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/app_icons.dart';
-import '../../core/storage/user_data_store.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/storage/user_data_store.dart';
+import '../../data/quran/quran_repository.dart';
 
 /// بطاقة في الرئيسية تسأل القارئ عمّا التزم به في وقفة سابقة.
 ///

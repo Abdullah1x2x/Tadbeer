@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 
 import '../../app/main_shell.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 

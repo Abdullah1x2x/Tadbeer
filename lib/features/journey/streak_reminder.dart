@@ -7,9 +7,9 @@
 /// today's activity or the reminder changes.
 library;
 
-import '../../core/services/local_reminder_service.dart';
-import '../../core/storage/user_data_store.dart';
-import 'reading_journey.dart';
+import '../reminders/local_reminder_service.dart';
+import '../../data/storage/user_data_store.dart';
+import '../../data/models/reading_journey.dart';
 
 /// Fixed id of the streak reminder among the saved reminders.
 const streakReminderId = 'streak_guard';

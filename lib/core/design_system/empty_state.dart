@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 import 'app_icons.dart';
 
 /// حالة فارغة موحدة تشرح للمستخدم كيف يبدأ، مع زر إجراء اختياري.

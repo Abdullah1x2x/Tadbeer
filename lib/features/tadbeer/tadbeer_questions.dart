@@ -1,8 +1,8 @@
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../duas/quran_duas_repository.dart';
-import '../quran/data/quran_models.dart';
-import '../quran/data/quran_repository.dart';
-import 'tadbeer_model.dart';
+import '../duas/data/quran_duas_repository.dart';
+import '../../data/quran/quran_models.dart';
+import '../../data/quran/quran_repository.dart';
+import '../../data/models/tadbeer_model.dart';
 
 /// نوع الآية كما تراه وقفة التدبر، لتبديل سؤال واحد يناسبها.
 enum AyahKind {

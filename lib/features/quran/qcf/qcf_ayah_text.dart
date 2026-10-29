@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../data/quran_models.dart';
+import '../../../data/quran/quran_models.dart';
 import 'qcf_fonts.dart';
 import 'qcf_layout.dart';
 import 'qcf_page_body.dart';

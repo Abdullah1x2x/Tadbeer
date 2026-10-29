@@ -42,7 +42,7 @@ packages:
     source: hosted
     version: "2.13.1"
   audio_service:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: audio_service
       sha256: "95f3267f3449eb5cf71c8fcf1d556f57af1e898e2dc5815fb168d1843653edb7"
@@ -294,14 +294,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.6"
-  flutter_compass:
+  flutter_device_compass:
     dependency: "direct main"
     description:
-      name: flutter_compass
-      sha256: "1b4d7e6c95a675ec8482b5c9c9ccf1ebf0ced3dbec59dce28ad609da953de850"
+      name: flutter_device_compass
+      sha256: "39820e627728c470b494596c04da6d5102eef8c1cbb60d3b54c829b0c0fabef6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.1"
+    version: "2.2.0"
   flutter_islamic_icons:
     dependency: "direct main"
     description:
@@ -330,42 +330,42 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_local_notifications
-      sha256: "92f85ca0fe488bf26af993a3275a0f699d1e2fa94e84932bd8ece5fde0718d8f"
+      sha256: fd5fc8966a8b34337ac182dc394f3506139b69d8138d4e9e174a13d6468adcd4
       url: "https://pub.dev"
     source: hosted
-    version: "23.0.0-dev.2"
+    version: "22.3.3"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
       name: flutter_local_notifications_linux
-      sha256: "2d60f9cd94cf866d5ed0d350815fbe382ab47670173794e194daba45331fe3c6"
+      sha256: "3b89a4bf095fa5f8a99beeabf982c5bd506c3ad25e7b9e61da945e994dc5b615"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0-dev.2"
+    version: "8.0.2"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
       name: flutter_local_notifications_platform_interface
-      sha256: c52ce1df03185a6c28c8de6b065cb23702941362c33c916ec30e1ea6635c945c
+      sha256: "43c3761d916c9bd3d5c7ebbc44d82f4990329840c0c5d62ad5260cc1b5d399bd"
       url: "https://pub.dev"
     source: hosted
-    version: "13.0.0-dev.1"
+    version: "12.2.0"
   flutter_local_notifications_web:
     dependency: transitive
     description:
       name: flutter_local_notifications_web
-      sha256: "477646e6f265dcbbcba80c5cfb7ee7ef0bfb8c0477a57e7253bc1f284e432051"
+      sha256: "516afaf97a2d1e67a036c6617321b00d205d72f7a67b6eccf936cd565f985878"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0-dev.1"
+    version: "1.0.0"
   flutter_local_notifications_windows:
     dependency: transitive
     description:
       name: flutter_local_notifications_windows
-      sha256: "048c2efd75f76d7d48084fea9a0e35f7e84127f742c37500c4cc7aab681e71cb"
+      sha256: "6f43bdd03b171b7a90f22647506fea33e2bb12294b7c7c7a3d690e960a382945"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0-dev.1"
+    version: "3.1.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -557,14 +557,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.10.6"
-  just_audio_background:
-    dependency: "direct main"
-    description:
-      name: just_audio_background
-      sha256: "3900825701164577db65337792bc122b66f9eb1245ee47e7ae8244ae5ceb8030"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1-beta.17"
   just_audio_platform_interface:
     dependency: transitive
     description:

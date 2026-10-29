@@ -5,7 +5,7 @@ Usage: python3 tool/widget/make_glass.py
 Writes android/app/src/main/res/drawable-nodpi/widget_glass_<theme>.jpg:
 coloured light blurred behind a grained frost, a faint eight-pointed star
 lattice and a sheen across the top. The colours are each theme's dark hero
-gradient (lib/app/theme.dart) and its gold, so keep them in step.
+gradient (lib/core/theme/theme.dart) and its gold, so keep them in step.
 """
 import math
 import os
