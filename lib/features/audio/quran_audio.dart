@@ -1,9 +1,6 @@
 /// تشغيل التلاوة آيةً آية: من أي آية، مع التكرار ووقفة التدبر.
 ///
-/// Playback runs through a queue of one file per ayah, from the chosen
-/// ayah to the end of its surah, then on to the next surah. The player
-/// fetches the next files ahead, so the ayahs follow one another without a
-/// gap, except for the pause the reader asked for after each one.
+/// يجري التشغيل على قائمة فيها ملف لكل آية، من الآية المختارة إلى آخر سورتها ثم ما بعدها. يجلب المشغّل الملفات التالية مسبقاً، فتتتابع الآيات بلا فجوة إلا الوقفة التي طلبها القارئ.
 library;
 
 import 'dart:async';
@@ -20,21 +17,20 @@ import 'audio_downloads.dart';
 import 'recitation_handler.dart';
 import 'reciters.dart';
 
-/// What the playback needs from an audio player; replaceable in tests.
+/// ما يحتاجه التشغيل من مشغّل الصوت؛ يُستبدل في الاختبارات.
 abstract class AudioEngine {
-  /// The item now playing in the queue.
+  /// رقم العنصر الجاري في القائمة.
   Stream<int?> get index;
   Stream<bool> get playing;
 
-  /// Whether the player is waiting for audio to arrive.
+  /// هل ينتظر المشغّل وصول الصوت.
   Stream<bool> get loading;
 
-  /// Fires when the queue has played to its end.
+  /// حين تنتهي القائمة.
   Stream<void> get completed;
   Stream<Object> get errors;
 
-  /// Loads [tracks] as the queue, ready to play from [start]; throws when
-  /// the first file cannot be fetched.
+  /// يحمّل [tracks] قائمةً جاهزة للتشغيل من [start]، ويرمي خطأ إن تعذّر جلب الملف الأول.
   Future<void> load(List<AudioTrack> tracks, {int start = 0});
   Future<void> play();
   Future<void> pause();
@@ -42,7 +38,7 @@ abstract class AudioEngine {
   Future<void> stop();
 }
 
-/// The device's audio player.
+/// مشغّل الصوت في الجهاز.
 class JustAudioEngine implements AudioEngine {
   JustAudioEngine() {
     RecitationHandler.instance?.attach(_player);
@@ -73,7 +69,7 @@ class JustAudioEngine implements AudioEngine {
 
   @override
   Future<void> load(List<AudioTrack> tracks, {int start = 0}) {
-    // What the notification and the lock screen show.
+    // ما يعرضه الإشعار وشاشة القفل.
     RecitationHandler.instance?.setItems([
       for (final (i, t) in tracks.indexed)
         MediaItem(
@@ -90,7 +86,7 @@ class JustAudioEngine implements AudioEngine {
 
   @override
   Future<void> play() async {
-    // Starts playing without waiting for the end, as play() otherwise does.
+    // يبدأ التشغيل دون انتظار نهايته، كما تفعل play() عادة.
     unawaited(_player.play());
   }
 
@@ -104,7 +100,7 @@ class JustAudioEngine implements AudioEngine {
   Future<void> stop() => _player.stop();
 }
 
-/// ملف واحد في قائمة التشغيل وما يُعرض عنه في الإشعار.
+/// ملف في قائمة التشغيل، وما يُعرض عنه في الإشعار.
 class AudioTrack {
   final Uri uri;
   final String title;
@@ -117,18 +113,16 @@ class AudioTrack {
 class AudioQueue {
   final List<AudioTrack> tracks;
 
-  /// The ayah each item recites; the basmala carries the ayah it opens.
+  /// الآية التي يقرؤها كل عنصر؛ والبسملة تحمل الآية التي تفتتحها.
   final List<Ayah> ayahs;
 
   const AudioQueue._(this.tracks, this.ayahs);
 
-  /// Where each item plays from.
+  /// مصدر كل عنصر.
   List<Uri> get urls => [for (final t in tracks) t.uri];
 
-  /// From [from] to the end of its surah, each ayah [repeat] times, by
-  /// [reciter]. A surah begun from its first ayah opens with the basmala,
-  /// except al-Fatiha, whose first ayah it is, and at-Tawbah. Each file
-  /// comes from [source] (a download, or the internet by default).
+  /// من [from] إلى آخر سورتها، كل آية [repeat] مرة، بصوت [reciter].
+  /// السورة التي تبدأ من أولها تُفتتح بالبسملة، إلا الفاتحة (فهي أولها) والتوبة. ومصدر كل ملف [source]: التنزيل، أو الإنترنت افتراضياً.
   factory AudioQueue.from(
     Ayah from,
     Reciter reciter, {
@@ -164,7 +158,7 @@ class AudioQueue {
     return AudioQueue._(tracks, ayahs);
   }
 
-  /// The first item of [ayah], or null if it is not in the queue.
+  /// أول عنصر للآية [ayah]، أو null إن لم تكن في القائمة.
   int? startOf(Ayah ayah) {
     final i = ayahs.indexWhere((a) => a.id == ayah.id);
     return i < 0 ? null : i;
@@ -177,14 +171,14 @@ class QuranAudio extends ChangeNotifier {
 
   static QuranAudio _instance = QuranAudio._(JustAudioEngine.new);
 
-  /// The app's one player.
+  /// مشغّل التطبيق الوحيد.
   static QuranAudio get instance => _instance;
 
-  /// Puts a player over a stand-in engine in its place, for tests.
+  /// للاختبارات: يضع مكانه مشغّلاً فوق محرك بديل.
   @visibleForTesting
   static set instance(QuranAudio audio) => _instance = audio;
 
-  /// A player over [engine], for tests.
+  /// للاختبارات: مشغّل فوق [engine].
   @visibleForTesting
   factory QuranAudio.withEngine(AudioEngine engine) =>
       QuranAudio._(() => engine);
@@ -193,12 +187,12 @@ class QuranAudio extends ChangeNotifier {
   AudioEngine? _engine;
   final _subscriptions = <StreamSubscription<Object?>>[];
 
-  /// The player, made on first use so screens that never play need none.
+  /// المحرك، يُنشأ عند أول استخدام فلا تحتاج إليه الشاشات التي لا تشغّل شيئاً.
   AudioEngine get _player {
     final existing = _engine;
     if (existing != null) return existing;
     final engine = _engine = _makeEngine();
-    // The notification's stop closes the recitation, as the bar's does.
+    // إيقاف الإشعار يغلق التلاوة، كما يفعل إيقاف الشريط.
     RecitationHandler.instance?.onStop = stop;
     _subscriptions.addAll([
       engine.index.listen(_onIndex),
@@ -221,24 +215,22 @@ class QuranAudio extends ChangeNotifier {
   AudioQueue? _queue;
   Timer? _pauseTimer;
 
-  /// The ayah being recited, or null when nothing plays.
+  /// الآية الجارية، أو null حين لا شيء يُتلى.
   Ayah? current;
   bool playing = false;
   bool loading = false;
 
-  /// Set when the recitation could not be fetched; cleared on the next
-  /// play. Screens show it once.
+  /// يُرفع حين تعذّر جلب التلاوة، ويُمسح عند التشغيل التالي؛ تعرضه الشاشات مرة.
   bool failed = false;
 
-  /// Whether a recitation is under way, playing or paused.
+  /// هل التلاوة جارية، تعمل أو موقوفة مؤقتاً.
   bool get active => current != null;
 
-  /// Whether playback is held for the pause after an ayah.
+  /// هل التشغيل موقوف لوقفة ما بعد الآية.
   bool get resting => _pauseTimer?.isActive ?? false;
 
   Map<String, dynamic> get _saved => UserDataStore.instance.featureState(_key);
 
-  /// القارئ المختار.
   Reciter get reciter => reciterById(_saved['reciter'] as String?);
 
   /// كم مرة تُقرأ كل آية.
@@ -262,14 +254,14 @@ class QuranAudio extends ChangeNotifier {
     if (now != null) await playFrom(now);
   }
 
-  /// Sets how often each ayah is read, from the current ayah on.
+  /// تكرار كل آية، من الآية الحالية فصاعداً.
   Future<void> setRepeat(int times) async {
     await _save('repeat', times);
     final now = current;
     if (now != null) await playFrom(now);
   }
 
-  /// Sets the pause after each ayah; it applies from the next one.
+  /// الوقفة بعد كل آية؛ تسري من الآية التالية.
   Future<void> setPauseSeconds(int seconds) => _save('pause', seconds);
 
   /// يبدأ التلاوة من [ayah] حتى آخر السورة ثم ما بعدها.
@@ -279,7 +271,7 @@ class QuranAudio extends ChangeNotifier {
     current = ayah;
     loading = true;
     notifyListeners();
-    // Downloaded ayahs play from the device; the rest stream.
+    // الآيات المنزّلة تُشغّل من الجهاز، والباقي من الإنترنت.
     final downloads = AudioDownloads.instance;
     await downloads.ready();
     final reciter = this.reciter;
@@ -301,7 +293,7 @@ class QuranAudio extends ChangeNotifier {
   /// يوقف مؤقتاً أو يستأنف.
   Future<void> toggle() async {
     if (resting) {
-      // A tap during the pause after an ayah goes on at once.
+      // النقر أثناء الوقفة بعد الآية يكمل فوراً.
       _pauseTimer?.cancel();
       await _player.play();
       notifyListeners();
@@ -312,7 +304,6 @@ class QuranAudio extends ChangeNotifier {
     }
   }
 
-  /// الآية التالية.
   Future<void> next() async {
     final now = current;
     if (now == null) return;
@@ -328,7 +319,6 @@ class QuranAudio extends ChangeNotifier {
     }
   }
 
-  /// الآية السابقة.
   Future<void> previous() async {
     final now = current;
     if (now == null) return;
@@ -355,7 +345,7 @@ class QuranAudio extends ChangeNotifier {
     await _engine?.stop();
   }
 
-  /// The ayah [step] places from [ayah] in the Mushaf, or null at its ends.
+  /// الآية على بعد [step] من [ayah] في المصحف، أو null عند طرفيه.
   static Ayah? _neighbour(Ayah ayah, int step) {
     final all = QuranRepository.instance.allAyahs;
     final i = ayah.id - 1 + step;
@@ -368,7 +358,7 @@ class QuranAudio extends ChangeNotifier {
     final ayah = queue.ayahs[index];
     final previous = current;
     current = ayah;
-    // A new ayah begins: rest first, if the reader asked for a pause.
+    // تبدأ آية جديدة: الوقفة أولاً إن طلبها القارئ.
     if (previous != null && previous.id != ayah.id && pauseSeconds > 0) {
       _player.pause();
       _pauseTimer?.cancel();
@@ -388,7 +378,7 @@ class QuranAudio extends ChangeNotifier {
       stop();
       return;
     }
-    // On to the next surah, after the same pause as between ayahs.
+    // إلى السورة التالية، بعد نفس الوقفة التي بين الآيات.
     if (pauseSeconds > 0) {
       _pauseTimer?.cancel();
       _pauseTimer = Timer(

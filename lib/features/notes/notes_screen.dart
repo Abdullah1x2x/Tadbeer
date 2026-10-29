@@ -13,39 +13,26 @@ import '../quran/screens/quran_screen.dart';
 import 'note_editor_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// شاشة عرض وإدارة الخواطر المرتبطة بالآيات والملاحظات الحرة في قائمة موحدة.
-///
-/// Notes screen displaying both Ayah Notes and Free Notes in a unified stream.
-///
-/// EDUCATIONAL NOTE:
-/// Unified Stream Architecture:
-/// - Displays both Ayah Reflections (tied to stable Ayah IDs) and Free Notes.
-/// - Sorts newest first.
-/// - Supports quick full-text search matching normalized Arabic content.
-/// - Individual notes can be exported to formatted A4 PDF documents with Amiri fonts.
-/// - Complete periodic reflection journals can be exported to PDF/Markdown.
+/// الخواطر كلها في قائمة واحدة، خواطر الآيات والحرة معاً، الأحدث أولاً.
+/// فيها بحث في النص، وتصدير الخاطرة PDF، وتصدير دفتر التدبر لفترة PDF أو Markdown.
 class NotesScreen extends StatefulWidget {
-  /// ينشئ شاشة الملاحظات والخواطر.
   const NotesScreen({super.key});
 
-  /// ينشئ حالة شاشة الملاحظات.
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }
 
-/// الحالة الداخلية لشاشة الملاحظات وإدارة البحث والتصدير والحذف.
 class _NotesScreenState extends State<NotesScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يفتح شاشة محرر الملاحظات لإنشاء ملاحظة جديدة أو تعديل ملاحظة قائمة.
+  /// يفتح المحرر لخاطرة جديدة، أو لتعديل [existing].
   void _openFreeNoteEditor([NoteItem? existing]) {
     Navigator.push(
       context,
@@ -55,7 +42,6 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  /// يبني واجهة شاشة الملاحظات مع شريط البحث وقائمة البطاقات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -100,7 +86,6 @@ class _NotesScreenState extends State<NotesScreen> {
         ),
         body: Column(
           children: [
-            // Search field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Container(
@@ -152,7 +137,6 @@ class _NotesScreenState extends State<NotesScreen> {
               ),
             ),
 
-            // Notes List
             Expanded(
               child: ListenableBuilder(
                 listenable: UserDataStore.instance,
@@ -244,7 +228,7 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  /// يصدر الملاحظة المحددة إلى ملف PDF ويفتح نافذة المشاركة.
+  /// يصدّر الخاطرة PDF ويفتح المشاركة.
   void _exportNotePdf(NoteItem note) async {
     try {
       await NotePdfExporter.exportAndShareNote(note);
@@ -262,7 +246,7 @@ class _NotesScreenState extends State<NotesScreen> {
     }
   }
 
-  /// يعرض نافذة حوار لتأكيد حذف الملاحظة المختارة.
+  /// يطلب التأكيد قبل حذف الخاطرة.
   void _showDeleteConfirmDialog(NoteItem note) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -313,7 +297,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 }
 
-/// بطاقة عرض لملاحظة واحدة (سواء كانت مرتبطة بآية أو ملاحظة حرة).
+/// بطاقة خاطرة، على آية أو حرة.
 class _NoteCard extends StatelessWidget {
   final NoteItem note;
   final VoidCallback onTap;
@@ -321,7 +305,6 @@ class _NoteCard extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onExportPdf;
 
-  /// ينشئ بطاقة عرض الملاحظة.
   const _NoteCard({
     required this.note,
     required this.onTap,
@@ -330,7 +313,6 @@ class _NoteCard extends StatelessWidget {
     required this.onExportPdf,
   });
 
-  /// يبني واجهة بطاقة الملاحظة مع قائمة الخيارات السريعة.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -347,7 +329,7 @@ class _NoteCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header Row: Type badge + date + actions menu
+          // الرأس: نوع الخاطرة والتاريخ وقائمة الإجراءات.
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -405,7 +387,7 @@ class _NoteCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Ayah Note Quote Preview
+          // مقتطف الآية في خواطر الآيات.
           if (note.isAyahNote && note.ayahText != null) ...[
             Container(
               padding: const EdgeInsets.all(12),
@@ -475,7 +457,6 @@ class _NoteCard extends StatelessWidget {
             const SizedBox(height: 10),
           ],
 
-          // Free Note Title
           if (!note.isAyahNote &&
               note.title != null &&
               note.title!.isNotEmpty) ...[
@@ -493,7 +474,6 @@ class _NoteCard extends StatelessWidget {
             const SizedBox(height: 6),
           ],
 
-          // Content preview
           Text(
             note.content,
             style: TextStyle(

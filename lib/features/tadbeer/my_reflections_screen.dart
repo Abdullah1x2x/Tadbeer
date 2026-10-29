@@ -10,9 +10,8 @@ import '../quran/screens/quran_screen.dart';
 import '../../data/models/tadbeer_model.dart';
 import 'tadbeer_pause_sheet.dart';
 
-/// شاشة «وقفاتي»: كل ما كتبه القارئ عند الآيات، وما التزم به منها.
+/// «وقفاتي»: كل ما كتبه القارئ عند الآيات، وما التزم به منها.
 class MyReflectionsScreen extends StatelessWidget {
-  /// ينشئ شاشة وقفاتي.
   const MyReflectionsScreen({super.key});
 
   @override
@@ -32,8 +31,7 @@ class MyReflectionsScreen extends StatelessWidget {
               ],
             ),
           ),
-          // Each tab listens to the store itself: a const child would not
-          // rebuild under a builder here.
+          // كل تبويب يستمع للمخزن بنفسه: الابن الثابت (const) لا يُعاد بناؤه تحت builder هنا.
           body: const TabBarView(children: [_AllTab(), _CommitmentsTab()]),
         ),
       ),
@@ -41,7 +39,7 @@ class MyReflectionsScreen extends StatelessWidget {
   }
 }
 
-/// Opens the reflection on [t] to read it or carry on writing.
+/// يفتح الوقفة على [t] لقراءتها أو متابعة كتابتها.
 Future<void> _open(BuildContext context, TadbeerItem t) async {
   final ayah = QuranRepository.instance.getAyah(t.surahNumber, t.ayahNumber);
   if (ayah != null) await TadbeerPauseSheet.show(context, ayah);
@@ -151,7 +149,7 @@ class _ReflectionCard extends StatelessWidget {
   }
 }
 
-/// Whether the reader did what they committed to, as a small label.
+/// هل فعل القارئ ما التزم به، كشارة صغيرة.
 class _CommitmentChip extends StatelessWidget {
   final bool done;
 
@@ -194,7 +192,7 @@ class _CommitmentsTab extends StatelessWidget {
   Widget _list(BuildContext context) {
     final l10n = context.l10n;
     DateTime at(TadbeerItem t) => t.commitmentAt ?? t.updatedAt;
-    // What is still to do comes first, the latest on top.
+    // ما بقي للإنجاز أولاً، والأحدث في الأعلى.
     final items =
         [
           for (final t in UserDataStore.instance.tadbeerItems)

@@ -16,7 +16,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'note_pdf_exporter.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// Timeframes available for reflection journal export.
+/// فترات تصدير دفتر التدبر.
 enum JournalPeriod {
   last7Days('آخر 7 أيام (أسبوعي)'),
   last30Days('آخر 30 يومًا (شهري)'),
@@ -26,7 +26,7 @@ enum JournalPeriod {
   const JournalPeriod(this.label);
 }
 
-/// Aggregated reflection and note data for a specified timeframe.
+/// الخواطر ووقفات التدبر في فترة.
 class JournalSummary {
   final JournalPeriod period;
   final DateTime startDate;
@@ -44,25 +44,17 @@ class JournalSummary {
     required this.surahNames,
   });
 
-  /// إجمالي عدد الخواطر ووقفات التدبر المشمولة في الملخص.
   int get totalReflections => notes.length + tadbeerItems.length;
 
-  /// ما إذا كان الملخص خالياً من أي خواطر أو وقفات تدبرية.
   bool get isEmpty => totalReflections == 0;
 }
 
-/// Service for generating, formatting, and sharing reflective journals (PDF & Markdown).
-///
-/// EDUCATIONAL NOTE:
-/// Tadbeer Journal Architecture:
-/// - Aggregates user reflections, notes, and Tadbeer pause responses.
-/// - 100% offline generation: TrueType fonts (Amiri-Regular, Amiri-Bold, AmiriQuran)
-///   are embedded directly from app assets.
-/// - Respects RTL layout and Madinah Mushaf numbering standards.
+/// دفتر التدبر: يجمع الخواطر ووقفات التدبر في فترة، ويصدّرها PDF أو Markdown دون إنترنت.
+/// تُضمَّن خطوط أميري في الملف، ويُحترم الاتجاه من اليمين لليسار.
 class TadbeerJournalExporter {
   TadbeerJournalExporter._();
 
-  /// Aggregates all user reflection items for the requested period.
+  /// يجمع خواطر الفترة [period].
   static JournalSummary buildSummary({
     JournalPeriod period = JournalPeriod.last30Days,
   }) {
@@ -92,7 +84,6 @@ class TadbeerJournalExporter {
           (t.updatedAt.isAfter(cutoff) || t.createdAt.isAfter(cutoff));
     }).toList();
 
-    // Sort newest first
     filteredNotes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     filteredTadbeer.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
@@ -116,7 +107,7 @@ class TadbeerJournalExporter {
     );
   }
 
-  /// Generates a structured Markdown export of the reflection journal.
+  /// الدفتر بصيغة Markdown.
   static String generateMarkdown(JournalSummary summary) {
     final repo = QuranRepository.instance;
     final buffer = StringBuffer();
@@ -129,7 +120,7 @@ class TadbeerJournalExporter {
     );
     buffer.writeln();
 
-    // Stats Table
+    // جدول الإحصاءات.
     buffer.writeln('### 📊 ملخص الإحصاءات التدبرية');
     buffer.writeln('| البند | العدد |');
     buffer.writeln('|---|---|');
@@ -157,7 +148,7 @@ class TadbeerJournalExporter {
     buffer.writeln('---');
     buffer.writeln();
 
-    // Tadbeer Pauses
+    // وقفات التدبر.
     if (summary.tadbeerItems.isNotEmpty) {
       buffer.writeln('## 🌿 الوقفات التدبرية');
       buffer.writeln();
@@ -189,7 +180,7 @@ class TadbeerJournalExporter {
       }
     }
 
-    // Notes
+    // الخواطر.
     if (summary.notes.isNotEmpty) {
       buffer.writeln('## 📝 الخواطر والملاحظات');
       buffer.writeln();
@@ -225,7 +216,7 @@ class TadbeerJournalExporter {
     return buffer.toString();
   }
 
-  /// Generates a PDF file of the reflection journal and saves to cache storage.
+  /// ينشئ الدفتر PDF في مجلد الكاش.
   static Future<File> generatePdf(
     JournalSummary summary, {
     Directory? outputDir,
@@ -312,7 +303,7 @@ class TadbeerJournalExporter {
           return [
             pw.SizedBox(height: 12),
 
-            // Statistics Summary Banner
+            // ترويسة الإحصاءات.
             pw.Container(
               padding: const pw.EdgeInsets.all(16),
               decoration: const pw.BoxDecoration(
@@ -387,7 +378,7 @@ class TadbeerJournalExporter {
                 ),
               ),
 
-            // Section: Tadbeer Pauses
+            // قسم وقفات التدبر.
             if (summary.tadbeerItems.isNotEmpty) ...[
               pw.Container(
                 padding: const pw.EdgeInsets.symmetric(vertical: 6),
@@ -509,7 +500,7 @@ class TadbeerJournalExporter {
 
             pw.SizedBox(height: 16),
 
-            // Section: Notes & Reflections
+            // قسم الخواطر.
             if (summary.notes.isNotEmpty) ...[
               pw.Container(
                 padding: const pw.EdgeInsets.symmetric(vertical: 6),
@@ -608,7 +599,7 @@ class TadbeerJournalExporter {
     return file;
   }
 
-  /// بناء صندوق إحصائي مصغّر لعرض قيمة وعنوان داخل ترويسة ملف الـ PDF.
+  /// صندوق إحصاء صغير في ترويسة الملف.
   static pw.Widget _buildPdfStatBox({
     required String label,
     required String value,
@@ -639,7 +630,7 @@ class TadbeerJournalExporter {
     );
   }
 
-  /// Exports the reflection journal in either PDF or Markdown and invokes system share sheet.
+  /// يصدّر الدفتر PDF أو Markdown ويفتح المشاركة.
   static Future<void> exportAndShareJournal({
     required JournalPeriod period,
     required bool asPdf,
@@ -671,7 +662,7 @@ class TadbeerJournalExporter {
     }
   }
 
-  /// Displays an interactive modal sheet allowing the user to select period and format.
+  /// لوحة لاختيار الفترة والصيغة.
   static Future<void> showExportDialog(BuildContext context) async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     JournalPeriod selectedPeriod = JournalPeriod.last30Days;
@@ -719,7 +710,6 @@ class TadbeerJournalExporter {
                       ),
                       const SizedBox(height: 14),
 
-                      // Period Selector
                       const Text(
                         'الفترة الزمنية:',
                         style: TextStyle(
@@ -756,7 +746,6 @@ class TadbeerJournalExporter {
 
                       const SizedBox(height: 14),
 
-                      // Format Selector
                       const Text(
                         'صيغة التصدير:',
                         style: TextStyle(
@@ -820,7 +809,6 @@ class TadbeerJournalExporter {
 
                       const SizedBox(height: 14),
 
-                      // Quick info badge
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -841,7 +829,6 @@ class TadbeerJournalExporter {
 
                       const SizedBox(height: 16),
 
-                      // Action Button
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.olive,

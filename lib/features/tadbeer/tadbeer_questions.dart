@@ -4,9 +4,9 @@ import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../data/models/tadbeer_model.dart';
 
-/// نوع الآية كما تراه وقفة التدبر، لتبديل سؤال واحد يناسبها.
+/// نوع الآية كما تراه وقفة التدبر، ليُبدّل سؤال واحد بما يناسبها.
 enum AyahKind {
-  /// كل آية لا تدخل في نوع مما يلي.
+  /// كل آية لا تدخل في الأنواع التالية.
   general,
 
   /// دعاء: يبدأ بـ«ربنا» أو «رب»، أو من أدعية القرآن في التطبيق.
@@ -20,11 +20,7 @@ enum AyahKind {
 }
 
 /// أسئلة وقفة التدبر لآية بعينها.
-///
-/// Every ayah gets the four general questions; a dua, a story or a
-/// promise/warning swaps a single one for a question closer to it. The
-/// check is a light one by words, so a wrong guess still asks a fair
-/// question.
+/// كل آية تأخذ الأسئلة الأربعة العامة، والدعاء والقصة والوعد والوعيد تبدّل سؤالاً واحداً بأقرب منه. الفحص خفيف بالكلمات، فإن أخطأ بقي السؤال عادلاً.
 abstract final class TadbeerQuestions {
   static String _n(String s) => ArabicSearchNormalizer.normalize(s);
 
@@ -74,7 +70,7 @@ abstract final class TadbeerQuestions {
 
   static Set<String>? _duaKeys;
 
-  /// Every ayah of the Quranic duas the app lists, as `surah:ayah`.
+  /// آيات أدعية القرآن في التطبيق، بصيغة `سورة:آية`.
   static Set<String> get _duas => _duaKeys ??= {
     for (final d in QuranDuasRepository.instance.getDuas(
       quranRepository: QuranRepository.instance,
@@ -83,7 +79,6 @@ abstract final class TadbeerQuestions {
         '${d.surahNumber}:$a',
   };
 
-  /// نوع الآية.
   static AyahKind kindOf(Ayah ayah) {
     var text = _n(ayah.text);
     if (text.startsWith(_basmala)) {

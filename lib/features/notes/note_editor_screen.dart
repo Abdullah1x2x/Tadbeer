@@ -11,22 +11,17 @@ import '../../data/models/note_model.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// شاشة محرر الملاحظات والخواطر التدبرية بملء الشاشة.
-///
-/// Full-screen, comfortable Arabic note editor for long-form tadbeer reflections.
+/// محرر الخواطر بملء الشاشة، للخواطر الطويلة.
 class NoteEditorScreen extends StatefulWidget {
-  /// الملاحظة الحالية المراد تعديلها، أو فارغة عند إنشاء ملاحظة جديدة.
+  /// الخاطرة المعدّلة، أو null لخاطرة جديدة.
   final NoteItem? existingNote;
 
-  /// ينشئ شاشة محرر الملاحظات.
   const NoteEditorScreen({super.key, this.existingNote});
 
-  /// ينشئ حالة شاشة محرر الملاحظات.
   @override
   State<NoteEditorScreen> createState() => _NoteEditorScreenState();
 }
 
-/// الحالة الداخلية لشاشة محرر الملاحظات وإدارة الحفظ والتصدير.
 class _NoteEditorScreenState extends State<NoteEditorScreen> {
   late final String _initialTitle;
   late final String _initialContent;
@@ -36,7 +31,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   int _wordCount = 0;
   bool _isSaving = false;
 
-  /// يهيئ متحكمات النصوص ويحسب عدد الكلمات والأحرف المبدئي.
   @override
   void initState() {
     super.initState();
@@ -51,13 +45,13 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     });
   }
 
-  /// يتحقق مما إذا كانت هناك تعديلات غير محفوظة في العنوان أو المحتوى.
+  /// هل في العنوان أو المحتوى تعديل لم يُحفظ.
   bool get _hasUnsavedChanges {
     return _titleController.text.trim() != _initialTitle.trim() ||
         _contentController.text.trim() != _initialContent.trim();
   }
 
-  /// يعرض حوار تأكيد أنيق عند محاولة الخروج دون حفظ التغييرات.
+  /// يطلب التأكيد قبل الخروج دون حفظ.
   Future<bool?> _showDiscardConfirmationDialog(BuildContext context) {
     final l10n = context.l10n;
     return AppMotion.showSmoothDialog<bool>(
@@ -90,7 +84,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     );
   }
 
-  /// يحدث عدّاد الكلمات والأحرف عند تغير النص المدخل.
+  /// يحدّث عدّاد الكلمات والأحرف.
   void _updateCounts(String text) {
     final trimmed = text.trim();
     final words = trimmed.isEmpty
@@ -102,7 +96,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     });
   }
 
-  /// يحرر موارد متحكمات النصوص عند إغلاق الشاشة.
   @override
   void dispose() {
     _titleController.dispose();
@@ -110,7 +103,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     super.dispose();
   }
 
-  /// يحفظ الملاحظة الجديدة أو المعدلة في التخزين المحلي.
   Future<void> _saveNote() async {
     final content = _contentController.text.trim();
     if (content.isEmpty) {
@@ -163,7 +155,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     }
   }
 
-  /// يصدر الملاحظة الحالية إلى ملف PDF ويفتح نافذة المشاركة.
+  /// يصدّر الخاطرة PDF ويفتح المشاركة.
   Future<void> _exportPdf() async {
     final note =
         widget.existingNote ??
@@ -194,7 +186,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     }
   }
 
-  /// يبني واجهة محرر الملاحظات مع حقول العنوان والمحتوى وشريط الإحصائيات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -289,7 +280,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Linked Ayah Banner (for Ayah reflection notes)
+                        // الآية المرتبطة، في خواطر الآيات.
                         if (isAyahNote && existing?.ayahText != null) ...[
                           FuturisticCard(
                             accentColor: AppColors.accentGold(context),
@@ -365,7 +356,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                           const SizedBox(height: 16),
                         ],
 
-                        // Note Title Field
                         TextField(
                           controller: _titleController,
                           textDirection: context.currentLanguage.direction,
@@ -401,7 +391,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                         ),
                         const SizedBox(height: 14),
 
-                        // Large comfortable editing area
                         TextField(
                           controller: _contentController,
                           minLines: 12,
@@ -441,7 +430,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                   ),
                 ),
 
-                // Bottom status bar with word & character counts
+                // شريط الحالة: عدد الكلمات والأحرف.
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,

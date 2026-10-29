@@ -10,11 +10,8 @@ import 'quran_audio.dart';
 import 'reciters.dart';
 
 /// شريط التلاوة في المصحف: الآية المسموعة وأزرار التحكم.
-///
-/// Shown while a recitation is under way, playing or paused; it names the
-/// ayah and the reciter, and says when it is pausing to reflect.
+/// يظهر ما دامت التلاوة جارية أو موقوفة مؤقتاً، ويذكر الآية والقارئ، ويقول حين يتوقف للتدبر.
 class AudioBar extends StatelessWidget {
-  /// ينشئ شريط التلاوة.
   const AudioBar({super.key});
 
   @override
@@ -128,11 +125,10 @@ class AudioBar extends StatelessWidget {
   }
 }
 
-/// لوحة إعدادات التلاوة: القارئ والتكرار والوقفة بعد كل آية.
+/// إعدادات التلاوة: القارئ، والتكرار، والوقفة بعد كل آية.
 class AudioSettingsSheet extends StatelessWidget {
   const AudioSettingsSheet._();
 
-  /// يفتح لوحة الإعدادات.
   static Future<void> show(BuildContext context) => showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,

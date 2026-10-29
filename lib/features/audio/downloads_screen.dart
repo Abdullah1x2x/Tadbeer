@@ -10,9 +10,8 @@ import 'audio_downloads.dart';
 import 'quran_audio.dart';
 import 'reciters.dart';
 
-/// شاشة تنزيل التلاوات: كل سورة بصوت القارئ المختار، تُنزَّل أو تُحذف.
+/// تنزيل التلاوات: كل سورة بصوت القارئ المختار، تُنزّل أو تُحذف.
 class RecitationDownloadsScreen extends StatefulWidget {
-  /// ينشئ شاشة التنزيلات.
   const RecitationDownloadsScreen({super.key});
 
   @override
@@ -21,7 +20,7 @@ class RecitationDownloadsScreen extends StatefulWidget {
 }
 
 class _RecitationDownloadsScreenState extends State<RecitationDownloadsScreen> {
-  /// The reciter whose downloads are shown; the one chosen for listening.
+  /// القارئ المعروضة تنزيلاته؛ هو المختار للاستماع.
   late Reciter _reciter = QuranAudio.instance.reciter;
   late Future<int> _bytes = AudioDownloads.instance.bytesOf(_reciter);
 
@@ -42,7 +41,7 @@ class _RecitationDownloadsScreenState extends State<RecitationDownloadsScreen> {
     if (mounted) _refreshSize();
   }
 
-  /// The surahs of Juz Amma (an-Naba to an-Nas), one after another.
+  /// ينزّل سور جزء عمّ (من النبأ إلى الناس) واحدة بعد أخرى.
   Future<void> _downloadJuzAmma() async {
     HapticFeedback.selectionClick();
     for (var s = 78; s <= 114; s++) {
@@ -124,7 +123,7 @@ class _RecitationDownloadsScreenState extends State<RecitationDownloadsScreen> {
                     child: FutureBuilder<int>(
                       future: _bytes,
                       builder: (context, snap) => Text(
-                        // One decimal, so a few small files still show.
+                        // منزلة عشرية واحدة، ليظهر حجم الملفات الصغيرة.
                         l10n.downloadsSize(
                           l10n
                               .digits(

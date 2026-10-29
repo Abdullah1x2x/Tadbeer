@@ -1,33 +1,30 @@
 /// قرّاء التلاوة المسموعة: ملف لكل آية من شبكة Islamic Network.
 ///
-/// Every recitation here has one file per ayah, numbered by the ayah's
-/// place in the Mushaf (1 to 6236), the same number the app gives it. That
-/// lets playback start at any ayah, repeat it and pause after it.
+/// لكل تلاوة ملف لكل آية برقمها في المصحف (1..6236)، وهو نفس رقمها في التطبيق؛ فيمكن البدء من أي آية وتكرارها والتوقف بعدها.
 library;
 
-/// قارئ واحد وموضع تلاوته.
+/// قارئ وموضع تلاوته.
 class Reciter {
-  /// The recitation's name at the source, as in its file paths.
+  /// اسم التلاوة في المصدر، كما في مسارات ملفاتها.
   final String id;
 
-  /// الاسم كما يُعرض.
   final String name;
 
-  /// Bit rate of its files, in kbit/s.
+  /// معدّل بت ملفاته، بالكيلوبت في الثانية.
   final int bitrate;
 
   const Reciter({required this.id, required this.name, required this.bitrate});
 
-  /// Whether its files are of noticeably lower quality than the others'.
+  /// هل جودة ملفاته أقل بوضوح من غيره.
   bool get lowQuality => bitrate < 64;
 
-  /// The file of the ayah numbered [ayahId] in the Mushaf (1 to 6236).
+  /// ملف الآية [ayahId] (1..6236).
   Uri urlFor(int ayahId) => Uri.parse(
     'https://cdn.islamic.network/quran/audio/$bitrate/$id/$ayahId.mp3',
   );
 }
 
-/// The reciters offered, in the order they are listed.
+/// القرّاء المعروضون، بترتيب ظهورهم.
 const reciters = <Reciter>[
   Reciter(id: 'ar.husary', name: 'محمود خليل الحصري', bitrate: 128),
   Reciter(id: 'ar.minshawi', name: 'محمد صديق المنشاوي', bitrate: 128),
@@ -42,6 +39,6 @@ const reciters = <Reciter>[
   Reciter(id: 'ar.parhizgar', name: 'شهريار پرهيزگار', bitrate: 48),
 ];
 
-/// The reciter with [id], or the first one if it is no longer offered.
+/// القارئ [id]، أو الأول إن لم يعد موجوداً.
 Reciter reciterById(String? id) =>
     reciters.firstWhere((r) => r.id == id, orElse: () => reciters.first);

@@ -1,9 +1,7 @@
 import 'dart:math';
 
-// مكتبة Flutter الأساسية التي أستخدمها لبناء واجهة الشاشة
 import 'package:flutter/material.dart';
 
-// هذه الملفات أرجع لها حسب الوظيفة التي أحتاجها في الشاشة
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import '../../core/design_system/app_logo.dart';
@@ -14,30 +12,20 @@ import '../../data/quran/quran_repository.dart';
 import '../../app/main_shell.dart';
 import '../../core/motion/app_motion.dart';
 
-/// شاشة الترحيب التي تظهر عند تشغيل التطبيق.
-///
-/// هنا أضع آية مرتبطة بالتدبر، وأعطي المستخدم خيار
-/// إخفاء شاشة الترحيب نهائيًا.
+/// شاشة الترحيب: آية في التدبر، وخيار إخفاء الشاشة نهائياً.
 class TadbeerIntroScreen extends StatefulWidget {
-  /// ينشئ شاشة الترحيب بالتدبر.
   const TadbeerIntroScreen({super.key});
 
-  /// ينشئ حالة شاشة الترحيب.
   @override
   State<TadbeerIntroScreen> createState() => _TadbeerIntroScreenState();
 }
 
-/// اسم بديل متوافق مع الإصدارات السابقة لشاشة الترحيب.
-///
-/// Compatibility alias
+/// الاسم القديم، يبقى للتوافق.
 typedef TadabburIntroScreen = TadbeerIntroScreen;
 
-/// الحالة الداخلية لشاشة الترحيب واختيار آية التدبر العشوائية.
 class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
     with SingleTickerProviderStateMixin {
-  // هنا خزنت أرقام السور والآيات التي أريد استخدامها في شاشة الترحيب.
-  // الرقم الأول = رقم السورة
-  // الرقم الثاني = رقم الآية
+  /// آيات الترحيب (سورة، آية)؛ تُختار واحدة عشوائياً عند كل فتح.
   static const List<(int, int)> _tadbeerAyahRefs = [
     (47, 24),
     (4, 82),
@@ -51,15 +39,11 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
     (10, 24),
   ];
 
-  // هذا المتغير سأضع فيه الآية التي تم اختيارها عند فتح الشاشة.
-  // late يعني أنني سأعطيه قيمة قبل استخدامه.
   late final (int, int) _chosenRef;
 
-  // false في البداية لأن الـ Checkbox غير محدد.
   bool _doNotShowAgain = false;
 
-  /// Drives the welcome: the logo, then the name, the ayah and the button
-  /// come in one after another.
+  /// يحرّك الترحيب: الشعار، ثم الاسم والآية والزر واحداً بعد الآخر.
   late final AnimationController _entrance = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1400),
@@ -69,7 +53,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_entrance.isDismissed) {
-      // Shown at once when the reader asked the system for less motion.
+      // يظهر فوراً حين يطلب القارئ تقليل الحركة من النظام.
       AppMotion.shouldAnimate(context)
           ? _entrance.forward()
           : _entrance.value = 1;
@@ -82,8 +66,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
     super.dispose();
   }
 
-  /// Gives each element of the column its own delayed entrance; the
-  /// first one (the logo) also grows into place.
+  /// يعطي كل عنصر دخولاً متأخراً عن سابقه، والأول (الشعار) يكبر أيضاً إلى مكانه.
   List<Widget> _staggered(List<Widget> children) {
     final out = <Widget>[];
     var order = 0;
@@ -108,76 +91,56 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
     return out;
   }
 
-  /// يختار مرجع آية تدبرية عشوائية عند تهيئة الشاشة.
   @override
   void initState() {
     super.initState();
 
-    // أختار آية عشوائية من القائمة عند فتح الشاشة.
-    // بعد الاختيار تبقى نفس الآية طالما الشاشة مفتوحة.
     final random = Random();
 
     _chosenRef = _tadbeerAyahRefs[random.nextInt(_tadbeerAyahRefs.length)];
   }
 
-  /// يحفظ تفضيل عدم الإظهار مجدداً إن حُدد وينتقل إلى الشاشة الرئيسية.
-  // هذه الدالة تعمل عندما أضغط على زر "متابعة".
+  /// يحفظ "لا تظهر مرة أخرى" إن اختير، ثم ينتقل إلى الرئيسية.
   Future<void> _handleContinue() async {
-    // أحصل على Navigator حتى أستطيع الانتقال إلى الصفحة التالية.
     final navigator = Navigator.of(context);
 
-    // إذا كان المستخدم فعل خيار عدم إظهار الشاشة مرة أخرى...
     if (_doNotShowAgain) {
-      // أجيب الإعدادات الحالية حتى لا أمسح باقي الإعدادات.
+      // تُؤخذ الإعدادات الحالية كي لا يُمسح غيرها.
       final settings = UserDataStore.instance.settings;
 
-      // أحفظ فقط أن شاشة الترحيب لا تظهر مرة أخرى.
       await UserDataStore.instance.updateSettings(
         settings.copyWith(hideTadbeerIntroPermanently: true),
       );
     }
 
-    // بعد الضغط على متابعة أنتقل إلى الصفحة الرئيسية.
     navigator.pushReplacement(
       MaterialPageRoute(builder: (_) => const MainShell()),
     );
   }
 
-  /// يبني واجهة شاشة الترحيب مع شعار التطبيق وآية التدبر المختارة وزر المتابعة.
   @override
   Widget build(BuildContext context) {
-    // هذا يعطيني النصوص حسب اللغة الحالية للتطبيق.
     final l10n = context.l10n;
 
-    // أعرف من هنا هل التطبيق حاليًا في الوضع الداكن.
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // هذا هو المصدر الذي أجيب منه بيانات القرآن.
     final repo = QuranRepository.instance;
 
-    // سأضع هنا الآية والسورة بعد البحث عنها.
     Ayah? currentAyah;
     Surah? currentSurah;
 
-    // أتأكد أولًا أن بيانات القرآن تم تحميلها.
     if (repo.isLoaded) {
       try {
-        // أجيب الآية باستخدام رقم السورة ورقم الآية
-        // اللذين اخترتهما سابقًا.
         currentAyah = repo.getAyah(_chosenRef.$1, _chosenRef.$2);
 
-        // أجيب معلومات السورة نفسها.
         currentSurah = repo.getSurah(_chosenRef.$1);
       } catch (_) {
-        // إذا حصل خطأ أترك القيم فارغة
-        // وسيتم استخدام النص الاحتياطي الموجود أسفل.
+        // عند الخطأ تبقى القيم فارغة، ويُستخدم النص الاحتياطي.
       }
     }
 
-    // إذا وجدت الآية أستخدمها، وإذا لم أجدها أستخدم النص الاحتياطي.
     final verseText = currentAyah?.text ?? l10n.tadbeerVerse;
 
-    // أجهز اسم السورة ورقم الآية حتى أعرضهما تحت النص.
     final verseRef = (currentSurah != null && currentAyah != null)
         ? l10n.ayahReference(
             currentSurah.name,
@@ -188,11 +151,9 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
         : l10n.tadbeerVerseRef;
 
     return Directionality(
-      // اتجاه الشاشة يتغير حسب اللغة.
       textDirection: context.currentLanguage.direction,
 
       child: Scaffold(
-        // أغير لون الخلفية حسب الوضع الداكن أو الفاتح.
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.comsilkLight,
@@ -204,7 +165,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
               final isCompact = h < 720;
               final isVeryCompact = h < 640;
 
-              // مقاسات واستجابات متكيفة بحسب حجم الشاشة
+              // مقاسات تتكيّف مع حجم الشاشة.
               final horizontalPadding = isVeryCompact
                   ? 16.0
                   : (isCompact ? 20.0 : 28.0);
@@ -267,11 +228,9 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: _staggered([
-                          // شعار التطبيق (اللوقو)
                           Center(child: AppLogo(size: logoSize)),
                           SizedBox(height: spaceAfterLogo),
 
-                          // اسم التطبيق
                           Text(
                             l10n.appName,
                             textAlign: TextAlign.center,
@@ -287,7 +246,6 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                           ),
                           const SizedBox(height: 2),
 
-                          // الوصف القصير تحت اسم التطبيق
                           Text(
                             l10n.appTagline,
                             textAlign: TextAlign.center,
@@ -300,7 +258,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                           ),
                           SizedBox(height: spaceBeforeVerse),
 
-                          // صندوق الآية
+                          // صندوق الآية.
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: verseCardPaddingH,
@@ -327,7 +285,6 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                             ),
                             child: Column(
                               children: [
-                                // نص الآية
                                 Text(
                                   '﴿ $verseText ﴾',
                                   textAlign: TextAlign.center,
@@ -342,7 +299,6 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                                   ),
                                 ),
                                 SizedBox(height: isVeryCompact ? 6 : 10),
-                                // مرجع الآية
                                 Text(
                                   verseRef,
                                   textAlign: TextAlign.center,
@@ -359,7 +315,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                           ),
                           SizedBox(height: spaceAfterVerse),
 
-                          // الرسالة التوضيحية عن فكرة التدبر
+                          // فكرة التدبر.
                           Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: isVeryCompact ? 6.0 : 12.0,
@@ -378,7 +334,6 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                           ),
                           SizedBox(height: spaceBeforeButton),
 
-                          // زر متابعة
                           ElevatedButton(
                             onPressed: _handleContinue,
                             style: ElevatedButton.styleFrom(
@@ -402,7 +357,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                           ),
                           const SizedBox(height: 4),
 
-                          // خيار عدم إظهار الشاشة مرة أخرى
+                          // خيار عدم الإظهار مرة أخرى.
                           InkWell(
                             onTap: () {
                               setState(() {
@@ -464,7 +419,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
   }
 }
 
-/// Fades an element in while it rises (and, for the logo, grows) into place.
+/// يُظهر العنصر بتلاشٍ وهو يرتفع إلى مكانه، والشعار يكبر أيضاً.
 class _Entrance extends StatelessWidget {
   final Animation<double> animation;
   final bool grow;
