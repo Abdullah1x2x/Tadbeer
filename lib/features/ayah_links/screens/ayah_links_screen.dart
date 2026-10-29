@@ -58,11 +58,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: Text(l10n.deleteConfirmTitle),
-        content: Text(
-          l10n.isArabic
-              ? 'هل أنت متأكد من رغبتك في حذف رابط «${link.title}»؟'
-              : 'Are you sure you want to delete link "${link.title}"?',
-        ),
+        content: Text(l10n.deleteLinkConfirm(link.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
@@ -85,11 +81,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              l10n.isArabic
-                  ? 'تم حذف رابط «${link.title}»'
-                  : 'Link "${link.title}" deleted',
-            ),
+            content: Text(l10n.linkDeleted(link.title)),
             backgroundColor: Theme.of(context).colorScheme.primary,
             behavior: SnackBarBehavior.floating,
           ),

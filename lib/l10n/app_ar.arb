@@ -993,15 +993,23 @@
   "reflectionsCount": "{count, plural, =1{وقفة واحدة} =2{وقفتان} few{{shown} وقفات} other{{shown} وقفة}}",
   "@reflectionsCount": {
     "placeholders": {
-      "count": {"type": "int"},
-      "shown": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "shown": {
+        "type": "String"
+      }
     }
   },
   "streakAtRiskTitle": "{count, plural, =1{لا تقطع سلسلتك: يوم واحد حتى الآن} =2{لا تقطع سلسلتك: يومان متتاليان} few{لا تقطع سلسلتك: {n} أيام متتالية} other{لا تقطع سلسلتك: {n} يومًا متتاليًا}}",
   "@streakAtRiskTitle": {
     "placeholders": {
-      "count": {"type": "int"},
-      "n": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "n": {
+        "type": "String"
+      }
     }
   },
   "streakAtRiskBody": "صفحة واحدة أو وقفة تدبر تكفي لتبقى السلسلة",
@@ -1010,7 +1018,9 @@
   "streakReminderAt": "كل مساء {time} إن لم تقرأ بعد",
   "@streakReminderAt": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "streakReminderPrompt": "متى نذكّرك إن لم تقرأ في يومك؟",
@@ -1021,13 +1031,17 @@
   "qiblaTurnRight": "استدر يمينًا {deg}°",
   "@qiblaTurnRight": {
     "placeholders": {
-      "deg": {"type": "String"}
+      "deg": {
+        "type": "String"
+      }
     }
   },
   "qiblaTurnLeft": "استدر يسارًا {deg}°",
   "@qiblaTurnLeft": {
     "placeholders": {
-      "deg": {"type": "String"}
+      "deg": {
+        "type": "String"
+      }
     }
   },
   "qiblaFromNorth": "من الشمال",
@@ -1057,7 +1071,9 @@
   "secondsShort": "{n} ث",
   "@secondsShort": {
     "placeholders": {
-      "n": {"type": "String"}
+      "n": {
+        "type": "String"
+      }
     }
   },
   "audioFailed": "تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت",
@@ -1079,15 +1095,231 @@
   "deleteAllDownloadsConfirm": "ستُحذف كل سور {name} المنزّلة من جهازك.",
   "@deleteAllDownloadsConfirm": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "downloadsSize": "على جهازك: {size} ميجابايت",
   "@downloadsSize": {
     "placeholders": {
-      "size": {"type": "String"}
+      "size": {
+        "type": "String"
+      }
     }
   },
   "downloadJuzAmma": "تنزيل جزء عمّ",
-  "downloadsHint": "السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال."
+  "downloadsHint": "السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.",
+  "mushaf": "المصحف",
+  "appColorTheme": "لون التطبيق",
+  "sourcesAndCreditsDetails": "• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.",
+  "unsavedChanges": "تغييرات غير محفوظة",
+  "discardChangesConfirm": "هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟",
+  "discard": "تجاهل والخروج",
+  "cannotSaveAnEmptyNote": "لا يمكن حفظ ملاحظة فارغة",
+  "editAyahReflection": "تعديل تدبر الآية",
+  "unsaved": "غير محفوظ",
+  "saved": "محفوظ",
+  "reflectionTitleOptional": "عنوان التدبر (اختياري)...",
+  "instantSecureLocalSave": "حفظ محلي فوري وآمن",
+  "bookmarkRemoved": "تم حذف الفاصلة المرجعية",
+  "undo": "تراجع",
+  "booksBooklets": "الملازم والكتب",
+  "searchEmptyHint": "اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)",
+  "sectionHasNoItems": "لا توجد عناصر محفوظة في هذا القسم بعد",
+  "systemTheme": "تلقائي",
+  "lightThemeExplanation": "الوضع النهاري: خلفية ورقية هادئة مع لمسات كحلية وذهبية لقراءة نهارية مريحة وواضحة.",
+  "darkThemeExplanation": "الوضع الليلي: ألوان كحلية ليلية مع لمسات ذهبية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.",
+  "privacyOfflineTitle": "عمل محلي تام دون إنترنت (100% Offline-First)",
+  "privacyOfflineBody": "لا يطلب التطبيق إذن الإنترنت (android.permission.INTERNET) في ملف التكوين، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.",
+  "privacyNoDataTitle": "عدم جمع أي بيانات شخصية (Zero Data Collection)",
+  "privacyNoDataBody": "لا يجمع التطبيق ولا يسجل ولا يشارك أي بيانات شخصية، أو معرّفات أجهزة، أو سجلات قراءة، أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق.",
+  "privacyStorageTitle": "تخزين محلي وتشفير عالي (AES-256)",
+  "privacyStorageBody": "تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.",
+  "privacyPermissionsTitle": "استخدام حصري ومحدد للأذونات (Device Permissions)",
+  "privacyPermissionsBody": "تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.",
+  "privacyNoAdsTitle": "خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)",
+  "privacyNoAdsBody": "التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.",
+  "privacyOpenSourceBody": "تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.",
+  "createLinkWithVerseHint": "إنشاء رابط جديد وربط هذه الآية به مباشرة",
+  "alreadyAdded": "مضافة بالفعل",
+  "shareAyahLinkOffline": "مشاركة رابط الآيات دون إنترنت",
+  "qrScanHint": "يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.",
+  "linkDataCopiedToClipboard": "تم نسخ بيانات الرابط إلى الحافظة",
+  "copyData": "نسخ البيانات",
+  "importAyahLink": "استيراد رابط آيات",
+  "importLinkHint": "الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:",
+  "importLinkFieldHint": "الصق الرابط أو النص الممسوح هنا...",
+  "pasteFromClipboard": "لصق من الحافظة",
+  "importNow": "استيراد الآن",
+  "editAyahLink": "تعديل رابط الآيات",
+  "titleRequired": "يرجى إدخال عنوان الرابط",
+  "create": "إنشاء",
+  "reflectionNoteCard": "كرت ملاحظة تدبرية",
+  "noteCopiedToClipboard": "تم نسخ نص الملاحظة إلى الحافظة",
+  "copyText": "نسخ النص",
+  "deleteNote": "حذف الملاحظة",
+  "myNote": "ملاحظتي",
+  "reflectionNoteLabel": "كرت ملاحظة تدبرية",
+  "remove": "إزالة",
+  "editNoteCard": "تعديل كرت الملاحظة",
+  "titleOptional": "عنوان الملاحظة (اختياري)",
+  "noteContentHint": "نص الملاحظة...",
+  "deleteNoteCard": "حذف كرت الملاحظة",
+  "deleteNoteCardConfirm": "هل أنت متأكد من حذف كرت هذه الملاحظة؟",
+  "addNoteCard": "إضافة كرت ملاحظة",
+  "addNoteCardHint": "سجّل ملاحظتك أو تدبرك ككرت مستقل في هذا الرابط:",
+  "noteTitleOptional": "عنوان الملاحظة (اختياري)",
+  "noteCardAddedSuccessfully": "تمت إضافة كرت الملاحظة بنجاح",
+  "linkNotFound": "الرابط غير موجود أو تم حذفه",
+  "shareViaQrCode": "مشاركة عبر رمز الاستجابة السريعة (QR)",
+  "addNoteShort": "إضافة ملاحظة",
+  "searchQuranicSupplications": "ابحث في أدعية القرآن الكريم...",
+  "clearedEmptyAnswersSuccessfully": "تم مسح الإجابات الفارغة بنجاح",
+  "tadbeerPauseSavedSuccessfully": "تم حفظ وقفة التدبر بنجاح",
+  "reflectionAnswerHint": "اكتب ما خطر ببالك...",
+  "doneAndSave": "تم وحفظ",
+  "saveAndFinish": "حفظ ما كتبت الآن وإنهاء",
+  "noMatchingBooks": "لا توجد نتائج مطابقة لبحثك",
+  "booksSectionIsEmpty": "هذا القسم فارغ حالياً",
+  "noSearchResultsHint": "جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.",
+  "emptySectionHint": "لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.",
+  "sectionsTitle": "الأقسام",
+  "myVersesSection": "آياتي",
+  "toolsSection": "الأدوات",
+  "appSection": "التطبيق",
+  "systemThemeLabel": "تلقائي ({mode})",
+  "@systemThemeLabel": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "systemThemeExplanation": "الوضع التلقائي: يتزامن مظهر التطبيق آلياً مع إعدادات هاتفك (المظهر المفعّل حالياً في جهازك: {mode}).",
+  "@systemThemeExplanation": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "exportNoteFailed": "تعذر تصدير الملاحظة: {error}",
+  "@exportNoteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWordCharCount": "{words} كلمة · {chars} حرف",
+  "@noteWordCharCount": {
+    "placeholders": {
+      "words": {
+        "type": "String"
+      },
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "searchInSection": "ابحث في {section}...",
+  "@searchInSection": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
+  "verseAddedToLink": "تمت إضافة الآية إلى رابط «{title}»",
+  "@verseAddedToLink": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "linkIncludesVerses": "يتضمن {count} آيات مرتبطة",
+  "@linkIncludesVerses": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "importedLinkTitle": "العنوان: {title}",
+  "@importedLinkTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "importedVersesCount": "الآيات المتضمنة: {count} آية",
+  "@importedVersesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "reflectionNotesCount": "كروت الملاحظات والتدبرات ({count})",
+  "@reflectionNotesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "connectedVersesCount": "الآيات المرتبطة ({count})",
+  "@connectedVersesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteLinkConfirm": "هل أنت متأكد من رغبتك في حذف رابط «{title}»؟",
+  "@deleteLinkConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "linkDeleted": "تم حذف رابط «{title}»",
+  "@linkDeleted": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "itemCopied": "تم نسخ {title} إلى الحافظة بنجاح",
+  "@itemCopied": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "duaAlert": "تنبيه: {text}",
+  "@duaAlert": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "questionOfTotal": "السؤال {number} من {total}",
+  "@questionOfTotal": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
 }

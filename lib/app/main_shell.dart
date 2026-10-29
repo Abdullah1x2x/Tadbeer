@@ -200,13 +200,13 @@ class _MainShellState extends State<MainShell>
       FloatingNavItem(
         icon: AppIcons.bookOpen,
         selectedIcon: AppIcons.bookOpenFill,
-        label: l10n.isArabic ? 'المصحف' : 'Mushaf',
+        label: l10n.mushaf,
       ),
       FloatingNavItem(
         // السبحة، حتى لا يشبه تبويب الأدعية.
         icon: FlutterIslamicIcons.tasbih2,
         selectedIcon: FlutterIslamicIcons.solidTasbih2,
-        label: l10n.isArabic ? 'الاستغفار' : 'Istighfar',
+        label: l10n.istighfar,
       ),
       FloatingNavItem(
         icon: AppIcons.handHeart,

@@ -222,9 +222,7 @@ class _VerseCanvasNode extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    context.l10n.isArabic
-                        ? '${surah.name} · ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
-                        : '${surah.name} · ${verse.ayahNumber}',
+                    '${surah.name} · ${context.l10n.digits(verse.ayahNumber)}',
                     style: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',
                       fontSize: 13,
@@ -268,7 +266,7 @@ class _VerseCanvasNode extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    context.l10n.isArabic ? 'ملاحظتي' : 'My note',
+                    context.l10n.myNote,
                     style: TextStyle(
                       fontSize: 12.0,
                       fontWeight: FontWeight.bold,
@@ -356,9 +354,7 @@ class _NoteCanvasNode extends StatelessWidget {
                   child: Text(
                     hasTitle
                         ? note.title!.trim()
-                        : (context.l10n.isArabic
-                              ? 'كرت ملاحظة تدبرية'
-                              : 'Reflection Note'),
+                        : (context.l10n.reflectionNoteLabel),
                     style: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',
                       fontSize: 13,

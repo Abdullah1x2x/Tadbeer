@@ -344,12 +344,8 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
               const SizedBox(height: 16),
               Text(
                 hasSearch
-                    ? (context.l10n.isArabic
-                          ? 'لا توجد نتائج مطابقة لبحثك'
-                          : 'No results match your search')
-                    : (context.l10n.isArabic
-                          ? 'هذا القسم فارغ حالياً'
-                          : 'This section is currently empty'),
+                    ? (context.l10n.noMatchingBooks)
+                    : (context.l10n.booksSectionIsEmpty),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontFamily: 'Amiri',
@@ -360,12 +356,8 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
               const SizedBox(height: 8),
               Text(
                 hasSearch
-                    ? (context.l10n.isArabic
-                          ? 'جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.'
-                          : 'Try searching with another word or choose a different category.')
-                    : (context.l10n.isArabic
-                          ? 'لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.'
-                          : 'No pamphlets or books have been added to this section yet.'),
+                    ? (context.l10n.noSearchResultsHint)
+                    : (context.l10n.emptySectionHint),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.5,

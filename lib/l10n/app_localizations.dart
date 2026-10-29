@@ -3329,6 +3329,570 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.'**
   String get downloadsHint;
+
+  /// No description provided for @mushaf.
+  ///
+  /// In ar, this message translates to:
+  /// **'المصحف'**
+  String get mushaf;
+
+  /// No description provided for @appColorTheme.
+  ///
+  /// In ar, this message translates to:
+  /// **'لون التطبيق'**
+  String get appColorTheme;
+
+  /// No description provided for @sourcesAndCreditsDetails.
+  ///
+  /// In ar, this message translates to:
+  /// **'• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.'**
+  String get sourcesAndCreditsDetails;
+
+  /// No description provided for @unsavedChanges.
+  ///
+  /// In ar, this message translates to:
+  /// **'تغييرات غير محفوظة'**
+  String get unsavedChanges;
+
+  /// No description provided for @discardChangesConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟'**
+  String get discardChangesConfirm;
+
+  /// No description provided for @discard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجاهل والخروج'**
+  String get discard;
+
+  /// No description provided for @cannotSaveAnEmptyNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن حفظ ملاحظة فارغة'**
+  String get cannotSaveAnEmptyNote;
+
+  /// No description provided for @editAyahReflection.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل تدبر الآية'**
+  String get editAyahReflection;
+
+  /// No description provided for @unsaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير محفوظ'**
+  String get unsaved;
+
+  /// No description provided for @saved.
+  ///
+  /// In ar, this message translates to:
+  /// **'محفوظ'**
+  String get saved;
+
+  /// No description provided for @reflectionTitleOptional.
+  ///
+  /// In ar, this message translates to:
+  /// **'عنوان التدبر (اختياري)...'**
+  String get reflectionTitleOptional;
+
+  /// No description provided for @instantSecureLocalSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ محلي فوري وآمن'**
+  String get instantSecureLocalSave;
+
+  /// No description provided for @bookmarkRemoved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف الفاصلة المرجعية'**
+  String get bookmarkRemoved;
+
+  /// No description provided for @undo.
+  ///
+  /// In ar, this message translates to:
+  /// **'تراجع'**
+  String get undo;
+
+  /// No description provided for @booksBooklets.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملازم والكتب'**
+  String get booksBooklets;
+
+  /// No description provided for @searchEmptyHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)'**
+  String get searchEmptyHint;
+
+  /// No description provided for @sectionHasNoItems.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد عناصر محفوظة في هذا القسم بعد'**
+  String get sectionHasNoItems;
+
+  /// No description provided for @systemTheme.
+  ///
+  /// In ar, this message translates to:
+  /// **'تلقائي'**
+  String get systemTheme;
+
+  /// No description provided for @lightThemeExplanation.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوضع النهاري: خلفية ورقية هادئة مع لمسات كحلية وذهبية لقراءة نهارية مريحة وواضحة.'**
+  String get lightThemeExplanation;
+
+  /// No description provided for @darkThemeExplanation.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوضع الليلي: ألوان كحلية ليلية مع لمسات ذهبية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.'**
+  String get darkThemeExplanation;
+
+  /// No description provided for @privacyOfflineTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'عمل محلي تام دون إنترنت (100% Offline-First)'**
+  String get privacyOfflineTitle;
+
+  /// No description provided for @privacyOfflineBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يطلب التطبيق إذن الإنترنت (android.permission.INTERNET) في ملف التكوين، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.'**
+  String get privacyOfflineBody;
+
+  /// No description provided for @privacyNoDataTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدم جمع أي بيانات شخصية (Zero Data Collection)'**
+  String get privacyNoDataTitle;
+
+  /// No description provided for @privacyNoDataBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يجمع التطبيق ولا يسجل ولا يشارك أي بيانات شخصية، أو معرّفات أجهزة، أو سجلات قراءة، أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق.'**
+  String get privacyNoDataBody;
+
+  /// No description provided for @privacyStorageTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تخزين محلي وتشفير عالي (AES-256)'**
+  String get privacyStorageTitle;
+
+  /// No description provided for @privacyStorageBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.'**
+  String get privacyStorageBody;
+
+  /// No description provided for @privacyPermissionsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'استخدام حصري ومحدد للأذونات (Device Permissions)'**
+  String get privacyPermissionsTitle;
+
+  /// No description provided for @privacyPermissionsBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.'**
+  String get privacyPermissionsBody;
+
+  /// No description provided for @privacyNoAdsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)'**
+  String get privacyNoAdsTitle;
+
+  /// No description provided for @privacyNoAdsBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.'**
+  String get privacyNoAdsBody;
+
+  /// No description provided for @privacyOpenSourceBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.'**
+  String get privacyOpenSourceBody;
+
+  /// No description provided for @createLinkWithVerseHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء رابط جديد وربط هذه الآية به مباشرة'**
+  String get createLinkWithVerseHint;
+
+  /// No description provided for @alreadyAdded.
+  ///
+  /// In ar, this message translates to:
+  /// **'مضافة بالفعل'**
+  String get alreadyAdded;
+
+  /// No description provided for @shareAyahLinkOffline.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة رابط الآيات دون إنترنت'**
+  String get shareAyahLinkOffline;
+
+  /// No description provided for @qrScanHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.'**
+  String get qrScanHint;
+
+  /// No description provided for @linkDataCopiedToClipboard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم نسخ بيانات الرابط إلى الحافظة'**
+  String get linkDataCopiedToClipboard;
+
+  /// No description provided for @copyData.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ البيانات'**
+  String get copyData;
+
+  /// No description provided for @importAyahLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'استيراد رابط آيات'**
+  String get importAyahLink;
+
+  /// No description provided for @importLinkHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:'**
+  String get importLinkHint;
+
+  /// No description provided for @importLinkFieldHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصق الرابط أو النص الممسوح هنا...'**
+  String get importLinkFieldHint;
+
+  /// No description provided for @pasteFromClipboard.
+  ///
+  /// In ar, this message translates to:
+  /// **'لصق من الحافظة'**
+  String get pasteFromClipboard;
+
+  /// No description provided for @importNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'استيراد الآن'**
+  String get importNow;
+
+  /// No description provided for @editAyahLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل رابط الآيات'**
+  String get editAyahLink;
+
+  /// No description provided for @titleRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'يرجى إدخال عنوان الرابط'**
+  String get titleRequired;
+
+  /// No description provided for @create.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء'**
+  String get create;
+
+  /// No description provided for @reflectionNoteCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'كرت ملاحظة تدبرية'**
+  String get reflectionNoteCard;
+
+  /// No description provided for @noteCopiedToClipboard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم نسخ نص الملاحظة إلى الحافظة'**
+  String get noteCopiedToClipboard;
+
+  /// No description provided for @copyText.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ النص'**
+  String get copyText;
+
+  /// No description provided for @deleteNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الملاحظة'**
+  String get deleteNote;
+
+  /// No description provided for @myNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظتي'**
+  String get myNote;
+
+  /// No description provided for @reflectionNoteLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'كرت ملاحظة تدبرية'**
+  String get reflectionNoteLabel;
+
+  /// No description provided for @remove.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة'**
+  String get remove;
+
+  /// No description provided for @editNoteCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل كرت الملاحظة'**
+  String get editNoteCard;
+
+  /// No description provided for @titleOptional.
+  ///
+  /// In ar, this message translates to:
+  /// **'عنوان الملاحظة (اختياري)'**
+  String get titleOptional;
+
+  /// No description provided for @noteContentHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'نص الملاحظة...'**
+  String get noteContentHint;
+
+  /// No description provided for @deleteNoteCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف كرت الملاحظة'**
+  String get deleteNoteCard;
+
+  /// No description provided for @deleteNoteCardConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'هل أنت متأكد من حذف كرت هذه الملاحظة؟'**
+  String get deleteNoteCardConfirm;
+
+  /// No description provided for @addNoteCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة كرت ملاحظة'**
+  String get addNoteCard;
+
+  /// No description provided for @addNoteCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'سجّل ملاحظتك أو تدبرك ككرت مستقل في هذا الرابط:'**
+  String get addNoteCardHint;
+
+  /// No description provided for @noteTitleOptional.
+  ///
+  /// In ar, this message translates to:
+  /// **'عنوان الملاحظة (اختياري)'**
+  String get noteTitleOptional;
+
+  /// No description provided for @noteCardAddedSuccessfully.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت إضافة كرت الملاحظة بنجاح'**
+  String get noteCardAddedSuccessfully;
+
+  /// No description provided for @linkNotFound.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرابط غير موجود أو تم حذفه'**
+  String get linkNotFound;
+
+  /// No description provided for @shareViaQrCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة عبر رمز الاستجابة السريعة (QR)'**
+  String get shareViaQrCode;
+
+  /// No description provided for @addNoteShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة ملاحظة'**
+  String get addNoteShort;
+
+  /// No description provided for @searchQuranicSupplications.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث في أدعية القرآن الكريم...'**
+  String get searchQuranicSupplications;
+
+  /// No description provided for @clearedEmptyAnswersSuccessfully.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم مسح الإجابات الفارغة بنجاح'**
+  String get clearedEmptyAnswersSuccessfully;
+
+  /// No description provided for @tadbeerPauseSavedSuccessfully.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حفظ وقفة التدبر بنجاح'**
+  String get tadbeerPauseSavedSuccessfully;
+
+  /// No description provided for @reflectionAnswerHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب ما خطر ببالك...'**
+  String get reflectionAnswerHint;
+
+  /// No description provided for @doneAndSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم وحفظ'**
+  String get doneAndSave;
+
+  /// No description provided for @saveAndFinish.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ ما كتبت الآن وإنهاء'**
+  String get saveAndFinish;
+
+  /// No description provided for @noMatchingBooks.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد نتائج مطابقة لبحثك'**
+  String get noMatchingBooks;
+
+  /// No description provided for @booksSectionIsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا القسم فارغ حالياً'**
+  String get booksSectionIsEmpty;
+
+  /// No description provided for @noSearchResultsHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.'**
+  String get noSearchResultsHint;
+
+  /// No description provided for @emptySectionHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.'**
+  String get emptySectionHint;
+
+  /// No description provided for @sectionsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأقسام'**
+  String get sectionsTitle;
+
+  /// No description provided for @myVersesSection.
+  ///
+  /// In ar, this message translates to:
+  /// **'آياتي'**
+  String get myVersesSection;
+
+  /// No description provided for @toolsSection.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأدوات'**
+  String get toolsSection;
+
+  /// No description provided for @appSection.
+  ///
+  /// In ar, this message translates to:
+  /// **'التطبيق'**
+  String get appSection;
+
+  /// No description provided for @systemThemeLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'تلقائي ({mode})'**
+  String systemThemeLabel(String mode);
+
+  /// No description provided for @systemThemeExplanation.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوضع التلقائي: يتزامن مظهر التطبيق آلياً مع إعدادات هاتفك (المظهر المفعّل حالياً في جهازك: {mode}).'**
+  String systemThemeExplanation(String mode);
+
+  /// No description provided for @exportNoteFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تصدير الملاحظة: {error}'**
+  String exportNoteFailed(String error);
+
+  /// No description provided for @noteWordCharCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{words} كلمة · {chars} حرف'**
+  String noteWordCharCount(String words, String chars);
+
+  /// No description provided for @searchInSection.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث في {section}...'**
+  String searchInSection(String section);
+
+  /// No description provided for @verseAddedToLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت إضافة الآية إلى رابط «{title}»'**
+  String verseAddedToLink(String title);
+
+  /// No description provided for @linkIncludesVerses.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتضمن {count} آيات مرتبطة'**
+  String linkIncludesVerses(String count);
+
+  /// No description provided for @importedLinkTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'العنوان: {title}'**
+  String importedLinkTitle(String title);
+
+  /// No description provided for @importedVersesCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآيات المتضمنة: {count} آية'**
+  String importedVersesCount(String count);
+
+  /// No description provided for @reflectionNotesCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'كروت الملاحظات والتدبرات ({count})'**
+  String reflectionNotesCount(String count);
+
+  /// No description provided for @connectedVersesCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآيات المرتبطة ({count})'**
+  String connectedVersesCount(String count);
+
+  /// No description provided for @deleteLinkConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'هل أنت متأكد من رغبتك في حذف رابط «{title}»؟'**
+  String deleteLinkConfirm(String title);
+
+  /// No description provided for @linkDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم حذف رابط «{title}»'**
+  String linkDeleted(String title);
+
+  /// No description provided for @itemCopied.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم نسخ {title} إلى الحافظة بنجاح'**
+  String itemCopied(String title);
+
+  /// No description provided for @duaAlert.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه: {text}'**
+  String duaAlert(String text);
+
+  /// No description provided for @questionOfTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'السؤال {number} من {total}'**
+  String questionOfTotal(String number, String total);
 }
 
 class _AppLocalizationsDelegate

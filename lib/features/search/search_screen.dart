@@ -191,9 +191,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     hintText: _selectedProviderId != null
-                        ? (l10n.isArabic
-                              ? 'ابحث في ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...'
-                              : 'Search in ${providers.firstWhere((p) => p.id == _selectedProviderId, orElse: () => providers.first).getSectionTitle(context)}...')
+                        ? (l10n.searchInSection(
+                            providers
+                                .firstWhere(
+                                  (p) => p.id == _selectedProviderId,
+                                  orElse: () => providers.first,
+                                )
+                                .getSectionTitle(context),
+                          ))
                         : l10n.searchGlobalPlaceholder,
                     hintStyle: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',
@@ -410,12 +415,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                 Text(
                                   _selectedProviderId != null && !hasQuery
                                       ? (_selectedProviderId == 'quran'
-                                            ? (l10n.isArabic
-                                                  ? 'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)'
-                                                  : 'Type a word, surah name, or search by root (e.g. root:sbr)')
-                                            : (l10n.isArabic
-                                                  ? 'لا توجد عناصر محفوظة في هذا القسم بعد'
-                                                  : 'No saved items in this section yet'))
+                                            ? (l10n.searchEmptyHint)
+                                            : (l10n.sectionHasNoItems))
                                       : l10n.noSearchResults,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

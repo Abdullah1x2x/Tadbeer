@@ -29,11 +29,7 @@ class AyahLinkOrderedView extends StatelessWidget {
     Clipboard.setData(ClipboardData(text: note.content));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          context.l10n.isArabic
-              ? 'تم نسخ نص الملاحظة إلى الحافظة'
-              : 'Note copied to clipboard',
-        ),
+        content: Text(context.l10n.noteCopiedToClipboard),
         backgroundColor: Theme.of(context).colorScheme.primary,
         behavior: SnackBarBehavior.floating,
       ),
@@ -117,9 +113,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    context.l10n.isArabic
-                        ? 'كروت الملاحظات والتدبرات (${ArabicSearchNormalizer.toArabicDigits(notes.length)})'
-                        : 'Reflection Notes (${notes.length})',
+                    context.l10n.reflectionNotesCount(notes.length),
                     style: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',
                       fontSize: 16,
@@ -155,9 +149,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    context.l10n.isArabic
-                        ? 'الآيات المرتبطة (${ArabicSearchNormalizer.toArabicDigits(verses.length)})'
-                        : 'Connected Verses (${verses.length})',
+                    context.l10n.connectedVersesCount(verses.length),
                     style: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',
                       fontSize: 16,
@@ -281,9 +273,10 @@ class AyahLinkOrderedView extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              context.l10n.isArabic
-                                  ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
-                                  : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
+                              context.l10n.ayahReference(
+                                surah.name,
+                                verse.ayahNumber,
+                              ),
                               style: TextStyle(
                                 fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 14,
@@ -476,11 +469,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  hasTitle
-                      ? title.trim()
-                      : (context.l10n.isArabic
-                            ? 'كرت ملاحظة تدبرية'
-                            : 'Reflection Note Card'),
+                  hasTitle ? title.trim() : (context.l10n.reflectionNoteCard),
                   style: TextStyle(
                     fontFamily: 'IBMPlexSansArabic',
                     fontSize: 15,
@@ -504,21 +493,17 @@ class _AyahLinkNoteCard extends StatelessWidget {
                   appMenuItem(
                     value: 'edit',
                     icon: AppIcons.pencilSimple,
-                    label: context.l10n.isArabic
-                        ? 'تعديل الملاحظة'
-                        : 'Edit Note',
+                    label: context.l10n.editVerseNote,
                   ),
                   appMenuItem(
                     value: 'copy',
                     icon: AppIcons.copy,
-                    label: context.l10n.isArabic ? 'نسخ النص' : 'Copy Text',
+                    label: context.l10n.copyText,
                   ),
                   appMenuItem(
                     value: 'delete',
                     icon: AppIcons.trash,
-                    label: context.l10n.isArabic
-                        ? 'حذف الملاحظة'
-                        : 'Delete Note',
+                    label: context.l10n.deleteNote,
                     destructive: true,
                   ),
                 ],

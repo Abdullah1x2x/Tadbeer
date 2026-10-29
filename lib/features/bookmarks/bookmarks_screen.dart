@@ -147,13 +147,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      l10n.isArabic
-                                          ? 'تم حذف الفاصلة المرجعية'
-                                          : 'Bookmark removed',
-                                    ),
+                                    content: Text(l10n.bookmarkRemoved),
                                     action: SnackBarAction(
-                                      label: l10n.isArabic ? 'تراجع' : 'Undo',
+                                      label: l10n.undo,
                                       onPressed: () {
                                         UserDataStore.instance.putBookmark(
                                           item,

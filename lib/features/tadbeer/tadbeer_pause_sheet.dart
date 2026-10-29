@@ -105,12 +105,8 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
         SnackBar(
           content: Text(
             answers.isEmpty
-                ? (l10n.isArabic
-                      ? 'تم مسح الإجابات الفارغة بنجاح'
-                      : 'Cleared empty answers successfully')
-                : (l10n.isArabic
-                      ? 'تم حفظ وقفة التدبر بنجاح'
-                      : 'Tadbeer pause saved successfully'),
+                ? (l10n.clearedEmptyAnswersSuccessfully)
+                : (l10n.tadbeerPauseSavedSuccessfully),
             textAlign: TextAlign.center,
           ),
           backgroundColor: AppColors.olive,
@@ -297,9 +293,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      l10n.isArabic
-                          ? 'السؤال ${ArabicSearchNormalizer.toArabicDigits(questionNumber)} من ٤'
-                          : 'Question $questionNumber of 4',
+                      l10n.questionOfTotal(questionNumber, 4),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -369,9 +363,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         : AppColors.dayQuranText,
                   ),
                   decoration: InputDecoration(
-                    hintText: l10n.isArabic
-                        ? 'اكتب ما خطر ببالك...'
-                        : 'Write your thoughts here...',
+                    hintText: l10n.reflectionAnswerHint,
                     hintStyle: TextStyle(
                       color: isDark
                           ? AppColors.nightSubtitle
@@ -439,8 +431,8 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         ),
                         label: Text(
                           _currentQuestionIndex < _questions.length - 1
-                              ? (l10n.isArabic ? 'التالي' : 'Next')
-                              : (l10n.isArabic ? 'تم وحفظ' : 'Done & Save'),
+                              ? (l10n.next)
+                              : (l10n.doneAndSave),
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -455,11 +447,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                     child: TextButton.icon(
                       onPressed: _saveAndClose,
                       icon: const Icon(AppIcons.floppyDisk, size: 16),
-                      label: Text(
-                        l10n.isArabic
-                            ? 'حفظ ما كتبت الآن وإنهاء'
-                            : 'Save reflections & finish',
-                      ),
+                      label: Text(l10n.saveAndFinish),
                       style: TextButton.styleFrom(
                         foregroundColor: isDark
                             ? AppColors.oliveSoft

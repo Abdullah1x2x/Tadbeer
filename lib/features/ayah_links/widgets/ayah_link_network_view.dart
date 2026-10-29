@@ -345,9 +345,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            context.l10n.isArabic
-                ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
-                : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
+            context.l10n.ayahReference(surah.name, verse.ayahNumber),
             style: TextStyle(
               fontFamily: 'IBMPlexSansArabic',
               fontSize: 16,
@@ -356,9 +354,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
             ),
           ),
           Text(
-            context.l10n.isArabic
-                ? 'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}'
-                : 'p. ${verse.page}',
+            context.l10n.pageAbbr(verse.page),
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.bold,
@@ -552,11 +548,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              hasTitle
-                  ? note.title!.trim()
-                  : (context.l10n.isArabic
-                        ? 'كرت ملاحظة تدبرية'
-                        : 'Reflection Note Card'),
+              hasTitle ? note.title!.trim() : (context.l10n.reflectionNoteCard),
               style: TextStyle(
                 fontFamily: 'IBMPlexSansArabic',
                 fontSize: 16,
@@ -593,11 +585,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 Clipboard.setData(ClipboardData(text: note.content));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(
-                      context.l10n.isArabic
-                          ? 'تم نسخ نص الملاحظة إلى الحافظة'
-                          : 'Note copied to clipboard',
-                    ),
+                    content: Text(context.l10n.noteCopiedToClipboard),
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -613,7 +601,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               ),
               icon: const Icon(AppIcons.copy, size: 18),
               label: Text(
-                context.l10n.isArabic ? 'نسخ النص' : 'Copy Text',
+                context.l10n.copyText,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -622,7 +610,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
           IconButton.filledTonal(
             icon: const Icon(AppIcons.notePencil, size: 20),
-            tooltip: context.l10n.isArabic ? 'تعديل الملاحظة' : 'Edit Note',
+            tooltip: context.l10n.editVerseNote,
             onPressed: () {
               Navigator.pop(bottomSheetCtx);
               editAyahLinkNoteCard(context, widget.link.id, note);
@@ -632,7 +620,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
           IconButton.filledTonal(
             icon: const Icon(AppIcons.trash, size: 20, color: Colors.redAccent),
-            tooltip: context.l10n.isArabic ? 'حذف الملاحظة' : 'Delete Note',
+            tooltip: context.l10n.deleteNote,
             onPressed: () {
               Navigator.pop(bottomSheetCtx);
               confirmDeleteAyahLinkNoteCard(context, widget.link.id, note);

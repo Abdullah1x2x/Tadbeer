@@ -46,11 +46,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
       final l10n = context.l10n;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            l10n.isArabic
-                ? 'تمت إضافة الآية إلى رابط «$linkTitle»'
-                : 'Verse added to link "$linkTitle"',
-          ),
+          content: Text(l10n.verseAddedToLink(linkTitle)),
           backgroundColor: Theme.of(context).colorScheme.primary,
           behavior: SnackBarBehavior.floating,
         ),
@@ -186,9 +182,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                       ),
                     ),
                     subtitle: Text(
-                      l10n.isArabic
-                          ? 'إنشاء رابط جديد وربط هذه الآية به مباشرة'
-                          : 'Create a new link and add this verse directly',
+                      l10n.createLinkWithVerseHint,
                       style: const TextStyle(fontSize: 12),
                     ),
                     onTap: _createNewLinkAndAdd,
@@ -263,9 +257,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                             ),
                             trailing: isAlreadyLinked
                                 ? Text(
-                                    l10n.isArabic
-                                        ? 'مضافة بالفعل'
-                                        : 'Already added',
+                                    l10n.alreadyAdded,
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Theme.of(context)

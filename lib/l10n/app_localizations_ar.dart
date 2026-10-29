@@ -1857,4 +1857,339 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get downloadsHint =>
       'السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.';
+
+  @override
+  String get mushaf => 'المصحف';
+
+  @override
+  String get appColorTheme => 'لون التطبيق';
+
+  @override
+  String get sourcesAndCreditsDetails =>
+      '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.';
+
+  @override
+  String get unsavedChanges => 'تغييرات غير محفوظة';
+
+  @override
+  String get discardChangesConfirm =>
+      'هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟';
+
+  @override
+  String get discard => 'تجاهل والخروج';
+
+  @override
+  String get cannotSaveAnEmptyNote => 'لا يمكن حفظ ملاحظة فارغة';
+
+  @override
+  String get editAyahReflection => 'تعديل تدبر الآية';
+
+  @override
+  String get unsaved => 'غير محفوظ';
+
+  @override
+  String get saved => 'محفوظ';
+
+  @override
+  String get reflectionTitleOptional => 'عنوان التدبر (اختياري)...';
+
+  @override
+  String get instantSecureLocalSave => 'حفظ محلي فوري وآمن';
+
+  @override
+  String get bookmarkRemoved => 'تم حذف الفاصلة المرجعية';
+
+  @override
+  String get undo => 'تراجع';
+
+  @override
+  String get booksBooklets => 'الملازم والكتب';
+
+  @override
+  String get searchEmptyHint =>
+      'اكتب كلمة أو اسم سورة أو ابحث بالجذر اللغوي (مثال: جذر صبر)';
+
+  @override
+  String get sectionHasNoItems => 'لا توجد عناصر محفوظة في هذا القسم بعد';
+
+  @override
+  String get systemTheme => 'تلقائي';
+
+  @override
+  String get lightThemeExplanation =>
+      'الوضع النهاري: خلفية ورقية هادئة مع لمسات كحلية وذهبية لقراءة نهارية مريحة وواضحة.';
+
+  @override
+  String get darkThemeExplanation =>
+      'الوضع الليلي: ألوان كحلية ليلية مع لمسات ذهبية صُممت خصيصاً لتقليل إجهاد النظر والسطوع أثناء التلاوة والتدبر الطويل.';
+
+  @override
+  String get privacyOfflineTitle =>
+      'عمل محلي تام دون إنترنت (100% Offline-First)';
+
+  @override
+  String get privacyOfflineBody =>
+      'لا يطلب التطبيق إذن الإنترنت (android.permission.INTERNET) في ملف التكوين، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.';
+
+  @override
+  String get privacyNoDataTitle =>
+      'عدم جمع أي بيانات شخصية (Zero Data Collection)';
+
+  @override
+  String get privacyNoDataBody =>
+      'لا يجمع التطبيق ولا يسجل ولا يشارك أي بيانات شخصية، أو معرّفات أجهزة، أو سجلات قراءة، أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق.';
+
+  @override
+  String get privacyStorageTitle => 'تخزين محلي وتشفير عالي (AES-256)';
+
+  @override
+  String get privacyStorageBody =>
+      'تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.';
+
+  @override
+  String get privacyPermissionsTitle =>
+      'استخدام حصري ومحدد للأذونات (Device Permissions)';
+
+  @override
+  String get privacyPermissionsBody =>
+      'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.';
+
+  @override
+  String get privacyNoAdsTitle =>
+      'خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)';
+
+  @override
+  String get privacyNoAdsBody =>
+      'التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.';
+
+  @override
+  String get privacyOpenSourceBody =>
+      'تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.';
+
+  @override
+  String get createLinkWithVerseHint =>
+      'إنشاء رابط جديد وربط هذه الآية به مباشرة';
+
+  @override
+  String get alreadyAdded => 'مضافة بالفعل';
+
+  @override
+  String get shareAyahLinkOffline => 'مشاركة رابط الآيات دون إنترنت';
+
+  @override
+  String get qrScanHint =>
+      'يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.';
+
+  @override
+  String get linkDataCopiedToClipboard => 'تم نسخ بيانات الرابط إلى الحافظة';
+
+  @override
+  String get copyData => 'نسخ البيانات';
+
+  @override
+  String get importAyahLink => 'استيراد رابط آيات';
+
+  @override
+  String get importLinkHint =>
+      'الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:';
+
+  @override
+  String get importLinkFieldHint => 'الصق الرابط أو النص الممسوح هنا...';
+
+  @override
+  String get pasteFromClipboard => 'لصق من الحافظة';
+
+  @override
+  String get importNow => 'استيراد الآن';
+
+  @override
+  String get editAyahLink => 'تعديل رابط الآيات';
+
+  @override
+  String get titleRequired => 'يرجى إدخال عنوان الرابط';
+
+  @override
+  String get create => 'إنشاء';
+
+  @override
+  String get reflectionNoteCard => 'كرت ملاحظة تدبرية';
+
+  @override
+  String get noteCopiedToClipboard => 'تم نسخ نص الملاحظة إلى الحافظة';
+
+  @override
+  String get copyText => 'نسخ النص';
+
+  @override
+  String get deleteNote => 'حذف الملاحظة';
+
+  @override
+  String get myNote => 'ملاحظتي';
+
+  @override
+  String get reflectionNoteLabel => 'كرت ملاحظة تدبرية';
+
+  @override
+  String get remove => 'إزالة';
+
+  @override
+  String get editNoteCard => 'تعديل كرت الملاحظة';
+
+  @override
+  String get titleOptional => 'عنوان الملاحظة (اختياري)';
+
+  @override
+  String get noteContentHint => 'نص الملاحظة...';
+
+  @override
+  String get deleteNoteCard => 'حذف كرت الملاحظة';
+
+  @override
+  String get deleteNoteCardConfirm => 'هل أنت متأكد من حذف كرت هذه الملاحظة؟';
+
+  @override
+  String get addNoteCard => 'إضافة كرت ملاحظة';
+
+  @override
+  String get addNoteCardHint =>
+      'سجّل ملاحظتك أو تدبرك ككرت مستقل في هذا الرابط:';
+
+  @override
+  String get noteTitleOptional => 'عنوان الملاحظة (اختياري)';
+
+  @override
+  String get noteCardAddedSuccessfully => 'تمت إضافة كرت الملاحظة بنجاح';
+
+  @override
+  String get linkNotFound => 'الرابط غير موجود أو تم حذفه';
+
+  @override
+  String get shareViaQrCode => 'مشاركة عبر رمز الاستجابة السريعة (QR)';
+
+  @override
+  String get addNoteShort => 'إضافة ملاحظة';
+
+  @override
+  String get searchQuranicSupplications => 'ابحث في أدعية القرآن الكريم...';
+
+  @override
+  String get clearedEmptyAnswersSuccessfully => 'تم مسح الإجابات الفارغة بنجاح';
+
+  @override
+  String get tadbeerPauseSavedSuccessfully => 'تم حفظ وقفة التدبر بنجاح';
+
+  @override
+  String get reflectionAnswerHint => 'اكتب ما خطر ببالك...';
+
+  @override
+  String get doneAndSave => 'تم وحفظ';
+
+  @override
+  String get saveAndFinish => 'حفظ ما كتبت الآن وإنهاء';
+
+  @override
+  String get noMatchingBooks => 'لا توجد نتائج مطابقة لبحثك';
+
+  @override
+  String get booksSectionIsEmpty => 'هذا القسم فارغ حالياً';
+
+  @override
+  String get noSearchResultsHint =>
+      'جرّب البحث بكلمة أخرى أو اختر تصنيفاً أو سلسلة أخرى.';
+
+  @override
+  String get emptySectionHint =>
+      'لم تتم إضافة أي ملازم أو كتب في هذا القسم بعد.';
+
+  @override
+  String get sectionsTitle => 'الأقسام';
+
+  @override
+  String get myVersesSection => 'آياتي';
+
+  @override
+  String get toolsSection => 'الأدوات';
+
+  @override
+  String get appSection => 'التطبيق';
+
+  @override
+  String systemThemeLabel(String mode) {
+    return 'تلقائي ($mode)';
+  }
+
+  @override
+  String systemThemeExplanation(String mode) {
+    return 'الوضع التلقائي: يتزامن مظهر التطبيق آلياً مع إعدادات هاتفك (المظهر المفعّل حالياً في جهازك: $mode).';
+  }
+
+  @override
+  String exportNoteFailed(String error) {
+    return 'تعذر تصدير الملاحظة: $error';
+  }
+
+  @override
+  String noteWordCharCount(String words, String chars) {
+    return '$words كلمة · $chars حرف';
+  }
+
+  @override
+  String searchInSection(String section) {
+    return 'ابحث في $section...';
+  }
+
+  @override
+  String verseAddedToLink(String title) {
+    return 'تمت إضافة الآية إلى رابط «$title»';
+  }
+
+  @override
+  String linkIncludesVerses(String count) {
+    return 'يتضمن $count آيات مرتبطة';
+  }
+
+  @override
+  String importedLinkTitle(String title) {
+    return 'العنوان: $title';
+  }
+
+  @override
+  String importedVersesCount(String count) {
+    return 'الآيات المتضمنة: $count آية';
+  }
+
+  @override
+  String reflectionNotesCount(String count) {
+    return 'كروت الملاحظات والتدبرات ($count)';
+  }
+
+  @override
+  String connectedVersesCount(String count) {
+    return 'الآيات المرتبطة ($count)';
+  }
+
+  @override
+  String deleteLinkConfirm(String title) {
+    return 'هل أنت متأكد من رغبتك في حذف رابط «$title»؟';
+  }
+
+  @override
+  String linkDeleted(String title) {
+    return 'تم حذف رابط «$title»';
+  }
+
+  @override
+  String itemCopied(String title) {
+    return 'تم نسخ $title إلى الحافظة بنجاح';
+  }
+
+  @override
+  String duaAlert(String text) {
+    return 'تنبيه: $text';
+  }
+
+  @override
+  String questionOfTotal(String number, String total) {
+    return 'السؤال $number من $total';
+  }
 }

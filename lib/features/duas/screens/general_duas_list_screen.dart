@@ -55,9 +55,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.isArabic
-              ? 'تم نسخ ${item.title} إلى الحافظة بنجاح'
-              : '${item.title} copied to clipboard',
+          context.l10n.itemCopied(item.title),
           textAlign: TextAlign.center,
           style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
         ),

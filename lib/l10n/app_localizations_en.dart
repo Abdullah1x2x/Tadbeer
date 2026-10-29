@@ -1860,4 +1860,338 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get downloadsHint =>
       'Downloaded surahs play offline; the rest stream when you are connected.';
+
+  @override
+  String get mushaf => 'Mushaf';
+
+  @override
+  String get appColorTheme => 'App color';
+
+  @override
+  String get sourcesAndCreditsDetails =>
+      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia (Quranpedia.net — release 2026-10-10) and classical & modern Arabic dictionaries (Lisan al-Arab, Maqayis al-Lughah, Al-Tibyan, Tadhkirat al-Arib, Mufradat al-Raghib, and Al-Mu\'jam al-Wasit).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Madinah Mushaf script: page fonts (QCF) by the King Fahd Glorious Quran Printing Complex, with line layout from Quran.com data.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
+
+  @override
+  String get unsavedChanges => 'Unsaved Changes';
+
+  @override
+  String get discardChangesConfirm =>
+      'Do you want to discard your unsaved changes and leave?';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get cannotSaveAnEmptyNote => 'Cannot save an empty note';
+
+  @override
+  String get editAyahReflection => 'Edit Ayah Reflection';
+
+  @override
+  String get unsaved => 'Unsaved';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String get reflectionTitleOptional => 'Reflection title (optional)...';
+
+  @override
+  String get instantSecureLocalSave => 'Instant & secure local save';
+
+  @override
+  String get bookmarkRemoved => 'Bookmark removed';
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get booksBooklets => 'Books & Booklets';
+
+  @override
+  String get searchEmptyHint =>
+      'Type a word, surah name, or search by root (e.g. root:sbr)';
+
+  @override
+  String get sectionHasNoItems => 'No saved items in this section yet';
+
+  @override
+  String get systemTheme => 'System';
+
+  @override
+  String get lightThemeExplanation =>
+      'Light Mode: Calm paper tones with navy and gold accents for comfortable daytime reading.';
+
+  @override
+  String get darkThemeExplanation =>
+      'Dark Mode: Deep night-navy tones with gold accents, engineered to minimize eye fatigue during extended nighttime reading.';
+
+  @override
+  String get privacyOfflineTitle => '100% Offline-First by Architecture';
+
+  @override
+  String get privacyOfflineBody =>
+      'The application does not request internet permission and operates completely independently on your local device without external servers.';
+
+  @override
+  String get privacyNoDataTitle => 'Zero Personal Data Collection';
+
+  @override
+  String get privacyNoDataBody =>
+      'Tadbeer does not collect, record, transmit, or share any personal identity information, usage habits, or device identifiers.';
+
+  @override
+  String get privacyStorageTitle => 'Local Storage & AES-256 Encryption';
+
+  @override
+  String get privacyStorageBody =>
+      'All reflections and notes reside strictly in on-device SQLite storage. Exported backups are encrypted locally with AES-256-CBC and verified via SHA-256.';
+
+  @override
+  String get privacyPermissionsTitle => 'Strictly Scoped Device Permissions';
+
+  @override
+  String get privacyPermissionsBody =>
+      'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.';
+
+  @override
+  String get privacyNoAdsTitle => 'Zero Advertisements & Trackers';
+
+  @override
+  String get privacyNoAdsBody =>
+      'The app is completely free from advertising SDKs, marketing trackers, and analytics frameworks.';
+
+  @override
+  String get privacyOpenSourceBody =>
+      'Tadbeer is an open-source project licensed under MIT, fully accessible for public review and audit on GitHub.';
+
+  @override
+  String get createLinkWithVerseHint =>
+      'Create a new link and add this verse directly';
+
+  @override
+  String get alreadyAdded => 'Already added';
+
+  @override
+  String get shareAyahLinkOffline => 'Share Ayah Link Offline';
+
+  @override
+  String get qrScanHint =>
+      'This code can be scanned from another Tadbeer device to import the link offline.';
+
+  @override
+  String get linkDataCopiedToClipboard => 'Link data copied to clipboard';
+
+  @override
+  String get copyData => 'Copy Data';
+
+  @override
+  String get importAyahLink => 'Import Ayah Link';
+
+  @override
+  String get importLinkHint =>
+      'Paste the share code or link data below to import it into your links:';
+
+  @override
+  String get importLinkFieldHint => 'Paste link or scanned text here...';
+
+  @override
+  String get pasteFromClipboard => 'Paste from clipboard';
+
+  @override
+  String get importNow => 'Import Now';
+
+  @override
+  String get editAyahLink => 'Edit Ayah Link';
+
+  @override
+  String get titleRequired => 'Please enter a title';
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String get reflectionNoteCard => 'Reflection Note Card';
+
+  @override
+  String get noteCopiedToClipboard => 'Note copied to clipboard';
+
+  @override
+  String get copyText => 'Copy Text';
+
+  @override
+  String get deleteNote => 'Delete Note';
+
+  @override
+  String get myNote => 'My note';
+
+  @override
+  String get reflectionNoteLabel => 'Reflection Note';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get editNoteCard => 'Edit Note Card';
+
+  @override
+  String get titleOptional => 'Title (optional)';
+
+  @override
+  String get noteContentHint => 'Note content...';
+
+  @override
+  String get deleteNoteCard => 'Delete Note Card';
+
+  @override
+  String get deleteNoteCardConfirm =>
+      'Are you sure you want to delete this note card?';
+
+  @override
+  String get addNoteCard => 'Add Note Card';
+
+  @override
+  String get addNoteCardHint =>
+      'Record your reflection as an independent card in this link:';
+
+  @override
+  String get noteTitleOptional => 'Note title (optional)';
+
+  @override
+  String get noteCardAddedSuccessfully => 'Note card added successfully';
+
+  @override
+  String get linkNotFound => 'Link not found or has been deleted';
+
+  @override
+  String get shareViaQrCode => 'Share via QR Code';
+
+  @override
+  String get addNoteShort => 'Add Note';
+
+  @override
+  String get searchQuranicSupplications => 'Search Quranic supplications...';
+
+  @override
+  String get clearedEmptyAnswersSuccessfully =>
+      'Cleared empty answers successfully';
+
+  @override
+  String get tadbeerPauseSavedSuccessfully =>
+      'Tadbeer pause saved successfully';
+
+  @override
+  String get reflectionAnswerHint => 'Write your thoughts here...';
+
+  @override
+  String get doneAndSave => 'Done & Save';
+
+  @override
+  String get saveAndFinish => 'Save reflections & finish';
+
+  @override
+  String get noMatchingBooks => 'No results match your search';
+
+  @override
+  String get booksSectionIsEmpty => 'This section is currently empty';
+
+  @override
+  String get noSearchResultsHint =>
+      'Try searching with another word or choose a different category.';
+
+  @override
+  String get emptySectionHint =>
+      'No pamphlets or books have been added to this section yet.';
+
+  @override
+  String get sectionsTitle => 'Sections';
+
+  @override
+  String get myVersesSection => 'My verses';
+
+  @override
+  String get toolsSection => 'Tools';
+
+  @override
+  String get appSection => 'App';
+
+  @override
+  String systemThemeLabel(String mode) {
+    return 'System ($mode)';
+  }
+
+  @override
+  String systemThemeExplanation(String mode) {
+    return 'System Mode: Automatically synchronizes with your device settings (Currently active: $mode).';
+  }
+
+  @override
+  String exportNoteFailed(String error) {
+    return 'Failed to export note: $error';
+  }
+
+  @override
+  String noteWordCharCount(String words, String chars) {
+    return '$words words · $chars chars';
+  }
+
+  @override
+  String searchInSection(String section) {
+    return 'Search in $section...';
+  }
+
+  @override
+  String verseAddedToLink(String title) {
+    return 'Verse added to link \"$title\"';
+  }
+
+  @override
+  String linkIncludesVerses(String count) {
+    return 'Includes $count linked verses';
+  }
+
+  @override
+  String importedLinkTitle(String title) {
+    return 'Title: $title';
+  }
+
+  @override
+  String importedVersesCount(String count) {
+    return 'Included verses: $count verses';
+  }
+
+  @override
+  String reflectionNotesCount(String count) {
+    return 'Reflection Notes ($count)';
+  }
+
+  @override
+  String connectedVersesCount(String count) {
+    return 'Connected Verses ($count)';
+  }
+
+  @override
+  String deleteLinkConfirm(String title) {
+    return 'Are you sure you want to delete the link \"$title\"?';
+  }
+
+  @override
+  String linkDeleted(String title) {
+    return 'Link \"$title\" deleted';
+  }
+
+  @override
+  String itemCopied(String title) {
+    return '$title copied to clipboard';
+  }
+
+  @override
+  String duaAlert(String text) {
+    return 'Note: $text';
+  }
+
+  @override
+  String questionOfTotal(String number, String total) {
+    return 'Question $number of $total';
+  }
 }

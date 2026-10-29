@@ -124,9 +124,7 @@ class QuranDuaCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      l10n.isArabic
-                          ? 'تنبيه: ${dua.alert}'
-                          : 'Note: ${dua.alert}',
+                      l10n.duaAlert(dua.alert!),
                       textDirection: l10n.isArabic
                           ? TextDirection.rtl
                           : TextDirection.ltr,
@@ -215,9 +213,7 @@ class QuranDuaCard extends StatelessWidget {
           // ٣. اسم السورة.
           Center(
             child: Text(
-              l10n.isArabic
-                  ? 'سورة ${dua.surahName}'
-                  : 'Surah ${dua.surahName}',
+              l10n.surahTitle(dua.surahName),
               style: TextStyle(
                 fontFamily: 'IBMPlexSansArabic',
                 fontSize: 16,

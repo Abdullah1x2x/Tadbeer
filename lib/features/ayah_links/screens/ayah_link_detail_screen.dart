@@ -77,7 +77,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                l10n.isArabic ? 'إضافة كرت ملاحظة' : 'Add Note Card',
+                l10n.addNoteCard,
                 style: const TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: 18,
@@ -93,9 +93,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                l10n.isArabic
-                    ? 'سجّل ملاحظتك أو تدبرك ككرت مستقل في هذا الرابط:'
-                    : 'Record your reflection as an independent card in this link:',
+                l10n.addNoteCardHint,
                 style: TextStyle(
                   fontSize: 13,
                   color: isDark
@@ -108,9 +106,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                 controller: titleController,
                 style: const TextStyle(fontSize: 14),
                 decoration: InputDecoration(
-                  hintText: l10n.isArabic
-                      ? 'عنوان الملاحظة (اختياري)'
-                      : 'Note title (optional)',
+                  hintText: l10n.noteTitleOptional,
                   filled: true,
                   fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                   border: OutlineInputBorder(
@@ -138,9 +134,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                 autofocus: true,
                 style: const TextStyle(fontSize: 14, height: 1.5),
                 decoration: InputDecoration(
-                  hintText: l10n.isArabic
-                      ? 'اكتب تدبرك أو ملاحظتك هنا...'
-                      : 'Write your reflection or note here...',
+                  hintText: l10n.noteContent,
                   filled: true,
                   fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                   border: OutlineInputBorder(
@@ -195,11 +189,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              l10n.isArabic
-                  ? 'تمت إضافة كرت الملاحظة بنجاح'
-                  : 'Note card added successfully',
-            ),
+            content: Text(l10n.noteCardAddedSuccessfully),
             backgroundColor: Theme.of(context).colorScheme.primary,
             behavior: SnackBarBehavior.floating,
           ),
@@ -219,11 +209,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: Text(l10n.deleteAyahLink),
-        content: Text(
-          l10n.isArabic
-              ? 'هل أنت متأكد من رغبتك في حذف رابط «${link.title}»؟'
-              : 'Are you sure you want to delete the link "${link.title}"?',
-        ),
+        content: Text(l10n.deleteLinkConfirm(link.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
@@ -247,11 +233,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              l10n.isArabic
-                  ? 'تم حذف رابط «${link.title}»'
-                  : 'Link "${link.title}" deleted',
-            ),
+            content: Text(l10n.linkDeleted(link.title)),
             backgroundColor: Theme.of(context).colorScheme.primary,
             behavior: SnackBarBehavior.floating,
           ),
@@ -274,13 +256,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
           if (link == null) {
             return Scaffold(
               appBar: AppBar(),
-              body: Center(
-                child: Text(
-                  l10n.isArabic
-                      ? 'الرابط غير موجود أو تم حذفه'
-                      : 'Link not found or has been deleted',
-                ),
-              ),
+              body: Center(child: Text(l10n.linkNotFound)),
             );
           }
 
@@ -297,9 +273,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
               actions: [
                 IconButton(
                   icon: const Icon(AppIcons.qrCode),
-                  tooltip: l10n.isArabic
-                      ? 'مشاركة عبر رمز الاستجابة السريعة (QR)'
-                      : 'Share via QR Code',
+                  tooltip: l10n.shareViaQrCode,
                   onPressed: () =>
                       AyahLinkQrDialog.showShareDialog(context, link),
                 ),
@@ -423,7 +397,7 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                   ),
                   icon: const Icon(AppIcons.notePencil),
                   label: Text(
-                    l10n.isArabic ? 'إضافة ملاحظة' : 'Add Note',
+                    l10n.addNoteShort,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),

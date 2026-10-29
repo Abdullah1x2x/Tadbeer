@@ -45,7 +45,7 @@ class MoreScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
               _Group(
-                title: l10n.isArabic ? 'الأقسام' : 'Sections',
+                title: l10n.sectionsTitle,
                 children: [
                   _Tile(
                     icon: AppIcons.chartLineUp,
@@ -110,7 +110,7 @@ class MoreScreen extends StatelessWidget {
                 ],
               ),
               _Group(
-                title: l10n.isArabic ? 'آياتي' : 'My verses',
+                title: l10n.myVersesSection,
                 children: [
                   _Tile(
                     icon: AppIcons.bookmarkSimpleFill,
@@ -125,7 +125,7 @@ class MoreScreen extends StatelessWidget {
                 ],
               ),
               _Group(
-                title: l10n.isArabic ? 'الأدوات' : 'Tools',
+                title: l10n.toolsSection,
                 children: [
                   _Tile(
                     icon: AppIcons.alarmFill,
@@ -140,7 +140,7 @@ class MoreScreen extends StatelessWidget {
                 ],
               ),
               _Group(
-                title: l10n.isArabic ? 'التطبيق' : 'App',
+                title: l10n.appSection,
                 children: [
                   _Tile(
                     icon: AppIcons.gearFill,
