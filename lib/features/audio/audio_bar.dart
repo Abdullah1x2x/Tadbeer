@@ -83,6 +83,22 @@ class AudioBar extends StatelessWidget {
                 ),
                 playButton,
                 control(AppIcons.skipForwardFill, l10n.nextAyah, audio.next),
+                // متابعة التلاوة أو الوقوف عند آية واحدة.
+                IconButton(
+                  tooltip: audio.continuous
+                      ? l10n.continuousRecitation
+                      : l10n.singleAyahRecitation,
+                  isSelected: !audio.continuous,
+                  onPressed: () {
+                    HapticFeedback.selectionClick();
+                    audio.setContinuous(!audio.continuous);
+                  },
+                  icon: Icon(
+                    audio.continuous ? AppIcons.repeat : AppIcons.repeatOnce,
+                    size: 20,
+                    color: audio.continuous ? null : gold,
+                  ),
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Semantics(
@@ -98,12 +114,16 @@ class AudioBar extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          audio.resting ? l10n.resting : audio.reciter.name,
+                          audio.resting
+                              ? l10n.resting
+                              : audio.finished
+                              ? l10n.ayahFinished
+                              : audio.reciter.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 12,
-                            color: audio.resting
+                            color: audio.resting || audio.finished
                                 ? gold
                                 : AppColors.textSecondary(context),
                           ),

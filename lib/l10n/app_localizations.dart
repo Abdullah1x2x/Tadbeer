@@ -3917,6 +3917,72 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لاحقاً'**
   String get permissionsLater;
+
+  /// No description provided for @continuousRecitation.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة التلاوة (اضغط لآية واحدة)'**
+  String get continuousRecitation;
+
+  /// No description provided for @singleAyahRecitation.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية واحدة (اضغط للمتابعة)'**
+  String get singleAyahRecitation;
+
+  /// No description provided for @ayahFinished.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت الآية · اضغط تشغيل لإعادتها'**
+  String get ayahFinished;
+
+  /// No description provided for @myReflectionsCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفات التدبر التي كتبتها'**
+  String get myReflectionsCardHint;
+
+  /// No description provided for @notesCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'خواطرك على الآيات'**
+  String get notesCardHint;
+
+  /// No description provided for @memorizationCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'احفظ وراجع في وقته'**
+  String get memorizationCardHint;
+
+  /// No description provided for @searchCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'في القرآن وكل ما حفظت'**
+  String get searchCardHint;
+
+  /// No description provided for @wordMeaningsCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني الكلمات بترتيب المصحف'**
+  String get wordMeaningsCardHint;
+
+  /// No description provided for @ayahLinksCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اربط الآيات بموضوع واحد'**
+  String get ayahLinksCardHint;
+
+  /// No description provided for @guidedPathwaysCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلات تدبر يومًا بيوم'**
+  String get guidedPathwaysCardHint;
+
+  /// No description provided for @booksAndBookletsCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملازم والكتب للقراءة'**
+  String get booksAndBookletsCardHint;
 }
 
 class _AppLocalizationsDelegate

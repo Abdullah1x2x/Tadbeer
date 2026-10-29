@@ -1325,5 +1325,16 @@
   "permissionsTitle": "أذونات التطبيق",
   "permissionsBody": "يحتاج تدبير إذن الإشعارات والمنبهات ليذكّرك بوردك وأذكارك في وقتها، ولو كان التطبيق مغلقاً. لا يُرسَل شيء خارج جهازك.",
   "permissionsAllow": "سماح",
-  "permissionsLater": "لاحقاً"
+  "permissionsLater": "لاحقاً",
+  "continuousRecitation": "متابعة التلاوة (اضغط لآية واحدة)",
+  "singleAyahRecitation": "آية واحدة (اضغط للمتابعة)",
+  "ayahFinished": "انتهت الآية · اضغط تشغيل لإعادتها",
+  "myReflectionsCardHint": "وقفات التدبر التي كتبتها",
+  "notesCardHint": "خواطرك على الآيات",
+  "memorizationCardHint": "احفظ وراجع في وقته",
+  "searchCardHint": "في القرآن وكل ما حفظت",
+  "wordMeaningsCardHint": "معاني الكلمات بترتيب المصحف",
+  "ayahLinksCardHint": "اربط الآيات بموضوع واحد",
+  "guidedPathwaysCardHint": "رحلات تدبر يومًا بيوم",
+  "booksAndBookletsCardHint": "الملازم والكتب للقراءة"
 }
