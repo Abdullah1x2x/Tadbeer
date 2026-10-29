@@ -3,9 +3,7 @@ library;
 
 import 'package:flutter/foundation.dart';
 
-/// Registers bundled non-Dart asset licenses (Quranic text, Word Meanings dataset,
-/// and SIL OFL 1.1 fonts) into Flutter's [LicenseRegistry] so they appear in
-/// `showLicensePage` inside the binary distribution on Google Play & App Store.
+/// يسجّل تراخيص المحتوى المضمّن في [LicenseRegistry] لتظهر في صفحة التراخيص داخل التطبيق.
 void registerBundledAssetLicenses() {
   LicenseRegistry.addLicense(() async* {
     yield const LicenseEntryWithLineBreaks(

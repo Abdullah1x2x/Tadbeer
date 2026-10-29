@@ -4,10 +4,10 @@ import 'app/app.dart';
 import 'app/bootstrap.dart';
 import 'features/widgets/widget_links.dart';
 
-/// Entrypoint for the Tadbeer application; [bootstrap] holds the startup.
+/// نقطة البداية: [bootstrap] يجهّز كل شيء، ثم تُعرض الواجهة.
 void main() async {
   await bootstrap();
   runApp(const TadbeerApp());
-  // Buttons on the home-screen widget open the matching screen.
+  // أزرار ودجت الشاشة الرئيسية تفتح الشاشة المقابلة.
   WidgetsBinding.instance.addPostFrameCallback((_) => WidgetLinks.attach());
 }

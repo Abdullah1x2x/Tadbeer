@@ -16,19 +16,19 @@ import '../quran/quran_models.dart';
 import '../models/reminder_model.dart';
 import '../models/user_settings_model.dart';
 
-/// نوع المشكلة التي حدثت في قاعدة بيانات المستخدم.
+/// نوع مشكلة قاعدة البيانات.
 enum UserDatabaseIssueKind {
-  /// فشل قراءة جدول كامل.
+  /// فشلت قراءة جدول كامل.
   readFailed,
 
-  /// فشل حفظ أو حذف بيانات.
+  /// فشل حفظ أو حذف.
   writeFailed,
 
-  /// وُجدت صفوف تالفة وتم تخطيها أثناء التحميل (دون حذفها).
+  /// تُخطّيت صفوف تالفة أثناء التحميل، دون حذفها.
   corruptRowsSkipped,
 }
 
-/// وصف مشكلة في قاعدة البيانات لعرضها للمستخدم.
+/// مشكلة في قاعدة البيانات تُعرض للمستخدم.
 class UserDatabaseIssue {
   final UserDatabaseIssueKind kind;
   final String operation;
@@ -43,8 +43,8 @@ class UserDatabaseIssue {
   });
 }
 
-/// إدارة قاعدة بيانات SQLite لبيانات المستخدم (الملاحظات، الفواصل، روابط الآيات).
-/// نصوص المصحف والكتب ثابتة ومخزنة كأصول للقراءة فقط لحمايتها وتسهيل النسخ الاحتياطي.
+/// قاعدة SQLite لبيانات القارئ: الخواطر والفواصل والروابط وغيرها.
+/// نص المصحف والكتب ليس هنا؛ هو أصول ثابتة للقراءة فقط.
 class UserDatabase {
   static final UserDatabase instance = UserDatabase._internal();
   UserDatabase._internal();
@@ -54,7 +54,7 @@ class UserDatabase {
 
   Database? _database;
 
-  /// إرجاع كائن قاعدة البيانات المفتوح حالياً أو رمي خطأ إذا لم تتم التهيئة.
+  /// قاعدة البيانات المفتوحة؛ ترمي خطأ إن لم تُهيّأ.
   Database get db {
     if (_database == null) {
       throw StateError(
@@ -64,13 +64,9 @@ class UserDatabase {
     return _database!;
   }
 
-  /// ما إذا كان اتصال قاعدة البيانات مفتوحاً وجاهزاً للاستخدام.
   bool get isOpen => _database != null && _database!.isOpen;
 
-  /// آخر مشكلة حدثت أثناء القراءة أو الكتابة، لتُعرض للمستخدم بدل ابتلاعها بصمت.
-  ///
-  /// Write failures and skipped corrupt rows are published here so the UI can
-  /// tell the user instead of silently pretending everything was saved.
+  /// آخر مشكلة في القراءة أو الكتابة، لتُعرض للمستخدم بدل أن تُبتلع بصمت.
   final ValueNotifier<UserDatabaseIssue?> lastIssue =
       ValueNotifier<UserDatabaseIssue?>(null);
 
@@ -88,9 +84,7 @@ class UserDatabase {
     );
   }
 
-  /// يفك ترميز صفوف الجدول صفاً صفاً، فيتخطى الصف التالف وحده بدلاً من
-  /// إرجاع قائمة فارغة كاملة (وهو ما كان يُظهر كل البيانات كأنها حُذفت).
-  /// الصفوف التالفة لا تُحذف من قاعدة البيانات.
+  /// يفك الصفوف واحداً واحداً، فيتخطى الصف التالف وحده بدل أن يعيد قائمة فارغة توهم بحذف كل البيانات. الصفوف التالفة لا تُحذف.
   List<T> _decodeRows<T>(
     List<Map<String, Object?>> rows,
     T Function(Map<String, dynamic>) fromJson,
@@ -117,12 +111,11 @@ class UserDatabase {
     return result;
   }
 
-  /// Initializes the SQLite engine and opens the database.
-  /// If [customPath] is provided (or in-memory path), it will be used.
+  /// يفتح قاعدة البيانات، في [customPath] إن مُرّر (أو في الذاكرة للاختبارات).
   Future<void> init([String? customPath]) async {
     if (_database != null && _database!.isOpen) return;
 
-    // Disable watchdog timer to prevent fake_async pending timer leaks during widget tests
+    // يعطّل مؤقت التحذير، فلا يترك مؤقتات معلّقة في اختبارات الواجهة.
     // ignore: deprecated_member_use
     sqflite_utils.lockWarningCallback = null;
     // ignore: deprecated_member_use
@@ -150,9 +143,8 @@ class UserDatabase {
     );
   }
 
-  /// ترقية مخطط قاعدة البيانات تدريجياً عند تحديث إصدار المخطط.
+  /// يرقّي بنية الجداول خطوة خطوة عند تغيّر الإصدار.
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Progressive schema migrations
     if (oldVersion < 2) {
       await _createAppStateTable(db);
       await db.execute(
@@ -170,7 +162,7 @@ class UserDatabase {
     }
   }
 
-  /// Executes multiple database operations inside a single atomic SQLite transaction.
+  /// ينفّذ عمليات عدة في معاملة واحدة ذرّية.
   Future<T> transaction<T>(Future<T> Function(Transaction txn) action) async {
     if (!isOpen) {
       throw StateError('Database is not open');
@@ -178,9 +170,9 @@ class UserDatabase {
     return await db.transaction(action);
   }
 
-  /// إنشاء جميع جداول بيانات المستخدم والفهارس عند فتح قاعدة البيانات لأول مرة.
+  /// ينشئ الجداول والفهارس عند أول فتح.
   Future<void> _onCreate(Database db, int version) async {
-    // 1. Reading Position Table
+    // ١. موضع القراءة
     await db.execute('''
       CREATE TABLE IF NOT EXISTS reading_position (
         id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -192,7 +184,7 @@ class UserDatabase {
       )
     ''');
 
-    // 2. Notes Table
+    // ٢. الخواطر
     await db.execute('''
       CREATE TABLE IF NOT EXISTS notes (
         id TEXT PRIMARY KEY,
@@ -205,7 +197,7 @@ class UserDatabase {
       )
     ''');
 
-    // 3. Bookmarks Table
+    // ٣. الفواصل
     await db.execute('''
       CREATE TABLE IF NOT EXISTS bookmarks (
         id TEXT PRIMARY KEY,
@@ -216,7 +208,7 @@ class UserDatabase {
       )
     ''');
 
-    // 4. Highlights Table
+    // ٤. التظليل
     await db.execute('''
       CREATE TABLE IF NOT EXISTS highlights (
         id TEXT PRIMARY KEY,
@@ -228,7 +220,7 @@ class UserDatabase {
       )
     ''');
 
-    // 5. Reminders Table
+    // ٥. التذكيرات
     await db.execute('''
       CREATE TABLE IF NOT EXISTS reminders (
         id TEXT PRIMARY KEY,
@@ -238,7 +230,7 @@ class UserDatabase {
       )
     ''');
 
-    // 6. Verse Links (Ayah Links) Table
+    // ٦. روابط الآيات
     await db.execute('''
       CREATE TABLE IF NOT EXISTS ayah_links (
         id TEXT PRIMARY KEY,
@@ -248,7 +240,7 @@ class UserDatabase {
       )
     ''');
 
-    // 7. Tadbeer Answers Table
+    // ٧. إجابات وقفات التدبر
     await db.execute('''
       CREATE TABLE IF NOT EXISTS tadbeer_items (
         id TEXT PRIMARY KEY,
@@ -268,7 +260,7 @@ class UserDatabase {
       )
     ''');
 
-    // 8. User Settings Table
+    // ٨. الإعدادات
     await db.execute('''
       CREATE TABLE IF NOT EXISTS user_settings (
         key TEXT PRIMARY KEY,
@@ -276,10 +268,10 @@ class UserDatabase {
       )
     ''');
 
-    // 9. Generic per-feature state (reading journey, ...)
+    // ٩. حالة الميزات الأخرى (رحلة القراءة…)
     await _createAppStateTable(db);
 
-    // 10. Composite Indexes for O(log N) Ayah Queries
+    // ١٠. فهارس مركّبة لاستعلامات الآيات
     await db.execute(
       'CREATE INDEX IF NOT EXISTS idx_notes_ayah ON notes (surah_number, ayah_number)',
     );
@@ -294,7 +286,7 @@ class UserDatabase {
     );
   }
 
-  /// Key/value JSON store for feature state that has no table of its own.
+  /// مخزن JSON بمفتاح لحالة الميزات التي ليس لها جدول.
   static Future<void> _createAppStateTable(DatabaseExecutor db) =>
       db.execute('''
         CREATE TABLE IF NOT EXISTS app_state (
@@ -303,9 +295,9 @@ class UserDatabase {
         )
       ''');
 
-  // ==================== APP STATE ====================
+  // حالة الميزات
 
-  /// تحميل حالة ميزة محفوظة كـ JSON بمفتاحها.
+  /// حالة الميزة [key]، أو null.
   Future<Map<String, dynamic>?> loadAppState(String key) async {
     if (!isOpen) return null;
     try {
@@ -322,7 +314,7 @@ class UserDatabase {
     }
   }
 
-  /// تحميل كل حالات الميزات المحفوظة.
+  /// حالات كل الميزات.
   Future<Map<String, Map<String, dynamic>>> loadAllAppState() async {
     if (!isOpen) return {};
     try {
@@ -338,7 +330,7 @@ class UserDatabase {
     }
   }
 
-  /// حفظ حالة ميزة كـ JSON بمفتاحها.
+  /// يحفظ حالة الميزة [key].
   Future<void> saveAppState(String key, Map<String, dynamic> value) async {
     if (!isOpen) return;
     try {
@@ -351,9 +343,8 @@ class UserDatabase {
     }
   }
 
-  // ==================== READING POSITION ====================
+  // موضع القراءة
 
-  /// تحميل آخر موضع قراءة محفوظ للمستخدم من قاعدة البيانات.
   Future<ReadingPosition?> loadReadingPosition() async {
     if (!isOpen) return null;
     try {
@@ -368,7 +359,6 @@ class UserDatabase {
     }
   }
 
-  /// حفظ أو تحديث آخر موضع قراءة للمستخدم في قاعدة البيانات.
   Future<void> saveReadingPosition(ReadingPosition position) async {
     if (!isOpen) return;
     try {
@@ -382,9 +372,9 @@ class UserDatabase {
     }
   }
 
-  // ==================== NOTES ====================
+  // الخواطر
 
-  /// استرجاع جميع ملاحظات وتأملات المستخدم مرتبة من الأحدث إلى الأقدم.
+  /// كل الخواطر، من الأحدث إلى الأقدم.
   Future<List<NoteItem>> loadNotes() async {
     if (!isOpen) return [];
     try {
@@ -396,7 +386,6 @@ class UserDatabase {
     }
   }
 
-  /// إدراج ملاحظة جديدة أو تحديث ملاحظة موجودة في جدول الملاحظات.
   Future<void> insertOrUpdateNote(NoteItem note) async {
     if (!isOpen) return;
     try {
@@ -410,7 +399,6 @@ class UserDatabase {
     }
   }
 
-  /// حذف ملاحظة من قاعدة البيانات باستخدام معرفها الفريد.
   Future<void> deleteNote(String id) async {
     if (!isOpen) return;
     try {
@@ -420,9 +408,9 @@ class UserDatabase {
     }
   }
 
-  // ==================== BOOKMARKS ====================
+  // الفواصل
 
-  /// تحميل جميع الآيات المحفوظة (الإشارات المرجعية) مرتبة تنازلياً حسب تاريخ الإضافة.
+  /// كل الفواصل، من الأحدث إلى الأقدم.
   Future<List<BookmarkItem>> loadBookmarks() async {
     if (!isOpen) return [];
     try {
@@ -434,7 +422,6 @@ class UserDatabase {
     }
   }
 
-  /// إدراج أو تحديث إشارة مرجعية لآية في قاعدة البيانات.
   Future<void> insertBookmark(BookmarkItem bookmark) async {
     if (!isOpen) return;
     try {
@@ -448,7 +435,6 @@ class UserDatabase {
     }
   }
 
-  /// حذف إشارة مرجعية من قاعدة البيانات بواسطة معرفها.
   Future<void> deleteBookmark(String id) async {
     if (!isOpen) return;
     try {
@@ -458,9 +444,8 @@ class UserDatabase {
     }
   }
 
-  // ==================== HIGHLIGHTS ====================
+  // التظليل
 
-  /// تحميل جميع تظليلات الآيات المحفوظة من قاعدة البيانات.
   Future<List<HighlightItem>> loadHighlights() async {
     if (!isOpen) return [];
     try {
@@ -472,7 +457,6 @@ class UserDatabase {
     }
   }
 
-  /// إدراج أو تحديث تظليل لآية في جدول التظليلات.
   Future<void> insertOrUpdateHighlight(HighlightItem highlight) async {
     if (!isOpen) return;
     try {
@@ -490,7 +474,6 @@ class UserDatabase {
     }
   }
 
-  /// حذف تظليل آية من قاعدة البيانات بواسطة معرفه.
   Future<void> deleteHighlight(String id) async {
     if (!isOpen) return;
     try {
@@ -500,9 +483,8 @@ class UserDatabase {
     }
   }
 
-  // ==================== REMINDERS ====================
+  // التذكيرات
 
-  /// تحميل جميع تنبيهات ومنبهات الورد القرآني من قاعدة البيانات.
   Future<List<ReminderItem>> loadReminders() async {
     if (!isOpen) return [];
     try {
@@ -514,7 +496,6 @@ class UserDatabase {
     }
   }
 
-  /// إدراج أو تحديث تنبيه في جدول التنبيهات.
   Future<void> insertOrUpdateReminder(ReminderItem reminder) async {
     if (!isOpen) return;
     try {
@@ -532,7 +513,6 @@ class UserDatabase {
     }
   }
 
-  /// حذف تنبيه من قاعدة البيانات بواسطة معرفه.
   Future<void> deleteReminder(String id) async {
     if (!isOpen) return;
     try {
@@ -542,9 +522,9 @@ class UserDatabase {
     }
   }
 
-  // ==================== AYAH LINKS ====================
+  // روابط الآيات
 
-  /// تحميل جميع خرائط وروابط الآيات المحفوظة مرتبة من الأحدث إلى الأقدم.
+  /// كل الروابط، من الأحدث إلى الأقدم.
   Future<List<AyahLinkItem>> loadAyahLinks() async {
     if (!isOpen) return [];
     try {
@@ -556,7 +536,6 @@ class UserDatabase {
     }
   }
 
-  /// إدراج أو تحديث رابط آيات في قاعدة البيانات.
   Future<void> insertOrUpdateAyahLink(AyahLinkItem link) async {
     if (!isOpen) return;
     try {
@@ -574,7 +553,6 @@ class UserDatabase {
     }
   }
 
-  /// حذف رابط آيات من قاعدة البيانات بواسطة معرفه.
   Future<void> deleteAyahLink(String id) async {
     if (!isOpen) return;
     try {
@@ -584,9 +562,9 @@ class UserDatabase {
     }
   }
 
-  // ==================== TADBEER ANSWERS ====================
+  // وقفات التدبر
 
-  /// تحميل جميع إجابات وقفات التدبر المحفوظة مع دعم الجداول السابقة للتوافق.
+  /// كل وقفات التدبر، ومنها ما حُفظ في الجدول القديم.
   Future<List<TadbeerItem>> loadTadbeerItems() async {
     if (!isOpen) return [];
     try {
@@ -607,7 +585,6 @@ class UserDatabase {
     }
   }
 
-  /// إدراج أو تحديث إجابات وقفة تدبر لآية محددة في قاعدة البيانات.
   Future<void> insertOrUpdateTadbeer(TadbeerItem item) async {
     if (!isOpen) return;
     try {
@@ -633,7 +610,6 @@ class UserDatabase {
     }
   }
 
-  /// حذف إجابات وقفة تدبر من قاعدة البيانات بواسطة معرفها.
   Future<void> deleteTadbeer(String id) async {
     if (!isOpen) return;
     try {
@@ -646,9 +622,8 @@ class UserDatabase {
     }
   }
 
-  // ==================== USER SETTINGS ====================
+  // الإعدادات
 
-  /// تحميل إعدادات المستخدم المفضلة (السمة، حجم ونوع الخط، اللغة) من قاعدة البيانات.
   Future<UserSettings?> loadSettings() async {
     if (!isOpen) return null;
     try {
@@ -671,7 +646,6 @@ class UserDatabase {
     }
   }
 
-  /// حفظ إعدادات المستخدم في جدول الإعدادات.
   Future<void> saveSettings(UserSettings settings) async {
     if (!isOpen) return;
     try {
@@ -691,9 +665,9 @@ class UserDatabase {
     }
   }
 
-  // ==================== FULL REPLACEMENT / RESTORE ====================
+  // المسح والاستبدال الكامل
 
-  /// مسح جميع بيانات المستخدم المخزنة في الجداول (عند إعادة الضبط أو استعادة نسخة احتياطية).
+  /// يمسح كل بيانات القارئ، عند إعادة الضبط أو الاستعادة.
   Future<void> clearAllUserData() async {
     if (!isOpen) return;
     try {
@@ -714,11 +688,8 @@ class UserDatabase {
     }
   }
 
-  /// يستبدل كل بيانات المستخدم في معاملة واحدة (Transaction).
-  ///
-  /// Used by backup restore and JSON migration: either EVERYTHING is written,
-  /// or (on any failure) the transaction is rolled back and the previous
-  /// database content stays intact. Returns `false` on failure.
+  /// يستبدل كل بيانات القارئ في معاملة واحدة، للاستعادة والترحيل.
+  /// إما أن يُكتب كل شيء، أو تُلغى المعاملة عند أي فشل ويبقى المحتوى السابق سليماً. يعيد false عند الفشل.
   Future<bool> replaceAllUserData({
     required ReadingPosition readingPosition,
     required List<NoteItem> notes,
@@ -732,7 +703,7 @@ class UserDatabase {
     if (!isOpen) return false;
     try {
       await db.transaction((txn) async {
-        // The legacy mirror table may be missing on some old installs.
+        // الجدول القديم قد لا يوجد في بعض التثبيتات القديمة.
         final legacy = await txn.rawQuery(
           "SELECT name FROM sqlite_master WHERE type='table' AND name='tadabbur_items'",
         );
@@ -809,7 +780,7 @@ class UserDatabase {
     }
   }
 
-  // ==================== ROW BUILDERS ====================
+  // بناء الصفوف
 
   static Map<String, Object?> _readingPositionRow(ReadingPosition p) => {
     'id': 1,
@@ -874,7 +845,6 @@ class UserDatabase {
       {'key': entry.key, 'value': jsonEncode(entry.value)},
   ];
 
-  /// إغلاق اتصال قاعدة البيانات بأمان.
   Future<void> close() async {
     if (_database != null && _database!.isOpen) {
       await _database!.close();

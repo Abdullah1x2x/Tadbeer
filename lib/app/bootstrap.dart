@@ -1,7 +1,6 @@
 /// تهيئة التطبيق قبل أول إطار: البيانات، والتذكيرات، والتلاوة في الخلفية.
 ///
-/// The order matters: the store and the Quran data load first, as every
-/// later step reads them.
+/// الترتيب مهم: المخزن وبيانات القرآن أولاً، لأن كل ما بعدهما يقرأ منهما.
 library;
 
 import 'package:audio_service/audio_service.dart';
@@ -20,21 +19,19 @@ import '../features/widgets/home_widget_sync.dart';
 import 'licenses.dart';
 import 'main_shell.dart';
 
-/// Prepares everything the first frame needs. The app works offline; only
-/// the recitation audio reaches the internet, and only when asked.
+/// يجهّز كل ما يحتاجه أول إطار.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   registerBundledAssetLicenses();
 
-  // 1. Local storage; it reschedules reminders through the reminder service
-  // whenever they change.
+  // 1. التخزين المحلي، ويعيد جدولة التذكيرات عبر خدمتها كلما تغيّرت.
   UserDataStore.instance.reminderScheduler = LocalReminderService.instance;
   await UserDataStore.instance.init();
 
-  // 2. The Quran dataset.
+  // 2. بيانات القرآن.
   await QuranRepository.instance.init();
 
-  // 3. Reminders, rescheduled from what was saved.
+  // 3. التذكيرات، تُجدول من جديد مما حُفظ.
   await LocalReminderService.instance.init(onTapped: _openFromReminder);
   await LocalReminderService.instance.syncAllReminders(
     UserDataStore.instance.reminders,
@@ -44,10 +41,10 @@ Future<void> bootstrap() async {
   await _startBackgroundRecitation();
 }
 
-/// Opens the screen a tapped reminder points to.
+/// يفتح الشاشة التي يشير إليها التذكير المنقور.
 void _openFromReminder(String? payload) {
   if (payload == 'adhkar_morning' || payload == 'adhkar_evening') {
-    // Open the matching adhkar from the Duas tab.
+    // يفتح الأذكار المطابقة من تبويب الأدعية.
     final navigator = MainShell.showFromOutside(ShellTab.duas);
     if (navigator == null) return;
     navigator.push(
@@ -62,27 +59,25 @@ void _openFromReminder(String? payload) {
     return;
   }
   if (payload == 'quran_resume') {
-    // Open the Mushaf tab at the reading (khatma) position rather than a
-    // separate reader; skip the intro when launched from the reminder.
+    // يفتح المصحف عند موضع القراءة، متجاوزاً شاشة الترحيب.
     MainShell.showFromOutside(ShellTab.quran);
   }
 }
 
-/// Keeps reminders, the widget and the streak following the reader's data.
+/// يجعل التذكيرات والودجت وسلسلة الأيام تتبع بيانات القارئ.
 void _attachSyncs() {
-  // Keeps the khatma reminder's "pages left today" current while reading.
+  // يُبقي "الصفحات المتبقية اليوم" في تذكير الختمة محدّثة أثناء القراءة.
   PortionReminderSync.attach();
-  // Warns in the evening before the streak of active days breaks.
+  // ينبّه مساءً قبل أن تنقطع سلسلة الأيام.
   StreakReminderSync.attach();
-  // The home-screen widget follows the ayah of the day and the khatma.
+  // الودجت يتبع آية اليوم والختمة.
   HomeWidgetSync.attach();
-  // A completed tasbeeh round counts toward the reading streak.
+  // إتمام جولة تسبيح يُحتسب في سلسلة الأيام.
   TasbeehRepository.instance.onTargetReached = () =>
       UserDataStore.instance.markActiveDay();
 }
 
-/// The recitation plays on in the background, with its controls in the
-/// notification. Platforms without it (desktop) play in the app only.
+/// تستمر التلاوة في الخلفية مع أزرارها في الإشعار؛ وعلى سطح المكتب تعمل داخل التطبيق فقط.
 Future<void> _startBackgroundRecitation() async {
   try {
     RecitationHandler.instance = await AudioService.init(

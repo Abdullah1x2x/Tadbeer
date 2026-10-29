@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/utils/arabic_search_normalizer.dart';
 import '../l10n/app_localizations.dart';
 
-/// اللغات المدعومة في واجهة تطبيق تَدْبِير مع اتجاه النص المقابل لكل لغة.
+/// لغات الواجهة مع اتجاه النص لكل منها.
 enum AppLanguage {
   arabic('ar', 'العربية', TextDirection.rtl),
   english('en', 'English', TextDirection.ltr);
@@ -14,7 +14,7 @@ enum AppLanguage {
 
   const AppLanguage(this.code, this.label, this.direction);
 
-  /// استرجاع لغة التطبيق المقابلة لرمز اللغة المحفوظ، مع اعتماد العربية افتراضياً.
+  /// اللغة المقابلة لرمز محفوظ، والعربية لأي رمز غير معروف.
   static AppLanguage fromCode(String code) {
     return AppLanguage.values.firstWhere(
       (l) => l.code == code,
@@ -23,12 +23,12 @@ enum AppLanguage {
   }
 }
 
-/// مستودع النصوص المترجمة لواجهة المستخدم باللغتين العربية والإنجليزية.
+/// نصوص الواجهة باللغتين، مأخوذة من ملفات ARB عبر gen-l10n.
 class AppStrings {
   final AppLanguage language;
   const AppStrings(this.language);
 
-  // Translations are generated from lib/l10n/app_ar.arb and app_en.arb.
+  // تُولَّد الترجمات من lib/l10n/app_ar.arb و app_en.arb.
   static final AppLocalizations _ar = lookupAppLocalizations(
     const Locale('ar'),
   );
@@ -37,20 +37,19 @@ class AppStrings {
   );
   AppLocalizations get _l => language == AppLanguage.arabic ? _ar : _en;
 
-  /// ما إذا كانت اللغة الحالية للتطبيق هي اللغة العربية.
   bool get isArabic => language == AppLanguage.arabic;
 
-  /// Renders numbers with Arabic-Indic digits in the Arabic UI.
+  /// يكتب الأرقام بالأرقام العربية الهندية في الواجهة العربية.
   String digits(Object? value) =>
       isArabic ? ArabicSearchNormalizer.convertDigits('$value') : '$value';
 
   String _n(Object? value) => ArabicSearchNormalizer.convertDigits('$value');
 
-  // App Identity
+  // هوية التطبيق
   String get appName => _l.appName;
   String get appTagline => _l.appTagline;
 
-  // Navigation / Main Sections
+  // التنقل والأقسام الرئيسية
   String get home => _l.home;
   String get quran => _l.quran;
   String get notes => _l.notes;
@@ -70,7 +69,7 @@ class AppStrings {
   String get about => _l.about;
   String get more => _l.more;
 
-  // Tadbeer Intro
+  // مقدمة التدبر
   String get tadbeerVerse =>
       'أَفَلَا يَتَدَبَّرُونَ الْقُرْآنَ أَمْ عَلَىٰ قُلُوبٍ أَقْفَالُهَا';
   String get tadbeerVerseRef => _l.tadbeerVerseRef;
@@ -79,14 +78,11 @@ class AppStrings {
 
   String get tadabburVerse => tadbeerVerse;
 
-  // Quran Reader & Side Menu
-  /// تنسيق نص رقم الصفحة الحالية في المصحف.
+  // قارئ المصحف والقائمة الجانبية
   String pageNumber(int page) => _l.pageNumber(digits(page));
 
-  /// تنسيق نص رقم الجزء الحالي في المصحف.
   String juzNumber(int juz) => _l.juzNumber(digits(juz));
 
-  /// تنسيق نص رقم الحزب الحالي في المصحف.
   String hizbNumber(int hizb) => _l.hizbNumber(digits(hizb));
 
   String get surahs => _l.surahs;
@@ -96,13 +92,13 @@ class AppStrings {
   String get cancel => _l.cancel;
   String get options => _l.options;
 
-  // Mushaf map & reflection log
+  // خريطة المصحف وسجل التدبر
   String get mushafMap => _l.mushafMap;
   String get mapTab => _l.mapTab;
   String get reflectionLog => _l.reflectionLog;
   String pagesTouched(int n) => _l.pagesTouched(digits(n));
 
-  /// Legend label for [PageActivity] by index.
+  /// اسم حالة [PageActivity] في مفتاح الخريطة، بحسب ترتيبها.
   String activityLabel(int i) => isArabic
       ? const [
           'لم تُقرأ',
@@ -124,7 +120,7 @@ class AppStrings {
       ? _n('${d.day}/${d.month}/${d.year}')
       : '${d.day}/${d.month}/${d.year}';
 
-  // Guided pathways
+  // مسارات التدبر
   String get guidedPathways => _l.guidedPathways;
   String get guidedPathwaysHint => _l.guidedPathwaysHint;
   String daysOfTotal(int a, int b) => _l.daysOfTotal(digits(a), digits(b));
@@ -133,7 +129,7 @@ class AppStrings {
   String get pathwayUnlockHint => _l.pathwayUnlockHint;
   String get pathwayComplete => _l.pathwayComplete;
 
-  // Memorization (الحفظ)
+  // الحفظ
   String get memorization => _l.memorization;
   String versesMemorized(int n) => _l.versesMemorized(digits(n));
   String get memorizationHint => _l.memorizationHint;
@@ -148,13 +144,11 @@ class AppStrings {
   String sessionSummary(int a, int b) =>
       _l.sessionSummary(digits(a), digits(b));
 
-  // Ayah of the day
+  // آية اليوم
   String get ayahOfTheDay => _l.ayahOfTheDay;
   String get reflectOnIt => _l.reflectOnIt;
 
-  // Reading vs viewing
-
-  // Sequential khatma
+  // الختمة المتتابعة
   String get fromMushafStart => _l.fromMushafStart;
   String fromMyPosition(int page) => _l.fromMyPosition(digits(page));
   String reachedPage(int page) => _l.reachedPage(digits(page));
@@ -172,7 +166,7 @@ class AppStrings {
   String get portionLeftBody => _l.portionLeftBody;
   String get adhkarSetCompleted => _l.adhkarSetCompleted;
 
-  /// The widget fills in the numbers itself, so they stay placeholders.
+  /// يملأ الودجت الأرقام بنفسه، فتبقى هنا متغيرات.
   String get widgetPortionLeftTemplate =>
       _l.widgetPortionLeft('{left}', '{portion}');
   String get widgetPortionDone => _l.widgetPortionDone;
@@ -205,8 +199,7 @@ class AppStrings {
   String get commitmentQuestion => _l.commitmentQuestion;
   String commitmentSaidAt(String reference) => _l.commitmentSaidAt(reference);
 
-  /// Addresses [text] to the reader by [name] ("أحمد، …" / "Ahmed, …");
-  /// the name goes first so the wording suits anyone.
+  /// يوجّه [text] إلى القارئ باسمه ("أحمد، …")؛ الاسم أولاً لتناسب الصيغة الجميع.
   String toReader(String name, String text) {
     final n = name.trim();
     if (n.isEmpty || text.isEmpty) return text;
@@ -214,7 +207,7 @@ class AppStrings {
     return '$n, ${text[0].toLowerCase()}${text.substring(1)}';
   }
 
-  /// A percentage in this language's digits (١٢٠٪ / 120%).
+  /// نسبة مئوية بأرقام اللغة الحالية (١٢٠٪ / 120%).
   String percent(int value) => isArabic ? '${digits(value)}٪' : '$value%';
   String get addVerseTitle => _l.addVerseTitle;
   String get addVerseSearchHint => _l.addVerseSearchHint;
@@ -282,8 +275,6 @@ class AppStrings {
     return isArabic ? '${ar[month - 1]} ${_n(year)}' : '${en[month - 1]} $year';
   }
 
-  // Group khatma
-
   String get continueWhereYouLeft => _l.continueWhereYouLeft;
   String get adhkarKind => _l.adhkarKind;
   String chapterN(int n) => _l.chapterN(digits(n));
@@ -295,19 +286,19 @@ class AppStrings {
 
   String get appColorTheme => isArabic ? 'لون التطبيق' : 'App color';
 
-  /// Name of [AppColorTheme] by index.
+  /// اسم [AppColorTheme] بحسب ترتيبه.
   String colorThemeName(int i) => isArabic
       ? const ['كحلي', 'زمردي', 'عنابي', 'بني خشبي', 'تركوازي'][i]
       : const ['Navy', 'Emerald', 'Burgundy', 'Brown', 'Teal'][i];
 
-  // Focus mode (وضع التأمل)
+  // وضع التأمل
   String get focusMode => _l.focusMode;
   String get breathe => _l.breathe;
   String get breatheIn => _l.breatheIn;
   String get breatheOut => _l.breatheOut;
   String get swipeForNextAyah => _l.swipeForNextAyah;
 
-  // Reading journey (الختمة والإحصاءات)
+  // رحلة القراءة والختمة
   String get myJourney => _l.myJourney;
   String get startKhatmaTitle => _l.startKhatmaTitle;
   String get startKhatmaHint => _l.startKhatmaHint;
@@ -341,10 +332,9 @@ class AppStrings {
   String get increase => _l.increase;
   String get sajdah => _l.sajdah;
 
-  /// تنسيق نص عدد آيات السورة.
   String ayahCount(int count) => _l.ayahCount(digits(count));
 
-  // Ayah Action Modal
+  // نافذة إجراءات الآية
   String get addNote => _l.addNote;
   String get saveBookmark => _l.saveBookmark;
   String get removeBookmark => _l.removeBookmark;
@@ -433,7 +423,7 @@ class AppStrings {
   String get cardSaveDenied => _l.cardSaveDenied;
   String get copiedToClipboard => _l.copiedToClipboard;
 
-  // Notes
+  // الملاحظات
   String get newNote => _l.newNote;
   String get newFreeNote => _l.newFreeNote;
   String get noteTitle => _l.noteTitle;
@@ -448,14 +438,14 @@ class AppStrings {
   String get ayahNoteLabel => _l.ayahNoteLabel;
   String get goToAyah => _l.goToAyah;
 
-  // Bookmarks & Highlights
+  // الفواصل والتظليل
   String get noBookmarksYet => _l.noBookmarksYet;
   String get noHighlightsYet => _l.noHighlightsYet;
   String get bookmarksEmptyHint => _l.bookmarksEmptyHint;
   String get highlightsEmptyHint => _l.highlightsEmptyHint;
   String get openMushaf => _l.openMushaf;
 
-  // Search
+  // البحث
   String get searchGlobalPlaceholder => _l.searchGlobalPlaceholder;
   String get searchAll => _l.searchAll;
   String get searchBookmarksHint => _l.searchBookmarksHint;
@@ -471,7 +461,7 @@ class AppStrings {
   String get selectSearchSection => _l.selectSearchSection;
   String get noSearchResults => _l.noSearchResults;
 
-  // Reminders
+  // التذكيرات
   String get addReminder => _l.addReminder;
   String get editReminder => _l.editReminder;
   String get reminderTitle => _l.reminderTitle;
@@ -483,7 +473,7 @@ class AppStrings {
   String get noRemindersYet => _l.noRemindersYet;
   String get remindersEmptyHint => _l.remindersEmptyHint;
 
-  // Ayah Links (روابط الآيات)
+  // روابط الآيات
   String get newAyahLink => _l.newAyahLink;
   String get addToAyahLink => _l.addToAyahLink;
   String get networkView => _l.networkView;
@@ -498,10 +488,9 @@ class AppStrings {
   String get noAyahLinksYet => _l.noAyahLinksYet;
   String get ayahLinksSubtitle => _l.ayahLinksSubtitle;
 
-  /// تنسيق نص عدد الآيات المربوطة في الرابط.
   String versesCount(int count) => _l.versesCount(digits(count));
 
-  // Backup & Restore
+  // النسخ الاحتياطي والاستعادة
   String get exportBackup => _l.exportBackup;
   String get restoreBackup => _l.restoreBackup;
   String get restoreWarningTitle => _l.restoreWarningTitle;
@@ -518,7 +507,7 @@ class AppStrings {
 
   String get enterBackupPassword => _l.enterBackupPassword;
 
-  // Settings
+  // الإعدادات
   String get appearance => _l.appearance;
   String get themeMode => _l.themeMode;
   String get light => _l.light;
@@ -531,7 +520,7 @@ class AppStrings {
   String get paperSepia => _l.paperSepia;
   String get aboutContent => _l.aboutContent;
 
-  // Home Screen Cards & Subtitles
+  // بطاقات الشاشة الرئيسية
   String get resumeReading => _l.resumeReading;
   String get additionalTools => _l.additionalTools;
   String get quranAndSunnahDuas => _l.quranAndSunnahDuas;
@@ -554,7 +543,7 @@ class AppStrings {
   String get tadbeerLibrary => _l.tadbeerLibrary;
   String get offlineQuranAndReflection => _l.offlineQuranAndReflection;
 
-  // Common Quran Formats & References
+  // صيغ المراجع القرآنية
   String readingPosition(String surahName, dynamic page) =>
       _l.readingPosition(surahName, digits(page));
   String ayahReference(String surahName, dynamic ayahNumber) =>
@@ -581,7 +570,7 @@ class AppStrings {
     dynamic page,
   ) => _l.surahAyahPageReference(surahName, digits(ayahNumber), digits(page));
 
-  // Actions & Common Dialogs
+  // الإجراءات والحوارات العامة
   String get edit => _l.edit;
   String get editNote => _l.editNote;
   String get tadbeerPause => _l.tadbeerPause;
@@ -599,7 +588,7 @@ class AppStrings {
   String get editTitleAndDescription => _l.editTitleAndDescription;
   String get deleteAyahLink => _l.deleteAyahLink;
 
-  // Settings & Data Management
+  // الإعدادات وإدارة البيانات
   String get typographyAndReading => _l.typographyAndReading;
   String get quranFontFamily => _l.quranFontFamily;
   String fontSizePoints(dynamic points) => _l.fontSizePoints(digits(points));
@@ -618,7 +607,6 @@ class AppStrings {
   String get versionInfo => _l.versionInfo;
   String get sourcesAndCredits => _l.sourcesAndCredits;
 
-  /// تفاصيل المصادر وتراخيص المحتوى المعتمد في التطبيق.
   String get sourcesAndCreditsDetails => isArabic
       ? '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n'
             '• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n'
@@ -638,16 +626,13 @@ class AppStrings {
             '• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
   String get openSourceLicenses => _l.openSourceLicenses;
 
-  /// زر استعراض ميثاق وسياسة الخصوصية والأمان.
   String get privacyPolicy => _l.privacyPolicy;
 
-  /// عنوان نافذة ميثاق الخصوصية والأمان.
   String get privacyPolicyTitle => _l.privacyPolicyTitle;
 
-  /// وصف موجز للخصوصية والأمان.
   String get privacyPolicySubtitle => _l.privacyPolicySubtitle;
 
-  // Reminders Configuration
+  // إعداد التذكيرات
   String get alertType => _l.alertType;
   String get notificationAlert => _l.notificationAlert;
   String get notificationSubtitle => _l.notificationSubtitle;
@@ -671,7 +656,7 @@ class AppStrings {
       _l.reminderScheduledSuccess(mode);
   String get specificDays => _l.specificDays;
 
-  // Backup Configuration
+  // إعداد النسخ الاحتياطي
   String get exportBackupSubtitle => _l.exportBackupSubtitle;
   String get restoreBackupSubtitle => _l.restoreBackupSubtitle;
   String get restoreFailed => _l.restoreFailed;
@@ -679,7 +664,7 @@ class AppStrings {
   String get backupCreateFailed => _l.backupCreateFailed;
   String errorSavingFile(dynamic err) => _l.errorSavingFile('$err');
 
-  // Supplications & Adhkar
+  // الأدعية والأذكار
   String get viewAyah => _l.viewAyah;
   String get duaCopiedSuccess => _l.duaCopiedSuccess;
   String get searchDuasHint => _l.searchDuasHint;
@@ -696,7 +681,7 @@ class AppStrings {
   String remainingCount(dynamic count) => _l.remainingCount(digits(count));
   String get once => _l.once;
 
-  // Ahlulbayt & Hadith Duas
+  // أدعية أهل البيت
   String get searchAhlulbaytHint => _l.searchAhlulbaytHint;
   String ahlulbaytDuasCountBadge(dynamic count) =>
       _l.ahlulbaytDuasCountBadge(digits(count));
@@ -712,7 +697,7 @@ class AppStrings {
   String duaIndex(dynamic index) => _l.duaIndex(digits(index));
   String get copyDuaTooltip => _l.copyDuaTooltip;
 
-  // Books & Pamphlets Reader
+  // قارئ الكتب والملازم
   String get tableOfContents => _l.tableOfContents;
   String bookIndexPrefix(String title) => _l.bookIndexPrefix(title);
   String pageOfTotal(dynamic page, dynamic total) =>
@@ -743,7 +728,7 @@ class AppStrings {
   String get noTextContent => _l.noTextContent;
   String get textFile => _l.textFile;
 
-  // Ayah Links Views
+  // عروض روابط الآيات
   String get openInQuran => _l.openInQuran;
   String get editVerseNote => _l.editVerseNote;
   String get removeVerseFromLink => _l.removeVerseFromLink;
@@ -761,7 +746,7 @@ class AppStrings {
   String get next => _l.next;
   String get allCategories => _l.allCategories;
 
-  // Tasbeeh & Istighfar
+  // الاستغفار والتسبيح
   String get istighfar => _l.istighfar;
   String get tasbeeh => _l.tasbeeh;
   String get browseAllFormulas => _l.browseAllFormulas;
@@ -793,28 +778,24 @@ class AppStrings {
   String get nextDhikr => _l.nextDhikr;
   String get previousDhikr => _l.previousDhikr;
 
-  /// زر تفعيل وضع العد التلقائي للسبحة.
   String get autoCount => _l.autoCount;
 
-  /// زر إيقاف العد التلقائي المؤقت للسبحة.
   String get stopAutoCount => _l.stopAutoCount;
 
-  /// عرض مدة الإيقاع الزمني المحسوب لكل عَدّة بالثواني.
+  /// مدة الإيقاع لكل عَدّة، بالثواني.
   String smartPaceSeconds(dynamic seconds) =>
       _l.smartPaceSeconds(digits(seconds));
 
-  /// تلميح تسريع وتيرة العد التلقائي.
   String get decreasePace => _l.decreasePace;
 
-  /// تلميح إبطاء وتيرة العد التلقائي وتدبر الذكر.
   String get increasePace => _l.increasePace;
 
-  // Books
+  // الكتب
   String get booksSectionEmpty => _l.booksSectionEmpty;
   String get booksSectionEmptyDescription => _l.booksSectionEmptyDescription;
 }
 
-/// عنصر وراثة لتوفير إعدادات اللغة والنصوص المترجمة لجميع عناصر شجرة الواجهة.
+/// يوفّر اللغة الحالية ونصوصها لكل الواجهة، ويعيد البناء عند تغيّر اللغة.
 class AppLocalizationScope extends InheritedWidget {
   final AppLanguage currentLanguage;
   final AppStrings strings;
@@ -828,33 +809,30 @@ class AppLocalizationScope extends InheritedWidget {
     required super.child,
   });
 
-  /// استرجاع نطاق الترجمة الحالي من سياق البناء إن وجد.
   static AppLocalizationScope? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<AppLocalizationScope>();
   }
 
-  /// استرجاع نطاق الترجمة الحالي من سياق البناء.
   static AppLocalizationScope of(BuildContext context) {
     final scope = maybeOf(context);
     assert(scope != null, 'No AppLocalizationScope found in context');
     return scope!;
   }
 
-  /// إشعار العناصر التابعة عند تغيّر اللغة الحالية.
   @override
   bool updateShouldNotify(AppLocalizationScope oldWidget) {
     return currentLanguage != oldWidget.currentLanguage;
   }
 }
 
-/// امتداد يسهّل الوصول إلى النصوص المترجمة واللغة الحالية مباشرة عبر `context`.
+/// اختصارات للوصول إلى النصوص واللغة عبر `context`.
 extension AppLocalizationExtension on BuildContext {
-  /// النصوص المترجمة المرتبطة باللغة الحالية مع الرجوع للغة الافتراضية إذا لم يتوفر نطاق.
+  /// النصوص الحالية، أو العربية إن لم يوجد [AppLocalizationScope].
   AppStrings get l10n =>
       AppLocalizationScope.maybeOf(this)?.strings ??
       const AppStrings(AppLanguage.arabic);
 
-  /// اللغة المفعّلة حالياً في الواجهة مع الرجوع للغة العربية افتراضياً.
+  /// اللغة الحالية، أو العربية إن لم يوجد [AppLocalizationScope].
   AppLanguage get currentLanguage =>
       AppLocalizationScope.maybeOf(this)?.currentLanguage ?? AppLanguage.arabic;
 }

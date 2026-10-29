@@ -1,22 +1,15 @@
 import '../storage/user_data_store.dart';
 
-/// يحدد إحداثيات موضع العقدة داخل لوحة شبكة روابط الآيات.
-///
-/// Position of a node within the Ayah Link canvas.
+/// موضع عقدة على لوحة شبكة الروابط.
 class LinkNodePosition {
-  /// الإحداثي الأفقي للعقدة.
   final double dx;
 
-  /// الإحداثي الرأسي للعقدة.
   final double dy;
 
-  /// ينشئ كائن إحداثيات موضع العقدة.
   const LinkNodePosition({required this.dx, required this.dy});
 
-  /// يحول إحداثيات العقدة إلى خريطة بيانات قابلة للتخزين بصيغة JSON.
   Map<String, dynamic> toJson() => {'dx': dx, 'dy': dy};
 
-  /// ينشئ كائن إحداثيات العقدة من خريطة بيانات JSON.
   factory LinkNodePosition.fromJson(Map<String, dynamic> json) {
     return LinkNodePosition(
       dx: (json['dx'] as num).toDouble(),
@@ -24,12 +17,10 @@ class LinkNodePosition {
     );
   }
 
-  /// ينشئ نسخة معدلة من إحداثيات العقدة.
   LinkNodePosition copyWith({double? dx, double? dy}) {
     return LinkNodePosition(dx: dx ?? this.dx, dy: dy ?? this.dy);
   }
 
-  /// يتحقق من تطابق إحداثيات عقدتين.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -38,37 +29,27 @@ class LinkNodePosition {
           dx == other.dx &&
           dy == other.dy;
 
-  /// يحسب رمز التجزئة لإحداثيات العقدة.
   @override
   int get hashCode => Object.hash(dx, dy);
 }
 
-/// يمثل آية قرآنية واحدة مشاركة ضمن رابط آيات تدبري.
-///
-/// Represents a single verse participating in an Ayah Link.
-///
-/// Uses stable ayah linkage (surahNumber, ayahNumber, page, ayahId)
-/// so that Quran text is never duplicated into the user's storage.
+/// آية ضمن رابط. تحفظ موضع الآية فقط لا نصها، فلا يتكرر نص القرآن في بيانات المستخدم.
 class AyahLinkVerse {
-  /// المعرّف الفريد للآية في المصحف.
+  /// رقم الآية في المصحف كله (1..6236).
   final int ayahId;
 
-  /// رقم السورة التي تنتمي إليها الآية.
   final int surahNumber;
 
-  /// رقم الآية داخل السورة.
   final int ayahNumber;
 
   /// رقم الصفحة في مصحف المدينة.
   final int page;
 
-  /// ملاحظة التدبر الخاصة بهذه الآية ضمن هذا الرابط.
+  /// خاطرة القارئ على هذه الآية داخل هذا الرابط.
   final String? note;
 
-  /// تاريخ ووقت إضافة الآية إلى الرابط.
   final DateTime addedAt;
 
-  /// ينشئ عنصر آية مرتبطة داخل رابط الآيات.
   const AyahLinkVerse({
     required this.ayahId,
     required this.surahNumber,
@@ -78,14 +59,10 @@ class AyahLinkVerse {
     required this.addedAt,
   });
 
-  /// المفتاح المرجعي للآية بصيغة رقم السورة ورقم الآية.
+  /// مفتاح الآية "سورة:آية".
   String get ayahKey => '$surahNumber:$ayahNumber';
 
-  /// يعيد ملاحظة التدبر الفعالة للآية من الرابط أو من سجل التدبر العام.
-  ///
-  /// Returns the effective reflection note for this verse:
-  /// 1. Specific note assigned within this link (if non-empty)
-  /// 2. User's general note or Tadbeer pause reflection for this Ayah
+  /// الخاطرة المعروضة للآية: خاطرتها في هذا الرابط، وإلا خاطرة القارئ العامة أو وقفة التدبر عليها.
   String? getEffectiveNote() {
     if (note != null && note!.trim().isNotEmpty) {
       return note!.trim();
@@ -93,7 +70,6 @@ class AyahLinkVerse {
     return UserDataStore.instance.getReflectionForAyah(surahNumber, ayahNumber);
   }
 
-  /// يحول بيانات الآية المرتبطة إلى خريطة JSON للتخزين.
   Map<String, dynamic> toJson() => {
     'ayahId': ayahId,
     'surahNumber': surahNumber,
@@ -103,7 +79,6 @@ class AyahLinkVerse {
     'addedAt': addedAt.toIso8601String(),
   };
 
-  /// ينشئ كائن آية مرتبطة من خريطة بيانات JSON.
   factory AyahLinkVerse.fromJson(Map<String, dynamic> json) {
     return AyahLinkVerse(
       ayahId: json['ayahId'] as int,
@@ -117,7 +92,6 @@ class AyahLinkVerse {
     );
   }
 
-  /// ينشئ نسخة محدثة من الآية المرتبطة مع إمكانية تعديل الملاحظة.
   AyahLinkVerse copyWith({String? note}) {
     return AyahLinkVerse(
       ayahId: ayahId,
@@ -130,24 +104,18 @@ class AyahLinkVerse {
   }
 }
 
-/// يمثل علاقة ربط مباشرة بين آيتين داخل شبكة رابط الآيات.
-///
-/// Optional future-proof representation of an explicit relationship edge
-/// between two ayahs in the link network.
+/// علاقة صريحة بين آيتين في الشبكة، بعنوان وملاحظة اختياريين.
 class AyahLinkRelationship {
-  /// مفتاح الآية المصدر في العلاقة.
   final String fromAyahKey;
 
-  /// مفتاح الآية الهدف في العلاقة.
   final String toAyahKey;
 
-  /// عنوان مختصر اختياري لوصف العلاقة.
+  /// وصف قصير للعلاقة.
   final String? label;
 
-  /// ملاحظة تفصيلية اختيارية حول وجه الارتباط.
+  /// شرح وجه الارتباط.
   final String? note;
 
-  /// ينشئ علاقة ربط بين آيتين في الشبكة.
   const AyahLinkRelationship({
     required this.fromAyahKey,
     required this.toAyahKey,
@@ -155,7 +123,6 @@ class AyahLinkRelationship {
     this.note,
   });
 
-  /// يحول علاقة الربط إلى خريطة بيانات JSON.
   Map<String, dynamic> toJson() => {
     'from': fromAyahKey,
     'to': toAyahKey,
@@ -163,7 +130,6 @@ class AyahLinkRelationship {
     if (note != null) 'note': note,
   };
 
-  /// ينشئ كائن علاقة ربط من خريطة بيانات JSON.
   factory AyahLinkRelationship.fromJson(Map<String, dynamic> json) {
     return AyahLinkRelationship(
       fromAyahKey: json['from'] as String,
@@ -174,26 +140,18 @@ class AyahLinkRelationship {
   }
 }
 
-/// يمثل بطاقة ملاحظة أو تدبر حر مستقل مضاف داخل رابط الآيات.
-///
-/// An independent reflection note card within an Ayah Link.
+/// بطاقة خاطرة حرة داخل رابط، غير مرتبطة بآية.
 class AyahLinkNote {
-  /// المعرف الفريد لبطاقة الملاحظة.
   final String id;
 
-  /// عنوان اختياري للملاحظة أو الفكرة التدبرية.
   final String? title;
 
-  /// نص الملاحظة أو التدبر بالكامل.
   final String content;
 
-  /// تاريخ إنشاء الملاحظة.
   final DateTime createdAt;
 
-  /// تاريخ آخر تعديل للملاحظة.
   final DateTime updatedAt;
 
-  /// ينشئ كائن بطاقة ملاحظة تدبرية جديدة.
   const AyahLinkNote({
     required this.id,
     this.title,
@@ -202,10 +160,9 @@ class AyahLinkNote {
     required this.updatedAt,
   });
 
-  /// المفتاح المرجعي للعقدة على لوحة الشبكة.
+  /// مفتاح البطاقة كعقدة في الشبكة.
   String get noteKey => 'note_$id';
 
-  /// تحويل بطاقة الملاحظة إلى خريطة JSON.
   Map<String, dynamic> toJson() => {
     'id': id,
     if (title != null && title!.isNotEmpty) 'title': title,
@@ -214,7 +171,6 @@ class AyahLinkNote {
     'updatedAt': updatedAt.toIso8601String(),
   };
 
-  /// إنشاء بطاقة ملاحظة من خريطة JSON.
   factory AyahLinkNote.fromJson(Map<String, dynamic> json) {
     return AyahLinkNote(
       id: json['id'] as String,
@@ -225,7 +181,6 @@ class AyahLinkNote {
     );
   }
 
-  /// إنشاء نسخة محدثة من بطاقة الملاحظة.
   AyahLinkNote copyWith({String? title, String? content, DateTime? updatedAt}) {
     return AyahLinkNote(
       id: id,
@@ -237,56 +192,44 @@ class AyahLinkNote {
   }
 }
 
-/// يمثل كيان رابط الآيات التدبري بما يشمل العنوان والوصف والآيات ومواضع العقد.
-///
-/// Represents an Ayah Link (روابط الآيات) collection entity.
-///
-/// Holds the theme/title, optional personal description, member ayahs,
-/// canvas node positions, view preferences, and layout state.
+/// رابط آيات: محور بعنوان، وآياته وبطاقاته، ومواضعها على الشبكة، وحالة العرض المحفوظة.
 class AyahLinkItem {
-  /// المعرّف الفريد لرابط الآيات.
   final String id;
 
-  /// عنوان الرابط أو المحور التدبري.
+  /// عنوان المحور التدبري.
   final String title;
 
-  /// وصف إضافي اختياري لفكرة الرابط التدبرية.
   final String? description;
 
-  /// قائمة الآيات القرآنية المنضمة لهذا الرابط.
   final List<AyahLinkVerse> verses;
 
-  /// قائمة كروت الملاحظات والتدبرات الحرة التابعة لهذا الرابط.
+  /// بطاقات الخواطر الحرة في الرابط.
   final List<AyahLinkNote> notes;
 
-  /// خريطة مواضع العقد على لوحة الشبكة التفاعلية.
+  /// مواضع العقد على الشبكة، بمفتاح الآية أو البطاقة.
   final Map<String, LinkNodePosition> positions;
 
-  /// قائمة العلاقات المباشرة بين الآيات داخل الرابط.
   final List<AyahLinkRelationship> relationships;
 
-  /// يحدد ما إذا كان ترتيب العقد يدوياً أم تلقائياً.
+  /// هل رتّب القارئ العقد بيده، أم تُرتّب تلقائياً.
   final bool isManualLayout;
 
-  /// آخر وضع عرض نشط للرابط مثل الشبكة أو القائمة المرتبة.
+  /// آخر طريقة عرض استُخدمت.
   final String lastViewMode; // 'network', 'ordered', 'cards'
 
-  /// الإزاحة الأفقية المحفوظة لمنظور الشبكة.
+  /// منظور الشبكة المحفوظ: الإزاحة الأفقية.
   final double? panX;
 
-  /// الإزاحة الرأسية المحفوظة لمنظور الشبكة.
+  /// الإزاحة الرأسية.
   final double? panY;
 
-  /// مستوى التكبير المحفوظ لمنظور الشبكة.
+  /// مستوى التكبير.
   final double? zoomScale;
 
-  /// تاريخ ووقت إنشاء الرابط.
   final DateTime createdAt;
 
-  /// تاريخ ووقت آخر تحديث للرابط.
   final DateTime updatedAt;
 
-  /// ينشئ كائن رابط آيات متكامل.
   const AyahLinkItem({
     required this.id,
     required this.title,
@@ -304,13 +247,11 @@ class AyahLinkItem {
     required this.updatedAt,
   });
 
-  /// يتحقق مما إذا كان الرابط يحتوي على آية محددة برقم السورة ورقم الآية.
   bool containsAyah(int surahNumber, int ayahNumber) {
     final key = '$surahNumber:$ayahNumber';
     return verses.any((v) => v.ayahKey == key);
   }
 
-  /// يحول بيانات رابط الآيات إلى خريطة JSON للتخزين.
   Map<String, dynamic> toJson() => {
     'id': id,
     'title': title,
@@ -330,7 +271,6 @@ class AyahLinkItem {
     'updatedAt': updatedAt.toIso8601String(),
   };
 
-  /// ينشئ كائن رابط آيات من خريطة بيانات JSON.
   factory AyahLinkItem.fromJson(Map<String, dynamic> json) {
     final versesList = <AyahLinkVerse>[];
     if (json.containsKey('verses')) {
@@ -386,7 +326,6 @@ class AyahLinkItem {
     );
   }
 
-  /// ينشئ نسخة محدثة من رابط الآيات مع تعديل الحقول المطلوبة.
   AyahLinkItem copyWith({
     String? title,
     String? description,

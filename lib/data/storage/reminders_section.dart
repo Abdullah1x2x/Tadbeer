@@ -1,12 +1,8 @@
 part of 'user_data_store.dart';
 
-/// REMINDERS
+/// قسم التذكيرات.
 mixin _RemindersSection on _StoreState {
-  // ==========================================
-  // REMINDERS
-  // ==========================================
-
-  /// إضافة تنبيه جديد أو تحديث تنبيه موجود في الذاكرة وقاعدة البيانات.
+  /// يضيف تذكيراً أو يعدّله.
   Future<void> putReminder(ReminderItem reminder) async {
     final idx = _reminders.indexWhere((r) => r.id == reminder.id);
     if (idx != -1) {
@@ -22,7 +18,6 @@ mixin _RemindersSection on _StoreState {
     await saveToDisk();
   }
 
-  /// حذف تنبيه من الذاكرة وقاعدة البيانات بواسطة معرفه.
   Future<void> removeReminder(String id) async {
     _reminders.removeWhere((r) => r.id == id);
     notifyListeners();

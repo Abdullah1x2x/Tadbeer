@@ -1,12 +1,8 @@
 part of 'user_data_store.dart';
 
-/// NOTES
+/// قسم الخواطر.
 mixin _NotesSection on _StoreState {
-  // ==========================================
-  // NOTES
-  // ==========================================
-
-  /// البحث عن جميع الملاحظات المرتبطة بآية محددة.
+  /// خواطر آية محددة.
   @override
   List<NoteItem> findNotesForAyah(int surahNumber, int ayahNumber) {
     return _notes
@@ -16,12 +12,12 @@ mixin _NotesSection on _StoreState {
         .toList();
   }
 
-  /// استرجاع الملاحظات المرتبطة بآية محددة (مرادف لدالة البحث).
+  /// الاسم القديم لـ[findNotesForAyah].
   List<NoteItem> getNotesForAyah(int surahNumber, int ayahNumber) {
     return findNotesForAyah(surahNumber, ayahNumber);
   }
 
-  /// إضافة ملاحظة أو تحديثها في الذاكرة وقاعدة البيانات.
+  /// يضيف خاطرة أو يعدّلها.
   Future<void> putNote(NoteItem note) async {
     final idx = _notes.indexWhere((n) => n.id == note.id);
     if (idx != -1) {
@@ -37,7 +33,7 @@ mixin _NotesSection on _StoreState {
     await saveToDisk();
   }
 
-  /// إنشاء ملاحظة جديدة أو تحديث ملاحظة قائمة وحفظها.
+  /// ينشئ خاطرة، أو يعدّل الموجودة إن مُرّر معرّفها، ويحفظها.
   Future<NoteItem> saveNote({
     String? id,
     required NoteType type,
@@ -81,7 +77,6 @@ mixin _NotesSection on _StoreState {
     return newNote;
   }
 
-  /// إزالة ملاحظة من الذاكرة وقاعدة البيانات بواسطة معرفها.
   Future<void> removeNote(String id) async {
     _notes.removeWhere((n) => n.id == id);
     notifyListeners();
@@ -92,6 +87,6 @@ mixin _NotesSection on _StoreState {
     await saveToDisk();
   }
 
-  /// حذف ملاحظة بواسطة معرفها.
+  /// الاسم القديم لـ[removeNote].
   Future<void> deleteNote(String id) => removeNote(id);
 }

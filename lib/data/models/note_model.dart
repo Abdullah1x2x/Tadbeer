@@ -2,55 +2,42 @@ import 'package:uuid/uuid.dart';
 
 import '../storage/user_data_store.dart';
 
-/// أنواع الخواطر والملاحظات المتاحة في التطبيق.
+/// نوع الخاطرة.
 enum NoteType {
-  /// خواطر مرتبطة بآية قرآنية محددة.
+  /// مرتبطة بآية.
   ayah,
 
-  /// خواطر حرة عامة غير مرتبطة بآية بعينها.
+  /// حرة، غير مرتبطة بآية.
   free,
 }
 
-/// يمثل خاطرة أو تدوينة للمستخدم في تطبيق تدبّر.
-///
-/// ملاحظة:
-/// الخواطر تدعم نوعين: خواطر مرتبطة بآية محددة (مع حفظ رقم السورة والآية والصفحة)،
-/// أو خواطر حرة. يتم حفظها محلياً وعرضها في تدفق موحد مرتب من الأحدث إلى الأقدم.
+/// خاطرة القارئ، على آية أو حرة؛ تُعرض كلها من الأحدث إلى الأقدم.
 class NoteItem {
-  /// المعرّف الفريد للملاحظة.
   final String id;
 
-  /// نوع الملاحظة (مرتبطة بآية أو حرة).
   final NoteType type;
 
-  /// عنوان الملاحظة الاختياري.
+  /// عنوان اختياري.
   final String? title;
 
-  /// المحتوى النصي للخاطرة أو الملاحظة.
   final String content;
 
-  /// حقول الربط بالآية (تُملأ عند كون الخاطرة من نوع [NoteType.ayah]).
+  /// حقول الآية، تُملأ في خواطر [NoteType.ayah] فقط.
   final int? ayahId;
 
-  /// رقم السورة المرتبطة بالملاحظة إن وجدت.
   final int? surahNumber;
 
-  /// رقم الآية المرتبطة بالملاحظة إن وجدت.
   final int? ayahNumber;
 
-  /// رقم صفحة المصحف للآية المرتبطة إن وجدت.
   final int? page;
 
-  /// النص القرآني للآية المرتبطة بالملاحظة إن وجد.
+  /// نص الآية وقت كتابة الخاطرة.
   final String? ayahText;
 
-  /// تاريخ ووقت إنشاء الملاحظة.
   final DateTime createdAt;
 
-  /// تاريخ ووقت آخر تحديث للملاحظة.
   final DateTime updatedAt;
 
-  /// ينشئ كائن ملاحظة أو خاطرة جديد.
   const NoteItem({
     required this.id,
     required this.type,
@@ -65,10 +52,8 @@ class NoteItem {
     required this.updatedAt,
   });
 
-  /// ما إذا كانت هذه الملاحظة مرتبطة بآية قرآنية محددة.
   bool get isAyahNote => type == NoteType.ayah;
 
-  /// يحول بيانات الملاحظة إلى خريطة JSON للتخزين المحلي.
   Map<String, dynamic> toJson() => {
     'id': id,
     'type': type.name,
@@ -83,7 +68,6 @@ class NoteItem {
     'updatedAt': updatedAt.toIso8601String(),
   };
 
-  /// ينشئ كائن ملاحظة من خريطة بيانات JSON المحفوظة.
   factory NoteItem.fromJson(Map<String, dynamic> json) {
     return NoteItem(
       id: json['id'] as String,
@@ -100,7 +84,6 @@ class NoteItem {
     );
   }
 
-  /// ينشئ نسخة محدثة من الملاحظة مع تعديل الحقول الممررة.
   NoteItem copyWith({String? title, String? content, DateTime? updatedAt}) {
     return NoteItem(
       id: id,
@@ -118,26 +101,22 @@ class NoteItem {
   }
 }
 
-/// مستودع إدارة الخواطر والتدوينات.
-///
-/// يتيح حفظ الخواطر وتحديثها واسترجاعها حسب الآية أو حذفها عبر [UserDataStore].
-/// تم دمج هذا المستودع داخل ملف النموذج لتقليل عدد الملفات وجمع منطق الخواطر في وحدة متكاملة.
+/// حفظ الخواطر وتعديلها وحذفها وجلبها لكل آية، فوق [UserDataStore].
 class NoteRepository {
   final UserDataStore _store;
 
-  /// ينشئ مستودع الخواطر والتدوينات مع إمكانية تمرير مخزن بيانات مخصص.
+  /// [store] للاختبارات؛ الافتراضي هو المخزن العام.
   NoteRepository([UserDataStore? store])
     : _store = store ?? UserDataStore.instance;
 
-  /// قائمة بجميع الملاحظات والخواطر المحفوظة.
   List<NoteItem> get allNotes => _store.notes;
 
-  /// يسترجع قائمة الخواطر المرتبطة بآية محددة حسب رقم السورة ورقم الآية.
+  /// خواطر آية محددة.
   List<NoteItem> getNotesForAyah(int surahNumber, int ayahNumber) {
     return _store.findNotesForAyah(surahNumber, ayahNumber);
   }
 
-  /// حفظ خاطرة جديدة أو تحديث خاطرة موجودة مسبقاً.
+  /// يحفظ خاطرة جديدة، أو يعدّل الموجودة إن مُرّر [id].
   Future<NoteItem> saveNote({
     String? id,
     required NoteType type,
@@ -181,7 +160,6 @@ class NoteRepository {
     return newNote;
   }
 
-  /// حذف خاطرة بواسطة معرّفها الفريد.
   Future<void> deleteNote(String id) async {
     await _store.removeNote(id);
   }

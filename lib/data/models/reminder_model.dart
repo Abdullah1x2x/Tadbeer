@@ -1,72 +1,54 @@
 import 'package:flutter/material.dart';
 
-/// أنماط تكرار التذكير المتاحة (مرة واحدة، يومياً، أو أيام محددة من الأسبوع).
+/// تكرار التذكير.
 enum ReminderRepeatMode {
-  /// تنبيه لمرة واحدة فقط.
+  /// مرة واحدة.
   once,
 
-  /// تنبيه يتكرر يومياً في نفس الموعد.
+  /// كل يوم في نفس الموعد.
   daily,
 
-  /// تنبيه يتكرر في أيام مختارة من الأسبوع.
+  /// في أيام مختارة من الأسبوع.
   weekdays,
 }
 
-/// يحدد طريقة تسليم التنبيه (إشعار عادي أو منبه صوتي مستمر).
-///
-/// Determines whether the reminder is delivered as a standard notification
-/// or as a continuous ringing alarm.
+/// طريقة التنبيه.
 enum ReminderAlertType {
-  /// إشعار عادي في شريط الإشعارات.
+  /// إشعار عادي.
   notification,
 
-  /// تنبيه صوتي مستمر كالمنبه.
+  /// رنين مستمر كالمنبه.
   alarm,
 }
 
-/// يمثل تذكيراً محلياً لقراءة الورد القرآني يجدوله المستخدم.
-///
-/// Represents a local Quran reading reminder scheduled by the user.
-///
-/// Fully offline: uses local device alarms and notification APIs.
+/// تذكير يجدوله القارئ لورده، ويُنبَّه به محلياً على الجهاز.
 class ReminderItem {
-  /// المعرّف الفريد للتذكير.
   final String id;
 
-  /// عنوان التذكير الذي يظهر في الإشعار أو المنبه.
+  /// العنوان الظاهر في الإشعار.
   final String title;
 
-  /// الساعة المحددة للتنبيه بنظام 24 ساعة (0..23).
+  /// الساعة بنظام 24 ساعة (0..23).
   final int hour;
 
-  /// الدقيقة المحددة للتنبيه (0..59).
+  /// الدقيقة (0..59).
   final int minute;
 
-  /// نمط تكرار التذكير.
   final ReminderRepeatMode repeatMode;
 
-  /// نوع التنبيه (إشعار أو منبه).
   final ReminderAlertType alertType;
 
-  /// أيام الأسبوع المحددة للتنبيه (1 = الإثنين .. 7 = الأحد).
-  ///
-  /// Specific days of the week: 1 = Monday .. 7 = Sunday
+  /// أيام [ReminderRepeatMode.weekdays]: 1 = الإثنين … 7 = الأحد.
   final List<int> selectedDays;
 
-  /// ما إذا كان التذكير مفعلاً حالياً.
   final bool isEnabled;
 
-  /// تاريخ ووقت إنشاء التذكير.
   final DateTime createdAt;
 
-  /// الموعد الفعلي المجدول للتنبيه ذي المرة الواحدة.
-  ///
-  /// For [ReminderRepeatMode.once] only: the exact moment the OS notification
-  /// was scheduled for. Once this moment has passed, the reminder has already
-  /// fired and must be disabled instead of being rescheduled for the next day.
+  /// لتذكير "مرة واحدة" فقط: اللحظة التي جُدول لها.
+  /// إذا مضت فقد رنّ التذكير، فيُعطَّل بدل أن يُجدول لليوم التالي.
   final DateTime? scheduledFor;
 
-  /// ينشئ كائن تذكير جديد.
   const ReminderItem({
     required this.id,
     required this.title,
@@ -80,7 +62,7 @@ class ReminderItem {
     this.scheduledFor,
   });
 
-  /// ما إذا كان تنبيه "مرة واحدة" قد حان موعده وانقضى (أي أنه رنّ بالفعل).
+  /// هل مضى موعد تذكير "مرة واحدة"، أي أنه رنّ.
   bool hasOnceReminderFired([DateTime? now]) {
     if (repeatMode != ReminderRepeatMode.once) return false;
     final at = scheduledFor;
@@ -88,13 +70,9 @@ class ReminderItem {
     return !at.isAfter(now ?? DateTime.now());
   }
 
-  /// وقت التذكير ككائن [TimeOfDay].
   TimeOfDay get time => TimeOfDay(hour: hour, minute: minute);
 
-  /// ينسق الوقت من نظام 24 ساعة إلى نظام 12 ساعة بالأرقام العربية مع رمز (ص/م).
-  ///
-  /// Formats a 24-hour (0..23) time into 12-hour format (01..12) with ص/م
-  /// so midnight (0) displays as ١٢:٠٠ ص instead of ٠٠:٠٠.
+  /// الوقت بنظام 12 ساعة بالأرقام العربية مع ص/م؛ منتصف الليل يظهر ١٢:٠٠ ص لا ٠٠:٠٠.
   static String formatTime12Hour(int hour, int minute) {
     final int hour12 = hour % 12 == 0 ? 12 : hour % 12;
     final String period = hour < 12 ? 'ص' : 'م';
@@ -103,7 +81,6 @@ class ReminderItem {
     return '$hStr:$mStr $period';
   }
 
-  /// يحول الرقم الصحيح إلى نص بالأرقام العربية المشرقية مع إكمال الأصفار البادئة.
   static String _toArabicDigits(int number, {int minDigits = 1}) {
     const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     final s = number.toString().padLeft(minDigits, '0');
@@ -119,10 +96,8 @@ class ReminderItem {
     return buffer.toString();
   }
 
-  /// الوقت المنسق للعرض بنظام 12 ساعة بالأرقام العربية.
   String get formattedTime => formatTime12Hour(hour, minute);
 
-  /// يحول كائن التذكير إلى خريطة بيانات JSON للحفظ المحلي.
   Map<String, dynamic> toJson() => {
     'id': id,
     'title': title,
@@ -136,7 +111,6 @@ class ReminderItem {
     if (scheduledFor != null) 'scheduledFor': scheduledFor!.toIso8601String(),
   };
 
-  /// ينشئ كائن تذكير من خريطة بيانات JSON المحفوظة.
   factory ReminderItem.fromJson(Map<String, dynamic> json) {
     ReminderRepeatMode mode;
     switch (json['repeatMode'] as String?) {
@@ -171,11 +145,7 @@ class ReminderItem {
     );
   }
 
-  /// ينشئ نسخة محدثة من التذكير مع تعديل الحقول الممررة.
-  ///
-  /// Changing the time, repeat mode, days, or re-enabling the reminder
-  /// clears [scheduledFor] so the next schedule computes a fresh date —
-  /// unless a new [scheduledFor] is passed explicitly.
+  /// نسخة معدّلة. تغيير الوقت أو التكرار أو الأيام أو إعادة التفعيل يمسح [scheduledFor] ليُحسب موعد جديد، إلا إن مُرّر صراحة.
   ReminderItem copyWith({
     String? title,
     int? hour,

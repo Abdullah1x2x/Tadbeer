@@ -7,31 +7,16 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'custom_word_meanings.dart';
 import 'quran_models.dart';
 
-/// Repository providing verified, authentic Uthmani Quran data for Tadbeer.
-///
-/// EDUCATIONAL NOTE:
-/// Quran Data Architecture & Integrity:
-/// 1. Data Source: Bundled Tanzil Uthmani text (`assets/quran/quran_data.json`).
-///    - 114 Surahs (Surah names, revelation type, ayah counts, page ranges)
-///    - 6,236 Ayahs (global stable 1-based sequential ID, surah number, ayah number, page, juz, hizb, quarter, sajdah)
-///    - 604 standard Madani Mushaf pages
-/// 2. Immutability: Quranic text is immutable and strictly read-only.
-/// مستودع بيانات القرآن الكريم وتخطيط المصحف (المرجع الأساسي غير القابل للتعديل).
-///
-/// ملاحظة معمارية:
-/// - هذا المستودع يُحمّل النص العثماني الموثق من مشروع تنزيل (Tanzil) موزّعاً على 604 صفحات.
-/// - تم إنشاء كاش نصوص تم تطبيعها مسبقاً (`_normalizedAyahTexts`) للبحث السريع في أجزاء من الثانية.
-/// - الكائنات المعادة محمية بقوائم غير قابلة للتعديل (Unmodifiable Lists) لصيانة قدسية النص القرآني.
+/// نص القرآن وبيانات المصحف، للقراءة فقط.
+/// النص العثماني من مشروع تنزيل (`assets/quran/quran_data.json`): ١١٤ سورة، و٦٢٣٦ آية برقم ثابت لكل آية، و٦٠٤ صفحات. القوائم المعادة غير قابلة للتعديل، ويُحفظ نص كل آية مطبّعاً مسبقاً ليكون البحث فورياً.
 class QuranRepository {
-  /// النسخة المشتركة الوحيدة (Singleton) من مستودع بيانات القرآن الكريم.
   static final QuranRepository instance = QuranRepository._internal();
 
-  /// منشئ داخلي خاص لتطبيق نمط النسخة الوحيدة.
   QuranRepository._internal();
 
   bool _isLoaded = false;
 
-  /// يحدد ما إذا تم تحميل بيانات القرآن الكريم ومعاني الكلمات في الذاكرة.
+  /// هل حُمّلت بيانات القرآن ومعاني الكلمات.
   bool get isLoaded => _isLoaded;
 
   final List<Surah> _surahs = [];
@@ -45,20 +30,17 @@ class QuranRepository {
   final List<String> _normalizedWordOnly = [];
   final List<String> _normalizedMeaningOnly = [];
 
-  /// قائمة سور القرآن الكريم (١١٤ سورة) غير قابلة للتعديل.
   List<Surah> get surahs => List.unmodifiable(_surahs);
 
-  /// قائمة صفحات المصحف المدني (٦٠٤ صفحات) غير قابلة للتعديل.
   List<QuranPage> get pages => List.unmodifiable(_pages);
 
-  /// قائمة جميع آيات القرآن الكريم (٦٢٣٦ آية) غير قابلة للتعديل.
   List<Ayah> get allAyahs => List.unmodifiable(_allAyahs);
 
-  /// قائمة جميع معاني الكلمات القرآنية الغريبة المعتمدة غير قابلة للتعديل.
+  /// معاني الكلمات الغريبة.
   List<QuranWordMeaning> get allWordMeanings =>
       List.unmodifiable(_wordMeanings);
 
-  /// يهيئ المستودع عبر تحميل بيانات القرآن الكريم ومعاني الكلمات وبناء فهارس البحث السريع.
+  /// يحمّل بيانات القرآن ومعاني الكلمات ويبني فهارس البحث؛ يُستدعى مرة عند الإقلاع.
   Future<void> init() async {
     if (_isLoaded) return;
 
@@ -89,7 +71,7 @@ class QuranRepository {
       }
     }
 
-    // Load authentic Quranic word meanings (السراج في بيان غريب القرآن)
+    // معاني الكلمات (السراج في بيان غريب القرآن).
     try {
       final meaningsString = await rootBundle.loadString(
         'assets/quran/word_meanings.json',
@@ -120,10 +102,10 @@ class QuranRepository {
         _normalizedMeaningOnly.add(normMeaning);
       }
     } catch (_) {
-      // Graceful fallback if asset loading is not mocked in isolated unit tests
+      // في الاختبارات المعزولة قد لا تُتاح ملفات الأصول، فتُكمل البيانات بدونها.
     }
 
-    // دمج مفردات غريب القرآن المضافة برمجياً من قبل المطور
+    // دمج المعاني التي أضافها المطور في [customWordMeanings].
     for (final customItem in customWordMeanings) {
       final ayah = _ayahsByKey['${customItem.surah}:${customItem.ayah}'];
       final pageNum = ayah?.page ?? 1;
@@ -142,7 +124,7 @@ class QuranRepository {
     _isLoaded = true;
   }
 
-  /// يعيد بيانات صفحة المصحف الموافقة لرقم الصفحة (١ إلى ٦٠٤).
+  /// صفحة المصحف [pageNumber] (١..٦٠٤).
   QuranPage getPage(int pageNumber) {
     assert(_isLoaded, 'QuranRepository must be initialized before use');
     if (pageNumber < 1 || pageNumber > 604) {
@@ -151,7 +133,7 @@ class QuranRepository {
     return _pages[pageNumber - 1];
   }
 
-  /// يعيد بيانات السورة الموافقة لرقم السورة (١ إلى ١١٤).
+  /// السورة [surahNumber] (١..١١٤).
   Surah getSurah(int surahNumber) {
     assert(_isLoaded, 'QuranRepository must be initialized before use');
     if (surahNumber < 1 || surahNumber > 114) {
@@ -160,19 +142,14 @@ class QuranRepository {
     return _surahs[surahNumber - 1];
   }
 
-  /// يعيد الآية المحددة برقم السورة ورقم الآية، أو قيمة فارغة إن لم توجد.
+  /// الآية، أو null إن لم توجد.
   Ayah? getAyah(int surahNumber, int ayahNumber) {
     assert(_isLoaded, 'QuranRepository must be initialized before use');
     return _ayahsByKey['$surahNumber:$ayahNumber'];
   }
 
-  /// بحث فوري وذكي في جميع آيات القرآن الكريم (٦٢٣٦ آية) بدون إنترنت.
-  ///
-  /// المزايا المعمارية للبحث القرآني:
-  /// ١. التعرف المباشر على مراجع السور والآيات (مثل: "البقرة 255" أو "2:255" أو "آية الكرسي" أو "سورة الكهف").
-  /// ٢. دعم البحث بالجذر اللغوي الصرفي (مثل: "جذر:صبر").
-  /// ٣. ترتيب النتائج بذكاء: المطابقة المتصلة التامة أولاً، تليها الآيات المشتملة على كل كلمات البحث حتى لو كانت متفرقة.
-  /// ٤. مرونة السوابق (أل التعريف والواو والفاء) لتسهيل كتابة الكلمات دون اشتراط المطابقة الحرفية الصارمة.
+  /// بحث في كل الآيات دون إنترنت.
+  /// يتعرّف على المراجع المباشرة ("البقرة 255"، "2:255"، "آية الكرسي")، ويدعم البحث بالجذر ("جذر:صبر"). المطابقة المتصلة أولاً، ثم الآيات التي فيها كل كلمات البحث ولو متفرقة. ولا يشترط "ال" التعريف.
   List<Ayah> searchAyahs(String query, {int limit = 50}) {
     if (!_isLoaded || query.trim().isEmpty) return const [];
 
@@ -192,13 +169,13 @@ class QuranRepository {
     final results = <Ayah>[];
     final addedIds = <int>{};
 
-    // إضافة الآية المحددة مباشرة إذا تطابقت مع مرجع مباشر (مثل: البقرة 255 أو الكرسي)
+    // مرجع مباشر (البقرة 255 أو الكرسي) يأتي أولاً.
     if (directAyah != null) {
       results.add(directAyah);
       addedIds.add(directAyah.id);
     }
 
-    // المرحلة الأولى: المطابقة المتصلة التامة لعبارة البحث
+    // أولاً: العبارة كاملة متصلة.
     for (int i = 0; i < _allAyahs.length; i++) {
       if (_normalizedAyahTexts[i].contains(normalizedQuery)) {
         if (addedIds.add(_allAyahs[i].id)) {
@@ -208,7 +185,7 @@ class QuranRepository {
       }
     }
 
-    // المرحلة الثانية: المطابقة المرنة للكلمات المتعددة داخل نفس الآية
+    // ثانياً: كل الكلمات في نفس الآية ولو متفرقة.
     final tokens = normalizedQuery
         .split(' ')
         .where((w) => w.isNotEmpty)
@@ -221,7 +198,7 @@ class QuranRepository {
         for (final token in tokens) {
           if (ayahNorm.contains(token)) continue;
 
-          // مرونة السوابق: إذا بدأت الكلمة بـ "ال" وكانت ٤ أحرف فأكثر، نفحص وجودها بدون "ال"
+          // كلمة من ٤ أحرف فأكثر تبدأ بـ "ال" تُفحص أيضاً بدونها.
           if (token.startsWith('ال') && token.length >= 4) {
             final withoutAl = token.substring(2);
             if (ayahNorm.contains(withoutAl)) continue;
@@ -239,7 +216,7 @@ class QuranRepository {
         }
       }
     } else if (tokens.length == 1) {
-      // كلمة مفردة بدأت بـ "ال" ولم تتطابق حرفياً
+      // كلمة واحدة تبدأ بـ "ال" ولم تطابق حرفياً.
       final single = tokens.first;
       if (single.startsWith('ال') && single.length >= 4) {
         final withoutAl = single.substring(2);
@@ -257,8 +234,7 @@ class QuranRepository {
     return results;
   }
 
-  /// يحاول التعرف على استعلامات الإحالة المباشرة للآيات القرآنية
-  /// مثل: "البقرة 255"، "2:255"، "سورة الكهف"، أو "آية الكرسي".
+  /// الآية التي يشير إليها مرجع مباشر ("البقرة 255"، "2:255"، "سورة الكهف"، "آية الكرسي")، أو null.
   Ayah? _tryParseDirectAyahReference(String rawQuery) {
     if (!_isLoaded) return null;
     final englishQuery = ArabicSearchNormalizer.toEnglishDigits(
@@ -266,7 +242,7 @@ class QuranRepository {
     );
     final norm = ArabicSearchNormalizer.normalize(rawQuery);
 
-    // ١. مسميات مشهورة لآيات محددة
+    // ١. آيات بأسماء مشهورة.
     if (norm == 'ايه الكرسي' || norm == 'الكرسي') {
       return getAyah(2, 255);
     }
@@ -274,7 +250,7 @@ class QuranRepository {
       return getAyah(2, 282);
     }
 
-    // ٢. صيغة "رقم السورة:رقم الآية" (مثلاً "2:255" أو "18:10")
+    // ٢. "سورة:آية" (2:255).
     final colonMatch = RegExp(r'^(\d{1,3})\s*[:\s]\s*(\d{1,3})$')
         .firstMatch(englishQuery);
     if (colonMatch != null) {
@@ -291,7 +267,7 @@ class QuranRepository {
       }
     }
 
-    // ٣. صيغة "اسم السورة + رقم الآية" (مثلاً "البقرة 255" أو "سورة الكهف 10")
+    // ٣. اسم السورة ورقم الآية (البقرة 255).
     final surahAyahMatch = RegExp(r'^(?:سورة\s+)?([^\d:]+?)\s+(\d{1,3})$')
         .firstMatch(englishQuery);
     if (surahAyahMatch != null) {
@@ -305,7 +281,7 @@ class QuranRepository {
       }
     }
 
-    // ٤. صيغة "اسم السورة" فقط (مثلاً "سورة الكهف" أو "سورة الفاتحة")
+    // ٤. اسم السورة وحده (سورة الكهف).
     final surahOnlyMatch = RegExp(r'^سورة\s+([^\d:]+)$')
         .firstMatch(englishQuery);
     if (surahOnlyMatch != null) {
@@ -319,7 +295,7 @@ class QuranRepository {
     return null;
   }
 
-  /// يبحث عن سورة بمطابقة الاسم العادي أو مع حذف "ال" التعريف.
+  /// السورة بالاسم، مع "ال" أو بدونها.
   Surah? _findSurahByName(String nameQuery) {
     final normQuery = ArabicSearchNormalizer.normalize(nameQuery);
     final withoutAl = normQuery.startsWith('ال') && normQuery.length > 3
@@ -342,8 +318,7 @@ class QuranRepository {
     return null;
   }
 
-  /// Instant offline Arabic root and morphological search across all 6,236 ayahs.
-  /// يبحث في آيات القرآن الكريم باستخدام الجذر الصرفي العربي ومشتقاته.
+  /// الآيات التي فيها صيغة من صيغ الجذر [root].
   List<Ayah> searchAyahsByRoot(String root, {int limit = 50}) {
     if (!_isLoaded || root.trim().isEmpty) return const [];
     final forms = ArabicRootSearchHelper.getRootForms(root);
@@ -363,7 +338,7 @@ class QuranRepository {
     return results;
   }
 
-  /// الكلمات الغريبة المعتمدة في صفحة مصحف معينة (1 - 604).
+  /// معاني الكلمات في صفحة [pageNumber].
   List<QuranWordMeaning> getWordMeaningsForPage(int pageNumber) {
     assert(_isLoaded, 'QuranRepository must be initialized before use');
     if (pageNumber < 1 || pageNumber > 604) {
@@ -372,7 +347,7 @@ class QuranRepository {
     return _wordMeaningsByPage[pageNumber] ?? const [];
   }
 
-  /// الكلمات الغريبة المعتمدة في سورة معينة (1 - 114).
+  /// معاني الكلمات في سورة [surahNumber].
   List<QuranWordMeaning> getWordMeaningsForSurah(int surahNumber) {
     assert(_isLoaded, 'QuranRepository must be initialized before use');
     if (surahNumber < 1 || surahNumber > 114) {
@@ -381,7 +356,7 @@ class QuranRepository {
     return _wordMeaningsBySurah[surahNumber] ?? const [];
   }
 
-  /// بحث لحظي في معاني الكلمات القرآنية المعتمدة ومفرداتها مع ترتيب الأولوية للمطابقة التامة والمباشرة.
+  /// بحث في معاني الكلمات، المطابقة التامة أولاً.
   List<QuranWordMeaning> searchWordMeanings(String query, {int limit = 50}) {
     if (!_isLoaded) return const [];
     if (query.trim().isEmpty) {

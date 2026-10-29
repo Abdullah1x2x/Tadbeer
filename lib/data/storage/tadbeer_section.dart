@@ -1,17 +1,13 @@
 part of 'user_data_store.dart';
 
-/// TADBEER PAUSE (وقفة تدبر)
+/// قسم وقفات التدبر.
 mixin _TadbeerSection on _StoreState {
-  // ==========================================
-  // TADBEER PAUSE (وقفة تدبر)
-  // ==========================================
-
-  /// استرجاع إجابات وقفة التدبر المحفوظة لآية محددة إن وُجدت.
+  /// وقفة التدبر المحفوظة للآية، أو null.
   TadbeerItem? getTadbeer(int surahNumber, int ayahNumber) {
     return _tadbeerLookup['$surahNumber:$ayahNumber'];
   }
 
-  /// Resolves the most relevant reflection note for an ayah across Notes & Tadbeer.
+  /// أنسب خاطرة للآية: من الملاحظات أو من وقفة التدبر.
   String? getReflectionForAyah(int surahNumber, int ayahNumber) {
     final notes = findNotesForAyah(surahNumber, ayahNumber);
     if (notes.isNotEmpty && notes.first.content.trim().isNotEmpty) {
@@ -24,7 +20,7 @@ mixin _TadbeerSection on _StoreState {
     return null;
   }
 
-  /// حفظ إجابات أسئلة وقفة التدبر لآية محددة أو حذفها إن صارت فارغة.
+  /// يحفظ إجابات وقفة التدبر للآية، أو يحذفها إن صارت كلها فارغة.
   Future<void> saveTadbeer({
     required int surahNumber,
     required int ayahNumber,
@@ -41,7 +37,7 @@ mixin _TadbeerSection on _StoreState {
 
     final key = '$surahNumber:$ayahNumber';
     if (cleanedAnswers.isEmpty) {
-      // Do not save empty responses; clean up if all were deleted
+      // لا تُحفظ الإجابات الفارغة؛ وإن حُذفت كلها تُحذف الوقفة.
       final existing = _tadbeerLookup.remove(key);
       _tadbeerItems.removeWhere((t) => t.ayahKey == key);
       notifyListeners();
@@ -55,7 +51,7 @@ mixin _TadbeerSection on _StoreState {
 
     final now = DateTime.now();
     final existing = _tadbeerLookup[key];
-    // A new or changed commitment is asked about afresh.
+    // التزام جديد أو معدّل يُسأل عنه من جديد.
     final commitment = cleanedAnswers[TadbeerItem.commitmentKey];
     final sameCommitment =
         existing != null && existing.commitment == commitment;
@@ -88,12 +84,11 @@ mixin _TadbeerSection on _StoreState {
       await userDb.insertOrUpdateTadbeer(item);
     }
     await saveToDisk();
-    // A reflection keeps the day streak going like reading does.
+    // التدبر يحفظ سلسلة الأيام كما تحفظها القراءة.
     await markActiveDay(now: now);
   }
 
-  /// The commitment to ask about on Home: the latest one written before
-  /// today and within the last week, not done and not asked about yet.
+  /// الالتزام الذي يُسأل عنه في الرئيسية: أحدث التزام كُتب قبل اليوم وخلال الأسبوع الماضي، لم يُنجز ولم يُسأل عنه.
   TadbeerItem? pendingCommitment({DateTime? now}) {
     final at = now ?? DateTime.now();
     final today = DateTime(at.year, at.month, at.day);
@@ -113,7 +108,7 @@ mixin _TadbeerSection on _StoreState {
     return latest;
   }
 
-  /// يسجّل أن القارئ فعل ما التزم به عند الآية، أو يلغي ذلك.
+  /// يسجّل أن القارئ فعل ما التزم به، أو يلغي ذلك.
   Future<void> setCommitmentDone(
     int surahNumber,
     int ayahNumber, {
@@ -124,7 +119,7 @@ mixin _TadbeerSection on _StoreState {
     (t) => t.copyWith(commitmentDone: done, commitmentAsked: true),
   );
 
-  /// يسجّل أن القارئ أجاب «ليس بعد»، فلا تُعرض عليه البطاقة ثانية.
+  /// يسجّل أن القارئ أجاب «ليس بعد»، فلا تُعرض البطاقة ثانية.
   Future<void> setCommitmentAsked(int surahNumber, int ayahNumber) =>
       _updateCommitment(
         surahNumber,
@@ -150,7 +145,6 @@ mixin _TadbeerSection on _StoreState {
     await saveToDisk();
   }
 
-  /// حذف إجابات وقفة التدبر المرتبطة بآية محددة.
   Future<void> deleteTadbeer(int surahNumber, int ayahNumber) async {
     final key = '$surahNumber:$ayahNumber';
     final existing = _tadbeerLookup.remove(key);

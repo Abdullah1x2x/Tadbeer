@@ -4,18 +4,14 @@ import 'package:flutter/services.dart';
 import '../theme/theme.dart';
 import '../motion/app_motion.dart';
 
-/// عنصر واحد في شريط التنقل العائم.
+/// عنصر في شريط التنقل العائم.
 class FloatingNavItem {
-  /// الأيقونة في الحالة العادية.
   final IconData icon;
 
-  /// الأيقونة عند التحديد.
   final IconData selectedIcon;
 
-  /// اسم القسم.
   final String label;
 
-  /// ينشئ عنصراً لشريط التنقل العائم.
   const FloatingNavItem({
     required this.icon,
     required this.selectedIcon,
@@ -23,23 +19,15 @@ class FloatingNavItem {
   });
 }
 
-/// شريط تنقل سفلي عائم بكبسولة ذهبية تنزلق إلى القسم المحدد.
-///
-/// Floating capsule bar: the selected item widens to show its name while a
-/// gold pill glides underneath it with a small overshoot; the other items are
-/// icon-only. Every item keeps a tooltip and semantics label so icon-only
-/// items stay discoverable and accessible.
+/// شريط تنقل سفلي عائم: العنصر المحدد يتسع ليظهر اسمه، وكبسولة ذهبية تنزلق تحته.
+/// لكل عنصر تلميح ووصف لقارئ الشاشة، فتبقى العناصر التي بلا اسم واضحة.
 class FloatingNavBar extends StatelessWidget {
-  /// عناصر الشريط بالترتيب المنطقي.
   final List<FloatingNavItem> items;
 
-  /// فهرس العنصر المحدد.
   final int selectedIndex;
 
-  /// يُستدعى عند اختيار عنصر.
   final ValueChanged<int> onSelected;
 
-  /// ينشئ شريط التنقل العائم.
   const FloatingNavBar({
     super.key,
     required this.items,
@@ -51,7 +39,7 @@ class FloatingNavBar extends StatelessWidget {
   static const double _radius = 30;
   static const double _inset = 7;
 
-  /// Share of the width given to the selected item (icon + name).
+  /// نسبة العرض التي يأخذها العنصر المحدد (الأيقونة والاسم).
   static const double _selectedShare = 0.36;
 
   @override
@@ -62,8 +50,7 @@ class FloatingNavBar extends StatelessWidget {
       context,
       const Duration(milliseconds: 380),
     );
-    // No overshoot: the pill and the widths must stay inside the bar even
-    // at the first and last tabs. The bounce lives on the icon instead.
+    // بلا ارتداد: يجب أن تبقى الكبسولة داخل الشريط حتى عند أول تبويب وآخره. الارتداد على الأيقونة بدلاً من ذلك.
     const curve = Curves.easeOutCubic;
 
     return SafeArea(
@@ -95,13 +82,11 @@ class FloatingNavBar extends StatelessWidget {
               final narrow = (inner - wide) / (items.length - 1);
               final isRtl = Directionality.of(context) == TextDirection.rtl;
 
-              // Start of the selected item along the reading direction,
-              // mirrored to a physical left offset for RTL.
+              // بداية العنصر المحدد في اتجاه القراءة، معكوسة إلى إزاحة من اليسار في RTL.
               final start = narrow * selectedIndex;
               final left = isRtl ? inner - start - wide : start;
 
-              // Own layer: the moving pill repaints without redrawing the
-              // bar's large shadow every frame.
+              // طبقة مستقلة: تُرسم الكبسولة المتحركة دون إعادة رسم ظل الشريط الكبير كل إطار.
               return RepaintBoundary(
                 child: Padding(
                   padding: const EdgeInsets.all(_inset),
@@ -160,7 +145,7 @@ class FloatingNavBar extends StatelessWidget {
   }
 }
 
-/// زر قسم واحد: أيقونة، واسم يظهر عند التحديد فقط.
+/// زر قسم: أيقونة، واسم يظهر عند التحديد فقط.
 class _NavButton extends StatelessWidget {
   final FloatingNavItem item;
   final bool selected;
@@ -176,7 +161,7 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Dark navy reads best on the gold pill in both themes.
+    // الكحلي الداكن أوضح على الكبسولة الذهبية في الوضعين.
     final onGold = AppColors.lightPrimaryDark;
     final idle = AppColors.textSecondary(context);
     final color = selected ? onGold : idle;
@@ -196,7 +181,7 @@ class _NavButton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Re-keyed on selection so the icon pops each time it is picked.
+                // مفتاح يتغير بالتحديد، فتقفز الأيقونة كلما اختيرت.
                 TweenAnimationBuilder<double>(
                   key: ValueKey(selected),
                   tween: Tween(begin: selected ? 0.7 : 1.0, end: 1.0),
@@ -212,7 +197,7 @@ class _NavButton extends StatelessWidget {
                     color: color,
                   ),
                 ),
-                // Flexible lets the name clip while the item is still widening.
+                // Flexible يقص الاسم بينما العنصر ما زال يتسع.
                 Flexible(
                   child: AnimatedSize(
                     duration: duration,

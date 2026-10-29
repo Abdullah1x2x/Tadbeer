@@ -1,10 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-/// Every icon used in the app, drawn from the Phosphor set.
-///
-/// Phosphor marks all of its icons to flip in right-to-left text, which turns
-/// letters, clocks and magnifying glasses backwards. Only icons that point
-/// somewhere (arrows, carets, lists) are mirrored here.
+/// كل أيقونات التطبيق، من مجموعة Phosphor.
+/// تقلب Phosphor كل أيقوناتها في النص من اليمين لليسار، فتنعكس الحروف والساعات والعدسات. هنا تُقلب فقط الأيقونات التي تشير إلى اتجاه: الأسهم والأقواس والقوائم.
 abstract final class AppIcons {
   static const _regular = 'PhosphorRegular';
   static const _fill = 'PhosphorFill';
@@ -762,7 +759,7 @@ abstract final class AppIcons {
     fontPackage: _package,
   );
 
-  // Quran audio.
+  // تلاوة القرآن.
   static const IconData headphones = IconData(
     0xe2a6,
     fontFamily: _regular,
@@ -784,7 +781,7 @@ abstract final class AppIcons {
     fontPackage: _package,
   );
 
-  /// The next ayah: points the way the text reads.
+  /// الآية التالية: يشير في اتجاه القراءة.
   static const IconData skipForwardFill = IconData(
     0xe5a6,
     fontFamily: _fill,
@@ -792,7 +789,7 @@ abstract final class AppIcons {
     matchTextDirection: true,
   );
 
-  /// The previous ayah: points back against the text.
+  /// الآية السابقة: يشير عكس اتجاه القراءة.
   static const IconData skipBackFill = IconData(
     0xe5a4,
     fontFamily: _fill,

@@ -1,12 +1,8 @@
 part of 'user_data_store.dart';
 
-/// READING POSITION
+/// قسم موضع القراءة.
 mixin _ReadingPositionSection on _StoreState {
-  // ==========================================
-  // READING POSITION
-  // ==========================================
-
-  /// تعيين كائن موضع القراءة الحالي وحفظه في قاعدة البيانات والقرص.
+  /// يحفظ [position] موضعاً للقراءة.
   Future<void> setReadingPosition(ReadingPosition position) async {
     _readingPosition = position;
     notifyListeners();
@@ -17,7 +13,7 @@ mixin _ReadingPositionSection on _StoreState {
     await saveToDisk();
   }
 
-  /// حفظ موضع القراءة الحالي باستخدام رقم الصفحة ورقم السورة ورقم الآية.
+  /// يحفظ موضع القراءة من الصفحة والسورة والآية.
   @override
   Future<void> saveReadingPosition({
     required int page,
@@ -31,7 +27,7 @@ mixin _ReadingPositionSection on _StoreState {
       updatedAt: DateTime.now(),
     );
     await setReadingPosition(position);
-    // The khatma is where the reader is.
+    // الختمة تتبع موضع القارئ.
     await followReadingPosition(page);
   }
 }

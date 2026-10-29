@@ -5,32 +5,26 @@ import '../theme/theme.dart';
 import '../motion/app_motion.dart';
 import 'app_tokens.dart';
 
-/// زر رقمي مستقبلي يدعم الأنماط الأساسية والثانوية مع استجابة لمسية وحركية.
-///
-/// Futuristic Button component with primary, secondary, and icon variants.
+/// زر التطبيق: ممتلئ للإجراء الأساسي، أو مفرّغ للثانوي، مع حالة تحميل.
 class FuturisticButton extends StatelessWidget {
-  /// نص الزر
   final String label;
 
-  /// إجراء النقر
   final VoidCallback? onPressed;
 
-  /// أيقونة اختيارية تسبق النص
+  /// أيقونة اختيارية قبل النص.
   final IconData? icon;
 
-  /// اللون المميز للزر
+  /// لون الزر بدل اللون الأساسي للثيم.
   final Color? color;
 
-  /// هل الزر في نمط أساسي ممتلئ أم ثانوي مفرّغ
+  /// مفرّغ بإطار بدل الممتلئ.
   final bool isSecondary;
 
-  /// هل الزر في حالة تحميل نشطة
+  /// يعرض مؤشر تحميل ويعطّل النقر.
   final bool isLoading;
 
-  /// حشوة داخلية مخصصة
   final EdgeInsetsGeometry? padding;
 
-  /// ينشئ زر أساسي مستقبلي.
   const FuturisticButton({
     super.key,
     required this.label,
@@ -42,7 +36,7 @@ class FuturisticButton extends StatelessWidget {
     this.padding,
   });
 
-  /// منشئ مخصص لزر ثانوي مفرّغ
+  /// زر ثانوي مفرّغ.
   const FuturisticButton.secondary({
     super.key,
     required this.label,
@@ -159,35 +153,27 @@ class FuturisticButton extends StatelessWidget {
   }
 }
 
-/// زر أيقونة هندسي مستقبلي للشريط العلوي والأدوات السريعة.
-///
-/// Geometric squircle icon button with subtle border glow and tooltip.
+/// زر أيقونة مربع مستدير للشريط العلوي والأدوات السريعة، مع تلميح.
 class FuturisticIconButton extends StatelessWidget {
-  /// الأيقونة
   final IconData icon;
 
-  /// التلميح النصي
+  /// التلميح، وهو أيضاً اسم الزر لقارئ الشاشة.
   final String tooltip;
 
-  /// إجراء النقر
   final VoidCallback onTap;
 
-  /// حجم الحاوية (الافتراضي 42)
+  /// ضلع الزر.
   final double size;
 
-  /// حجم الأيقونة (الافتراضي 20)
   final double iconSize;
 
-  /// لون مخصص للأيقونة
   final Color? iconColor;
 
-  /// لون مخصص للخلفية
   final Color? backgroundColor;
 
-  /// هل الزر مفعل وقابل للنقر
+  /// يعطّل الزر ويخفّته حين يكون false.
   final bool isEnabled;
 
-  /// ينشئ زر أيقونة مستقبلي.
   const FuturisticIconButton({
     super.key,
     required this.icon,

@@ -3,31 +3,21 @@ import 'package:uuid/uuid.dart';
 import '../storage/user_data_store.dart';
 import '../quran/quran_models.dart';
 
-/// يمثل إشارة مرجعية (فاصل قراءة) لآية محددة في المصحف.
-///
-/// ملاحظة:
-/// الإشارات المرجعية مرتبطة بآية محددة ورقم الصفحة لتمكين القارئ من العودة
-/// السريعة بلمسة واحدة من شاشة "الفواصل" إلى موضع التلاوة.
+/// فاصل على آية، يعود منه القارئ إلى موضعها بنقرة من شاشة الفواصل.
 class BookmarkItem {
-  /// المعرّف الفريد للإشارة المرجعية.
   final String id;
 
-  /// معرّف الآية الموحد (1..6236) لضمان الربط الدقيق.
+  /// رقم الآية في المصحف كله (1..6236).
   final int ayahId;
 
-  /// رقم السورة التي تقع فيها الآية.
   final int surahNumber;
 
-  /// رقم الآية داخل السورة.
   final int ayahNumber;
 
-  /// رقم صفحة المصحف التي تحتوي على الآية.
   final int page;
 
-  /// تاريخ ووقت إنشاء الإشارة المرجعية.
   final DateTime createdAt;
 
-  /// ينشئ كائن إشارة مرجعية لآية قرآنية.
   const BookmarkItem({
     required this.id,
     required this.ayahId,
@@ -37,10 +27,9 @@ class BookmarkItem {
     required this.createdAt,
   });
 
-  /// المفتاح النصي للآية بصيغة رقم السورة ورقم الآية.
+  /// مفتاح الآية "سورة:آية".
   String get ayahKey => '$surahNumber:$ayahNumber';
 
-  /// يحول بيانات الإشارة المرجعية إلى خريطة JSON للتخزين.
   Map<String, dynamic> toJson() => {
     'id': id,
     'ayahId': ayahId,
@@ -50,7 +39,6 @@ class BookmarkItem {
     'createdAt': createdAt.toIso8601String(),
   };
 
-  /// ينشئ كائن إشارة مرجعية من خريطة بيانات JSON.
   factory BookmarkItem.fromJson(Map<String, dynamic> json) {
     return BookmarkItem(
       id: json['id'] as String,
@@ -63,26 +51,21 @@ class BookmarkItem {
   }
 }
 
-/// مستودع إدارة الإشارات المرجعية (الفواصل) في التطبيق.
-///
-/// يوفر واجهة لإضافة وحذف وفحص حالة الفاصل للآية بالاعتماد على [UserDataStore].
-/// تم دمج هذا المستودع داخل ملف النموذج لتقليل تشتت الملفات وتقديم واجهة موحدة للفواصل.
+/// إضافة الفواصل وحذفها والتحقق منها، فوق [UserDataStore].
 class BookmarkRepository {
   final UserDataStore _store;
 
-  /// ينشئ مستودع الفواصل المرجعية بالاعتماد على مخزن بيانات المستخدم.
+  /// [store] للاختبارات؛ الافتراضي هو المخزن العام.
   BookmarkRepository([UserDataStore? store])
     : _store = store ?? UserDataStore.instance;
 
-  /// يعيد قائمة جميع الإشارات المرجعية المحفوظة.
   List<BookmarkItem> get allBookmarks => _store.bookmarks;
 
-  /// يتحقق مما إذا كانت الآية المحددة محفوظة في الفواصل المرجعية.
   bool isBookmarked(int surahNumber, int ayahNumber) {
     return _store.hasBookmark(surahNumber, ayahNumber);
   }
 
-  /// تبديل حالة الفاصل للآية (إضافة إذا لم تكن موجودة، وحذف إذا كانت مضافة).
+  /// يضيف الفاصل أو يحذفه، ويعيد true إن صارت الآية محفوظة.
   Future<bool> toggleBookmark(Ayah ayah) async {
     final currentlyBookmarked = isBookmarked(ayah.surahNumber, ayah.ayahNumber);
     if (currentlyBookmarked) {
@@ -107,7 +90,6 @@ class BookmarkRepository {
     }
   }
 
-  /// يحذف إشارة مرجعية محددة بواسطة معرّفها.
   Future<void> removeBookmark(String id) async {
     await _store.removeBookmark(id);
   }

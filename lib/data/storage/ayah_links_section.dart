@@ -1,24 +1,19 @@
 part of 'user_data_store.dart';
 
-/// AYAH LINKS (روابط الآيات)
+/// قسم روابط الآيات.
 mixin _AyahLinksSection on _StoreState {
-  // ==========================================
-  // AYAH LINKS (روابط الآيات)
-  // ==========================================
-
-  /// استرجاع رابط آيات محدد بواسطة معرفه الفريد.
   AyahLinkItem? getAyahLink(String id) {
     return _ayahLinks.where((l) => l.id == id).firstOrNull;
   }
 
-  /// استرجاع جميع روابط الآيات التي تتضمن الآية المحددة.
+  /// الروابط التي تضم الآية.
   List<AyahLinkItem> getLinksForAyah(int surahNumber, int ayahNumber) {
     return _ayahLinks
         .where((l) => l.containsAyah(surahNumber, ayahNumber))
         .toList();
   }
 
-  /// حفظ رابط آيات جديد أو تحديث رابط موجود.
+  /// يحفظ رابطاً جديداً أو يعدّله.
   Future<void> saveAyahLink(AyahLinkItem link) async {
     final idx = _ayahLinks.indexWhere((l) => l.id == link.id);
     if (idx != -1) {
@@ -34,7 +29,6 @@ mixin _AyahLinksSection on _StoreState {
     await saveToDisk();
   }
 
-  /// حذف رابط آيات بواسطة معرفه الفريد.
   Future<void> deleteAyahLink(String id) async {
     _ayahLinks.removeWhere((l) => l.id == id);
     notifyListeners();
@@ -45,7 +39,7 @@ mixin _AyahLinksSection on _StoreState {
     await saveToDisk();
   }
 
-  /// إضافة آية جديدة إلى رابط آيات قائم.
+  /// يضيف آية إلى رابط.
   Future<void> addVerseToLink(String linkId, AyahLinkVerse verse) async {
     final idx = _ayahLinks.indexWhere((l) => l.id == linkId);
     if (idx != -1) {
@@ -67,7 +61,7 @@ mixin _AyahLinksSection on _StoreState {
     }
   }
 
-  /// إزالة آية محددة من رابط آيات مع حذف إحداثياتها في المخطط الشبكي.
+  /// يزيل آية من رابط، مع موضعها على الشبكة.
   Future<void> removeVerseFromLink(
     String linkId,
     int surahNumber,
@@ -98,7 +92,7 @@ mixin _AyahLinksSection on _StoreState {
     }
   }
 
-  /// تحديث الملاحظة التدبرية الخاصة بآية داخل رابط آيات محدد.
+  /// يعدّل خاطرة آية داخل رابط.
   Future<void> updateVerseNote(
     String linkId,
     int surahNumber,
@@ -129,7 +123,7 @@ mixin _AyahLinksSection on _StoreState {
     }
   }
 
-  /// تحديث إحداثيات عقد الآيات في العرض الشبكي لرابط الآيات.
+  /// يحفظ مواضع العقد على الشبكة.
   Future<void> updateLinkPositions(
     String linkId,
     Map<String, LinkNodePosition> positions,
@@ -153,7 +147,7 @@ mixin _AyahLinksSection on _StoreState {
     }
   }
 
-  /// حفظ حالة العرض والتقريب والإزاحة لشاشة رابط الآيات.
+  /// يحفظ منظور الشبكة: طريقة العرض والتكبير والإزاحة.
   Future<void> updateLinkViewState(
     String linkId, {
     String? viewMode,

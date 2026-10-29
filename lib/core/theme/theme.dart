@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../design_system/app_icons.dart';
 
-/// سمات الألوان التي يختارها المستخدم (الكحلي هو الافتراضي).
+/// ثيمات الألوان التي يختار منها القارئ؛ الكحلي هو الافتراضي.
 enum AppColorTheme {
   /// كحلي
   navy,
@@ -21,7 +21,7 @@ enum AppColorTheme {
   teal,
 }
 
-/// مجموعة ألوان سمة واحدة للوضعين الفاتح والداكن.
+/// ألوان ثيم واحد في الوضعين الفاتح والداكن.
 class ThemePalette {
   final Color lightBackground;
   final Color lightSurface;
@@ -280,7 +280,6 @@ class ThemePalette {
     goldDeep: Color(0xFFB58E45),
   );
 
-  /// مجموعة الألوان المقابلة للسمة.
   static ThemePalette of(AppColorTheme theme) {
     switch (theme) {
       case AppColorTheme.navy:
@@ -297,21 +296,17 @@ class ThemePalette {
   }
 }
 
-/// Central color system for Tadbeer (تَدْبِير).
-///
-/// The colors come from the selected [AppColorTheme] (night navy and
-/// burnished gold by default). Names stay the same across themes, so every
-/// screen follows the user's choice; call [use] to switch.
+/// ألوان التطبيق كله، مأخوذة من الثيم المختار.
+/// الأسماء ثابتة بين الثيمات، فكل شاشة تتبع اختيار القارئ تلقائياً؛ [use] يبدّل الثيم.
 class AppColors {
   AppColors._();
 
   static ThemePalette _p = ThemePalette.navy;
   static AppColorTheme _theme = AppColorTheme.navy;
 
-  /// السمة الحالية.
   static AppColorTheme get theme => _theme;
 
-  /// يبدّل مجموعة الألوان؛ يعيد true إذا تغيّرت.
+  /// يبدّل الثيم، ويعيد true إن تغيّر فعلاً.
   static bool use(AppColorTheme theme) {
     if (theme == _theme) return false;
     _theme = theme;
@@ -348,22 +343,18 @@ class AppColors {
   static Color get darkSurfaceLow => _p.darkSurfaceLow;
   static Color get darkSurfaceHighest => _p.darkSurfaceHighest;
 
-  // Status tones, mid-luminance so they read on both light and dark.
+  // ألوان الحالة متوسطة السطوع لتُقرأ في الوضعين الفاتح والداكن.
   static const Color statusSuccess = Color(0xFF3F9A72);
   static const Color statusWarning = Color(0xFFD39B32);
   static const Color statusError = Color(0xFFD0574E);
   static const Color statusInfo = Color(0xFF4F86C6);
 
-  // ---------------------------------------------------------------------------
-  // 📖 MUSHAF PAGE (classic paper tone in light mode)
-  // ---------------------------------------------------------------------------
+  // ورق المصحف (لون الورق الكلاسيكي في الوضع الفاتح)
   static const Color mushafBackground = Color(0xFFF8F4EA);
   static Color get mushafQuranText => _p.lightTextPrimary;
 
-  // ---------------------------------------------------------------------------
-  // 🌅 SIGNATURE GRADIENTS
-  // ---------------------------------------------------------------------------
-  /// تدرج الهوية المستخدم في الرؤوس والأزرار البارزة.
+  // تدرجات الهوية
+  /// تدرج الهوية في الرؤوس والأزرار البارزة.
   static LinearGradient heroGradient(bool isDark) => LinearGradient(
     begin: AlignmentDirectional.topStart,
     end: AlignmentDirectional.bottomEnd,
@@ -379,10 +370,7 @@ class AppColors {
     colors: [_p.goldLight, _p.goldDeep],
   );
 
-  // ---------------------------------------------------------------------------
-  // BACKWARD-COMPATIBILITY ALIASES
-  // (Maintained so existing call-sites seamlessly map to the current palette)
-  // ---------------------------------------------------------------------------
+  // أسماء قديمة تبقى للتوافق، وتشير إلى ألوان الثيم الحالي.
   static Color get olive => lightPrimary;
   static Color get oliveDark => lightPrimaryDark;
   static Color get oliveSoft => darkPrimary;
@@ -398,10 +386,7 @@ class AppColors {
   static Color get daySubtitle => lightTextSecondary;
   static Color get nightSubtitle => darkTextSecondary;
 
-  // ---------------------------------------------------------------------------
-  // AYAH HIGHLIGHT PALETTE
-  // (Light, translucent tones that keep Quranic text fully legible)
-  // ---------------------------------------------------------------------------
+  // ألوان تظليل الآيات: فاتحة وشفافة لتبقى الآية مقروءة.
   static const List<Color> highlightColors = [
     Color(0x555B8BD0), // Sky navy highlight
     Color(0x55E3C06A), // Gold highlight
@@ -409,92 +394,79 @@ class AppColors {
     Color(0x55D99A9A), // Rose highlight
   ];
 
-  // ---------------------------------------------------------------------------
-  // DYNAMIC CONTEXT HELPERS
-  // ---------------------------------------------------------------------------
+  // ألوان تتبع الوضع الفاتح أو الداكن للسياق
 
-  /// إرجاع لون خلفية الشاشة المناسب للوضع الفاتح أو الداكن.
   static Color background(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkBackground
       : lightBackground;
 
-  /// إرجاع لون البطاقات والأسطح المناسب للوضع الفاتح أو الداكن.
   static Color surface(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkSurface
       : lightSurface;
 
-  /// إرجاع اللون الأساسي للتطبيق حسب السمة الحالية.
   static Color primary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkPrimary
       : lightPrimary;
 
-  /// إرجاع لون النص الأساسي حسب السمة الحالية.
   static Color textPrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkTextPrimary
       : lightTextPrimary;
 
-  /// إرجاع لون الإطارات والفواصل حسب السمة الحالية.
   static Color border(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkBorder
       : lightBorder;
 
-  /// إرجاع لون النص الثانوي حسب السمة الحالية.
   static Color textSecondary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkTextSecondary
       : lightTextSecondary;
 
-  /// إرجاع اللون الذهبي المميز حسب السمة الحالية.
   static Color accentGold(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkAccentGold
       : lightAccentGold;
 
-  /// إرجاع لون تحديد الآية المختارة حسب السمة الحالية.
+  /// لون تحديد الآية المختارة.
   static Color selectedAyah(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkSelectedAyah
       : lightSelectedAyah;
 
-  /// إرجاع لون السطح المرتفع حسب السمة الحالية.
   static Color surfaceElevated(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark
       ? darkSurfaceElevated
       : lightSurfaceElevated;
 }
 
-/// لون ورق المصحف الذي يختاره المستخدم للقراءة.
+/// لون ورق المصحف الذي يختاره القارئ.
 enum MushafPaperTone {
-  /// ورق المصحف الكلاسيكي الفاتح.
   classic,
 
-  /// ورق سيبيا دافئ يخفف وهج الشاشة أثناء القراءة الطويلة.
+  /// سيبيا دافئ يخفف وهج الشاشة في القراءة الطويلة.
   sepia,
 }
 
-/// ألوان صفحة المصحف المحسوبة من السمة ولون الورق المختار.
-///
-/// One instance per theme, mode and paper, so painters can compare them by
-/// identity in `shouldRepaint` and repaint when any of the three changes.
+/// ألوان صفحة المصحف من الثيم والوضع ولون الورق.
+/// نسخة واحدة لكل تركيبة، فيقارنها الرسّامون بالهوية في `shouldRepaint`.
 class MushafPalette {
-  /// لون المساحة المحيطة بالصفحة.
+  /// المساحة المحيطة بالصفحة.
   final Color outer;
 
-  /// لون ورق الصفحة نفسها.
+  /// ورق الصفحة.
   final Color page;
 
-  /// لون الشريط الأوسط في تدرج ترويسة السورة.
+  /// الشريط الأوسط في تدرج ترويسة السورة.
   final Color band;
 
-  /// لون النص القرآني.
+  /// النص القرآني.
   final Color text;
 
-  /// لون إطار الصفحة وترويسات السور وعلامات الهامش: اللون الأساسي للسمة.
+  /// إطار الصفحة وترويسات السور وعلامات الهامش (اللون الأساسي للثيم).
   final Color frame;
 
   const MushafPalette._({
@@ -508,7 +480,7 @@ class MushafPalette {
   static final _cache =
       <(AppColorTheme, bool, MushafPaperTone), MushafPalette>{};
 
-  /// إرجاع ألوان الصفحة المناسبة للسمة والوضع الحاليين ولون الورق المختار.
+  /// ألوان الصفحة للثيم والوضع الحاليين ولون الورق المختار.
   static MushafPalette of({
     required bool isDark,
     required MushafPaperTone tone,
@@ -560,21 +532,18 @@ class MushafPalette {
   }
 }
 
-/// Application theme definitions for Tadbeer.
-///
-/// Material 3 theme built from the navy and gold palette: soft rounded
-/// shapes, shadow-based depth instead of borders, and tactile state feedback
-/// (sparkle ripples, gold focus rings, animated selection) on every control.
+/// سمات Material 3 للتطبيق من لوحة الألوان الحالية.
+/// أشكال مستديرة، وعمق بالظلال بدل الإطارات، واستجابة واضحة للمس في كل عنصر.
 class AppTheme {
   AppTheme._();
 
-  /// خط العناوين والنصوص الكبيرة (عناوين الشاشات، والحوارات، والأدعية).
+  /// خط العناوين والنصوص الكبيرة: عناوين الشاشات والحوارات والأدعية.
   static const String appFontFamily = 'Amiri';
 
   /// خط الواجهة: الأزرار والقوائم والنصوص العادية.
   static const String uiFontFamily = 'IBMPlexSansArabic';
 
-  /// System-safe modern Arabic and Latin UI font fallbacks
+  /// خطوط احتياطية للعربية واللاتينية إن غاب خط الواجهة.
   static const List<String> uiFontFallbacks = [
     'Noto Sans Arabic',
     'Segoe UI',
@@ -592,13 +561,10 @@ class AppTheme {
   /// انحناء الحوارات واللوحات السفلية.
   static const double sheetRadius = 28;
 
-  /// إعدادات السمة الفاتحة (النهارية) للتطبيق.
   static ThemeData get lightTheme => _build(Brightness.light);
 
-  /// إعدادات السمة الداكنة (الليلية) للتطبيق.
   static ThemeData get darkTheme => _build(Brightness.dark);
 
-  /// يبني السمة الكاملة للوضع المحدد من لوحة الألوان الموحدة.
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
 
@@ -678,7 +644,7 @@ class AppTheme {
       borderRadius: BorderRadius.circular(controlRadius),
     );
 
-    // Pressed controls dim slightly so every tap is visibly acknowledged.
+    // العنصر المضغوط يخفت قليلاً، فيظهر أثر كل نقرة.
     WidgetStateProperty<Color?> overlay(Color color) =>
         WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.pressed)) {
@@ -702,14 +668,14 @@ class AppTheme {
     return base.copyWith(
       scaffoldBackgroundColor: background,
       canvasColor: background,
-      // InkRipple: InkSparkle's shader costs a frame on every tap.
+      // InkRipple لأن ظلّال InkSparkle يكلّف إطاراً في كل نقرة.
       splashFactory: InkRipple.splashFactory,
       hoverColor: primary.withValues(alpha: 0.06),
       focusColor: gold.withValues(alpha: 0.14),
       splashColor: primary.withValues(alpha: 0.14),
       highlightColor: primary.withValues(alpha: 0.06),
       shadowColor: shadow,
-      // Back, close and menu buttons use the same Phosphor set as the rest.
+      // أزرار الرجوع والإغلاق والقائمة من نفس مجموعة أيقونات Phosphor.
       actionIconTheme: ActionIconThemeData(
         backButtonIconBuilder: (_) => const Icon(AppIcons.arrowLeft),
         closeButtonIconBuilder: (_) => const Icon(AppIcons.x),
@@ -987,7 +953,7 @@ class AppTheme {
         labelStyle: label(14),
         unselectedLabelStyle: label(14, weight: FontWeight.normal),
       ),
-      // Menus open under their button, rounded, with a hairline of gold.
+      // القوائم تفتح تحت زرها، مستديرة، بإطار ذهبي رفيع.
       popupMenuTheme: PopupMenuThemeData(
         color: elevated,
         surfaceTintColor: Colors.transparent,
@@ -1049,7 +1015,7 @@ class AppTheme {
     );
   }
 
-  /// بناء أنماط النصوص الموحدة مع خطوط احتياطية متوافقة مع العربية واللاتينية.
+  /// أنماط النصوص مع خطوط احتياطية للعربية واللاتينية.
   static TextTheme _buildTextTheme(
     TextTheme base,
     Color textColor,

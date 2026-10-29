@@ -1,49 +1,39 @@
 /// رحلة القراءة: خطة الختمة وسجل الصفحات المقروءة يومياً.
 ///
-/// Offline record of what the user read: the pages read on each day in
-/// reading mode (for the daily portion and the weekly chart), the days with
-/// any activity (reading, reflection or memorization, for the streak) and an
-/// optional sequential khatma plan.
+/// سجل محلي لما قرأه القارئ: الصفحات المقروءة كل يوم (للورد والرسم الأسبوعي)، وأيام النشاط (للسلسلة)، وخطة ختمة اختيارية.
 library;
 
 /// عدد صفحات مصحف المدينة.
 const int mushafPageCount = 604;
 
-/// يحوّل التاريخ إلى مفتاح يومي ثابت (yyyy-MM-dd) بالتوقيت المحلي.
+/// مفتاح ثابت لليوم (yyyy-MM-dd) بالتوقيت المحلي.
 String dayKey(DateTime d) =>
     '${d.year.toString().padLeft(4, '0')}-'
     '${d.month.toString().padLeft(2, '0')}-'
     '${d.day.toString().padLeft(2, '0')}';
 
-/// الصفحة التالية في المصحف مع الالتفاف من ٦٠٤ إلى ١.
+/// الصفحة التالية، مع الالتفاف من ٦٠٤ إلى ١.
 int nextMushafPage(int page) => page % mushafPageCount + 1;
 
-/// خطة ختمة متسلسلة: مؤشر واحد «وصلت إلى صفحة» يتقدم صفحة صفحة.
-///
-/// The khatma moves forward only when the page it points at is read, so
-/// browsing other pages never scatters its progress, and the progress ring
-/// and the "continue from page" button always show the same page.
+/// ختمة متسلسلة بمؤشر واحد «وصلت إلى صفحة» يتقدم صفحة صفحة.
+/// لا يتقدم إلا بقراءة الصفحة التي يشير إليها، فلا يبعثره تصفح صفحات أخرى، وتبقى حلقة التقدم وزر "أكمل من صفحة" على نفس الصفحة.
 class KhatmaPlan {
-  /// تاريخ بدء الختمة (بداية اليوم).
+  /// تاريخ البدء (أول اليوم).
   final DateTime startDate;
 
-  /// عدد أيام الختمة.
   final int days;
 
-  /// الصفحة التي بدأت منها الختمة.
   final int startPage;
 
-  /// الصفحة التي يكمل منها القارئ (لم تُقرأ بعد).
+  /// الصفحة التي يكمل منها القارئ، ولم تُقرأ بعد.
   final int currentPage;
 
-  /// عدد الصفحات المنجزة في الختمة.
+  /// الصفحات المنجزة.
   final int advanced;
 
-  /// Pages already read on the day the khatma started, before it started;
-  /// they do not count toward that day's portion.
+  /// صفحات قُرئت يوم البدء قبل بدء الختمة؛ لا تُحسب من ورد ذلك اليوم.
   final int pagesBeforeStart;
 
-  /// ينشئ خطة ختمة.
   KhatmaPlan({
     required DateTime startDate,
     required this.days,
@@ -60,29 +50,27 @@ class KhatmaPlan {
   /// نسبة الإنجاز من ٠ إلى ١.
   double get progress => advanced / mushafPageCount;
 
-  /// هل اكتملت الختمة.
   bool get isComplete => advanced >= mushafPageCount;
 
-  /// رقم اليوم الحالي في الخطة (يبدأ من ١)، محصوراً بين ١ وعدد الأيام.
+  /// رقم اليوم في الخطة (من ١)، محصوراً بين ١ وعدد الأيام.
   int dayNumber(DateTime now) {
     final today = DateTime(now.year, now.month, now.day);
     return (today.difference(startDate).inDays + 1).clamp(1, days);
   }
 
-  /// الأيام المتبقية بما فيها اليوم.
+  /// الأيام المتبقية، ومنها اليوم.
   int daysLeft(DateTime now) => days - dayNumber(now) + 1;
 
-  /// الصفحات التي كان يجب إنجازها قبل اليوم الحالي؛ ورد اليوم نفسه لا
-  /// يُحسب تأخراً حتى ينتهي اليوم.
+  /// الصفحات المفترض إنجازها قبل اليوم؛ ورد اليوم لا يُعدّ تأخراً حتى ينتهي اليوم.
   int expectedPagesBefore(DateTime now) =>
       (pagesPerDay * (dayNumber(now) - 1)).clamp(0, mushafPageCount);
 
-  /// يتقدم المؤشر إذا كانت [page] هي صفحته الحالية.
+  /// يتقدم المؤشر إن كانت [page] هي صفحته الحالية.
   KhatmaPlan read(int page) => page != currentPage
       ? this
       : _copy(currentPage: nextMushafPage(page), advanced: advanced + 1);
 
-  /// يضبط موضع الختمة يدوياً على [page]، ويُحسب ما بين البداية وبينها منجزاً.
+  /// ينقل الختمة يدوياً إلى [page]، ويُحسب ما قبلها منجزاً.
   KhatmaPlan moveTo(int page) => _copy(
     currentPage: page,
     advanced: (page - startPage + mushafPageCount) % mushafPageCount,
@@ -120,8 +108,7 @@ class KhatmaPlan {
         pagesBeforeStart: (json['pagesBeforeStart'] as num?)?.toInt() ?? 0,
       );
     }
-    // Earlier format: a set of scattered pages plus the last page read.
-    // Continue after the last page, keeping the number of pages done.
+    // صيغة قديمة: صفحات متفرقة وآخر صفحة مقروءة. نكمل بعد آخر صفحة، ونحفظ عدد المنجز.
     final pages = (json['readPages'] as List? ?? const []).length;
     final last = (json['lastPage'] as num?)?.toInt();
     final current = last == null ? 1 : nextMushafPage(last);
@@ -140,19 +127,16 @@ class KhatmaPlan {
 
 /// سجل رحلة القراءة كاملاً.
 class ReadingJourney {
-  /// خطة الختمة الحالية إن وُجدت.
   final KhatmaPlan? plan;
 
-  /// الصفحات المقروءة في كل يوم (مفتاح yyyy-MM-dd).
+  /// الصفحات المقروءة في كل يوم، بمفتاح [dayKey].
   final Map<String, Set<int>> dailyPages;
 
-  /// أيام فيها تدبر أو حفظ (تُحسب في الأيام المتتالية مع أيام القراءة).
+  /// أيام فيها تدبر أو حفظ؛ تُحسب في السلسلة مع أيام القراءة.
   final Set<String> activeDays;
 
-  /// عدد الختمات المكتملة.
   final int completedKhatmas;
 
-  /// ينشئ سجل رحلة القراءة.
   const ReadingJourney({
     this.plan,
     this.dailyPages = const {},
@@ -160,11 +144,9 @@ class ReadingJourney {
     this.completedKhatmas = 0,
   });
 
-  /// صفحات يوم محدد.
   int pagesOn(DateTime day) => dailyPages[dayKey(day)]?.length ?? 0;
 
-  /// صفحات ورد اليوم: ما قُرئ في [day] للختمة الحالية. On the day a khatma
-  /// starts, pages read before it do not fill its first portion.
+  /// صفحات ورد [day] للختمة الحالية؛ وفي يوم بدء الختمة لا تُحسب الصفحات المقروءة قبلها.
   int portionPagesOn(DateTime day) {
     final read = pagesOn(day);
     final p = plan;
@@ -175,15 +157,12 @@ class ReadingJourney {
   static bool _sameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
-  /// هل كان للمستخدم نشاط (قراءة أو تدبر أو حفظ) في يوم محدد.
+  /// هل كان في [day] قراءة أو تدبر أو حفظ.
   bool isActiveOn(DateTime day) =>
       pagesOn(day) > 0 || activeDays.contains(dayKey(day));
 
-  /// عدد الأيام المتتالية التي فيها نشاط، حتى اليوم (أو حتى أمس إن لم يكن
-  /// هناك نشاط اليوم بعد، كي لا تنقطع السلسلة صباحاً).
-  ///
-  /// Days are stepped back by the calendar, not by 24 hours, so a clock
-  /// change (daylight saving) never skips a day and breaks the streak.
+  /// عدد الأيام المتتالية التي فيها نشاط حتى اليوم، أو حتى أمس إن لم يكن نشاط اليوم بعد، فلا تنقطع صباحاً.
+  /// يرجع بأيام التقويم لا بـ 24 ساعة، فلا يُسقط تغيير التوقيت الصيفي يوماً.
   int streak(DateTime now) {
     var day = DateTime(now.year, now.month, now.day);
     if (!isActiveOn(day)) day = DateTime(day.year, day.month, day.day - 1);
@@ -195,8 +174,7 @@ class ReadingJourney {
     return count;
   }
 
-  /// Whether the streak still stands but today has no activity yet, so it
-  /// breaks at midnight unless the reader reads, reflects or memorizes.
+  /// السلسلة قائمة لكن اليوم بلا نشاط بعد، فتنقطع عند منتصف الليل إن لم يقرأ القارئ أو يتدبر أو يحفظ.
   bool streakAtRisk(DateTime now) => !isActiveOn(now) && streak(now) > 0;
 
   /// صفحات آخر سبعة أيام، من الأقدم إلى اليوم.
@@ -208,12 +186,10 @@ class ReadingJourney {
     ];
   }
 
-  /// إجمالي الصفحات المقروءة عبر كل الأيام.
   int get totalPages =>
       dailyPages.values.fold(0, (sum, pages) => sum + pages.length);
 
-  /// Records [page] as read on [now] and advances the khatma when it is the
-  /// page the plan points at. Completing the khatma clears the plan.
+  /// يسجّل [page] مقروءة في [now] ويقدّم الختمة إن كانت صفحتها، وإتمام الختمة يمسح الخطة.
   ReadingJourney recordPage(int page, DateTime now) {
     final key = dayKey(now);
     return _withPlan(
@@ -232,7 +208,7 @@ class ReadingJourney {
     return _copy(activeDays: {...activeDays, key});
   }
 
-  /// يقرأ ورد اليوم دفعة واحدة: يتقدم المؤشر بعدد صفحات الورد.
+  /// يقرأ ورد اليوم دفعة واحدة: يتقدم المؤشر بعدد صفحاته.
   ReadingJourney completePortion(DateTime now) {
     final p = plan;
     if (p == null) return this;
@@ -245,12 +221,11 @@ class ReadingJourney {
     return journey;
   }
 
-  /// يضبط موضع الختمة يدوياً.
   ReadingJourney moveKhatmaTo(int page) => plan == null
       ? this
       : _copy(plan: plan!.moveTo(page.clamp(1, mushafPageCount)));
 
-  /// Starts (or replaces) the khatma plan from [startPage].
+  /// يبدأ خطة ختمة من [startPage]، أو يستبدل الحالية.
   ReadingJourney startPlan(int days, DateTime now, {int startPage = 1}) =>
       _copy(
         plan: KhatmaPlan(
@@ -261,7 +236,7 @@ class ReadingJourney {
         ),
       );
 
-  /// Cancels the current plan, keeping the reading history.
+  /// يلغي الخطة، ويبقى سجل القراءة.
   ReadingJourney cancelPlan() => ReadingJourney(
     dailyPages: dailyPages,
     activeDays: activeDays,

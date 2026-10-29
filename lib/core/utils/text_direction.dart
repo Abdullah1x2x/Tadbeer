@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
 
-/// Direction of [text] judged from its own letters, so Arabic content stays
-/// right to left even when the interface is in English (and the reverse).
+/// اتجاه [text] من حروفه نفسها، فيبقى العربي من اليمين ولو كانت الواجهة إنجليزية، والعكس.
 TextDirection directionOfText(
   String text, {
   TextDirection fallback = TextDirection.rtl,
