@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'app_icons.dart';
 
-/// عنصر موحّد في قوائم «⋮»: أيقونة في دائرة ملونة واسم بجانبها، وبالأحمر لما يحذف.
-/// شكل القائمة نفسه من PopupMenuThemeData في الثيم؛ هذا يوحّد ارتفاع العناصر ومسافاتها.
+/// عنصر موحّد في قوائم «⋮»: أيقونة في دائرة ملونة واسم بجانبها، وبالأحمر لما
+/// يحذف.
+///
+/// شكل القائمة نفسه من PopupMenuThemeData في الثيم؛ هذا يوحّد ارتفاع العناصر
+/// ومسافاتها.
 PopupMenuItem<T> appMenuItem<T>({
   T? value,
   VoidCallback? onTap,

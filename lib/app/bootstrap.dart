@@ -77,7 +77,8 @@ void _attachSyncs() {
       UserDataStore.instance.markActiveDay();
 }
 
-/// تستمر التلاوة في الخلفية مع أزرارها في الإشعار؛ وعلى سطح المكتب تعمل داخل التطبيق فقط.
+/// تستمر التلاوة في الخلفية مع أزرارها في الإشعار؛ وعلى سطح المكتب تعمل داخل
+/// التطبيق فقط.
 Future<void> _startBackgroundRecitation() async {
   try {
     RecitationHandler.instance = await AudioService.init(

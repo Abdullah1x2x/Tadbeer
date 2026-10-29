@@ -10,40 +10,33 @@ import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import '../../../core/design_system/app_icons.dart';
 
-/// Side drawer menu providing direct jump navigation across Surahs and Juzs,
-/// as well as fast access to Home and Settings.
-/// القائمة الجانبية للمصحف للتنقل المباشر بين السور والأجزاء والوصول السريع للرئيسية والإعدادات.
+/// القائمة الجانبية للمصحف: الانتقال إلى السور والأجزاء، والرئيسية والإعدادات.
 class QuranSideMenu extends StatefulWidget {
   final int currentPage;
   final ValueChanged<int> onPageSelected;
 
-  /// ينشئ ودجت القائمة الجانبية للمصحف الشريف.
   const QuranSideMenu({
     super.key,
     required this.currentPage,
     required this.onPageSelected,
   });
 
-  /// ينشئ الحالة التفاعلية للقائمة الجانبية.
   @override
   State<QuranSideMenu> createState() => _QuranSideMenuState();
 }
 
-/// الحالة التفاعلية للقائمة الجانبية للمصحف الشريف.
 class _QuranSideMenuState extends State<QuranSideMenu>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _filter = '';
 
-  /// يهيئ متحكم التبويبات بين قائمتي السور والأجزاء.
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  /// يحرر متحكم التبويبات وحقل البحث عند إغلاق القائمة.
   @override
   void dispose() {
     _tabController.dispose();
@@ -51,20 +44,17 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     super.dispose();
   }
 
-  /// يغلق القائمة الجانبية ويعود إلى الشاشة الرئيسية للتطبيق.
   void _navigateToHome(BuildContext context) {
     Navigator.of(context).pop(); // close drawer
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  /// يغلق القائمة الجانبية ويفتح شاشة الإعدادات.
   void _navigateToSettings(BuildContext context) {
     Navigator.of(context).pop(); // close drawer
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
   }
 
-  /// يبني واجهة القائمة الجانبية مع التبويبات وحقل تصفية السور.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -78,10 +68,9 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       child: SafeArea(
         child: Column(
           children: [
-            // Top App Bar / Drawer Header
             _buildDrawerHeader(context, isDark, l10n),
 
-            // Tab bar: Surahs / Juzs
+            // التبويب: السور / الأجزاء.
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
@@ -116,7 +105,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               ),
             ),
 
-            // Search filter for surahs
+            // تصفية السور.
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: TextField(
@@ -165,7 +154,6 @@ class _QuranSideMenuState extends State<QuranSideMenu>
 
             const SizedBox(height: 4),
 
-            // Tab View
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -181,7 +169,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     );
   }
 
-  /// يبني ترويسة القائمة الجانبية التي تعرض اسم التطبيق وأزرار الرئيسية والإعدادات.
+  /// ترويسة القائمة: اسم التطبيق وزرّا الرئيسية والإعدادات.
   Widget _buildDrawerHeader(
     BuildContext context,
     bool isDark,
@@ -240,14 +228,12 @@ class _QuranSideMenuState extends State<QuranSideMenu>
               ],
             ),
           ),
-          // Home Button
           IconButton(
             icon: const Icon(AppIcons.house),
             tooltip: l10n.home,
             color: AppColors.olive,
             onPressed: () => _navigateToHome(context),
           ),
-          // Settings Button
           IconButton(
             icon: const Icon(AppIcons.gear),
             tooltip: l10n.settings,
@@ -259,7 +245,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     );
   }
 
-  /// يبني قائمة سور القرآن الكريم القابلة للتصفية والانتقال المباشر.
+  /// السور، مع تصفية وانتقال مباشر.
   Widget _buildSurahsList(
     BuildContext context,
     QuranRepository repo,
@@ -357,7 +343,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     );
   }
 
-  /// يبني قائمة أجزاء القرآن الكريم الثلاثين للانتقال المباشر إلى بداية كل جزء.
+  /// الأجزاء الثلاثون، تنقل إلى بداية كل جزء.
   Widget _buildJuzsList(
     BuildContext context,
     QuranRepository repo,

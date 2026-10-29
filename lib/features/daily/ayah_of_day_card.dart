@@ -22,7 +22,10 @@ import '../tadbeer/tadbeer_questions.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// آيات للتدبّر: القائمة المشتركة بين بطاقة الرئيسية والودجت.
-/// هي الآيات التي تُقرأ وحدها: أدعية القرآن وآيات المسارات أولاً، ثم كل آية بطول مريح لا تبدأ وسط فكرة ("فـ"، "ثم"، "إلا"…)، ولا داخل حوار قصة ("قال"…)، ولا في أحكام مفصّلة. لكل يوم مجموعته، وهي نفسها لكل القرّاء.
+///
+/// هي الآيات التي تُقرأ وحدها: أدعية القرآن وآيات المسارات أولاً، ثم كل آية
+/// بطول مريح لا تبدأ وسط فكرة ("فـ"، "ثم"، "إلا"…)، ولا داخل حوار قصة ("قال"…)،
+/// ولا في أحكام مفصّلة. لكل يوم مجموعته، وهي نفسها لكل القرّاء.
 class AyahOfTheDay {
   AyahOfTheDay._();
 
@@ -177,14 +180,19 @@ class AyahOfTheDay {
 }
 
 /// بطاقة «آية للتدبّر» في الرئيسية: آيات اليوم تتتابع تلقائياً.
-/// تتتابع كل [_interval] ما دامت البطاقة ظاهرة؛ السحب ينقل باليد، والإصبع على البطاقة يوقفها. وتثبت مع "تقليل الحركة" أو قارئ الشاشة، وتنتقل إلى آيات اليوم الجديد بعد منتصف الليل.
+///
+/// تتتابع كل [_interval] ما دامت البطاقة ظاهرة؛ السحب ينقل باليد، والإصبع على
+/// البطاقة يوقفها. وتثبت مع "تقليل الحركة" أو قارئ الشاشة، وتنتقل إلى آيات
+/// اليوم الجديد بعد منتصف الليل.
 class AyahOfTheDayCard extends StatefulWidget {
   const AyahOfTheDayCard({super.key});
 
-  /// ارتفاع ما عدا الآية والسؤال: الحشوة وسطر العنوان والفراغات والإجراءات والنقاط.
+  /// ارتفاع ما عدا الآية والسؤال: الحشوة وسطر العنوان والفراغات والإجراءات
+  /// والنقاط.
   static const _chrome = 16 + 10 + 24 + 12 + 8 + 40 + 13.0;
 
-  /// أقل ارتفاع تحتاجه البطاقة بعرض [width] لتعرض كل آيات اليوم كاملة مع إجراءاتها؛ وقد يتنحى السؤال.
+  /// أقل ارتفاع تحتاجه البطاقة بعرض [width] لتعرض كل آيات اليوم كاملة مع
+  /// إجراءاتها؛ وقد يتنحى السؤال.
   static double minHeight(BuildContext context, double width) {
     final looks = _VerseLook.of(AyahOfTheDay.forDayAll(DateTime.now()));
     return _chrome +
@@ -217,7 +225,8 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     _restart();
   }
 
-  /// يحمّل خطوط مصحف المدينة لآيات اليوم إن كان هو المختار؛ وحتى ذلك تظهر الآية بخط النص المتدفق.
+  /// يحمّل خطوط مصحف المدينة لآيات اليوم إن كان هو المختار؛ وحتى ذلك تظهر الآية
+  /// بخط النص المتدفق.
   void _prepareGlyphs() {
     if (_preparing || !_VerseLook.madinah) return;
     if (_ayahs.every((a) => QcfGlyphs.of(a) != null)) return;
@@ -325,7 +334,8 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
               onTap: () => FocusModeScreen.open(context, ayah),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(_padH, 16, _padH, 10),
-                // إن أُعطيت ارتفاعاً (صفحة بقدر الشاشة) تأخذ الآية ما بقي؛ وفي البطاقة القصيرة يتنحى السؤال ثم الإجراءات لتبقى الآية ظاهرة.
+                // إن أُعطيت ارتفاعاً (صفحة بقدر الشاشة) تأخذ الآية ما بقي؛ وفي
+                // البطاقة القصيرة يتنحى السؤال ثم الإجراءات لتبقى الآية ظاهرة.
                 child: LayoutBuilder(
                   builder: (context, box) {
                     final bounded = box.maxHeight.isFinite;
@@ -531,7 +541,8 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   }
 }
 
-/// يعطي [child] ارتفاع أطول عناصر [items]، فتبقى البطاقة بحجم واحد وآيات اليوم تتتابع.
+/// يعطي [child] ارتفاع أطول عناصر [items]، فتبقى البطاقة بحجم واحد وآيات اليوم
+/// تتتابع.
 class _SteadyHeight extends StatelessWidget {
   final List<(String, TextStyle)> items;
   final Widget child;
@@ -572,7 +583,8 @@ double _tallest(
   return h;
 }
 
-/// كيف تُكتب الآية على البطاقة: بخطوط مصحف المدينة وعلامة آيتها حين يكون هو المختار، أو بخط النص المتدفق ورقم الآية بين قوسين.
+/// كيف تُكتب الآية على البطاقة: بخطوط مصحف المدينة وعلامة آيتها حين يكون هو
+/// المختار، أو بخط النص المتدفق ورقم الآية بين قوسين.
 class _VerseLook {
   final String text;
 
@@ -587,7 +599,8 @@ class _VerseLook {
   static bool get madinah =>
       UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
 
-  /// أشكال [ayahs]: كلها بخطوط المدينة متى حُمّلت جميعاً، فلا تخلط البطاقة بين الخطين.
+  /// أشكال [ayahs]: كلها بخطوط المدينة متى حُمّلت جميعاً، فلا تخلط البطاقة بين
+  /// الخطين.
   static List<_VerseLook> of(List<Ayah> ayahs) {
     if (madinah) {
       final glyphs = [for (final a in ayahs) QcfGlyphs.of(a)];
@@ -618,7 +631,9 @@ class _VerseLook {
   }
 }
 
-/// الآية بأكبر حجم (حتى [minSize]) تتسع عنده كل [looks] في ارتفاعها، فتبقى البطاقة بحجم واحد. وعند أصغر حجم تتقارب الأسطر ([tightHeight]) قبل أن يُقص سطر.
+/// الآية بأكبر حجم (حتى [minSize]) تتسع عنده كل [looks] في ارتفاعها، فتبقى
+/// البطاقة بحجم واحد. وعند أصغر حجم تتقارب الأسطر ([tightHeight]) قبل أن يُقص
+/// سطر.
 class _FittedVerse extends StatelessWidget {
   final List<_VerseLook> looks;
   final _VerseLook shown;

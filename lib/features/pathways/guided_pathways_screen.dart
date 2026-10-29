@@ -350,7 +350,8 @@ class _DayCard extends StatelessWidget {
                               initialQuestion:
                                   day % TadbeerItem.questions.length,
                             );
-                            // حفظ تدبر على آية اليوم يُتم اليوم، فلا يحتاج القارئ نقرة ثانية.
+                            // حفظ تدبر على آية اليوم يُتم اليوم، فلا يحتاج
+                            // القارئ نقرة ثانية.
                             final saved = UserDataStore.instance.getTadbeer(
                               ayah.surahNumber,
                               ayah.ayahNumber,

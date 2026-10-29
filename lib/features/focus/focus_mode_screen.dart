@@ -15,7 +15,9 @@ import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// وضع التأمل: آية واحدة في كل مرة على خلفية هادئة متحركة.
-/// بلا مشتتات: يُسحب بين الآيات، وتُفتح أسئلة التدبر للآية، أو يُتّبع تمرين تنفس قبل القراءة.
+///
+/// بلا مشتتات: يُسحب بين الآيات، وتُفتح أسئلة التدبر للآية، أو يُتّبع تمرين
+/// تنفس قبل القراءة.
 class FocusModeScreen extends StatefulWidget {
   /// الآية التي يبدأ منها.
   final Ayah startAyah;
@@ -131,7 +133,8 @@ class _FocusModeScreenState extends State<FocusModeScreen>
               itemCount: _ayahs.length,
               onPageChanged: (i) {
                 HapticFeedback.selectionClick();
-                // الانتقال من آخر آية في صفحة المصحف يُحسب الصفحة مقروءة، كما في المصحف.
+                // الانتقال من آخر آية في صفحة المصحف يُحسب الصفحة مقروءة، كما
+                // في المصحف.
                 if (i == _index + 1 && _ayahs[i].page != _ayahs[_index].page) {
                   UserDataStore.instance.recordPageRead(_ayahs[_index].page);
                 }

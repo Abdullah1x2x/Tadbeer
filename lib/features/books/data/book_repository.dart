@@ -39,7 +39,9 @@ class BookRepository extends ChangeNotifier {
   }
 
   /// يقرأ الأقسام والكتب المحفوظة.
-  /// [storageFile] و[booksDirectory] للاختبارات، و[disableDisk] يُبقي كل شيء في الذاكرة.
+  ///
+  /// [storageFile] و[booksDirectory] للاختبارات، و[disableDisk] يُبقي كل شيء في
+  /// الذاكرة.
   Future<void> init({
     File? storageFile,
     Directory? booksDirectory,

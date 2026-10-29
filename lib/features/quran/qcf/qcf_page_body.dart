@@ -12,60 +12,55 @@ import 'qcf_layout.dart';
 
 /// متن صفحة مصحف المدينة بخط مجمع الملك فهد.
 ///
-/// At [zoom] 1 the page is laid out line for line as printed, sized so the
-/// whole page fits the space it is given on any screen. Below 1 the page
-/// shrinks; above 1 the same glyphs flow as wrapped paragraphs that scroll,
-/// so enlarging never clips a line or needs sideways scrolling.
+/// عند [zoom] = 1 تُرصف الصفحة سطراً بسطر كالمطبوع، بحجم تتسع به كاملة في أي
+/// شاشة. وتحت 1 تصغر، وفوقه تنساب نفس الرموز فقرات ملتفة تُمرّر، فلا يُقص سطر
+/// ولا يُحتاج تمرير أفقي.
 class QcfPageBody extends StatefulWidget {
   final int pageNumber;
   final double zoom;
   final Color textColor;
 
-  /// Colour of ayah-number markers on ayahs with a bookmark, note or
-  /// reflection.
+  /// لون علامة رقم الآية على الآيات التي عليها فاصل أو خاطرة أو تدبر.
   final Color markerColor;
 
-  /// Background for an ayah (selection or highlight), or null.
+  /// خلفية الآية (تحديد أو تظليل)، أو null.
   final Color? Function(int surah, int ayah) backgroundFor;
 
-  /// Whether the ayah has a bookmark, note, reflection or is memorised.
+  /// هل على الآية فاصل أو خاطرة أو تدبر، أو هي قيد الحفظ.
   final bool Function(int surah, int ayah) isMarked;
 
   final GestureRecognizer Function(Ayah ayah) recognizerFor;
 
-  /// Shown until the page's font is ready, or if it cannot be loaded.
+  /// يظهر حتى يجهز خط الصفحة، أو إن تعذّر تحميله.
   final Widget fallback;
 
-  /// The basmala as printed: the words of Al-Fatiha's first ayah in the
-  /// first page's font, without its ayah number. Basmala lines carry no
-  /// glyphs of their own.
+  /// البسملة كما في المطبوع: كلمات أول الفاتحة بخط الصفحة الأولى دون رقمها؛
+  /// فسطور البسملة لا رموز لها.
   @visibleForTesting
   static const basmalaGlyphs = '\uFB51\uFB52\uFB53\uFB54';
 
-  /// Size of the basmala against the page's font size, so its letters are
-  /// exactly as large as the ayahs': the same four words in An-Naml 30
-  /// (page 379) draw 1.32 times as tall and 1.38 times as wide as the
-  /// first page's basmala at one font size.
+  /// حجم البسملة نسبةً إلى خط الصفحة، لتكون حروفها بحجم حروف الآيات تماماً: نفس
+  /// الكلمات في النمل 30 (صفحة 379) أطول 1.32 مرة وأعرض 1.38 مرة من بسملة
+  /// الصفحة الأولى بنفس الحجم.
   @visibleForTesting
   static const basmalaScale = 1.35;
 
-  /// The fonts of the first two pages draw words smaller for the same font
-  /// size: their median word height is 0.889 and 0.834 of the size, against
-  /// 1.036 elsewhere (measured from the glyph outlines). These factors make
-  /// their letters as tall as on every other page.
+  /// خطا الصفحتين الأوليين يرسمان الكلمات أصغر بنفس الحجم: وسيط ارتفاع الكلمة
+  /// 0.889 و0.834 من الحجم مقابل 1.036 في غيرهما (مقيساً من أشكال الرموز). هذه
+  /// المعاملات تجعل حروفهما بارتفاع حروف سائر الصفحات.
   static const _openingScale = {1: 1.165, 2: 1.241};
 
-  /// How much larger [page]'s glyphs must be drawn to match the rest of the
-  /// Mushaf: above 1 for the two opening pages, 1 elsewhere.
+  /// كم تُكبّر رموز [page] لتطابق باقي المصحف: أكثر من 1 لصفحتي البداية، و1
+  /// لغيرهما.
   static double glyphScale(int page) => _openingScale[page] ?? 1;
 
-  /// Width of a space per unit of font size, measured from the fonts:
-  /// 0.04 on every page but the first, whose font draws it 0.293.
+  /// عرض المسافة لكل وحدة من حجم الخط، مقيساً من الخطوط: 0.04 في كل الصفحات إلا
+  /// الأولى، فخطها يرسمها 0.293.
   static const _space = 0.04;
   static const _wideSpace = {1: 0.293};
 
-  /// Word spacing that brings [page]'s spaces to the usual width at
-  /// [fontSize], so the first page's words are not set far apart.
+  /// تباعد الكلمات الذي يعيد مسافات [page] إلى عرضها المعتاد بحجم [fontSize]،
+  /// فلا تتباعد كلمات الصفحة الأولى.
   static double wordSpacingFor(int page, double fontSize) =>
       _space * fontSize - (_wideSpace[page] ?? _space) * fontSize;
 
@@ -86,14 +81,14 @@ class QcfPageBody extends StatefulWidget {
 }
 
 class _QcfPageBodyState extends State<QcfPageBody> {
-  /// Size used to measure lines; layouts scale from it.
+  /// الحجم الذي تُقاس به الأسطر، وتُحسب منه المقاسات.
   static const _probe = 100.0;
 
-  /// Line box height relative to the font size.
+  /// ارتفاع السطر نسبةً إلى حجم الخط.
   static const _lineHeight = 1.9;
 
-  /// Widest line of an ordinary page at [_probe] size (the median across
-  /// the Mushaf), used to size the opening pages like the rest.
+  /// أعرض سطر في الصفحة العادية بحجم [_probe] (الوسيط عبر المصحف)، لتُقاس به
+  /// صفحتا البداية.
   static const _typicalWidest = 1450.0;
 
   late Future<bool> _ready;
@@ -125,12 +120,11 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     _ready = Future.wait([
       QcfLayout.instance.init().then((_) => true),
       QcfFonts.instance.ensurePage(page),
-      // Holds the basmala glyphs drawn at the top of most surahs.
+      // خط البسملة المرسومة أعلى أغلب السور.
       QcfFonts.instance.ensurePage(1),
     ]).then((r) => r.every((ok) => ok));
-    // Neighbouring pages load in the background so swiping stays smooth,
-    // once the swipe that brought this page has settled: registering a
-    // font blocks the UI thread for a moment.
+    // الصفحات المجاورة تُحمّل في الخلفية ليبقى التقليب سلساً، بعد أن يهدأ السحب
+    // الذي جاء بهذه الصفحة: تسجيل الخط يحجز خيط الواجهة لحظة.
     _neighbours?.cancel();
     _neighbours = Timer(const Duration(milliseconds: 600), () {
       for (final p in [page - 1, page + 1]) {
@@ -141,7 +135,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
 
   String get _family => QcfFonts.familyFor(widget.pageNumber);
 
-  /// Widest line of the page at [_probe] size, measured once per page.
+  /// أعرض سطر في الصفحة بحجم [_probe]، يُقاس مرة لكل صفحة.
   double _measure(List<QcfLine> lines) {
     if (_measuredPage == widget.pageNumber) return _widestLine;
     var widest = 1.0;
@@ -173,8 +167,8 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       future: _ready,
       builder: (context, snap) {
         if (snap.data == true) return _page(context);
-        // Blank for the moment the font takes to load, so the page never
-        // flashes in the plain text font; that view is only for a failure.
+        // فارغة لحظة تحميل الخط، فلا تومض الصفحة بخط النص العادي؛ ذلك العرض
+        // للفشل فقط.
         if (snap.connectionState != ConnectionState.done) {
           return const SizedBox.expand();
         }
@@ -194,10 +188,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         final byHeight = box.maxHeight / (lines.length * _lineHeight);
         var fit = math.min(byWidth, byHeight);
         if (openingScale != null) {
-          // Sized like an ordinary 15-line page on this screen, then
-          // corrected for the smaller glyphs, keeping the short lines a
-          // centred block no wider than 92% of the page (85% shrank page 1
-          // on common phones).
+          // بحجم صفحة عادية من ١٥ سطراً على هذه الشاشة، مصحّحاً لصغر رموز صفحتي
+          // البداية، مع إبقاء أسطرهما القصيرة كتلة في الوسط لا يتجاوز عرضها 92%
+          // من الصفحة (85% كانت تصغّر الصفحة الأولى على الهواتف الشائعة).
           final ordinary = math.min(
             _probe * box.maxWidth / _typicalWidest,
             box.maxHeight / (15 * _lineHeight),
@@ -215,11 +208,10 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     );
   }
 
-  /// The page as printed: every line on its own, centred, evenly spaced.
+  /// الصفحة كالمطبوع: كل سطر وحده، في الوسط، بتباعد متساوٍ.
   Widget _printed(List<QcfLine> lines, double size, double height) {
-    // An ordinary page's 15 lines spread to fill it; the opening pages'
-    // few lines keep their own height and sit together in the middle, as
-    // printed, instead of drifting apart.
+    // أسطر الصفحة العادية الـ١٥ تتوزع لتملأها؛ أما أسطر صفحتي البداية القليلة
+    // فتحتفظ بارتفاعها وتتجمع في الوسط كالمطبوع.
     final opening = QcfPageBody._openingScale.containsKey(widget.pageNumber);
     final slot = opening
         ? size * _lineHeight
@@ -239,7 +231,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     );
   }
 
-  /// The page enlarged: word lines merge into paragraphs that wrap.
+  /// الصفحة مكبّرة: أسطر الكلمات تندمج فقرات ملتفة.
   Widget _flowing(List<QcfLine> lines, double size) {
     final children = <Widget>[];
     var words = <QcfWord>[];
@@ -278,7 +270,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   Widget _line(QcfLine line, double size) {
     switch (line.kind) {
       case QcfLineKind.surahHeader:
-        // Fills the line; the banner scales itself to the line's height.
+        // تملأ السطر، والترويسة تتحجّم بارتفاعه.
         return SurahHeaderBanner(
           surah: QuranRepository.instance.getSurah(line.surah),
         );
@@ -290,8 +282,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
           textDirection: TextDirection.rtl,
           style: TextStyle(
             fontFamily: QcfFonts.familyFor(1),
-            // The opening pages' size is raised for their own small glyphs,
-            // which the basmala does not share.
+            // حجم صفحتي البداية مكبّر لصغر رموزهما، والبسملة لا تشاركهما ذلك.
             fontSize:
                 size *
                 QcfPageBody.basmalaScale /
@@ -313,7 +304,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     }
   }
 
-  /// One span per ayah run, so a tap anywhere on an ayah selects it.
+  /// مقطع لكل آية، فالنقر في أي موضع منها يختارها.
   TextSpan _spans(List<QcfWord> words, double size) {
     final runs = <TextSpan>[];
     var i = 0;
@@ -344,7 +335,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         );
       }
       if (end != null) {
-        // The ayah-number marker turns gold on ayahs the reader marked.
+        // علامة رقم الآية تصير ذهبية على الآيات التي علّمها القارئ.
         final marked = widget.isMarked(first.surah, first.ayah);
         runs.add(
           TextSpan(

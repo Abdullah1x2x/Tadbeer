@@ -95,7 +95,9 @@ class _StartKhatmaCard extends StatefulWidget {
 
 class _StartKhatmaCardState extends State<_StartKhatmaCard> {
   /// يعرض تذكيراً يومياً بالورد بعد البدء مباشرة.
-  /// بدء الختمة يستبدل هذه البطاقة بالخطة، فيُؤخذ الـ navigator والـ messenger من الشاشة قبل البدء.
+  ///
+  /// بدء الختمة يستبدل هذه البطاقة بالخطة، فيُؤخذ الـ navigator والـ messenger
+  /// من الشاشة قبل البدء.
   static Future<void> _offerPortionReminder(
     NavigatorState navigator,
     ScaffoldMessengerState messenger,
@@ -645,7 +647,8 @@ class _StreakReminderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // مستمع خاص: البطاقة ثابتة (const)، فإعادة بناء الشاشة وحدها لا تحدّثها عند حفظ التذكير.
+    // مستمع خاص: البطاقة ثابتة (const)، فإعادة بناء الشاشة وحدها لا تحدّثها عند
+    // حفظ التذكير.
     return ListenableBuilder(
       listenable: UserDataStore.instance,
       builder: (context, _) => _build(context),
@@ -741,7 +744,8 @@ class _WeekChartCard extends StatelessWidget {
                               duration: Duration(milliseconds: 500 + i * 70),
                               curve: Curves.easeOutBack,
                               builder: (context, v, _) => Container(
-                                // easeOutBack يتجاوز الهدف، فلا يجوز أن يتخطى أطول عمود حدود المخطط أثناء ارتداده.
+                                // easeOutBack يتجاوز الهدف، فلا يجوز أن يتخطى
+                                // أطول عمود حدود المخطط أثناء ارتداده.
                                 height: (100 * v).clamp(4.0, 100.0),
                                 decoration: BoxDecoration(
                                   gradient: i == days.length - 1

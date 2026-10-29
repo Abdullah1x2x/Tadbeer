@@ -57,7 +57,9 @@ class QiblaLocator {
   }
 
   /// يحدد موقع القارئ، ويطلب الإذن حين يمكنه ذلك.
-  /// دقة المدينة تكفي للقبلة، فيُستخدم الموقع التقريبي من GPS دون حاجة للإنترنت.
+  ///
+  /// دقة المدينة تكفي للقبلة، فيُستخدم الموقع التقريبي من GPS دون حاجة
+  /// للإنترنت.
   Future<QiblaFix> locate() async {
     try {
       if (!await Geolocator.isLocationServiceEnabled()) {

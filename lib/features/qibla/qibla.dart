@@ -1,6 +1,7 @@
 /// حساب اتجاه القبلة والمسافة إلى الكعبة من موقع القارئ.
 ///
-/// هندسة الدائرة العظمى، فيعمل دون إنترنت وبدقة في أي مكان على الأرض؛ الشاشة تضيف الموقع والبوصلة فقط.
+/// هندسة الدائرة العظمى، فيعمل دون إنترنت وبدقة في أي مكان على الأرض؛ الشاشة
+/// تضيف الموقع والبوصلة فقط.
 library;
 
 import 'dart:math' as math;
@@ -15,7 +16,8 @@ const _earthRadiusKm = 6371.0;
 double _rad(double deg) => deg * math.pi / 180;
 double _deg(double rad) => rad * 180 / math.pi;
 
-/// اتجاه القبلة من [latitude] و[longitude]: درجات من الشمال الحقيقي مع عقارب الساعة (٠ إلى أقل من ٣٦٠).
+/// اتجاه القبلة من [latitude] و[longitude]: درجات من الشمال الحقيقي مع عقارب
+/// الساعة (٠ إلى أقل من ٣٦٠).
 double qiblaBearing(double latitude, double longitude) {
   final phi = _rad(latitude);
   final phiK = _rad(kaabaLatitude);

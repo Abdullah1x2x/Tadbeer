@@ -46,6 +46,7 @@ class ReminderItem {
   final DateTime createdAt;
 
   /// لتذكير "مرة واحدة" فقط: اللحظة التي جُدول لها.
+  ///
   /// إذا مضت فقد رنّ التذكير، فيُعطَّل بدل أن يُجدول لليوم التالي.
   final DateTime? scheduledFor;
 
@@ -72,7 +73,8 @@ class ReminderItem {
 
   TimeOfDay get time => TimeOfDay(hour: hour, minute: minute);
 
-  /// الوقت بنظام 12 ساعة بالأرقام العربية مع ص/م؛ منتصف الليل يظهر ١٢:٠٠ ص لا ٠٠:٠٠.
+  /// الوقت بنظام 12 ساعة بالأرقام العربية مع ص/م؛ منتصف الليل يظهر ١٢:٠٠ ص لا
+  /// ٠٠:٠٠.
   static String formatTime12Hour(int hour, int minute) {
     final int hour12 = hour % 12 == 0 ? 12 : hour % 12;
     final String period = hour < 12 ? 'ص' : 'م';
@@ -145,7 +147,8 @@ class ReminderItem {
     );
   }
 
-  /// نسخة معدّلة. تغيير الوقت أو التكرار أو الأيام أو إعادة التفعيل يمسح [scheduledFor] ليُحسب موعد جديد، إلا إن مُرّر صراحة.
+  /// نسخة معدّلة. تغيير الوقت أو التكرار أو الأيام أو إعادة التفعيل يمسح
+  /// [scheduledFor] ليُحسب موعد جديد، إلا إن مُرّر صراحة.
   ReminderItem copyWith({
     String? title,
     int? hour,

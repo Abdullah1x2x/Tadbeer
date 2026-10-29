@@ -18,7 +18,8 @@ mixin _SettingsSection on _StoreState {
   Future<void> updateSettings(UserSettings newSettings) =>
       putSettings(newSettings);
 
-  /// حجم خط المصحف من الإصدارات السابقة؛ المصحف اليوم يحدد حجمه من الشاشة، ويبقى هذا لتوافق النسخ الاحتياطية.
+  /// حجم خط المصحف من الإصدارات السابقة؛ المصحف اليوم يحدد حجمه من الشاشة،
+  /// ويبقى هذا لتوافق النسخ الاحتياطية.
   double get quranFontSize => _settings.quranFontSize;
 
   String get quranFontFamily => _settings.quranFontFamilyName;

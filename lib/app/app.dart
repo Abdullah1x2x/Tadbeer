@@ -111,7 +111,8 @@ class _TadbeerAppState extends State<TadbeerApp> {
       listenable: UserDataStore.instance.settingsNotifier,
       builder: (context, _) {
         final settings = UserDataStore.instance.settingsNotifier.value;
-        // ألوان الثيم تُقرأ مباشرة من [AppColors]، فتغييرها يتطلب إعادة بناء الشجرة كلها مرة واحدة.
+        // ألوان الثيم تُقرأ مباشرة من [AppColors]، فتغييرها يتطلب إعادة بناء
+        // الشجرة كلها مرة واحدة.
         if (AppColors.use(settings.colorTheme)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) _rebuildAll(this.context);
@@ -131,7 +132,8 @@ class _TadbeerAppState extends State<TadbeerApp> {
             darkTheme: AppTheme.darkTheme,
             themeMode: settings.themeMode,
             locale: Locale(_currentLanguage.code),
-            // العربية والإنجليزية لنصوص التطبيق ولعناصر Material نفسها (منتقي الوقت والحوارات).
+            // العربية والإنجليزية لنصوص التطبيق ولعناصر Material نفسها (منتقي
+            // الوقت والحوارات).
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {

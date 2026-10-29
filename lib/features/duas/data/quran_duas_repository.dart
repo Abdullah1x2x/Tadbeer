@@ -2,9 +2,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_repository.dart';
 import 'quran_dua_model.dart';
 
-/// سجل بيانات خام داخلي يحدد دعاءً قرآنياً موثقاً في الفهرس.
-///
-/// Raw catalog entry defining an authentic Quranic supplication.
+/// مدخل في فهرس الأدعية القرآنية.
 class _DuaCatalogEntry {
   final int id;
   final int surahNumber;
@@ -20,7 +18,6 @@ class _DuaCatalogEntry {
   final int orderInSurah;
   final List<QuranDuaVerse>? verses;
 
-  /// ينشئ مدخلاً في فهرس الأدعية القرآنية.
   const _DuaCatalogEntry({
     required this.id,
     required this.surahNumber,
@@ -38,23 +35,16 @@ class _DuaCatalogEntry {
   });
 }
 
-/// مستودع أدعية القرآن الكريم (أدعية من القرآن).
+/// أدعية القرآن: 88 دعاءً مباشراً بترتيب المصحف، في 12 محوراً.
 ///
-/// ملاحظات معمارية وقواعد لحماية النص القرآني:
-/// 1. القائمة المعتمدة تتضمن 88 مدخلًا من الأدعية القرآنية المباشرة مرتبة حسب ترتيب المصحف الشريف.
-/// 2. النصوص محفوظة بكامل الرسم والتشكيل كما وردت في التوثيق المعتمد.
-/// 3. فصل كامل بين عنوان الدعاء ووصفه وبين النص القرآني.
-/// 4. تصنيف دقيق يشمل 12 محورًا موضوعيًا للأدعية القرآنية المباشرة.
+/// النصوص بكامل رسمها وتشكيلها، والعنوان والوصف منفصلان عن النص القرآني.
 class QuranDuasRepository {
-  /// النسخة المشتركة الوحيدة لمستودع أدعية القرآن الكريم.
   static final QuranDuasRepository instance = QuranDuasRepository._internal();
   QuranDuasRepository._internal();
 
   List<QuranDua>? _cachedDuas;
 
-  /// التصنيفات الموضوعية المتاحة لتصفية الأدعية القرآنية.
-  ///
-  /// Available thematic categories for filtering.
+  /// محاور التصفية.
   static const List<String> categories = [
     'الكل',
     'الهداية والثبات',
@@ -71,9 +61,7 @@ class QuranDuasRepository {
     'أذكار وإقرارات إيمانية',
   ];
 
-  /// يعيد القائمة الكاملة المعتمدة لأدعية القرآن الكريم مرتبة حسب ترتيب المصحف.
-  ///
-  /// Returns the complete verified list of Quranic Duas sorted strictly by Quran order.
+  /// كل الأدعية بترتيب المصحف.
   List<QuranDua> getDuas({QuranRepository? quranRepository}) {
     if (_cachedDuas != null) return _cachedDuas!;
 
@@ -115,9 +103,7 @@ class QuranDuasRepository {
     return _cachedDuas!;
   }
 
-  /// يبحث فورياً بدون إنترنت في الأدعية القرآنية حسب النص أو العنوان أو السورة أو التصنيف أو رقم الآية.
-  ///
-  /// Instant offline search across Quranic duas by text, title, surah name, category or ayah number.
+  /// بحث فوري في الأدعية بالنص أو العنوان أو السورة أو المحور أو رقم الآية.
   List<QuranDua> search(
     String query, {
     String? categoryFilter,
@@ -137,32 +123,32 @@ class QuranDuasRepository {
     );
 
     return all.where((dua) {
-      // 1. Category Filter Check
+      // ١. المحور.
       if (!isAllCategory && dua.category != categoryFilter) {
         return false;
       }
 
       if (normQuery.isEmpty) return true;
 
-      // 2. Search in normalized dua text
+      // ٢. نص الدعاء.
       if (dua.rawText.contains(normQuery)) return true;
 
-      // 3. Search in normalized title
+      // ٣. العنوان.
       if (ArabicSearchNormalizer.normalize(dua.title).contains(normQuery)) {
         return true;
       }
 
-      // 4. Search in normalized surah name
+      // ٤. اسم السورة.
       if (ArabicSearchNormalizer.normalize(dua.surahName).contains(normQuery)) {
         return true;
       }
 
-      // 5. Search in normalized category name
+      // ٥. اسم المحور.
       if (ArabicSearchNormalizer.normalize(dua.category).contains(normQuery)) {
         return true;
       }
 
-      // 6. Search by ayah number or ayah range string
+      // ٦. رقم الآية أو نطاقها.
       if (ayahNumQuery != null &&
           (dua.ayahNumber <= ayahNumQuery &&
                   ayahNumQuery <= dua.ayahEndNumber ||
@@ -183,24 +169,15 @@ class QuranDuasRepository {
     }).toList();
   }
 
-  /// يفرغ الذاكرة المؤقتة للأدعية لإعادة تحميلها من جديد.
-  ///
-  /// Clears in-memory cached duas (ensuring fresh load or for testing).
+  /// يمسح الأدعية المخزنة في الذاكرة لتُحمّل من جديد.
   void resetCache() {
     _cachedDuas = null;
   }
 
-  // ===========================================================================
-  // 💡 كيف تضيف دعاءً قرآنياً جديداً؟
-  // -------------------------------------------------------------
-  // أضف مدخلاً جديداً إلى الفهرس المرجعي [_catalog] أدناه باستخدام [_DuaCatalogEntry].
-  // حدد رقم السورة، ورقم الآية أو نطاق الآيات، ونص الدعاء، ومحوره الموضوعي.
-  // سيقوم المستودع تلقائياً بربط الدعاء بالمصحف الشريف ومحرك البحث وشاشة الأدعية القرآنية.
-  // ===========================================================================
+  // لإضافة دعاء: أضف [_DuaCatalogEntry] إلى [_catalog] بالسورة والآية أو
+  // نطاقها، والنص، والمحور؛ فيُربط بالمصحف والبحث والشاشة.
 
-  /// الفهرس المرجعي المعتمد لجميع الأدعية القرآنية الموثقة بترتيب المصحف.
-  ///
-  /// Canonical metadata catalog of all 88 verified Quranic Duas in Quran order.
+  /// فهرس الأدعية الـ88 الموثقة، بترتيب المصحف.
   static const List<_DuaCatalogEntry> _catalog = [
     _DuaCatalogEntry(
       id: 1,

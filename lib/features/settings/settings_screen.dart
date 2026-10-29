@@ -227,7 +227,8 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // صفحات مصحف المدينة أولاً؛ والنص المتدفق بديل لا يحتاج تحميلاً.
+                        // صفحات مصحف المدينة أولاً؛ والنص المتدفق بديل لا يحتاج
+                        // تحميلاً.
                         Row(
                           children: [
                             Icon(
@@ -300,7 +301,8 @@ class SettingsScreen extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          // قائمة مختصرة بدل خمس بطاقات كبيرة، والمعاينة تحتها تُظهر الخط المختار.
+                          // قائمة مختصرة بدل خمس بطاقات كبيرة، والمعاينة تحتها
+                          // تُظهر الخط المختار.
                           AppSelectField<QuranFontFamilyOption>(
                             title: l10n.quranFontFamily,
                             icon: AppIcons.textT,

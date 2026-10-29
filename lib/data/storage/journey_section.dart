@@ -2,7 +2,8 @@ part of 'user_data_store.dart';
 
 /// قسم رحلة القراءة والختمة.
 mixin _JourneySection on _StoreState {
-  /// هل يعرض المصحف "ابدأ" بدل "أكمل": ختمة لم تبدأ، أو لا قراءة أصلاً إن لم توجد ختمة.
+  /// هل يعرض المصحف "ابدأ" بدل "أكمل": ختمة لم تبدأ، أو لا قراءة أصلاً إن لم
+  /// توجد ختمة.
   bool get readingNotStarted {
     final plan = _journey.plan;
     if (plan != null) return plan.advanced == 0;
@@ -19,7 +20,8 @@ mixin _JourneySection on _StoreState {
     await _saveJourney(_journey.recordPage(page, at));
   }
 
-  /// يبدأ ختمة في [days] يوماً من [startPage]، ويجعلها موضع القراءة ليفتح المصحف والرئيسية على نفس الصفحة.
+  /// يبدأ ختمة في [days] يوماً من [startPage]، ويجعلها موضع القراءة ليفتح
+  /// المصحف والرئيسية على نفس الصفحة.
   Future<void> startKhatma(int days, {int startPage = 1}) async {
     await _saveJourney(
       _journey.startPlan(days, DateTime.now(), startPage: startPage),
@@ -40,7 +42,8 @@ mixin _JourneySection on _StoreState {
     if (plan != null) await _moveReadingPositionTo(plan.currentPage);
   }
 
-  /// الختمة تتبع موضع القراءة: صفحتها حيث يقف القارئ، والمنجز ما قبلها منذ بدايتها، كالعلامة في المصحف الورقي.
+  /// الختمة تتبع موضع القراءة: صفحتها حيث يقف القارئ، والمنجز ما قبلها منذ
+  /// بدايتها، كالعلامة في المصحف الورقي.
   @override
   Future<void> followReadingPosition(int page) async {
     final plan = _journey.plan;

@@ -12,6 +12,7 @@ import '../../core/design_system/ornaments.dart';
 part 'tasbeeh_widgets.dart';
 
 /// الاستغفار والتسبيح: سبحة بسيطة بقسمين.
+///
 /// مربع الذكر ثابت الحجم، فلا تقفز الشاشة عند تقليب الأذكار.
 class TasbeehScreen extends StatefulWidget {
   /// القسم الذي تُفتح عليه.

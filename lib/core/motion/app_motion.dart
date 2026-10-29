@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// قيم الحركة الموحّدة: المدد والمنحنيات، واحترام "تقليل الحركة"، وانتقال الحوارات.
+/// قيم الحركة الموحّدة: المدد والمنحنيات، واحترام "تقليل الحركة"، وانتقال
+/// الحوارات.
 class AppMotion {
   AppMotion._();
 
@@ -25,7 +26,8 @@ class AppMotion {
 
   // تقليل الحركة
 
-  /// هل يُسمح بالحركة؛ false حين يفعّل المستخدم "تقليل الحركة" في النظام، فتصبح الحركات فورية.
+  /// هل يُسمح بالحركة؛ false حين يفعّل المستخدم "تقليل الحركة" في النظام، فتصبح
+  /// الحركات فورية.
   static bool shouldAnimate(BuildContext context) {
     return !MediaQuery.disableAnimationsOf(context);
   }
@@ -74,7 +76,9 @@ class AppMotion {
 }
 
 /// يصغّر الزر أو البطاقة قليلاً عند الضغط ثم يرتد.
-/// يستخدم [Listener] فيرصد اللمس دون أن يحجزه، فيبقى السحب والتمرير و[InkWell] الداخلي يعملون.
+///
+/// يستخدم [Listener] فيرصد اللمس دون أن يحجزه، فيبقى السحب والتمرير و[InkWell]
+/// الداخلي يعملون.
 class ScaleOnPress extends StatefulWidget {
   final Widget child;
 

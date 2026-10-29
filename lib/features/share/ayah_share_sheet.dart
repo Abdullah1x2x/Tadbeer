@@ -80,7 +80,8 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
 
   /// البطاقة كما تظهر، مرسومة بعرض [imageWidth] بكسل.
   Future<Uint8List?> _capture() async {
-    // خطوط مصحف المدينة تُحمّل مع صفحتها؛ ننتظرها كي لا تلتقط الصورة الخط البديل.
+    // خطوط مصحف المدينة تُحمّل مع صفحتها؛ ننتظرها كي لا تلتقط الصورة الخط
+    // البديل.
     final page = widget.ayah.page;
     if (UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah &&
         !(QcfLayout.instance.isReady && QcfFonts.instance.isPageLoaded(page))) {
@@ -307,7 +308,8 @@ class _Spinner extends StatelessWidget {
   );
 }
 
-/// بطاقة الآية: إطار ذهبي مزدوج، ونقش هندسي خفيف، واسم السورة، ونص الآية بخط المصحف المختار، وتوقيع التطبيق.
+/// بطاقة الآية: إطار ذهبي مزدوج، ونقش هندسي خفيف، واسم السورة، ونص الآية بخط
+/// المصحف المختار، وتوقيع التطبيق.
 class AyahCard extends StatelessWidget {
   final Ayah ayah;
   final AyahCardStyle style;
@@ -366,7 +368,8 @@ class AyahCard extends StatelessWidget {
         height: height,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            // لون الثيم يتوهج من خلفيته الليلية، أو ورقه مع لمسة من لونه في الأسفل.
+            // لون الثيم يتوهج من خلفيته الليلية، أو ورقه مع لمسة من لونه في
+            // الأسفل.
             gradient: night
                 ? RadialGradient(
                     center: const Alignment(0, -0.35),
@@ -416,7 +419,8 @@ class AyahCard extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: width - 68),
-                          // بخط المصحف الذي اختاره القارئ: صفحات المدينة بعلامة آيتها، أو خط النص المتدفق.
+                          // بخط المصحف الذي اختاره القارئ: صفحات المدينة بعلامة
+                          // آيتها، أو خط النص المتدفق.
                           child: madinah
                               ? QcfAyahText(
                                   ayah: ayah,

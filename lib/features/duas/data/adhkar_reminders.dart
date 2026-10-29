@@ -12,12 +12,12 @@ import '../../../core/design_system/app_icons.dart';
 class AdhkarReminders {
   AdhkarReminders._();
 
-  /// Fixed ids; the notification payload equals the id so a tap opens the
-  /// matching adhkar (see main.dart).
+  /// معرّف ثابت، وحمولة الإشعار هي المعرّف نفسه، فيفتح النقر الأذكار المطابقة
+  /// (انظر bootstrap.dart).
   static String idFor(AdhkarCategory c) =>
       c == AdhkarCategory.morning ? 'adhkar_morning' : 'adhkar_evening';
 
-  /// التنبيه الحالي للفئة إن وُجد.
+  /// تنبيه الفئة الحالي، إن وُجد.
   static ReminderItem? reminderFor(AdhkarCategory c) {
     for (final r in UserDataStore.instance.reminders) {
       if (r.id == idFor(c)) return r;
@@ -44,7 +44,6 @@ class AdhkarReminders {
     await LocalReminderService.instance.scheduleReminder(reminder);
   }
 
-  /// يلغي تنبيه الفئة.
   static Future<void> disable(AdhkarCategory c) async {
     final existing = reminderFor(c);
     if (existing == null) return;
@@ -52,7 +51,7 @@ class AdhkarReminders {
     await UserDataStore.instance.removeReminder(existing.id);
   }
 
-  /// يفتح لوحة ضبط تذكيرات الأذكار.
+  /// لوحة ضبط تذكيرات الأذكار.
   static Future<void> showSettingsSheet(BuildContext context) {
     return showModalBottomSheet<void>(
       context: context,

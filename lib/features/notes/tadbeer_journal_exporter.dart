@@ -49,7 +49,9 @@ class JournalSummary {
   bool get isEmpty => totalReflections == 0;
 }
 
-/// دفتر التدبر: يجمع الخواطر ووقفات التدبر في فترة، ويصدّرها PDF أو Markdown دون إنترنت.
+/// دفتر التدبر: يجمع الخواطر ووقفات التدبر في فترة، ويصدّرها PDF أو Markdown
+/// دون إنترنت.
+///
 /// تُضمَّن خطوط أميري في الملف، ويُحترم الاتجاه من اليمين لليسار.
 class TadbeerJournalExporter {
   TadbeerJournalExporter._();

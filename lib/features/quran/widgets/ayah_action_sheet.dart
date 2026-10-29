@@ -16,30 +16,20 @@ import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// Modal action sheet for interacting with an individual Ayah.
-///
-/// EDUCATIONAL NOTE:
-/// Offers quick actions:
-/// 1. Tadbeer reflection note (linked to this ayah via stable ID)
-/// 2. Bookmark toggle (pinning verse for recitation)
-/// 3. Color highlight (4 calm, non-distracting colors)
-/// 4. Copying authentic Quranic verse with reference
-/// نافذة إجراءات منبثقة للتفاعل مع الآية القرآنية (وقفة تدبر، ربط آيات، ملاحظة، علامة مرجعية، تظليل، نسخ).
+/// نافذة إجراءات الآية: التدبر، والربط، والخاطرة، والفاصل، والتظليل، والنسخ.
 class AyahActionSheet extends StatefulWidget {
   final Ayah ayah;
 
-  /// What the sheet opens on: all actions, or straight to one of its editors.
+  /// ما تفتح عليه: كل الإجراءات، أو أحد محرريها مباشرة.
   final AyahSheetMode mode;
 
-  /// ينشئ نافذة إجراءات الآية القرآنية المحددة.
   const AyahActionSheet({
     super.key,
     required this.ayah,
     this.mode = AyahSheetMode.actions,
   });
 
-  /// Displays the Ayah action sheet as a smooth, responsive modal dialog.
-  /// يعرض نافذة إجراءات الآية كحوار منبثق سلس ومتجاوب.
+  /// يعرض النافذة كحوار.
   static Future<void> show(
     BuildContext context,
     Ayah ayah, {
@@ -70,35 +60,31 @@ class AyahActionSheet extends StatefulWidget {
     );
   }
 
-  /// ينشئ الحالة التفاعلية لنافذة إجراءات الآية.
   @override
   State<AyahActionSheet> createState() => _AyahActionSheetState();
 }
 
 /// ما تفتح عليه نافذة الآية.
 enum AyahSheetMode {
-  /// كل الإجراءات.
   actions,
 
-  /// محرر ملاحظة الآية.
+  /// محرر خاطرة الآية.
   note,
 
-  /// اختيار لون التمييز.
+  /// اختيار لون التظليل.
   highlight,
 }
 
-/// Backward compatibility alias for AyahActionSheet
-/// اسم بديل متوافق مع الإصدارات السابقة لنافذة إجراءات الآية.
+/// الاسم القديم، يبقى للتوافق.
 typedef AyahActionDialog = AyahActionSheet;
 
-/// الحالة التفاعلية لنافذة إجراءات الآية القرآنية.
 class _AyahActionSheetState extends State<AyahActionSheet> {
   late bool _isNoteEditorOpen = widget.mode == AyahSheetMode.note;
   late bool _isHighlightPickerOpen = widget.mode == AyahSheetMode.highlight;
   late TextEditingController _noteController;
   String? _existingNoteId;
 
-  /// يهيئ حقل الملاحظة بالبيانات المحفوظة مسبقاً للآية إن وجدت.
+  /// يملأ الخاطرة بالمحفوظ للآية إن وُجد.
   @override
   void initState() {
     super.initState();
@@ -116,14 +102,13 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
     }
   }
 
-  /// يحرر متحكم النص عند إغلاق النافذة.
   @override
   void dispose() {
     _noteController.dispose();
     super.dispose();
   }
 
-  /// يحفظ ملاحظة المستخدم المرتبطة بالآية أو يحذفها إذا كان النص فارغاً.
+  /// يحفظ الخاطرة، أو يحذفها إن صار النص فارغاً.
   Future<void> _saveNote() async {
     final text = _noteController.text.trim();
     if (text.isEmpty && _existingNoteId != null) {
@@ -140,10 +125,9 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
         ayahText: widget.ayah.text,
       );
     }
-    // The sheet closes after saving, so it does not go back to the actions.
+    // تُغلق النافذة بعد الحفظ، فلا تعود إلى الإجراءات.
   }
 
-  /// يبني واجهة نافذة إجراءات الآية وأوضاع تحرير الملاحظة أو اختيار لون التظليل.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -202,7 +186,6 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Header: Surah and Ayah reference
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -261,8 +244,8 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                 ),
               ),
 
-              // The ayah as the reader sees it in the Mushaf: in the
-              // Madinah script, or in their font in the flowing text view.
+              // الآية كما يراها القارئ في المصحف: بخط المدينة، أو بخطه في النص
+              // المتدفق.
               ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 200),
                 child: SingleChildScrollView(
@@ -280,7 +263,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
 
               const Divider(height: 1),
 
-              // Note Editor Mode
+              // محرر الخاطرة.
               if (_isNoteEditorOpen) ...[
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -338,8 +321,8 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            // Opened on the editor alone, cancel closes it
-                            // rather than showing the other actions.
+                            // إن فُتحت على المحرر وحده، يُغلقها الإلغاء بدل عرض
+                            // باقي الإجراءات.
                             onPressed: () => widget.mode == AyahSheetMode.note
                                 ? Navigator.of(context).pop()
                                 : setState(() => _isNoteEditorOpen = false),
@@ -381,7 +364,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                   ),
                 ),
               ] else if (_isHighlightPickerOpen) ...[
-                // Highlight Color Picker Mode
+                // اختيار لون التظليل.
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -467,8 +450,8 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                   ),
                 ),
               ] else ...[
-                // Reflection leads, as the app's purpose; the other actions
-                // sit in a grid of four that takes another one in its row.
+                // التدبر أولاً لأنه غاية التطبيق، وباقي الإجراءات في شبكة من
+                // أربعة يتسع صفها لإجراء آخر.
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
                   child: _ReflectButton(
@@ -580,8 +563,8 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
   }
 }
 
-/// The ayah's actions, four to a row; a row that is not full is centred,
-/// so adding an action needs nothing but a new child.
+/// إجراءات الآية، أربعة في الصف؛ والصف غير المكتمل في الوسط، فإضافة إجراء لا
+/// تحتاج إلا ابناً جديداً.
 class _ActionGrid extends StatelessWidget {
   final List<Widget> children;
 
@@ -606,7 +589,7 @@ class _ActionGrid extends StatelessWidget {
   }
 }
 
-/// زر وقفة التدبر البارز في رأس الإجراءات.
+/// زر التدبر البارز في رأس الإجراءات.
 class _ReflectButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -620,7 +603,7 @@ class _ReflectButton extends StatelessWidget {
       onPressed: onTap,
       style: FilledButton.styleFrom(
         backgroundColor: AppColors.accentGold(context),
-        // Dark text on gold reads clearly in both modes.
+        // النص الداكن على الذهبي واضح في الوضعين.
         foregroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.lightPrimaryDark,
@@ -634,8 +617,7 @@ class _ReflectButton extends StatelessWidget {
   }
 }
 
-/// زر إجراء في شبكة نافذة الآية: أيقونة في دائرة وتسمية تحتها، ونقطة ذهبية
-/// إن كان للآية ما يخص هذا الإجراء.
+/// زر إجراء: أيقونة في دائرة وتسمية تحتها، ونقطة ذهبية إن كان للآية ما يخصّه.
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -643,7 +625,6 @@ class _ActionButton extends StatelessWidget {
   final Color? iconColor;
   final bool hasActiveIndicator;
 
-  /// ينشئ زر إجراء لنافذة إجراءات الآية.
   const _ActionButton({
     required this.icon,
     required this.label,
@@ -703,7 +684,7 @@ class _ActionButton extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            // Two lines at most, so a longer name wraps instead of shrinking.
+            // سطران على الأكثر، فيلتف الاسم الطويل بدل أن يصغر.
             Text(
               label,
               textAlign: TextAlign.center,

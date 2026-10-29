@@ -16,16 +16,14 @@ import '../../../core/design_system/app_icons.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../qcf/qcf_page_body.dart';
 
-/// متعرف إيماءات مخصص للآيات القرآنية المدمجة داخل TextSpan.
-///
-/// يرث LongPressGestureRecognizer لدمج النقر السريع مع الضغط المطول،
-/// ومنع أي تعارض مع حركة تمرير صفحات المصحف في PageView.
+/// يميّز النقر من الضغط المطوّل على آية داخل نص الصفحة، دون أن يتعارض مع سحب
+/// الصفحات.
 class AyahGestureRecognizer extends LongPressGestureRecognizer {
   VoidCallback? onPointerDown;
   VoidCallback? onPointerUpEarly;
   VoidCallback? onTap;
 
-  /// المهلة الافتراضية للضغط المطول (1100ms).
+  /// [duration] مهلة الضغط المطوّل؛ الافتراضي 1100 مللي ثانية.
   AyahGestureRecognizer({
     this.onPointerDown,
     this.onPointerUpEarly,
@@ -39,14 +37,13 @@ class AyahGestureRecognizer extends LongPressGestureRecognizer {
 
   bool _longPressFired = false;
 
-  /// يسجل تجاوز المهلة الزمنية لتفعيل إيماءة الضغط المطول.
   @override
   void didExceedDeadline() {
     _longPressFired = true;
     super.didExceedDeadline();
   }
 
-  /// يعالج أحداث المؤشر الأساسي للتمييز بين النقر السريع والضغط المطول.
+  /// يميّز النقر السريع من الضغط المطوّل.
   @override
   void handlePrimaryPointer(PointerEvent event) {
     if (event is PointerDownEvent) {
@@ -68,14 +65,12 @@ class AyahGestureRecognizer extends LongPressGestureRecognizer {
   }
 }
 
-/// Helper model representing consecutive Ayahs from the same Surah on a given page.
-/// نموذج مساعد يمثل مجموعة آيات متتالية تنتمي لسورة واحدة داخل الصفحة.
+/// آيات متتالية من سورة واحدة في الصفحة.
 class _SurahPageBlock {
   final int surahNumber;
   final bool isStartOfSurah;
   final List<Ayah> ayahs;
 
-  /// ينشئ كتلة آيات متتالية لسورة واحدة في الصفحة.
   const _SurahPageBlock({
     required this.surahNumber,
     required this.isStartOfSurah,
@@ -83,18 +78,11 @@ class _SurahPageBlock {
   });
 }
 
-/// Responsive Medina Mushaf Page Reader (1..604).
+/// صفحة المصحف (١..٦٠٤): صفحات مصحف المدينة، أو النص العثماني المتدفق بخط
+/// القارئ.
 ///
-/// Renders authentic Uthmani text with natural, responsive typography using
-/// the user's selected open-source Quran font.
-///
-/// Key Architectural Guarantees:
-/// 1. Authentic Tanzil Uthmani text with 100% intact diacritics, pauses, and stops.
-/// 2. Natural RTL Arabic text flow with authentic Ayah end rosettes ﴿#﴾.
-/// 3. Zero RenderFlex overflow on all device sizes (phones, foldables, tablets, landscape).
-/// 4. Dynamic Quran font scaling driven by UserSettings with live reactivity.
-/// 5. Full support for highlights, bookmarks, notes, tadbeer, and ayah action sheet.
-/// عارض صفحة المصحف المدني المتجاوب (للصفحات من ١ إلى ٦٠٤) بالرسم العثماني الأصيل.
+/// النص من مشروع تنزيل بتشكيله وعلامات وقفه كاملة، يتجاوب مع أي شاشة دون أن
+/// يفيض، ويعرض التظليل والفواصل والخواطر والتدبر.
 class QuranPageView extends StatefulWidget {
   final QuranPage? page;
   final int? pageNumber;
@@ -102,22 +90,20 @@ class QuranPageView extends StatefulWidget {
   final Ayah? selectedAyah;
   final ValueChanged<Ayah>? onAyahTap;
 
-  /// A long press on an ayah, with where the finger is when it comes from
-  /// one (the finger may then slide over the rosette that opens there).
+  /// الضغط المطوّل على آية، مع موضع الإصبع إن جاء منه (فقد ينزلق بعدها على
+  /// الوردة التي تُفتح هناك).
   final void Function(Ayah ayah, {Offset? at})? onAyahLongPress;
   final ValueChanged<Ayah>? onAyahHighlight;
   final ValueChanged<Ayah>? onAyahHighlightClear;
   final bool showHeader;
   final bool showFooter;
 
-  /// Size of the flowing text for a page [width] wide: about 21 average
-  /// words' width per line on a phone, growing on wider screens up to a
-  /// comfortable reading size. The system's text scale still applies on
-  /// top, for readers who set larger text.
+  /// حجم النص المتدفق لصفحة بعرض [width]: نحو 21 كلمة متوسطة في السطر على
+  /// الهاتف، ويكبر مع الشاشات الأعرض حتى حجم قراءة مريح. ومقياس النص في النظام
+  /// يُطبّق فوقه.
   static double textSizeFor(double width) =>
       width.isFinite ? (width / 21).clamp(16.0, 28.0) : 20.0;
 
-  /// ينشئ ودجت عرض صفحة من صفحات المصحف الشريف.
   const QuranPageView({
     super.key,
     this.page,
@@ -135,30 +121,27 @@ class QuranPageView extends StatefulWidget {
          'Either page or pageNumber must be provided',
        );
 
-  /// ينشئ الحالة التفاعلية لعارض صفحة المصحف.
   @override
   State<QuranPageView> createState() => _QuranPageViewState();
 }
 
-/// الحالة التفاعلية لودجت عرض صفحة المصحف الشريف.
 class _QuranPageViewState extends State<QuranPageView> {
   final Map<int, AyahGestureRecognizer> _recognizers = {};
 
-  /// متحكم التمرير الرأسي لمحتوى صفحة المصحف داخل الإطار.
+  /// تمرير محتوى الصفحة رأسياً داخل الإطار.
   final ScrollController _scrollController = ScrollController();
 
-  /// إشعار يحدد ما إذا كان التدرج السفلي الناعم ظاهراً لوجود نص إضافي أسفل الشاشة.
+  /// هل يظهر التدرج السفلي، لوجود نص تحت الشاشة.
   final ValueNotifier<bool> _showBottomGradient = ValueNotifier<bool>(false);
 
-  /// إشعار يحدد ما إذا كان سهم التوجيه السفلي ظاهراً لتنبيه القارئ بالسحب.
+  /// هل يظهر سهم السحب للأسفل.
   final ValueNotifier<bool> _showScrollHint = ValueNotifier<bool>(false);
 
-  /// What this page shows from the user's data, as one comparable value.
+  /// ما تعرضه الصفحة من بيانات القارئ، كقيمة واحدة تُقارن.
   String? _signature;
 
-  /// Saving the reading position or counting a page notifies the store on
-  /// every page turn; the page only rebuilds when something it shows
-  /// (settings, or a mark on one of its ayahs) actually changed.
+  /// حفظ موضع القراءة وعدّ الصفحة يُعلمان المخزن مع كل تقليب؛ والصفحة لا تُعاد
+  /// بناؤها إلا إن تغيّر شيء تعرضه (الإعدادات، أو علامة على إحدى آياتها).
   void _onStoreChanged() {
     final next = _contentSignature();
     if (next != _signature && mounted) setState(() => _signature = next);
@@ -189,7 +172,6 @@ class _QuranPageViewState extends State<QuranPageView> {
     return out.toString();
   }
 
-  /// يضبط الاستماع لأحداث التمرير وتحديث المؤشرات البصرية عند بدء الحالة.
   @override
   void initState() {
     super.initState();
@@ -201,7 +183,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     });
   }
 
-  /// يعيد ضبط موقع التمرير إلى أعلى الصفحة عند تغيير رقم الصفحة المعروضة.
+  /// يعود إلى أعلى الصفحة حين يتغير رقمها.
   @override
   void didUpdateWidget(covariant QuranPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -218,7 +200,6 @@ class _QuranPageViewState extends State<QuranPageView> {
     });
   }
 
-  /// يحرر موارد متحكم التمرير والإشعارات ومتعرفات الإيماءات عند إزالة الودجت.
   @override
   void dispose() {
     UserDataStore.instance.removeListener(_onStoreChanged);
@@ -230,7 +211,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     super.dispose();
   }
 
-  /// يحدث حالة ظهور التدرج ومؤشر السهم بحسب موقع التمرير الحالي داخل الصفحة.
+  /// يحدّث ظهور التدرج والسهم بحسب موضع التمرير.
   void _updateScrollIndicators() {
     if (!mounted || !_scrollController.hasClients) return;
     final position = _scrollController.position;
@@ -250,7 +231,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     }
   }
 
-  /// يمرر الصفحة قليلاً إلى الأسفل بسلاسة عند النقر على السهم التوجيهي.
+  /// يمرّر خطوة للأسفل عند النقر على السهم.
   void _scrollDownOneStep() {
     if (!_scrollController.hasClients) return;
     final maxScroll = _scrollController.position.maxScrollExtent;
@@ -262,7 +243,6 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يتخلص من جميع متعرفات الإيماءات المخزنة وينظف القائمة.
   void _disposeRecognizers() {
     for (final recognizer in _recognizers.values) {
       recognizer.dispose();
@@ -270,14 +250,14 @@ class _QuranPageViewState extends State<QuranPageView> {
     _recognizers.clear();
   }
 
-  /// يعيد متعرف إيماءات الآية المحددة أو ينشئ واحداً جديداً عند الحاجة.
+  /// متعرّف الإيماءات للآية، يُنشأ عند الحاجة.
   AyahGestureRecognizer _getOrCreateRecognizer(Ayah ayah) {
     if (_recognizers.containsKey(ayah.id)) {
       return _recognizers[ayah.id]!;
     }
 
     final recognizer = AyahGestureRecognizer(
-      // مدة الضغط المطول لإظهار خيارات الآية (النقر المباشر على رقم الآية يفتحها فوراً).
+      // مدة الضغط المطوّل لخيارات الآية؛ والنقر على رقم الآية يفتحها فوراً.
       duration: const Duration(milliseconds: 500),
       onPointerDown: () {
         widget.onAyahHighlight?.call(ayah);
@@ -289,7 +269,7 @@ class _QuranPageViewState extends State<QuranPageView> {
         widget.onAyahTap?.call(ayah);
       },
     );
-    // The same press goes on to steer the rosette that opens under it.
+    // نفس الضغطة تستمر لتوجيه الوردة التي تُفتح تحتها.
     recognizer
       ..onLongPressStart = (details) {
         final at = details.globalPosition;
@@ -310,7 +290,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     return recognizer;
   }
 
-  /// يجمع آيات الصفحة المتتالية في كتل مستقلة بحسب السورة.
+  /// يجمع آيات الصفحة في كتل بحسب السورة.
   List<_SurahPageBlock> _groupAyahsBySurah(List<Ayah> ayahs) {
     if (ayahs.isEmpty) return const [];
     final blocks = <_SurahPageBlock>[];
@@ -346,20 +326,19 @@ class _QuranPageViewState extends State<QuranPageView> {
     return blocks;
   }
 
-  /// يبني واجهة صفحة المصحف بما يشمل الترويسة والنص القرآني والتذييل.
   @override
   Widget build(BuildContext context) {
     final repo = QuranRepository.instance;
     final pageNumber = widget.page?.pageNumber ?? widget.pageNumber!;
     final quranPage = widget.page ?? repo.getPage(pageNumber);
 
-    // Rebuilt by _onStoreChanged only when this page's content changes.
+    // يعيد _onStoreChanged بناءها فقط حين يتغير محتوى هذه الصفحة.
     return LayoutBuilder(
       builder: (context, box) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final storage = UserDataStore.instance;
-        // Sized to the screen, enlarged as far as the reader asked; the
-        // Madinah pages ignore it and always fit the screen.
+        // بحجم الشاشة، مكبّراً بقدر ما طلب القارئ؛ وصفحات المدينة تتجاهله وتتسع
+        // للشاشة دائماً.
         final effectiveFontSize =
             widget.fontSize ??
             QuranPageView.textSizeFor(box.maxWidth) *
@@ -478,7 +457,8 @@ class _QuranPageViewState extends State<QuranPageView> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.stretch,
                                               children: [
-                                                // 1. Top Page Header (Surah name & Juz number)
+                                                // ١. الترويسة: اسم السورة ورقم
+                                                // الجزء.
                                                 if (widget.showHeader)
                                                   _buildPageHeader(
                                                     context,
@@ -494,7 +474,7 @@ class _QuranPageViewState extends State<QuranPageView> {
 
                                                 const SizedBox(height: 4),
 
-                                                // 2. Main Quranic Text Body
+                                                // ٢. النص القرآني.
                                                 Expanded(
                                                   child: isOpeningPage
                                                       ? _buildOpeningPageContent(
@@ -517,7 +497,7 @@ class _QuranPageViewState extends State<QuranPageView> {
 
                                                 const SizedBox(height: 4),
 
-                                                // 3. Bottom Page Footer (Arabic page number)
+                                                // ٣. التذييل: رقم الصفحة.
                                                 if (widget.showFooter)
                                                   _buildPageFooter(
                                                     context,
@@ -535,7 +515,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                                     ),
                                   ),
 
-                                  // 2. Bottom subtle gradient fade
+                                  // التدرج السفلي الخافت.
                                   Positioned(
                                     left: 0,
                                     right: 0,
@@ -589,7 +569,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                                     ),
                                   ),
 
-                                  // 3. Subtle micro chevron indicator
+                                  // سهم السحب الصغير.
                                   Positioned(
                                     left: 0,
                                     right: 0,
@@ -726,8 +706,8 @@ class _QuranPageViewState extends State<QuranPageView> {
         Expanded(
           child: QcfPageBody(
             pageNumber: pageNumber,
-            // The printed page fits the screen by itself; only an explicit
-            // size (in tests) enlarges it.
+            // الصفحة المطبوعة تتسع للشاشة وحدها؛ ولا يكبّرها إلا حجم صريح (في
+            // الاختبارات).
             zoom: widget.fontSize == null
                 ? 1
                 : fontSize / UserSettings.defaultQuranFontSize,
@@ -774,7 +754,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يبني ترويسة الصفحة العلوية التي تعرض اسم السورة ورقم الجزء وعلامات الهوامش إن وُجدت.
+  /// الترويسة: اسم السورة ورقم الجزء وعلامات الهامش إن وُجدت.
   Widget _buildPageHeader(
     BuildContext context, {
     required Surah surah,
@@ -875,7 +855,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يبني تذييل الصفحة السفلي الذي يعرض رقم الصفحة بالأرقام العربية.
+  /// التذييل: رقم الصفحة بالأرقام العربية.
   Widget _buildPageFooter(
     BuildContext context, {
     required int pageNumber,
@@ -924,7 +904,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يبني محتوى الصفحتين الافتتاحيتين (الفاتحة وأول البقرة) بتصميم متمركز متناسق مع إطار المصحف.
+  /// الصفحتان الافتتاحيتان (الفاتحة وأول البقرة) متمركزتين داخل إطار المصحف.
   Widget _buildOpeningPageContent({
     required BuildContext context,
     required List<_SurahPageBlock> blocks,
@@ -963,7 +943,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يبني محتوى صفحات المصحف القياسية مع ترويسات السور والبسملة والآيات المتصلة.
+  /// الصفحات العادية: ترويسات السور والبسملة والآيات المتصلة.
   Widget _buildStandardPageContent({
     required BuildContext context,
     required List<_SurahPageBlock> blocks,
@@ -1006,7 +986,7 @@ class _QuranPageViewState extends State<QuranPageView> {
 
   static final RegExp _standaloneWaqfRegex = RegExp(r' ([\u06D6-\u06DB]) ');
 
-  /// ينسق نص الآية بربط علامات الوقف بالكلمة السابقة لمنع انفصالها في بداية السطر.
+  /// يربط علامات الوقف بالكلمة قبلها، فلا تنفصل إلى بداية سطر.
   static String _formatAyahText(String text) {
     return text.replaceAllMapped(
       _standaloneWaqfRegex,
@@ -1014,7 +994,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 
-  /// يبني فقرة الآيات القرآنية المتصلة مع فواصل الآيات والتظليل وشارات العلامات والملاحظات.
+  /// فقرة الآيات المتصلة: أرقامها وتظليلها وشارات الفواصل والخواطر.
   Widget _buildAyahsParagraph({
     required BuildContext context,
     required List<Ayah> ayahs,
@@ -1033,7 +1013,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     final fontFamily = storage.settings.quranFontFamilyName;
 
     final spanChildren = <InlineSpan>[];
-    // Read once per page; checked for every verse below.
+    // تُقرأ مرة للصفحة، وتُفحص لكل آية أدناه.
     final memorized = HifzStore.all().keys.toSet();
 
     for (final ayah in ayahs) {
@@ -1203,6 +1183,5 @@ class _QuranPageViewState extends State<QuranPageView> {
   }
 }
 
-/// Backward compatibility alias for QuranPageView
-/// اسم بديل متوافق مع الإصدارات السابقة لودجت عرض صفحة المصحف.
+/// الاسم القديم، يبقى للتوافق.
 typedef QuranPageWidget = QuranPageView;

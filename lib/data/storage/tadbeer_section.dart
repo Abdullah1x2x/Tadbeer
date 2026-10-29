@@ -88,7 +88,8 @@ mixin _TadbeerSection on _StoreState {
     await markActiveDay(now: now);
   }
 
-  /// الالتزام الذي يُسأل عنه في الرئيسية: أحدث التزام كُتب قبل اليوم وخلال الأسبوع الماضي، لم يُنجز ولم يُسأل عنه.
+  /// الالتزام الذي يُسأل عنه في الرئيسية: أحدث التزام كُتب قبل اليوم وخلال
+  /// الأسبوع الماضي، لم يُنجز ولم يُسأل عنه.
   TadbeerItem? pendingCommitment({DateTime? now}) {
     final at = now ?? DateTime.now();
     final today = DateTime(at.year, at.month, at.day);

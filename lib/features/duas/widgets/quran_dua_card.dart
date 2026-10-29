@@ -8,26 +8,15 @@ import '../../quran/screens/quran_screen.dart';
 import '../data/quran_dua_model.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// بطاقة عرض الدعاء القرآني الموثق مع أزرار النسخ والانتقال المباشر للمصحف.
+/// بطاقة دعاء قرآني، مع نسخه وفتحه في المصحف.
 ///
-/// Card widget displaying an authentic Quranic supplication with direct Mushaf navigation.
-///
-/// EDUCATIONAL NOTE:
-/// Quranic Presentation & Purity:
-/// 1. Verbatim Text: Renders authentic Quranic text in AmiriQuran font with full diacritics.
-/// 2. Clear Separation: Title, category, and contextual notes are strictly separated from
-///    the sacred Quranic text.
-/// 3. Accurate Copying: Copying copies exclusively the Quranic text without titles or alerts.
-/// 4. Direct Reader Navigation: Tapping 'عرض الآية' opens [QuranScreen] at the exact page
-///    and navigates to the target ayah.
+/// النص القرآني بخط أميري قرآني مشكولاً، ومنفصل عن العنوان والتصنيف والتنبيه.
+/// والنسخ ينسخ النص القرآني وحده، و'عرض الآية' يفتح المصحف على الآية.
 class QuranDuaCard extends StatelessWidget {
-  /// بيانات الدعاء القرآني المعروض في البطاقة.
   final QuranDua dua;
 
-  /// ينشئ بطاقة عرض الدعاء القرآني.
   const QuranDuaCard({super.key, required this.dua});
 
-  /// يبني واجهة بطاقة الدعاء القرآني مع التصنيف والنص وأزرار الإجراءات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -46,10 +35,9 @@ class QuranDuaCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 1. Header Row: Category Badge & Dua Number
+          // ١. التصنيف ورقم الدعاء.
           Row(
             children: [
-              // Category Chip
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -80,7 +68,6 @@ class QuranDuaCard extends StatelessWidget {
               ),
 
               const Spacer(),
-              // Dua Sequential Number
               Text(
                 '#${ArabicSearchNormalizer.toArabicDigits(dua.id)}',
                 style: TextStyle(
@@ -160,7 +147,7 @@ class QuranDuaCard extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // 2. النص القرآني
+          // ٢. النص القرآني.
           if (!dua.isMultiAyah)
             Text(
               '﴿ ${dua.duaText} ﴾',
@@ -210,7 +197,6 @@ class QuranDuaCard extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // Divider decoration
           Center(
             child: Container(
               width: 48,
@@ -226,7 +212,7 @@ class QuranDuaCard extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // 3. اسم السورة
+          // ٣. اسم السورة.
           Center(
             child: Text(
               l10n.isArabic
@@ -245,7 +231,7 @@ class QuranDuaCard extends StatelessWidget {
 
           const SizedBox(height: 4),
 
-          // 4. رقم الآية (SurahNumber : AyahDisplay)
+          // ٤. رقم الآية (سورة : آيات).
           Center(
             child: Text(
               l10n.isArabic
@@ -268,11 +254,10 @@ class QuranDuaCard extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // 5. أزرار الإجراءات (عرض الآية + نسخ الدعاء)
+          // ٥. عرض الآية ونسخ الدعاء.
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // زر "عرض الآية"
               OutlinedButton.icon(
                 onPressed: () {
                   Navigator.push(
@@ -326,12 +311,10 @@ class QuranDuaCard extends StatelessWidget {
 
               const SizedBox(width: 10),
 
-              // زر "نسخ"
               OutlinedButton.icon(
                 onPressed: () {
-                  // Rule 11: Only copy the pure Quranic text without titles or alerts
-                  // For multi-ayah: copies verses with authentic ayah end markers
-                  // For single-ayah: copies verbatim duaText
+                  // ينسخ النص القرآني وحده دون عنوان أو تنبيه؛ ومتعدد الآيات
+                  // بأرقام آياته.
                   final textToCopy = dua.isMultiAyah
                       ? dua.formattedTextWithMarkers
                       : dua.duaText;

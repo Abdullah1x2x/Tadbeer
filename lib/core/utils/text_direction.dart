@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
 
-/// اتجاه [text] من حروفه نفسها، فيبقى العربي من اليمين ولو كانت الواجهة إنجليزية، والعكس.
+/// اتجاه [text] من حروفه نفسها، فيبقى العربي من اليمين ولو كانت الواجهة
+/// إنجليزية، والعكس.
 TextDirection directionOfText(
   String text, {
   TextDirection fallback = TextDirection.rtl,

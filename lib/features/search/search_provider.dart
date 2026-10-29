@@ -110,6 +110,7 @@ class SearchRegistry {
   }
 
   /// يبحث في كل المزوّدات معاً، أو في [providerId] وحده.
+  ///
   /// فشل مزوّد لا يوقف البحث، وتبقى نتائج الباقين.
   Future<List<SearchResultItem>> searchAll(
     String query,

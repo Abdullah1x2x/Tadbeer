@@ -8,7 +8,7 @@ import 'ahlulbayt_dua_reader_screen.dart';
 import '../data/ahlulbayt_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// شاشة استعراض وبحث أدعية أهل البيت (عليهم السلام) والصحيفة السجادية.
+/// أدعية أهل البيت (عليهم السلام) والصحيفة السجادية، مع بحث وتصنيفات.
 class AhlulbaytDuasScreen extends StatefulWidget {
   const AhlulbaytDuasScreen({super.key});
 
@@ -112,7 +112,6 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // حقل البحث السريع
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                 child: Container(
@@ -168,7 +167,6 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                 ),
               ),
 
-              // شريط تصنيف الأدعية
               SizedBox(
                 height: 40,
                 child: ListView.separated(
@@ -224,7 +222,6 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
 
               const SizedBox(height: 6),
 
-              // عدد النتائج
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -251,7 +248,6 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
                 ),
               ),
 
-              // قائمة الأدعية
               Expanded(
                 child: filtered.isEmpty
                     ? Center(
@@ -349,7 +345,6 @@ class _DuaCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // العنوان والقائل
             Row(
               children: [
                 Expanded(
@@ -405,7 +400,6 @@ class _DuaCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // النبذة والوصف
             Text(
               dua.summary,
               style: TextStyle(
@@ -422,7 +416,7 @@ class _DuaCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // شارة التصنيف وعدد المقاطع
+            // شارة التصنيف وعدد المقاطع.
             Row(
               children: [
                 Container(

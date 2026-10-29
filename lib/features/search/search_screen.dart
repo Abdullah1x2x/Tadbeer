@@ -12,7 +12,9 @@ import 'search_provider.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// البحث الشامل الفوري دون إنترنت في كل أقسام التطبيق.
-/// يسأل كل المزوّدات معاً، مع تصفية بالقسم، وينتقل إلى وجهة النتيجة؛ أو يعيد الآية المختارة إن كان [returnToCaller].
+///
+/// يسأل كل المزوّدات معاً، مع تصفية بالقسم، وينتقل إلى وجهة النتيجة؛ أو يعيد
+/// الآية المختارة إن كان [returnToCaller].
 class SearchScreen extends StatefulWidget {
   /// يعيد الآية المختارة إلى الشاشة المستدعية بدل فتح المصحف.
   final bool returnToCaller;

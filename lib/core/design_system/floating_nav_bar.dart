@@ -19,7 +19,9 @@ class FloatingNavItem {
   });
 }
 
-/// شريط تنقل سفلي عائم: العنصر المحدد يتسع ليظهر اسمه، وكبسولة ذهبية تنزلق تحته.
+/// شريط تنقل سفلي عائم: العنصر المحدد يتسع ليظهر اسمه، وكبسولة ذهبية تنزلق
+/// تحته.
+///
 /// لكل عنصر تلميح ووصف لقارئ الشاشة، فتبقى العناصر التي بلا اسم واضحة.
 class FloatingNavBar extends StatelessWidget {
   final List<FloatingNavItem> items;
@@ -50,7 +52,8 @@ class FloatingNavBar extends StatelessWidget {
       context,
       const Duration(milliseconds: 380),
     );
-    // بلا ارتداد: يجب أن تبقى الكبسولة داخل الشريط حتى عند أول تبويب وآخره. الارتداد على الأيقونة بدلاً من ذلك.
+    // بلا ارتداد: يجب أن تبقى الكبسولة داخل الشريط حتى عند أول تبويب وآخره.
+    // الارتداد على الأيقونة بدلاً من ذلك.
     const curve = Curves.easeOutCubic;
 
     return SafeArea(
@@ -82,11 +85,13 @@ class FloatingNavBar extends StatelessWidget {
               final narrow = (inner - wide) / (items.length - 1);
               final isRtl = Directionality.of(context) == TextDirection.rtl;
 
-              // بداية العنصر المحدد في اتجاه القراءة، معكوسة إلى إزاحة من اليسار في RTL.
+              // بداية العنصر المحدد في اتجاه القراءة، معكوسة إلى إزاحة من
+              // اليسار في RTL.
               final start = narrow * selectedIndex;
               final left = isRtl ? inner - start - wide : start;
 
-              // طبقة مستقلة: تُرسم الكبسولة المتحركة دون إعادة رسم ظل الشريط الكبير كل إطار.
+              // طبقة مستقلة: تُرسم الكبسولة المتحركة دون إعادة رسم ظل الشريط
+              // الكبير كل إطار.
               return RepaintBoundary(
                 child: Padding(
                   padding: const EdgeInsets.all(_inset),

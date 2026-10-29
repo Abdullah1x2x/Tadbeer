@@ -1,27 +1,19 @@
-/// تصنيف الذكر (صباح أو مساء).
-enum AdhkarCategory {
-  /// أذكار الصباح المشروعة.
-  morning,
+/// فئة الذكر.
+enum AdhkarCategory { morning, evening }
 
-  /// أذكار المساء المشروعة.
-  evening,
-}
-
-/// نموذج يمثل الذكر الشريف مع تكراره وفضيلته.
+/// ذكر مع تكراره وفضله ومصدره.
 class AdhkarItem {
-  /// المعرف الفريد للذكر.
   final String id;
 
-  /// القسم (صباح أو مساء).
   final AdhkarCategory category;
 
-  /// نص الذكر المبارك بالرسم المشكول.
+  /// نص الذكر مشكولاً.
   final String text;
 
-  /// عدد مرات التكرار المأثورة.
+  /// عدد مرات التكرار المأثور.
   final int repeatCount;
 
-  /// فضيلة الذكر أو أثره المأثور.
+  /// فضل الذكر أو أثره المأثور.
   final String virtue;
 
   /// مصدر الذكر أو تخريجه.
@@ -36,32 +28,20 @@ class AdhkarItem {
     required this.source,
   });
 
-  /// هل الذكر من أذكار الصباح؟
   bool get isMorning => category == AdhkarCategory.morning;
 
-  /// هل الذكر من أذكار المساء؟
   bool get isEvening => category == AdhkarCategory.evening;
 }
 
-/// مستودع أذكار الصباح والمساء المأثورة الموثقة.
-///
-/// تم دمج نماذج الأذكار داخل هذا المستودع لتوحيد منطق الأذكار وتقليل عدد الملفات.
+/// أذكار الصباح والمساء الموثقة.
 class AdhkarRepository {
   AdhkarRepository._();
 
-  /// النسخة المفردة (Singleton).
   static final AdhkarRepository instance = AdhkarRepository._();
 
-  // ===========================================================================
-  // 💡 كيف تضيف ذكراً جديداً لأذكار الصباح أو المساء؟
-  // -------------------------------------------------------------
-  // - لأذكار الصباح: أضف عنصراً جديداً إلى قائمة [morningAdhkar] أدناه.
-  // - لأذكار المساء: أضف عنصراً جديداً إلى قائمة [eveningAdhkar] أدناه.
-  // باستخدام منشئ [AdhkarItem] وتحديد عدد التكرار وفضل الذكر ومصدره.
-  // يظهر الذكر تلقائياً في الشاشة مع العداد التفاعلي التلقائي دون تعديل الواجهات.
-  // ===========================================================================
+  // لإضافة ذكر: أضف [AdhkarItem] إلى [morningAdhkar] أو [eveningAdhkar] بعدد
+  // تكراره وفضله ومصدره، فيظهر في الشاشة مع عدّاده.
 
-  /// أذكار الصباح المباركة.
   static const List<AdhkarItem> morningAdhkar = [
     AdhkarItem(
       id: 'm_ayat_al_kursi',
@@ -175,7 +155,6 @@ class AdhkarRepository {
     ),
   ];
 
-  /// أذكار المساء المباركة.
   static const List<AdhkarItem> eveningAdhkar = [
     AdhkarItem(
       id: 'e_ayat_al_kursi',
@@ -274,7 +253,6 @@ class AdhkarRepository {
     ),
   ];
 
-  /// جلب الأذكار حسب القسم.
   List<AdhkarItem> getAdhkar(AdhkarCategory category) {
     return category == AdhkarCategory.morning ? morningAdhkar : eveningAdhkar;
   }

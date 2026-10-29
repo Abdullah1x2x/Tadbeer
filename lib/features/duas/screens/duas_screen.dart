@@ -15,16 +15,9 @@ import '../data/sunnah_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/ornaments.dart';
 
-/// الشاشة الرئيسية لقسم الأدعية والأذكار في تطبيق تدبير.
-///
-/// تم تنظيم وترتيب قسم الأدعية ليكون بسيطاً وشاملاً:
-/// 1. أدعية من القرآن الكريم (88 دعاء قرآني موثق مع أرقام الآيات والسور)
-/// 2. أذكار الصباح والمساء (حصن المسلم وأذكار اليوم والليلة مع عدادات تفاعلية)
-/// 3. أدعية مأثورة عن أهل البيت (مكارم الأخلاق، الثغور، كميل، الندبة، التوسل، عرفة، الجوشن الكبير...)
-/// 4. أدعية من السنة النبوية (أدعية نبوية صحيحة جامعة)
-/// 5. جوامع الدعاء والرجاء (أدعية الصلاح والعافية وخيري الدنيا والآخرة)
+/// تبويب الأدعية: أدعية القرآن، وأذكار الصباح والمساء، وأدعية أهل البيت، وأدعية
+/// السنة، وجوامع الدعاء.
 class DuasScreen extends StatelessWidget {
-  /// ينشئ الشاشة الرئيسية للأدعية.
   const DuasScreen({super.key});
 
   @override
@@ -69,7 +62,7 @@ class DuasScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
-                // الآية القرآنية في فضل الدعاء
+                // آية في فضل الدعاء.
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -130,7 +123,7 @@ class DuasScreen extends StatelessWidget {
 
                 const SizedBox(height: 18),
 
-                // القسم 1: أدعية من القرآن الكريم
+                // ١. أدعية القرآن.
                 _DuaCategoryCard(
                   icon: FlutterIslamicIcons.quran,
                   title: l10n.quranDuasTitle,
@@ -153,7 +146,7 @@ class DuasScreen extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // القسم 2: أذكار الصباح والمساء
+                // ٢. أذكار الصباح والمساء.
                 _DuaCategoryCard(
                   icon: AppIcons.sun,
                   title: l10n.morningEveningAdhkarTitle,
@@ -175,7 +168,7 @@ class DuasScreen extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // القسم 3: أدعية مأثورة عن أهل البيت
+                // ٣. أدعية أهل البيت.
                 _DuaCategoryCard(
                   icon: FlutterIslamicIcons.prayer,
                   title: l10n.ahlulbaytDuasTitle,
@@ -199,7 +192,7 @@ class DuasScreen extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // القسم 4: أدعية من السنة النبوية
+                // ٤. أدعية السنة النبوية.
                 _DuaCategoryCard(
                   icon: AppIcons.sparkle,
                   title: l10n.sunnahDuasTitle,
@@ -224,7 +217,7 @@ class DuasScreen extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // القسم 5: جوامع الدعاء والرجاء
+                // ٥. جوامع الدعاء.
                 _DuaCategoryCard(
                   icon: AppIcons.heart,
                   title: l10n.jawamiDuasTitle,
@@ -257,7 +250,7 @@ class DuasScreen extends StatelessWidget {
   }
 }
 
-/// بطاقة عرض قسم فرعي من أقسام الأدعية مع الأيقونة وشارة العدد.
+/// بطاقة قسم: أيقونة وعنوان وشارة العدد.
 class _DuaCategoryCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -279,7 +272,7 @@ class _DuaCategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // الألوان الموحدة للأقسام الاعتيادية لضمان تطابق المقاس واللون
+    // ألوان الأقسام العادية موحّدة.
     final standardBorderColor = isDark
         ? AppColors.darkBorder
         : AppColors.lightBorder;
@@ -299,7 +292,7 @@ class _DuaCategoryCard extends StatelessWidget {
         ? AppColors.darkTextSecondary.withValues(alpha: 0.5)
         : AppColors.lightTextSecondary.withValues(alpha: 0.5);
 
-    // الألوان والسمات المميزة لزر أدعية القرآن الكريم
+    // ألوان بطاقة أدعية القرآن المميّزة.
     final quranBorderColor = isDark
         ? AppColors.darkAccentGold
         : AppColors.lightAccentGold;
@@ -330,8 +323,8 @@ class _DuaCategoryCard extends StatelessWidget {
             vertical: isQuran ? 16 : 14,
           ),
           decoration: BoxDecoration(
-            // The featured Quran card gets a warm gold wash rather than a
-            // tinted gradient, so it reads as highlighted, not as selected.
+            // بطاقة القرآن المميّزة بلمسة ذهبية دافئة لا بتدرج ملوّن، فتبدو
+            // مُبرزة لا مُختارة.
             color: isQuran
                 ? Color.alphaBlend(
                     (isDark
@@ -361,7 +354,6 @@ class _DuaCategoryCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // أيقونة القسم
               Container(
                 width: isQuran ? 48 : 46,
                 height: isQuran ? 48 : 46,
@@ -385,7 +377,6 @@ class _DuaCategoryCard extends StatelessWidget {
 
               const SizedBox(width: 14),
 
-              // العنوان والوصف وشارة العدد
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -460,7 +451,6 @@ class _DuaCategoryCard extends StatelessWidget {
 
               const SizedBox(width: 8),
 
-              // سهم التنقل
               Icon(
                 AppIcons.caretRight,
                 size: 14,

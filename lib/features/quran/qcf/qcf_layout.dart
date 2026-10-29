@@ -1,9 +1,8 @@
 /// تخطيط صفحات مصحف المدينة (مجمع الملك فهد، الإصدار الأول).
 ///
-/// Each page of the printed Madinah Mushaf is 15 lines (8 on the first two
-/// pages). Every word is one glyph of that page's QCF font, so a line drawn
-/// from its glyphs matches the print exactly. The layout ships with the app;
-/// only the fonts are downloaded.
+/// كل صفحة في مصحف المدينة المطبوع ١٥ سطراً (٨ في الصفحتين الأوليين)، وكل كلمة
+/// رمز واحد في خط QCF للصفحة، فالسطر المرسوم من رموزه يطابق المطبوع تماماً.
+/// التخطيط والخطوط كلاهما مضمّنان في التطبيق.
 library;
 
 import 'dart:convert';
@@ -16,10 +15,10 @@ class QcfWord {
   final int surah;
   final int ayah;
 
-  /// The glyph (one or two characters) in the page's font.
+  /// الرمز (حرف أو حرفان) في خط الصفحة.
   final String code;
 
-  /// Whether this is the ayah-number marker that ends the ayah.
+  /// هل هي علامة رقم الآية في آخرها.
   final bool isEnd;
 
   const QcfWord(this.surah, this.ayah, this.code, {this.isEnd = false});
@@ -27,11 +26,11 @@ class QcfWord {
 
 enum QcfLineKind { words, surahHeader, basmala }
 
-/// سطر من سطور الصفحة.
+/// سطر من الصفحة.
 class QcfLine {
   final QcfLineKind kind;
 
-  /// The surah a header or basmala line opens.
+  /// السورة التي يفتتحها سطر العنوان أو البسملة.
   final int surah;
 
   final List<QcfWord> words;
@@ -47,7 +46,7 @@ class QcfLine {
       words = const [];
 }
 
-/// Loads and serves the line layout of all 604 pages.
+/// يحمّل تخطيط أسطر الصفحات الـ٦٠٤.
 class QcfLayout {
   QcfLayout._();
 
@@ -60,7 +59,7 @@ class QcfLayout {
 
   bool get isReady => _pages != null;
 
-  /// Loads the layout once; later calls return the same future.
+  /// يحمّل التخطيط مرة واحدة؛ وكل استدعاء بعدها يعيد نفس الـ future.
   Future<void> init() => _loading ??= _load();
 
   Future<void> _load() async {
@@ -69,16 +68,16 @@ class QcfLayout {
     _pages = parse(jsonDecode(json) as List);
   }
 
-  /// The lines of [page] (1-604); empty until [init] completes.
+  /// أسطر [page] (1..604)؛ فارغة حتى ينتهي [init].
   List<QcfLine> page(int page) {
     final pages = _pages;
     if (pages == null || page < 1 || page > pages.length) return const [];
     return pages[page - 1];
   }
 
-  /// Parses the compact format: a list of pages, each a list of lines. A line
-  /// is `["h", surah]`, `["b", surah]`, or a list of words
-  /// `[surah, ayah, glyph]` with a fourth element `1` on ayah-end markers.
+  /// يقرأ الصيغة المختصرة: قائمة صفحات، كل منها قائمة أسطر. السطر `["h",
+  /// surah]` أو `["b", surah]` أو قائمة كلمات `[surah, ayah, glyph]` بعنصر رابع
+  /// `1` لعلامات آخر الآية.
   static List<List<QcfLine>> parse(List raw) => [
     for (final page in raw)
       [

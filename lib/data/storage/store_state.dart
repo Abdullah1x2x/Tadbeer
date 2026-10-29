@@ -4,7 +4,9 @@ part of 'user_data_store.dart';
 const _journeyKey = 'reading_journey';
 
 /// ما يطلبه المخزن من مجدول التذكيرات حين تتغير التذكيرات.
-/// المجدول جزء من ميزة التذكيرات ويربطه bootstrap، فلا تستورد طبقة البيانات أي ميزة. وإن لم يُربط (كما في الاختبارات) لا يُجدول شيء.
+///
+/// المجدول جزء من ميزة التذكيرات ويربطه bootstrap، فلا تستورد طبقة البيانات أي
+/// ميزة. وإن لم يُربط (كما في الاختبارات) لا يُجدول شيء.
 abstract interface class ReminderScheduler {
   /// يستبدل كل التذكيرات المجدولة بـ[reminders].
   Future<void> syncAllReminders(List<ReminderItem> reminders);
@@ -14,7 +16,9 @@ abstract interface class ReminderScheduler {
 }
 
 /// الحالة المشتركة بين أقسام المخزن.
-/// كل قسم من [UserDataStore] في ملف خاص به كـ mixin على هذا الكلاس، فتُعرّف البيانات وطريقة حفظها هنا مرة واحدة.
+///
+/// كل قسم من [UserDataStore] في ملف خاص به كـ mixin على هذا الكلاس، فتُعرّف
+/// البيانات وطريقة حفظها هنا مرة واحدة.
 abstract class _StoreState extends ChangeNotifier {
   bool _isInitialized = false;
 
@@ -41,7 +45,8 @@ abstract class _StoreState extends ChangeNotifier {
   /// رحلة القراءة: خطة الختمة وسجل الصفحات اليومية.
   ReadingJourney get journey => _journey;
 
-  /// حالة صغيرة لميزات أخرى (المسارات، الحفظ…)، بمفتاح لكل ميزة؛ تُحفظ في `app_state` وتدخل في النسخ الاحتياطية.
+  /// حالة صغيرة لميزات أخرى (المسارات، الحفظ…)، بمفتاح لكل ميزة؛ تُحفظ في
+  /// `app_state` وتدخل في النسخ الاحتياطية.
   final Map<String, Map<String, dynamic>> _featureState = {};
 
   /// حالة الميزة [key]، فارغة إن لم تُحفظ بعد.

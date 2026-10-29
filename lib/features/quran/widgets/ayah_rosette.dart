@@ -24,20 +24,19 @@ import 'ayah_action_sheet.dart';
 
 /// الوردة الثمانية: إجراءات الآية تتفتح حول الإصبع على هيئة نجمة ثمانية.
 ///
-/// A long press opens it under the finger. Without lifting, the reader
-/// slides toward an action (its name shows in the centre, with a tick of
-/// haptics) and lifts to run it; the centre is the reflection. Lifting
-/// before choosing leaves the rosette open with every action named, to tap.
-/// Eight places surround the centre, so one more action fits in the empty
-/// one. With a screen reader the plain action sheet opens instead.
+/// الضغط المطوّل يفتحها تحت الإصبع؛ ودون رفعه ينزلق القارئ نحو إجراء (يظهر اسمه
+/// في الوسط مع اهتزاز خفيف) ثم يرفع لينفّذه، والوسط هو التدبر. والرفع قبل
+/// الاختيار يُبقيها مفتوحة بأسماء كل الإجراءات للنقر. حول الوسط ثمانية أماكن،
+/// فيتسع المكان الفارغ لإجراء آخر. ومع قارئ الشاشة تُفتح نافذة الإجراءات
+/// العادية بدلها.
 ///
-/// It is an overlay rather than a route: pushing a route cancels the
-/// pointers on screen, which would end the very press that steers it.
+/// هي طبقة فوق الشاشة لا مسار (route): فتح مسار يلغي اللمسات الحالية، فينهي
+/// الضغطة التي توجّهها.
 abstract final class AyahRosette {
   static _RosetteState? _open;
 
-  /// يفتح الوردة للآية عند [at] (موضع الإصبع)، أو وسط الشاشة، وينتهي
-  /// عند إغلاقها.
+  /// يفتح الوردة للآية عند [at] (موضع الإصبع)، أو في وسط الشاشة، وينتهي عند
+  /// إغلاقها.
   static Future<void> show(BuildContext context, Ayah ayah, {Offset? at}) {
     if (MediaQuery.accessibleNavigationOf(context)) {
       return AyahActionSheet.show(context, ayah);
@@ -46,7 +45,7 @@ abstract final class AyahRosette {
     final closed = Completer<void>();
     late final OverlayEntry entry;
     entry = OverlayEntry(
-      // The root overlay sits above any Material, which text needs.
+      // الطبقة الجذرية فوق أي Material، والنص يحتاج Material.
       builder: (_) => Material(
         type: MaterialType.transparency,
         child: _Rosette(
@@ -65,10 +64,8 @@ abstract final class AyahRosette {
     return closed.future;
   }
 
-  /// يطوي الوردة إن كانت مفتوحة، ويعيد true حينها.
-  ///
-  /// For a back handler that runs before the rosette's own, such as the
-  /// shell's return to Home.
+  /// يطوي الوردة إن كانت مفتوحة، ويعيد true حينها؛ لمعالج رجوع يسبق معالجها،
+  /// كعودة الهيكل إلى الرئيسية.
   static bool dismissIfOpen() {
     final open = _open;
     if (open == null) return false;
@@ -79,16 +76,16 @@ abstract final class AyahRosette {
   /// يتابع حركة الإصبع الذي فتح الوردة.
   static void dragTo(Offset global) => _open?._dragTo(global);
 
-  /// يرفع الإصبع: ينفذ الإجراء الذي تحته، أو يبقي الوردة مفتوحة للنقر.
+  /// رفع الإصبع: ينفّذ الإجراء الذي تحته، أو يُبقي الوردة مفتوحة للنقر.
   static void releaseAt(Offset global) => _open?._releaseAt(global);
 }
 
-/// One action around the rosette.
+/// إجراء حول الوردة.
 class _Petal {
   final IconData icon;
   final String label;
 
-  /// Marks something the ayah already has, such as a note.
+  /// يدل على شيء موجود على الآية، كخاطرة.
   final bool active;
   final Color? tint;
   final VoidCallback run;
@@ -107,10 +104,10 @@ class _Rosette extends StatefulWidget {
   final Offset? anchor;
   final bool dragging;
 
-  /// The screen that opened the rosette, which runs the chosen action.
+  /// الشاشة التي فتحت الوردة، وهي التي تنفّذ الإجراء المختار.
   final BuildContext host;
 
-  /// Removes the rosette once it has closed.
+  /// يزيل الوردة بعد إغلاقها.
   final VoidCallback onClosed;
 
   const _Rosette({
@@ -132,22 +129,22 @@ class _RosetteState extends State<_Rosette>
   static const _petalSize = 52.0;
   static const _heartSize = 82.0;
 
-  /// Radius of the medallion the petals sit on.
+  /// نصف قطر القرص الذي تقوم عليه الإجراءات.
   static const _medallion = _ring + 54;
 
-  /// Room the rosette needs around its centre.
+  /// المساحة التي تحتاجها الوردة حول مركزها.
   static const _reach = _medallion + 6;
 
-  /// Least height left for the ayah above the medallion.
+  /// أقل ارتفاع يبقى للآية فوق القرص.
   static const _minCardHeight = 140.0;
 
-  /// The heart is index -1; petals are 0 to 7, clockwise from the top.
+  /// الوسط رقمه -1، والإجراءات 0..7 مع عقارب الساعة من الأعلى.
   static const _heart = -1;
 
   late bool _dragging = widget.dragging;
 
-  /// Whether the finger has left where it pressed, so lifting it in place
-  /// chooses nothing even when the rosette had to open off-centre.
+  /// هل ابتعد الإصبع عن موضع الضغط، فلا يختار الرفع في المكان نفسه شيئاً ولو
+  /// فُتحت الوردة بعيداً عن الوسط.
   bool _moved = false;
   LocalHistoryEntry? _back;
   bool _closing = false;
@@ -164,7 +161,7 @@ class _RosetteState extends State<_Rosette>
   void initState() {
     super.initState();
     AyahRosette._open = this;
-    // The back button takes the rosette away before the screen under it.
+    // زر الرجوع يُغلق الوردة قبل الشاشة تحتها.
     _back = LocalHistoryEntry(onRemove: _dismiss);
     ModalRoute.of(widget.host)?.addLocalHistoryEntry(_back!);
     _bloom.forward();
@@ -183,14 +180,14 @@ class _RosetteState extends State<_Rosette>
     super.dispose();
   }
 
-  /// Ends the back button's hold, once the rosette goes.
+  /// ينهي حجز زر الرجوع حين تذهب الوردة.
   void _releaseBack() {
     final back = _back;
     _back = null;
     back?.remove();
   }
 
-  /// Folds the rosette away without doing anything.
+  /// يطوي الوردة دون تنفيذ شيء.
   Future<void> _dismiss() async {
     if (_closing) return;
     _closing = true;
@@ -280,7 +277,7 @@ class _RosetteState extends State<_Rosette>
 
   void _reflect() => TadbeerPauseSheet.show(widget.host, _ayah);
 
-  /// What lies under [global]: the heart, a petal, or nothing.
+  /// ما تحت [global]: الوسط، أو إجراء، أو لا شيء.
   int? _hitTest(Offset global) {
     final d = global - _centre;
     final distance = d.distance;
@@ -288,7 +285,7 @@ class _RosetteState extends State<_Rosette>
     if (distance < _heartSize / 2 + 10 || distance > _ring + _petalSize) {
       return null;
     }
-    // Clockwise from the top.
+    // مع عقارب الساعة من الأعلى.
     final angle = math.atan2(d.dx, -d.dy);
     return (angle / (2 * math.pi / _places)).round() % _places;
   }
@@ -312,7 +309,7 @@ class _RosetteState extends State<_Rosette>
     _dragTo(global);
     final chosen = _hovered;
     if (chosen == null) {
-      // Lifted without choosing: stay open, with every action named.
+      // رُفع دون اختيار: تبقى مفتوحة بأسماء كل الإجراءات.
       setState(() => _dragging = false);
       return;
     }
@@ -326,7 +323,7 @@ class _RosetteState extends State<_Rosette>
     final action = index == _heart
         ? _reflect
         : _petals(context.l10n)[index]!.run;
-    // Gone at once, so what the action opens is not covered.
+    // تختفي فوراً، فلا تغطي ما يفتحه الإجراء.
     _releaseBack();
     if (AyahRosette._open == this) AyahRosette._open = null;
     widget.onClosed();
@@ -341,9 +338,8 @@ class _RosetteState extends State<_Rosette>
     final padding = MediaQuery.paddingOf(context);
     final petals = _petals(l10n);
 
-    // Always in the same place: centred, in the lower part of the screen
-    // within reach of the thumb but lifted off its edge, leaving room above
-    // for the ayah.
+    // دائماً في نفس المكان: في الوسط، في أسفل الشاشة في متناول الإبهام مع
+    // ابتعاد عن حافتها، وفوقها مساحة للآية.
     final cardTop = padding.top + 12;
     final lowest = size.height - padding.bottom - _reach - 12;
     _centre = Offset(
@@ -353,8 +349,8 @@ class _RosetteState extends State<_Rosette>
         cardTop + _minCardHeight + 12 + _reach,
       ),
     );
-    // The ayah sits just above the medallion and grows upward when long,
-    // so the two read as one however short the ayah is.
+    // الآية فوق القرص مباشرة وتمتد للأعلى إن طالت، فيُقرآن معاً مهما قصرت
+    // الآية.
     final cardBottom = _centre.dy - _medallion - 14;
     final cardMaxHeight = cardBottom - cardTop;
 
@@ -387,8 +383,8 @@ class _RosetteState extends State<_Rosette>
         final t = bloom.value;
         return Stack(
           children: [
-            // The page stays in sight, only a little softer, so the ayah
-            // stands apart without hiding the rest; a tap on it closes.
+            // الصفحة تبقى ظاهرة وتخفت قليلاً فقط، لتتميز الآية دون إخفاء
+            // الباقي؛ والنقر عليها يُغلق.
             Positioned.fill(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -401,7 +397,7 @@ class _RosetteState extends State<_Rosette>
                 ),
               ),
             ),
-            // The ayah on its own, as on the page.
+            // الآية وحدها، كما في الصفحة.
             Positioned(
               bottom: size.height - cardBottom,
               left: 16,
@@ -439,7 +435,7 @@ class _RosetteState extends State<_Rosette>
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      // The medallion, its star turning into place.
+                      // القرص، ونجمته تدور إلى مكانها.
                       Positioned.fill(
                         child: IgnorePointer(
                           child: CustomPaint(
@@ -492,7 +488,7 @@ class _RosetteState extends State<_Rosette>
     );
   }
 
-  /// [child] centred on [centre]; a petal's label hangs below it.
+  /// [child] متمركزاً على [centre]؛ واسم الإجراء معلّق تحته.
   Widget _at(Offset centre, Widget child) {
     const width = 96.0;
     return Positioned(
@@ -504,21 +500,20 @@ class _RosetteState extends State<_Rosette>
   }
 }
 
-/// The medallion's gold and cream, the same in light and dark.
+/// ذهبي القرص وقشديّه، نفسهما في الوضعين.
 const _gold = Color(0xFFD9B566);
 const _cream = Color(0xFFF2EEE4);
 const _onGold = Color(0xFF1A1405);
 const _paper = Color(0xFFF7F1E3);
 
-/// The reflection at the heart of the medallion; while the finger slides
-/// it names the action under it.
+/// التدبر في قلب القرص؛ وأثناء انزلاق الإصبع يُظهر اسم الإجراء الذي تحته.
 class _Heart extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool hovered;
   final VoidCallback? onTap;
 
-  /// The theme's deep colour, for the lotus and its name on the paper.
+  /// اللون الداكن للثيم، للزهرة واسمها على الورق.
   final Color ink;
 
   const _Heart({
@@ -533,7 +528,7 @@ class _Heart extends StatelessWidget {
   Widget build(BuildContext context) {
     const size = _RosetteState._heartSize;
     return Transform.translate(
-      // Centred on the medallion rather than hung from its top.
+      // في وسط القرص لا معلّقاً من أعلاه.
       offset: const Offset(0, (_RosetteState._petalSize - size) / 2),
       child: Semantics(
         button: true,
@@ -548,7 +543,7 @@ class _Heart extends StatelessWidget {
               height: size,
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                // The Mushaf's paper in a gold ring, like the ayah above.
+                // ورق المصحف في حلقة ذهبية، كالآية أعلاه.
                 color: _paper,
                 shape: BoxShape.circle,
                 border: Border.all(color: _gold, width: 2.5),
@@ -585,8 +580,8 @@ class _Heart extends StatelessWidget {
   }
 }
 
-/// An action on the medallion: a cream icon that turns gold under the
-/// finger, its name below once the rosette settles.
+/// إجراء على القرص: أيقونة قشدية تصير ذهبية تحت الإصبع، واسمها تحتها حين تستقر
+/// الوردة.
 class _PetalView extends StatelessWidget {
   final _Petal petal;
   final bool hovered;
@@ -637,7 +632,7 @@ class _PetalView extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   Icon(petal.icon, size: 24, color: iconColour),
-                  // Something of this kind is already on the ayah.
+                  // على الآية شيء من هذا النوع.
                   if ((petal.active || petal.tint != null) && !hovered)
                     Positioned(
                       bottom: 7,
@@ -678,9 +673,8 @@ class _PetalView extends StatelessWidget {
   }
 }
 
-/// The chosen ayah on its own, on a piece of the Mushaf's paper: its
-/// reference above, the ayah in the Madinah script (or the reader's font in
-/// the flowing text view), scrolling if long.
+/// الآية المختارة وحدها على قطعة من ورق المصحف: مرجعها فوقها، وهي بخط المدينة
+/// (أو بخط القارئ في النص المتدفق)، وتُمرّر إن طالت.
 class _IsolatedAyah extends StatelessWidget {
   final Ayah ayah;
   final String reference;
@@ -769,13 +763,12 @@ class _IsolatedAyah extends StatelessWidget {
   }
 }
 
-/// The medallion: a disc in the theme's colours under a soft shadow, a
-/// double gold rim, a faint eight-pointed star and gold beads between the
-/// petals.
+/// القرص: دائرة بألوان الثيم تحت ظل خفيف، بإطار ذهبي مزدوج ونجمة ثمانية خافتة
+/// وحبات ذهبية بين الإجراءات.
 class _MedallionPainter extends CustomPainter {
   final List<Color> colours;
 
-  /// How far the star still has to turn into place.
+  /// كم بقي للنجمة لتدور إلى مكانها.
   final double turn;
 
   const _MedallionPainter({required this.colours, required this.turn});
@@ -821,8 +814,7 @@ class _MedallionPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.7;
 
-    // Ground: stars and crosses, the classic tile pattern, faint and
-    // kept inside the scalloped band.
+    // الأرضية: نجوم وصلبان، نقش البلاط الكلاسيكي، خافت وداخل الحزام المفصّص.
     canvas.save();
     canvas.clipPath(
       Path()..addOval(Rect.fromCircle(center: c, radius: r - 16)),
@@ -836,7 +828,7 @@ class _MedallionPainter extends CustomPainter {
     }
     canvas.restore();
 
-    // Scallops inside the rim, as on an illuminated Mushaf medallion.
+    // تفصيص داخل الإطار، كقنديل المصحف المذهّب.
     line
       ..color = _gold.withValues(alpha: 0.5)
       ..strokeWidth = 0.8;
@@ -848,7 +840,7 @@ class _MedallionPainter extends CustomPainter {
       final at = c + Offset(math.sin(a), -math.cos(a)) * band;
       canvas.drawArc(
         Rect.fromCircle(center: at, radius: arc * 0.55),
-        // The half facing the centre.
+        // النصف المواجه للمركز.
         a,
         math.pi,
         false,
@@ -856,8 +848,7 @@ class _MedallionPainter extends CustomPainter {
       );
     }
 
-    // The shamsa: a sixteen-pointed sun round the heart, turning into
-    // place as the medallion opens.
+    // الشمسة: شمس بست عشرة شعلة حول القلب، تدور إلى مكانها عند فتح القرص.
     canvas.save();
     canvas.translate(c.dx, c.dy);
     canvas.rotate(turn);
@@ -896,7 +887,7 @@ class _MedallionPainter extends CustomPainter {
       old.colours.last != colours.last;
 }
 
-/// A small gold star keeping the empty place.
+/// نجمة ذهبية صغيرة في المكان الفارغ.
 class _SparkPainter extends CustomPainter {
   const _SparkPainter();
 

@@ -32,7 +32,10 @@ part 'journey_section.dart';
 part 'tadbeer_section.dart';
 
 /// مخزن بيانات القارئ على الجهاز، ومصدرها الوحيد في التطبيق.
-/// يحفظ في SQLite، ويبقي في الذاكرة فهارس للفواصل والتظليل فتُسأل أثناء رسم المصحف دون استعلام كل إطار. الحفظ ذرّي، فلا تتلف البيانات إن أُغلق التطبيق فجأة.
+///
+/// يحفظ في SQLite، ويبقي في الذاكرة فهارس للفواصل والتظليل فتُسأل أثناء رسم
+/// المصحف دون استعلام كل إطار. الحفظ ذرّي، فلا تتلف البيانات إن أُغلق التطبيق
+/// فجأة.
 class UserDataStore extends _StoreState
     with
         _ReadingPositionSection,
@@ -184,7 +187,9 @@ class UserDataStore extends _StoreState
   }
 
   /// يضع بيانات [data] في الذاكرة.
-  /// لا يستبدل إلا الأقسام الموجودة في [data]، فنسخة احتياطية جزئية لا تمسح ما ليس فيها. ويقرأ كل شيء أولاً، فقسم تالف يرمي خطأ قبل أن يتغير أي شيء.
+  ///
+  /// لا يستبدل إلا الأقسام الموجودة في [data]، فنسخة احتياطية جزئية لا تمسح ما
+  /// ليس فيها. ويقرأ كل شيء أولاً، فقسم تالف يرمي خطأ قبل أن يتغير أي شيء.
   void _applyData(Map<String, dynamic> data) {
     ReadingPosition? newPosition;
     if (data['readingPosition'] is Map) {
@@ -330,7 +335,8 @@ class UserDataStore extends _StoreState
     }
   }
 
-  /// يكتب كل البيانات في SQLite في معاملة واحدة (كلها أو لا شيء)، ويعيد false عند الفشل.
+  /// يكتب كل البيانات في SQLite في معاملة واحدة (كلها أو لا شيء)، ويعيد false
+  /// عند الفشل.
   Future<bool> _persistAllToSQLite() async {
     final userDb = UserDatabase.instance;
     if (!userDb.isOpen) return false;
@@ -449,8 +455,11 @@ class UserDataStore extends _StoreState
     };
   }
 
-  /// يستعيد نسخة احتياطية: يستبدل كل قسم موجود في [data] كاملاً، ويترك الأقسام الغائبة.
-  /// يرمي [StateError] إن فشلت الكتابة في قاعدة البيانات، وتعود الذاكرة كما كانت فلا يتغير شيء.
+  /// يستعيد نسخة احتياطية: يستبدل كل قسم موجود في [data] كاملاً، ويترك الأقسام
+  /// الغائبة.
+  ///
+  /// يرمي [StateError] إن فشلت الكتابة في قاعدة البيانات، وتعود الذاكرة كما
+  /// كانت فلا يتغير شيء.
   Future<void> replaceAllUserData(Map<String, dynamic> data) async {
     final previous = exportSnapshot();
 

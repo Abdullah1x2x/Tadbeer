@@ -5,42 +5,33 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 
-/// نوع علامة الهامش في صفحة المصحف الشريف.
+/// نوع علامة الهامش في صفحة المصحف.
 enum MarginStampType {
-  /// بداية جزء جديد.
   juz,
 
-  /// بداية حزب جديد.
   hizb,
 
-  /// ربع الحزب.
   quarter,
 
-  /// نصف الحزب.
   half,
 
-  /// ثلاثة أرباع الحزب.
   threeQuarters,
 
-  /// سجدة تلاوة.
+  /// موضع سجدة تلاوة.
   sajdah,
 }
 
-/// نموذج يمثل بيانات علامة الهامش الزخرفية (القنديل) لصفحة المصحف.
+/// علامة هامش زخرفية (قنديل) في صفحة المصحف.
 class MarginStampData {
-  /// نوع علامة الهامش.
   final MarginStampType type;
 
-  /// النص المعروض داخل علامة الهامش.
+  /// النص داخل العلامة.
   final String label;
 
-  /// رقم الآية المقترنة بالعلامة.
   final int ayahNumber;
 
-  /// رقم السورة المقترنة بالعلامة.
   final int surahNumber;
 
-  /// ينشئ كائناً يمثل علامة الهامش.
   const MarginStampData({
     required this.type,
     required this.label,
@@ -48,7 +39,7 @@ class MarginStampData {
     required this.surahNumber,
   });
 
-  /// يستخرج علامات الهوامش المستحقة لصفحة مصحف معينة.
+  /// علامات الهامش لصفحة [page].
   static List<MarginStampData> forPage(QuranPage page) {
     final stamps = <MarginStampData>[];
     if (page.ayahs.isEmpty) return stamps;
@@ -56,7 +47,7 @@ class MarginStampData {
     for (int i = 0; i < page.ayahs.length; i++) {
       final ayah = page.ayahs[i];
 
-      // 1. فحص مواضع السجود
+      // ١. مواضع السجود.
       if (ayah.isSajdah) {
         stamps.add(
           MarginStampData(
@@ -68,7 +59,7 @@ class MarginStampData {
         );
       }
 
-      // 2. فحص بدايات الأجزاء والأحزاب والأرباع
+      // ٢. بدايات الأجزاء والأحزاب والأرباع.
       bool isQuarterStart = false;
       if (i > 0) {
         isQuarterStart = ayah.quarter != page.ayahs[i - 1].quarter;
@@ -80,7 +71,7 @@ class MarginStampData {
         }
       }
 
-      // للتحقق من عدم تكرار إضافة نفس الربع على الصفحة
+      // لا يتكرر نفس الربع في الصفحة.
       if (!isQuarterStart ||
           stamps.any((s) => s.type != MarginStampType.sajdah)) {
         continue;
@@ -139,18 +130,14 @@ class MarginStampData {
   }
 }
 
-/// ودجت يرسم قنديل الهامش الزخرفي المستدير لصفحة المصحف الشريف.
+/// قنديل الهامش الزخرفي المستدير.
 class MarginStampMedallion extends StatelessWidget {
-  /// بيانات علامة الهامش.
   final MarginStampData stamp;
 
-  /// ما إذا كان الوضع الليلي مفعلاً.
   final bool isDark;
 
-  /// ألوان ورق المصحف الحالية.
   final MushafPalette palette;
 
-  /// ينشئ ودجت قنديل الهامش.
   const MarginStampMedallion({
     super.key,
     required this.stamp,
@@ -160,7 +147,7 @@ class MarginStampMedallion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // A sajdah stays marked in gold; the rest read in the frame's colour.
+    // السجدة تبقى ذهبية، والباقي بلون الإطار.
     final goldColor = isDark
         ? AppColors.darkAccentGold
         : AppColors.lightAccentGold;
@@ -195,7 +182,7 @@ class MarginStampMedallion extends StatelessWidget {
   }
 }
 
-/// رسام قنديل الهامش البيضاوي/المفصص المذهب.
+/// يرسم القنديل المفصّص المذهّب.
 class _MarginMedallionPainter extends CustomPainter {
   final bool isDark;
   final MushafPalette palette;
@@ -213,20 +200,17 @@ class _MarginMedallionPainter extends CustomPainter {
     final rect = Offset.zero & size;
     final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(12.0));
 
-    // خلفية القنديل
     final bgPaint = Paint()
       ..color = palette.page.withValues(alpha: 0.95)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(rrect, bgPaint);
 
-    // إطار ناعم بلون السمة
     final borderPaint = Paint()
       ..color = frameColor.withValues(alpha: isDark ? 0.75 : 0.85)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.9;
     canvas.drawRRect(rrect, borderPaint);
 
-    // إطار داخلي دقيق
     final innerRRect = rrect.deflate(2.0);
     final innerPaint = Paint()
       ..color = frameColor.withValues(alpha: isDark ? 0.35 : 0.45)
@@ -234,7 +218,7 @@ class _MarginMedallionPainter extends CustomPainter {
       ..strokeWidth = 0.5;
     canvas.drawRRect(innerRRect, innerPaint);
 
-    // حليات ماسية بالأطراف
+    // حليات ماسية في الأطراف.
     final midY = size.height / 2;
     final diamondPaint = Paint()
       ..color = frameColor
@@ -252,19 +236,15 @@ class _MarginMedallionPainter extends CustomPainter {
   }
 }
 
-/// رسام إطار صفحة المصحف المدني (الصفحات من 3 إلى 604).
+/// إطار صفحة المصحف (الصفحات 3..604) بلون إطار الثيم.
 ///
-/// يعتمد على الرسم المتجهي بالمسارات للحفاظ على الحدة على كافة الشاشات،
-/// بلون إطار السمة المختارة، مع قصر إعادة الرسم على تغير السمة أو الوضع أو
-/// لون الورق لتحسين أداء تقليب الصفحات.
+/// رسم متجهي حادّ في كل الشاشات، ولا يُعاد إلا بتغيّر الثيم أو الوضع أو لون
+/// الورق، فيبقى التقليب سريعاً.
 class MushafPageFramePainter extends CustomPainter {
-  /// ما إذا كان الوضع الليلي مفعلاً.
   final bool isDark;
 
-  /// ألوان ورق المصحف الحالية.
   final MushafPalette palette;
 
-  /// ينشئ رسام إطار صفحة المصحف الشريف.
   const MushafPageFramePainter({required this.isDark, required this.palette});
 
   @override
@@ -279,27 +259,26 @@ class MushafPageFramePainter extends CustomPainter {
       size.height - 1.0,
     );
 
-    // 1. خلفية الورق الأصيلة (Mushaf Parchment Tint)
+    // ١. لون الورق.
     final bgPaint = Paint()
       ..color = palette.page
       ..style = PaintingStyle.fill;
     canvas.drawRect(outerRect, bgPaint);
 
-    // 2. الإطار الخارجي الرفيع
+    // ٢. الإطار الخارجي الرفيع.
     final outerBorderPaint = Paint()
       ..color = borderColor.withValues(alpha: isDark ? 0.7 : 0.85)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.85;
     canvas.drawRect(outerRect, outerBorderPaint);
 
-    // سنون الأركان الخارجية الدقيقة (Corner Finials)
+    // نهايات دقيقة في الأركان الخارجية.
     const finialLen = 4.0;
     final finialPaint = Paint()
       ..color = frameColor.withValues(alpha: 0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.75;
 
-    // الزوايا الأربع
     canvas.drawLine(
       const Offset(0.5, -finialLen),
       const Offset(0.5, 0.5),
@@ -344,7 +323,7 @@ class MushafPageFramePainter extends CustomPainter {
       finialPaint,
     );
 
-    // 3. الإطار المذهب الداخلي المزدوج (على بعد 4.0 بكسل من الخارجي)
+    // ٣. الإطار المذهب الداخلي المزدوج، على بعد 4 بكسل من الخارجي.
     const marginInset = 4.0;
     final innerOuterRect = outerRect.deflate(marginInset);
     final goldOuterPaint = Paint()
@@ -361,7 +340,7 @@ class MushafPageFramePainter extends CustomPainter {
       ..strokeWidth = 0.6;
     canvas.drawRect(innerInnerRect, goldInnerPaint);
 
-    // 4. زوايا الأرابيسك الإسلامية الأربع المذهبة (Islamic Corner Knotwork)
+    // ٤. زخارف الأركان الأربعة.
     _drawCornerArabesque(canvas, innerOuterRect.topLeft, frameColor, 1, 1);
     _drawCornerArabesque(canvas, innerOuterRect.topRight, frameColor, -1, 1);
     _drawCornerArabesque(canvas, innerOuterRect.bottomLeft, frameColor, 1, -1);
@@ -374,7 +353,7 @@ class MushafPageFramePainter extends CustomPainter {
     );
   }
 
-  /// ترسم عقدة زخرفية إسلامية في ركن الإطار.
+  /// زخرفة إسلامية في ركن الإطار.
   void _drawCornerArabesque(
     Canvas canvas,
     Offset corner,
@@ -400,7 +379,7 @@ class MushafPageFramePainter extends CustomPainter {
 
     canvas.drawPath(knotPath, knotPaint);
 
-    // نقطة ماسية مركزية في قلب زاوية الركن
+    // نقطة ماسية في قلب الركن.
     final diamondCenter = Offset(
       corner.dx + dxSign * 4.0,
       corner.dy + dySign * 4.0,

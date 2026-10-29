@@ -5,8 +5,8 @@ import 'qcf_layout.dart';
 
 /// معاينة صغيرة لخط مصحف المدينة في الإعدادات.
 ///
-/// The opening of Al-Baqarah (page 2) in its Mushaf font at [zoom], wrapping
-/// like an enlarged page does, so the size setting shows what it will do.
+/// أول البقرة (الصفحة ٢) بخطها بتكبير [zoom]، تلتف كما تلتف الصفحة المكبّرة،
+/// فيرى القارئ أثر الحجم قبل اختياره.
 class MadinahPreview extends StatefulWidget {
   final double zoom;
   final Color color;
@@ -31,7 +31,7 @@ class _MadinahPreviewState extends State<MadinahPreview> {
       future: _ready,
       builder: (context, snap) {
         if (snap.data != true) return const SizedBox(height: 90);
-        // Al-Baqarah 1-3: the first three word lines of the page.
+        // البقرة 1-3: أول ثلاثة أسطر كلمات في الصفحة.
         final words = QcfLayout.instance
             .page(_page)
             .where((l) => l.kind == QcfLineKind.words)
