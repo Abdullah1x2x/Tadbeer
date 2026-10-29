@@ -3933,7 +3933,7 @@ abstract class AppLocalizations {
   /// No description provided for @ayahFinished.
   ///
   /// In ar, this message translates to:
-  /// **'انتهت الآية · اضغط تشغيل لإعادتها'**
+  /// **'انتهت الآية'**
   String get ayahFinished;
 
   /// No description provided for @myReflectionsCardHint.

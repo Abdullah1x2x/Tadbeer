@@ -35,6 +35,8 @@ class AudioBar extends StatelessWidget {
           bool main = false,
         }) => IconButton(
           tooltip: tip,
+          // أزرار متقاربة تترك للآية مكاناً على الهواتف الضيقة.
+          visualDensity: main ? null : VisualDensity.compact,
           onPressed: () {
             HapticFeedback.selectionClick();
             onTap();
@@ -85,6 +87,7 @@ class AudioBar extends StatelessWidget {
                 control(AppIcons.skipForwardFill, l10n.nextAyah, audio.next),
                 // متابعة التلاوة أو الوقوف عند آية واحدة.
                 IconButton(
+                  visualDensity: VisualDensity.compact,
                   tooltip: audio.continuous
                       ? l10n.continuousRecitation
                       : l10n.singleAyahRecitation,
@@ -99,7 +102,7 @@ class AudioBar extends StatelessWidget {
                     color: audio.continuous ? null : gold,
                   ),
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 4),
                 Expanded(
                   child: Semantics(
                     liveRegion: true,

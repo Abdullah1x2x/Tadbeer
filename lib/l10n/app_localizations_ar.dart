@@ -2213,7 +2213,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get singleAyahRecitation => 'آية واحدة (اضغط للمتابعة)';
 
   @override
-  String get ayahFinished => 'انتهت الآية · اضغط تشغيل لإعادتها';
+  String get ayahFinished => 'انتهت الآية';
 
   @override
   String get myReflectionsCardHint => 'وقفات التدبر التي كتبتها';
