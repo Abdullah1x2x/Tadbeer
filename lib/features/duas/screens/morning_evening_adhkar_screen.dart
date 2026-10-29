@@ -10,9 +10,9 @@ import '../../continue/last_activity.dart';
 import '../../../data/storage/user_data_store.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// شاشة أذكار الصباح والمساء المأثورة بتصميم هادئ ومريح مع عداد تفاعلي لكل ذكر.
+/// أذكار الصباح والمساء، مع عدّاد لكل ذكر.
 class MorningEveningAdhkarScreen extends StatefulWidget {
-  /// القسم المبدئي (صباح أو مساء).
+  /// الفئة المفتوحة أولاً.
   final AdhkarCategory initialCategory;
 
   const MorningEveningAdhkarScreen({
@@ -72,7 +72,7 @@ class _MorningEveningAdhkarScreenState
     }
   }
 
-  /// Finishing the whole set counts the day toward the reading streak.
+  /// إتمام كل الأذكار يحتسب اليوم في سلسلة القراءة.
   void _onItemCompleted() {
     final items = AdhkarRepository.instance.getAdhkar(_currentCategory);
     if (items.any((i) => _getRemainingCount(i) > 0)) return;
@@ -167,7 +167,7 @@ class _MorningEveningAdhkarScreenState
         body: SafeArea(
           child: Column(
             children: [
-              // مفتاح التبديل بين الصباح والمساء
+              // التبديل بين الصباح والمساء.
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -218,7 +218,6 @@ class _MorningEveningAdhkarScreenState
                 ),
               ),
 
-              // قائمة الأذكار
               Expanded(
                 child: ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
@@ -375,7 +374,7 @@ class _AdhkarCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // شريط الرأس: رقم الذكر، المصدر، زر النسخ، وعداد التكرار
+          // الرأس: رقم الذكر ومصدره والنسخ وعدّاد التكرار.
           Row(
             children: [
               Container(
@@ -422,7 +421,7 @@ class _AdhkarCard extends StatelessWidget {
                 onPressed: onCopy,
               ),
               const SizedBox(width: 4),
-              // زر العداد التفاعلي
+              // العدّاد.
               InkWell(
                 onTap: isComplete ? null : onTapCount,
                 borderRadius: BorderRadius.circular(20),
@@ -496,7 +495,6 @@ class _AdhkarCard extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // نص الذكر الشريف
           Text(
             item.text,
             textAlign: TextAlign.center,

@@ -10,7 +10,8 @@ import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
-/// الفواصل، للانتقال السريع إلى مواضعها، مع بحث فوري باسم السورة أو رقم الآية أو نصها.
+/// الفواصل، للانتقال السريع إلى مواضعها، مع بحث فوري باسم السورة أو رقم الآية
+/// أو نصها.
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});
 

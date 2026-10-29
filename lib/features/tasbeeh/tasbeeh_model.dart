@@ -84,7 +84,8 @@ class TasbeehDhikr {
   static List<TasbeehDhikr> get tasbeehDhikrs =>
       defaultDhikrs.where((d) => d.section == DhikrSection.tasbeeh).toList();
 
-  /// الأذكار المعتمدة: 49 صيغة (20 استغفار و29 تسبيح)، وتُضاف في [curatedDhikrs].
+  /// الأذكار المعتمدة: 49 صيغة (20 استغفار و29 تسبيح)، وتُضاف في
+  /// [curatedDhikrs].
   static const List<TasbeehDhikr> defaultDhikrs = curatedDhikrs;
 }
 
@@ -93,7 +94,8 @@ class TasbeehRepository extends ChangeNotifier {
   static final TasbeehRepository instance = TasbeehRepository._internal();
   TasbeehRepository._internal();
 
-  /// يُستدعى عند بلوغ هدف الدورة؛ يستخدمه التطبيق لاحتساب اليوم في سلسلة القراءة.
+  /// يُستدعى عند بلوغ هدف الدورة؛ يستخدمه التطبيق لاحتساب اليوم في سلسلة
+  /// القراءة.
   VoidCallback? onTargetReached;
 
   bool _initialized = false;

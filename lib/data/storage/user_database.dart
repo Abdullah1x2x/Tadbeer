@@ -44,6 +44,7 @@ class UserDatabaseIssue {
 }
 
 /// قاعدة SQLite لبيانات القارئ: الخواطر والفواصل والروابط وغيرها.
+///
 /// نص المصحف والكتب ليس هنا؛ هو أصول ثابتة للقراءة فقط.
 class UserDatabase {
   static final UserDatabase instance = UserDatabase._internal();
@@ -84,7 +85,8 @@ class UserDatabase {
     );
   }
 
-  /// يفك الصفوف واحداً واحداً، فيتخطى الصف التالف وحده بدل أن يعيد قائمة فارغة توهم بحذف كل البيانات. الصفوف التالفة لا تُحذف.
+  /// يفك الصفوف واحداً واحداً، فيتخطى الصف التالف وحده بدل أن يعيد قائمة فارغة
+  /// توهم بحذف كل البيانات. الصفوف التالفة لا تُحذف.
   List<T> _decodeRows<T>(
     List<Map<String, Object?>> rows,
     T Function(Map<String, dynamic>) fromJson,
@@ -689,7 +691,9 @@ class UserDatabase {
   }
 
   /// يستبدل كل بيانات القارئ في معاملة واحدة، للاستعادة والترحيل.
-  /// إما أن يُكتب كل شيء، أو تُلغى المعاملة عند أي فشل ويبقى المحتوى السابق سليماً. يعيد false عند الفشل.
+  ///
+  /// إما أن يُكتب كل شيء، أو تُلغى المعاملة عند أي فشل ويبقى المحتوى السابق
+  /// سليماً. يعيد false عند الفشل.
   Future<bool> replaceAllUserData({
     required ReadingPosition readingPosition,
     required List<NoteItem> notes,

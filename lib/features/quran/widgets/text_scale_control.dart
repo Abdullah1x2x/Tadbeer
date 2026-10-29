@@ -7,14 +7,12 @@ import '../../../core/design_system/app_icons.dart';
 import '../../../data/storage/user_data_store.dart';
 import '../../../data/models/user_settings_model.dart';
 
-/// حجم خط النص المتدفق: زرّا تصغير وتكبير بينهما النسبة الحالية، وزرّ
-/// يعيده إلى حجمه التلقائي.
+/// حجم خط النص المتدفق: زرّا تصغير وتكبير بينهما النسبة الحالية، وزر يعيده إلى
+/// حجمه التلقائي.
 ///
-/// The flowing text sizes itself to the screen; this makes it smaller or
-/// larger from there in steps of 10%, within
-/// [UserSettings.minFlowingTextScale]–[UserSettings.maxFlowingTextScale].
+/// النص يتحجّم من الشاشة، وهذا يصغّره أو يكبّره من هناك بخطوات 10%، بين
+/// [UserSettings.minFlowingTextScale] و[UserSettings.maxFlowingTextScale].
 class TextScaleControl extends StatelessWidget {
-  /// ينشئ عنصر تكبير الخط.
   const TextScaleControl({super.key});
 
   static const _step = 0.1;
@@ -22,7 +20,7 @@ class TextScaleControl extends StatelessWidget {
   void _set(double scale) {
     HapticFeedback.selectionClick();
     final store = UserDataStore.instance;
-    // Rounded to whole steps, so repeated taps never drift.
+    // يُقرّب لخطوات كاملة، فلا ينحرف بتكرار النقر.
     final rounded = (scale * 10).round() / 10;
     store.updateSettings(store.settings.copyWith(flowingTextScale: rounded));
   }
@@ -54,7 +52,7 @@ class TextScaleControl extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
-            // Back to the automatic size; shown only once it has changed.
+            // العودة إلى الحجم التلقائي؛ يظهر فقط بعد أن يتغير.
             AnimatedOpacity(
               opacity: isDefault ? 0 : 1,
               duration: const Duration(milliseconds: 200),

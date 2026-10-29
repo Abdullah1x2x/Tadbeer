@@ -5,21 +5,19 @@ import 'qcf_fonts.dart';
 import 'qcf_layout.dart';
 import 'qcf_page_body.dart';
 
-/// حروف آية بخط مصحف المدينة جاهزة للرسم: رموزها واسم خط صفحتها.
+/// آية بخط مصحف المدينة جاهزة للرسم: رموزها واسم خط صفحتها.
 ///
-/// The ayah's words are its glyphs in the Madinah Mushaf, ending with the
-/// printed ayah-number marker; every page there ends on a whole ayah, so
-/// they all come from the ayah's page, drawn in that page's font.
+/// كلماتها رموز في خط صفحتها تنتهي بعلامة رقم الآية؛ وكل صفحة في المدينة تنتهي
+/// بآية كاملة، فكلها من صفحة الآية.
 class QcfGlyphs {
-  /// The glyph codes, words separated by spaces.
+  /// رموز الكلمات، بينها مسافات.
   final String text;
 
   final int page;
 
   const QcfGlyphs._(this.text, this.page);
 
-  /// The [ayah]'s glyphs, or null until the layout and its page's font
-  /// are loaded (see [prepare]).
+  /// رموز [ayah]، أو null حتى يُحمّل التخطيط وخط صفحتها (انظر [prepare]).
   static QcfGlyphs? of(Ayah ayah) {
     if (!QcfLayout.instance.isReady ||
         !QcfFonts.instance.isPageLoaded(ayah.page)) {
@@ -34,14 +32,14 @@ class QcfGlyphs {
     return words.isEmpty ? null : QcfGlyphs._('${words.join(' ')} ', ayah.page);
   }
 
-  /// Loads what [of] needs for [ayah]; true once its glyphs can be drawn.
+  /// يحمّل ما يحتاجه [of] للآية [ayah]؛ true متى أمكن رسمها.
   static Future<bool> prepare(Ayah ayah) async {
     await QcfLayout.instance.init();
     return await QcfFonts.instance.ensurePage(ayah.page) && of(ayah) != null;
   }
 
-  /// The look of the glyphs at [fontSize] of an ordinary page, with lines
-  /// [height] apart; opening pages are scaled to match.
+  /// نمط الرموز بحجم [fontSize] للصفحة العادية وتباعد أسطر [height]؛ وصفحتا
+  /// البداية تُكبّران لتطابقا.
   TextStyle style({
     required double fontSize,
     required double height,
@@ -60,28 +58,23 @@ class QcfGlyphs {
   }
 }
 
-/// آية واحدة بخط مصحف المدينة، تلتف أسطرها حسب المساحة.
+/// آية بخط مصحف المدينة، تلتف أسطرها بحسب المساحة.
 ///
-/// The ayah's words are its glyphs in the Madinah Mushaf, ending with the
-/// printed ayah-number marker; every page there ends on a whole ayah, so
-/// they all come from the ayah's page. Until the layout and that page's
-/// font are ready, and if they cannot be loaded, [fallback] shows instead.
+/// حتى يجهز التخطيط وخط صفحتها، أو إن تعذّر تحميلهما، يظهر [fallback].
 class QcfAyahText extends StatefulWidget {
   final Ayah ayah;
 
-  /// Font size of an ordinary page's glyphs; opening pages are scaled to
-  /// match.
+  /// حجم خط الصفحة العادية؛ وصفحتا البداية تُكبّران لتطابقا.
   final double fontSize;
 
   final Color color;
 
-  /// Line height relative to [fontSize].
+  /// تباعد الأسطر نسبةً إلى [fontSize].
   final double height;
 
-  /// Shown while the glyphs load, or if they cannot be drawn.
+  /// يظهر أثناء التحميل، أو إن تعذّر الرسم.
   final Widget fallback;
 
-  /// ينشئ نص الآية بخط مصحف المدينة.
   const QcfAyahText({
     super.key,
     required this.ayah,
@@ -127,8 +120,8 @@ class _QcfAyahTextState extends State<QcfAyahText> {
 
   @override
   Widget build(BuildContext context) {
-    // Drawn at once when the glyphs are already loaded, as when the ayah
-    // is opened from its page in the Mushaf.
+    // تُرسم فوراً إن كانت الرموز محمّلة، كما حين تُفتح الآية من صفحتها في
+    // المصحف.
     final glyphs = QcfGlyphs.of(widget.ayah);
     if (glyphs != null) return _text(glyphs);
     return FutureBuilder<bool>(

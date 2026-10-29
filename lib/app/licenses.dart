@@ -3,7 +3,8 @@ library;
 
 import 'package:flutter/foundation.dart';
 
-/// يسجّل تراخيص المحتوى المضمّن في [LicenseRegistry] لتظهر في صفحة التراخيص داخل التطبيق.
+/// يسجّل تراخيص المحتوى المضمّن في [LicenseRegistry] لتظهر في صفحة التراخيص
+/// داخل التطبيق.
 void registerBundledAssetLicenses() {
   LicenseRegistry.addLicense(() async* {
     yield const LicenseEntryWithLineBreaks(

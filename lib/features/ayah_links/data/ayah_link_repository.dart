@@ -8,6 +8,7 @@ import '../../../data/quran/quran_repository.dart';
 import '../../../data/models/ayah_link_model.dart';
 
 /// روابط الآيات: يربط القارئ آيات من سور مختلفة بموضوع واحد.
+///
 /// تُحفظ مواضع العقد على الخريطة، دون تكرار نص القرآن في التخزين.
 class AyahLinkRepository {
   final UserDataStore _store;

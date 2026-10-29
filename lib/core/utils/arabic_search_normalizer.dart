@@ -1,4 +1,5 @@
-/// تطبيع النص العربي للبحث فقط: النص العثماني نفسه لا يُمس، والتطبيع يُطبّق عند المطابقة ليجد البحث الآية بأي طريقة كتابة.
+/// تطبيع النص العربي للبحث فقط: النص العثماني نفسه لا يُمس، والتطبيع يُطبّق عند
+/// المطابقة ليجد البحث الآية بأي طريقة كتابة.
 class ArabicSearchNormalizer {
   ArabicSearchNormalizer._();
 
@@ -15,7 +16,8 @@ class ArabicSearchNormalizer {
 
     var result = text;
 
-    // ١. الألف الخنجرية: الواو التي تحملها (صلوٰة، زكوٰة) تصير ألفاً قائمة كالرسم الإملائي.
+    // ١. الألف الخنجرية: الواو التي تحملها (صلوٰة، زكوٰة) تصير ألفاً قائمة
+    // كالرسم الإملائي.
     result = result.replaceAll('و\u0670', 'ا');
 
     // الألف المقصورة قبل خنجرية في وسط الكلمة (هَدَىٰكُمْ) تصير ألفاً قائمة.
@@ -116,7 +118,8 @@ class ArabicSearchNormalizer {
     return buffer.toString();
   }
 
-  /// [number] بالأرقام العربية الهندية، مع أصفار بادئة حتى [minDigits] (5 ← "٠٥").
+  /// [number] بالأرقام العربية الهندية، مع أصفار بادئة حتى [minDigits] (5 ←
+  /// "٠٥").
   static String formatDigits(int number, {int minDigits = 1}) {
     final s = number.toString().padLeft(minDigits, '0');
     return convertDigits(s);
@@ -125,7 +128,8 @@ class ArabicSearchNormalizer {
   /// [number] بالأرقام العربية الهندية (1 ← ١).
   static String toArabicDigits(int number) => formatDigits(number);
 
-  /// يحوّل الأرقام العربية الهندية والفارسية إلى لاتينية، ليُقبل الإدخال من أي لوحة مفاتيح.
+  /// يحوّل الأرقام العربية الهندية والفارسية إلى لاتينية، ليُقبل الإدخال من أي
+  /// لوحة مفاتيح.
   static String toEnglishDigits(String input) {
     if (input.isEmpty) return input;
     var result = input;

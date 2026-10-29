@@ -131,7 +131,8 @@ class BookConfig {
 
 // أقسام المكتبة وكتبها التي يعرّفها المطور.
 //
-// لإرفاق ملف: ضعه في assets/books/، ثم أضف القسم والكتاب في [curatedBookSections]:
+// لإرفاق ملف: ضعه في assets/books/، ثم أضف القسم والكتاب في
+// [curatedBookSections]:
 //
 //   BookSectionConfig(
 //     name: 'ملازم التدبر',
@@ -143,7 +144,8 @@ class BookConfig {
 //     ],
 //   ),
 //
-// ودون ملف: اكتب الفصول مباشرة في `chapters: [BookChapter(title: ..., content: ...)]`.
+// ودون ملف: اكتب الفصول مباشرة في `chapters: [BookChapter(title: ..., content:
+// ...)]`.
 
 /// أقسام المكتبة المعرّفة في الكود.
 final List<BookSectionConfig> curatedBookSections = [

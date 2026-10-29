@@ -6,7 +6,7 @@ import '../../../core/theme/theme.dart';
 import '../data/ahlulbayt_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// شاشة قراءة وتدبر الدعاء المأثور بنصوص واضحة وإمكانية ضبط حجم الخط ونسخ المقاطع.
+/// قراءة دعاء مأثور، مع ضبط حجم الخط ونسخ النص.
 class AhlulbaytDuaReaderScreen extends StatefulWidget {
   final AhlulbaytDua dua;
 
@@ -100,7 +100,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             physics: const BouncingScrollPhysics(),
             children: [
-              // بطاقة تفاصيل ومناسبة الدعاء
+              // تفاصيل الدعاء ومناسبته.
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
@@ -176,7 +176,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
 
               const SizedBox(height: 16),
 
-              // النص الشريف للدعاء كاملاً قطعة واحدة متصلة
+              // النص كاملاً متصلاً.
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 18,
@@ -219,7 +219,6 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
 
               const SizedBox(height: 16),
 
-              // زر نسخ الدعاء كاملاً في الأسفل
               OutlinedButton.icon(
                 onPressed: _copyAllText,
                 icon: const Icon(AppIcons.copy, size: 18),

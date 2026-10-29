@@ -16,7 +16,9 @@ import '../../../core/design_system/app_icons.dart';
 part 'ayah_link_network_nodes.dart';
 
 /// شبكة الرابط: عقدة المحور في المركز والآيات حولها.
-/// ترتيب دائري تلقائي لا تتداخل فيه العقد، وسحب يدوي يُحفظ، وتحريك وتكبير بـ[InteractiveViewer]، وتركيز سلس على الآية المنقورة مع لوحة تفاصيلها.
+///
+/// ترتيب دائري تلقائي لا تتداخل فيه العقد، وسحب يدوي يُحفظ، وتحريك وتكبير
+/// بـ[InteractiveViewer]، وتركيز سلس على الآية المنقورة مع لوحة تفاصيلها.
 class AyahLinkNetworkView extends StatefulWidget {
   final AyahLinkItem link;
 
@@ -109,7 +111,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     }
   }
 
-  /// مواضع دائرية حول المركز في حلقات متحدة المركز، ونصف القطر يتبع حجم الخط فلا تتداخل البطاقات.
+  /// مواضع دائرية حول المركز في حلقات متحدة المركز، ونصف القطر يتبع حجم الخط
+  /// فلا تتداخل البطاقات.
   void _computeAutoLayoutPositions(
     List<AyahLinkVerse> verses,
     List<AyahLinkNote> notes,
@@ -435,7 +438,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                               ),
                             const SizedBox(height: 12),
 
-                            // الخاطرة: من الرابط، أو خاطرة القارئ، أو وقفة التدبر.
+                            // الخاطرة: من الرابط، أو خاطرة القارئ، أو وقفة
+                            // التدبر.
                             () {
                               final effectiveNote = verse.getEffectiveNote();
                               if (effectiveNote != null &&

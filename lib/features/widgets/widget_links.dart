@@ -1,5 +1,8 @@
 /// يفتح ما يطلبه القارئ من أزرار الودجت.
-/// كل زر يفتح التطبيق برابط `tadbeer://`: `ayah?s=&a=` يعرض الآية في المصحف، و`reflect?s=&a=` يفتح التدبر عليها، و`khatma` يفتح المصحف على صفحة الختمة، و`home` الشاشة الرئيسية.
+///
+/// كل زر يفتح التطبيق برابط `tadbeer://`: `ayah?s=&a=` يعرض الآية في المصحف،
+/// و`reflect?s=&a=` يفتح التدبر عليها، و`khatma` يفتح المصحف على صفحة الختمة،
+/// و`home` الشاشة الرئيسية.
 library;
 
 import 'package:flutter/material.dart';
@@ -16,7 +19,8 @@ class WidgetLinks {
   static Uri? _lastUri;
   static DateTime? _lastAt;
 
-  /// يعالج الرابط الذي فُتح به التطبيق وأي رابط لاحق؛ يُستدعى بعد أول إطار حين يوجد الـ navigator.
+  /// يعالج الرابط الذي فُتح به التطبيق وأي رابط لاحق؛ يُستدعى بعد أول إطار حين
+  /// يوجد الـ navigator.
   static void attach() {
     HomeWidget.initiallyLaunchedFromHomeWidget().then(open).catchError((_) {});
     HomeWidget.widgetClicked.listen(open, onError: (_) {});

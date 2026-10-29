@@ -6,15 +6,10 @@ import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// لوحة معاني الكلمات القرآنية المصاحبة لقراءة المصحف الشريف.
+/// لوحة معاني كلمات الصفحة الحالية، تطفو فوق المصحف دون أن تغيّر تخطيطه.
 ///
-/// الميزات:
-/// 1. تعرض الكلمات الصعبة المعتمدة في الصفحة الحالية فقط.
-/// 2. تتحدث تلقائياً عند تقليب الصفحات في المصحف.
-/// 3. تدعم التبديل السلس بين «المعنى المعجمي» و«البيان السياقي».
-/// 4. تتيح إغلاق اللوحة أو إخفاء الشريط السفلي بالكامل.
-/// 5. تعرض رسالة تفيد بعدم وجود كلمات تحتاج إلى شرح إذا خلت الصفحة منها.
-/// 6. تطفو فوق مساحة القراءة بانسيابية دون التأثير على تخطيط صفحات المصحف.
+/// تتحدث مع تقليب الصفحات، وتبدّل بين «المعنى المعجمي» و«البيان السياقي»، وتقول
+/// إن خلت الصفحة من كلمات تحتاج شرحاً.
 class WordMeaningsPanel extends StatefulWidget {
   final int pageNumber;
   final bool isExpanded;
@@ -22,7 +17,6 @@ class WordMeaningsPanel extends StatefulWidget {
   final VoidCallback onClose;
   final VoidCallback? onDismiss;
 
-  /// ينشئ لوحة معاني الكلمات القرآنية للصفحة المحددة.
   const WordMeaningsPanel({
     super.key,
     required this.pageNumber,
@@ -32,14 +26,11 @@ class WordMeaningsPanel extends StatefulWidget {
     this.onDismiss,
   });
 
-  /// ينشئ الحالة التفاعلية للوحة معاني الكلمات.
   @override
   State<WordMeaningsPanel> createState() => _WordMeaningsPanelState();
 }
 
-/// الحالة التفاعلية للوحة معاني الكلمات القرآنية المصاحبة للمصحف.
 class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
-  /// يبني واجهة اللوحة العائمة سواء في الوضع المطوي أو الموسع.
   @override
   Widget build(BuildContext context) {
     final repo = QuranRepository.instance;
@@ -93,7 +84,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     );
   }
 
-  /// يبني الشريط السفلي المصغر الذي يعرض عدد الكلمات المشروحة في الصفحة.
+  /// الشريط المطوي: عدد الكلمات المشروحة في الصفحة.
   Widget _buildCollapsedBar(
     BuildContext context,
     List<QuranWordMeaning> meanings,
@@ -160,7 +151,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     );
   }
 
-  /// يبني المحتوى الموسع للوحة معاني الكلمات مع قائمة الكلمات أو حالة الفراغ.
+  /// اللوحة الموسّعة: قائمة الكلمات أو الحالة الفارغة.
   Widget _buildExpandedContent(
     BuildContext context,
     QuranRepository repo,
@@ -176,7 +167,6 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Drag handle pill
           Center(
             child: Container(
               width: 36,
@@ -189,7 +179,6 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
               ),
             ),
           ),
-          // Header
           Padding(
             padding: const EdgeInsets.only(
               left: 12,
@@ -268,7 +257,6 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                 .withValues(alpha: 0.6),
           ),
 
-          // Content List or Empty State
           Expanded(
             child: meanings.isEmpty
                 ? _buildEmptyState(isDark)
@@ -303,7 +291,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     );
   }
 
-  /// يبني واجهة الحالة الفارغة عند عدم وجود كلمات تحتاج إلى شرح في الصفحة الحالية.
+  /// الحالة الفارغة حين لا كلمات تحتاج شرحاً في الصفحة.
   Widget _buildEmptyState(bool isDark) {
     return Center(
       child: Padding(
@@ -335,7 +323,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
   }
 }
 
-/// يعرض نافذة سفلية بتفاصيل معنى الكلمة القرآنية ومصدرها المعجمي المعتمد.
+/// لوحة بتفاصيل الكلمة ومصدرها المعجمي.
 void _showWordDetailsModal(
   BuildContext context,
   QuranWordMeaning item,
@@ -471,20 +459,18 @@ void _showWordDetailsModal(
   );
 }
 
-/// عنصر يعرض الكلمة القرآنية ومعناها المختصر داخل لوحة معاني الصفحة.
+/// الكلمة ومعناها المختصر في لوحة الصفحة.
 class _WordMeaningTile extends StatelessWidget {
   final QuranWordMeaning item;
   final String surahName;
   final bool isDark;
 
-  /// ينشئ عنصر عرض الكلمة القرآنية ومعناها.
   const _WordMeaningTile({
     required this.item,
     required this.surahName,
     required this.isDark,
   });
 
-  /// يبني واجهة عنصر الكلمة القرآنية ومعناها مع إمكانية النقر لعرض التفاصيل.
   @override
   Widget build(BuildContext context) {
     final ayahDigits = ArabicSearchNormalizer.toArabicDigits(item.ayah);
@@ -501,7 +487,6 @@ class _WordMeaningTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                // Word
                 Expanded(
                   child: Text(
                     item.word,
@@ -514,7 +499,6 @@ class _WordMeaningTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Surah and Ayah reference
                 Text(
                   'سورة $surahName · آية $ayahDigits',
                   style: TextStyle(
@@ -527,7 +511,7 @@ class _WordMeaningTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 3),
-            // Arabic Meaning (strictly WITHOUT reference name in tile)
+            // المعنى وحده، دون اسم المصدر.
             Text(
               item.meaning,
               style: TextStyle(

@@ -9,7 +9,8 @@ import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_select.dart';
 
-/// معاني كلمات القرآن: استعراض الكلمات الغريبة والبحث فيها وتصفيتها بالسورة، والانتقال إلى موضع الكلمة في المصحف، والمصادر.
+/// معاني كلمات القرآن: استعراض الكلمات الغريبة والبحث فيها وتصفيتها بالسورة،
+/// والانتقال إلى موضع الكلمة في المصحف، والمصادر.
 class WordMeaningsScreen extends StatefulWidget {
   final int? initialSurahNumber;
 

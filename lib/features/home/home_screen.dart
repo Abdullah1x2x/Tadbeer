@@ -27,7 +27,9 @@ import '../settings/settings_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// الشاشة الرئيسية.
-/// من الأعلى: آية اليوم، وما التزم به القارئ، والمصحف مع رحلة القراءة، وآخر ما توقف عنده، ووقفاته وملاحظاته والكتب. وما سوى ذلك في الشريط أو «المزيد».
+///
+/// من الأعلى: آية اليوم، وما التزم به القارئ، والمصحف مع رحلة القراءة، وآخر ما
+/// توقف عنده، ووقفاته وملاحظاته والكتب. وما سوى ذلك في الشريط أو «المزيد».
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -53,7 +55,9 @@ class HomeScreen extends StatelessWidget {
                 final paddingV = isVeryCompact ? 6.0 : 10.0;
                 final gap = isVeryCompact ? 8.0 : (isCompact ? 10.0 : 12.0);
 
-                // الصفحة بقدر الشاشة ولا تُمرّر: بطاقة الآية تأخذ ما تتركه البطاقات الأخرى. ولا تتجاوز الشاشة وتُمرّر إلا إن قلّ ذلك عن أطول آية اليوم (شاشة قصيرة بكل البطاقات، أو نص كبير جداً).
+                // الصفحة بقدر الشاشة ولا تُمرّر: بطاقة الآية تأخذ ما تتركه
+                // البطاقات الأخرى. ولا تتجاوز الشاشة وتُمرّر إلا إن قلّ ذلك عن
+                // أطول آية اليوم (شاشة قصيرة بكل البطاقات، أو نص كبير جداً).
                 return ScrollConfiguration(
                   behavior: ScrollConfiguration.of(context)
                       .copyWith(overscroll: false),
@@ -595,7 +599,8 @@ class _QuranHeroCard extends StatelessWidget {
   }
 }
 
-/// سطر رحلة القراءة في بطاقة المصحف: السلسلة وورد اليوم وتقدّم الختمة، ويفتح «رحلتي».
+/// سطر رحلة القراءة في بطاقة المصحف: السلسلة وورد اليوم وتقدّم الختمة، ويفتح
+/// «رحلتي».
 class _ReadingJourneyRow extends StatelessWidget {
   final bool isVeryCompact;
 
@@ -769,7 +774,8 @@ class _ShortcutTile extends StatelessWidget {
   }
 }
 
-/// يُعلن [heightFor] ارتفاعاً ذاتياً لابنه، فيحسب [IntrinsicHeight] بطاقة الآية بأقل ارتفاع تحتاجه، بينما تملأ البطاقة ما يُعطى لها.
+/// يُعلن [heightFor] ارتفاعاً ذاتياً لابنه، فيحسب [IntrinsicHeight] بطاقة الآية
+/// بأقل ارتفاع تحتاجه، بينما تملأ البطاقة ما يُعطى لها.
 class _HeightFloor extends SingleChildRenderObjectWidget {
   final double Function(double width) heightFor;
 

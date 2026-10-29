@@ -17,7 +17,9 @@ Path eightPointStar(Offset c, double radius) {
 }
 
 /// شبكة خافتة من النجوم الثمانية خلف محتوى الشاشة.
-/// أقوى في الأعلى وتتلاشى عند منتصف الشاشة، فتزيّن الرأس دون أن تزاحم البطاقات والنصوص.
+///
+/// أقوى في الأعلى وتتلاشى عند منتصف الشاشة، فتزيّن الرأس دون أن تزاحم البطاقات
+/// والنصوص.
 class PatternBackground extends StatelessWidget {
   final Widget child;
 

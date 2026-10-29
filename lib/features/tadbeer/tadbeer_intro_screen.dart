@@ -66,7 +66,8 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
     super.dispose();
   }
 
-  /// يعطي كل عنصر دخولاً متأخراً عن سابقه، والأول (الشعار) يكبر أيضاً إلى مكانه.
+  /// يعطي كل عنصر دخولاً متأخراً عن سابقه، والأول (الشعار) يكبر أيضاً إلى
+  /// مكانه.
   List<Widget> _staggered(List<Widget> children) {
     final out = <Widget>[];
     var order = 0;

@@ -44,7 +44,9 @@ class CuratedPathway {
 class CuratedPathwaysRegistry {
   CuratedPathwaysRegistry._();
 
-  // لإضافة مسار أضف [CuratedPathway] إلى [pathways]: العنوان والوصف والتصنيف، والآيات بفوائدها عبر [CuratedPathwayVerse]. يظهر المسار في روابط الآيات ويمكن استيراده.
+  // لإضافة مسار أضف [CuratedPathway] إلى [pathways]: العنوان والوصف والتصنيف،
+  // والآيات بفوائدها عبر [CuratedPathwayVerse]. يظهر المسار في روابط الآيات
+  // ويمكن استيراده.
 
   static const List<CuratedPathway> pathways = [
     CuratedPathway(

@@ -1,6 +1,8 @@
 /// بيانات ودجت الشاشة الرئيسية: آية كل ربع ساعة وتقدم الختمة.
 ///
-/// الودجت يعمل خارج التطبيق، فيُعطى ما يحتاجه مسبقاً: آية لكل ربع ساعة من الأرباع [quarters] القادمة مرسومة بالخط القرآني (ويختار الحالية بنفسه من الساعة)، وحالة الختمة، والثيم.
+/// الودجت يعمل خارج التطبيق، فيُعطى ما يحتاجه مسبقاً: آية لكل ربع ساعة من
+/// الأرباع [quarters] القادمة مرسومة بالخط القرآني (ويختار الحالية بنفسه من
+/// الساعة)، وحالة الختمة، والثيم.
 library;
 
 import 'dart:async';
@@ -26,12 +28,14 @@ class HomeWidgetSync {
   static const iOSName = 'TadbeerWidget';
   static const appGroupId = 'group.com.tadbeer.app';
 
-  /// الأرباع المخزنة مسبقاً: يومان. بعدها يدور الودجت على الآيات المخزنة حتى يُفتح التطبيق.
+  /// الأرباع المخزنة مسبقاً: يومان. بعدها يدور الودجت على الآيات المخزنة حتى
+  /// يُفتح التطبيق.
   static const quarters = 2 * 96;
 
   static String? _lastKey;
 
-  /// رقم ربع الساعة الذي يقع فيه [time]، محسوباً من 2020-01-01 بالتوقيت المحلي؛ الكود الأصلي للودجت يحسب بنفس الطريقة.
+  /// رقم ربع الساعة الذي يقع فيه [time]، محسوباً من 2020-01-01 بالتوقيت المحلي؛
+  /// الكود الأصلي للودجت يحسب بنفس الطريقة.
   static int quarterOf(DateTime time) {
     final days = DateTime.utc(
       time.year,
@@ -41,7 +45,8 @@ class HomeWidgetSync {
     return days * 96 + time.hour * 4 + time.minute ~/ 15;
   }
 
-  /// الآية المعروضة في الربع [quarter]؛ خطوة أولية كبيرة توزّع الأرباع المتتالية على المصحف.
+  /// الآية المعروضة في الربع [quarter]؛ خطوة أولية كبيرة توزّع الأرباع
+  /// المتتالية على المصحف.
   static Ayah ayahForQuarter(int quarter) {
     final pool = AyahOfTheDay.pool;
     return pool[(quarter * 7919) % pool.length];
@@ -80,7 +85,8 @@ class HomeWidgetSync {
       'has_khatma': plan != null && !plan.isComplete,
       'khatma_title': strings.myJourney,
       'khatma_progress': plan == null ? 0 : (plan.progress * 100).round(),
-      // يحسب الودجت صفحات اليوم المتبقية من هذه القيم، فتبقى صحيحة بعد منتصف الليل.
+      // يحسب الودجت صفحات اليوم المتبقية من هذه القيم، فتبقى صحيحة بعد منتصف
+      // الليل.
       'portion': plan?.pagesPerDay ?? 0,
       'read_day': dayKey(now),
       'read_today': journey.portionPagesOn(now),
@@ -123,7 +129,8 @@ class HomeWidgetSync {
   static String imageKey(Ayah ayah) =>
       'img_${ayah.surahNumber}_${ayah.ayahNumber}';
 
-  /// يرسم كل آية من الأرباع المخزنة بالخط القرآني، مرة لكل آية، ويحذف الصور التي لم تعد لازمة.
+  /// يرسم كل آية من الأرباع المخزنة بالخط القرآني، مرة لكل آية، ويحذف الصور
+  /// التي لم تعد لازمة.
   static Future<void> _renderAyahImages(DateTime now, String language) async {
     if (_rendering) return;
     _rendering = true;
@@ -191,7 +198,8 @@ class HomeWidgetSync {
 
   static Timer? _debounce;
 
-  /// يُبقي الودجت محدّثاً أثناء عمل التطبيق. التغييرات تأتي متتابعة (تقليب صفحة يحفظ الموضع ويعدّ الصفحة)، فيُحدّث مرة بعد أن تهدأ لا مع كل تغيير.
+  /// يُبقي الودجت محدّثاً أثناء عمل التطبيق. التغييرات تأتي متتابعة (تقليب صفحة
+  /// يحفظ الموضع ويعدّ الصفحة)، فيُحدّث مرة بعد أن تهدأ لا مع كل تغيير.
   static void attach() {
     UserDataStore.instance.addListener(() {
       _debounce?.cancel();

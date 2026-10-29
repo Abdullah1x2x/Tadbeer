@@ -16,7 +16,9 @@ import '../core/design_system/app_icons.dart';
 enum ShellTab { home, quran, tasbeeh, duas, more }
 
 /// الهيكل الرئيسي: الأقسام متجاورة خلف شريط التنقل السفلي.
-/// كل تبويب يُبنى عند أول زيارة ثم يُحفظ بحالته. ويختفي الشريط أثناء قراءة المصحف، ويعود بالنقر على الصفحة.
+///
+/// كل تبويب يُبنى عند أول زيارة ثم يُحفظ بحالته. ويختفي الشريط أثناء قراءة
+/// المصحف، ويعود بالنقر على الصفحة.
 class MainShell extends StatefulWidget {
   final ShellTab initialTab;
 
@@ -30,6 +32,7 @@ class MainShell extends StatefulWidget {
   static final ValueNotifier<ShellTab?> requestedTab = ValueNotifier(null);
 
   /// يعرض [tab] لطلب آتٍ من خارج الشاشات (إشعار أو ودجت)، ويغلق ما فوق الهيكل.
+  ///
   /// يعيد الـ navigator، أو null قبل بناء التطبيق.
   static NavigatorState? showFromOutside(ShellTab tab) {
     final navigator = appNavigatorKey.currentState;
@@ -45,7 +48,8 @@ class MainShell extends StatefulWidget {
     return navigator;
   }
 
-  /// ينتقل إلى [tab] إن كان [context] داخل الهيكل، وإلا يعيد false ليفتح المستدعي صفحة بدلها.
+  /// ينتقل إلى [tab] إن كان [context] داخل الهيكل، وإلا يعيد false ليفتح
+  /// المستدعي صفحة بدلها.
   static bool selectTab(BuildContext context, ShellTab tab) {
     // يُستدعى من معالجات النقر، فلا يسجّل اعتماداً على الـ InheritedWidget.
     final scope = context.getInheritedWidgetOfExactType<_ShellScope>();
@@ -123,7 +127,8 @@ class _MainShellState extends State<MainShell>
   void _select(ShellTab tab) {
     if (tab == _tab) return;
     final isRtl = Directionality.of(context) == TextDirection.rtl;
-    // في RTL تقع التبويبات اللاحقة يساراً، فتدخل الصفحة من جهة التبويب الذي اتجه إليه المستخدم.
+    // في RTL تقع التبويبات اللاحقة يساراً، فتدخل الصفحة من جهة التبويب الذي
+    // اتجه إليه المستخدم.
     final forward = tab.index > _tab.index;
     setState(() {
       _travel = (forward ? 1.0 : -1.0) * (isRtl ? -1.0 : 1.0);
@@ -137,8 +142,12 @@ class _MainShellState extends State<MainShell>
     }
   }
 
-  /// كل تبويب يبقى في نفس سلسلة الأغلفة، فالتبديل يغيّر المعاملات فقط ولا يعيد بناء حالته.
-  /// يمر التبديل عبر لون الخلفية: القديم يختفي فوراً، والجديد ينزلق تحت ستار بلون الخلفية يتلاشى. تلاشي لون واحد شبه مجاني، أما تلاشي صفحات كاملة فكان يعيد رسمها كل إطار.
+  /// كل تبويب يبقى في نفس سلسلة الأغلفة، فالتبديل يغيّر المعاملات فقط ولا يعيد
+  /// بناء حالته.
+  ///
+  /// يمر التبديل عبر لون الخلفية: القديم يختفي فوراً، والجديد ينزلق تحت ستار
+  /// بلون الخلفية يتلاشى. تلاشي لون واحد شبه مجاني، أما تلاشي صفحات كاملة فكان
+  /// يعيد رسمها كل إطار.
   Widget _tabLayer(ShellTab tab) {
     final isCurrent = tab == _tab;
     final position = isCurrent

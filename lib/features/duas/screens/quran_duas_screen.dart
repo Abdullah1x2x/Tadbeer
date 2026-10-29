@@ -8,31 +8,19 @@ import '../widgets/quran_dua_card.dart';
 import '../data/quran_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// شاشة عرض قائمة أدعية القرآن الكريم الموثقة مع البحث الفوري والتصفية الموضوعية.
-///
-/// Screen listing all authentic Quranic supplications (أدعية من القرآن) in vertical order.
-///
-/// EDUCATIONAL NOTE:
-/// Quranic Fidelity & Presentation:
-/// 1. Comprehensive Catalog: 88 verified Quranic supplications with titles and categories.
-/// 2. Clean Architecture: Rendered in a vertical [ListView.separated] with instant search and category filtering.
-/// 3. Search: Supports search by text, title, surah name, category and ayah number.
+/// أدعية القرآن الـ88، مع بحث فوري وتصفية بالمحور.
 class QuranDuasScreen extends StatefulWidget {
-  /// ينشئ شاشة أدعية القرآن الكريم.
   const QuranDuasScreen({super.key});
 
-  /// ينشئ حالة شاشة أدعية القرآن الكريم.
   @override
   State<QuranDuasScreen> createState() => _QuranDuasScreenState();
 }
 
-/// الحالة الداخلية لشاشة أدعية القرآن الكريم المسؤولة عن البحث وتصفية التصنيفات.
 class _QuranDuasScreenState extends State<QuranDuasScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<QuranDua> _filteredDuas = const [];
   String _selectedCategory = 'الكل';
 
-  /// يهيئ قائمة الأدعية الكاملة ويربط مستمع التغير بحقل البحث.
   @override
   void initState() {
     super.initState();
@@ -40,7 +28,6 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
     _searchController.addListener(_onFilterChanged);
   }
 
-  /// يزيل مستمع البحث ويحرر موارد المتحكم عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.removeListener(_onFilterChanged);
@@ -48,7 +35,6 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
     super.dispose();
   }
 
-  /// يحدّث قائمة الأدعية المعروضة عند تغير نص البحث.
   void _onFilterChanged() {
     setState(() {
       _filteredDuas = QuranDuasRepository.instance.search(
@@ -58,7 +44,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
     });
   }
 
-  /// يغيّر التصنيف الموضوعي النشط ويعيد تصفية قائمة الأدعية.
+  /// يغيّر المحور ويعيد التصفية.
   void _onCategorySelected(String category) {
     if (_selectedCategory == category) return;
     setState(() {
@@ -70,7 +56,6 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
     });
   }
 
-  /// يبني واجهة شاشة أدعية القرآن الكريم مع شريط البحث ورقاقات التصنيفات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -105,7 +90,6 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                   child: Row(
                     children: [
-                      // Search Input Field
                       Expanded(
                         child: Container(
                           height: 46,
@@ -169,7 +153,6 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
 
                       const SizedBox(width: 10),
 
-                      // Duas Count Badge
                       Container(
                         height: 46,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -207,7 +190,6 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                   ),
                 ),
 
-                // Horizontal Categories Filter Chips
                 SizedBox(
                   height: 46,
                   child: ListView.separated(

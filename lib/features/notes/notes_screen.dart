@@ -14,7 +14,9 @@ import 'note_editor_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// الخواطر كلها في قائمة واحدة، خواطر الآيات والحرة معاً، الأحدث أولاً.
-/// فيها بحث في النص، وتصدير الخاطرة PDF، وتصدير دفتر التدبر لفترة PDF أو Markdown.
+///
+/// فيها بحث في النص، وتصدير الخاطرة PDF، وتصدير دفتر التدبر لفترة PDF أو
+/// Markdown.
 class NotesScreen extends StatefulWidget {
   const NotesScreen({super.key});
 

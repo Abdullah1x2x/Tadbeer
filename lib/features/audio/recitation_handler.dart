@@ -1,6 +1,7 @@
 /// التلاوة خارج التطبيق: إشعار التشغيل وأزرار شاشة القفل.
 ///
-/// يُبقي audio_service التلاوة تعمل بعد خروج التطبيق من الشاشة. وهذا الوسيط يعرض حالة المشغّل في الإشعار، ويعيد أزرار الإشعار إلى المشغّل.
+/// يُبقي audio_service التلاوة تعمل بعد خروج التطبيق من الشاشة. وهذا الوسيط
+/// يعرض حالة المشغّل في الإشعار، ويعيد أزرار الإشعار إلى المشغّل.
 library;
 
 import 'dart:async';
@@ -11,13 +12,15 @@ import 'package:just_audio/just_audio.dart';
 /// يربط مشغّل التلاوة بإشعار النظام.
 class RecitationHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
-  /// الوسيط المنشأ عند الإقلاع، أو null حيث لا تشغيل في الخلفية (سطح المكتب والاختبارات).
+  /// الوسيط المنشأ عند الإقلاع، أو null حيث لا تشغيل في الخلفية (سطح المكتب
+  /// والاختبارات).
   static RecitationHandler? instance;
 
   AudioPlayer? _player;
   final _subscriptions = <StreamSubscription<Object?>>[];
 
-  /// ينهي التلاوة في التطبيق كما يفعل زر الإغلاق فيه؛ بدونه كان الإيقاف من الإشعار يترك مشغّلاً متوقفاً لا يعود بالتشغيل.
+  /// ينهي التلاوة في التطبيق كما يفعل زر الإغلاق فيه؛ بدونه كان الإيقاف من
+  /// الإشعار يترك مشغّلاً متوقفاً لا يعود بالتشغيل.
   Future<void> Function()? onStop;
 
   /// يتبع [player] من الآن. المشغّل يُنشأ عند أول استخدام، فالوسيط يسبقه.
@@ -96,7 +99,8 @@ class RecitationHandler extends BaseAudioHandler
 
   @override
   Future<void> play() async {
-    // المشغّل المتوقف لا شيء فيه يُستأنف: زر التشغيل عندها لا يفعل شيئاً بدل أن ينتظر صوتاً لن يأتي.
+    // المشغّل المتوقف لا شيء فيه يُستأنف: زر التشغيل عندها لا يفعل شيئاً بدل أن
+    // ينتظر صوتاً لن يأتي.
     final player = _player;
     if (player == null || player.processingState == ProcessingState.idle) {
       return;

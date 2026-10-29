@@ -1,7 +1,8 @@
 import 'quran_models.dart';
 
 // معاني كلمات يضيفها المطور أو يصحّحها، دون تعديل ملف JSON.
-// أضف عنصراً إلى [customWordMeanings]، فيُربط بصفحته ويُفهرس في البحث والمصحف تلقائياً. مثال:
+// أضف عنصراً إلى [customWordMeanings]، فيُربط بصفحته ويُفهرس في البحث والمصحف
+// تلقائياً. مثال:
 //
 //   CustomWordMeaningConfig(
 //     surah: 1,

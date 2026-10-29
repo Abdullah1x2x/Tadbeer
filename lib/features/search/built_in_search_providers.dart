@@ -577,7 +577,8 @@ class WordMeaningsSearchProvider implements SearchProvider {
   }
 }
 
-/// البحث في الكتب والملازم: العنوان والسلسلة والمؤلف والفصول والوصف، بأكثر من كلمة.
+/// البحث في الكتب والملازم: العنوان والسلسلة والمؤلف والفصول والوصف، بأكثر من
+/// كلمة.
 class BooksSearchProvider implements SearchProvider {
   const BooksSearchProvider();
 

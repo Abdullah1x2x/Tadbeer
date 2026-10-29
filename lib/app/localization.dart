@@ -199,7 +199,8 @@ class AppStrings {
   String get commitmentQuestion => _l.commitmentQuestion;
   String commitmentSaidAt(String reference) => _l.commitmentSaidAt(reference);
 
-  /// يوجّه [text] إلى القارئ باسمه ("أحمد، …")؛ الاسم أولاً لتناسب الصيغة الجميع.
+  /// يوجّه [text] إلى القارئ باسمه ("أحمد، …")؛ الاسم أولاً لتناسب الصيغة
+  /// الجميع.
   String toReader(String name, String text) {
     final n = name.trim();
     if (n.isEmpty || text.isEmpty) return text;

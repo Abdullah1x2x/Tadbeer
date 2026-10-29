@@ -7,7 +7,8 @@ import '../../../core/design_system/app_icons.dart';
 
 export 'sahifah_sajjadiyah_data.dart';
 
-// كتب التراث وعلوم القرآن. لإضافة فصل أضف [BookChapter] إلى [chapters] الكتاب، ولإضافة كتاب أنشئ [BookConfig] وأضفه إلى قسمه في curated_books.dart.
+// كتب التراث وعلوم القرآن. لإضافة فصل أضف [BookChapter] إلى [chapters] الكتاب،
+// ولإضافة كتاب أنشئ [BookConfig] وأضفه إلى قسمه في curated_books.dart.
 
 /// نهج البلاغة: خطب أمير المؤمنين علي بن أبي طالب عليه السلام ورسائله وحكمه.
 const nahjAlBalaghaBook = BookConfig(

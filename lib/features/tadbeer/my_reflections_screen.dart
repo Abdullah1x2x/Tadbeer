@@ -31,7 +31,8 @@ class MyReflectionsScreen extends StatelessWidget {
               ],
             ),
           ),
-          // كل تبويب يستمع للمخزن بنفسه: الابن الثابت (const) لا يُعاد بناؤه تحت builder هنا.
+          // كل تبويب يستمع للمخزن بنفسه: الابن الثابت (const) لا يُعاد بناؤه
+          // تحت builder هنا.
           body: const TabBarView(children: [_AllTab(), _CommitmentsTab()]),
         ),
       ),

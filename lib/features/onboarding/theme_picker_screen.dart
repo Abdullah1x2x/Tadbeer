@@ -7,8 +7,11 @@ import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
 import '../../data/storage/user_data_store.dart';
 
-/// اختيار مظهر التطبيق عند أول فتح: فاتح أو داكن أو تلقائي، وأحد الثيمات الخمسة.
-/// كل اختيار يُطبّق فوراً على التطبيق كله وهذه الشاشة معه، فيرى القارئ النتيجة الحقيقية قبل أن يبدأ.
+/// اختيار مظهر التطبيق عند أول فتح: فاتح أو داكن أو تلقائي، وأحد الثيمات
+/// الخمسة.
+///
+/// كل اختيار يُطبّق فوراً على التطبيق كله وهذه الشاشة معه، فيرى القارئ النتيجة
+/// الحقيقية قبل أن يبدأ.
 class ThemePickerScreen extends StatelessWidget {
   /// الشاشة التي تُفتح عند البدء.
   final WidgetBuilder next;
@@ -113,7 +116,8 @@ class ThemePickerScreen extends StatelessWidget {
                         const SizedBox(height: 12),
                         FilledButton.icon(
                           onPressed: () => _start(context),
-                          // يشير إلى الأمام: لليسار في العربية، ولليمين في الإنجليزية.
+                          // يشير إلى الأمام: لليسار في العربية، ولليمين في
+                          // الإنجليزية.
                           icon: const Icon(AppIcons.arrowRight),
                           label: Text(l10n.themePickerStart),
                           style: FilledButton.styleFrom(

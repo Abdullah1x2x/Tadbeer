@@ -11,7 +11,9 @@ import 'backup_crypto_service.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// إنشاء النسخ الاحتياطية المشفرة واستعادتها.
-/// التصدير على الجهاز بكلمة مرور يختارها القارئ (انظر [BackupCryptoService]). والاستعادة تستبدل الأقسام الموجودة في النسخة ولا تدمجها، فلا تتكرر سجلات.
+///
+/// التصدير على الجهاز بكلمة مرور يختارها القارئ (انظر [BackupCryptoService]).
+/// والاستعادة تستبدل الأقسام الموجودة في النسخة ولا تدمجها، فلا تتكرر سجلات.
 class BackupScreen extends StatefulWidget {
   const BackupScreen({super.key});
 

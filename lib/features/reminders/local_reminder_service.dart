@@ -14,7 +14,10 @@ import '../../data/models/reminder_model.dart';
 import '../../data/storage/user_data_store.dart';
 
 /// تذكيرات القراءة على الجهاز دون إنترنت.
-/// نوعان يختار القارئ بينهما: [ReminderAlertType.notification] إشعار عادي، و[ReminderAlertType.alarm] منبه كامل: صوت المنبه بنغمته الافتراضية، ورنين مستمر، واهتزاز متكرر، وظهور على شاشة القفل.
+///
+/// نوعان يختار القارئ بينهما: [ReminderAlertType.notification] إشعار عادي،
+/// و[ReminderAlertType.alarm] منبه كامل: صوت المنبه بنغمته الافتراضية، ورنين
+/// مستمر، واهتزاز متكرر، وظهور على شاشة القفل.
 class LocalReminderService implements ReminderScheduler {
   static final LocalReminderService instance = LocalReminderService._internal();
   LocalReminderService._internal();
@@ -32,7 +35,8 @@ class LocalReminderService implements ReminderScheduler {
   static const int testNotificationId = 999998;
   static const int testAlarmId = 999999;
 
-  /// `Notification.FLAG_INSISTENT` في أندرويد (4): يعيد الصوت حتى يُغلق الإشعار أو يُنقر.
+  /// `Notification.FLAG_INSISTENT` في أندرويد (4): يعيد الصوت حتى يُغلق الإشعار
+  /// أو يُنقر.
   static final Int32List _insistentAlarmFlags = Int32List.fromList(const [4]);
 
   /// نمط اهتزاز المنبه المتكرر، بالمللي ثانية.
@@ -68,7 +72,8 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// يهيّئ المناطق الزمنية وقنوات الإشعارات، ويقرأ إشعار الإقلاع، ويشغّل المؤقت البديل على سطح المكتب.
+  /// يهيّئ المناطق الزمنية وقنوات الإشعارات، ويقرأ إشعار الإقلاع، ويشغّل المؤقت
+  /// البديل على سطح المكتب.
   Future<void> init({void Function(String? payload)? onTapped}) async {
     if (onTapped != null) {
       onNotificationTapped = onTapped;
@@ -224,7 +229,8 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// لينكس والويب لا يدعمان الجدولة في الخلفية، فيفحص مؤقت خفيف كل 20 ثانية لتعمل التذكيرات ما دام التطبيق مفتوحاً.
+  /// لينكس والويب لا يدعمان الجدولة في الخلفية، فيفحص مؤقت خفيف كل 20 ثانية
+  /// لتعمل التذكيرات ما دام التطبيق مفتوحاً.
   void _startFallbackTimerIfNeeded() {
     if (_isRunningInFlutterTest) return;
     if (!kIsWeb && defaultTargetPlatform != TargetPlatform.linux) return;
@@ -236,7 +242,8 @@ class LocalReminderService implements ReminderScheduler {
     );
   }
 
-  /// يفحص التذكيرات المستحقة داخل التطبيق، للمنصات التي لا تدعم الجدولة في الخلفية.
+  /// يفحص التذكيرات المستحقة داخل التطبيق، للمنصات التي لا تدعم الجدولة في
+  /// الخلفية.
   Future<void> _checkInAppFallbackReminders() async {
     final now = DateTime.now();
     final minuteKey =
@@ -614,7 +621,8 @@ class LocalReminderService implements ReminderScheduler {
         : AndroidScheduleMode.exactAllowWhileIdle;
   }
 
-  /// يجدول إشعاراً أو منبهاً بالمنطقة الزمنية، ويتراجع إلى الجدولة غير الدقيقة عند غياب الإذن.
+  /// يجدول إشعاراً أو منبهاً بالمنطقة الزمنية، ويتراجع إلى الجدولة غير الدقيقة
+  /// عند غياب الإذن.
   Future<void> _zonedScheduleSafe({
     required int id,
     required String title,
@@ -870,7 +878,8 @@ class LocalReminderService implements ReminderScheduler {
     final latest = UserDataStore.instance.reminders
         .where((r) => r.id == reminder.id)
         .firstOrNull;
-    // يُعطّل فقط إن كان التذكير المحفوظ ما زال على نفس الموعد، فقد يكون القارئ عدّله.
+    // يُعطّل فقط إن كان التذكير المحفوظ ما زال على نفس الموعد، فقد يكون القارئ
+    // عدّله.
     if (latest != null &&
         latest.isEnabled &&
         latest.scheduledFor == reminder.scheduledFor) {

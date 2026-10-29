@@ -8,7 +8,10 @@ import 'custom_word_meanings.dart';
 import 'quran_models.dart';
 
 /// نص القرآن وبيانات المصحف، للقراءة فقط.
-/// النص العثماني من مشروع تنزيل (`assets/quran/quran_data.json`): ١١٤ سورة، و٦٢٣٦ آية برقم ثابت لكل آية، و٦٠٤ صفحات. القوائم المعادة غير قابلة للتعديل، ويُحفظ نص كل آية مطبّعاً مسبقاً ليكون البحث فورياً.
+///
+/// النص العثماني من مشروع تنزيل (`assets/quran/quran_data.json`): ١١٤ سورة،
+/// و٦٢٣٦ آية برقم ثابت لكل آية، و٦٠٤ صفحات. القوائم المعادة غير قابلة للتعديل،
+/// ويُحفظ نص كل آية مطبّعاً مسبقاً ليكون البحث فورياً.
 class QuranRepository {
   static final QuranRepository instance = QuranRepository._internal();
 
@@ -40,7 +43,8 @@ class QuranRepository {
   List<QuranWordMeaning> get allWordMeanings =>
       List.unmodifiable(_wordMeanings);
 
-  /// يحمّل بيانات القرآن ومعاني الكلمات ويبني فهارس البحث؛ يُستدعى مرة عند الإقلاع.
+  /// يحمّل بيانات القرآن ومعاني الكلمات ويبني فهارس البحث؛ يُستدعى مرة عند
+  /// الإقلاع.
   Future<void> init() async {
     if (_isLoaded) return;
 
@@ -102,7 +106,8 @@ class QuranRepository {
         _normalizedMeaningOnly.add(normMeaning);
       }
     } catch (_) {
-      // في الاختبارات المعزولة قد لا تُتاح ملفات الأصول، فتُكمل البيانات بدونها.
+      // في الاختبارات المعزولة قد لا تُتاح ملفات الأصول، فتُكمل البيانات
+      // بدونها.
     }
 
     // دمج المعاني التي أضافها المطور في [customWordMeanings].
@@ -149,7 +154,10 @@ class QuranRepository {
   }
 
   /// بحث في كل الآيات دون إنترنت.
-  /// يتعرّف على المراجع المباشرة ("البقرة 255"، "2:255"، "آية الكرسي")، ويدعم البحث بالجذر ("جذر:صبر"). المطابقة المتصلة أولاً، ثم الآيات التي فيها كل كلمات البحث ولو متفرقة. ولا يشترط "ال" التعريف.
+  ///
+  /// يتعرّف على المراجع المباشرة ("البقرة 255"، "2:255"، "آية الكرسي")، ويدعم
+  /// البحث بالجذر ("جذر:صبر"). المطابقة المتصلة أولاً، ثم الآيات التي فيها كل
+  /// كلمات البحث ولو متفرقة. ولا يشترط "ال" التعريف.
   List<Ayah> searchAyahs(String query, {int limit = 50}) {
     if (!_isLoaded || query.trim().isEmpty) return const [];
 
@@ -234,7 +242,8 @@ class QuranRepository {
     return results;
   }
 
-  /// الآية التي يشير إليها مرجع مباشر ("البقرة 255"، "2:255"، "سورة الكهف"، "آية الكرسي")، أو null.
+  /// الآية التي يشير إليها مرجع مباشر ("البقرة 255"، "2:255"، "سورة الكهف"،
+  /// "آية الكرسي")، أو null.
   Ayah? _tryParseDirectAyahReference(String rawQuery) {
     if (!_isLoaded) return null;
     final englishQuery = ArabicSearchNormalizer.toEnglishDigits(

@@ -40,7 +40,8 @@ class ContinueCard extends StatelessWidget {
         return Card(
           margin: EdgeInsetsDirectional.only(bottom: gap),
           child: Padding(
-            // البطاقة ذات السطر الواحد تضع اسمها في سطرها بدل عنوان، لتبقى بارتفاع سطر.
+            // البطاقة ذات السطر الواحد تضع اسمها في سطرها بدل عنوان، لتبقى
+            // بارتفاع سطر.
             padding: single
                 ? const EdgeInsets.symmetric(horizontal: 16, vertical: 2)
                 : const EdgeInsets.fromLTRB(16, 14, 16, 6),

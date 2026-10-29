@@ -6,26 +6,23 @@ import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
 
-/// ترويسة السورة على طراز ترويسات مصحف المدينة.
+/// ترويسة السورة على طراز مصحف المدينة.
 ///
-/// A band with pointed ends and a double rule in the theme's frame colour
-/// fills the line it is given; the surah name sits in a central cartouche, its number in an
-/// eight-pointed rosette on one side and its type and length on the other.
-/// Everything is sized from the band's height, so it looks the same on any
-/// screen and at any zoom.
+/// شريط مدبّب الطرفين بخط مزدوج بلون إطار الثيم يملأ سطره؛ اسم السورة في خرطوشة
+/// وسطه، ورقمها في وردة ثمانية على جانب، ونوعها وعدد آياتها على الآخر. كل شيء
+/// يُقاس من ارتفاع الشريط، فيبدو نفسه في أي شاشة وأي تكبير.
 class SurahHeaderBanner extends StatelessWidget {
   final Surah surah;
 
-  /// ينشئ ترويسة السورة.
   const SurahHeaderBanner({super.key, required this.surah});
 
-  /// Band height relative to its width.
+  /// ارتفاع الشريط نسبةً إلى عرضه.
   static const _aspect = 0.13;
 
-  /// Tallest the band gets, on wide screens.
+  /// أقصى ارتفاع، في الشاشات العريضة.
   static const _maxHeight = 72.0;
 
-  /// Width of each side panel relative to the band's height.
+  /// عرض كل جانب نسبةً إلى ارتفاع الشريط.
   static const _panel = 1.35;
 
   @override
@@ -40,9 +37,9 @@ class SurahHeaderBanner extends StatelessWidget {
         ? AppColors.darkTextSecondary
         : AppColors.lightTextSecondary;
 
-    // Sized from the width it is given (AspectRatio needs nothing from its
-    // child, so this also works inside IntrinsicHeight), never taller than
-    // _maxHeight; the contents then scale from the actual height.
+    // الحجم من العرض المعطى (AspectRatio لا يحتاج شيئاً من ابنه، فيعمل داخل
+    // IntrinsicHeight أيضاً)، دون تجاوز _maxHeight؛ ثم يتحجّم المحتوى من
+    // الارتفاع الفعلي.
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: _maxHeight),
@@ -142,8 +139,7 @@ class SurahHeaderBanner extends StatelessWidget {
   }
 }
 
-/// Paints the header band, the central cartouche, the number rosette and
-/// the star ornaments between them.
+/// يرسم الشريط والخرطوشة ووردة الرقم والنجوم بينها.
 class _SurahBandPainter extends CustomPainter {
   final Color gold;
   final Color band;
@@ -157,7 +153,7 @@ class _SurahBandPainter extends CustomPainter {
     required this.panel,
   });
 
-  /// The band: a bar whose ends come to a point, inset by [inset].
+  /// الشريط: قضيب مدبّب الطرفين، مُزاح للداخل بـ[inset].
   Path _bandPath(Size size, double inset) {
     final w = size.width, h = size.height;
     final tip = h * 0.32;
@@ -178,7 +174,7 @@ class _SurahBandPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..color = gold;
 
-    // Band with a soft wash of the frame colour and a double rule.
+    // الشريط بلمسة خفيفة من لون الإطار وخط مزدوج.
     final outer = _bandPath(size, 1);
     canvas.drawPath(
       outer,
@@ -201,7 +197,7 @@ class _SurahBandPainter extends CustomPainter {
         ..color = gold.withValues(alpha: 0.7),
     );
 
-    // Central cartouche on paper, with crests above and below.
+    // الخرطوشة على لون الورق، مع تيجان أعلاها وأسفلها.
     final cw = (w - 2 * panel) * 0.72;
     final cartouche = RRect.fromRectAndRadius(
       Rect.fromCenter(center: Offset(w / 2, h / 2), width: cw, height: h * 0.7),
@@ -225,7 +221,7 @@ class _SurahBandPainter extends CustomPainter {
       canvas.drawPath(eightPointStar(Offset(w / 2, y), h * 0.07), crest);
     }
 
-    // Number rosette in the right panel (the start side in Arabic).
+    // وردة الرقم في الجانب الأيمن (بداية القراءة بالعربية).
     final rosette = Offset(w - panel / 2, h / 2);
     canvas.drawPath(eightPointStar(rosette, h * 0.36), Paint()..color = page);
     canvas.drawPath(
@@ -242,7 +238,7 @@ class _SurahBandPainter extends CustomPainter {
         ..color = gold.withValues(alpha: 0.6),
     );
 
-    // Small stars between the side panels and the cartouche.
+    // نجوم صغيرة بين الجانبين والخرطوشة.
     final star = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8
@@ -263,13 +259,10 @@ class _SurahBandPainter extends CustomPainter {
       old.panel != panel;
 }
 
-/// Decorative Basmalah banner shown between Surahs (except Surah 1 & 9).
-/// لافتة البسملة التي تعرض في مطلع السور (باستثناء سورتي الفاتحة والتوبة).
+/// البسملة في مطلع السور، إلا الفاتحة والتوبة.
 class BismillahBanner extends StatelessWidget {
-  /// ينشئ ودجت لافتة البسملة.
   const BismillahBanner({super.key});
 
-  /// يبني نص البسملة متمركزاً بالخط القرآني المختار.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

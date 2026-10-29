@@ -8,6 +8,7 @@ import '../../core/design_system/ornaments.dart';
 import '../../data/storage/user_data_store.dart';
 
 /// يسأل القارئ عن اسمه عند أول فتح، لتناديه به التذكيرات.
+///
 /// الاسم اختياري، ويبقى على الجهاز، ويُغيّر من الإعدادات.
 class NameScreen extends StatefulWidget {
   /// الشاشة التالية.

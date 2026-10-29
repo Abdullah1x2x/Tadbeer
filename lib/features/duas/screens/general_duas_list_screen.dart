@@ -7,7 +7,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/sunnah_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// شاشة استعراض أدعية السنة النبوية أو جوامع الدعاء والرجاء.
+/// أدعية السنة النبوية أو جوامع الدعاء، مع بحث.
 class GeneralDuasListScreen extends StatefulWidget {
   final String title;
   final List<GeneralDuaItem> items;
@@ -94,7 +94,6 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              // حقل البحث
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                 child: Container(
@@ -150,7 +149,6 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                 ),
               ),
 
-              // عدد الأدعية
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -177,7 +175,6 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                 ),
               ),
 
-              // قائمة الأدعية
               Expanded(
                 child: ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),

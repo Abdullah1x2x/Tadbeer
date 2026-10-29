@@ -1,4 +1,4 @@
-/// نموذج يمثل دعاءً نبوياً أو جامعاً.
+/// دعاء نبوي أو جامع.
 class GeneralDuaItem {
   final String id;
   final String title;
@@ -17,21 +17,15 @@ class GeneralDuaItem {
   });
 }
 
-/// مستودع أدعية السنة النبوية وجوامع الدعاء والرجاء.
+/// أدعية السنة النبوية وجوامع الدعاء.
 class SunnahDuasRepository {
   SunnahDuasRepository._();
 
   static final SunnahDuasRepository instance = SunnahDuasRepository._();
 
-  // ===========================================================================
-  // 💡 كيف تضيف دعاءً نبوياً أو جامعاً جديداً؟
-  // -------------------------------------------------------------
-  // - لإضافة دعاء من السنة النبوية: أضف عنصراً جديداً إلى قائمة [sunnahDuas]
-  // - لإضافة دعاء من جوامع الدعاء والرجاء: أضف عنصراً جديداً إلى قائمة [jawamiDuas]
-  // ينعكس الدعاء الجديد تلقائياً في شاشات التطبيق وإحصائيات العدادات.
-  // ===========================================================================
+  // لإضافة دعاء: أضفه إلى [sunnahDuas] أو [jawamiDuas]، فيظهر في الشاشات
+  // والعدادات.
 
-  /// أدعية السنة النبوية المشروعة.
   static const List<GeneralDuaItem> sunnahDuas = [
     GeneralDuaItem(
       id: 'sunnah_hamm_huzn',
@@ -83,7 +77,6 @@ class SunnahDuasRepository {
     ),
   ];
 
-  /// جوامع الدعاء والرجاء.
   static const List<GeneralDuaItem> jawamiDuas = [
     GeneralDuaItem(
       id: 'jawami_khayr_kulluh',
