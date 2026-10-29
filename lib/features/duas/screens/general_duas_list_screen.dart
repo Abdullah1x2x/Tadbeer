@@ -6,6 +6,7 @@ import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/sunnah_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../../core/design_system/app_search_field.dart';
 
 /// أدعية السنة النبوية أو جوامع الدعاء، مع بحث.
 class GeneralDuasListScreen extends StatefulWidget {
@@ -96,56 +97,11 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkSurface
-                        : AppColors.lightSurface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                    ),
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (val) => setState(() => _searchQuery = val),
-                    style: const TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
-                      fontSize: 14,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: l10n.searchGeneralDuasHint(widget.title),
-                      hintStyle: TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                        fontSize: 13,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      ),
-                      prefixIcon: Icon(
-                        AppIcons.magnifyingGlass,
-                        size: 20,
-                        color: isDark ? AppColors.darkAccentGold : primaryColor,
-                      ),
-                      suffixIcon: _searchQuery.isNotEmpty
-                          ? IconButton(
-                              tooltip: context.l10n.clearText,
-                              icon: const Icon(AppIcons.x, size: 18),
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() => _searchQuery = '');
-                              },
-                            )
-                          : null,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
+                child: AppSearchField(
+                  controller: _searchController,
+                  hintText: l10n.searchGeneralDuasHint(widget.title),
+                  clearTooltip: l10n.clearText,
+                  onChanged: (val) => setState(() => _searchQuery = val),
                 ),
               ),
 

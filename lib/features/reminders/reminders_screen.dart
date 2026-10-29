@@ -476,50 +476,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                      borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-                      border: Border.all(
-                        color: AppColors.border(context),
-                        width: AppTokens.borderHairline,
-                      ),
-                      boxShadow: AppTokens.cardShadow(isDark: isDark),
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: (val) =>
-                          setState(() => _searchQuery = val.trim()),
-                      decoration: InputDecoration(
-                        hintText: l10n.searchRemindersHint,
-                        hintStyle: TextStyle(
-                          fontFamily: 'IBMPlexSansArabic',
-                          fontSize: 14,
-                          color: isDark
-                              ? AppColors.nightSubtitle
-                              : AppColors.daySubtitle,
-                        ),
-                        prefixIcon: Icon(
-                          AppIcons.magnifyingGlass,
-                          color: AppColors.cyberEmerald,
-                        ),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                tooltip: context.l10n.clearText,
-                                icon: const Icon(AppIcons.x, size: 20),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                      ),
-                    ),
+                  child: AppSearchField(
+                    controller: _searchController,
+                    hintText: l10n.searchRemindersHint,
+                    clearTooltip: l10n.clearText,
+                    onChanged: (val) =>
+                        setState(() => _searchQuery = val.trim()),
                   ),
                 ),
 
