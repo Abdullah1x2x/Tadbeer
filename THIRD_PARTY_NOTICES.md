@@ -32,6 +32,7 @@ A comprehensive legal and architectural audit was conducted across all component
 | **Mihrab Tasbeeh & Istighfar Repository** (`lib/features/tasbeeh/data/curated_dhikrs.dart` — 49 formulas) | Authentic Prophetic & Ahlulbayt Traditions / Curated by Tadbeer | `1.0.0` | Texts: Public Domain<br>Code: `MIT` | Free distribution and offline religious contemplation. |
 | **Curated Contemplation Pathways** (`curated_pathways.dart`) | Tadbeer Authors | `1.0.0` | [MIT](LICENSE) | Original project authorship covered under the primary MIT License. |
 | **Brand Identity, Logo & Icons** (`assets/icons/*`) | Tadbeer Design | `1.0.0` | [MIT](LICENSE) | Original visual brand identity covered under the primary MIT License. |
+| **Audio Recitations** (7 reciters, one file per ayah) | [Islamic Network CDN](https://cdn.islamic.network/) | Online | Served freely by Islamic Network | Not bundled: streamed, or downloaded on the user's request, from `cdn.islamic.network`. |
 
 ---
 
@@ -61,17 +62,26 @@ Packages explicitly declared in [`pubspec.yaml`](pubspec.yaml) and bundled into 
 
 | Package | Version | Purpose in Application | License Type | Copyright Holder |
 | :--- | :--- | :--- | :--- | :--- |
+| **`audio_service`** | `0.18.19` | Background playback and notification media controls | MIT | Copyright (c) 2018-2021 Ryan Heise and the project contributors. |
 | **`crypto`** | `3.0.7` | SHA-256 hash calculation for backup integrity | BSD-3-Clause | Copyright 2015, the Dart project authors. |
+| **`cupertino_icons`** | `2.0.0` | iOS-style icon font | MIT | Copyright (c) 2016 Vladimir Kharlampidi. |
 | **`encrypt`** | `5.0.3` | AES-256 encryption for encrypted backups | BSD-3-Clause | Copyright (c) 2018, Leo Cavalcante. |
 | **`file_picker`** | `13.1.0` | On-device backup file selection | MIT | Copyright (c) 2018 Miguel Ruivo. |
 | **`flutter`** | SDK | Core application user interface framework | BSD-3-Clause | Copyright 2014 The Flutter Authors. |
+| **`flutter_device_compass`** | `2.2.0` | Device compass heading for the Qibla direction | MIT | Copyright (c) 2018 Hemanth Raj V. |
 | **`flutter_islamic_icons`** | `1.0.2` | Quranic and Islamic iconography | BSD-2-Clause | Copyright 2022, RAMAZAN ERBASARAN. |
-| **`flutter_local_notifications`**| `23.0.0-dev.2`| Offline local habit reminders and alarms | BSD-3-Clause | Copyright 2018 Michael Bui. |
+| **`flutter_local_notifications`**| `22.3.3`| Offline local habit reminders and alarms | BSD-3-Clause | Copyright 2018 Michael Bui. |
 | **`flutter_pdfview`** | `1.4.5` | Native PDF viewer rendering for Islamic books and pamphlets | Apache-2.0 | Copyright 2018 Endre Zibolen. |
 | **`flutter_timezone`** | `5.1.1` | Local device timezone resolution | Apache-2.0 | flutter_timezone Authors. |
+| **`gal`** | `2.3.3` | Saving ayah cards to the device's Photos | BSD-3-Clause | Copyright (c) 2023 Midori Design Studio. |
+| **`geolocator`** | `14.0.1` | On-device GPS location for the Qibla direction | MIT | Copyright (c) 2018 Baseflow. |
+| **`home_widget`** | `0.10.0` | Home-screen widget with the ayah of the day | BSD-3-Clause | Copyright (c) 2020, Anton Borries. |
+| **`intl`** | `0.20.3` | Date and number formatting | BSD-3-Clause | Copyright 2013, the Dart project authors. |
+| **`just_audio`** | `0.10.6` | Audio recitation playback | MIT | Copyright (c) 2019-2020 Ryan Heise and the project contributors. |
 | **`path`** | `1.9.1` | File system path manipulation | BSD-3-Clause | Copyright 2014, the Dart project authors. |
 | **`path_provider`** | `2.1.6` | Access to persistent local storage directories | BSD-3-Clause | Copyright 2013 The Flutter Authors. |
 | **`pdf`** | `3.13.1` | PDF generation for notes and reflection journals | Apache-2.0 | Copyright (c) 2017, David PHAM-VAN. |
+| **`phosphor_flutter`** | `2.1.0` | Phosphor icon set used across the app | MIT | Copyright (c) 2020-2021 Phosphor Icons. |
 | **`qr_flutter`** | `4.1.0` | Offline QR code generation for peer sharing | BSD-3-Clause | Copyright (c) 2020, Luke Freeman. |
 | **`share_plus`** | `13.3.1` | Native system share sheet integration | BSD-3-Clause | Copyright 2017, the Flutter project authors. |
 | **`sqflite`** | `2.4.4+1` | SQLite database engine on mobile devices | BSD-2-Clause | Copyright (c) 2019, Alexandre Roux Tekartik. |

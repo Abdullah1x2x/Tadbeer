@@ -25,26 +25,49 @@
 
 ```
 lib/
-├── app/                  # إعدادات التطبيق العامة: الثيم، التوطين اللغوي، والتهيئة
-├── core/                 # الخدمات المركزية المشتركة، قواعد البيانات، والتطبيع النصي
-│   ├── design_system/    # منظومة التصميم الرقمي المستقبلي (AppTokens, Cards, Buttons, Badges)
-│   ├── motion/           # نظام الحركة الموحد AppMotion ومؤثر اللمس ScaleOnPress
-│   ├── services/         # النسخ الاحتياطي، التشفير، والإشعارات المحلية
-│   ├── storage/          # مدير قاعدة بيانات SQLite (UserDatabase, UserDataStore)
-│   └── utils/            # أدوات تطبيع العربية، البحث بالجذر، وتصدير PDF
-└── features/             # الميزات الوظيفية المستقلة (عالية التماسك ومدمجة النماذج)
-    ├── quran/            # المصحف الشريف، قراءة الصفحات، وتفسير الآيات
-    ├── ayah_links/       # شبكة روابط الآيات، مسارات التدبر، ونافذة إضافة الآيات
-    ├── notes/            # نموذج ومستودع الملاحظات والخواطر القرآنية ومحررها
-    ├── bookmarks/        # نموذج ومستودع الفواصل المرجعية وشاشتها
-    ├── highlights/       # نموذج ومستودع التظليل اللوني للآيات وشاشتها
-    ├── tasbeeh/          # نموذج ومستودع سبحة الاستغفار والتسبيح والعداد الذكي
-    ├── duas/             # أدعية القرآن، أذكار الصباح والمساء، وأدعية أهل البيت
-    ├── books/            # مكتبة الكتب وملازم هدي القرآن وتراث أهل البيت وقارئ PDF
-    ├── search/           # محرك البحث الشامل والموحد وسجل المزودات الـ 10
-    ├── word_meanings/    # معجم غريب القرآن ومعاني الكلمات
-    └── settings/         # إعدادات المستخدم وتفضيلات القراءة
+├── app/                # هيكل التطبيق: التهيئة، والتنقل، والترجمة، والتراخيص
+├── core/               # الأساسات التي لا تعرف بيانات التطبيق (لا تستورد ما فوقها)
+│   ├── design_system/  # الرموز، والبطاقات، والأزرار، والقوائم، والأيقونات
+│   ├── motion/         # الحركة واحترام تقليلها
+│   ├── theme/          # ثيمات الألوان الخمسة
+│   └── utils/          # تطبيع العربية، والبحث بالجذر، واتجاه النص
+├── data/               # بيانات التطبيق؛ تعتمد على core فقط
+│   ├── models/         # نماذج البيانات ومستودعاتها
+│   ├── quran/          # نص القرآن ونماذجه ومعاني الكلمات
+│   └── storage/        # قاعدة SQLite ومخزن بيانات المستخدم
+├── features/           # مجلد لكل ميزة؛ وفيه screens/ وwidgets/ وdata/ إذا تجاوزت ستة ملفات
+│   ├── audio/          # التلاوة آيةً آية، والتشغيل في الخلفية، والتنزيل
+│   ├── ayah_links/     # روابط الآيات، والعرض الشبكي، والمشاركة برمز QR
+│   ├── backup/         # النسخ الاحتياطي المشفّر واستعادته
+│   ├── bookmarks/      # شاشة الفواصل
+│   ├── books/          # مكتبة الكتب والملازم، وقارئ PDF
+│   ├── continue/       # المتابعة من حيث توقفت
+│   ├── daily/          # آية اليوم
+│   ├── duas/           # أدعية القرآن، وأذكار الصباح والمساء، وأدعية أهل البيت
+│   ├── focus/          # وضع التأمل
+│   ├── highlights/     # شاشة التظليل
+│   ├── home/           # الشاشة الرئيسية
+│   ├── journey/        # رحلة القراءة، والالتزام اليومي، والأهداف، وخريطة المصحف
+│   ├── memorization/   # الحفظ بصناديق لايتنر
+│   ├── more/           # تبويب المزيد
+│   ├── notes/          # الخواطر، وتصديرها PDF والدفتر
+│   ├── onboarding/     # الإقلاع الأول: الاسم والثيم
+│   ├── pathways/       # مسارات التدبر
+│   ├── qibla/          # اتجاه القبلة (GPS والبوصلة)
+│   ├── quran/          # مصحف المدينة (QCF)، وعرض الصفحات، وإجراءات الآية
+│   ├── reminders/      # التذكيرات ومجدول الإشعارات
+│   ├── search/         # البحث الموحّد ومزوّداته
+│   ├── settings/       # الإعدادات
+│   ├── share/          # بطاقات مشاركة الآيات
+│   ├── tadbeer/        # وقفة التدبر بأسئلتها الأربعة
+│   ├── tasbeeh/        # الاستغفار والتسبيح
+│   ├── widgets/        # ودجت الشاشة الرئيسية
+│   └── word_meanings/  # مستكشف معاني الكلمات
+├── l10n/               # ملفات الترجمة ARB
+└── main.dart           # نقطة البداية: bootstrap() ثم runApp()
 ```
+
+الاعتماد يسير في اتجاه واحد فقط: `features` ← `data` ← `core`. لا تستورد `core` ولا `data` أي ميزة؛ وحين تحتاج طبقة البيانات ميزةً (مجدول التذكيرات) يربطها `main` عبر واجهة (`ReminderScheduler`).
 
 ### 💡 لماذا تم اختيار هذا النمط؟
 - **عزل الميزات (Feature Isolation):** كل مجلد ميزة يحتوي على نماذجها (`models`)، مستودع بياناتها (`repositories`)، وواجهاتها (`views`/`screens`).
@@ -175,7 +198,7 @@ $$y = y_{\text{center}} + r \cdot \sin(\theta)$$
 
 ## 8. نظام الألوان وإمكانية الوصول (Color Harmony & Accessibility)
 
-صُمم نظام الألوان في كلاس [`AppColors`](../lib/app/theme.dart) مستلهماً من فنون تذهيب المصاحف القديمة وورق المخطوطات الدافئ:
+صُمم نظام الألوان في كلاس [`AppColors`](../lib/core/theme/theme.dart) مستلهماً من فنون تذهيب المصاحف القديمة وورق المخطوطات الدافئ:
 
 - **ألوان الوضع النهاري:**
   - خلفية الورق (`#F6F3EA` و `#F1EBDD`): تقليل إجهاد العين مقارنة بالأبيض الساطع.
@@ -194,15 +217,15 @@ $$y = y_{\text{center}} + r \cdot \sin(\theta)$$
 | الإعداد البرمجي | الملف المخصص | السطر التقريبي | القيمة الافتراضية / الحالية | الأثر والتخصيص |
 | :--- | :--- | :--- | :--- | :--- |
 | **مهلة الضغط المطول على الآية** | [`lib/features/quran/screens/quran_page_view.dart`](../lib/features/quran/screens/quran_page_view.dart) | السطر `248` و `42` | `1100ms` (1.1 ثانية) | تحدد مدة استمرار الإصبع على الآية لفتح قائمة خيارات الآية (`AyahActionSheet`). لتقليل المدة وتسريع الفتح تُعدل مثلاً إلى `500ms`. |
-| **حجم خط المصحف المرجعي** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطر `25` | `18.5pt` (medium) | الحجم القياسي الذي يعيد إنتاج تخطيط مصحف المدينة النبوية (604 صفحات) بدقة متطابقة. |
-| **الحد الأدنى والأقصى لخط المصحف** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطور `170-176` | `16.0pt` إلى `32.0pt` | يحدد النطاق الآمن المسموح للمستخدم بتكبير الخط عبره دون الإخلال بتناسق الصفحة. |
-| **حجم خط كروت شبكة روابط الآيات** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطر `220` | `18.0pt` | مقياس خط الآيات في الكانفاس، وتستخدمه خوارزمية `_computeAutoLayoutPositions` تلقائياً لتوسيع قطر الدوائر وتفادي تصادم الكروت. |
-| **أبعاد كانفاس روابط الآيات** | [`lib/features/ayah_links/views/ayah_link_network_view.dart`](../lib/features/ayah_links/views/ayah_link_network_view.dart) | السطر `49` | `3000.0 × 3000.0` | المساحة التفاعلية الافتراضية الكاملة، ومركزها يقع عند النقطة `(1500.0, 1500.0)`. |
-| **حدود تكبير/تصغير الكانفاس** | [`lib/features/ayah_links/views/ayah_link_network_view.dart`](../lib/features/ayah_links/views/ayah_link_network_view.dart) | السطور `288-290` | `minScale: 0.35`, `maxScale: 2.5` | يحدد مدى مرونة التقريب والابتعاد باللمس المتعدد (Pinch-to-zoom). |
-| **مدة حركة انتقال الكاميرا** | [`lib/features/ayah_links/views/ayah_link_network_view.dart`](../lib/features/ayah_links/views/ayah_link_network_view.dart) | السطر `68` | `380ms` | سرعة انزلاق المنظور وتركيز الكاميرا على العقدة المحددة بنعومة. |
+| **حجم خط المصحف المرجعي** | [`lib/data/models/user_settings_model.dart`](../lib/data/models/user_settings_model.dart) | السطر `25` | `18.5pt` (medium) | الحجم القياسي الذي يعيد إنتاج تخطيط مصحف المدينة النبوية (604 صفحات) بدقة متطابقة. |
+| **الحد الأدنى والأقصى لخط المصحف** | [`lib/data/models/user_settings_model.dart`](../lib/data/models/user_settings_model.dart) | السطور `170-176` | `16.0pt` إلى `32.0pt` | يحدد النطاق الآمن المسموح للمستخدم بتكبير الخط عبره دون الإخلال بتناسق الصفحة. |
+| **حجم خط كروت شبكة روابط الآيات** | [`lib/data/models/user_settings_model.dart`](../lib/data/models/user_settings_model.dart) | السطر `220` | `18.0pt` | مقياس خط الآيات في الكانفاس، وتستخدمه خوارزمية `_computeAutoLayoutPositions` تلقائياً لتوسيع قطر الدوائر وتفادي تصادم الكروت. |
+| **أبعاد كانفاس روابط الآيات** | [`lib/features/ayah_links/widgets/ayah_link_network_view.dart`](../lib/features/ayah_links/widgets/ayah_link_network_view.dart) | السطر `49` | `3000.0 × 3000.0` | المساحة التفاعلية الافتراضية الكاملة، ومركزها يقع عند النقطة `(1500.0, 1500.0)`. |
+| **حدود تكبير/تصغير الكانفاس** | [`lib/features/ayah_links/widgets/ayah_link_network_view.dart`](../lib/features/ayah_links/widgets/ayah_link_network_view.dart) | السطور `288-290` | `minScale: 0.35`, `maxScale: 2.5` | يحدد مدى مرونة التقريب والابتعاد باللمس المتعدد (Pinch-to-zoom). |
+| **مدة حركة انتقال الكاميرا** | [`lib/features/ayah_links/widgets/ayah_link_network_view.dart`](../lib/features/ayah_links/widgets/ayah_link_network_view.dart) | السطر `68` | `380ms` | سرعة انزلاق المنظور وتركيز الكاميرا على العقدة المحددة بنعومة. |
 | **معادلة إيقاع السبحة التلقائية** | [`lib/features/tasbeeh/tasbeeh_model.dart`](../lib/features/tasbeeh/tasbeeh_model.dart) | السطور `63-66` | `800ms + (words * 320ms)` | وتيرة العد الذكي المقيدة بين `1.2` ثانية و `7.0` ثوانٍ بحسب طول النص. |
 | **أهداف عداد التسبيح الافتراضية** | [`lib/features/tasbeeh/tasbeeh_model.dart`](../lib/features/tasbeeh/tasbeeh_model.dart) | السطر `51` | `33` عَدّة | الأهداف المأثورة المعتمدة (`33`, `70`, `100`). |
-| **إخفاء مقدمة التدبر نهائياً** | [`lib/features/settings/user_settings_model.dart`](../lib/features/settings/user_settings_model.dart) | السطر `185` | `false` | خيار مستديم يحفظ تفضيل المستخدم بعدم إظهار شاشة الترحيب بالتدبر مجدداً لسرعة الدخول. |
+| **إخفاء مقدمة التدبر نهائياً** | [`lib/data/models/user_settings_model.dart`](../lib/data/models/user_settings_model.dart) | السطر `185` | `false` | خيار مستديم يحفظ تفضيل المستخدم بعدم إظهار شاشة الترحيب بالتدبر مجدداً لسرعة الدخول. |
 
 ---
 

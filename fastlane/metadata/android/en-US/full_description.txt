@@ -1,8 +1,8 @@
-Tadbeer (تَدْبِير) is a free, open-source, 100% offline Quranic reading and reflection (Tadabbur) app with no ads, no analytics, and no internet permission required.
+Tadbeer (تَدْبِير) is a free, open-source, offline-first Quranic reading and reflection (Tadabbur) app with no ads and no analytics. The internet is used only to stream or download audio recitation.
 
 Key Features:
 • Full 604-page Uthmani Mushaf with 5 selectable open-source Quranic fonts (Scheherazade New, Amiri Quran, Uthmanic Hafs, Al-Mushaf, Neirizi).
 • Comprehensive offline Quranic Word Meanings lexicon integrated directly into the Mushaf and searchable standalone.
 • Reflection (Tadabbur) notes and bookmarks linked to verses, with local JSON backup and restore.
 • Customizable local reminders and alarms for daily Quran reading.
-• Complete privacy: 100% offline with zero tracking or telemetry.
+• Complete privacy: your data stays on your device, with zero tracking or telemetry.

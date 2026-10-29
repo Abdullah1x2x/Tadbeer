@@ -41,83 +41,67 @@ flutter pub get
 # 2. تشغيل التحليل الساكن (يجب أن يعطي 0 أخطاء)
 dart analyze
 
-# 3. تشغيل الاختبارات الآلية (246 اختباراً عبر 26 ملفاً بنسبة نجاح 100%)
+# 3. تشغيل الاختبارات الآلية (588 اختباراً عبر 81 ملفاً)
 flutter test
 
 # 4. تشغيل التطبيق في وضع التطوير
 flutter run
 
 # 5. بناء حزم الإصدار والإنتاج
-flutter build apk --release
+# ملف APK لكل معمارية معالج (حوالي ثلث حجم الملف الشامل)
+flutter build apk --release --split-per-abi
+# حزمة Google Play، التي تعطي كل جهاز ما يحتاجه فقط
 flutter build appbundle --release
 ```
 
 ---
 
-## 3. خريطة ملفات المشروع (`lib/` — 81 ملفاً متماسكاً)
+## 3. خريطة ملفات المشروع (`lib/`)
+
+الاعتماد يسير في اتجاه واحد فقط: `features` ← `data` ← `core`. لا تستورد `core` ولا `data` أي ميزة؛ وحين تحتاج طبقة البيانات ميزةً (مجدول التذكيرات) يربطها `main` عبر واجهة (`ReminderScheduler`).
 
 ```text
 lib/
-├── app/                              # إعدادات التطبيق العامة والسمات (3 ملفات)
-│   ├── app.dart                      # ويدجت التطبيق الجذر TadbeerApp ومفتاح التنقل
-│   ├── localization.dart             # نصوص وترجمات التطبيق باللغتين العربية والإنجليزية
-│   └── theme.dart                    # لوحة الألوان AppColors والأنماط والسمات
-│
-├── core/                             # البنية التحتية المشتركة ومنظومة التصميم والحركة (14 ملفاً)
-│   ├── design_system/                # حزمة التصميم الرقمي المستقبلي (5 ملفات)
-│   │   ├── app_tokens.dart           # الرموز والتنسيقات وأبعاد الحواف والظلال
-│   │   ├── design_system.dart        # المصدّر المركزي للمنظومة
-│   │   ├── futuristic_badge.dart     # الشارات الإيضاحية وحالات الحضور
-│   │   ├── futuristic_button.dart    # الأزرار التفاعلية ومؤشرات الضغط
-│   │   └── futuristic_card.dart      # البطاقات الرقمية ذات الطبقات والحدود الدقيقة
-│   ├── motion/                       # محرك الحركة الموحد وإمكانية الوصول
-│   │   └── app_motion.dart           # كلاس AppMotion والمدد الزمنية والمؤثر اللمسي ScaleOnPress
-│   ├── services/
-│   │   ├── backup_crypto_service.dart # تشفير وفك تشفير النسخ الاحتياطية (AES-256)
-│   │   └── local_reminder_service.dart# خدمة التنبيهات المجدولة محلياً
-│   ├── storage/
-│   │   ├── user_database.dart         # مدير قاعدة بيانات SQLite المحلية
-│   │   └── user_data_store.dart       # مخزن الكاش التفاعلي الموحد (ChangeNotifier)
-│   └── utils/
-│       ├── arabic_root_search_helper.dart # استخراج الجذور اللغوية والمطابقة الصرفية
-│       ├── arabic_search_normalizer.dart  # تطبيع الحروف والبحث الصوتي القياسي
-│       ├── note_pdf_exporter.dart        # تصدير الخاطرة المنفردة إلى مستند PDF
-│       └── tadbeer_journal_exporter.dart # تصدير دفتر التدبر الشامل (PDF و Markdown)
-│
-├── features/                         # أقسام وميزات التطبيق المستقلة عالية التماسك (63 ملفاً)
-│   ├── ayah_links/                   # شبكة روابط الآيات الموضوعية (11 ملفاً)
-│   │   ├── ayah_link_detail_screen.dart, ayah_link_model.dart, ayah_link_repository.dart
-│   │   ├── ayah_links_screen.dart, curated_pathways.dart
-│   │   ├── views/ (ayah_link_network_view.dart, ayah_link_ordered_view.dart)
-│   │   └── widgets/ (add_verse_to_link_dialog, picker, qr_dialog, create_link)
-│   ├── backup/                       # واجهة النسخ الاحتياطي (backup_screen.dart)
-│   ├── bookmarks/                    # الفواصل المرجعية المدمجة (bookmark_model.dart [نموذج + مستودع]، الشاشة - ملفان)
-│   ├── books/                        # مكتبة الكتب وملازم التراث (6 ملفات متكاملة)
-│   │   ├── book_model.dart, book_repository.dart, book_reader_screen.dart, book_section_screen.dart, curated_books.dart
-│   │   └── data/ (heritage_data.dart [نهج البلاغة، رسالة الحقوق، تحف العقول]، malazem_data.dart، sahifah_sajjadiyah_data.dart)
-│   ├── duas/                         # قسم الأدعية والأذكار الشامل المتماسك (11 ملفاً)
-│   │   ├── duas_screen.dart          # الموزع الرئيسي المنظم لأقسام الأدعية والأذكار
-│   │   ├── quran_dua_model.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # الأدعية القرآنية الـ 88
-│   │   ├── adhkar_repository.dart [النموذج والمستودع]، morning_evening_adhkar_screen.dart # أذكار الصباح والمساء التفاعلية
-│   │   ├── ahlulbayt_duas_repository.dart [النموذج والمستودع] # مستودع ونماذج أدعية أهل البيت والصحيفة السجادية
-│   │   ├── ahlulbayt_duas_screen.dart, ahlulbayt_dua_reader_screen.dart # شاشة استعراض وقارئ أدعية أهل البيت
-│   │   └── sunnah_duas_repository.dart, general_duas_list_screen.dart # أدعية السنة وجوامع الدعاء والرجاء
-│   ├── highlights/                   # تظليل الآيات المدمج (highlight_model.dart [نموذج + مستودع]، الشاشة - ملفان)
-│   ├── home/                         # الشاشة الرئيسية وبطاقة استئناف القراءة (home_screen.dart)
-│   ├── notes/                        # الخواطر والملاحظات (note_model.dart [نموذج + مستودع]، المحرر، الشاشة - 3 ملفات)
-│   ├── quran/                        # محرك المصحف الشريف والصفحات (8 ملفات)
-│   │   ├── data/ (quran_models.dart, quran_repository.dart)
-│   │   ├── screens/ (quran_page_view.dart, quran_screen.dart)
-│   │   └── widgets/ (ayah_action_sheet, mushaf_frame_painter, quran_side_menu, surah_header_banner, word_meanings_panel)
-│   ├── reminders/                    # التنبيهات المجدولة (النموذج، الشاشة - ملفان)
-│   ├── search/                       # نظام البحث الموحد (المزودات، السجل، الشاشة - 3 ملفات)
-│   ├── settings/                     # إعدادات الخط والمظهر وعن تدبير (ملفان)
-│   ├── tadbeer/                      # وقفة تدبر والأسئلة الأربعة ومقدمة التدبر (3 ملفات)
-│   ├── tasbeeh/                      # السبحة الإلكترونية ومحراب الذكر (tasbeeh_model.dart [نموذج + مستودع]، الشاشة - ملفان)
-│   └── word_meanings/                # مستكشف معاني الكلمات وفهرس المفردات (word_meanings_screen.dart)
-│
-└── main.dart                         # نقطة الانطلاق والتهيئة غير المتزامنة للمحركات
-```
+├── app/                # هيكل التطبيق: التهيئة، والتنقل، والترجمة، والتراخيص
+├── core/               # الأساسات التي لا تعرف بيانات التطبيق (لا تستورد ما فوقها)
+│   ├── design_system/  # الرموز، والبطاقات، والأزرار، والقوائم، والأيقونات
+│   ├── motion/         # الحركة واحترام تقليلها
+│   ├── theme/          # ثيمات الألوان الخمسة
+│   └── utils/          # تطبيع العربية، والبحث بالجذر، واتجاه النص
+├── data/               # بيانات التطبيق؛ تعتمد على core فقط
+│   ├── models/         # نماذج البيانات ومستودعاتها
+│   ├── quran/          # نص القرآن ونماذجه ومعاني الكلمات
+│   └── storage/        # قاعدة SQLite ومخزن بيانات المستخدم
+├── features/           # مجلد لكل ميزة؛ وفيه screens/ وwidgets/ وdata/ إذا تجاوزت ستة ملفات
+│   ├── audio/          # التلاوة آيةً آية، والتشغيل في الخلفية، والتنزيل
+│   ├── ayah_links/     # روابط الآيات، والعرض الشبكي، والمشاركة برمز QR
+│   ├── backup/         # النسخ الاحتياطي المشفّر واستعادته
+│   ├── bookmarks/      # شاشة الفواصل
+│   ├── books/          # مكتبة الكتب والملازم، وقارئ PDF
+│   ├── continue/       # المتابعة من حيث توقفت
+│   ├── daily/          # آية اليوم
+│   ├── duas/           # أدعية القرآن، وأذكار الصباح والمساء، وأدعية أهل البيت
+│   ├── focus/          # وضع التأمل
+│   ├── highlights/     # شاشة التظليل
+│   ├── home/           # الشاشة الرئيسية
+│   ├── journey/        # رحلة القراءة، والالتزام اليومي، والأهداف، وخريطة المصحف
+│   ├── memorization/   # الحفظ بصناديق لايتنر
+│   ├── more/           # تبويب المزيد
+│   ├── notes/          # الخواطر، وتصديرها PDF والدفتر
+│   ├── onboarding/     # الإقلاع الأول: الاسم والثيم
+│   ├── pathways/       # مسارات التدبر
+│   ├── qibla/          # اتجاه القبلة (GPS والبوصلة)
+│   ├── quran/          # مصحف المدينة (QCF)، وعرض الصفحات، وإجراءات الآية
+│   ├── reminders/      # التذكيرات ومجدول الإشعارات
+│   ├── search/         # البحث الموحّد ومزوّداته
+│   ├── settings/       # الإعدادات
+│   ├── share/          # بطاقات مشاركة الآيات
+│   ├── tadbeer/        # وقفة التدبر بأسئلتها الأربعة
+│   ├── tasbeeh/        # الاستغفار والتسبيح
+│   ├── widgets/        # ودجت الشاشة الرئيسية
+│   └── word_meanings/  # مستكشف معاني الكلمات
+├── l10n/               # ملفات الترجمة ARB
+└── main.dart           # نقطة البداية: bootstrap() ثم runApp()
 ```
 
 ---
@@ -131,7 +115,7 @@ lib/
 - **الخطوط القرآنية:** يدعم 5 خطوط حرة ومفتوحة المصدر مرخصة بـ SIL OFL-1.1 (`AmiriQuran`، `ScheherazadeNew`، `NotoNaskhArabic`، `Lateef`، `Harmattan`) عبر `UserDataStore.instance.setQuranFontFamily()`.
 - **التظليل المتصل:** يتم رسم تظليلات الآيات متعددة الكلمات خلف النص عبر الرسام المخصص `AyahHighlightPainter`.
 
-### 4.2. قاعدة البيانات والتخزين المحلي (`lib/core/storage/`)
+### 4.2. قاعدة البيانات والتخزين المحلي (`lib/data/storage/`)
 تدار عبر كلاس `UserDatabase` في ملف SQLite المحلي `tadbeer_user_data.db` وتتألف من 9 جداول:
 1. `reading_position`: يحفظ موضع القراءة الأخير (صفحة، سورة، آية) مع قيد السجل الواحد (`id = 1`).
 2. `notes`: الخواطر والملاحظات الشخصية بمعرفات UUID.
@@ -179,7 +163,7 @@ lib/
   1. **قسم «ملازم هدي القرآن الكريم»:** يضم 86 ملزمة ومحاضرة موثقة كاملة للسيد حسين بدر الدين الحوثي (رضوان الله عليه) من هدي القرآن الكريم (سلسلة معرفة الله 14 ملزمة، سلسلة مديح القرآن 6 ملازم، دروس رمضان المبارك 19 ملزمة، مدارسة سور القرآن آل عمران والمائدة 11 ملزمة، في ظلال الأدعية والعبادات 5 ملازم، والمحاضرات الكبرى والمناسبات والهداية 31 ملزمة). تم تنظيم الملفات بمسارات آمنة في `assets/books/malazem/` لتفادي قيود أسماء الملفات في بيئات أندرويد و Linux.
   2. **قسم «تراث وأدعية أهل البيت (عليهم السلام)»:** يضم أمهات مصادر أهل البيت التراثية المفتوحة العامة دون أي قيود نشر، مع فصول للقراءة النصية المباشرة وملفات PDF مرفقة عالية الجودة: **الصحيفة السجادية الكاملة**، و**رسالة الحقوق** للإمام زين العابدين علي بن الحسين عليه السلام، و**نهج البلاغة (روائع الخطب والعهود والحكم)** لأمير المؤمنين علي بن أبي طالب عليه السلام.
   3. **قسم «علوم وتدبر القرآن الكريم»:** يضم كتب التراث الإسلامي المفتوحة في آداب وأخلاق حملة القرآن وقواعد التدبر: **أخلاق حَمَلَة القرآن وأهله** للإمام الآجري، و**قواعد وأصول في تدبر القرآن الكريم**، و**التبيان في آداب حَمَلَة القرآن** للإمام النووي.
-- **إضافة كتب وملازم جديدة برمجياً بكل سهولة (`lib/features/books/curated_books.dart`):** يمكن للمطور إضافة أي قسم أو كتاب جديد بإضافة عنصر `BookSectionConfig` و `BookConfig` مباشرة في الكود، مع إمكانية إرفاق ملف PDF أو ملف نصي، أو كتابة فصول نصية (`BookChapter`).
+- **إضافة كتب وملازم جديدة برمجياً بكل سهولة (`lib/features/books/data/curated_books.dart`):** يمكن للمطور إضافة أي قسم أو كتاب جديد بإضافة عنصر `BookSectionConfig` و `BookConfig` مباشرة في الكود، مع إمكانية إرفاق ملف PDF أو ملف نصي، أو كتابة فصول نصية (`BookChapter`).
 - **القارئ وعارض المستندات (`BookReaderScreen`):** يعرض الفصول والمباحث النصية بالقراءة التفاعلية المباشرة (مع التحكم بحجم الخط والنسخ وفهرس المباحث)، كما يوفر للملازم وكتب الـ PDF إمكانية الفتح والمطالعة المباشرة والمشاركة الخارجية مع تصدير الملفات بأسماء عناوينها العربية الصحيحة تلقائياً.
 
 ---
@@ -192,7 +176,7 @@ lib/
 4. **الفحص قبل الاعتماد:**
    ```bash
    dart analyze    # يجب أن يعطي: No issues found!
-   flutter test    # يجب أن تنجح كافة الاختبارات الـ 246 بنسبة 100%
+   flutter test    # يجب أن تنجح كافة الاختبارات الـ 588
    ```
 5. **صيانة القدسية والعمل دون إنترنت:** يُحظر تماماً إضافة أي أذونات أو استدعاءات شبكية خارجية، أو حزم تتبع، أو المساس غير الموثق بالنصوص القرآنية في `assets/quran/`.
 
@@ -205,7 +189,7 @@ lib/
 
 تمت هندسة التطبيق ليكون قابلاً للتوسع وإضافة المحتوى بسهولة فائقة دون الحاجة لتعديل شاشات الواجهات أو بناء هياكل قواعد بيانات معقدة. تعتمد كل ميزة على **ملفات تسجيل مهيأة برمجياً بـ Dart** تحتوي على ترويسة إرشادية عربية مفصلة تشرح للمطور كيفية الإضافة خطوة بخطوة.
 
-### 6.1. إضافة وتعديل الكتب والملازم التدبرية (`lib/features/books/curated_books.dart`)
+### 6.1. إضافة وتعديل الكتب والملازم التدبرية (`lib/features/books/data/curated_books.dart`)
 
 يمكن للمطور إضافة قسم جديد بالكامل أو إلحاق كتاب أو ملزمة بملف PDF أو إنشاء فصول نصية مباشرة:
 
@@ -290,7 +274,7 @@ TasbeehDhikr(
 
 ---
 
-### 6.3. إضافة وتصحيح معاني كلمات القرآن الغريبة (`lib/features/word_meanings/data/custom_word_meanings.dart`)
+### 6.3. إضافة وتصحيح معاني كلمات القرآن الغريبة (`lib/data/quran/custom_word_meanings.dart`)
 
 بدلاً من تعديل ملف `word_meanings.json` الضخم يدوياً، أنشأنا سجلاً تصريحياً مرناً يتيح لك إضافة أي مفردة أو تصحيح معنى كلمة قرآنية عبر قائمة `customWordMeanings`:
 
@@ -311,7 +295,7 @@ CustomWordMeaningConfig(
 
 تم فصل مصادر الأدعية في ملفات مستودعات مستقلة يسهل تعزيزها:
 
-1. **أدعية أهل البيت (عليهم السلام) والصحيفة السجادية (`lib/features/duas/ahlulbayt_duas_repository.dart`):**  
+1. **أدعية أهل البيت (عليهم السلام) والصحيفة السجادية (`lib/features/duas/data/ahlulbayt_duas_repository.dart`):**  
    أضف عنصراً جديداً إلى قائمة `defaultDuas`:
    ```dart
    AhlulbaytDua(
@@ -323,7 +307,7 @@ CustomWordMeaningConfig(
      content: 'نص الدعاء المبارك كاملاً كقطعة واحدة مشكولاً...',
    ),
    ```
-2. **أدعية السنة النبوية وجوامع الدعاء (`lib/features/duas/sunnah_duas_repository.dart`):**  
+2. **أدعية السنة النبوية وجوامع الدعاء (`lib/features/duas/data/sunnah_duas_repository.dart`):**  
    أضف عنصراً إلى `sunnahDuas` (أدعية نبوية) أو `jawamiDuas` (جوامع الدعاء):
    ```dart
    GeneralDuaItem(
@@ -335,7 +319,7 @@ CustomWordMeaningConfig(
      isSunnah: true,
    ),
    ```
-3. **أذكار الصباح والمساء التفاعلية (`lib/features/duas/adhkar_repository.dart`):**  
+3. **أذكار الصباح والمساء التفاعلية (`lib/features/duas/data/adhkar_repository.dart`):**  
    أضف عنصراً إلى `morningAdhkar` أو `eveningAdhkar` عبر `AdhkarItem`:
    ```dart
    AdhkarItem(
@@ -346,7 +330,7 @@ CustomWordMeaningConfig(
      source: 'صحيح أبي داود',
    ),
    ```
-4. **الأدعية القرآنية الـ 88 الموثقة (`lib/features/duas/quran_duas_repository.dart`):**  
+4. **الأدعية القرآنية الـ 88 الموثقة (`lib/features/duas/data/quran_duas_repository.dart`):**  
    أضف مدخلاً إلى الفهرس المرجعي الموثق `_catalog` عبر `_DuaCatalogEntry`:
    ```dart
    _DuaCatalogEntry(
@@ -360,7 +344,7 @@ CustomWordMeaningConfig(
 
 ---
 
-### 6.5. إضافة مسارات تدبرية وروابط موضوعية بين الآيات (`lib/features/ayah_links/curated_pathways.dart`)
+### 6.5. إضافة مسارات تدبرية وروابط موضوعية بين الآيات (`lib/features/ayah_links/data/curated_pathways.dart`)
 
 أضف مساراً تدبرياً موضوعياً جديداً يربط بين الآيات في قائمة `CuratedPathwaysRegistry.pathways`:
 

@@ -32,6 +32,7 @@ All fonts bundled with the application are free, open source, and licensed under
 | **Lateef** (*لطيف*) | [SIL International](https://software.sil.org/lateef/) | SIL OFL-1.1 | Refined, elegant Quranic typeface for Mushaf pages |
 | **Amiri Quran** (*أميري قرآني*) | [Dr. Khaled Hosny (Alif Type)](https://github.com/aliftype/amiri) | SIL OFL-1.1 | Classical Quranic Naskh typeface based on the Bulaq Press edition |
 | **Amiri** (*أميري للواجهة*) | [Dr. Khaled Hosny (Alif Type)](https://github.com/aliftype/amiri) | SIL OFL-1.1 | Surah headers, Duas, and general application UI |
+| **IBM Plex Sans Arabic** (*خط الواجهة*) | [IBM](https://github.com/IBM/plex) | SIL OFL-1.1 | Interface text across the app; license text bundled as `assets/fonts/IBMPlexSansArabic-OFL.txt` |
 
 ---
 
@@ -41,6 +42,14 @@ All fonts bundled with the application are free, open source, and licensed under
 | :--- | :--- | :--- | :--- |
 | **QCF page fonts, version 1** (604 fonts, *خطوط صفحات مصحف المدينة*) | [King Fahd Glorious Quran Printing Complex](https://qurancomplex.gov.sa/) | Distributed free of charge by the Complex for non-commercial use; the glyphs must not be altered | Primary Mushaf view; bundled as `assets/fonts/qcf/p1.ttf` … `p604.ttf` and loaded page by page |
 | **Mushaf line layout** (word glyph codes and line numbers) | [Quran.com API v4](https://api-docs.quran.com/) (Quran Foundation) | Used with attribution | Places each word on its printed line; bundled as `assets/quran/qcf_v1_layout.json.gz` (built by `tool/qcf/build_layout.py`) |
+
+---
+
+## 3.2 Audio Recitation (التلاوة المسموعة)
+
+| Component | Source | Terms | Usage in Application |
+| :--- | :--- | :--- | :--- |
+| **Ayah-by-ayah recitations** by 7 reciters (Mahmoud Khalil Al-Husary, Muhammad Siddiq Al-Minshawi, Abdul Basit Abdul Samad, Mishary Alafasy, Maher Al-Muaiqly, Abu Bakr Al-Shatri, Shahriar Parhizgar) | [Islamic Network CDN](https://cdn.islamic.network/) (the audio behind [AlQuran.cloud](https://alquran.cloud/)) | Served freely by Islamic Network; not bundled in the app | Streamed, or downloaded on the user's request, from `cdn.islamic.network/quran/audio/` (see `lib/features/audio/reciters.dart`) |
 
 ---
 
@@ -59,6 +68,7 @@ All fonts bundled with the application are free, open source, and licensed under
 
 - **Material Design Icons:** Google LLC official user interface icon font, licensed under **[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)**.
 - **Flutter Islamic Icons:** Islamic icons package for mosques and Quranic elements, licensed under **[BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause)**.
+- **Phosphor Icons:** The app's main icon set (`phosphor_flutter`) by Phosphor Icons, licensed under **[MIT](https://opensource.org/licenses/MIT)**.
 
 ---
 
