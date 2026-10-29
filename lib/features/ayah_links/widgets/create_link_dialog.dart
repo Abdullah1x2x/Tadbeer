@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
-import '../ayah_link_model.dart';
-import '../ayah_link_repository.dart';
+import '../../../core/theme/theme.dart';
+import '../../../data/models/ayah_link_model.dart';
+import '../data/ayah_link_repository.dart';
+import '../../../core/design_system/app_icons.dart';
 
-/// نافذة حوار مبسطة لإنشاء رابط آيات جديد أو تعديل رابط موجود.
-///
-/// Minimal dialog to create or edit an Ayah Link.
-///
-/// Keeps fields minimal: Title is required, Description/Idea is optional.
+/// حوار إنشاء رابط أو تعديله: العنوان مطلوب، والوصف اختياري.
 class CreateLinkDialog extends StatefulWidget {
-  /// رابط الآيات المراد تعديله في حال وجوده، أو فارغ عند الإنشاء الجديد.
+  /// الرابط المعدّل، أو null لرابط جديد.
   final AyahLinkItem? existingLink;
 
-  /// ينشئ نافذة حوار إنشاء أو تعديل رابط الآيات.
   const CreateLinkDialog({super.key, this.existingLink});
 
-  /// يعرض نافذة حوار إنشاء أو تعديل رابط الآيات ويعيد العنصر الناتج.
+  /// يعرض الحوار ويعيد الرابط الناتج.
   static Future<AyahLinkItem?> show(
     BuildContext context, {
     AyahLinkItem? existingLink,
@@ -28,19 +24,16 @@ class CreateLinkDialog extends StatefulWidget {
     );
   }
 
-  /// ينشئ حالة نافذة حوار إنشاء أو تعديل رابط الآيات.
   @override
   State<CreateLinkDialog> createState() => _CreateLinkDialogState();
 }
 
-/// الحالة الداخلية لنافذة إنشاء أو تعديل رابط الآيات.
 class _CreateLinkDialogState extends State<CreateLinkDialog> {
   late final TextEditingController _titleController;
   late final TextEditingController _descController;
   final _formKey = GlobalKey<FormState>();
   bool _isSaving = false;
 
-  /// يهيئ حقول العنوان والوصف بالقيم الحالية عند التعديل.
   @override
   void initState() {
     super.initState();
@@ -52,7 +45,6 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     );
   }
 
-  /// يحرر موارد متحكمات النصوص عند إغلاق النافذة.
   @override
   void dispose() {
     _titleController.dispose();
@@ -60,7 +52,7 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     super.dispose();
   }
 
-  /// يتحقق من صحة المدخلات ويحفظ رابط الآيات الجديد أو المحدث.
+  /// يتحقق من المدخلات ويحفظ الرابط.
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -95,7 +87,6 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
     }
   }
 
-  /// يبني نموذج إدخال عنوان ووصف رابط الآيات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -109,15 +100,13 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
         title: Row(
           children: [
             Icon(
-              Icons.hub_outlined,
+              AppIcons.graph,
               color: Theme.of(context).colorScheme.primary,
               size: 24,
             ),
             const SizedBox(width: 8),
             Text(
-              isEditing
-                  ? (l10n.isArabic ? 'تعديل رابط الآيات' : 'Edit Ayah Link')
-                  : l10n.newAyahLink,
+              isEditing ? (l10n.editAyahLink) : l10n.newAyahLink,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ],
@@ -143,9 +132,7 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
                 ),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
-                    return l10n.isArabic
-                        ? 'يرجى إدخال عنوان الرابط'
-                        : 'Please enter a title';
+                    return l10n.titleRequired;
                   }
                   return null;
                 },
@@ -193,9 +180,7 @@ class _CreateLinkDialogState extends State<CreateLinkDialog> {
                     ),
                   )
                 : Text(
-                    isEditing
-                        ? l10n.save
-                        : (l10n.isArabic ? 'إنشاء' : 'Create'),
+                    isEditing ? l10n.save : (l10n.create),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
           ),

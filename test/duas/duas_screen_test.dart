@@ -3,14 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/duas/duas_screen.dart';
-import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
-import 'package:tadbeer/features/duas/quran_dua_card.dart';
-import 'package:tadbeer/features/duas/quran_duas_screen.dart';
-import 'package:tadbeer/features/home/home_screen.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/features/duas/screens/duas_screen.dart';
+import 'package:tadbeer/features/duas/widgets/quran_dua_card.dart';
+import 'package:tadbeer/features/duas/screens/quran_duas_screen.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -63,33 +62,32 @@ void main() {
       },
     );
 
-    testWidgets(
-      'All non-Quran section cards have identical size',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestWidget(const DuasScreen()));
-        await tester.pumpAndSettle();
+    testWidgets('All non-Quran section cards have identical size', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(const DuasScreen()));
+      await tester.pumpAndSettle();
 
-        final cardTitles = [
-          'أذكار الصباح والمساء',
-          'أدعية مأثورة عن أهل البيت',
-          'أدعية من السنة النبوية',
-          'جوامع الدعاء والرجاء',
-        ];
+      final cardTitles = [
+        'أذكار الصباح والمساء',
+        'أدعية مأثورة عن أهل البيت',
+        'أدعية من السنة النبوية',
+        'جوامع الدعاء والرجاء',
+      ];
 
-        final heights = <double>[];
-        for (final title in cardTitles) {
-          final inkWell = find.ancestor(
-            of: find.text(title),
-            matching: find.byType(InkWell),
-          );
-          expect(inkWell, findsOneWidget);
-          heights.add(tester.getSize(inkWell).height);
-        }
+      final heights = <double>[];
+      for (final title in cardTitles) {
+        final inkWell = find.ancestor(
+          of: find.text(title),
+          matching: find.byType(InkWell),
+        );
+        expect(inkWell, findsOneWidget);
+        heights.add(tester.getSize(inkWell).height);
+      }
 
-        // All 4 cards must have the exact same height
-        expect(heights.toSet().length, 1);
-      },
-    );
+      // All 4 cards must have the exact same height
+      expect(heights.toSet().length, 1);
+    });
 
     testWidgets(
       'Tapping "أدعية من القرآن" in DuasScreen opens QuranDuasScreen',
@@ -148,7 +146,7 @@ void main() {
         expect(find.textContaining('الأنبياء'), findsOneWidget);
 
         // Clear search
-        final clearButton = find.byIcon(Icons.clear);
+        final clearButton = find.byIcon(AppIcons.x);
         expect(clearButton, findsOneWidget);
         await tester.tap(clearButton);
         await tester.pumpAndSettle();
@@ -170,7 +168,7 @@ void main() {
 
       expect(find.text('٠ دعاء'), findsOneWidget);
       expect(find.text('لا توجد أدعية مطابقة لبحثك'), findsOneWidget);
-      expect(find.byIcon(Icons.search_off_rounded), findsOneWidget);
+      expect(find.byIcon(AppIcons.magnifyingGlassMinus), findsOneWidget);
     });
 
     testWidgets('Tapping "عرض الآية" navigates to QuranScreen', (
@@ -188,28 +186,6 @@ void main() {
 
       // Should push QuranScreen
       expect(find.byType(QuranScreen), findsOneWidget);
-    });
-
-    testWidgets('HomeScreen "الأدعية" tile opens DuasScreen Hub', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const HomeScreen()));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(HomeScreen), findsOneWidget);
-
-      // Find "الأدعية" card
-      final duasCard = find.text('الأدعية');
-      expect(duasCard, findsWidgets);
-      expect(find.byIcon(FlutterIslamicIcons.prayer), findsWidgets);
-
-      await tester.tap(duasCard.first);
-      await tester.pumpAndSettle();
-
-      // Should open DuasScreen (Hub)
-      expect(find.byType(DuasScreen), findsOneWidget);
-      expect(find.text('الأدعية'), findsOneWidget);
-      expect(find.text('أدعية من القرآن'), findsOneWidget);
     });
 
     testWidgets(

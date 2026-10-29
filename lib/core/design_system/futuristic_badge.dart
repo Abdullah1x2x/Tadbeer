@@ -1,32 +1,27 @@
 import 'package:flutter/material.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 import 'app_tokens.dart';
 
-/// شارة رقمية مستقبلية متألقة لعرض الحالات والوسوم والعدادات.
-///
-/// Futuristic Digital Badge / Pill for displaying status, tags, and reading milestones.
-/// Features high-contrast border styling, luminous ambient tint, and optional dot pulse.
+/// شارة صغيرة للحالات والوسوم والعدادات، بإطار ولون خلفية خافت ونقطة اختيارية.
 class FuturisticBadge extends StatelessWidget {
-  /// نص الشارة
   final String label;
 
-  /// اللون المميز للشارة (تدرج الوهج والنص)
+  /// لون الإطار والنص والخلفية الخافتة.
   final Color? color;
 
-  /// أيقونة اختيارية تسبق النص
+  /// أيقونة اختيارية قبل النص.
   final IconData? icon;
 
-  /// إظهار نقطة ضوئية رقمية تشير إلى الحالة الحية
+  /// نقطة تشير إلى حالة حية.
   final bool showDot;
 
-  /// مقاس مضغوط للشاشات الصغيرة
+  /// مقاس مضغوط للشاشات الصغيرة.
   final bool isCompact;
 
-  /// حجم خط مخصص إن وجد
+  /// حجم خط مخصّص بدل الافتراضي.
   final double? fontSize;
 
-  /// ينشئ شارة رقمية مستقبلية.
   const FuturisticBadge({
     super.key,
     required this.label,

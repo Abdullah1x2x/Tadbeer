@@ -18,13 +18,13 @@
 | نوع المحتوى | الملف المخصص للإضافة | النموذج البرمجي | طريقة وانعكاس العرض في التطبيق |
 | :--- | :--- | :--- | :--- |
 | **صيغ الاستغفار والتسبيح** | [`lib/features/tasbeeh/data/curated_dhikrs.dart`](../lib/features/tasbeeh/data/curated_dhikrs.dart) | `TasbeehDhikr` | تنضم مباشرة لسبحة الاستغفار والتسبيح، وتعمل مع العداد الذكي التلقائي. |
-| **معاني الكلمات وغريب القرآن** | [`lib/features/word_meanings/data/custom_word_meanings.dart`](../lib/features/word_meanings/data/custom_word_meanings.dart) | `CustomWordMeaningConfig` | تندمج تلقائياً مع معجم المصحف (604 صفحة) وتظهر في لوحة الآية والبحث. |
-| **الكتب والملازم التدبرية** | [`lib/features/books/curated_books.dart`](../lib/features/books/curated_books.dart) | `BookSectionConfig` و `BookConfig` | تُنشأ بطاقة القسم والملزمة مع قارئ PDF أو قارئ الفصول والبحث. |
-| **أدعية القرآن الكريم** | [`lib/features/duas/quran_duas_repository.dart`](../lib/features/duas/quran_duas_repository.dart) | `_DuaCatalogEntry` | ترتبط بالسورة والآية والمصحف الشريف وفهرس الأدعية الموضوعي. |
-| **أذكار الصباح والمساء** | [`lib/features/duas/adhkar_repository.dart`](../lib/features/duas/adhkar_repository.dart) | `AdhkarItem` | تظهر في شاشة أذكار الصباح والمساء مع العداد الرقمي التفاعلي. |
-| **أدعية أهل البيت والتراث** | [`lib/features/duas/ahlulbayt_duas_repository.dart`](../lib/features/duas/ahlulbayt_duas_repository.dart) | `AhlulbaytDua` | تظهر في فهرس أدعية أهل البيت مع قارئ النصوص وتكبير الخط والنسخ. |
-| **أدعية السنة وجوامع الدعاء** | [`lib/features/duas/sunnah_duas_repository.dart`](../lib/features/duas/sunnah_duas_repository.dart) | `GeneralDuaItem` | تظهر في بطاقات الأدعية المأثورة وجوامع الرجاء مع تصنيف المناسبة. |
-| **مسارات وروابط الآيات** | [`lib/features/ayah_links/curated_pathways.dart`](../lib/features/ayah_links/curated_pathways.dart) | `CuratedPathway` | تظهر في شبكة روابط الآيات الموضوعية مع إمكانية استيرادها للمستخدم. |
+| **معاني الكلمات وغريب القرآن** | [`lib/data/quran/custom_word_meanings.dart`](../lib/data/quran/custom_word_meanings.dart) | `CustomWordMeaningConfig` | تندمج تلقائياً مع معجم المصحف (604 صفحة) وتظهر في لوحة الآية والبحث. |
+| **الكتب والملازم التدبرية** | [`lib/features/books/data/curated_books.dart`](../lib/features/books/data/curated_books.dart) | `BookSectionConfig` و `BookConfig` | تُنشأ بطاقة القسم والملزمة مع قارئ PDF أو قارئ الفصول والبحث. |
+| **أدعية القرآن الكريم** | [`lib/features/duas/data/quran_duas_repository.dart`](../lib/features/duas/data/quran_duas_repository.dart) | `_DuaCatalogEntry` | ترتبط بالسورة والآية والمصحف الشريف وفهرس الأدعية الموضوعي. |
+| **أذكار الصباح والمساء** | [`lib/features/duas/data/adhkar_repository.dart`](../lib/features/duas/data/adhkar_repository.dart) | `AdhkarItem` | تظهر في شاشة أذكار الصباح والمساء مع العداد الرقمي التفاعلي. |
+| **أدعية أهل البيت والتراث** | [`lib/features/duas/data/ahlulbayt_duas_repository.dart`](../lib/features/duas/data/ahlulbayt_duas_repository.dart) | `AhlulbaytDua` | تظهر في فهرس أدعية أهل البيت مع قارئ النصوص وتكبير الخط والنسخ. |
+| **أدعية السنة وجوامع الدعاء** | [`lib/features/duas/data/sunnah_duas_repository.dart`](../lib/features/duas/data/sunnah_duas_repository.dart) | `GeneralDuaItem` | تظهر في بطاقات الأدعية المأثورة وجوامع الرجاء مع تصنيف المناسبة. |
+| **مسارات وروابط الآيات** | [`lib/features/ayah_links/data/curated_pathways.dart`](../lib/features/ayah_links/data/curated_pathways.dart) | `CuratedPathway` | تظهر في شبكة روابط الآيات الموضوعية مع إمكانية استيرادها للمستخدم. |
 
 ---
 
@@ -68,7 +68,7 @@ TasbeehDhikr(
 
 ## 2. معاني الكلمات وغريب القرآن (Word Meanings)
 
-- **الملف:** `lib/features/word_meanings/data/custom_word_meanings.dart`
+- **الملف:** `lib/data/quran/custom_word_meanings.dart`
 - **القائمة المستهدفة:** `customWordMeanings`
 
 بدلاً من التعامل مع ملف `word_meanings.json` الضخم وتعديله، يمكنك إضافة أي لفظة قرآنية غريبة أو تصحيح معناها مباشرة عبر الكود:
@@ -92,7 +92,7 @@ CustomWordMeaningConfig(
 
 ## 3. الكتب والملازم والبحوث التدبرية (Books & Malazem)
 
-- **الملف:** `lib/features/books/curated_books.dart`
+- **الملف:** `lib/features/books/data/curated_books.dart`
 - **القائمة المستهدفة:** `curatedBookSections`
 
 يدعم نظام الكتب والملازم ثلاثة أنماط متباينة تلائم كافة أنواع المحتوى:
@@ -159,7 +159,7 @@ BookConfig(
 ## 4. الأدعية والأذكار (Duas & Adhkar)
 
 ### أ. أدعية القرآن الكريم الـ 88 الموثقة
-- **الملف:** `lib/features/duas/quran_duas_repository.dart`
+- **الملف:** `lib/features/duas/data/quran_duas_repository.dart`
 - **القائمة:** `_catalog`
 
 ```dart
@@ -186,7 +186,7 @@ _DuaCatalogEntry(
 ```
 
 ### ب. أذكار الصباح والمساء التفاعلية
-- **الملف:** `lib/features/duas/adhkar_repository.dart`
+- **الملف:** `lib/features/duas/data/adhkar_repository.dart`
 - **القائمتان:** `morningAdhkar` (للصباح) و `eveningAdhkar` (للمساء)
 
 ```dart
@@ -201,7 +201,7 @@ AdhkarItem(
 ```
 
 ### ج. أدعية أهل البيت (عليهم السلام) والصحيفة السجادية
-- **الملف:** `lib/features/duas/ahlulbayt_duas_repository.dart`
+- **الملف:** `lib/features/duas/data/ahlulbayt_duas_repository.dart`
 - **القائمة:** `defaultDuas`
 
 ```dart
@@ -216,7 +216,7 @@ AhlulbaytDua(
 ```
 
 ### د. أدعية السنة النبوية وجوامع الدعاء والرجاء
-- **الملف:** `lib/features/duas/sunnah_duas_repository.dart`
+- **الملف:** `lib/features/duas/data/sunnah_duas_repository.dart`
 - **القائمتان:** `sunnahDuas` (للأدعية النبوية) و `jawamiDuas` (لجوامع الدعاء)
 
 ```dart
@@ -234,7 +234,7 @@ GeneralDuaItem(
 
 ## 5. مسارات وروابط الآيات التدبرية (Ayah Links & Pathways)
 
-- **الملف:** `lib/features/ayah_links/curated_pathways.dart`
+- **الملف:** `lib/features/ayah_links/data/curated_pathways.dart`
 - **القائمة المستهدفة:** `CuratedPathwaysRegistry.pathways`
 
 تتيح هذه الميزة جمع آيات من سور مختلفة تتناول موضوعاً قرآنياً واحداً وإرفاق ملاحظة تدبرية ملهمة لكل آية:

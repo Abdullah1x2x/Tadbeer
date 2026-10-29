@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/quran/widgets/surah_header_banner.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
 
 Widget buildTestQuranApp({int initialPage = 1}) {
   return AppLocalizationScope(
@@ -27,6 +28,8 @@ void main() {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_mushaf_test_');
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
+    // These tests cover the flowing text view, not the Madinah pages.
+    await UserDataStore.instance.setMushafStyle(MushafStyle.text);
     await QuranRepository.instance.init();
   });
 
@@ -160,7 +163,7 @@ void main() {
               body: QuranPageView(
                 page: page1,
                 onAyahTap: (_) {},
-                onAyahLongPress: (_) {},
+                onAyahLongPress: (_, {at}) {},
               ),
             ),
           ),

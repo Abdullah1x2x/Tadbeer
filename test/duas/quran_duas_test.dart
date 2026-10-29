@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/core/utils/arabic_search_normalizer.dart';
-import 'package:tadbeer/features/duas/quran_duas_repository.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/features/duas/data/quran_duas_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

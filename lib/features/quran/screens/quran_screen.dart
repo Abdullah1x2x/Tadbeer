@@ -4,41 +4,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/design_system/design_system.dart';
 import '../../../core/motion/app_motion.dart';
-import '../../../core/storage/user_data_store.dart';
+import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../data/quran_models.dart';
-import '../data/quran_repository.dart';
-import '../widgets/ayah_action_sheet.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
+import '../widgets/ayah_rosette.dart';
+import '../widgets/text_scale_control.dart';
+import '../../audio/audio_bar.dart';
+import '../../audio/quran_audio.dart';
 import '../widgets/word_meanings_panel.dart';
+import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
 import 'quran_page_view.dart';
 import '../widgets/quran_side_menu.dart';
-import '../../settings/user_settings_model.dart';
+import '../../../data/models/user_settings_model.dart';
+import '../../../core/design_system/app_icons.dart';
 
-/// Fullscreen Medina Mushaf reading experience for Tadbeer (1421H layout, 604 pages).
-/// شاشة قراءة المصحف المدني الكاملة (٦٠٤ صفحات) مع أدوات التدبر والبحث والتنقل.
+part 'quran_screen_dialogs.dart';
+
+/// شاشة المصحف (٦٠٤ صفحات) بأدوات التدبر والبحث والتنقل والتلاوة.
 class QuranScreen extends StatefulWidget {
   final int? initialPage;
   final int? targetSurahNumber;
   final int? targetAyahNumber;
 
-  /// ينشئ شاشة قراءة المصحف الشريف مع إمكانية تحديد الصفحة أو الآية المستهدفة.
+  /// حين يُعرض المصحف تبويباً، يعكس هنا ظهور أدواته ليخفي الهيكل الشريط السفلي
+  /// أثناء القراءة؛ وnull حين يُفتح صفحة مستقلة.
+  final ValueNotifier<bool>? controlsVisible;
+
   const QuranScreen({
     super.key,
     this.initialPage,
     this.targetSurahNumber,
     this.targetAyahNumber,
+    this.controlsVisible,
   });
 
-  /// ينشئ الحالة التفاعلية لشاشة قراءة المصحف.
   @override
   State<QuranScreen> createState() => _QuranScreenState();
 }
 
-/// الحالة التفاعلية لشاشة قراءة المصحف الشريف.
 class _QuranScreenState extends State<QuranScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late PageController _pageController;
@@ -49,7 +57,65 @@ class _QuranScreenState extends State<QuranScreen> {
   bool _suppressNextPageTap = false;
   Timer? _suppressTimer;
 
-  /// يهيئ متحكم الصفحات ويحدد صفحة البداية والآية المستهدفة عند فتح الشاشة.
+  /// تُحسب الصفحة مقروءة حين يتقدم القارئ بعدها وقد بقي عليها هذه المدة على
+  /// الأقل؛ التصفح السريع والرجوع لا يُحسبان.
+  static const _readDwell = Duration(seconds: 3);
+  DateTime _pageShownAt = DateTime.now();
+
+  /// وتُحسب أيضاً إن بقيت على الشاشة هذه المدة، فتُحسب آخر صفحة في الجلسة دون
+  /// تقليبها.
+  static const _autoCountDwell = Duration(seconds: 40);
+
+  /// الصفحة المعروضة على شريط التمرير أثناء سحبه.
+  int? _sliderPage;
+  Timer? _autoCountTimer;
+
+  /// يُضبط قبل انتقال لم يقم به القارئ (كمزامنة التبويب)، فلا يُحسب ولا يُحفظ
+  /// ثانية.
+  bool _ignoreNextPageChange = false;
+
+  /// آخر آية رُئيت عليها التلاوة، لتتبعها صفحة بصفحة.
+  int? _audioAyahId;
+
+  /// يقيس الشريط السفلي، ليقع شريط التلاوة فوقه مباشرة.
+  final _bottomBarKey = GlobalKey();
+  double _bottomBarHeight = 120;
+
+  /// يقرأ ارتفاع الشريط السفلي بعد رصفه.
+  void _measureBottomBar(Duration _) {
+    if (!mounted) return;
+    final height = _bottomBarKey.currentContext?.size?.height;
+    if (height != null && height != _bottomBarHeight) {
+      setState(() => _bottomBarHeight = height);
+    }
+  }
+
+  /// لا يتحرك موضع القراءة (ومعه الختمة) إلا بقراءة فعلية: التقدم بعد قراءة
+  /// الصفحة، أو البقاء عليها. النظرة ونتيجة البحث وقفزة الشريط لا تحرّك شيئاً.
+  Future<void> _maybeCountPage(int fromIndex, int toIndex) async {
+    if (toIndex != fromIndex + 1) return;
+    if (DateTime.now().difference(_pageShownAt) < _readDwell) return;
+    // يُحسب أولاً، فتكتمل الختمة بقراءة صفحتها الأخيرة.
+    await UserDataStore.instance.recordPageRead(fromIndex + 1);
+    _persistCurrentPagePosition(toIndex + 1);
+  }
+
+  /// يعيد بدء الانتظار الذي تُحسب بعده الصفحة المعروضة مقروءة.
+  void _startAutoCount() {
+    _autoCountTimer?.cancel();
+    final page = _currentPageIndex + 1;
+    _autoCountTimer = Timer(_autoCountDwell, () {
+      // فقط حين يكون المصحف التبويب أو الصفحة الظاهرة.
+      if (!mounted || !TickerMode.valuesOf(context).enabled) return;
+      if (_currentPageIndex + 1 == page) {
+        UserDataStore.instance
+            .recordPageRead(page)
+            .then((_) => _persistCurrentPagePosition(page));
+      }
+    });
+  }
+
+  /// يحدد صفحة البداية والآية المستهدفة.
   @override
   void initState() {
     super.initState();
@@ -72,32 +138,111 @@ class _QuranScreenState extends State<QuranScreen> {
     _currentPageIndex = startPage - 1;
     _pageController = PageController(initialPage: _currentPageIndex);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _persistCurrentPagePosition(startPage);
-      }
-    });
+    if (widget.controlsVisible != null) {
+      // كتبويب: تبدأ الأدوات والشريط السفلي ظاهرة ليعرف القارئ كيف يخرج، ويتبع
+      // تغيّر الموضع من قارئ فُتح في مكان آخر (من فاصل مثلاً).
+      _showTopBar = true;
+      widget.controlsVisible!.value = true;
+      UserDataStore.instance.addListener(_syncToSavedPosition);
+    }
+
+    _startAutoCount();
+    QuranAudio.instance.addListener(_onAudio);
   }
 
-  /// يحرر المؤقت ومتحكم الصفحات عند إغلاق الشاشة.
+  /// يتبع التلاوة: يقلب إلى صفحة الآية المتلوّة (دون حسابها مقروءة)، ويقول إن
+  /// تعذّر تشغيلها.
+  void _onAudio() {
+    if (!mounted) return;
+    final audio = QuranAudio.instance;
+    final visible =
+        TickerMode.valuesOf(context).enabled &&
+        (ModalRoute.of(context)?.isCurrent ?? true);
+    if (audio.failed && visible) {
+      audio.failed = false;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.audioFailed, textAlign: TextAlign.center),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+    final ayah = audio.current;
+    if (ayah != null && ayah.id != _audioAyahId) {
+      _audioAyahId = ayah.id;
+      if (visible &&
+          ayah.page - 1 != _currentPageIndex &&
+          _pageController.hasClients) {
+        _ignoreNextPageChange = true;
+        _pageController.animateToPage(
+          ayah.page - 1,
+          duration: AppMotion.normal,
+          curve: AppMotion.emphasized,
+        );
+      }
+    }
+    if (ayah == null) _audioAyahId = null;
+    setState(() {});
+    _measureSoon();
+  }
+
+  /// يبدأ قياس الشريط السفلي حين تحتاجه التلاوة.
+  void _measureSoon() =>
+      WidgetsBinding.instance.addPostFrameCallback(_measureBottomBar);
+
+  /// يبدأ التلاوة من الآية المختارة أو أول الصفحة، أو يوقفها مؤقتاً.
+  void _toggleListening(int pageNumber) {
+    final audio = QuranAudio.instance;
+    if (audio.active) {
+      audio.toggle();
+      return;
+    }
+    final page = QuranRepository.instance.getPage(pageNumber);
+    if (page.ayahs.isEmpty) return;
+    audio.playFrom(_activeSelectedAyah ?? page.ayahs.first);
+  }
+
   @override
   void dispose() {
+    if (widget.controlsVisible != null) {
+      UserDataStore.instance.removeListener(_syncToSavedPosition);
+    }
+    QuranAudio.instance.removeListener(_onAudio);
     _suppressTimer?.cancel();
+    _autoCountTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
 
-  /// يحدث رقم الصفحة الحالية عند تقليب الصفحات ويحفظ موضع القراءة الجديد.
+  /// ينقل مصحف التبويب إلى الموضع المحفوظ حين يحرّكه قارئ آخر.
+  void _syncToSavedPosition() {
+    final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
+    if (page - 1 != _currentPageIndex && _pageController.hasClients) {
+      _ignoreNextPageChange = true;
+      _pageController.jumpToPage(page - 1);
+    }
+  }
+
+  /// عند تقليب الصفحة: يحدّث رقمها ويحفظ الموضع.
   void _onPageChanged(int index) {
     if (index < 0 || index >= 604) return;
+    final from = _currentPageIndex;
+    final programmatic = _ignoreNextPageChange;
+    _ignoreNextPageChange = false;
     setState(() {
       _currentPageIndex = index;
       _activeSelectedAyah = null;
     });
-    _persistCurrentPagePosition(index + 1);
+    _startAutoCount();
+    if (programmatic) {
+      _pageShownAt = DateTime.now();
+      return;
+    }
+    _maybeCountPage(from, index);
+    _pageShownAt = DateTime.now();
   }
 
-  /// يحفظ موضع القراءة الحالي (الصفحة والسورة والآية) في التخزين المحلي.
+  /// يحفظ موضع القراءة: الصفحة والسورة والآية.
   void _persistCurrentPagePosition(int pageNumber) {
     final repo = QuranRepository.instance;
     final page = repo.getPage(pageNumber);
@@ -111,13 +256,13 @@ class _QuranScreenState extends State<QuranScreen> {
     }
   }
 
-  /// ينتقل مباشرة إلى صفحة محددة في المصحف الشريف (١ إلى ٦٠٤).
+  /// ينتقل إلى الصفحة [mushafPage] (١..٦٠٤).
   void _jumpToMushafPage(int mushafPage) {
     final target = mushafPage.clamp(1, 604);
     _pageController.jumpToPage(target - 1);
   }
 
-  /// ينتقل إلى صفحة الآية المحددة ويقوم بتمييزها بصرياً.
+  /// ينتقل إلى صفحة الآية ويميّزها.
   void _jumpToAyah(Ayah ayah) {
     _pageController.jumpToPage(ayah.page - 1);
     setState(() {
@@ -125,14 +270,14 @@ class _QuranScreenState extends State<QuranScreen> {
     });
   }
 
-  /// يبرز الآية المحددة مؤقتاً عند بدء لمسها.
+  /// يبرز الآية لحظة لمسها.
   void _handleAyahHighlight(Ayah ayah) {
     setState(() {
       _activeSelectedAyah = ayah;
     });
   }
 
-  /// يزيل التمييز المؤقت عن الآية عند رفع الإصبع مبكراً.
+  /// يزيل الإبراز إن رُفع الإصبع مبكراً.
   void _handleAyahHighlightClear(Ayah ayah) {
     if (_activeSelectedAyah?.id == ayah.id) {
       setState(() {
@@ -141,7 +286,7 @@ class _QuranScreenState extends State<QuranScreen> {
     }
   }
 
-  /// يعالج النقر السريع على الآية لإلغاء التحديد أو إظهار وإخفاء أشرطة التحكم.
+  /// النقر على الآية: يلغي التحديد، أو يُظهر الأدوات ويخفيها.
   void _handleAyahTap(Ayah ayah) {
     if (_activeSelectedAyah != null) {
       setState(() {
@@ -152,8 +297,8 @@ class _QuranScreenState extends State<QuranScreen> {
     _toggleTopBar();
   }
 
-  /// يعالج الضغط المطول على الآية لفتح نافذة إجراءات الآية مع اهتزاز خفيف.
-  Future<void> _handleAyahLongPress(Ayah ayah) async {
+  /// الضغط المطوّل: يفتح الوردة الثمانية عند الإصبع مع اهتزاز خفيف.
+  Future<void> _handleAyahLongPress(Ayah ayah, {Offset? at}) async {
     _suppressNextPageTap = true;
     setState(() {
       _activeSelectedAyah = ayah;
@@ -161,7 +306,7 @@ class _QuranScreenState extends State<QuranScreen> {
 
     HapticFeedback.mediumImpact();
 
-    await AyahActionSheet.show(context, ayah);
+    await AyahRosette.show(context, ayah, at: at);
 
     if (mounted) {
       setState(() {
@@ -174,7 +319,7 @@ class _QuranScreenState extends State<QuranScreen> {
     }
   }
 
-  /// يفتح شاشة البحث في القرآن الكريم وينتقل إلى الآية المختارة عند العودة.
+  /// يفتح البحث، وينتقل إلى الآية المختارة عند العودة.
   Future<void> _openSearch() async {
     final selectedAyah = await Navigator.of(context).push<Ayah>(
       MaterialPageRoute(
@@ -186,242 +331,13 @@ class _QuranScreenState extends State<QuranScreen> {
     }
   }
 
-  /// يعرض نافذة حوار للانتقال السريع إلى صفحة مصحف محددة برقمها.
-  void _showJumpToPageDialog() {
-    final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final controller = TextEditingController(text: '${_currentPageIndex + 1}');
-
-    showDialog(
-      context: context,
-      builder: (dialogCtx) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.comsilkLight,
-        title: Text(
-          l10n.jumpToPage,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'أدخل رقم الصفحة بين ١ و ٦٠٤',
-              style: TextStyle(
-                fontSize: 13,
-                color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                hintText: '1 - 604',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    color: isDark
-                        ? AppColors.darkSurfaceVariant
-                        : AppColors.lightBorder,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final raw = ArabicSearchNormalizer.toEnglishDigits(
-                controller.text.trim(),
-              );
-              final val = int.tryParse(raw);
-              if (val != null && val >= 1 && val <= 604) {
-                Navigator.pop(dialogCtx);
-                _jumpToMushafPage(val);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.olive,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              l10n.go,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// يعرض لوحة سفلية لاختيار نوع خط المصحف وضبط حجمه مع معاينة حية.
-  void _showFontSizeDialog() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return ListenableBuilder(
-          listenable: UserDataStore.instance,
-          builder: (ctx, _) {
-            final settings = UserDataStore.instance.settings;
-            final currentSize = settings.quranFontSize;
-            final currentFamily = settings.quranFontFamily;
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 20,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'نوع خط المصحف',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        for (final fontOpt in QuranFontFamilyOption.values)
-                          ChoiceChip(
-                            label: Text(
-                              fontOpt.labelArabic,
-                              style: TextStyle(
-                                fontSize: 12.5,
-                                fontWeight: currentFamily == fontOpt
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                            selected: currentFamily == fontOpt,
-                            onSelected: (_) {
-                              UserDataStore.instance.setQuranFontFamily(
-                                fontOpt,
-                              );
-                            },
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'حجم خط المصحف',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '${ArabicSearchNormalizer.toArabicDigits(currentSize.round())} نقطة',
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Slider(
-                      value: currentSize,
-                      min: UserSettings.minQuranFontSize,
-                      max: UserSettings.maxQuranFontSize,
-                      divisions: 16,
-                      label: '${currentSize.round()}',
-                      onChanged: (newSize) {
-                        UserDataStore.instance.setQuranFontSize(newSize);
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkSurfaceVariant
-                            : AppColors.mushafBackground,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder,
-                          width: 0.8,
-                        ),
-                      ),
-                      child: Text(
-                        'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
-                        textAlign: TextAlign.center,
-                        textDirection: TextDirection.rtl,
-                        style: TextStyle(
-                          fontFamily: settings.quranFontFamilyName,
-                          fontSize: currentSize,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.mushafQuranText,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            UserDataStore.instance.setQuranFontSize(
-                              UserSettings.defaultQuranFontSize,
-                            );
-                          },
-                          child: const Text('إعادة للوضع الافتراضي (٢٠)'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: const Text('تم'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  /// يبدل حالة إظهار أو إخفاء أشرطة التحكم العلوية والسفلية عند النقر على الصفحة.
+  /// النقر على الصفحة يُظهر الأدوات أو يخفيها.
   void _toggleTopBar() {
     if (_suppressNextPageTap) {
       _suppressNextPageTap = false;
       return;
     }
-    // If an Ayah was highlighted, cancel the highlight and do not toggle bars
+    // إن كانت آية محددة، يُلغى التحديد دون تبديل الأدوات.
     if (_activeSelectedAyah != null) {
       setState(() {
         _activeSelectedAyah = null;
@@ -431,9 +347,11 @@ class _QuranScreenState extends State<QuranScreen> {
     setState(() {
       _showTopBar = !_showTopBar;
     });
+    widget.controlsVisible?.value = _showTopBar;
   }
 
-  /// يبني الشريط العلوي العائم الذي يضم القائمة الجانبية والبحث ومعاني الكلمات وحجم الخط بتصميم مستقبلي.
+  /// الشريط العلوي: القائمة، والاستماع، ووضع التأمل، والبحث، والمعاني، وطريقة
+  /// العرض.
   Widget _buildTopBar(BuildContext context, int currentPageNumber) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = context.l10n;
@@ -464,33 +382,67 @@ class _QuranScreenState extends State<QuranScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 1. Drawer menu button (☰)
           FuturisticIconButton(
-            icon: Icons.menu,
+            icon: AppIcons.list,
             tooltip: 'القائمة',
             size: 38,
             iconSize: 20,
             onTap: () => _scaffoldKey.currentState?.openDrawer(),
           ),
 
-          // Actions group
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 2. Search button (🔍)
+              // الاستماع من الآية المختارة، أو أول الصفحة.
+              ListenableBuilder(
+                listenable: QuranAudio.instance,
+                builder: (context, _) {
+                  final audio = QuranAudio.instance;
+                  return FuturisticIconButton(
+                    icon: audio.playing
+                        ? AppIcons.pauseFill
+                        : (audio.active
+                              ? AppIcons.headphonesFill
+                              : AppIcons.headphones),
+                    tooltip: audio.playing ? l10n.pauseAudio : l10n.listen,
+                    size: 38,
+                    iconSize: 20,
+                    iconColor: audio.active ? primary : null,
+                    onTap: () => _toggleListening(currentPageNumber),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+              // وضع التأمل: آية واحدة في كل مرة.
               FuturisticIconButton(
-                icon: Icons.search,
+                icon: AppIcons.personSimpleTaiChi,
+                tooltip: l10n.focusMode,
+                size: 38,
+                iconSize: 20,
+                onTap: () {
+                  final page = QuranRepository.instance.getPage(
+                    currentPageNumber,
+                  );
+                  if (page.ayahs.isEmpty) return;
+                  FocusModeScreen.open(
+                    context,
+                    _activeSelectedAyah ?? page.ayahs.first,
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+              FuturisticIconButton(
+                icon: AppIcons.magnifyingGlass,
                 tooltip: l10n.search,
                 size: 38,
                 iconSize: 20,
                 onTap: _openSearch,
               ),
               const SizedBox(width: 8),
-              // 3. Word meanings button (📖)
               FuturisticIconButton(
                 icon: _showMeaningsPanel
-                    ? Icons.auto_stories_rounded
-                    : Icons.auto_stories_outlined,
+                    ? AppIcons.bookOpenTextFill
+                    : AppIcons.bookOpenText,
                 tooltip: 'معاني كلمات الصفحة',
                 size: 38,
                 iconSize: 20,
@@ -504,10 +456,10 @@ class _QuranScreenState extends State<QuranScreen> {
                 },
               ),
               const SizedBox(width: 8),
-              // 4. Quran font size button (Aa)
+              // طريقة عرض المصحف (Aa)؛ والحجم تلقائي.
               FuturisticIconButton(
-                icon: Icons.format_size_rounded,
-                tooltip: 'حجم الخط',
+                icon: AppIcons.textAa,
+                tooltip: l10n.mushafStyleTitle,
                 size: 38,
                 iconSize: 20,
                 onTap: _showFontSizeDialog,
@@ -519,11 +471,14 @@ class _QuranScreenState extends State<QuranScreen> {
     );
   }
 
-  /// يبني الشريط السفلي العائم الذي يعرض معلومات السورة والجزء وشريط التمرير السريع بين الصفحات بتصميم رقمي متطور.
+  /// الشريط السفلي: السورة والجزء، والانتقال بين الصفحات.
   Widget _buildBottomBar(BuildContext context, int currentPageNumber) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final repo = QuranRepository.instance;
-    final pageDigits = ArabicSearchNormalizer.toArabicDigits(currentPageNumber);
+    // أثناء السحب يُظهر الشريط الصفحة المقصودة، ويقفز المصحف إليها عند رفع
+    // الإصبع.
+    final sliderPage = _sliderPage ?? currentPageNumber;
+    final pageDigits = ArabicSearchNormalizer.toArabicDigits(sliderPage);
     final pageData = repo.getPage(currentPageNumber);
     final firstAyah = pageData.ayahs.isNotEmpty ? pageData.ayahs.first : null;
     final surahName = firstAyah != null
@@ -554,18 +509,17 @@ class _QuranScreenState extends State<QuranScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Top info row: Surah & Juz, meanings badge, page jump badge
+              // السورة والجزء، وشارة المعاني، وشارة الصفحة.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Surah & Juz
                   Flexible(
                     child: Text(
                       surahName.isNotEmpty
                           ? '$surahName • الجزء $juzDigits'
                           : 'الجزء $juzDigits',
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'IBMPlexSansArabic',
                         fontSize: 14.5,
                         fontWeight: FontWeight.bold,
                         color: isDark
@@ -576,7 +530,6 @@ class _QuranScreenState extends State<QuranScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Word meanings toggle badge
                   InkWell(
                     onTap: () {
                       setState(() {
@@ -586,7 +539,7 @@ class _QuranScreenState extends State<QuranScreen> {
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
                     child: FuturisticBadge(
                       label: 'المعاني ($meaningsDigits)',
-                      icon: Icons.library_books_rounded,
+                      icon: AppIcons.books,
                       color: _showMeaningsPanel
                           ? (isDark ? AppColors.cyberEmerald : primary)
                           : (isDark
@@ -596,7 +549,7 @@ class _QuranScreenState extends State<QuranScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Current page badge (opens jump dialog on tap)
+                  // الصفحة الحالية (تفتح حوار الانتقال).
                   InkWell(
                     onTap: _showJumpToPageDialog,
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
@@ -612,12 +565,12 @@ class _QuranScreenState extends State<QuranScreen> {
                 ],
               ),
               const SizedBox(height: 6),
-              // Bottom row: Previous page button, Slider, Next page button
+              // الصفحة السابقة، والشريط، والتالية.
               Row(
                 children: [
-                  // Previous page (in Arabic RTL, points right towards earlier pages)
+                  // السابقة: في RTL يشير لليمين نحو الصفحات الأولى.
                   FuturisticIconButton(
-                    icon: Icons.chevron_right_rounded,
+                    icon: AppIcons.caretRight,
                     tooltip: 'الصفحة السابقة',
                     size: 36,
                     iconSize: 22,
@@ -625,7 +578,6 @@ class _QuranScreenState extends State<QuranScreen> {
                     onTap: () => _jumpToMushafPage(currentPageNumber - 1),
                   ),
                   const SizedBox(width: 4),
-                  // Slider across pages 1 to 604
                   Expanded(
                     child: SliderTheme(
                       data: SliderTheme.of(context).copyWith(
@@ -649,12 +601,15 @@ class _QuranScreenState extends State<QuranScreen> {
                             : AppColors.lightPrimary,
                       ),
                       child: Slider(
-                        value: currentPageNumber.toDouble().clamp(1.0, 604.0),
+                        value: sliderPage.toDouble().clamp(1.0, 604.0),
                         min: 1.0,
                         max: 604.0,
                         divisions: 603,
                         label: 'ص $pageDigits',
-                        onChanged: (val) {
+                        onChanged: (val) =>
+                            setState(() => _sliderPage = val.round()),
+                        onChangeEnd: (val) {
+                          setState(() => _sliderPage = null);
                           final targetPage = val.round();
                           if (targetPage != currentPageNumber) {
                             _jumpToMushafPage(targetPage);
@@ -664,9 +619,9 @@ class _QuranScreenState extends State<QuranScreen> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  // Next page (in Arabic RTL, points left towards later pages)
+                  // التالية: في RTL يشير لليسار نحو الصفحات اللاحقة.
                   FuturisticIconButton(
-                    icon: Icons.chevron_left_rounded,
+                    icon: AppIcons.caretLeft,
                     tooltip: 'الصفحة التالية',
                     size: 36,
                     iconSize: 22,
@@ -682,7 +637,6 @@ class _QuranScreenState extends State<QuranScreen> {
     );
   }
 
-  /// يبني واجهة شاشة المصحف الكاملة مع دعم العرض الفردي أو المزدوج والأشرطة العائمة.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -700,7 +654,6 @@ class _QuranScreenState extends State<QuranScreen> {
         ),
         body: Stack(
           children: [
-            // Fullscreen Mushaf page area
             Positioned.fill(
               child: SafeArea(
                 child: GestureDetector(
@@ -717,18 +670,25 @@ class _QuranScreenState extends State<QuranScreen> {
                           final pageNumber = index + 1;
                           if (!isWideSpread) {
                             final page = repo.getPage(pageNumber);
-                            return QuranPageView(
-                              page: page,
-                              pageNumber: pageNumber,
-                              selectedAyah: _activeSelectedAyah,
-                              onAyahTap: _handleAyahTap,
-                              onAyahLongPress: _handleAyahLongPress,
-                              onAyahHighlight: _handleAyahHighlight,
-                              onAyahHighlightClear: _handleAyahHighlightClear,
+                            // طبقة لكل صفحة، فيحرّك السحب الصفحات دون إعادة
+                            // رسمها.
+                            return RepaintBoundary(
+                              child: QuranPageView(
+                                page: page,
+                                pageNumber: pageNumber,
+                                selectedAyah:
+                                    _activeSelectedAyah ??
+                                    QuranAudio.instance.current,
+                                onAyahTap: _handleAyahTap,
+                                onAyahLongPress: _handleAyahLongPress,
+                                onAyahHighlight: _handleAyahHighlight,
+                                onAyahHighlightClear: _handleAyahHighlightClear,
+                              ),
                             );
                           }
 
-                          // Dual-page spread on wide tablets/screens (>= 900px)
+                          // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
+                          // فأكثر).
                           if (pageNumber == 1) {
                             return Center(
                               child: ConstrainedBox(
@@ -738,7 +698,9 @@ class _QuranScreenState extends State<QuranScreen> {
                                 child: QuranPageView(
                                   page: repo.getPage(1),
                                   pageNumber: 1,
-                                  selectedAyah: _activeSelectedAyah,
+                                  selectedAyah:
+                                      _activeSelectedAyah ??
+                                      QuranAudio.instance.current,
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
@@ -765,7 +727,9 @@ class _QuranScreenState extends State<QuranScreen> {
                                 child: QuranPageView(
                                   page: repo.getPage(rightPageNum),
                                   pageNumber: rightPageNum,
-                                  selectedAyah: _activeSelectedAyah,
+                                  selectedAyah:
+                                      _activeSelectedAyah ??
+                                      QuranAudio.instance.current,
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
@@ -785,7 +749,9 @@ class _QuranScreenState extends State<QuranScreen> {
                                 child: QuranPageView(
                                   page: repo.getPage(leftPageNum),
                                   pageNumber: leftPageNum,
-                                  selectedAyah: _activeSelectedAyah,
+                                  selectedAyah:
+                                      _activeSelectedAyah ??
+                                      QuranAudio.instance.current,
                                   onAyahTap: _handleAyahTap,
                                   onAyahLongPress: _handleAyahLongPress,
                                   onAyahHighlight: _handleAyahHighlight,
@@ -803,7 +769,6 @@ class _QuranScreenState extends State<QuranScreen> {
               ),
             ),
 
-            // Smooth floating top bar overlay
             Positioned(
               top: 0,
               left: 0,
@@ -831,7 +796,6 @@ class _QuranScreenState extends State<QuranScreen> {
               ),
             ),
 
-            // Smooth floating bottom navigation bar overlay
             Positioned(
               bottom: 0,
               left: 0,
@@ -852,14 +816,34 @@ class _QuranScreenState extends State<QuranScreen> {
                           ? AppMotion.normal
                           : Duration.zero,
                       curve: AppMotion.standard,
-                      child: _buildBottomBar(context, currentPageNumber),
+                      child: KeyedSubtree(
+                        key: _bottomBarKey,
+                        child: _buildBottomBar(context, currentPageNumber),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
 
-            // Outside tap backdrop dismiss detector for Word Meanings Window
+            // التلاوة، فوق الشريط السفلي مباشرة حين يظهر.
+            AnimatedPositioned(
+              duration: shouldAnimate ? AppMotion.normal : Duration.zero,
+              curve: AppMotion.emphasized,
+              left: 12,
+              right: 12,
+              bottom:
+                  MediaQuery.paddingOf(context).bottom +
+                  (_showTopBar ? _bottomBarHeight + 6 : 12),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: const AudioBar(),
+                ),
+              ),
+            ),
+
+            // النقر خارج لوحة المعاني يُغلقها.
             if (_showMeaningsPanel)
               Positioned.fill(
                 child: GestureDetector(
@@ -875,7 +859,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 ),
               ),
 
-            // Word Meanings Window at the bottom
+            // لوحة المعاني في الأسفل.
             Positioned(
               left: 0,
               right: 0,

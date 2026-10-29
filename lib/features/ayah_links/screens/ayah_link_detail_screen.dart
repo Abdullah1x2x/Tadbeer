@@ -1,0 +1,487 @@
+import 'package:flutter/material.dart';
+
+import '../../../app/localization.dart';
+import '../../../core/theme/theme.dart';
+import '../../../data/storage/user_data_store.dart';
+import '../../../data/models/ayah_link_model.dart';
+import '../data/ayah_link_repository.dart';
+import '../widgets/ayah_link_network_view.dart';
+import '../widgets/ayah_link_ordered_view.dart';
+import '../widgets/add_verse_to_link_dialog.dart';
+import '../widgets/ayah_link_qr_dialog.dart';
+import '../widgets/create_link_dialog.dart';
+import '../../../core/design_system/app_icons.dart';
+import '../../../core/design_system/app_menu.dart';
+
+/// تفاصيل رابط: بعرض الشبكة أو القائمة المرتبة.
+class AyahLinkDetailScreen extends StatefulWidget {
+  final String linkId;
+
+  const AyahLinkDetailScreen({super.key, required this.linkId});
+
+  @override
+  State<AyahLinkDetailScreen> createState() => _AyahLinkDetailScreenState();
+}
+
+class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
+  final AyahLinkRepository _repo = AyahLinkRepository();
+  final GlobalKey<AyahLinkNetworkViewState> _networkKey =
+      GlobalKey<AyahLinkNetworkViewState>();
+  late String _activeViewMode;
+
+  /// يبدأ بآخر طريقة عرض محفوظة للرابط.
+  @override
+  void initState() {
+    super.initState();
+    final link = _repo.getLink(widget.linkId);
+    final mode = link?.lastViewMode ?? 'network';
+    _activeViewMode = (mode == 'ordered') ? 'ordered' : 'network';
+  }
+
+  /// يبدّل بين الشبكة والقائمة، ويحفظ الاختيار.
+  void _switchViewMode(String mode) {
+    setState(() => _activeViewMode = mode);
+    _repo.updateViewState(widget.linkId, viewMode: mode);
+  }
+
+  /// يفتح حوار إضافة آية إلى الرابط.
+  Future<void> _openAddVerse(AyahLinkItem link) async {
+    await AddVerseToLinkDialog.show(
+      context,
+      linkId: link.id,
+      existingAyahIds: link.verses.map((v) => v.ayahId).toList(),
+    );
+  }
+
+  /// يفتح حوار إضافة بطاقة خاطرة إلى الرابط.
+  Future<void> _openAddNote(AyahLinkItem link) async {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final titleController = TextEditingController();
+    final contentController = TextEditingController();
+
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.comsilkLight,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(
+              AppIcons.notePencil,
+              color: Theme.of(context).colorScheme.primary,
+              size: 26,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                l10n.addNoteCard,
+                style: const TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.addNoteCardHint,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: titleController,
+                style: const TextStyle(fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: l10n.noteTitleOptional,
+                  filled: true,
+                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: contentController,
+                minLines: 3,
+                maxLines: 8,
+                autofocus: true,
+                style: const TextStyle(fontSize: 14, height: 1.5),
+                decoration: InputDecoration(
+                  hintText: l10n.noteContent,
+                  filled: true,
+                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (contentController.text.trim().isNotEmpty) {
+                Navigator.pop(dialogCtx, true);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && mounted) {
+      final content = contentController.text.trim();
+      final title = titleController.text.trim();
+      await _repo.addNoteToLink(
+        link.id,
+        content: content,
+        title: title.isEmpty ? null : title,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.noteCardAddedSuccessfully),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _editLink(AyahLinkItem link) async {
+    await CreateLinkDialog.show(context, existingLink: link);
+  }
+
+  /// يطلب التأكيد قبل حذف الرابط، ثم يعود.
+  Future<void> _confirmDelete(AyahLinkItem link) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(l10n.deleteAyahLink),
+        content: Text(l10n.deleteLinkConfirm(link.title)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx, false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(dialogCtx, true),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      await _repo.deleteLink(link.id);
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.linkDeleted(link.title)),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Directionality(
+      textDirection: context.currentLanguage.direction,
+      child: ListenableBuilder(
+        listenable: UserDataStore.instance,
+        builder: (context, _) {
+          final link = _repo.getLink(widget.linkId);
+          if (link == null) {
+            return Scaffold(
+              appBar: AppBar(),
+              body: Center(child: Text(l10n.linkNotFound)),
+            );
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                link.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(AppIcons.qrCode),
+                  tooltip: l10n.shareViaQrCode,
+                  onPressed: () =>
+                      AyahLinkQrDialog.showShareDialog(context, link),
+                ),
+                PopupMenuButton<String>(
+                  icon: appMenuIcon,
+                  tooltip: l10n.more,
+                  onSelected: (val) {
+                    if (val == 'autolayout') {
+                      _networkKey.currentState?.autoLayout();
+                    } else if (val == 'edit') {
+                      _editLink(link);
+                    } else if (val == 'delete') {
+                      _confirmDelete(link);
+                    }
+                  },
+                  itemBuilder: (ctx) => [
+                    if (_activeViewMode == 'network')
+                      appMenuItem(
+                        value: 'autolayout',
+                        icon: AppIcons.squaresFour,
+                        label: l10n.autoLayout,
+                      ),
+                    appMenuItem(
+                      value: 'edit',
+                      icon: AppIcons.pencilSimple,
+                      label: l10n.editTitleAndDescription,
+                    ),
+                    appMenuItem(
+                      value: 'delete',
+                      icon: AppIcons.trash,
+                      label: l10n.deleteAyahLink,
+                      destructive: true,
+                    ),
+                  ],
+                ),
+              ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(48),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.comsilkLight,
+                    border: Border(
+                      bottom: BorderSide(
+                        color: isDark
+                            ? AppColors.darkSurfaceVariant
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _ViewTabButton(
+                        label: l10n.networkView,
+                        icon: AppIcons.graph,
+                        isActive: _activeViewMode == 'network',
+                        onTap: () => _switchViewMode('network'),
+                      ),
+                      const SizedBox(width: 8),
+                      _ViewTabButton(
+                        label: l10n.orderedView,
+                        icon: AppIcons.listNumbers,
+                        isActive: _activeViewMode == 'ordered',
+                        onTap: () => _switchViewMode('ordered'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            body: IndexedStack(
+              index: _activeViewMode == 'network' ? 0 : 1,
+              children: [
+                AyahLinkNetworkView(
+                  key: _networkKey,
+                  link: link,
+                  onAddVerse: () => _openAddVerse(link),
+                ),
+                AyahLinkOrderedView(
+                  link: link,
+                  onAddVerse: () => _openAddVerse(link),
+                ),
+              ],
+            ),
+            floatingActionButton: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                FloatingActionButton.extended(
+                  heroTag: 'add_verse_fab',
+                  onPressed: () => _openAddVerse(link),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  icon: const Icon(AppIcons.plus),
+                  label: Text(l10n.addVerse),
+                ),
+                const SizedBox(width: 8),
+                FloatingActionButton.extended(
+                  heroTag: 'add_note_fab',
+                  onPressed: () => _openAddNote(link),
+                  backgroundColor: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.comsilkLight,
+                  foregroundColor: isDark
+                      ? AppColors.darkAccentGold
+                      : AppColors.olive,
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: isDark
+                          ? AppColors.darkAccentGold.withValues(alpha: 0.5)
+                          : AppColors.olive.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  icon: const Icon(AppIcons.notePencil),
+                  label: Text(
+                    l10n.addNoteShort,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                if (_activeViewMode == 'network') ...[
+                  const SizedBox(width: 8),
+                  FloatingActionButton.small(
+                    heroTag: 'center_view_fab',
+                    onPressed: () => _networkKey.currentState?.centerView(),
+                    backgroundColor: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.comsilkLight,
+                    foregroundColor: AppColors.olive,
+                    tooltip: l10n.resetToCenter,
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color: isDark
+                            ? AppColors.darkSurfaceVariant
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                    child: const Icon(AppIcons.crosshair, size: 20),
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// زر للتبديل بين الشبكة والقائمة.
+class _ViewTabButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _ViewTabButton({
+    required this.label,
+    required this.icon,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: isActive
+              ? Theme.of(context).colorScheme.primary
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isActive
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                color: isActive ? Colors.white : null,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

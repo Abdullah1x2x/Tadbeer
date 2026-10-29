@@ -1,38 +1,32 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../quran/data/quran_models.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_models.dart';
+import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
+import '../quran/widgets/word_details_sheet.dart';
+import '../../core/design_system/app_icons.dart';
+import '../../core/design_system/app_select.dart';
 
-/// الشاشة الرئيسية المستقلة لقسم «معاني كلمات القرآن».
-///
-/// تتيح للمستخدم:
-/// 1. استعراض الكلمات القرآنية الصعبة المعتمدة.
-/// 2. البحث عن كلمة أو جزء منها أو معناها.
-/// 3. التصفية حسب السورة.
-/// 4. الانتقال إلى موضع الكلمة في المصحف الشريف بدقة.
-/// 5. الوصول إلى صفحة المصادر المعتمدة.
+/// معاني كلمات القرآن: استعراض الكلمات الغريبة والبحث فيها وتصفيتها بالسورة،
+/// والانتقال إلى موضع الكلمة في المصحف، والمصادر.
 class WordMeaningsScreen extends StatefulWidget {
   final int? initialSurahNumber;
 
-  /// ينشئ شاشة معاني كلمات القرآن مع إمكانية التصفية المبدئية بسورة محددة.
+  /// [initialSurahNumber] يبدأ مصفّى بسورة.
   const WordMeaningsScreen({super.key, this.initialSurahNumber});
 
-  /// ينشئ الحالة التفاعلية لشاشة معاني كلمات القرآن.
   @override
   State<WordMeaningsScreen> createState() => _WordMeaningsScreenState();
 }
 
-/// الحالة التفاعلية لشاشة استعراض والبحث في معاني كلمات القرآن الكريم.
 class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
   final TextEditingController _searchController = TextEditingController();
   int? _selectedSurah;
   List<QuranWordMeaning> _displayedWords = [];
 
-  /// يهيئ السورة المختارة وقائمة الكلمات المعروضة ويستمع لتغيرات حقل البحث.
   @override
   void initState() {
     super.initState();
@@ -41,7 +35,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     _searchController.addListener(_onSearchChanged);
   }
 
-  /// يزيل مستمع البحث ويحرر متحكم النص عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
@@ -49,12 +42,11 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     super.dispose();
   }
 
-  /// يعيد تصفية قائمة الكلمات المعروضة عند تغير نص البحث.
   void _onSearchChanged() {
     _filterWords();
   }
 
-  /// يصفي معاني الكلمات القرآنية بناءً على نص البحث والسورة المحددة.
+  /// يصفّي الكلمات بنص البحث والسورة المختارة.
   void _filterWords() {
     final repo = QuranRepository.instance;
     final query = _searchController.text.trim();
@@ -76,7 +68,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     });
   }
 
-  /// يبني واجهة شاشة معاني كلمات القرآن مع أدوات البحث والتصفية وقائمة النتائج.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -87,11 +78,13 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
-          backgroundColor:
-              isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          backgroundColor: isDark
+              ? AppColors.darkSurface
+              : AppColors.lightSurface,
           elevation: 0,
           scrolledUnderElevation: 0.5,
           title: Text(
@@ -106,29 +99,33 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
         ),
         body: Column(
           children: [
-            // Top Filter and Search Bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
                 border: Border(
                   bottom: BorderSide(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
                     width: 0.8,
                   ),
                 ),
               ),
               child: Column(
                 children: [
-                  // Search Field
                   TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: l10n.searchWordMeaningsHint,
-                      prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                      prefixIcon: const Icon(
+                        AppIcons.magnifyingGlass,
+                        size: 20,
+                      ),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
-                              icon: const Icon(Icons.clear_rounded, size: 18),
+                              tooltip: context.l10n.clearText,
+                              icon: const Icon(AppIcons.x, size: 18),
                               onPressed: () {
                                 _searchController.clear();
                               },
@@ -150,75 +147,35 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Surah Filter Dropdown
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.filter_list_rounded,
-                        size: 18,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
+                  AppSelectField<int?>(
+                    title: l10n.chooseSurah,
+                    icon: AppIcons.bookOpenText,
+                    searchable: true,
+                    searchHint: l10n.searchSurahHint,
+                    value: _selectedSurah,
+                    options: [
+                      AppSelectOption(
+                        value: null,
+                        label: l10n.allSurahsWithCount,
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? AppColors.darkSurfaceVariant
-                                : AppColors.comsilkLight,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder,
-                              width: 0.6,
-                            ),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<int?>(
-                              value: _selectedSurah,
-                              isExpanded: true,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                size: 20,
-                              ),
-                              hint: Text(l10n.allSurahsWithCount),
-                              dropdownColor: isDark
-                                  ? AppColors.darkSurface
-                                  : AppColors.comsilkLight,
-                              items: [
-                                DropdownMenuItem<int?>(
-                                  value: null,
-                                  child: Text(l10n.allSurahsWithCount),
-                                ),
-                                ...surahs.map(
-                                  (s) => DropdownMenuItem<int?>(
-                                    value: s.number,
-                                    child: Text(
-                                      '${context.currentLanguage == AppLanguage.arabic ? "${ArabicSearchNormalizer.toArabicDigits(s.number)}. " : "${s.number}. "}${l10n.surahTitle(s.name)}',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedSurah = val;
-                                });
-                                _filterWords();
-                              },
-                            ),
-                          ),
+                      for (final s in surahs)
+                        AppSelectOption(
+                          value: s.number,
+                          label:
+                              '${context.currentLanguage == AppLanguage.arabic ? "${ArabicSearchNormalizer.toArabicDigits(s.number)}. " : "${s.number}. "}${l10n.surahTitle(s.name)}',
                         ),
-                      ),
                     ],
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedSurah = val;
+                      });
+                      _filterWords();
+                    },
                   ),
                 ],
               ),
             ),
 
-            // Results count header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -227,7 +184,9 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                     child: Text(
                       l10n.wordSearchResultsCount(
                         context.currentLanguage == AppLanguage.arabic
-                            ? ArabicSearchNormalizer.toArabicDigits(_displayedWords.length)
+                            ? ArabicSearchNormalizer.toArabicDigits(
+                                _displayedWords.length,
+                              )
                             : _displayedWords.length,
                       ),
                       style: TextStyle(
@@ -240,7 +199,8 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (_selectedSurah != null || _searchController.text.isNotEmpty) ...[
+                  if (_selectedSurah != null ||
+                      _searchController.text.isNotEmpty) ...[
                     const SizedBox(width: 8),
                     InkWell(
                       onTap: () {
@@ -266,7 +226,6 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
               ),
             ),
 
-            // Words List
             Expanded(
               child: _displayedWords.isEmpty
                   ? _buildEmptyState(context, isDark)
@@ -305,7 +264,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     );
   }
 
-  /// يبني واجهة الحالة الفارغة عند عدم العثور على كلمات مطابقة للبحث أو التصفية.
+  /// الحالة الفارغة حين لا يطابق البحث شيئاً.
   Widget _buildEmptyState(BuildContext context, bool isDark) {
     final l10n = context.l10n;
     return Center(
@@ -315,7 +274,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.search_off_rounded,
+              AppIcons.magnifyingGlassMinus,
               size: 48,
               color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
             ),
@@ -349,153 +308,13 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
   }
 }
 
-/// يعرض نافذة سفلية بتفاصيل معنى الكلمة القرآنية وموضعها ومصدرها المعتمد.
-void _showWordDetailsModal(
-  BuildContext context,
-  QuranWordMeaning item,
-  String surahName,
-  bool isDark,
-) {
-  final l10n = context.l10n;
-  final isArabic = context.currentLanguage == AppLanguage.arabic;
-  final ayahDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.ayah) : item.ayah;
-  final pageDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.page) : item.page;
-
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (ctx) {
-      return Directionality(
-        textDirection: context.currentLanguage.direction,
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.word,
-                        textDirection: TextDirection.rtl,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? AppColors.oliveLight : AppColors.olive,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: (isDark ? AppColors.olive : AppColors.oliveLight)
-                            .withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        l10n.surahAyahPageReference(surahName, ayahDigits, pageDigits),
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.oliveLight
-                              : AppColors.oliveDark,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  l10n.lexicalMeaningTitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? AppColors.nightSubtitle
-                        : AppColors.daySubtitle,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item.meaning,
-                  textDirection: TextDirection.rtl,
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.5,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Divider(
-                  height: 1,
-                  color: (isDark ? AppColors.darkBorder : AppColors.lightBorder)
-                      .withValues(alpha: 0.6),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.menu_book_rounded,
-                      size: 16,
-                      color: isDark ? AppColors.oliveLight : AppColors.olive,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        item.sourceName,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        ),
-                      ),
-                    ),
-                    if (item.sourceUrl != null)
-                      Text(
-                        l10n.verifiedDocumentation,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.oliveLight
-                              : AppColors.oliveDark,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
-
-/// بطاقة عرض الكلمة القرآنية ومعناها مع زر الانتقال المباشر إلى موضعها في المصحف.
+/// بطاقة كلمة ومعناها، مع زر إلى موضعها في المصحف.
 class _WordCard extends StatelessWidget {
   final QuranWordMeaning item;
   final String surahName;
   final bool isDark;
   final VoidCallback onNavigateToMushaf;
 
-  /// ينشئ بطاقة عرض الكلمة القرآنية ومعناها.
   const _WordCard({
     required this.item,
     required this.surahName,
@@ -503,16 +322,19 @@ class _WordCard extends StatelessWidget {
     required this.onNavigateToMushaf,
   });
 
-  /// يبني واجهة بطاقة الكلمة القرآنية ومعناها المعجمي.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isArabic = context.currentLanguage == AppLanguage.arabic;
-    final ayahDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.ayah) : item.ayah;
-    final pageDigits = isArabic ? ArabicSearchNormalizer.toArabicDigits(item.page) : item.page;
+    final ayahDigits = isArabic
+        ? ArabicSearchNormalizer.toArabicDigits(item.ayah)
+        : item.ayah;
+    final pageDigits = isArabic
+        ? ArabicSearchNormalizer.toArabicDigits(item.page)
+        : item.page;
 
     return InkWell(
-      onTap: () => _showWordDetailsModal(context, item, surahName, isDark),
+      onTap: () => showWordDetailsSheet(context, item, surahName, isDark),
       borderRadius: BorderRadius.circular(14),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -535,11 +357,9 @@ class _WordCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Word & Surah/Ayah badge
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Quranic Word
                 Expanded(
                   child: Text(
                     item.word,
@@ -553,104 +373,99 @@ class _WordCard extends StatelessWidget {
                   ),
                 ),
 
-              // Surah & Ayah Badge
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 3,
-                ),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurfaceVariant
-                      : AppColors.comsilkLight,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkBorder
-                        : AppColors.lightBorder,
-                    width: 0.6,
-                  ),
-                ),
-                child: Text(
-                  l10n.ayahReference(surahName, ayahDigits),
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-
-              // Jump to Mushaf Page Button
-              InkWell(
-                onTap: onNavigateToMushaf,
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
+                Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
-                    vertical: 4,
+                    vertical: 3,
                   ),
                   decoration: BoxDecoration(
-                    color: (isDark ? AppColors.olive : AppColors.oliveLight)
-                        .withValues(alpha: 0.2),
+                    color: isDark
+                        ? AppColors.darkSurfaceVariant
+                        : AppColors.comsilkLight,
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                      width: 0.6,
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.menu_book_rounded,
-                        size: 13,
-                        color: isDark
-                            ? AppColors.oliveLight
-                            : AppColors.oliveDark,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        l10n.pageAbbr(pageDigits),
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                  child: Text(
+                    l10n.ayahReference(surahName, ayahDigits),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+
+                InkWell(
+                  onTap: onNavigateToMushaf,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: (isDark ? AppColors.olive : AppColors.oliveLight)
+                          .withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          AppIcons.bookOpenFill,
+                          size: 13,
                           color: isDark
                               ? AppColors.oliveLight
                               : AppColors.oliveDark,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 4),
+                        Text(
+                          l10n.pageAbbr(pageDigits),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: isDark
+                                ? AppColors.oliveLight
+                                : AppColors.oliveDark,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-
-          // Arabic Lexical Meaning
-          Text(
-            item.meaning,
-            textDirection: TextDirection.rtl,
-            style: TextStyle(
-              fontSize: 14.5,
-              height: 1.5,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+
+            Text(
+              item.meaning,
+              textDirection: TextDirection.rtl,
+              style: TextStyle(
+                fontSize: 14.5,
+                height: 1.5,
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
-/// صفحة «المصادر المعتمدة» لمعاني كلمات القرآن.
+/// صفحة المصادر المعتمدة لمعاني الكلمات.
 class WordMeaningsSourcesScreen extends StatelessWidget {
-  /// ينشئ شاشة المصادر المعتمدة لمعاني كلمات القرآن.
   const WordMeaningsSourcesScreen({super.key});
 
-  /// يبني واجهة شاشة المصادر المعتمدة وتفاصيل التوثيق والملكية الفكرية.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -659,11 +474,13 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
         appBar: AppBar(
-          backgroundColor:
-              isDark ? AppColors.darkSurface : AppColors.lightSurface,
+          backgroundColor: isDark
+              ? AppColors.darkSurface
+              : AppColors.lightSurface,
           elevation: 0,
           title: Text(
             l10n.approvedSourcesTitle,
@@ -678,7 +495,6 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Intro Callout Banner
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -693,7 +509,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    Icons.verified_outlined,
+                    AppIcons.sealCheck,
                     color: isDark ? AppColors.oliveLight : AppColors.olive,
                     size: 24,
                   ),
@@ -715,7 +531,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // Source 1: Al-Mu'jam Al-Waseet (Primary)
+            // المصدر الأول: المعجم الوسيط (الأساسي).
             _SourceCard(
               title: 'المعجم الوسيط',
               badge: 'المصدر الأساسي المعتمد',
@@ -729,7 +545,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            // Source 2: Doha Historical Dictionary
+            // المصدر الثاني: معجم الدوحة التاريخي.
             _SourceCard(
               title: 'معجم الدوحة التاريخي للغة العربية',
               badge: 'مرجع التحقق للألفاظ القديمة',
@@ -743,19 +559,18 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 14),
 
-            // Source 3: Quranpedia.net & Classical Lexicons
+            // المصدر الثالث: الموسوعة القرآنية والمعاجم التراثية.
             _SourceCard(
               title: 'الموسوعة القرآنية (Quranpedia.net) والمعاجم التراثية',
               badge: 'المصدر الرقمي والتراثي (نسخة 2026-10-10)',
               author: 'فريق الموسوعة القرآنية وأئمة اللغة والتفسير',
-              details:
-                  'الهيكلة الرقمية والربط بالآيات مستمدة من حزمة بيانات الموسوعة القرآنية المفتوحة (https://quranpedia.net — الإصدار 2026-10-10)، مع التحقق من أمهات المعاجم التراثية في الملكية العامة: لسان العرب لابن منظور، مقاييس اللغة لابن فارس، التبيان لابن الهائم، وتذكرة الأريب لابن الجوزي.',
+              details: 'الهيكلة الرقمية والربط بالآيات مستمدة من حزمة بيانات الموسوعة القرآنية المفتوحة (https://quranpedia.net — الإصدار 2026-10-10)، مع التحقق من أمهات المعاجم التراثية في الملكية العامة: لسان العرب لابن منظور، مقاييس اللغة لابن فارس، التبيان لابن الهائم، وتذكرة الأريب لابن الجوزي.',
               isPrimary: false,
               isDark: isDark,
             ),
             const SizedBox(height: 14),
 
-            // Legal & Terms of Use Card
+            // شروط الاستخدام.
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -772,7 +587,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        Icons.gavel_rounded,
+                        AppIcons.gavel,
                         size: 20,
                         color: isDark
                             ? AppColors.darkPrimary
@@ -782,7 +597,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
                       Text(
                         'تحقيق الملكية الفكرية وتراخيص الاستخدام',
                         style: TextStyle(
-                          fontFamily: 'Amiri',
+                          fontFamily: 'IBMPlexSansArabic',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: isDark
@@ -816,7 +631,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
   }
 }
 
-/// بطاقة تعرض بيانات مصدر معجمي معتمد (العنوان، الشارة، المؤلف، والتفاصيل).
+/// بطاقة مصدر معجمي: العنوان والشارة والمؤلف والتفاصيل.
 class _SourceCard extends StatelessWidget {
   final String title;
   final String badge;
@@ -825,7 +640,6 @@ class _SourceCard extends StatelessWidget {
   final bool isPrimary;
   final bool isDark;
 
-  /// ينشئ بطاقة تعريف بمصدر معجمي معتمد.
   const _SourceCard({
     required this.title,
     required this.badge,
@@ -835,7 +649,6 @@ class _SourceCard extends StatelessWidget {
     required this.isDark,
   });
 
-  /// يبني واجهة بطاقة المصدر المعجمي.
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -865,35 +678,32 @@ class _SourceCard extends StatelessWidget {
                     color: isPrimary
                         ? (isDark ? AppColors.oliveLight : AppColors.olive)
                         : (isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary),
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary),
                   ),
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 3,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: isPrimary
                       ? (isDark ? AppColors.olive : AppColors.oliveLight)
-                          .withValues(alpha: 0.25)
+                            .withValues(alpha: 0.25)
                       : (isDark
-                          ? AppColors.darkSurfaceVariant
-                          : AppColors.comsilkLight),
+                            ? AppColors.darkSurfaceVariant
+                            : AppColors.comsilkLight),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   badge,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: isPrimary
                         ? (isDark ? AppColors.oliveLight : AppColors.oliveDark)
                         : (isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary),
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary),
                   ),
                 ),
               ),

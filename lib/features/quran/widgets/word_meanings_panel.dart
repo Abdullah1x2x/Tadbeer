@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../data/quran_models.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
+import '../../../core/design_system/app_icons.dart';
+import 'word_details_sheet.dart';
 
-/// لوحة معاني الكلمات القرآنية المصاحبة لقراءة المصحف الشريف.
+/// لوحة معاني كلمات الصفحة الحالية، تطفو فوق المصحف دون أن تغيّر تخطيطه.
 ///
-/// الميزات:
-/// 1. تعرض الكلمات الصعبة المعتمدة في الصفحة الحالية فقط.
-/// 2. تتحدث تلقائياً عند تقليب الصفحات في المصحف.
-/// 3. تدعم التبديل السلس بين «المعنى المعجمي» و«البيان السياقي».
-/// 4. تتيح إغلاق اللوحة أو إخفاء الشريط السفلي بالكامل.
-/// 5. تعرض رسالة تفيد بعدم وجود كلمات تحتاج إلى شرح إذا خلت الصفحة منها.
-/// 6. تطفو فوق مساحة القراءة بانسيابية دون التأثير على تخطيط صفحات المصحف.
+/// تتحدث مع تقليب الصفحات، وتبدّل بين «المعنى المعجمي» و«البيان السياقي»، وتقول
+/// إن خلت الصفحة من كلمات تحتاج شرحاً.
 class WordMeaningsPanel extends StatefulWidget {
   final int pageNumber;
   final bool isExpanded;
@@ -21,7 +18,6 @@ class WordMeaningsPanel extends StatefulWidget {
   final VoidCallback onClose;
   final VoidCallback? onDismiss;
 
-  /// ينشئ لوحة معاني الكلمات القرآنية للصفحة المحددة.
   const WordMeaningsPanel({
     super.key,
     required this.pageNumber,
@@ -31,14 +27,11 @@ class WordMeaningsPanel extends StatefulWidget {
     this.onDismiss,
   });
 
-  /// ينشئ الحالة التفاعلية للوحة معاني الكلمات.
   @override
   State<WordMeaningsPanel> createState() => _WordMeaningsPanelState();
 }
 
-/// الحالة التفاعلية للوحة معاني الكلمات القرآنية المصاحبة للمصحف.
 class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
-  /// يبني واجهة اللوحة العائمة سواء في الوضع المطوي أو الموسع.
   @override
   Widget build(BuildContext context) {
     final repo = QuranRepository.instance;
@@ -79,7 +72,12 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
             color: Colors.transparent,
             child: widget.isExpanded
                 ? _buildExpandedContent(
-                    context, repo, meanings, pageDigits, isDark)
+                    context,
+                    repo,
+                    meanings,
+                    pageDigits,
+                    isDark,
+                  )
                 : _buildCollapsedBar(context, meanings, isDark),
           ),
         ),
@@ -87,14 +85,13 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     );
   }
 
-  /// يبني الشريط السفلي المصغر الذي يعرض عدد الكلمات المشروحة في الصفحة.
+  /// الشريط المطوي: عدد الكلمات المشروحة في الصفحة.
   Widget _buildCollapsedBar(
     BuildContext context,
     List<QuranWordMeaning> meanings,
     bool isDark,
   ) {
-    final countDigits =
-        ArabicSearchNormalizer.toArabicDigits(meanings.length);
+    final countDigits = ArabicSearchNormalizer.toArabicDigits(meanings.length);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -111,7 +108,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.auto_stories_rounded,
+                    AppIcons.bookOpenTextFill,
                     size: 18,
                     color: isDark ? AppColors.oliveLight : AppColors.olive,
                   ),
@@ -119,7 +116,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   Text(
                     'معاني الكلمات ($countDigits)',
                     style: TextStyle(
-                      fontFamily: 'Amiri',
+                      fontFamily: 'IBMPlexSansArabic',
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: isDark
@@ -129,9 +126,11 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   ),
                   const SizedBox(width: 6),
                   Icon(
-                    Icons.keyboard_arrow_up_rounded,
+                    AppIcons.caretUp,
                     size: 20,
-                    color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
+                    color: isDark
+                        ? AppColors.nightSubtitle
+                        : AppColors.oliveDark,
                   ),
                 ],
               ),
@@ -140,7 +139,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
           if (widget.onDismiss != null) ...[
             const SizedBox(width: 4),
             IconButton(
-              icon: const Icon(Icons.close_rounded, size: 18),
+              icon: const Icon(AppIcons.x, size: 18),
               tooltip: 'إخفاء الشريط',
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
@@ -153,7 +152,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     );
   }
 
-  /// يبني المحتوى الموسع للوحة معاني الكلمات مع قائمة الكلمات أو حالة الفراغ.
+  /// اللوحة الموسّعة: قائمة الكلمات أو الحالة الفارغة.
   Widget _buildExpandedContent(
     BuildContext context,
     QuranRepository repo,
@@ -169,7 +168,6 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Drag handle pill
           Center(
             child: Container(
               width: 36,
@@ -182,7 +180,6 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
               ),
             ),
           ),
-          // Header
           Padding(
             padding: const EdgeInsets.only(
               left: 12,
@@ -193,7 +190,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
             child: Row(
               children: [
                 Icon(
-                  Icons.auto_stories_rounded,
+                  AppIcons.bookOpenTextFill,
                   size: 20,
                   color: isDark ? AppColors.oliveLight : AppColors.olive,
                 ),
@@ -205,7 +202,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                         child: Text(
                           'معاني كلمات صفحة $pageDigits',
                           style: TextStyle(
-                            fontFamily: 'Amiri',
+                            fontFamily: 'IBMPlexSansArabic',
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: isDark
@@ -222,14 +219,15 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: (isDark ? AppColors.olive : AppColors.oliveLight)
-                              .withValues(alpha: 0.2),
+                          color:
+                              (isDark ? AppColors.olive : AppColors.oliveLight)
+                                  .withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
                           '${ArabicSearchNormalizer.toArabicDigits(meanings.length)} كلمات',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: isDark
                                 ? AppColors.oliveLight
@@ -241,10 +239,13 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close_rounded, size: 22),
+                  icon: const Icon(AppIcons.x, size: 22),
                   tooltip: 'إغلاق اللوحة',
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
                   onPressed: widget.onClose,
                 ),
               ],
@@ -257,7 +258,6 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                 .withValues(alpha: 0.6),
           ),
 
-          // Content List or Empty State
           Expanded(
             child: meanings.isEmpty
                 ? _buildEmptyState(isDark)
@@ -270,10 +270,11 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                     separatorBuilder: (_, index) => Divider(
                       height: 16,
                       thickness: 0.5,
-                      color: (isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder)
-                          .withValues(alpha: 0.4),
+                      color:
+                          (isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder)
+                              .withValues(alpha: 0.4),
                     ),
                     itemBuilder: (context, index) {
                       final item = meanings[index];
@@ -291,7 +292,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     );
   }
 
-  /// يبني واجهة الحالة الفارغة عند عدم وجود كلمات تحتاج إلى شرح في الصفحة الحالية.
+  /// الحالة الفارغة حين لا كلمات تحتاج شرحاً في الصفحة.
   Widget _buildEmptyState(bool isDark) {
     return Center(
       child: Padding(
@@ -300,7 +301,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.check_circle_outline_rounded,
+              AppIcons.checkCircle,
               size: 32,
               color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
             ),
@@ -309,7 +310,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
               'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Amiri',
+                fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,
                 color: isDark
                     ? AppColors.darkTextSecondary
@@ -323,161 +324,24 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
   }
 }
 
-/// يعرض نافذة سفلية بتفاصيل معنى الكلمة القرآنية ومصدرها المعجمي المعتمد.
-void _showWordDetailsModal(
-  BuildContext context,
-  QuranWordMeaning item,
-  String surahName,
-  bool isDark,
-) {
-  final ayahDigits = ArabicSearchNormalizer.toArabicDigits(item.ayah);
-  final pageDigits = ArabicSearchNormalizer.toArabicDigits(item.page);
-
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (ctx) {
-      return Directionality(
-        textDirection: TextDirection.rtl,
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.word,
-                        style: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? AppColors.oliveLight : AppColors.olive,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: (isDark ? AppColors.olive : AppColors.oliveLight)
-                            .withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        'سورة $surahName · آية $ayahDigits · ص $pageDigits',
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.oliveLight
-                              : AppColors.oliveDark,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  'المعنى اللغوي المعجمي:',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? AppColors.nightSubtitle
-                        : AppColors.daySubtitle,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item.meaning,
-                  style: TextStyle(
-                    fontSize: 16,
-                    height: 1.5,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Divider(
-                  height: 1,
-                  color: (isDark ? AppColors.darkBorder : AppColors.lightBorder)
-                      .withValues(alpha: 0.6),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.menu_book_rounded,
-                      size: 16,
-                      color: isDark ? AppColors.oliveLight : AppColors.olive,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        item.sourceName,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        ),
-                      ),
-                    ),
-                    if (item.sourceUrl != null)
-                      Text(
-                        'توثيق معتمد',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.oliveLight
-                              : AppColors.oliveDark,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
-
-/// عنصر يعرض الكلمة القرآنية ومعناها المختصر داخل لوحة معاني الصفحة.
+/// الكلمة ومعناها المختصر في لوحة الصفحة.
 class _WordMeaningTile extends StatelessWidget {
   final QuranWordMeaning item;
   final String surahName;
   final bool isDark;
 
-  /// ينشئ عنصر عرض الكلمة القرآنية ومعناها.
   const _WordMeaningTile({
     required this.item,
     required this.surahName,
     required this.isDark,
   });
 
-  /// يبني واجهة عنصر الكلمة القرآنية ومعناها مع إمكانية النقر لعرض التفاصيل.
   @override
   Widget build(BuildContext context) {
     final ayahDigits = ArabicSearchNormalizer.toArabicDigits(item.ayah);
 
     return InkWell(
-      onTap: () => _showWordDetailsModal(context, item, surahName, isDark),
+      onTap: () => showWordDetailsSheet(context, item, surahName, isDark),
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
@@ -488,7 +352,6 @@ class _WordMeaningTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                // Word
                 Expanded(
                   child: Text(
                     item.word,
@@ -501,11 +364,10 @@ class _WordMeaningTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Surah and Ayah reference
                 Text(
                   'سورة $surahName · آية $ayahDigits',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: isDark
                         ? AppColors.nightSubtitle
                         : AppColors.daySubtitle,
@@ -514,7 +376,7 @@ class _WordMeaningTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 3),
-            // Arabic Meaning (strictly WITHOUT reference name in tile)
+            // المعنى وحده، دون اسم المصدر.
             Text(
               item.meaning,
               style: TextStyle(

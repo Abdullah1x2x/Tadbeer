@@ -41,82 +41,67 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (246 tests across 26 test files - 100% passing)
+# 3. Run automated tests (594 tests across 81 test files)
 flutter test
 
 # 4. Run application in debug mode
 flutter run
 
 # 5. Build release packages
-flutter build apk --release
+# One APK per CPU architecture (about a third of the size of a universal APK)
+flutter build apk --release --split-per-abi
+# The app bundle for Google Play, which serves each device only what it needs
 flutter build appbundle --release
 ```
 
 ---
 
-## 3. Codebase File Map (`lib/` — 81 Cohesive Files)
+## 3. Codebase Map (`lib/`)
+
+Dependencies point one way only: `features` → `data` → `core`. `core` and `data` never import a feature; where the data layer needs a feature (the reminder scheduler), main wires it in through an interface (`ReminderScheduler`).
 
 ```text
 lib/
-├── app/                              # Application bootstrap & theming (3 files)
-│   ├── app.dart                      # Root TadbeerApp widget & navigator key
-│   ├── localization.dart             # Dual-language string tables (Arabic & English)
-│   └── theme.dart                    # AppColors, typography, and theme definitions
-│
-├── core/                             # Core infrastructure, design system & motion (14 files)
-│   ├── design_system/                # Futuristic design system tokens & components (5 files)
-│   │   ├── app_tokens.dart           # Geometric radii, borders, and ambient shadows
-│   │   ├── design_system.dart        # Central export module
-│   │   ├── futuristic_badge.dart     # Status badges & presence indicators
-│   │   ├── futuristic_button.dart    # Tactile buttons with press feedback
-│   │   └── futuristic_card.dart      # Geometric layered cards with subtle borders
-│   ├── motion/                       # Unified motion engine & accessibility
-│   │   └── app_motion.dart           # AppMotion durations, curves, & ScaleOnPress micro-interactions
-│   ├── services/
-│   │   ├── backup_crypto_service.dart # AES-256 backup encryption, compression & verification
-│   │   └── local_reminder_service.dart# Offline scheduled notification service
-│   ├── storage/
-│   │   ├── user_database.dart         # Local SQLite manager (tadbeer_user_data.db)
-│   │   └── user_data_store.dart       # Reactive in-memory cache (ChangeNotifier singleton)
-│   └── utils/
-│       ├── arabic_root_search_helper.dart # Root extraction & morphological matcher
-│       ├── arabic_search_normalizer.dart  # Diacritic stripping, normalization & phonetic query mapping
-│       ├── note_pdf_exporter.dart        # Formatted single-note PDF exporter
-│       └── tadbeer_journal_exporter.dart # Reflection journal exporter (PDF & Markdown)
-│
-├── features/                         # High-cohesion domain modules with consolidated models (63 files)
-│   ├── ayah_links/                   # Thematic verse relationship graph (11 files)
-│   │   ├── ayah_link_detail_screen.dart, ayah_link_model.dart, ayah_link_repository.dart
-│   │   ├── ayah_links_screen.dart, curated_pathways.dart
-│   │   ├── views/ (ayah_link_network_view.dart, ayah_link_ordered_view.dart)
-│   │   └── widgets/ (add_verse_to_link_dialog, picker, qr_dialog, create_link)
-│   ├── backup/                       # Encrypted backup UI (backup_screen.dart)
-│   ├── bookmarks/                    # Consolidated bookmarks (bookmark_model.dart [model + repo], screen - 2 files)
-│   ├── books/                        # Curated booklets & study library (6 files)
-│   │   ├── book_model.dart, book_repository.dart, book_reader_screen.dart, book_section_screen.dart, curated_books.dart
-│   │   └── data/ (heritage_data.dart [Nahj, Risalat al-Huquq, Tuhaf], malazem_data.dart, sahifah_sajjadiyah_data.dart)
-│   ├── duas/                         # Comprehensive Duas & Adhkar module (11 files)
-│   │   ├── duas_screen.dart          # Organized main hub for all duas & adhkar sections
-│   │   ├── quran_dua_model.dart, quran_duas_repository.dart, quran_duas_screen.dart, quran_dua_card.dart # 88 Quranic Duas
-│   │   ├── adhkar_repository.dart [model + repo], morning_evening_adhkar_screen.dart # Morning & Evening Adhkar
-│   │   ├── ahlulbayt_duas_repository.dart [model + repo] # Ahlulbayt & Sahifah Sajjadiyah repo
-│   │   ├── ahlulbayt_duas_screen.dart, ahlulbayt_dua_reader_screen.dart # Ahlulbayt duas browser & reader
-│   │   └── sunnah_duas_repository.dart, general_duas_list_screen.dart # Prophetic & Comprehensive Duas
-│   ├── highlights/                   # Consolidated highlights (highlight_model.dart [model + repo], screen - 2 files)
-│   ├── home/                         # Home dashboard & resume banner (home_screen.dart)
-│   ├── notes/                        # Reflection notes (note_model.dart [model + repo], editor, screen - 3 files)
-│   ├── quran/                        # Mushaf rendering engine & page data (8 files)
-│   │   ├── data/ (quran_models.dart, quran_repository.dart)
-│   │   ├── screens/ (quran_page_view.dart, quran_screen.dart)
-│   │   └── widgets/ (ayah_action_sheet, mushaf_frame_painter, quran_side_menu, surah_header_banner, word_meanings_panel)
-│   ├── reminders/                    # Offline reading reminders (model, screen - 2 files)
-│   ├── search/                       # Unified search system (providers, registry, screen - 3 files)
-│   ├── settings/                     # Appearance, font sizing/family, about (model, screen - 2 files)
-│   ├── tadbeer/                      # 4-prompt reflection worksheet (model, intro, sheet - 3 files)
-│   ├── tasbeeh/                      # Consolidated electronic tasbeeh (tasbeeh_model.dart [model + repo], screen - 2 files)
-│   └── word_meanings/                # Word meanings lexicon browser (word_meanings_screen.dart)
-│
-└── main.dart                         # Entrypoint & asynchronous engine bootstrap
+├── app/                # App shell: bootstrap, navigation, localization, licenses
+├── core/               # Foundations that know no app data (imports nothing above it)
+│   ├── design_system/  # Tokens, cards, buttons, menus, icons
+│   ├── motion/         # Motion and reduced-motion handling
+│   ├── theme/          # The five colour themes and ThemeData
+│   └── utils/          # Arabic normalization, root search, text direction
+├── data/               # App data; depends only on core
+│   ├── models/         # Data models and their repositories
+│   ├── quran/          # Quran text, models and word meanings
+│   └── storage/        # SQLite database and UserDataStore
+├── features/           # One folder per feature; screens/, widgets/, data/ once it grows past six files
+│   ├── audio/          # Ayah-by-ayah recitation, background playback, downloads
+│   ├── ayah_links/     # Thematic links between ayahs, network view, QR sharing
+│   ├── backup/         # AES-256 encrypted backup and restore
+│   ├── bookmarks/      # Bookmarks screen
+│   ├── books/          # Books and booklets library, PDF reader
+│   ├── continue/       # Continue where you left off
+│   ├── daily/          # Ayah of the day
+│   ├── duas/           # Quranic duas, morning and evening adhkar, Ahlulbayt duas
+│   ├── focus/          # Focus (contemplation) mode
+│   ├── highlights/     # Highlights screen
+│   ├── home/           # Home screen
+│   ├── journey/        # Reading journey, streak, weekly goals, Mushaf map
+│   ├── memorization/   # Memorization with Leitner boxes
+│   ├── more/           # The More tab
+│   ├── notes/          # Reflection notes, PDF and journal export
+│   ├── onboarding/     # First launch: name and theme
+│   ├── pathways/       # Curated contemplation pathways
+│   ├── qibla/          # Qibla direction (GPS and compass)
+│   ├── quran/          # Madinah Mushaf (QCF), page view, ayah actions
+│   ├── reminders/      # Reminders and the notification scheduler
+│   ├── search/         # Unified search and its providers
+│   ├── settings/       # Settings
+│   ├── share/          # Ayah cards to share
+│   ├── tadbeer/        # The four-question reflection pause
+│   ├── tasbeeh/        # Istighfar and tasbeeh counter
+│   ├── widgets/        # Home-screen widget
+│   └── word_meanings/  # Word meanings explorer
+├── l10n/               # ARB translations (gen-l10n)
+└── main.dart           # Entrypoint: bootstrap(), then runApp()
 ```
 
 ---
@@ -129,9 +114,11 @@ lib/
 - **Dual-Page Spread:** On wide screens (`width >= 900`), automatically renders two adjacent pages side-by-side with an authentic center divider.
 - **Typography:** Supports 5 selectable SIL OFL-1.1 fonts (`AmiriQuran`, `ScheherazadeNew`, `NotoNaskhArabic`, `Lateef`, `Harmattan`) via `UserDataStore.instance.setQuranFontFamily()`.
 - **Highlighting:** Multi-word continuous highlights are rendered behind text using custom painter `AyahHighlightPainter`.
+- **Ayah Markers:** `_ayahMarkers` in `quran_page_parts.dart` builds the bookmark, note, reflection and memorization icons once for both renderers. The flowing page shows them as a badge after the rosette; the Madinah page (`QcfPageBody.markersFor`) draws them above the ayah number in a zero-size `WidgetSpan`, so the printed line keeps its width.
+- **Large Screens in Part Files:** Builders that do not call `setState` live in private extensions beside their screen (`quran_page_parts.dart`, `quran_screen_dialogs.dart`, and likewise for tasbeeh, settings and the book reader).
 
-### 4.2. Local Database & Storage (`lib/core/storage/`)
-Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersion = 1`):
+### 4.2. Local Database & Storage (`lib/data/storage/`)
+Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersion = 3`):
 1. `reading_position`: Stores current page, surah, and ayah (single row invariant: `id = 1`).
 2. `notes`: Reflection notes keyed by UUID.
 3. `bookmarks`: Verses bookmarked for quick access.
@@ -139,8 +126,9 @@ Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersio
 5. `reminders`: Scheduled reading reminder configurations.
 6. `ayah_links`: Thematic verse link networks and metadata.
 7. `tadbeer_items`: 4-prompt structured reflection responses.
-8. `tadabbur_items`: Dual-write fallback compatibility table.
-9. `user_settings`: Key-value application preferences.
+8. `user_settings`: Key-value application preferences.
+
+Version 3 retired `tadabbur_items`: reflections used to be written to it and to `tadbeer_items`. On upgrade, rows only the old table holds are copied with `INSERT OR IGNORE`, then the table is dropped.
 
 ### 4.3. Encrypted Backup Container (`.quranbackup`)
 Managed by `BackupCryptoService`:
@@ -153,10 +141,12 @@ Managed by `BackupCryptoService`:
 - **Dataset:** 6,465 approved single-word lexical entries covering all 604 pages and 114 surahs with 100% coverage.
 - **Single-Word Invariant:** Every entry strictly satisfies `!word.contains(' ')` (no multi-word compounds).
 - **License:** Sourced from Quranpedia.net (2026-10-10) under CC0 1.0 Public Domain.
+- **Light Diacritics:** Meanings carry light tashkeel; search strips diacritics through `ArabicSearchNormalizer.normalize()`, so plain queries still match.
+- **Order:** `QuranRepository` merges the JSON with `customWordMeanings` and sorts everything by surah, then ayah, keeping the file order within an ayah.
 
 ### 4.5. Unified Search System & Phonetic Normalization (`lib/features/search/`)
-- Driven by `SearchRegistry` querying 10 domains concurrently via `Future.wait` with per-provider `try/catch` error isolation:
-  - Quran Ayahs, Curated Heritage Books, Reflection Notes, Tadbeer Pauses, Bookmarks, Highlights, Ayah Links, Duas, Reminders, and Word Meanings.
+- Driven by `SearchRegistry` querying 11 domains concurrently via `Future.wait` with per-provider `try/catch` error isolation:
+  - Quran Ayahs, Curated Heritage Books, Reflection Notes, Tadbeer Pauses, Bookmarks, Highlights, Ayah Links, Duas, Guided Pathways, Reminders, and Word Meanings.
 - **Phonetic-to-Standard Arabic Query Normalization:** Via `ArabicSearchNormalizer.normalizeSearchQuery`, commonly mis-typed or phonetically spelled queries (e.g. `هازا`, `هاذه`, `ذالك`, `لكن`, `رحمن`, `صلوه/صلاه`) are normalized to standard Uthmani and modern orthographic forms strictly inside the search input pipeline. Crucially, the immutable Quranic and classical text corpora remain 100% intact.
 - **Root Search:** Supports morphological root search via `جذر:XXX` syntax (e.g. `جذر:صبر`).
 - **Normalization:** All search matching utilizes `ArabicSearchNormalizer.normalize()`.
@@ -179,8 +169,20 @@ Managed by `BackupCryptoService`:
   1. **Sayyed Hussein Al-Houthi Quranic Guidance Booklets («ملازم هدي القرآن الكريم»):** 86 unabridged booklets and lectures from the Quranic guidance series, safely organized under `assets/books/malazem/` to guarantee smooth builds across Android, iOS, and Linux.
   2. **Ahlulbayt Heritage («تراث وأدعية أهل البيت (عليهم السلام)»):** Open Islamic heritage books with in-app interactive reading and companion high-resolution PDF attachments: **Al-Sahifah Al-Sajjadiyah**, **Risalat Al-Huquq**, and **Nahj Al-Balagha** (consolidated cleanly in `heritage_data.dart`).
   3. **Quranic Sciences & Reflection («علوم وتدبر القرآن الكريم»):** Open public heritage works including **Akhlaq Hamalat Al-Quran** by Al-Ajurri, **Qawaid Wa Usul fi Tadabbur Al-Quran**, and **Al-Tibyan fi Adab Hamalat Al-Quran** by Imam Al-Nawawi.
-- **Developer Extensibility (`lib/features/books/curated_books.dart`):** Easily declare new sections and books in Dart code via `BookSectionConfig` and `BookConfig` with PDF attachments, text files, or in-code chapters (`BookChapter`).
+- **Developer Extensibility (`lib/features/books/data/curated_books.dart`):** Easily declare new sections and books in Dart code via `BookSectionConfig` and `BookConfig` with PDF attachments, text files, or in-code chapters (`BookChapter`).
 - **Reader & Document Viewer (`BookReaderScreen`):** Native interactive reading for chapters (font scaling, chapter index, copying) and external opening / sharing for PDF documents with automatic clean Arabic file naming.
+
+### 4.9. Recitation (`lib/features/audio/`)
+- **`QuranAudio`:** `playFrom(ayah)` plays on through the surah and beyond; `playAyah(ayah)` plays one ayah and stops. Each request takes a number, so a newer request cancels an older one still loading.
+- **No Stalls:** Loading the first file times out after `QuranAudio.loadTimeout` (20 s); an error stops the engine; `toggle()` restarts the ayah when the engine is idle; next/previous skip the reflection pause.
+- **Background Playback:** `RecitationHandler` (audio_service) mirrors the player in the notification; its stop button closes the recitation through `onStop`.
+
+### 4.10. Ayah of the Day & Home-Screen Widget (`lib/features/daily/`, `lib/features/widgets/`)
+- **Pool:** `AyahOfTheDay.pool` holds every ayah of at most `maxLetters` (170) letters: 6,128 of 6,236, all 114 surahs. Each day starts with a curated ayah from the Quranic duas or the pathways.
+- **Widget:** `HomeWidgetSync` renders each ayah to an image (`WidgetAyahImage`, wrap width 300 for larger text). The picker shows `tadbeer_widget_preview.xml`, with the ayah in `res/font/amiri_quran.ttf` and sample khatma values.
+
+### 4.11. Startup Permissions (`lib/features/reminders/startup_permissions.dart`)
+- After onboarding, `MainShell` calls `StartupPermissions.askOnce`: an in-app explanation, then the notification and exact-alarm requests, once per install. Location stays on the Qibla screen.
 
 ---
 
@@ -192,9 +194,10 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 246 tests must pass
+   flutter test    # All 594 tests must pass
    ```
-5. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.
+5. **Interface Text:** Every visible string goes in `lib/l10n/app_ar.arb` and `app_en.arb` (then `flutter gen-l10n`) and is read through `context.l10n`; no inline `isArabic ? … : …` text. Pass numbers as `int` and let `AppStrings` localize the digits.
+6. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.
 
 ---
 
@@ -205,7 +208,7 @@ Managed by `BackupCryptoService`:
 
 The codebase has been refactored to eliminate hardcoded UI checks and burdensome database migrations for static and curated content. All extensible features are exposed via **strongly typed, modular Dart configuration files** equipped with detailed Arabic developer guidelines in their header doc comments.
 
-### 6.1. Adding Sections, Books, & Booklets (`lib/features/books/curated_books.dart`)
+### 6.1. Adding Sections, Books, & Booklets (`lib/features/books/data/curated_books.dart`)
 
 Developers can declare new sections, associate companion PDFs or text files, or write interactive in-app chapters directly in Dart:
 
@@ -290,7 +293,7 @@ TasbeehDhikr(
 
 ---
 
-### 6.3. Adding & Correcting Quran Word Meanings (`lib/features/word_meanings/data/custom_word_meanings.dart`)
+### 6.3. Adding & Correcting Quran Word Meanings (`lib/data/quran/custom_word_meanings.dart`)
 
 Instead of manually editing the 1.1MB `word_meanings.json` file, add entries to `customWordMeanings`:
 
@@ -311,7 +314,7 @@ CustomWordMeaningConfig(
 
 Duas repositories are cleanly separated into dedicated source files:
 
-1. **Ahlulbayt & Sahifah Sajjadiyah Duas (`lib/features/duas/ahlulbayt_duas_repository.dart`):**  
+1. **Ahlulbayt & Sahifah Sajjadiyah Duas (`lib/features/duas/data/ahlulbayt_duas_repository.dart`):**  
    Append to `defaultDuas`:
    ```dart
    AhlulbaytDua(
@@ -323,7 +326,7 @@ Duas repositories are cleanly separated into dedicated source files:
      content: 'Full Arabic diacritized text as a single unified piece...',
    ),
    ```
-2. **Prophetic & Comprehensive Duas (`lib/features/duas/sunnah_duas_repository.dart`):**  
+2. **Prophetic & Comprehensive Duas (`lib/features/duas/data/sunnah_duas_repository.dart`):**  
    Append to `sunnahDuas` or `jawamiDuas`:
    ```dart
    GeneralDuaItem(
@@ -335,7 +338,7 @@ Duas repositories are cleanly separated into dedicated source files:
      isSunnah: true,
    ),
    ```
-3. **Morning & Evening Adhkar (`lib/features/duas/adhkar_repository.dart`):**  
+3. **Morning & Evening Adhkar (`lib/features/duas/data/adhkar_repository.dart`):**  
    Append to `morningAdhkar` or `eveningAdhkar`:
    ```dart
    AdhkarItem(
@@ -346,7 +349,7 @@ Duas repositories are cleanly separated into dedicated source files:
      source: 'Reference',
    ),
    ```
-4. **Quranic Duas Catalog (`lib/features/duas/quran_duas_repository.dart`):**  
+4. **Quranic Duas Catalog (`lib/features/duas/data/quran_duas_repository.dart`):**  
    Append to `_catalog` via `_DuaCatalogEntry`:
    ```dart
    _DuaCatalogEntry(
@@ -360,7 +363,7 @@ Duas repositories are cleanly separated into dedicated source files:
 
 ---
 
-### 6.5. Adding Thematic Ayah Pathways (`lib/features/ayah_links/curated_pathways.dart`)
+### 6.5. Adding Thematic Ayah Pathways (`lib/features/ayah_links/data/curated_pathways.dart`)
 
 To propose ready-to-import thematic pathways connecting verses across the Quran, append to `CuratedPathwaysRegistry.pathways`:
 

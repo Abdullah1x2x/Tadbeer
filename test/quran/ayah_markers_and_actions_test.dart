@@ -3,13 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/notes/note_model.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/models/note_model.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_intro_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,8 @@ void main() {
     tempDir = await Directory.systemTemp.createTemp('marker_test_');
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
+    // These tests cover the flowing text view, not the Madinah pages.
+    await UserDataStore.instance.setMushafStyle(MushafStyle.text);
     await QuranRepository.instance.init();
   });
 
@@ -47,8 +51,8 @@ void main() {
       await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.bookmark_rounded), findsNothing);
-      expect(find.byIcon(Icons.edit_note_rounded), findsNothing);
+      expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsNothing);
+      expect(find.byIcon(AppIcons.notePencil), findsNothing);
     });
 
     testWidgets('Bookmarked State: displays bookmark icon next to ayah', (
@@ -63,8 +67,8 @@ void main() {
       await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.bookmark_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.edit_note_rounded), findsNothing);
+      expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsOneWidget);
+      expect(find.byIcon(AppIcons.notePencil), findsNothing);
     });
 
     testWidgets('Note State: displays note icon next to ayah', (tester) async {
@@ -85,8 +89,8 @@ void main() {
       await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
       await tester.pumpAndSettle();
 
-      expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
-      expect(find.byIcon(Icons.bookmark_rounded), findsNothing);
+      expect(find.byIcon(AppIcons.notePencil), findsOneWidget);
+      expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsNothing);
     });
 
     testWidgets(
@@ -110,14 +114,14 @@ void main() {
         await tester.pumpWidget(wrapWithApp(QuranPageView(page: page1)));
         await tester.pumpAndSettle();
 
-        expect(find.byIcon(Icons.bookmark_rounded), findsOneWidget);
-        expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
+        expect(find.byIcon(AppIcons.bookmarkSimpleFill), findsOneWidget);
+        expect(find.byIcon(AppIcons.notePencil), findsOneWidget);
       },
     );
   });
 
-  group('AyahActionSheet Centering & All 6 Actions Tests', () {
-    testWidgets('Action sheet renders all 6 actions in equal Expanded slots', (
+  group('AyahActionSheet Centering & All 7 Actions Tests', () {
+    testWidgets('Action sheet renders all 7 actions in equal Expanded slots', (
       tester,
     ) async {
       final ayah = QuranRepository.instance.getAyah(1, 1)!;
@@ -128,22 +132,38 @@ void main() {
       expect(find.text('وقفة تدبر'), findsOneWidget);
       expect(find.text('رابط آيات'), findsOneWidget);
       expect(find.text('ملاحظة'), findsOneWidget);
-      expect(find.text('حفظ'), findsOneWidget);
+      expect(find.text('علامة'), findsOneWidget);
       expect(find.text('تمييز'), findsOneWidget);
+      expect(find.text('أضف للحفظ'), findsOneWidget);
       expect(find.text('نسخ'), findsOneWidget);
+      expect(find.text('مشاركة'), findsOneWidget);
 
-      final actionsRowFinder = find.byWidgetPredicate(
-        (w) =>
-            w is Row &&
-            w.mainAxisAlignment == MainAxisAlignment.spaceEvenly &&
-            w.children.length == 6,
-      );
-      expect(actionsRowFinder, findsOneWidget);
-
-      final row = tester.widget<Row>(actionsRowFinder);
-      for (final child in row.children) {
-        expect(child, isA<Expanded>());
+      // Reflection leads on its own; the rest sit four to a row, each as
+      // wide as the others, with room left for another in the last row.
+      final reflect = tester.getRect(find.text('وقفة تدبر'));
+      final tiles = [
+        for (final label in [
+          'رابط آيات',
+          'ملاحظة',
+          'علامة',
+          'تمييز',
+          'أضف للحفظ',
+          'مشاركة',
+          'نسخ',
+        ])
+          tester.getRect(
+            find.ancestor(of: find.text(label), matching: find.byType(InkWell)),
+          ),
+      ];
+      final rows = tiles.map((r) => r.top.round()).toSet().toList()..sort();
+      expect(rows, hasLength(2));
+      expect(rows.first, greaterThan(reflect.bottom));
+      expect(tiles.where((r) => r.top.round() == rows.first), hasLength(4));
+      expect(tiles.where((r) => r.top.round() == rows.last), hasLength(3));
+      for (final r in tiles) {
+        expect(r.width, closeTo(tiles.first.width, 0.5));
       }
+      expect(tester.takeException(), isNull);
     });
   });
 
@@ -162,8 +182,7 @@ void main() {
       expect(
         hasReducedSpacing,
         isTrue,
-        reason:
-            'Intro screen option must be raised by ~10px using SizedBox(height: 6)',
+        reason: 'Intro screen option must be raised by ~10px using SizedBox(height: 6)',
       );
     });
   });

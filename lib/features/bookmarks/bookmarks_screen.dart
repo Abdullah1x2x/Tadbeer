@@ -1,41 +1,34 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../features/bookmarks/bookmark_model.dart';
-import '../../features/quran/data/quran_repository.dart';
+import '../../data/models/bookmark_model.dart';
+import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
+import '../../core/design_system/app_icons.dart';
 
-/// شاشة عرض قائمة الإشارات المرجعية للانتقال السريع إلى مواضع الآيات في المصحف.
-///
-/// Screen listing all bookmarked ayahs for quick recitation navigation.
-///
-/// Supports instant local search filtering by Surah name, Ayah number, or verse text.
+/// الفواصل، للانتقال السريع إلى مواضعها، مع بحث فوري باسم السورة أو رقم الآية
+/// أو نصها.
 class BookmarksScreen extends StatefulWidget {
-  /// ينشئ شاشة الإشارات المرجعية.
   const BookmarksScreen({super.key});
 
-  /// ينشئ حالة شاشة الإشارات المرجعية.
   @override
   State<BookmarksScreen> createState() => _BookmarksScreenState();
 }
 
-/// الحالة الداخلية لشاشة الإشارات المرجعية المسؤولة عن البحث والتصفية الفورية.
 class _BookmarksScreenState extends State<BookmarksScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  /// يحرر موارد متحكم حقل البحث عند إغلاق الشاشة.
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  /// يبني واجهة شاشة الإشارات المرجعية مع حقل البحث وقائمة الفواصل.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -48,7 +41,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
           title: Text(
             l10n.bookmarks,
             style: const TextStyle(
-              fontFamily: 'Amiri',
+              fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -59,27 +52,19 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
             final allBookmarks = UserDataStore.instance.bookmarks;
 
             if (allBookmarks.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.bookmark_border,
-                      size: 64,
-                      color: AppColors.border(context),
+              return EmptyState(
+                icon: AppIcons.bookmarkSimple,
+                title: l10n.noBookmarksYet,
+                hint: l10n.bookmarksEmptyHint,
+                actionLabel: l10n.openMushaf,
+                actionIcon: AppIcons.bookOpenFill,
+                onAction: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => QuranScreen(
+                      initialPage: UserDataStore.instance.readingPosition.page,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.noBookmarksYet,
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 16,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               );
             }
@@ -89,84 +74,36 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
             );
             final bookmarks = allBookmarks.where((item) {
               if (normalizedQuery.isEmpty) return true;
-              final surah = QuranRepository.instance.getSurah(item.surahNumber);
-              final ayah = QuranRepository.instance.getAyah(
+              return QuranRepository.instance.ayahMatches(
                 item.surahNumber,
                 item.ayahNumber,
+                normalizedQuery,
               );
-              final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
-              final ayahTextNorm = ayah != null
-                  ? ArabicSearchNormalizer.normalize(ayah.text)
-                  : '';
-              final ayahNumStr = item.ayahNumber.toString();
-
-              return surahNorm.contains(normalizedQuery) ||
-                  ayahTextNorm.contains(normalizedQuery) ||
-                  ayahNumStr.contains(normalizedQuery);
             }).toList();
 
             return Column(
               children: [
-                // Search Input Field
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                      borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-                      border: Border.all(
-                        color: AppColors.border(context),
-                        width: AppTokens.borderHairline,
-                      ),
-                      boxShadow: AppTokens.cardShadow(isDark: isDark),
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: (val) =>
-                          setState(() => _searchQuery = val.trim()),
-                      decoration: InputDecoration(
-                        hintText: l10n.searchBookmarksHint,
-                        hintStyle: TextStyle(
-                          fontFamily: 'Amiri',
-                          fontSize: 14,
-                          color: isDark
-                              ? AppColors.nightSubtitle
-                              : AppColors.daySubtitle,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search_rounded,
-                          color: AppColors.cyberEmerald,
-                        ),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear_rounded, size: 20),
-                                onPressed: () {
-                                  _searchController.clear();
-                                  setState(() => _searchQuery = '');
-                                },
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                      ),
-                    ),
+                  child: AppSearchField(
+                    controller: _searchController,
+                    hintText: l10n.searchBookmarksHint,
+                    clearTooltip: l10n.clearText,
+                    onChanged: (val) =>
+                        setState(() => _searchQuery = val.trim()),
                   ),
                 ),
 
-                // Bookmarks List / Empty Query Results
                 Expanded(
                   child: bookmarks.isEmpty
                       ? Center(
                           child: Text(
                             l10n.noSearchResults,
                             style: TextStyle(
-                              fontFamily: 'Amiri',
+                              fontFamily: 'IBMPlexSansArabic',
                               fontSize: 15,
                               color: isDark
                                   ? AppColors.nightSubtitle
@@ -210,13 +147,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      l10n.isArabic
-                                          ? 'تم حذف الفاصلة المرجعية'
-                                          : 'Bookmark removed',
-                                    ),
+                                    content: Text(l10n.bookmarkRemoved),
                                     action: SnackBarAction(
-                                      label: l10n.isArabic ? 'تراجع' : 'Undo',
+                                      label: l10n.undo,
                                       onPressed: () {
                                         UserDataStore.instance.putBookmark(
                                           item,
@@ -240,7 +173,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
   }
 }
 
-/// عنصر واجهة يمثل بطاقة إشارة مرجعية واحدة مع اسم السورة ومقتطف الآية.
+/// بطاقة فاصل: اسم السورة ومقتطف من الآية.
 class _BookmarkTile extends StatelessWidget {
   final BookmarkItem item;
   final String surahName;
@@ -248,7 +181,6 @@ class _BookmarkTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
-  /// ينشئ بطاقة الإشارة المرجعية.
   const _BookmarkTile({
     required this.item,
     required this.surahName,
@@ -257,7 +189,6 @@ class _BookmarkTile extends StatelessWidget {
     required this.onDelete,
   });
 
-  /// يبني بطاقة الإشارة المرجعية مع زر الحذف والانتقال للمصحف.
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -282,8 +213,8 @@ class _BookmarkTile extends StatelessWidget {
                 width: AppTokens.borderHairline,
               ),
             ),
-            child: const Icon(
-              Icons.bookmark_rounded,
+            child: Icon(
+              AppIcons.bookmarkSimpleFill,
               color: AppColors.cyberEmerald,
               size: 20,
             ),
@@ -308,7 +239,7 @@ class _BookmarkTile extends StatelessWidget {
                       style: TextStyle(
                         fontFamily:
                             context.currentLanguage == AppLanguage.arabic
-                            ? 'Amiri'
+                            ? 'IBMPlexSansArabic'
                             : null,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -345,27 +276,16 @@ class _BookmarkTile extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, size: 20),
+            icon: appMenuIcon,
             onSelected: (val) {
               if (val == 'delete') onDelete();
             },
             itemBuilder: (_) => [
-              PopupMenuItem(
+              appMenuItem(
                 value: 'delete',
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.delete_outline,
-                      size: 18,
-                      color: Colors.redAccent,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      context.l10n.removeBookmark,
-                      style: const TextStyle(color: Colors.redAccent),
-                    ),
-                  ],
-                ),
+                icon: AppIcons.trash,
+                label: context.l10n.removeBookmark,
+                destructive: true,
               ),
             ],
           ),

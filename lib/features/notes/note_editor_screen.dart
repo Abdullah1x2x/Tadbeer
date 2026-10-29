@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/motion/app_motion.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../core/utils/note_pdf_exporter.dart';
-import '../../features/notes/note_model.dart';
-import '../../features/quran/data/quran_repository.dart';
+import 'note_pdf_exporter.dart';
+import '../../data/models/note_model.dart';
+import '../../data/quran/quran_repository.dart';
+import '../../core/design_system/app_icons.dart';
 
-/// شاشة محرر الملاحظات والخواطر التدبرية بملء الشاشة.
-///
-/// Full-screen, comfortable Arabic note editor for long-form tadbeer reflections.
+/// محرر الخواطر بملء الشاشة، للخواطر الطويلة.
 class NoteEditorScreen extends StatefulWidget {
-  /// الملاحظة الحالية المراد تعديلها، أو فارغة عند إنشاء ملاحظة جديدة.
+  /// الخاطرة المعدّلة، أو null لخاطرة جديدة.
   final NoteItem? existingNote;
 
-  /// ينشئ شاشة محرر الملاحظات.
   const NoteEditorScreen({super.key, this.existingNote});
 
-  /// ينشئ حالة شاشة محرر الملاحظات.
   @override
   State<NoteEditorScreen> createState() => _NoteEditorScreenState();
 }
 
-/// الحالة الداخلية لشاشة محرر الملاحظات وإدارة الحفظ والتصدير.
 class _NoteEditorScreenState extends State<NoteEditorScreen> {
   late final String _initialTitle;
   late final String _initialContent;
@@ -35,7 +31,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   int _wordCount = 0;
   bool _isSaving = false;
 
-  /// يهيئ متحكمات النصوص ويحسب عدد الكلمات والأحرف المبدئي.
   @override
   void initState() {
     super.initState();
@@ -50,27 +45,23 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     });
   }
 
-  /// يتحقق مما إذا كانت هناك تعديلات غير محفوظة في العنوان أو المحتوى.
+  /// هل في العنوان أو المحتوى تعديل لم يُحفظ.
   bool get _hasUnsavedChanges {
     return _titleController.text.trim() != _initialTitle.trim() ||
         _contentController.text.trim() != _initialContent.trim();
   }
 
-  /// يعرض حوار تأكيد أنيق عند محاولة الخروج دون حفظ التغييرات.
+  /// يطلب التأكيد قبل الخروج دون حفظ.
   Future<bool?> _showDiscardConfirmationDialog(BuildContext context) {
     final l10n = context.l10n;
     return AppMotion.showSmoothDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          l10n.isArabic ? 'تغييرات غير محفوظة' : 'Unsaved Changes',
+          l10n.unsavedChanges,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        content: Text(
-          l10n.isArabic
-              ? 'هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟'
-              : 'Do you want to discard your unsaved changes and leave?',
-        ),
+        content: Text(l10n.discardChangesConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -82,14 +73,14 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.isArabic ? 'تجاهل والخروج' : 'Discard'),
+            child: Text(l10n.discard),
           ),
         ],
       ),
     );
   }
 
-  /// يحدث عدّاد الكلمات والأحرف عند تغير النص المدخل.
+  /// يحدّث عدّاد الكلمات والأحرف.
   void _updateCounts(String text) {
     final trimmed = text.trim();
     final words = trimmed.isEmpty
@@ -101,7 +92,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     });
   }
 
-  /// يحرر موارد متحكمات النصوص عند إغلاق الشاشة.
   @override
   void dispose() {
     _titleController.dispose();
@@ -109,7 +99,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     super.dispose();
   }
 
-  /// يحفظ الملاحظة الجديدة أو المعدلة في التخزين المحلي.
   Future<void> _saveNote() async {
     final content = _contentController.text.trim();
     if (content.isEmpty) {
@@ -117,9 +106,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n.isArabic
-                ? 'لا يمكن حفظ ملاحظة فارغة'
-                : 'Cannot save an empty note',
+            l10n.cannotSaveAnEmptyNote,
             textAlign: TextAlign.center,
           ),
         ),
@@ -162,7 +149,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     }
   }
 
-  /// يصدر الملاحظة الحالية إلى ملف PDF ويفتح نافذة المشاركة.
+  /// يصدّر الخاطرة PDF ويفتح المشاركة.
   Future<void> _exportPdf() async {
     final note =
         widget.existingNote ??
@@ -180,20 +167,12 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     } catch (e) {
       if (mounted) {
         final l10n = context.l10n;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              l10n.isArabic
-                  ? 'تعذر تصدير الملاحظة: $e'
-                  : 'Failed to export note: $e',
-            ),
-          ),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.exportNoteFailed(e))));
       }
     }
   }
 
-  /// يبني واجهة محرر الملاحظات مع حقول العنوان والمحتوى وشريط الإحصائيات.
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -222,9 +201,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     existing == null
                         ? l10n.newFreeNote
                         : (isAyahNote
-                              ? (l10n.isArabic
-                                    ? 'تعديل تدبر الآية'
-                                    : 'Edit Ayah Reflection')
+                              ? (l10n.editAyahReflection)
                               : l10n.editNote),
                     style: const TextStyle(
                       fontSize: 17,
@@ -235,9 +212,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 ),
                 const SizedBox(width: 8),
                 FuturisticBadge(
-                  label: _hasUnsavedChanges
-                      ? (l10n.isArabic ? 'غير محفوظ' : 'Unsaved')
-                      : (l10n.isArabic ? 'محفوظ' : 'Saved'),
+                  label: _hasUnsavedChanges ? (l10n.unsaved) : (l10n.saved),
                   color: _hasUnsavedChanges
                       ? AppColors.statusWarning
                       : AppColors.cyberEmerald,
@@ -251,7 +226,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 4),
                   child: FuturisticIconButton(
-                    icon: Icons.picture_as_pdf_outlined,
+                    icon: AppIcons.filePdf,
                     tooltip: l10n.exportPdf,
                     size: 38,
                     iconSize: 20,
@@ -263,7 +238,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 child: FuturisticButton(
                   onPressed: _isSaving ? null : _saveNote,
                   isLoading: _isSaving,
-                  icon: Icons.check,
+                  icon: AppIcons.check,
                   label: l10n.save,
                   color: AppColors.primary(context),
                   padding: const EdgeInsets.symmetric(
@@ -288,7 +263,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Linked Ayah Banner (for Ayah reflection notes)
+                        // الآية المرتبطة، في خواطر الآيات.
                         if (isAyahNote && existing?.ayahText != null) ...[
                           FuturisticCard(
                             accentColor: AppColors.accentGold(context),
@@ -318,7 +293,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                                   : existing.ayahNumber!,
                                             ),
                                             style: TextStyle(
-                                              fontFamily: 'Amiri',
+                                              fontFamily: 'IBMPlexSansArabic',
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                               color: isDark
@@ -364,7 +339,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                           const SizedBox(height: 16),
                         ],
 
-                        // Note Title Field
                         TextField(
                           controller: _titleController,
                           textDirection: context.currentLanguage.direction,
@@ -374,9 +348,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                           ),
                           decoration: InputDecoration(
                             hintText: isAyahNote
-                                ? (l10n.isArabic
-                                      ? 'عنوان التدبر (اختياري)...'
-                                      : 'Reflection title (optional)...')
+                                ? (l10n.reflectionTitleOptional)
                                 : l10n.noteTitle,
                             hintStyle: TextStyle(
                               fontSize: 16,
@@ -400,7 +372,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                         ),
                         const SizedBox(height: 14),
 
-                        // Large comfortable editing area
                         TextField(
                           controller: _contentController,
                           minLines: 12,
@@ -440,7 +411,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                   ),
                 ),
 
-                // Bottom status bar with word & character counts
+                // شريط الحالة: عدد الكلمات والأحرف.
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -460,9 +431,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        l10n.isArabic
-                            ? '${ArabicSearchNormalizer.toArabicDigits(_wordCount)} كلمة · ${ArabicSearchNormalizer.toArabicDigits(_charCount)} حرف'
-                            : '$_wordCount words · $_charCount chars',
+                        l10n.noteWordCharCount(_wordCount, _charCount),
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark
@@ -471,11 +440,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                         ),
                       ),
                       Text(
-                        l10n.isArabic
-                            ? 'حفظ محلي فوري وآمن'
-                            : 'Instant & secure local save',
+                        l10n.instantSecureLocalSave,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           color: isDark
                               ? AppColors.nightSubtitle
                               : AppColors.daySubtitle,

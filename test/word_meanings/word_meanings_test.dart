@@ -4,13 +4,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/quran/data/quran_models.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_models.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/quran/widgets/word_meanings_panel.dart';
-import 'package:tadbeer/features/word_meanings/data/custom_word_meanings.dart';
+import 'package:tadbeer/data/quran/custom_word_meanings.dart';
 import 'package:tadbeer/features/word_meanings/word_meanings_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -90,6 +91,21 @@ void main() {
         (e) => (e['word'] as String).contains('سَرْمَدًا'),
       );
       expect(sarmad['meaning'], equals('دائمًا لا ينقطع'));
+    });
+
+    test('meanings follow the Mushaf order, custom entries included', () {
+      final all = QuranRepository.instance.allWordMeanings;
+      for (var i = 1; i < all.length; i++) {
+        final a = all[i - 1];
+        final b = all[i];
+        expect(
+          (a.surah, a.ayah) == (b.surah, b.ayah) ||
+              a.surah < b.surah ||
+              (a.surah == b.surah && a.ayah < b.ayah),
+          isTrue,
+          reason: '${a.ayahKey} before ${b.ayahKey}',
+        );
+      }
     });
 
     test('2. خلوّ الأصول من ملفات المراجعة المستبعدة: word_meanings_excluded.json is not bundled in assets', () {
@@ -172,10 +188,10 @@ void main() {
       expect(resMeaning, isNotEmpty);
       expect(resMeaning.any((w) => w.meaning.contains('المرعى')), isTrue);
 
-      // Search by distinctive meaning snippet
-      final resSarmad = repo.searchWordMeanings('دائمًا لا ينقطع');
+      // Search by distinctive meaning snippet, typed without diacritics
+      final resSarmad = repo.searchWordMeanings('دائما لا ينقطع');
       expect(resSarmad, isNotEmpty);
-      expect(resSarmad.first.meaning, contains('دائمًا لا ينقطع'));
+      expect(resSarmad.first.meaning, equals('دائمًا لا ينقطع'));
     });
 
     test('6. التصفية حسب السورة: filter by surah number returns only words of that surah', () {
@@ -240,7 +256,7 @@ void main() {
                     onPressed: () {
                       setState(() => currentPage = 2);
                     },
-                    child: const Icon(Icons.arrow_forward),
+                    child: const Icon(AppIcons.arrowRight),
                   ),
                 );
               },

@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/app.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/core/design_system/design_system.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
+import 'package:tadbeer/features/duas/screens/duas_screen.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_intro_screen.dart';
 import 'package:tadbeer/features/notes/note_editor_screen.dart';
@@ -12,6 +14,20 @@ import 'package:tadbeer/features/notes/notes_screen.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/search/search_screen.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
+import 'package:tadbeer/features/tasbeeh/tasbeeh_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
+
+/// Opacity of the floating bar's wrapper (0 while it is hidden for reading).
+double barOpacity(WidgetTester tester) => tester
+    .widget<Opacity>(
+      find
+          .ancestor(
+            of: find.byType(FloatingNavBar),
+            matching: find.byType(Opacity),
+          )
+          .first,
+    )
+    .opacity;
 
 void main() {
   late Directory tempDir;
@@ -21,6 +37,10 @@ void main() {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_ui_test_');
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
+    // A returning user: the first-launch theme picker is behind them.
+    await UserDataStore.instance.updateSettings(
+      UserDataStore.instance.settings.copyWith(themeChosen: true),
+    );
     await QuranRepository.instance.init();
   });
 
@@ -120,19 +140,29 @@ void main() {
       // Check App Title
       expect(find.text('تَدْبِير'), findsOneWidget);
 
-      // Check Main Sections
+      // Check Main Sections (only the selected tab shows its name in the bar)
       expect(find.text('المصحف'), findsOneWidget);
       expect(find.text('الملاحظات'), findsOneWidget);
-      expect(find.text('المحفوظات'), findsOneWidget);
-      expect(find.text('المميزة'), findsOneWidget);
-      expect(find.text('التنبيهات'), findsOneWidget);
+
+      // The floating bar puts the main sections side by side; icon-only
+      // items stay reachable through their tooltips.
+      expect(find.byType(FloatingNavBar), findsOneWidget);
+      for (final label in [
+        'الرئيسية',
+        'المصحف',
+        'الاستغفار',
+        'الأدعية',
+        'المزيد',
+      ]) {
+        expect(find.byTooltip(label), findsOneWidget);
+      }
 
       // Verify side menu button is removed and settings button replaced it
-      expect(find.byIcon(Icons.menu_rounded), findsNothing);
-      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+      expect(find.byIcon(AppIcons.list), findsNothing);
+      expect(find.byIcon(AppIcons.gear), findsOneWidget);
 
       // Verify tapping settings button opens SettingsScreen
-      await tester.tap(find.byIcon(Icons.settings_outlined));
+      await tester.tap(find.byIcon(AppIcons.gear));
       await tester.pumpAndSettle();
       expect(find.byType(SettingsScreen), findsOneWidget);
     });
@@ -151,27 +181,38 @@ void main() {
         await tester.pumpWidget(const TadbeerApp());
         await tester.pumpAndSettle();
 
-        // Tap Quran card on Home
-        await tester.tap(find.text('المصحف').first);
+        // Open the Mushaf tab.
+        await tester.tap(find.byTooltip('المصحف'));
         await tester.pumpAndSettle();
 
         // Should be on QuranScreen
         expect(find.byType(QuranScreen), findsOneWidget);
 
-        // 1. Verify reading bars are hidden by default
-        final animatedOpacityFinder = find.descendant(
-          of: find.byType(SafeArea),
-          matching: find.byType(AnimatedOpacity),
-        ).first;
+        // 1. As a tab, the reader opens with its bars (and the bottom
+        // navigation) visible so the reader can see how to leave.
+        final animatedOpacityFinder = find
+            .descendant(
+              of: find.byType(SafeArea),
+              matching: find.byType(AnimatedOpacity),
+            )
+            .first;
         AnimatedOpacity opacityWidget = tester.widget(animatedOpacityFinder);
-        expect(opacityWidget.opacity, 0.0);
+        expect(opacityWidget.opacity, 1.0);
+        expect(barOpacity(tester), 1.0);
 
-        // 2. Tap on page margin to reveal reading bars
+        // 2. Tapping the page hides the reading bars and the bottom bar...
         await tester.tapAt(const Offset(30, 80));
         await tester.pumpAndSettle();
+        opacityWidget = tester.widget(animatedOpacityFinder);
+        expect(opacityWidget.opacity, 0.0);
+        expect(barOpacity(tester), 0.0);
 
+        // ...and tapping again brings them back.
+        await tester.tapAt(const Offset(30, 80));
+        await tester.pumpAndSettle();
         opacityWidget = tester.widget(animatedOpacityFinder);
         expect(opacityWidget.opacity, 1.0);
+        expect(barOpacity(tester), 1.0);
 
         // Verify Search button and Page Number button exist
         expect(find.byTooltip('البحث'), findsOneWidget);
@@ -219,6 +260,42 @@ void main() {
       },
     );
 
+    testWidgets('Bottom bar switches between the main sections', (
+      WidgetTester tester,
+    ) async {
+      await tester.runAsync(() async {
+        await UserDataStore.instance.updateSettings(
+          UserDataStore.instance.settings.copyWith(
+            hideTadbeerIntroPermanently: true,
+          ),
+        );
+      });
+
+      await tester.pumpWidget(const TadbeerApp());
+      await tester.pumpAndSettle();
+
+      Finder tab(String label) => find.byTooltip(label);
+
+      await tester.tap(tab('المصحف'));
+      await tester.pumpAndSettle();
+      expect(find.byType(QuranScreen), findsOneWidget);
+
+      await tester.tap(tab('الاستغفار'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TasbeehScreen), findsOneWidget);
+      // A tab has nothing to go back to, so no back arrow is shown.
+      expect(find.byType(BackButton), findsNothing);
+
+      await tester.tap(tab('الأدعية'));
+      await tester.pumpAndSettle();
+      expect(find.byType(DuasScreen), findsOneWidget);
+
+      // System back from a tab returns to Home.
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.byType(HomeScreen), findsOneWidget);
+    });
+
     testWidgets('NotesScreen opens NoteEditorScreen and saves a new note', (
       WidgetTester tester,
     ) async {
@@ -234,6 +311,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Open Notes from Home
+      await tester.ensureVisible(find.text('الملاحظات'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('الملاحظات'));
       await tester.pumpAndSettle();
       expect(find.byType(NotesScreen), findsOneWidget);
@@ -255,7 +334,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Tap Save button in AppBar within runAsync for real disk I/O
-      final saveButton = find.byIcon(Icons.check);
+      final saveButton = find.byIcon(AppIcons.check);
       expect(saveButton, findsOneWidget);
       await tester.runAsync(() async {
         await tester.tap(saveButton);
@@ -312,18 +391,34 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(HomeScreen), findsOneWidget);
+        // Only the selected tab (Home) shows its name in the bar.
         expect(find.text('المصحف'), findsOneWidget);
-        expect(find.text('الأدعية'), findsOneWidget);
-        expect(find.text('معاني الكلمات'), findsOneWidget);
+        expect(find.text('وقفاتي'), findsOneWidget);
         expect(find.text('الملاحظات'), findsOneWidget);
+        // Ayah links sit with the shortcuts; word meanings is in «المزيد».
+        expect(find.text('معاني الكلمات'), findsNothing);
         expect(find.text('روابط الآيات'), findsOneWidget);
-        expect(find.text('المحفوظات'), findsOneWidget);
-        expect(find.text('المميزة'), findsOneWidget);
-        expect(find.text('التنبيهات'), findsOneWidget);
-        expect(find.text('النسخ الاحتياطي'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+
+        // Secondary tools live in the "More" tab.
+        await tester.tap(find.byTooltip('المزيد'));
+        await tester.pumpAndSettle();
+        for (final label in [
+          'الملاحظات',
+          'المحفوظات',
+          'المميزة',
+          'التنبيهات',
+          'النسخ الاحتياطي',
+        ]) {
+          await tester.scrollUntilVisible(
+            find.text(label),
+            120,
+            scrollable: find.byType(Scrollable).first,
+          );
+          expect(find.text(label), findsOneWidget);
+        }
         expect(tester.takeException(), isNull);
       },
     );
   });
 }
-

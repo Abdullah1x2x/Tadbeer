@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tadbeer/core/design_system/design_system.dart';
 import 'package:tadbeer/app/app.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/books/book_reader_screen.dart';
-import 'package:tadbeer/features/books/book_repository.dart';
-import 'package:tadbeer/features/books/books_screen.dart';
-import 'package:tadbeer/features/books/curated_books.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/features/books/screens/book_reader_screen.dart';
+import 'package:tadbeer/features/books/data/book_repository.dart';
+import 'package:tadbeer/features/books/screens/books_screen.dart';
+import 'package:tadbeer/features/books/data/curated_books.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_model.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_screen.dart';
 
@@ -18,10 +19,7 @@ Widget buildTestWidget(Widget child) {
       currentLanguage: AppLanguage.arabic,
       strings: const AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: child,
-      ),
+      child: Directionality(textDirection: TextDirection.rtl, child: child),
     ),
   );
 }
@@ -69,17 +67,26 @@ void main() {
       expect(repo.lifetimeTotalCount, initialLifetime + 2);
     });
 
-    test('TasbeehDhikr catalog has 49 authentic items across both sections', () {
-      expect(TasbeehDhikr.defaultDhikrs.length, 49);
-      expect(TasbeehDhikr.istighfarDhikrs.length, 20);
-      expect(TasbeehDhikr.tasbeehDhikrs.length, 29);
-      expect(TasbeehDhikr.categories, containsAll(['استغفار', 'تسبيح']));
+    test(
+      'TasbeehDhikr catalog has 49 authentic items across both sections',
+      () {
+        expect(TasbeehDhikr.defaultDhikrs.length, 49);
+        expect(TasbeehDhikr.istighfarDhikrs.length, 20);
+        expect(TasbeehDhikr.tasbeehDhikrs.length, 29);
+        expect(TasbeehDhikr.categories, containsAll(['استغفار', 'تسبيح']));
 
-      for (final cat in ['استغفار', 'تسبيح']) {
-        final count = TasbeehDhikr.defaultDhikrs.where((d) => d.category == cat).length;
-        expect(count, greaterThan(0), reason: 'Category $cat should have items');
-      }
-    });
+        for (final cat in ['استغفار', 'تسبيح']) {
+          final count = TasbeehDhikr.defaultDhikrs
+              .where((d) => d.category == cat)
+              .length;
+          expect(
+            count,
+            greaterThan(0),
+            reason: 'Category $cat should have items',
+          );
+        }
+      },
+    );
 
     test('TasbeehRepository nextDhikr and previousDhikr cycles correctly', () {
       final total = TasbeehDhikr.defaultDhikrs.length;
@@ -95,7 +102,9 @@ void main() {
       expect(repo.activeDhikr.id, TasbeehDhikr.defaultDhikrs[total - 1].id);
 
       // Testing within scoped pool
-      final pool = TasbeehDhikr.defaultDhikrs.where((d) => d.category == 'تسبيح').toList();
+      final pool = TasbeehDhikr.defaultDhikrs
+          .where((d) => d.category == 'تسبيح')
+          .toList();
       repo.setActiveDhikr(pool.first);
       expect(repo.activeDhikr.id, pool[0].id);
 
@@ -121,7 +130,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('استغفار وتسبيح'), findsOneWidget);
-      expect(find.text(TasbeehDhikr.defaultDhikrs.first.arabicText), findsOneWidget);
+      expect(
+        find.text(TasbeehDhikr.defaultDhikrs.first.arabicText),
+        findsOneWidget,
+      );
 
       final initialCount = repo.currentCount;
       // Tap on the center counting circle area
@@ -177,32 +189,33 @@ void main() {
       expect(repo.activeDhikr.id, firstId);
     });
 
-    testWidgets('TasbeehScreen switches sections between Istighfar and Tasbeeh', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'TasbeehScreen switches sections between Istighfar and Tasbeeh',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
+        await tester.pumpAndSettle();
 
-      expect(repo.activeDhikr.isIstighfar, isTrue);
+        expect(repo.activeDhikr.isIstighfar, isTrue);
 
-      // 1. Switch to Tasbeeh section
-      final tasbeehTab = find.textContaining('التسبيح');
-      expect(tasbeehTab, findsWidgets);
-      await tester.tap(tasbeehTab.first);
-      await tester.pumpAndSettle();
+        // 1. Switch to Tasbeeh section
+        final tasbeehTab = find.textContaining('التسبيح');
+        expect(tasbeehTab, findsWidgets);
+        await tester.tap(tasbeehTab.first);
+        await tester.pumpAndSettle();
 
-      expect(repo.activeDhikr.isTasbeeh, isTrue);
-      expect(repo.activeSection, DhikrSection.tasbeeh);
+        expect(repo.activeDhikr.isTasbeeh, isTrue);
+        expect(repo.activeSection, DhikrSection.tasbeeh);
 
-      // 2. Switch back to Istighfar section
-      final istighfarTab = find.textContaining('الاستغفار');
-      expect(istighfarTab, findsWidgets);
-      await tester.tap(istighfarTab.first);
-      await tester.pumpAndSettle();
+        // 2. Switch back to Istighfar section
+        final istighfarTab = find.textContaining('الاستغفار');
+        expect(istighfarTab, findsWidgets);
+        await tester.tap(istighfarTab.first);
+        await tester.pumpAndSettle();
 
-      expect(repo.activeDhikr.isIstighfar, isTrue);
-      expect(repo.activeSection, DhikrSection.istighfar);
-    });
+        expect(repo.activeDhikr.isIstighfar, isTrue);
+        expect(repo.activeSection, DhikrSection.istighfar);
+      },
+    );
 
     test('TasbeehRepository setActiveSection switches active dhikr between sections', () {
       repo.setActiveSection(DhikrSection.istighfar);
@@ -225,8 +238,12 @@ void main() {
       await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
       await tester.pumpAndSettle();
 
+      // Target chips live in the "count settings" sheet.
+      await tester.tap(find.byTooltip('ضبط العدّ'));
+      await tester.pumpAndSettle();
+
       // Tap 33 target
-      final target33 = find.text('33 مرة');
+      final target33 = find.text('٣٣ مرة');
       expect(target33, findsOneWidget);
       await tester.ensureVisible(target33);
       await tester.tap(target33);
@@ -242,7 +259,7 @@ void main() {
       expect(repo.targetCount, 0);
 
       // Tap 100 target
-      final target100 = find.text('100 مرة');
+      final target100 = find.text('١٠٠ مرة');
       expect(target100, findsOneWidget);
       await tester.ensureVisible(target100);
       await tester.tap(target100);
@@ -267,7 +284,11 @@ void main() {
     testWidgets(
       'TasbeehScreen AppBar has BackButton on right, actions on left, and dhikr text centered',
       (WidgetTester tester) async {
-        await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
+        // The back arrow appears when the screen is pushed (not as a tab).
+        await tester.pumpWidget(buildTestWidget(const SizedBox()));
+        tester
+            .state<NavigatorState>(find.byType(Navigator))
+            .push(MaterialPageRoute(builder: (_) => const TasbeehScreen()));
         await tester.pumpAndSettle();
 
         final backButtonFinder = find.byType(BackButton);
@@ -295,39 +316,44 @@ void main() {
       },
     );
 
-    test('TasbeehDhikr estimated pace calculates smartly and respects override', () {
-      const shortDhikr = TasbeehDhikr(
-        id: 'short',
-        arabicText: 'سبحان الله',
-        englishTranslation: 'Glory be to Allah',
-        virtue: 'تسبيح',
-        category: 'تسبيح',
-      );
-      // 2 words -> 800 + 640 = 1440ms -> 1.4s
-      expect(shortDhikr.estimatedPaceSeconds, 1.4);
-      expect(shortDhikr.estimatedPaceDuration, const Duration(milliseconds: 1400));
+    test(
+      'TasbeehDhikr estimated pace calculates smartly and respects override',
+      () {
+        const shortDhikr = TasbeehDhikr(
+          id: 'short',
+          arabicText: 'سبحان الله',
+          englishTranslation: 'Glory be to Allah',
+          virtue: 'تسبيح',
+          category: 'تسبيح',
+        );
+        // 2 words -> 800 + 640 = 1440ms -> 1.4s
+        expect(shortDhikr.estimatedPaceSeconds, 1.4);
+        expect(
+          shortDhikr.estimatedPaceDuration,
+          const Duration(milliseconds: 1400),
+        );
 
-      const overriddenDhikr = TasbeehDhikr(
-        id: 'custom',
-        arabicText: 'سبحان الله',
-        englishTranslation: 'Glory be to Allah',
-        virtue: 'تسبيح',
-        category: 'تسبيح',
-        paceSeconds: 2.5,
-      );
-      expect(overriddenDhikr.estimatedPaceSeconds, 2.5);
+        const overriddenDhikr = TasbeehDhikr(
+          id: 'custom',
+          arabicText: 'سبحان الله',
+          englishTranslation: 'Glory be to Allah',
+          virtue: 'تسبيح',
+          category: 'تسبيح',
+          paceSeconds: 2.5,
+        );
+        expect(overriddenDhikr.estimatedPaceSeconds, 2.5);
 
-      const longDhikr = TasbeehDhikr(
-        id: 'long',
-        arabicText:
-            'اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت',
-        englishTranslation: 'O Allah, You are my Lord...',
-        virtue: 'استغفار',
-        category: 'استغفار',
-      );
-      expect(longDhikr.estimatedPaceSeconds, greaterThan(4.0));
-      expect(longDhikr.estimatedPaceSeconds, lessThanOrEqualTo(7.0));
-    });
+        const longDhikr = TasbeehDhikr(
+          id: 'long',
+          arabicText: 'اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت',
+          englishTranslation: 'O Allah, You are my Lord...',
+          virtue: 'استغفار',
+          category: 'استغفار',
+        );
+        expect(longDhikr.estimatedPaceSeconds, greaterThan(4.0));
+        expect(longDhikr.estimatedPaceSeconds, lessThanOrEqualTo(7.0));
+      },
+    );
 
     testWidgets(
       'TasbeehScreen auto-counter toggles, adjusts pace, and counts automatically',
@@ -350,8 +376,9 @@ void main() {
         // Tap speed up (-)
         await tester.tap(find.byTooltip('تسريع الوتيرة'));
         await tester.pump();
-        final fasterPaceText =
-            tester.widget<Text>(find.textContaining('إيقاع')).data!;
+        final fasterPaceText = tester
+            .widget<Text>(find.textContaining('إيقاع'))
+            .data!;
         expect(fasterPaceText, isNot(equals(initialPaceText)));
 
         // Tap slow down (+)
@@ -479,37 +506,46 @@ void main() {
       expect(find.text('ملزمة مدارسة الكهف'), findsOneWidget);
     });
 
-    testWidgets('BookReaderScreen renders chapter content and navigates chapters', (
-      WidgetTester tester,
-    ) async {
-      const book = BookModel(
-        id: 'test_book_custom',
-        title: 'ملزمة القواعد الحسان',
-        category: 'ملازم',
-        chapters: [
-          BookChapter(title: 'المبحث الأول: الإخلاص', content: 'نص المبحث الأول عن الإخلاص'),
-          BookChapter(title: 'المبحث الثاني: التدبر', content: 'نص المبحث الثاني عن التدبر'),
-        ],
-      );
+    testWidgets(
+      'BookReaderScreen renders chapter content and navigates chapters',
+      (WidgetTester tester) async {
+        const book = BookModel(
+          id: 'test_book_custom',
+          title: 'ملزمة القواعد الحسان',
+          category: 'ملازم',
+          chapters: [
+            BookChapter(
+              title: 'المبحث الأول: الإخلاص',
+              content: 'نص المبحث الأول عن الإخلاص',
+            ),
+            BookChapter(
+              title: 'المبحث الثاني: التدبر',
+              content: 'نص المبحث الثاني عن التدبر',
+            ),
+          ],
+        );
 
-      await tester.pumpWidget(
-        buildTestWidget(const BookReaderScreen(book: book, initialChapterIndex: 0)),
-      );
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          buildTestWidget(
+            const BookReaderScreen(book: book, initialChapterIndex: 0),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('ملزمة القواعد الحسان'), findsOneWidget);
-      expect(find.text('المبحث الأول: الإخلاص'), findsOneWidget);
-      expect(find.text('نص المبحث الأول عن الإخلاص'), findsOneWidget);
+        expect(find.text('ملزمة القواعد الحسان'), findsOneWidget);
+        expect(find.text('المبحث الأول: الإخلاص'), findsOneWidget);
+        expect(find.text('نص المبحث الأول عن الإخلاص'), findsOneWidget);
 
-      // Scroll to Next Chapter button and tap it
-      await tester.ensureVisible(find.text('المبحث التالي'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('المبحث التالي'));
-      await tester.pumpAndSettle();
+        // Scroll to Next Chapter button and tap it
+        await tester.ensureVisible(find.text('المبحث التالي'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('المبحث التالي'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('المبحث الثاني: التدبر'), findsOneWidget);
-      expect(find.text('نص المبحث الثاني عن التدبر'), findsOneWidget);
-    });
+        expect(find.text('المبحث الثاني: التدبر'), findsOneWidget);
+        expect(find.text('نص المبحث الثاني عن التدبر'), findsOneWidget);
+      },
+    );
 
     testWidgets('BookReaderScreen renders PDF attachment info card', (
       WidgetTester tester,
@@ -535,73 +571,143 @@ void main() {
 
     test('curatedBookSections contains Sayyed Hussein booklets, Ahlulbayt heritage, and Quranic sciences', () {
       expect(curatedBookSections.length, 3);
-      expect(curatedBookSections[0].name, 'تراث وأدعية أهل البيت (عليهم السلام)');
+      expect(
+        curatedBookSections[0].name,
+        'تراث وأدعية أهل البيت (عليهم السلام)',
+      );
       expect(curatedBookSections[1].name, 'علوم وتدبر القرآن الكريم');
       expect(curatedBookSections[2].name, 'ملازم هدي القرآن الكريم');
 
       final malazemSec = curatedBookSections[2];
       expect(malazemSec.books.length, 91);
-      expect(malazemSec.books.every((b) => b.author == 'السيد حسين بدر الدين الحوثي'), isTrue);
-      expect(malazemSec.books.every((b) => b.assetPath != null && b.assetPath!.startsWith('assets/books/malazem/')), isTrue);
-      expect(malazemSec.books.any((b) => b.title.contains('سورة الصف — الدرس الأول')), isTrue);
-      expect(malazemSec.books.any((b) => b.title.contains('سورة الصف — الدرس الثاني')), isTrue);
-      expect(malazemSec.books.any((b) => b.title.contains('وعده ووعيده — الدرس التاسع')), isTrue);
-      expect(malazemSec.books.any((b) => b.title.contains('مسؤولية أهل البيت')), isTrue);
-      expect(malazemSec.books.any((b) => b.title.contains('الثقافة القرآنية')), isTrue);
-      final saff1 = malazemSec.books.firstWhere((b) => b.title.contains('سورة الصف — الدرس الأول'));
+      expect(
+        malazemSec.books.every(
+          (b) => b.author == 'السيد حسين بدر الدين الحوثي',
+        ),
+        isTrue,
+      );
+      expect(
+        malazemSec.books.every(
+          (b) =>
+              b.assetPath != null &&
+              b.assetPath!.startsWith('assets/books/malazem/'),
+        ),
+        isTrue,
+      );
+      expect(
+        malazemSec.books.any(
+          (b) => b.title.contains('سورة الصف — الدرس الأول'),
+        ),
+        isTrue,
+      );
+      expect(
+        malazemSec.books.any(
+          (b) => b.title.contains('سورة الصف — الدرس الثاني'),
+        ),
+        isTrue,
+      );
+      expect(
+        malazemSec.books.any(
+          (b) => b.title.contains('وعده ووعيده — الدرس التاسع'),
+        ),
+        isTrue,
+      );
+      expect(
+        malazemSec.books.any((b) => b.title.contains('مسؤولية أهل البيت')),
+        isTrue,
+      );
+      expect(
+        malazemSec.books.any((b) => b.title.contains('الثقافة القرآنية')),
+        isTrue,
+      );
+      final saff1 = malazemSec.books.firstWhere(
+        (b) => b.title.contains('سورة الصف — الدرس الأول'),
+      );
       expect(saff1.chapters.length, 4);
 
       final ahlulbaytSec = curatedBookSections[0];
       expect(ahlulbaytSec.books.length, 4);
-      expect(ahlulbaytSec.books.any((b) => b.title == 'الصحيفة السجادية الكاملة'), isTrue);
-      final sahifah = ahlulbaytSec.books.firstWhere((b) => b.title == 'الصحيفة السجادية الكاملة');
+      expect(
+        ahlulbaytSec.books.any((b) => b.title == 'الصحيفة السجادية الكاملة'),
+        isTrue,
+      );
+      final sahifah = ahlulbaytSec.books.firstWhere(
+        (b) => b.title == 'الصحيفة السجادية الكاملة',
+      );
       expect(sahifah.chapters.length, 54);
       expect(sahifah.chapters[19].title, 'الدعاء العشرون (مكارم الأخلاق)');
-      expect(sahifah.chapters.every((c) => !c.title.contains('\u06cc') && !c.content.contains('\u06cc')), isTrue);
+      expect(
+        sahifah.chapters.every(
+          (c) => !c.title.contains('\u06cc') && !c.content.contains('\u06cc'),
+        ),
+        isTrue,
+      );
 
       expect(ahlulbaytSec.books.any((b) => b.title == 'رسالة الحقوق'), isTrue);
-      final huquq = ahlulbaytSec.books.firstWhere((b) => b.title == 'رسالة الحقوق');
+      final huquq = ahlulbaytSec.books.firstWhere(
+        (b) => b.title == 'رسالة الحقوق',
+      );
       expect(huquq.chapters.length, 17);
 
-      expect(ahlulbaytSec.books.any((b) => b.title.contains('نهج البلاغة')), isTrue);
-      expect(ahlulbaytSec.books.any((b) => b.title.contains('تحف العقول')), isTrue);
+      expect(
+        ahlulbaytSec.books.any((b) => b.title.contains('نهج البلاغة')),
+        isTrue,
+      );
+      expect(
+        ahlulbaytSec.books.any((b) => b.title.contains('تحف العقول')),
+        isTrue,
+      );
 
       final quranSciencesSec = curatedBookSections[1];
       expect(quranSciencesSec.books.length, 3);
-      expect(quranSciencesSec.books.any((b) => b.title.contains('أخلاق حَمَلَة القرآن')), isTrue);
-      expect(quranSciencesSec.books.any((b) => b.title.contains('قواعد وأصول في تدبر القرآن')), isTrue);
-      expect(quranSciencesSec.books.any((b) => b.title.contains('التبيان')), isTrue);
+      expect(
+        quranSciencesSec.books.any(
+          (b) => b.title.contains('أخلاق حَمَلَة القرآن'),
+        ),
+        isTrue,
+      );
+      expect(
+        quranSciencesSec.books.any(
+          (b) => b.title.contains('قواعد وأصول في تدبر القرآن'),
+        ),
+        isTrue,
+      );
+      expect(
+        quranSciencesSec.books.any((b) => b.title.contains('التبيان')),
+        isTrue,
+      );
     });
 
-    testWidgets('BooksScreen renders sections, navigates into Sayyed Hussein, and filters', (
-      WidgetTester tester,
-    ) async {
-      await BookRepository.instance.init(disableDisk: true);
-      await tester.pumpWidget(buildTestWidget(const BooksScreen()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'BooksScreen renders sections, navigates into Sayyed Hussein, and filters',
+      (WidgetTester tester) async {
+        await BookRepository.instance.init(disableDisk: true);
+        await tester.pumpWidget(buildTestWidget(const BooksScreen()));
+        await tester.pumpAndSettle();
 
-      expect(find.text('كتب وملازم'), findsWidgets);
+        expect(find.text('كتب وملازم'), findsWidgets);
 
-      // Section cards exist in the directory
-      expect(find.textContaining('ملازم هدي القرآن الكريم'), findsWidgets);
-      expect(find.textContaining('تراث وأدعية أهل البيت'), findsWidgets);
-      expect(find.textContaining('علوم وتدبر القرآن الكريم'), findsWidgets);
+        // Section cards exist in the directory
+        expect(find.textContaining('ملازم هدي القرآن الكريم'), findsWidgets);
+        expect(find.textContaining('تراث وأدعية أهل البيت'), findsWidgets);
+        expect(find.textContaining('علوم وتدبر القرآن الكريم'), findsWidgets);
 
-      // Tap on 'ملازم هدي القرآن الكريم' section card to enter the section
-      final malazemCard = find.textContaining('ملازم هدي القرآن الكريم');
-      await tester.tap(malazemCard.first);
-      await tester.pumpAndSettle();
+        // Tap on 'ملازم هدي القرآن الكريم' section card to enter the section
+        final malazemCard = find.textContaining('ملازم هدي القرآن الكريم');
+        await tester.tap(malazemCard.first);
+        await tester.pumpAndSettle();
 
-      // Inside BookSectionScreen: verify series filter chips appear
-      expect(find.textContaining('معرفة الله'), findsWidgets);
-      expect(find.textContaining('مديح القرآن'), findsWidgets);
+        // Inside BookSectionScreen: verify series filter chips appear
+        expect(find.textContaining('معرفة الله'), findsWidgets);
+        expect(find.textContaining('مديح القرآن'), findsWidgets);
 
-      // Search for specific booklet title inside the section
-      await tester.enterText(find.byType(TextField), 'يوم القدس العالمي');
-      await tester.pump();
+        // Search for specific booklet title inside the section
+        await tester.enterText(find.byType(TextField), 'يوم القدس العالمي');
+        await tester.pump();
 
-      expect(find.textContaining('يوم القدس العالمي'), findsWidgets);
-    });
+        expect(find.textContaining('يوم القدس العالمي'), findsWidgets);
+      },
+    );
   });
 
   group('HomeScreen Integration Tests', () {
@@ -612,6 +718,7 @@ void main() {
         await UserDataStore.instance.updateSettings(
           UserDataStore.instance.settings.copyWith(
             hideTadbeerIntroPermanently: true,
+            themeChosen: true,
           ),
         );
       });
@@ -619,20 +726,17 @@ void main() {
       await tester.pumpWidget(const TadbeerApp());
       await tester.pumpAndSettle();
 
-      // Check existence of sections on HomeScreen
-      expect(find.text('استغفار وتسبيح'), findsOneWidget);
+      // Istighfar lives in its bar tab; the books stay on Home.
+      expect(find.text('استغفار وتسبيح'), findsNothing);
       expect(find.text('كتب وملازم'), findsOneWidget);
 
-      // Ensure visible and tap on 'استغفار وتسبيح'
-      await tester.ensureVisible(find.text('استغفار وتسبيح'));
+      await tester.tap(find.byTooltip('الاستغفار'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('استغفار وتسبيح'));
-      await tester.pumpAndSettle();
-
       expect(find.byType(TasbeehScreen), findsOneWidget);
+      expect(find.byType(FloatingNavBar), findsOneWidget);
 
-      // Pop back to HomeScreen
-      await tester.pageBack();
+      // Back to Home through the bottom bar
+      await tester.tap(find.byTooltip('الرئيسية'));
       await tester.pumpAndSettle();
       expect(find.byType(HomeScreen), findsOneWidget);
 

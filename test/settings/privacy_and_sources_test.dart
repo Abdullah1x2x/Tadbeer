@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/core/storage/user_database.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/storage/user_database.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
+import 'package:tadbeer/core/design_system/app_icons.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -59,7 +60,9 @@ void main() {
         // Verify Privacy Policy bottom sheet opened
         expect(find.text('ميثاق الخصوصية والأمان'), findsOneWidget);
         expect(
-          find.text('التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)'),
+          find.text(
+            'التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)',
+          ),
           findsOneWidget,
         );
         expect(
@@ -72,14 +75,16 @@ void main() {
         );
 
         // Close the modal sheet
-        final closeButton = find.byIcon(Icons.close_rounded);
+        final closeButton = find.byIcon(AppIcons.x);
         expect(closeButton, findsOneWidget);
         await tester.tap(closeButton);
         await tester.pumpAndSettle();
 
         // Verify sheet is closed
         expect(
-          find.text('التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)'),
+          find.text(
+            'التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)',
+          ),
           findsNothing,
         );
       },
@@ -104,13 +109,21 @@ void main() {
           await tester.pumpAndSettle();
         }
 
-        final sourcesFinder = find.textContaining('مشروع تنزيل (Tanzil Project');
+        final sourcesFinder = find.textContaining(
+          'مشروع تنزيل (Tanzil Project',
+        );
 
         // Verify Sources card text includes Tanzil, Quranpedia, Books/Malazem, Ahlulbayt, and Tasbeeh
         expect(sourcesFinder, findsOneWidget);
-        expect(find.textContaining('الموسوعة القرآنية (Quranpedia.net'), findsOneWidget);
+        expect(
+          find.textContaining('الموسوعة القرآنية (Quranpedia.net'),
+          findsOneWidget,
+        );
         expect(find.textContaining('ملازم هدي القرآن الكريم'), findsOneWidget);
-        expect(find.textContaining('الصحيفة السجادية، رسالة الحقوق، نهج البلاغة'), findsOneWidget);
+        expect(
+          find.textContaining('الصحيفة السجادية، رسالة الحقوق، نهج البلاغة'),
+          findsOneWidget,
+        );
         expect(find.textContaining('باقة الاستغفار والتسبيح'), findsOneWidget);
       },
     );
@@ -136,11 +149,24 @@ void main() {
 
         expect(find.text('Sources & Documentation:'), findsOneWidget);
 
-        final sourcesFinder = find.textContaining('Holy Quran Text: Tanzil Project');
+        final sourcesFinder = find.textContaining(
+          'Holy Quran Text: Tanzil Project',
+        );
         expect(sourcesFinder, findsOneWidget);
-        expect(find.textContaining('Quran Vocabulary Lexicon: Quranic Encyclopedia'), findsOneWidget);
-        expect(find.textContaining('Lessons from the Guidance of the Holy Quran'), findsOneWidget);
-        expect(find.textContaining('Supplications, Adhkar & Tasbeeh: 88 Quranic duas'), findsOneWidget);
+        expect(
+          find.textContaining('Quran Vocabulary Lexicon: Quranic Encyclopedia'),
+          findsOneWidget,
+        );
+        expect(
+          find.textContaining('Lessons from the Guidance of the Holy Quran'),
+          findsOneWidget,
+        );
+        expect(
+          find.textContaining(
+            'Supplications, Adhkar & Tasbeeh: 88 Quranic duas',
+          ),
+          findsOneWidget,
+        );
         expect(find.text('Privacy Policy'), findsOneWidget);
         expect(find.text('Open Source Licenses'), findsOneWidget);
       },
