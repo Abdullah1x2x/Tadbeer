@@ -419,6 +419,24 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     }
   }
 
+  /// زرا تصغير الخط وتكبيره، وبينهما حجمه الحالي.
+  List<Widget> _fontSizeControls() => [
+    IconButton(
+      tooltip: context.l10n.decreaseFontSize,
+      icon: const Icon(AppIcons.minus, size: 20),
+      onPressed: _fontSize > 14 ? () => setState(() => _fontSize -= 1.5) : null,
+    ),
+    Text(
+      '${_fontSize.toInt()}',
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+    ),
+    IconButton(
+      tooltip: context.l10n.increaseFontSize,
+      icon: const Icon(AppIcons.plus, size: 20),
+      onPressed: _fontSize < 28 ? () => setState(() => _fontSize += 1.5) : null,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -857,27 +875,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 ),
               ),
               const Spacer(),
-              IconButton(
-                tooltip: context.l10n.decreaseFontSize,
-                icon: const Icon(AppIcons.minus, size: 20),
-                onPressed: _fontSize > 14
-                    ? () => setState(() => _fontSize -= 1.5)
-                    : null,
-              ),
-              Text(
-                '${_fontSize.toInt()}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-              IconButton(
-                tooltip: context.l10n.increaseFontSize,
-                icon: const Icon(AppIcons.plus, size: 20),
-                onPressed: _fontSize < 28
-                    ? () => setState(() => _fontSize += 1.5)
-                    : null,
-              ),
+              ..._fontSizeControls(),
             ],
           ),
         ),
@@ -1027,27 +1025,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 ),
               ),
               const Spacer(),
-              IconButton(
-                tooltip: context.l10n.decreaseFontSize,
-                icon: const Icon(AppIcons.minus, size: 20),
-                onPressed: _fontSize > 14
-                    ? () => setState(() => _fontSize -= 1.5)
-                    : null,
-              ),
-              Text(
-                '${_fontSize.toInt()}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                ),
-              ),
-              IconButton(
-                tooltip: context.l10n.increaseFontSize,
-                icon: const Icon(AppIcons.plus, size: 20),
-                onPressed: _fontSize < 28
-                    ? () => setState(() => _fontSize += 1.5)
-                    : null,
-              ),
+              ..._fontSizeControls(),
             ],
           ),
         ),

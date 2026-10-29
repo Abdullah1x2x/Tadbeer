@@ -340,247 +340,166 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     );
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (bottomSheetCtx) {
-        return Directionality(
-          textDirection: context.currentLanguage.direction,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
+    _showInspectorSheet(
+      header: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            context.l10n.isArabic
+                ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
+                : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
+            style: TextStyle(
+              fontFamily: 'IBMPlexSansArabic',
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: AppColors.olive,
+            ),
+          ),
+          Text(
+            context.l10n.isArabic
+                ? 'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}'
+                : 'p. ${verse.page}',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: AppColors.olive,
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (ayah != null)
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkBackground : AppColors.comsilk,
+                borderRadius: BorderRadius.circular(12),
               ),
-              border: Border.all(
-                color: isDark
-                    ? AppColors.darkSurfaceVariant
-                    : AppColors.lightBorder,
+              child: Text(
+                '﴿ ${ayah.text} ﴾',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'AmiriQuran',
+                  fontSize: 18,
+                  height: 1.8,
+                  color: isDark
+                      ? AppColors.nightQuranText
+                      : AppColors.dayQuranText,
+                ),
               ),
             ),
-            child: SafeArea(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.85,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withValues(alpha: 0.4),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
+          const SizedBox(height: 12),
+
+          // الخاطرة: من الرابط، أو خاطرة القارئ، أو وقفة
+          // التدبر.
+          () {
+            final effectiveNote = verse.getEffectiveNote();
+            if (effectiveNote != null && effectiveNote.isNotEmpty) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.olive.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: AppColors.olive.withValues(alpha: 0.3),
                     ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          context.l10n.isArabic
-                              ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)}'
-                              : 'Surah ${surah.name} · Verse ${verse.ayahNumber}',
-                          style: TextStyle(
-                            fontFamily: 'IBMPlexSansArabic',
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.olive,
-                          ),
-                        ),
-                        Text(
-                          context.l10n.isArabic
-                              ? 'ص ${ArabicSearchNormalizer.toArabicDigits(verse.page)}'
-                              : 'p. ${verse.page}',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.olive,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            if (ayah != null)
-                              Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: isDark
-                                      ? AppColors.darkBackground
-                                      : AppColors.comsilk,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  '﴿ ${ayah.text} ﴾',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'AmiriQuran',
-                                    fontSize: 18,
-                                    height: 1.8,
-                                    color: isDark
-                                        ? AppColors.nightQuranText
-                                        : AppColors.dayQuranText,
-                                  ),
-                                ),
-                              ),
-                            const SizedBox(height: 12),
-
-                            // الخاطرة: من الرابط، أو خاطرة القارئ، أو وقفة
-                            // التدبر.
-                            () {
-                              final effectiveNote = verse.getEffectiveNote();
-                              if (effectiveNote != null &&
-                                  effectiveNote.isNotEmpty) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 14),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.olive.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: AppColors.olive.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              AppIcons.note,
-                                              size: 16,
-                                              color: AppColors.olive,
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              context.l10n.reflectionNoteColon,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.olive,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Text(
-                                          effectiveNote,
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            height: 1.5,
-                                            color: isDark
-                                                ? AppColors.nightSubtitle
-                                                : AppColors.daySubtitle,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            }(),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pop(bottomSheetCtx);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => QuranScreen(
-                                    initialPage: verse.page,
-                                    targetSurahNumber: verse.surahNumber,
-                                    targetAyahNumber: verse.ayahNumber,
-                                  ),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.olive,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            icon: const Icon(AppIcons.bookOpenFill, size: 18),
-                            label: Text(
-                              context.l10n.openInQuran,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(AppIcons.note, size: 16, color: AppColors.olive),
+                          const SizedBox(width: 6),
+                          Text(
+                            context.l10n.reflectionNoteColon,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.olive,
                             ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        effectiveNote,
+                        style: TextStyle(
+                          fontSize: 13,
+                          height: 1.5,
+                          color: isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle,
                         ),
-                        const SizedBox(width: 8),
-
-                        IconButton.filledTonal(
-                          icon: const Icon(AppIcons.notePencil, size: 20),
-                          tooltip: context.l10n.reflectionNote,
-                          onPressed: () {
-                            Navigator.pop(bottomSheetCtx);
-                            editAyahLinkVerseNote(
-                              context,
-                              widget.link.id,
-                              verse,
-                            );
-                          },
-                        ),
-                        const SizedBox(width: 6),
-
-                        IconButton.filledTonal(
-                          icon: const Icon(
-                            AppIcons.trash,
-                            size: 20,
-                            color: Colors.redAccent,
-                          ),
-                          tooltip: context.l10n.removeVerseFromLink,
-                          onPressed: () {
-                            Navigator.pop(bottomSheetCtx);
-                            confirmRemoveAyahLinkVerse(
-                              context,
-                              widget.link.id,
-                              verse,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
+              );
+            }
+            return const SizedBox.shrink();
+          }(),
+        ],
+      ),
+      actions: (bottomSheetCtx) => Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(bottomSheetCtx);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => QuranScreen(
+                      initialPage: verse.page,
+                      targetSurahNumber: verse.surahNumber,
+                      targetAyahNumber: verse.ayahNumber,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.olive,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              icon: const Icon(AppIcons.bookOpenFill, size: 18),
+              label: Text(
+                context.l10n.openInQuran,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ),
-        );
-      },
+          const SizedBox(width: 8),
+
+          IconButton.filledTonal(
+            icon: const Icon(AppIcons.notePencil, size: 20),
+            tooltip: context.l10n.reflectionNote,
+            onPressed: () {
+              Navigator.pop(bottomSheetCtx);
+              editAyahLinkVerseNote(context, widget.link.id, verse);
+            },
+          ),
+          const SizedBox(width: 6),
+
+          IconButton.filledTonal(
+            icon: const Icon(AppIcons.trash, size: 20, color: Colors.redAccent),
+            tooltip: context.l10n.removeVerseFromLink,
+            onPressed: () {
+              Navigator.pop(bottomSheetCtx);
+              confirmRemoveAyahLinkVerse(context, widget.link.id, verse);
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -614,188 +533,173 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasTitle = note.title != null && note.title!.trim().isNotEmpty;
 
+    _showInspectorSheet(
+      header: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary
+                  .withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              AppIcons.noteFill,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              hasTitle
+                  ? note.title!.trim()
+                  : (context.l10n.isArabic
+                        ? 'كرت ملاحظة تدبرية'
+                        : 'Reflection Note Card'),
+              style: TextStyle(
+                fontFamily: 'IBMPlexSansArabic',
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkBackground : AppColors.comsilk,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: SelectableText(
+          note.content,
+          style: TextStyle(
+            fontSize: 14.5,
+            height: 1.6,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightPrimaryDark,
+          ),
+        ),
+      ),
+      actions: (bottomSheetCtx) => Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(bottomSheetCtx);
+                Clipboard.setData(ClipboardData(text: note.content));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      context.l10n.isArabic
+                          ? 'تم نسخ نص الملاحظة إلى الحافظة'
+                          : 'Note copied to clipboard',
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.olive,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              icon: const Icon(AppIcons.copy, size: 18),
+              label: Text(
+                context.l10n.isArabic ? 'نسخ النص' : 'Copy Text',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          IconButton.filledTonal(
+            icon: const Icon(AppIcons.notePencil, size: 20),
+            tooltip: context.l10n.isArabic ? 'تعديل الملاحظة' : 'Edit Note',
+            onPressed: () {
+              Navigator.pop(bottomSheetCtx);
+              editAyahLinkNoteCard(context, widget.link.id, note);
+            },
+          ),
+          const SizedBox(width: 6),
+
+          IconButton.filledTonal(
+            icon: const Icon(AppIcons.trash, size: 20, color: Colors.redAccent),
+            tooltip: context.l10n.isArabic ? 'حذف الملاحظة' : 'Delete Note',
+            onPressed: () {
+              Navigator.pop(bottomSheetCtx);
+              confirmDeleteAyahLinkNoteCard(context, widget.link.id, note);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// إطار لوحة تفاصيل العقدة: مقبض، ورأس، ومحتوى يُمرَّر، وصف أزرار.
+  ///
+  /// [actions] تأخذ سياق اللوحة لتغلقها.
+  void _showInspectorSheet({
+    required Widget header,
+    required Widget body,
+    required Widget Function(BuildContext sheetContext) actions,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (bottomSheetCtx) {
-        return Directionality(
-          textDirection: context.currentLanguage.direction,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
-              border: Border.all(
-                color: isDark
-                    ? AppColors.darkSurfaceVariant
-                    : AppColors.lightBorder,
-              ),
+      builder: (bottomSheetCtx) => Directionality(
+        textDirection: context.currentLanguage.direction,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            border: Border.all(
+              color: isDark
+                  ? AppColors.darkSurfaceVariant
+                  : AppColors.lightBorder,
             ),
-            child: SafeArea(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.85,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withValues(alpha: 0.4),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
+          ),
+          child: SafeArea(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.85,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary
-                                .withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            AppIcons.noteFill,
-                            size: 20,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            hasTitle
-                                ? note.title!.trim()
-                                : (context.l10n.isArabic
-                                      ? 'كرت ملاحظة تدبرية'
-                                      : 'Reflection Note Card'),
-                            style: TextStyle(
-                              fontFamily: 'IBMPlexSansArabic',
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-
-                    Flexible(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? AppColors.darkBackground
-                                : AppColors.comsilk,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: SelectableText(
-                            note.content,
-                            style: TextStyle(
-                              fontSize: 14.5,
-                              height: 1.6,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightPrimaryDark,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pop(bottomSheetCtx);
-                              Clipboard.setData(
-                                ClipboardData(text: note.content),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    context.l10n.isArabic
-                                        ? 'تم نسخ نص الملاحظة إلى الحافظة'
-                                        : 'Note copied to clipboard',
-                                  ),
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .primary,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.olive,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            icon: const Icon(AppIcons.copy, size: 18),
-                            label: Text(
-                              context.l10n.isArabic ? 'نسخ النص' : 'Copy Text',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-
-                        IconButton.filledTonal(
-                          icon: const Icon(AppIcons.notePencil, size: 20),
-                          tooltip: context.l10n.isArabic
-                              ? 'تعديل الملاحظة'
-                              : 'Edit Note',
-                          onPressed: () {
-                            Navigator.pop(bottomSheetCtx);
-                            editAyahLinkNoteCard(context, widget.link.id, note);
-                          },
-                        ),
-                        const SizedBox(width: 6),
-
-                        IconButton.filledTonal(
-                          icon: const Icon(
-                            AppIcons.trash,
-                            size: 20,
-                            color: Colors.redAccent,
-                          ),
-                          tooltip: context.l10n.isArabic
-                              ? 'حذف الملاحظة'
-                              : 'Delete Note',
-                          onPressed: () {
-                            Navigator.pop(bottomSheetCtx);
-                            confirmDeleteAyahLinkNoteCard(
-                              context,
-                              widget.link.id,
-                              note,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                  ),
+                  header,
+                  const SizedBox(height: 12),
+                  Flexible(child: SingleChildScrollView(child: body)),
+                  const SizedBox(height: 12),
+                  actions(bottomSheetCtx),
+                ],
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
