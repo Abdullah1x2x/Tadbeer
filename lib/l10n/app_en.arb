@@ -693,5 +693,9 @@
   "linkDeleted": "Link \"{title}\" deleted",
   "itemCopied": "{title} copied to clipboard",
   "duaAlert": "Note: {text}",
-  "questionOfTotal": "Question {number} of {total}"
+  "questionOfTotal": "Question {number} of {total}",
+  "permissionsTitle": "App permissions",
+  "permissionsBody": "Tadbeer needs notification and alarm permissions to remind you of your portion and adhkar on time, even when the app is closed. Nothing leaves your device.",
+  "permissionsAllow": "Allow",
+  "permissionsLater": "Later"
 }

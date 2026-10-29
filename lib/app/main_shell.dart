@@ -8,6 +8,7 @@ import '../features/home/home_screen.dart';
 import '../features/more/more_screen.dart';
 import '../features/quran/screens/quran_screen.dart';
 import '../features/quran/widgets/ayah_rosette.dart';
+import '../features/reminders/startup_permissions.dart';
 import '../features/tasbeeh/tasbeeh_screen.dart';
 import 'app.dart';
 import 'localization.dart';
@@ -72,6 +73,9 @@ class _MainShellState extends State<MainShell>
     super.initState();
     MainShell._mountedCount++;
     MainShell.requestedTab.addListener(_onTabRequested);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) StartupPermissions.askOnce(context);
+    });
   }
 
   void _onTabRequested() {

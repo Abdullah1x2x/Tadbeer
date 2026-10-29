@@ -2194,4 +2194,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String questionOfTotal(String number, String total) {
     return 'Question $number of $total';
   }
+
+  @override
+  String get permissionsTitle => 'App permissions';
+
+  @override
+  String get permissionsBody =>
+      'Tadbeer needs notification and alarm permissions to remind you of your portion and adhkar on time, even when the app is closed. Nothing leaves your device.';
+
+  @override
+  String get permissionsAllow => 'Allow';
+
+  @override
+  String get permissionsLater => 'Later';
 }

@@ -93,6 +93,21 @@ void main() {
       expect(sarmad['meaning'], equals('دائما لا ينقطع'));
     });
 
+    test('meanings follow the Mushaf order, custom entries included', () {
+      final all = QuranRepository.instance.allWordMeanings;
+      for (var i = 1; i < all.length; i++) {
+        final a = all[i - 1];
+        final b = all[i];
+        expect(
+          (a.surah, a.ayah) == (b.surah, b.ayah) ||
+              a.surah < b.surah ||
+              (a.surah == b.surah && a.ayah < b.ayah),
+          isTrue,
+          reason: '${a.ayahKey} before ${b.ayahKey}',
+        );
+      }
+    });
+
     test('2. خلوّ الأصول من ملفات المراجعة المستبعدة: word_meanings_excluded.json is not bundled in assets', () {
       final file = File('assets/quran/word_meanings_excluded.json');
       expect(file.existsSync(), isFalse);

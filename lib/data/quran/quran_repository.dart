@@ -75,55 +75,50 @@ class QuranRepository {
       }
     }
 
-    // معاني الكلمات (السراج في بيان غريب القرآن).
+    // معاني الكلمات (السراج في بيان غريب القرآن)، ومعها ما أضافه المطور في
+    // [customWordMeanings].
+    final meanings = <QuranWordMeaning>[];
     try {
       final meaningsString = await rootBundle.loadString(
         'assets/quran/word_meanings.json',
       );
       final rawMeanings = jsonDecode(meaningsString) as List<dynamic>;
-      _wordMeanings.clear();
-      _wordMeaningsByPage.clear();
-      _wordMeaningsBySurah.clear();
-      _normalizedWordOnly.clear();
-      _normalizedMeaningOnly.clear();
-
       for (final item in rawMeanings) {
         final map = item as Map<String, dynamic>;
         final surahNum = (map['surah'] ?? map['surah_number']) as int? ?? 1;
         final ayahNum = (map['ayah'] ?? map['ayah_number']) as int? ?? 1;
-        final ayah = _ayahsByKey['$surahNum:$ayahNum'];
-        final pageNum = ayah?.page ?? 1;
-
-        final wordMeaning = QuranWordMeaning.fromJson(map, page: pageNum);
-        _wordMeanings.add(wordMeaning);
-        _wordMeaningsByPage.putIfAbsent(pageNum, () => []).add(wordMeaning);
-        _wordMeaningsBySurah.putIfAbsent(surahNum, () => []).add(wordMeaning);
-        final normWord = ArabicSearchNormalizer.normalize(wordMeaning.word);
-        final normMeaning = ArabicSearchNormalizer.normalize(
-          wordMeaning.meaning,
-        );
-        _normalizedWordOnly.add(normWord);
-        _normalizedMeaningOnly.add(normMeaning);
+        final pageNum = _ayahsByKey['$surahNum:$ayahNum']?.page ?? 1;
+        meanings.add(QuranWordMeaning.fromJson(map, page: pageNum));
       }
     } catch (_) {
       // في الاختبارات المعزولة قد لا تُتاح ملفات الأصول، فتُكمل البيانات
       // بدونها.
     }
-
-    // دمج المعاني التي أضافها المطور في [customWordMeanings].
     for (final customItem in customWordMeanings) {
       final ayah = _ayahsByKey['${customItem.surah}:${customItem.ayah}'];
-      final pageNum = ayah?.page ?? 1;
-      final wordMeaning = customItem.toQuranWordMeaning(pageNum);
-      _wordMeanings.add(wordMeaning);
-      _wordMeaningsByPage.putIfAbsent(pageNum, () => []).add(wordMeaning);
-      _wordMeaningsBySurah
-          .putIfAbsent(customItem.surah, () => [])
-          .add(wordMeaning);
-      final normWord = ArabicSearchNormalizer.normalize(wordMeaning.word);
-      final normMeaning = ArabicSearchNormalizer.normalize(wordMeaning.meaning);
-      _normalizedWordOnly.add(normWord);
-      _normalizedMeaningOnly.add(normMeaning);
+      meanings.add(customItem.toQuranWordMeaning(ayah?.page ?? 1));
+    }
+
+    // بترتيب المصحف: السورة ثم الآية، وكلمات الآية الواحدة على ترتيبها.
+    final order = {for (final (i, m) in meanings.indexed) m: i};
+    meanings.sort((a, b) {
+      final bySurah = a.surah.compareTo(b.surah);
+      if (bySurah != 0) return bySurah;
+      final byAyah = a.ayah.compareTo(b.ayah);
+      return byAyah != 0 ? byAyah : order[a]!.compareTo(order[b]!);
+    });
+
+    _wordMeanings.clear();
+    _wordMeaningsByPage.clear();
+    _wordMeaningsBySurah.clear();
+    _normalizedWordOnly.clear();
+    _normalizedMeaningOnly.clear();
+    for (final m in meanings) {
+      _wordMeanings.add(m);
+      _wordMeaningsByPage.putIfAbsent(m.page, () => []).add(m);
+      _wordMeaningsBySurah.putIfAbsent(m.surah, () => []).add(m);
+      _normalizedWordOnly.add(ArabicSearchNormalizer.normalize(m.word));
+      _normalizedMeaningOnly.add(ArabicSearchNormalizer.normalize(m.meaning));
     }
 
     _isLoaded = true;

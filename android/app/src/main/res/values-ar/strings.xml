@@ -6,4 +6,8 @@
     <string name="widget_sample_ayah">أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ</string>
     <string name="widget_sample_ref">سورة الرعد · الآية ٢٨</string>
     <string name="widget_sample_reflect">تدبّرها</string>
+    <string name="widget_sample_percent">٤٠٪</string>
+    <string name="widget_sample_khatma">رحلتي مع القرآن</string>
+    <string name="widget_sample_portion">بقيت صفحتان من وردك اليوم</string>
+    <string name="widget_sample_read">تابع</string>
 </resources>

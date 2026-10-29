@@ -48,36 +48,6 @@ class MoreScreen extends StatelessWidget {
                 title: l10n.sectionsTitle,
                 children: [
                   _Tile(
-                    icon: AppIcons.chartLineUp,
-                    label: l10n.myJourney,
-                    onTap: () => open(const JourneyScreen()),
-                  ),
-                  _Tile(
-                    icon: AppIcons.gridFour,
-                    label: l10n.mushafMap,
-                    onTap: () => open(const MushafMapScreen()),
-                  ),
-                  _Tile(
-                    icon: AppIcons.path,
-                    label: l10n.guidedPathways,
-                    onTap: () => open(const GuidedPathwaysScreen()),
-                  ),
-                  _Tile(
-                    icon: AppIcons.headphones,
-                    label: l10n.recitationDownloads,
-                    onTap: () => open(const RecitationDownloadsScreen()),
-                  ),
-                  _Tile(
-                    icon: AppIcons.compass,
-                    label: l10n.qibla,
-                    onTap: () => open(const QiblaScreen()),
-                  ),
-                  _Tile(
-                    icon: AppIcons.brainFill,
-                    label: l10n.memorization,
-                    onTap: () => open(const MemorizationScreen()),
-                  ),
-                  _Tile(
                     icon: AppIcons.flowerLotusFill,
                     label: l10n.myReflections,
                     onTap: () => open(const MyReflectionsScreen()),
@@ -86,6 +56,11 @@ class MoreScreen extends StatelessWidget {
                     icon: AppIcons.notePencil,
                     label: l10n.notes,
                     onTap: () => open(const NotesScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.brainFill,
+                    label: l10n.memorization,
+                    onTap: () => open(const MemorizationScreen()),
                   ),
                   _Tile(
                     icon: AppIcons.magnifyingGlass,
@@ -101,6 +76,11 @@ class MoreScreen extends StatelessWidget {
                     icon: AppIcons.graphFill,
                     label: l10n.ayahLinks,
                     onTap: () => open(const AyahLinksScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.path,
+                    label: l10n.guidedPathways,
+                    onTap: () => open(const GuidedPathwaysScreen()),
                   ),
                   _Tile(
                     icon: AppIcons.bookOpenTextFill,
@@ -128,9 +108,29 @@ class MoreScreen extends StatelessWidget {
                 title: l10n.toolsSection,
                 children: [
                   _Tile(
+                    icon: AppIcons.chartLineUp,
+                    label: l10n.myJourney,
+                    onTap: () => open(const JourneyScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.headphones,
+                    label: l10n.recitationDownloads,
+                    onTap: () => open(const RecitationDownloadsScreen()),
+                  ),
+                  _Tile(
                     icon: AppIcons.alarmFill,
                     label: l10n.reminders,
                     onTap: () => open(const RemindersScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.gridFour,
+                    label: l10n.mushafMap,
+                    onTap: () => open(const MushafMapScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.compass,
+                    label: l10n.qibla,
+                    onTap: () => open(const QiblaScreen()),
                   ),
                   _Tile(
                     icon: AppIcons.cloudArrowUp,

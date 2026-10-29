@@ -3893,6 +3893,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'السؤال {number} من {total}'**
   String questionOfTotal(String number, String total);
+
+  /// No description provided for @permissionsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذونات التطبيق'**
+  String get permissionsTitle;
+
+  /// No description provided for @permissionsBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'يحتاج تدبير إذن الإشعارات والمنبهات ليذكّرك بوردك وأذكارك في وقتها، ولو كان التطبيق مغلقاً. لا يُرسَل شيء خارج جهازك.'**
+  String get permissionsBody;
+
+  /// No description provided for @permissionsAllow.
+  ///
+  /// In ar, this message translates to:
+  /// **'سماح'**
+  String get permissionsAllow;
+
+  /// No description provided for @permissionsLater.
+  ///
+  /// In ar, this message translates to:
+  /// **'لاحقاً'**
+  String get permissionsLater;
 }
 
 class _AppLocalizationsDelegate
