@@ -90,7 +90,7 @@ void main() {
       final sarmad = list.firstWhere(
         (e) => (e['word'] as String).contains('سَرْمَدًا'),
       );
-      expect(sarmad['meaning'], equals('دائما لا ينقطع'));
+      expect(sarmad['meaning'], equals('دائمًا لا ينقطع'));
     });
 
     test('meanings follow the Mushaf order, custom entries included', () {
@@ -188,10 +188,10 @@ void main() {
       expect(resMeaning, isNotEmpty);
       expect(resMeaning.any((w) => w.meaning.contains('المرعى')), isTrue);
 
-      // Search by distinctive meaning snippet
+      // Search by distinctive meaning snippet, typed without diacritics
       final resSarmad = repo.searchWordMeanings('دائما لا ينقطع');
       expect(resSarmad, isNotEmpty);
-      expect(resSarmad.first.meaning, contains('دائما لا ينقطع'));
+      expect(resSarmad.first.meaning, equals('دائمًا لا ينقطع'));
     });
 
     test('6. التصفية حسب السورة: filter by surah number returns only words of that surah', () {
