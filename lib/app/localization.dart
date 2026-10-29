@@ -780,6 +780,10 @@ class AppStrings {
   String get booksSectionEmptyDescription => _l.booksSectionEmptyDescription;
 
   // نصوص الشاشات
+  String get permissionsTitle => _l.permissionsTitle;
+  String get permissionsBody => _l.permissionsBody;
+  String get permissionsAllow => _l.permissionsAllow;
+  String get permissionsLater => _l.permissionsLater;
   String exportNoteFailed(Object error) => _l.exportNoteFailed('$error');
   String noteWordCharCount(int words, int chars) =>
       _l.noteWordCharCount(digits(words), digits(chars));

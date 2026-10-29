@@ -2192,4 +2192,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String questionOfTotal(String number, String total) {
     return 'السؤال $number من $total';
   }
+
+  @override
+  String get permissionsTitle => 'أذونات التطبيق';
+
+  @override
+  String get permissionsBody =>
+      'يحتاج تدبير إذن الإشعارات والمنبهات ليذكّرك بوردك وأذكارك في وقتها، ولو كان التطبيق مغلقاً. لا يُرسَل شيء خارج جهازك.';
+
+  @override
+  String get permissionsAllow => 'سماح';
+
+  @override
+  String get permissionsLater => 'لاحقاً';
 }

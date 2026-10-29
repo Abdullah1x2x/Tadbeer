@@ -25,14 +25,16 @@ void main() {
     (a) => a.surahNumber == surah && a.ayahNumber == ayah,
   );
 
-  test('the pool keeps ayahs that read alone and drops the rest', () {
+  test('the pool spans the whole Mushaf, leaving out only the longest', () {
+    final repo = QuranRepository.instance;
+    final pool = AyahOfTheDay.pool;
+    expect(pool.map((a) => a.surahNumber).toSet(), hasLength(114));
+    expect(pool.length, greaterThan(repo.allAyahs.length * 0.95));
     expect(inPool(2, 255), isTrue);
-    expect(inPool(2, 186), isTrue);
-    expect(inPool(3, 190), isTrue);
-    // A ruling, a reply in a story, and a sentence that needs the one before.
-    expect(inPool(4, 22), isFalse);
-    expect(inPool(12, 79), isFalse);
-    expect(inPool(13, 34), isFalse);
+    expect(inPool(103, 1), isTrue);
+    expect(inPool(108, 1), isTrue);
+    // The debt ayah is too long for the card and the widget.
+    expect(inPool(2, 282), isFalse);
   });
 
   test('each day has twelve different ayahs, led by a chosen one', () {

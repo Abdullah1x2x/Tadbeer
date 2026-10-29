@@ -18,8 +18,9 @@ class WidgetAyahImage extends StatelessWidget {
   /// خط النص المتدفق، يُستخدم دون [glyphs].
   final String font;
 
-  /// العرض الذي يلتف عنده النص.
-  static const width = 360.0;
+  /// العرض الذي يلتف عنده النص؛ أضيق يعني خطاً أكبر في الودجت، فهو يكبّر
+  /// الصورة بقدر مساحته.
+  static const width = 300.0;
 
   const WidgetAyahImage({
     super.key,

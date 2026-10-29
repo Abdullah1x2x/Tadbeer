@@ -44,7 +44,7 @@ class AyahOfTheDay {
   static List<Ayah> _buildPool() {
     final picked = {for (final a in curated) a.id: a};
     for (final a in QuranRepository.instance.allAyahs) {
-      if (readsAlone(a)) picked[a.id] = a;
+      if (fits(a)) picked[a.id] = a;
     }
     return picked.values.toList()..sort((x, y) => x.id.compareTo(y.id));
   }
@@ -70,76 +70,22 @@ class AyahOfTheDay {
     return picked.values.toList()..sort((x, y) => x.id.compareTo(y.id));
   }
 
-  /// كلمات إن بدأت بها الآية فهي تكمل ما قبلها أو حوار قصة.
-  static final Set<String> _openers = {
-    for (final w in const [
-      'ثم',
-      'إلا',
-      'أو',
-      'بل',
-      'حتى',
-      'إذ',
-      'لكن',
-      'ذلك',
-      'أولئك',
-      'كذلك',
-      'قال',
-      'قالوا',
-      'قالت',
-      'قيل',
-      'قلنا',
-      'وقال',
-      'وقالوا',
-      'وقالت',
-      'وإذ',
-      'وكذلك',
-      'لهم',
-      'ومنهم',
-      'منهم',
-    ])
-      ArabicSearchNormalizer.normalize(w),
-  };
-
   static final String _basmala = ArabicSearchNormalizer.normalize(
     'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
   );
 
-  /// كلمات الأحكام المفصّلة (النكاح والطلاق والميراث والطهارة).
-  static final List<String> _rulings = [
-    for (final w in const [
-      'تنكحوا',
-      'نكح',
-      'طلقتم',
-      'المطلقات',
-      'الطلاق',
-      'السدس',
-      'الثلث',
-      'الربع',
-      'الثمن',
-      'المحيض',
-      'الحيض',
-      'نسائكم',
-      'أرحامهن',
-    ])
-      ArabicSearchNormalizer.normalize(w),
-  ];
+  /// أطول آية (بالحروف دون تشكيل) تتسع لها البطاقة والودجت.
+  static const maxLetters = 170;
 
-  /// هل تُقرأ [ayah] ويُتدبّر فيها وحدها.
-  static bool readsAlone(Ayah ayah) {
+  /// هل تتسع [ayah] للبطاقة والودجت؛ فكل آيات المصحف تُعرض إلا الطويلة جداً.
+  static bool fits(Ayah ayah) {
     var text = ArabicSearchNormalizer.normalize(ayah.rawText).trim();
     // أول آية في السورة تحمل البسملة في نصها.
     if (text.startsWith(_basmala)) {
       text = text.substring(_basmala.length).trim();
     }
-    // الحروف فقط دون تشكيل: من سطر إلى فقرة قصيرة.
     final letters = text.replaceAll(' ', '').length;
-    if (letters < 25 || letters > 170) return false;
-    final words = text.split(RegExp(r'\s+'));
-    final first = words.first;
-    // "فـ" تكمل ما قبلها (فقال، فلما…)، أما "في" فحرف جر.
-    if (first.startsWith('ف') && first != 'في') return false;
-    if (_openers.contains(first)) return false;
-    return !_rulings.any(text.contains);
+    return letters > 0 && letters <= maxLetters;
   }
 
   static int _dayIndex(DateTime day) => DateTime.utc(
@@ -638,10 +584,10 @@ class _FittedVerse extends StatelessWidget {
   const _FittedVerse({required this.looks, required this.shown});
 
   /// أكبر حجم للآية.
-  static const maxSize = 21.0;
+  static const maxSize = 24.0;
 
   /// أصغر حجم للآية.
-  static const minSize = 15.0;
+  static const minSize = 17.0;
 
   /// تباعد الأسطر عند أصغر حجم، أقرب من 2 المعتاد.
   static const tightHeight = 1.7;
