@@ -26,8 +26,9 @@ class QcfPageBody extends StatefulWidget {
   /// خلفية الآية (تحديد أو تظليل)، أو null.
   final Color? Function(int surah, int ayah) backgroundFor;
 
-  /// هل على الآية فاصل أو خاطرة أو تدبر، أو هي قيد الحفظ.
-  final bool Function(int surah, int ayah) isMarked;
+  /// أيقونات ما على الآية (فاصل، خاطرة، تدبر، حفظ) بألوانها؛ فارغة إن لم يكن
+  /// عليها شيء.
+  final List<(IconData, Color)> Function(int surah, int ayah) markersFor;
 
   final GestureRecognizer Function(Ayah ayah) recognizerFor;
 
@@ -71,7 +72,7 @@ class QcfPageBody extends StatefulWidget {
     required this.textColor,
     required this.markerColor,
     required this.backgroundFor,
-    required this.isMarked,
+    required this.markersFor,
     required this.recognizerFor,
     required this.fallback,
   });
@@ -306,7 +307,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
 
   /// مقطع لكل آية، فالنقر في أي موضع منها يختارها.
   TextSpan _spans(List<QcfWord> words, double size) {
-    final runs = <TextSpan>[];
+    final runs = <InlineSpan>[];
     var i = 0;
     while (i < words.length) {
       final first = words[i];
@@ -335,16 +336,32 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         );
       }
       if (end != null) {
-        // علامة رقم الآية تصير ذهبية على الآيات التي علّمها القارئ.
-        final marked = widget.isMarked(first.surah, first.ayah);
+        // علامة رقم الآية تصير ذهبية على الآيات التي علّمها القارئ، وفوقها
+        // أيقونات ما عليها.
+        final markers = widget.markersFor(first.surah, first.ayah);
         runs.add(
           TextSpan(
-            text: '$end ',
+            text: end,
             recognizer: recognizer,
             style: TextStyle(
               backgroundColor: background,
-              color: marked ? widget.markerColor : null,
+              color: markers.isEmpty ? null : widget.markerColor,
             ),
+          ),
+        );
+        if (markers.isNotEmpty) {
+          runs.add(
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: _AyahMarkers(markers: markers, fontSize: size),
+            ),
+          );
+        }
+        runs.add(
+          TextSpan(
+            text: ' ',
+            recognizer: recognizer,
+            style: TextStyle(backgroundColor: background),
           ),
         );
       }
@@ -358,6 +375,39 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         color: widget.textColor,
       ),
       children: runs,
+    );
+  }
+}
+
+/// أيقونات صغيرة فوق علامة رقم الآية.
+///
+/// أسطر المصحف المطبوع بعرض ثابت، فلا تأخذ الأيقونات من السطر شيئاً: مكانها
+/// بلا عرض ولا ارتفاع، وتُرسم فوق العلامة التي قبلها.
+class _AyahMarkers extends StatelessWidget {
+  final List<(IconData, Color)> markers;
+  final double fontSize;
+
+  const _AyahMarkers({required this.markers, required this.fontSize});
+
+  @override
+  Widget build(BuildContext context) {
+    final iconSize = (fontSize * 0.34).clamp(7.0, 14.0);
+    return SizedBox.shrink(
+      child: OverflowBox(
+        maxWidth: double.infinity,
+        maxHeight: double.infinity,
+        child: Transform.translate(
+          // في السطر من اليمين إلى اليسار تقع العلامة يمين هذا المكان.
+          offset: Offset(fontSize * 0.42, -fontSize * 0.78),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final (icon, color) in markers)
+                Icon(icon, size: iconSize, color: color),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

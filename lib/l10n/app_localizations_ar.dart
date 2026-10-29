@@ -185,7 +185,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addToMemorization => 'أضف للحفظ';
 
   @override
-  String get removeFromMemorization => 'إزالة من الحفظ';
+  String get memorizedDone => 'تم الحفظ';
 
   @override
   String get journeyBackupSection => 'الختمة والإحصاءات والحفظ والمسارات';

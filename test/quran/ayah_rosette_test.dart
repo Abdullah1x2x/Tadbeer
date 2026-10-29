@@ -291,6 +291,9 @@ class _SilentEngine implements AudioEngine {
   bool loaded = false;
 
   @override
+  bool get idle => false;
+
+  @override
   Stream<int?> get index => const Stream.empty();
   @override
   Stream<bool> get playing => const Stream.empty();

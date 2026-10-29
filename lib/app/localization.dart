@@ -230,7 +230,7 @@ class AppStrings {
   String get reflectedToday => _l.reflectedToday;
 
   String get addToMemorization => _l.addToMemorization;
-  String get removeFromMemorization => _l.removeFromMemorization;
+  String get memorizedDone => _l.memorizedDone;
 
   String get journeyBackupSection => _l.journeyBackupSection;
 
