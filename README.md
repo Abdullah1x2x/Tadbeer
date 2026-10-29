@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%5E3.4.0-0175C2.svg?logo=dart)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-588%20passed-success.svg)](test/)
+[![Tests](https://img.shields.io/badge/Tests-594%20passed-success.svg)](test/)
 [![Offline](https://img.shields.io/badge/Offline--First-100%25-blueviolet.svg)](#privacy--offline-first)
 [![Website](https://img.shields.io/badge/Website-GitHub%20Pages-informational.svg)](https://abdullah-alshami.github.io/Tadbeer/)
 
@@ -34,6 +34,13 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Customizable Font Sizing & Typography:** Fully adjustable font size (16.0pt to 32.0pt) accessible via a live slider in Settings and a quick-access modal button in the Quran reading toolbar.
 - **Zero-Overflow Adaptive Geometry:** Adaptive layout engine using `LayoutBuilder` and `SingleChildScrollView`, guaranteeing zero `RenderFlex` overflow on small screens (320px width), foldables, tablets, and desktop displays.
 - **Dual-Page Spread Layout:** Automatic side-by-side spread on tablets and wide viewports (`width >= 900dp`), mimicking an open physical Mushaf.
+- **Ayah Markers in the Madinah Mushaf:** Bookmark, note, reflection and memorization icons sit above the ayah number on the King Fahd (QCF) pages without touching the printed line width.
+- **Recitation, Surah or Single Ayah:** The headphones button in the toolbar plays on through the surah; *Listen* in an ayah's long-press menu plays that ayah alone. Playback recovers from stalls: loading times out after 20 seconds, an error stops the player cleanly, and a player the system paused restarts the ayah.
+
+### 🌅 Ayah of the Day & Home-Screen Widget
+- **Verses from the Whole Mushaf:** The reflection card and the widget draw from every ayah that fits them (6,128 of 6,236 across all 114 surahs), led each day by a curated dua or pathway verse.
+- **Larger Verse Text:** The ayah is drawn larger on the home card and in the widget.
+- **Widget Preview:** The phone's widget picker shows the ayah in the Amiri Quran font with the khatma progress, in the app's language.
 
 ### 📿 Istighfar & Tasbeeh (Digital Counter & Daily Dhikr)
 - **Direct & Uncomplicated Dual Sections:** Pure and simple division into **Istighfar** (20 formulas) and **Tasbeeh** (29 formulas) without nested or excessive subcategories.
@@ -62,6 +69,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Pure Lexical Definitions:** Focused lexical meanings in concise Arabic, free from extraneous commentary or speculative tafsir.
 - **Authoritative Attributions:** Derived from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10`, CC0-1.0), *Al-Mu'jam Al-Waseet* (Academy of the Arabic Language in Cairo), and classical lexicons (*Lisan Al-Arab*, *Maqayis Al-Lughah*, *Taj Al-Arus*, *Mufradat Al-Raghib*).
 - **Synchronized Margin Panel:** Built-in collapsible reader panel updating dynamically on every page turn, alongside a dedicated standalone lexicon browser screen.
+- **Light Diacritics & Mushaf Order:** Meanings carry light tashkeel (shadda, tanween and the vowels a reader could misread) and are listed by surah and ayah; search still matches text typed without diacritics.
 
 ### 🤲 Organized Duas & Adhkar Section
 - **Quranic Duas:** Catalog of **88 direct Quranic supplications** extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
@@ -78,10 +86,10 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
   - *Sayyidah Fatimah al-Zahra's Dua* ("O Living, O Sustainer, by Your mercy I seek help...")
   - *Additional Revered Duas:* Dua al-Faraj, Dua al-Sabah of Imam Ali, Dua al-Ahd, Al-Munajat al-Sha'baniyyah, and Dua Yastasheer.
 - **Prophetic & Comprehensive Duas:** Curated authentic supplications for distress, grief, debts, and righteousness in this life and the hereafter.
-- **Unified Global Search:** Extensible `SearchRegistry` querying 10 domains concurrently with error isolation and interactive filter chips.
+- **Unified Global Search:** Extensible `SearchRegistry` querying 11 domains concurrently with error isolation and interactive filter chips.
 - **Phonetic-to-Standard Arabic Query Normalization:** Intelligent query normalizer in `ArabicSearchNormalizer` resolving common phonetic spellings (e.g. هازا -> هذا، ذالك -> ذلك، صلاه -> صلاة، رحمن -> رحمن) strictly within search inputs while preserving 100% untouched integrity of authentic Quranic text and classical heritage collections.
 - **Root & Morphological Search:** Instant root search via `جذر:XXX` syntax (e.g. `جذر:صبر` or `جذر:رحم`), matching across rich morphological variations across all 6,236 ayahs.
-- **Offline Reminders:** Local scheduled notifications (`flutter_local_notifications` + `flutter_timezone`) for daily Quran reading and reflection routines, operating completely on-device without internet access.
+- **Offline Reminders:** Local scheduled notifications (`flutter_local_notifications` + `flutter_timezone`) for daily Quran reading and reflection routines, operating completely on-device without internet access. On first launch the app explains why, then asks once for notification and alarm permissions.
 
 ### 📿 Digital Tasbeeh & Istighfar Sanctuary
 - **Simplified Dual Sections:** Direct switching between **Istighfar** (Seeking Forgiveness) and **Tasbeeh** (Glorification).
@@ -151,7 +159,7 @@ flutter run
 # Verify static analysis (0 warnings / 0 errors)
 dart analyze
 
-# Run all automated tests (588 tests, 81 test files)
+# Run all automated tests (594 tests, 81 test files)
 flutter test
 
 # Build production release packages
@@ -172,7 +180,7 @@ tadbeer/
 │   ├── icons/                  # Application icons & logo
 │   └── quran/
 │       ├── quran_data.json     # Verified Tanzil Uthmani text (2.0MB)
-│       └── word_meanings.json  # 6,465 verified lexical entries (1.1MB)
+│       └── word_meanings.json  # 6,465 verified lexical entries, lightly diacritized
 ├── lib/
 │   ├── app/                # App shell: bootstrap, navigation, localization, licenses
 │   ├── core/               # Foundations that know no app data (imports nothing above it)
@@ -214,7 +222,7 @@ tadbeer/
 │   │   └── word_meanings/  # Word meanings explorer
 │   ├── l10n/               # ARB translations (gen-l10n)
 │   └── main.dart           # Entrypoint: bootstrap(), then runApp()
-├── test/                       # Comprehensive test suite (588 tests, 81 files)
+├── test/                       # Comprehensive test suite (594 tests, 81 files)
 │   ├── design_system/          # Design system component tests (Cards, Buttons, Badges)
 │   ├── motion/                 # Motion engine & reduced-motion accessibility tests
 │   └── ...                     # Comprehensive unit & widget tests across all features

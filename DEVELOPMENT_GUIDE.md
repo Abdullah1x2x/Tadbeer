@@ -41,7 +41,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (588 tests across 81 test files)
+# 3. Run automated tests (594 tests across 81 test files)
 flutter test
 
 # 4. Run application in debug mode
@@ -114,6 +114,8 @@ lib/
 - **Dual-Page Spread:** On wide screens (`width >= 900`), automatically renders two adjacent pages side-by-side with an authentic center divider.
 - **Typography:** Supports 5 selectable SIL OFL-1.1 fonts (`AmiriQuran`, `ScheherazadeNew`, `NotoNaskhArabic`, `Lateef`, `Harmattan`) via `UserDataStore.instance.setQuranFontFamily()`.
 - **Highlighting:** Multi-word continuous highlights are rendered behind text using custom painter `AyahHighlightPainter`.
+- **Ayah Markers:** `_ayahMarkers` in `quran_page_parts.dart` builds the bookmark, note, reflection and memorization icons once for both renderers. The flowing page shows them as a badge after the rosette; the Madinah page (`QcfPageBody.markersFor`) draws them above the ayah number in a zero-size `WidgetSpan`, so the printed line keeps its width.
+- **Large Screens in Part Files:** Builders that do not call `setState` live in private extensions beside their screen (`quran_page_parts.dart`, `quran_screen_dialogs.dart`, and likewise for tasbeeh, settings and the book reader).
 
 ### 4.2. Local Database & Storage (`lib/data/storage/`)
 Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersion = 3`):
@@ -126,6 +128,8 @@ Managed by `UserDatabase` in SQLite file `tadbeer_user_data.db` (`databaseVersio
 7. `tadbeer_items`: 4-prompt structured reflection responses.
 8. `user_settings`: Key-value application preferences.
 
+Version 3 retired `tadabbur_items`: reflections used to be written to it and to `tadbeer_items`. On upgrade, rows only the old table holds are copied with `INSERT OR IGNORE`, then the table is dropped.
+
 ### 4.3. Encrypted Backup Container (`.quranbackup`)
 Managed by `BackupCryptoService`:
 - **Format:** Self-contained JSON container with Base64 fields: `magic`, `version`, `salt`, `iv`, `checksum`, and `cipher`.
@@ -137,10 +141,12 @@ Managed by `BackupCryptoService`:
 - **Dataset:** 6,465 approved single-word lexical entries covering all 604 pages and 114 surahs with 100% coverage.
 - **Single-Word Invariant:** Every entry strictly satisfies `!word.contains(' ')` (no multi-word compounds).
 - **License:** Sourced from Quranpedia.net (2026-10-10) under CC0 1.0 Public Domain.
+- **Light Diacritics:** Meanings carry light tashkeel; search strips diacritics through `ArabicSearchNormalizer.normalize()`, so plain queries still match.
+- **Order:** `QuranRepository` merges the JSON with `customWordMeanings` and sorts everything by surah, then ayah, keeping the file order within an ayah.
 
 ### 4.5. Unified Search System & Phonetic Normalization (`lib/features/search/`)
-- Driven by `SearchRegistry` querying 10 domains concurrently via `Future.wait` with per-provider `try/catch` error isolation:
-  - Quran Ayahs, Curated Heritage Books, Reflection Notes, Tadbeer Pauses, Bookmarks, Highlights, Ayah Links, Duas, Reminders, and Word Meanings.
+- Driven by `SearchRegistry` querying 11 domains concurrently via `Future.wait` with per-provider `try/catch` error isolation:
+  - Quran Ayahs, Curated Heritage Books, Reflection Notes, Tadbeer Pauses, Bookmarks, Highlights, Ayah Links, Duas, Guided Pathways, Reminders, and Word Meanings.
 - **Phonetic-to-Standard Arabic Query Normalization:** Via `ArabicSearchNormalizer.normalizeSearchQuery`, commonly mis-typed or phonetically spelled queries (e.g. `هازا`, `هاذه`, `ذالك`, `لكن`, `رحمن`, `صلوه/صلاه`) are normalized to standard Uthmani and modern orthographic forms strictly inside the search input pipeline. Crucially, the immutable Quranic and classical text corpora remain 100% intact.
 - **Root Search:** Supports morphological root search via `جذر:XXX` syntax (e.g. `جذر:صبر`).
 - **Normalization:** All search matching utilizes `ArabicSearchNormalizer.normalize()`.
@@ -166,6 +172,18 @@ Managed by `BackupCryptoService`:
 - **Developer Extensibility (`lib/features/books/data/curated_books.dart`):** Easily declare new sections and books in Dart code via `BookSectionConfig` and `BookConfig` with PDF attachments, text files, or in-code chapters (`BookChapter`).
 - **Reader & Document Viewer (`BookReaderScreen`):** Native interactive reading for chapters (font scaling, chapter index, copying) and external opening / sharing for PDF documents with automatic clean Arabic file naming.
 
+### 4.9. Recitation (`lib/features/audio/`)
+- **`QuranAudio`:** `playFrom(ayah)` plays on through the surah and beyond; `playAyah(ayah)` plays one ayah and stops. Each request takes a number, so a newer request cancels an older one still loading.
+- **No Stalls:** Loading the first file times out after `QuranAudio.loadTimeout` (20 s); an error stops the engine; `toggle()` restarts the ayah when the engine is idle; next/previous skip the reflection pause.
+- **Background Playback:** `RecitationHandler` (audio_service) mirrors the player in the notification; its stop button closes the recitation through `onStop`.
+
+### 4.10. Ayah of the Day & Home-Screen Widget (`lib/features/daily/`, `lib/features/widgets/`)
+- **Pool:** `AyahOfTheDay.pool` holds every ayah of at most `maxLetters` (170) letters: 6,128 of 6,236, all 114 surahs. Each day starts with a curated ayah from the Quranic duas or the pathways.
+- **Widget:** `HomeWidgetSync` renders each ayah to an image (`WidgetAyahImage`, wrap width 300 for larger text). The picker shows `tadbeer_widget_preview.xml`, with the ayah in `res/font/amiri_quran.ttf` and sample khatma values.
+
+### 4.11. Startup Permissions (`lib/features/reminders/startup_permissions.dart`)
+- After onboarding, `MainShell` calls `StartupPermissions.askOnce`: an in-app explanation, then the notification and exact-alarm requests, once per install. Location stays on the Qibla screen.
+
 ---
 
 ## 5. Coding & Contribution Guidelines
@@ -176,9 +194,10 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 588 tests must pass
+   flutter test    # All 594 tests must pass
    ```
-5. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.
+5. **Interface Text:** Every visible string goes in `lib/l10n/app_ar.arb` and `app_en.arb` (then `flutter gen-l10n`) and is read through `context.l10n`; no inline `isArabic ? … : …` text. Pass numbers as `int` and let `AppStrings` localize the digits.
+6. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.
 
 ---
 
