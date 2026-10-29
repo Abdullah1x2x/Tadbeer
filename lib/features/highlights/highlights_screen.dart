@@ -72,20 +72,11 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
             );
             final highlights = allHighlights.where((item) {
               if (normalizedQuery.isEmpty) return true;
-              final surah = QuranRepository.instance.getSurah(item.surahNumber);
-              final ayah = QuranRepository.instance.getAyah(
+              return QuranRepository.instance.ayahMatches(
                 item.surahNumber,
                 item.ayahNumber,
+                normalizedQuery,
               );
-              final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
-              final ayahTextNorm = ayah != null
-                  ? ArabicSearchNormalizer.normalize(ayah.text)
-                  : '';
-              final ayahNumStr = item.ayahNumber.toString();
-
-              return surahNorm.contains(normalizedQuery) ||
-                  ayahTextNorm.contains(normalizedQuery) ||
-                  ayahNumStr.contains(normalizedQuery);
             }).toList();
 
             return Column(

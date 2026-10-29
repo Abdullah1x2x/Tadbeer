@@ -153,6 +153,20 @@ class QuranRepository {
     return _ayahsByKey['$surahNumber:$ayahNumber'];
   }
 
+  /// هل يطابق [normalizedQuery] اسم سورة الآية أو نصها أو رقمها.
+  ///
+  /// [normalizedQuery] مطبَّع مسبقاً بـ[ArabicSearchNormalizer.normalize].
+  bool ayahMatches(int surahNumber, int ayahNumber, String normalizedQuery) {
+    if (ArabicSearchNormalizer.normalize(getSurah(surahNumber).name)
+        .contains(normalizedQuery)) {
+      return true;
+    }
+    if ('$ayahNumber'.contains(normalizedQuery)) return true;
+    final ayah = getAyah(surahNumber, ayahNumber);
+    return ayah != null &&
+        ArabicSearchNormalizer.normalize(ayah.text).contains(normalizedQuery);
+  }
+
   /// بحث في كل الآيات دون إنترنت.
   ///
   /// يتعرّف على المراجع المباشرة ("البقرة 255"، "2:255"، "آية الكرسي")، ويدعم
