@@ -1,4 +1,4 @@
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 
 /// نوع النشاط الأخير الذي يمكن استكماله.
 enum ActivityKind { adhkar, book, hifz, pathway }

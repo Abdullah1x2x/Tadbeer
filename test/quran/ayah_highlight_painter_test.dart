@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/notes/note_model.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/models/note_model.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
-import 'package:tadbeer/features/settings/user_settings_model.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
 
 List<Rect> mergeTextBoxes(List<TextBox> boxes, double maxWidth) {
   if (boxes.isEmpty) return const [];
@@ -28,7 +29,8 @@ List<Rect> mergeTextBoxes(List<TextBox> boxes, double maxWidth) {
     bool foundLine = false;
     for (final group in lineGroups) {
       final sample = group.first;
-      final vOverlap = math.min(sample.bottom, rect.bottom) - math.max(sample.top, rect.top);
+      final vOverlap =
+          math.min(sample.bottom, rect.bottom) - math.max(sample.top, rect.top);
       if (vOverlap > (sample.height * 0.5)) {
         group.add(rect);
         foundLine = true;
@@ -74,7 +76,9 @@ void main() {
     }
   });
 
-  testWidgets('Ayah highlight boxes computation and separation', (tester) async {
+  testWidgets('Ayah highlight boxes computation and separation', (
+    tester,
+  ) async {
     const text1 = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾';
     const text2 = 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾';
     const fullText = '$text1 $text2 ';
@@ -119,48 +123,54 @@ void main() {
     // If both ayahs share a line, verify they don't overlap horizontally
     for (final r1 in merged1) {
       for (final r2 in merged2) {
-        final vOverlap = math.min(r1.bottom, r2.bottom) - math.max(r1.top, r2.top);
+        final vOverlap =
+            math.min(r1.bottom, r2.bottom) - math.max(r1.top, r2.top);
         if (vOverlap > 10) {
           // On same line: verify horizontal separation
-          final hOverlap = math.min(r1.right, r2.right) - math.max(r1.left, r2.left);
-          expect(hOverlap <= 0, isTrue, reason: 'Adjacent ayahs on same line must not overlap: r1=$r1, r2=$r2');
+          final hOverlap =
+              math.min(r1.right, r2.right) - math.max(r1.left, r2.left);
+          expect(
+            hOverlap <= 0,
+            isTrue,
+            reason:
+                'Adjacent ayahs on same line must not overlap: r1=$r1, r2=$r2',
+          );
         }
       }
     }
   });
 
-  testWidgets('QuranPageView renders CustomPaint highlight when Ayah is selected', (tester) async {
-    final page1 = QuranRepository.instance.getPage(1);
-    final selected = page1.ayahs.first;
+  testWidgets(
+    'QuranPageView renders CustomPaint highlight when Ayah is selected',
+    (tester) async {
+      final page1 = QuranRepository.instance.getPage(1);
+      final selected = page1.ayahs.first;
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: QuranPageView(
-            page: page1,
-            selectedAyah: selected,
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: QuranPageView(page: page1, selectedAyah: selected),
           ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
+      );
+      await tester.pumpAndSettle();
 
-    // Verify CustomPaint is rendered for the active selection
-    expect(find.byType(CustomPaint), findsWidgets);
-    expect(find.text('سُورَةُ الفاتحة'), findsWidgets);
-  });
+      // Verify CustomPaint is rendered for the active selection
+      expect(find.byType(CustomPaint), findsWidgets);
+      expect(find.text('سُورَةُ الفاتحة'), findsWidgets);
+    },
+  );
 
-  testWidgets('QuranPageView displays bookmark and note icons next to Ayah', (tester) async {
+  testWidgets('QuranPageView displays bookmark and note icons next to Ayah', (
+    tester,
+  ) async {
     final page1 = QuranRepository.instance.getPage(1);
     final firstAyah = page1.ayahs.first;
 
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: QuranPageView(
-            page: page1,
-            selectedAyah: firstAyah,
-          ),
+          body: QuranPageView(page: page1, selectedAyah: firstAyah),
         ),
       ),
     );
@@ -196,4 +206,3 @@ void main() {
     expect(find.byIcon(AppIcons.notePencil), findsOneWidget);
   });
 }
-

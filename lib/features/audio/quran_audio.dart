@@ -8,15 +8,16 @@ library;
 
 import 'dart:async';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../quran/data/quran_models.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_models.dart';
+import '../../data/quran/quran_repository.dart';
 import 'audio_downloads.dart';
+import 'recitation_handler.dart';
 import 'reciters.dart';
 
 /// What the playback needs from an audio player; replaceable in tests.
@@ -43,6 +44,10 @@ abstract class AudioEngine {
 
 /// The device's audio player.
 class JustAudioEngine implements AudioEngine {
+  JustAudioEngine() {
+    RecitationHandler.instance?.attach(_player);
+  }
+
   final _player = AudioPlayer();
 
   @override
@@ -67,20 +72,21 @@ class JustAudioEngine implements AudioEngine {
   Stream<Object> get errors => _player.errorStream;
 
   @override
-  Future<void> load(List<AudioTrack> tracks, {int start = 0}) =>
-      _player.setAudioSources([
-        for (final (i, t) in tracks.indexed)
-          AudioSource.uri(
-            t.uri,
-            // What the notification and the lock screen show.
-            tag: MediaItem(
-              id: '$i:${t.uri}',
-              title: t.title,
-              artist: t.artist,
-              album: 'تَدْبِير',
-            ),
-          ),
-      ], initialIndex: start);
+  Future<void> load(List<AudioTrack> tracks, {int start = 0}) {
+    // What the notification and the lock screen show.
+    RecitationHandler.instance?.setItems([
+      for (final (i, t) in tracks.indexed)
+        MediaItem(
+          id: '$i:${t.uri}',
+          title: t.title,
+          artist: t.artist,
+          album: 'تَدْبِير',
+        ),
+    ]);
+    return _player.setAudioSources([
+      for (final t in tracks) AudioSource.uri(t.uri),
+    ], initialIndex: start);
+  }
 
   @override
   Future<void> play() async {
@@ -192,6 +198,8 @@ class QuranAudio extends ChangeNotifier {
     final existing = _engine;
     if (existing != null) return existing;
     final engine = _engine = _makeEngine();
+    // The notification's stop closes the recitation, as the bar's does.
+    RecitationHandler.instance?.onStop = stop;
     _subscriptions.addAll([
       engine.index.listen(_onIndex),
       engine.playing.listen((p) {

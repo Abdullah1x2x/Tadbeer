@@ -81,16 +81,13 @@ class AppStrings {
 
   // Quran Reader & Side Menu
   /// تنسيق نص رقم الصفحة الحالية في المصحف.
-  String pageNumber(int page) =>
-      _l.pageNumber(digits(page));
+  String pageNumber(int page) => _l.pageNumber(digits(page));
 
   /// تنسيق نص رقم الجزء الحالي في المصحف.
-  String juzNumber(int juz) =>
-      _l.juzNumber(digits(juz));
+  String juzNumber(int juz) => _l.juzNumber(digits(juz));
 
   /// تنسيق نص رقم الحزب الحالي في المصحف.
-  String hizbNumber(int hizb) =>
-      _l.hizbNumber(digits(hizb));
+  String hizbNumber(int hizb) => _l.hizbNumber(digits(hizb));
 
   String get surahs => _l.surahs;
   String get juzs => _l.juzs;
@@ -103,40 +100,47 @@ class AppStrings {
   String get mushafMap => _l.mushafMap;
   String get mapTab => _l.mapTab;
   String get reflectionLog => _l.reflectionLog;
-  String pagesTouched(int n) =>
-      _l.pagesTouched(digits(n));
+  String pagesTouched(int n) => _l.pagesTouched(digits(n));
 
   /// Legend label for [PageActivity] by index.
   String activityLabel(int i) => isArabic
-      ? const ['لم تُقرأ', 'مقروءة', 'محفوظة أو مميزة', 'في الحفظ', 'فيها تدبر'][i]
-      : const ['Not read', 'Read', 'Saved or highlighted', 'Memorizing', 'Reflected'][i];
+      ? const [
+          'لم تُقرأ',
+          'مقروءة',
+          'محفوظة أو مميزة',
+          'في الحفظ',
+          'فيها تدبر',
+        ][i]
+      : const [
+          'Not read',
+          'Read',
+          'Saved or highlighted',
+          'Memorizing',
+          'Reflected',
+        ][i];
   String get noReflectionsYet => _l.noReflectionsYet;
   String get reflectionsEmptyHint => _l.reflectionsEmptyHint;
-  String shortDate(DateTime d) =>
-      isArabic ? _n('${d.day}/${d.month}/${d.year}') : '${d.day}/${d.month}/${d.year}';
+  String shortDate(DateTime d) => isArabic
+      ? _n('${d.day}/${d.month}/${d.year}')
+      : '${d.day}/${d.month}/${d.year}';
 
   // Guided pathways
   String get guidedPathways => _l.guidedPathways;
   String get guidedPathwaysHint => _l.guidedPathwaysHint;
-  String daysOfTotal(int a, int b) =>
-      _l.daysOfTotal(digits(a), digits(b));
-  String dayN(int n) =>
-      _l.dayN(digits(n));
+  String daysOfTotal(int a, int b) => _l.daysOfTotal(digits(a), digits(b));
+  String dayN(int n) => _l.dayN(digits(n));
   String get completeDay => _l.completeDay;
   String get pathwayUnlockHint => _l.pathwayUnlockHint;
   String get pathwayComplete => _l.pathwayComplete;
 
   // Memorization (الحفظ)
   String get memorization => _l.memorization;
-  String versesMemorized(int n) =>
-      _l.versesMemorized(digits(n));
+  String versesMemorized(int n) => _l.versesMemorized(digits(n));
   String get memorizationHint => _l.memorizationHint;
-  String reviewToday(int n) =>
-      _l.reviewToday(digits(n));
+  String reviewToday(int n) => _l.reviewToday(digits(n));
   String get nothingDueToday => _l.nothingDueToday;
   String get chooseSurahToMemorize => _l.chooseSurahToMemorize;
-  String versesOfTotal(int a, int b) =>
-      _l.versesOfTotal(digits(a), digits(b));
+  String versesOfTotal(int a, int b) => _l.versesOfTotal(digits(a), digits(b));
   String get tapToReveal => _l.tapToReveal;
   String get needsReview => _l.needsReview;
   String get mastered => _l.mastered;
@@ -152,10 +156,8 @@ class AppStrings {
 
   // Sequential khatma
   String get fromMushafStart => _l.fromMushafStart;
-  String fromMyPosition(int page) =>
-      _l.fromMyPosition(digits(page));
-  String reachedPage(int page) =>
-      _l.reachedPage(digits(page));
+  String fromMyPosition(int page) => _l.fromMyPosition(digits(page));
+  String reachedPage(int page) => _l.reachedPage(digits(page));
   String get setKhatmaPosition => _l.setKhatmaPosition;
   String get pageNumberLabel => _l.pageNumberLabel;
   String get markPortionDone => _l.markPortionDone;
@@ -169,6 +171,7 @@ class AppStrings {
   String portionLeftTitle(int pages) => _l.portionLeftTitle(digits(pages));
   String get portionLeftBody => _l.portionLeftBody;
   String get adhkarSetCompleted => _l.adhkarSetCompleted;
+
   /// The widget fills in the numbers itself, so they stay placeholders.
   String get widgetPortionLeftTemplate =>
       _l.widgetPortionLeft('{left}', '{portion}');
@@ -200,8 +203,7 @@ class AppStrings {
   String get commitmentNotYet => _l.commitmentNotYet;
   String get commitmentPending => _l.commitmentPending;
   String get commitmentQuestion => _l.commitmentQuestion;
-  String commitmentSaidAt(String reference) =>
-      _l.commitmentSaidAt(reference);
+  String commitmentSaidAt(String reference) => _l.commitmentSaidAt(reference);
 
   /// Addresses [text] to the reader by [name] ("أحمد، …" / "Ahmed, …");
   /// the name goes first so the wording suits anyone.
@@ -250,24 +252,41 @@ class AppStrings {
   String get memorizedLabel => _l.memorizedLabel;
   String monthTitle(int month, int year) {
     const ar = [
-      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
     ];
     const en = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
-    return isArabic
-        ? '${ar[month - 1]} ${_n(year)}'
-        : '${en[month - 1]} $year';
+    return isArabic ? '${ar[month - 1]} ${_n(year)}' : '${en[month - 1]} $year';
   }
 
   // Group khatma
 
   String get continueWhereYouLeft => _l.continueWhereYouLeft;
   String get adhkarKind => _l.adhkarKind;
-  String chapterN(int n) =>
-      _l.chapterN(digits(n));
+  String chapterN(int n) => _l.chapterN(digits(n));
 
   String get weeklyGoals => _l.weeklyGoals;
   String get editGoals => _l.editGoals;
@@ -292,30 +311,21 @@ class AppStrings {
   String get myJourney => _l.myJourney;
   String get startKhatmaTitle => _l.startKhatmaTitle;
   String get startKhatmaHint => _l.startKhatmaHint;
-  String daysCount(int d) =>
-      _l.daysCount(d, digits(d));
-  String pagesPerDayHint(int n) =>
-      _l.pagesPerDayHint(digits(n));
+  String daysCount(int d) => _l.daysCount(d, digits(d));
+  String pagesPerDayHint(int n) => _l.pagesPerDayHint(digits(n));
   String get startKhatma => _l.startKhatma;
-  String completedKhatmas(int n) =>
-      _l.completedKhatmas(digits(n));
+  String completedKhatmas(int n) => _l.completedKhatmas(digits(n));
   String get cancelKhatma => _l.cancelKhatma;
   String get cancelKhatmaConfirm => _l.cancelKhatmaConfirm;
   String get onTrack => _l.onTrack;
-  String behindBy(int n) =>
-      _l.behindBy(digits(n));
-  String khatmaInDays(int n) =>
-      _l.khatmaInDays(n, digits(n));
-  String pagesOfMushaf(int n) =>
-      _l.pagesOfMushaf(digits(n));
-  String dayOfPlan(int d, int total) =>
-      _l.dayOfPlan(digits(d), digits(total));
+  String behindBy(int n) => _l.behindBy(digits(n));
+  String khatmaInDays(int n) => _l.khatmaInDays(n, digits(n));
+  String pagesOfMushaf(int n) => _l.pagesOfMushaf(digits(n));
+  String dayOfPlan(int d, int total) => _l.dayOfPlan(digits(d), digits(total));
   String get todayPortion => _l.todayPortion;
-  String pagesOfTarget(int a, int b) =>
-      _l.pagesOfTarget(digits(a), digits(b));
+  String pagesOfTarget(int a, int b) => _l.pagesOfTarget(digits(a), digits(b));
   String get keepReading => _l.keepReading;
-  String continueFromPage(int p) =>
-      _l.continueFromPage(digits(p));
+  String continueFromPage(int p) => _l.continueFromPage(digits(p));
   String get streakDays => _l.streakDays;
   String get totalPagesRead => _l.totalPagesRead;
   String get khatmasLabel => _l.khatmasLabel;
@@ -332,8 +342,7 @@ class AppStrings {
   String get sajdah => _l.sajdah;
 
   /// تنسيق نص عدد آيات السورة.
-  String ayahCount(int count) =>
-      _l.ayahCount(digits(count));
+  String ayahCount(int count) => _l.ayahCount(digits(count));
 
   // Ayah Action Modal
   String get addNote => _l.addNote;
@@ -490,8 +499,7 @@ class AppStrings {
   String get ayahLinksSubtitle => _l.ayahLinksSubtitle;
 
   /// تنسيق نص عدد الآيات المربوطة في الرابط.
-  String versesCount(int count) =>
-      _l.versesCount(digits(count));
+  String versesCount(int count) => _l.versesCount(digits(count));
 
   // Backup & Restore
   String get exportBackup => _l.exportBackup;
@@ -529,10 +537,8 @@ class AppStrings {
   String get quranAndSunnahDuas => _l.quranAndSunnahDuas;
   String get quranDuasTitle => _l.quranDuasTitle;
   String get quranDuasSubtitle => _l.quranDuasSubtitle;
-  String duasCountBadge(dynamic count) =>
-      _l.duasCountBadge(digits(count));
-  String adhkarCountBadge(dynamic count) =>
-      _l.adhkarCountBadge(digits(count));
+  String duasCountBadge(dynamic count) => _l.duasCountBadge(digits(count));
+  String adhkarCountBadge(dynamic count) => _l.adhkarCountBadge(digits(count));
   String get morningEveningAdhkarTitle => _l.morningEveningAdhkarTitle;
   String get morningEveningAdhkarSubtitle => _l.morningEveningAdhkarSubtitle;
   String get ahlulbaytDuasTitle => _l.ahlulbaytDuasTitle;
@@ -553,18 +559,13 @@ class AppStrings {
       _l.readingPosition(surahName, digits(page));
   String ayahReference(String surahName, dynamic ayahNumber) =>
       _l.ayahReference(surahName, digits(ayahNumber));
-  String surahTitle(String surahName) =>
-      _l.surahTitle(surahName);
-  String ayahTitle(dynamic ayahNumber) =>
-      _l.ayahTitle(digits(ayahNumber));
-  String pageAbbr(dynamic page) =>
-      _l.pageAbbr(digits(page));
-  String juzAbbr(dynamic juz) =>
-      _l.juzAbbr(digits(juz));
+  String surahTitle(String surahName) => _l.surahTitle(surahName);
+  String ayahTitle(dynamic ayahNumber) => _l.ayahTitle(digits(ayahNumber));
+  String pageAbbr(dynamic page) => _l.pageAbbr(digits(page));
+  String juzAbbr(dynamic juz) => _l.juzAbbr(digits(juz));
   String get meccan => _l.meccan;
   String get medinan => _l.medinan;
-  String ayahsCount(dynamic count) =>
-      _l.ayahsCount(digits(count));
+  String ayahsCount(dynamic count) => _l.ayahsCount(digits(count));
   String get searchSurahsHint => _l.searchSurahsHint;
   String get searchWordMeaningsHint => _l.searchWordMeaningsHint;
   String get allSurahsWithCount => _l.allSurahsWithCount;
@@ -574,8 +575,11 @@ class AppStrings {
   String get noWordsFoundSubtitle => _l.noWordsFoundSubtitle;
   String get lexicalMeaningTitle => _l.lexicalMeaningTitle;
   String get verifiedDocumentation => _l.verifiedDocumentation;
-  String surahAyahPageReference(String surahName, dynamic ayahNumber, dynamic page) =>
-      _l.surahAyahPageReference(surahName, digits(ayahNumber), digits(page));
+  String surahAyahPageReference(
+    String surahName,
+    dynamic ayahNumber,
+    dynamic page,
+  ) => _l.surahAyahPageReference(surahName, digits(ayahNumber), digits(page));
 
   // Actions & Common Dialogs
   String get edit => _l.edit;
@@ -590,8 +594,7 @@ class AppStrings {
   String get searchAyahLinksHint => _l.searchAyahLinksHint;
   String get noAyahLinkSearchResults => _l.noAyahLinkSearchResults;
   String get tryAnotherAyahLinkSearch => _l.tryAnotherAyahLinkSearch;
-  String linkedAyahsCount(dynamic count) =>
-      _l.linkedAyahsCount(digits(count));
+  String linkedAyahsCount(dynamic count) => _l.linkedAyahsCount(digits(count));
   String get importPathway => _l.importPathway;
   String get editTitleAndDescription => _l.editTitleAndDescription;
   String get deleteAyahLink => _l.deleteAyahLink;
@@ -599,8 +602,7 @@ class AppStrings {
   // Settings & Data Management
   String get typographyAndReading => _l.typographyAndReading;
   String get quranFontFamily => _l.quranFontFamily;
-  String fontSizePoints(dynamic points) =>
-      _l.fontSizePoints(digits(points));
+  String fontSizePoints(dynamic points) => _l.fontSizePoints(digits(points));
   String get resetToDefault => _l.resetToDefault;
   String resetToDefaultWithVal(dynamic val) =>
       _l.resetToDefaultWithVal(digits(val));
@@ -615,29 +617,33 @@ class AppStrings {
   String get resetWarningMessage => _l.resetWarningMessage;
   String get versionInfo => _l.versionInfo;
   String get sourcesAndCredits => _l.sourcesAndCredits;
+
   /// تفاصيل المصادر وتراخيص المحتوى المعتمد في التطبيق.
   String get sourcesAndCreditsDetails => isArabic
       ? '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n'
-        '• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n'
-        '• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n'
-        '• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n'
-        '• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n'
-        '• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n'
-        '• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n'
-        '• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.'
+            '• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n'
+            '• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n'
+            '• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n'
+            '• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n'
+            '• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n'
+            '• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n'
+            '• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.'
       : '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n'
-        '• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n'
-        '• Quran Vocabulary Lexicon: Quranic Encyclopedia (Quranpedia.net — release 2026-10-10) and classical & modern Arabic dictionaries (Lisan al-Arab, Maqayis al-Lughah, Al-Tibyan, Tadhkirat al-Arib, Mufradat al-Raghib, and Al-Mu\'jam al-Wasit).\n'
-        '• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n'
-        '• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n'
-        '• Application License: 100% free and open-source project licensed under the MIT License.\n'
-        '• Madinah Mushaf script: page fonts (QCF) by the King Fahd Glorious Quran Printing Complex, with line layout from Quran.com data.\n'
-        '• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
+            '• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n'
+            '• Quran Vocabulary Lexicon: Quranic Encyclopedia (Quranpedia.net — release 2026-10-10) and classical & modern Arabic dictionaries (Lisan al-Arab, Maqayis al-Lughah, Al-Tibyan, Tadhkirat al-Arib, Mufradat al-Raghib, and Al-Mu\'jam al-Wasit).\n'
+            '• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n'
+            '• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n'
+            '• Application License: 100% free and open-source project licensed under the MIT License.\n'
+            '• Madinah Mushaf script: page fonts (QCF) by the King Fahd Glorious Quran Printing Complex, with line layout from Quran.com data.\n'
+            '• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
   String get openSourceLicenses => _l.openSourceLicenses;
+
   /// زر استعراض ميثاق وسياسة الخصوصية والأمان.
   String get privacyPolicy => _l.privacyPolicy;
+
   /// عنوان نافذة ميثاق الخصوصية والأمان.
   String get privacyPolicyTitle => _l.privacyPolicyTitle;
+
   /// وصف موجز للخصوصية والأمان.
   String get privacyPolicySubtitle => _l.privacyPolicySubtitle;
 
@@ -671,8 +677,7 @@ class AppStrings {
   String get restoreFailed => _l.restoreFailed;
   String get selectBackupLocation => _l.selectBackupLocation;
   String get backupCreateFailed => _l.backupCreateFailed;
-  String errorSavingFile(dynamic err) =>
-      _l.errorSavingFile('$err');
+  String errorSavingFile(dynamic err) => _l.errorSavingFile('$err');
 
   // Supplications & Adhkar
   String get viewAyah => _l.viewAyah;
@@ -685,12 +690,10 @@ class AppStrings {
   String get resetCounters => _l.resetCounters;
   String get adhkarCountersResetSuccess => _l.adhkarCountersResetSuccess;
   String get dhikrCopiedSuccess => _l.dhikrCopiedSuccess;
-  String dhikrIndex(dynamic index) =>
-      _l.dhikrIndex(digits(index));
+  String dhikrIndex(dynamic index) => _l.dhikrIndex(digits(index));
   String get copyDhikr => _l.copyDhikr;
   String get completed => _l.completed;
-  String remainingCount(dynamic count) =>
-      _l.remainingCount(digits(count));
+  String remainingCount(dynamic count) => _l.remainingCount(digits(count));
   String get once => _l.once;
 
   // Ahlulbayt & Hadith Duas
@@ -703,18 +706,15 @@ class AppStrings {
   String get decreaseFontSize => _l.decreaseFontSize;
   String get increaseFontSize => _l.increaseFontSize;
   String get fullAuthenticText => _l.fullAuthenticText;
-  String searchGeneralDuasHint(String title) =>
-      _l.searchGeneralDuasHint(title);
+  String searchGeneralDuasHint(String title) => _l.searchGeneralDuasHint(title);
   String generalDuasCountBadge(dynamic count) =>
       _l.generalDuasCountBadge(digits(count));
-  String duaIndex(dynamic index) =>
-      _l.duaIndex(digits(index));
+  String duaIndex(dynamic index) => _l.duaIndex(digits(index));
   String get copyDuaTooltip => _l.copyDuaTooltip;
 
   // Books & Pamphlets Reader
   String get tableOfContents => _l.tableOfContents;
-  String bookIndexPrefix(String title) =>
-      _l.bookIndexPrefix(title);
+  String bookIndexPrefix(String title) => _l.bookIndexPrefix(title);
   String pageOfTotal(dynamic page, dynamic total) =>
       _l.pageOfTotal(digits(page), digits(total));
   String sectionOfTotal(dynamic section, dynamic total) =>
@@ -729,18 +729,15 @@ class AppStrings {
   String get retry => _l.retry;
   String get openAndReadPdf => _l.openAndReadPdf;
   String get noTextContentAvailable => _l.noTextContentAvailable;
-  String searchSectionHint(String name) =>
-      _l.searchSectionHint(name);
+  String searchSectionHint(String name) => _l.searchSectionHint(name);
   String get verifiedPamphletPdf => _l.verifiedPamphletPdf;
   String fullSectionsCount(dynamic count) =>
       _l.fullSectionsCount(digits(count));
   String get directTextReading => _l.directTextReading;
   String get textCopied => _l.textCopied;
   String get fileNotFound => _l.fileNotFound;
-  String fileShareError(dynamic error) =>
-      _l.fileShareError('$error');
-  String pdfReadError(dynamic error) =>
-      _l.pdfReadError('$error');
+  String fileShareError(dynamic error) => _l.fileShareError('$error');
+  String pdfReadError(dynamic error) => _l.pdfReadError('$error');
   String fileContentReadError(dynamic error) =>
       _l.fileContentReadError('$error');
   String get noTextContent => _l.noTextContent;
@@ -773,42 +770,42 @@ class AppStrings {
   String get resetCycleCounterConfirm => _l.resetCycleCounterConfirm;
   String get resetCycleAction => _l.resetCycleAction;
   String get tapAnywhereToCount => _l.tapAnywhereToCount;
-  String targetCount(dynamic target) =>
-      _l.targetCount(digits(target));
+  String targetCount(dynamic target) => _l.targetCount(digits(target));
   String get freeCount => _l.freeCount;
   String get countSettings => _l.countSettings;
   String get freeCountOpen => _l.freeCountOpen;
-  String countTimes(dynamic count) =>
-      _l.countTimes(digits(count));
+  String countTimes(dynamic count) => _l.countTimes(digits(count));
   String get autoAdvanceUponCompletion => _l.autoAdvanceUponCompletion;
-  String get todayCount =>
-      isArabic ? 'استغفار وتسبيح اليوم' : "Today's Count";
+  String get todayCount => isArabic ? 'استغفار وتسبيح اليوم' : "Today's Count";
   String get lifetimeTotalCount => _l.lifetimeTotalCount;
   String formulaXOfY(dynamic current, dynamic total) =>
       _l.formulaXOfY(digits(current), digits(total));
-  String allFormulasCount(dynamic total) =>
-      _l.allFormulasCount(digits(total));
+  String allFormulasCount(dynamic total) => _l.allFormulasCount(digits(total));
   String get copyDhikrTooltip => _l.copyDhikrTooltip;
   String get dhikrCopied => _l.dhikrCopied;
   String targetReachedAuto(dynamic target) =>
       _l.targetReachedAuto(digits(target));
-  String targetReached(dynamic target) =>
-      _l.targetReached(digits(target));
+  String targetReached(dynamic target) => _l.targetReached(digits(target));
   String get tasbeehAndIstighfarFormulas => _l.tasbeehAndIstighfarFormulas;
   String get searchDhikrHint => _l.searchDhikrHint;
   String get noMatchingFormulas => _l.noMatchingFormulas;
   String get swipeOrTapToChange => _l.swipeOrTapToChange;
   String get nextDhikr => _l.nextDhikr;
   String get previousDhikr => _l.previousDhikr;
+
   /// زر تفعيل وضع العد التلقائي للسبحة.
   String get autoCount => _l.autoCount;
+
   /// زر إيقاف العد التلقائي المؤقت للسبحة.
   String get stopAutoCount => _l.stopAutoCount;
+
   /// عرض مدة الإيقاع الزمني المحسوب لكل عَدّة بالثواني.
   String smartPaceSeconds(dynamic seconds) =>
       _l.smartPaceSeconds(digits(seconds));
+
   /// تلميح تسريع وتيرة العد التلقائي.
   String get decreasePace => _l.decreasePace;
+
   /// تلميح إبطاء وتيرة العد التلقائي وتدبر الذكر.
   String get increasePace => _l.increasePace;
 

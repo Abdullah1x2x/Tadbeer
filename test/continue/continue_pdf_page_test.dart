@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/app/theme.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/books/book_reader_screen.dart';
-import 'package:tadbeer/features/books/book_repository.dart';
+import 'package:tadbeer/core/theme/theme.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/features/books/screens/book_reader_screen.dart';
+import 'package:tadbeer/features/books/data/book_repository.dart';
 import 'package:tadbeer/features/continue/continue_card.dart';
 import 'package:tadbeer/features/continue/last_activity.dart';
 

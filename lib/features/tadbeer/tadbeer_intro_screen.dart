@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 
 // هذه الملفات أرجع لها حسب الوظيفة التي أحتاجها في الشاشة
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/app_logo.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../features/quran/data/quran_models.dart';
-import '../../features/quran/data/quran_repository.dart';
+import '../../data/quran/quran_models.dart';
+import '../../data/quran/quran_repository.dart';
 import '../../app/main_shell.dart';
 import '../../core/motion/app_motion.dart';
 

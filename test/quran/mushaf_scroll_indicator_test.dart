@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
-import 'package:tadbeer/features/settings/user_settings_model.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -37,12 +37,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(
-            body: QuranPageView(
-              page: page,
-              pageNumber: 100,
-            ),
-          ),
+          home: Scaffold(body: QuranPageView(page: page, pageNumber: 100)),
         ),
       );
       await tester.pumpAndSettle();
@@ -50,7 +45,9 @@ void main() {
       // Verify RawScrollbar is present
       expect(find.byType(RawScrollbar), findsOneWidget);
 
-      final scrollable = tester.widget<SingleChildScrollView>(find.byType(SingleChildScrollView));
+      final scrollable = tester.widget<SingleChildScrollView>(
+        find.byType(SingleChildScrollView),
+      );
       final controller = scrollable.controller!;
 
       // 1. Initially at top: chevron down icon is visible
@@ -58,7 +55,10 @@ void main() {
       expect(chevronFinder, findsOneWidget);
 
       // 2. Scroll partway down (not reaching the bottom yet)
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -60));
+      await tester.drag(
+        find.byType(SingleChildScrollView),
+        const Offset(0, -60),
+      );
       await tester.pumpAndSettle();
 
       // Verify chevron down icon REMAINS visible because there is still content below

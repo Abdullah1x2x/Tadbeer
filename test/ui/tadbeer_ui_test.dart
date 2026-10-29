@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/app.dart';
 import 'package:tadbeer/core/design_system/design_system.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
-import 'package:tadbeer/features/duas/duas_screen.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
+import 'package:tadbeer/features/duas/screens/duas_screen.dart';
 import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_intro_screen.dart';
 import 'package:tadbeer/features/notes/note_editor_screen.dart';
@@ -190,10 +190,12 @@ void main() {
 
         // 1. As a tab, the reader opens with its bars (and the bottom
         // navigation) visible so the reader can see how to leave.
-        final animatedOpacityFinder = find.descendant(
-          of: find.byType(SafeArea),
-          matching: find.byType(AnimatedOpacity),
-        ).first;
+        final animatedOpacityFinder = find
+            .descendant(
+              of: find.byType(SafeArea),
+              matching: find.byType(AnimatedOpacity),
+            )
+            .first;
         AnimatedOpacity opacityWidget = tester.widget(animatedOpacityFinder);
         expect(opacityWidget.opacity, 1.0);
         expect(barOpacity(tester), 1.0);
@@ -420,4 +422,3 @@ void main() {
     );
   });
 }
-

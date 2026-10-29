@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../../settings/settings_screen.dart';
 
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';

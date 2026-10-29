@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 import 'app_tokens.dart';
 
 /// شارة رقمية مستقبلية متألقة لعرض الحالات والوسوم والعدادات.

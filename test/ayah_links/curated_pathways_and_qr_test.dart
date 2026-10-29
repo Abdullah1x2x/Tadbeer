@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/ayah_links/ayah_link_model.dart';
-import 'package:tadbeer/features/ayah_links/ayah_link_repository.dart';
-import 'package:tadbeer/features/ayah_links/curated_pathways.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/models/ayah_link_model.dart';
+import 'package:tadbeer/features/ayah_links/data/ayah_link_repository.dart';
+import 'package:tadbeer/features/ayah_links/data/curated_pathways.dart';
 import 'package:tadbeer/features/ayah_links/widgets/ayah_link_qr_dialog.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +16,9 @@ void main() {
   late AyahLinkRepository repo;
 
   setUpAll(() async {
-    tempDir = await Directory.systemTemp.createTemp('tadbeer_pathways_qr_test_');
+    tempDir = await Directory.systemTemp.createTemp(
+      'tadbeer_pathways_qr_test_',
+    );
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
     await QuranRepository.instance.init();
@@ -30,40 +32,47 @@ void main() {
   });
 
   group('CuratedPathwaysRegistry & AyahLinkQrDialog Tests', () {
-    test('Curated pathways registry provides 4 high-quality thematic pathways', () {
-      final pathways = CuratedPathwaysRegistry.pathways;
-      expect(pathways.length, equals(4));
+    test(
+      'Curated pathways registry provides 4 high-quality thematic pathways',
+      () {
+        final pathways = CuratedPathwaysRegistry.pathways;
+        expect(pathways.length, equals(4));
 
-      for (final p in pathways) {
-        expect(p.id, isNotEmpty);
-        expect(p.title, isNotEmpty);
-        expect(p.description, isNotEmpty);
-        expect(p.category, isNotEmpty);
-        expect(p.verses.length, greaterThanOrEqualTo(3));
-      }
-    });
+        for (final p in pathways) {
+          expect(p.id, isNotEmpty);
+          expect(p.title, isNotEmpty);
+          expect(p.description, isNotEmpty);
+          expect(p.category, isNotEmpty);
+          expect(p.verses.length, greaterThanOrEqualTo(3));
+        }
+      },
+    );
 
-    test('importPathway imports curated pathway into AyahLinkRepository', () async {
-      final pathway = CuratedPathwaysRegistry.pathways.first;
-      final imported = await CuratedPathwaysRegistry.importPathway(
-        pathway,
-        repo: repo,
-      );
+    test(
+      'importPathway imports curated pathway into AyahLinkRepository',
+      () async {
+        final pathway = CuratedPathwaysRegistry.pathways.first;
+        final imported = await CuratedPathwaysRegistry.importPathway(
+          pathway,
+          repo: repo,
+        );
 
-      expect(imported.title, equals(pathway.title));
-      expect(imported.verses.length, equals(pathway.verses.length));
+        expect(imported.title, equals(pathway.title));
+        expect(imported.verses.length, equals(pathway.verses.length));
 
-      final retrieved = repo.getLink(imported.id);
-      expect(retrieved, isNotNull);
-      expect(retrieved!.id, equals(imported.id));
-      expect(retrieved.verses.length, equals(pathway.verses.length));
-    });
+        final retrieved = repo.getLink(imported.id);
+        expect(retrieved, isNotNull);
+        expect(retrieved!.id, equals(imported.id));
+        expect(retrieved.verses.length, equals(pathway.verses.length));
+      },
+    );
 
     test('AyahLinkQrDialog link encoding and decoding roundtrip', () {
       final link = AyahLinkItem(
         id: 'test_qr_link_1',
         title: 'رابط تدبري لاختبار QR',
-        description: 'وصف الرابط التدبري للتحقق من التشفير وفك التشفير دون إنترنت',
+        description:
+            'وصف الرابط التدبري للتحقق من التشفير وفك التشفير دون إنترنت',
         verses: [
           AyahLinkVerse(
             ayahId: 255,
@@ -107,8 +116,14 @@ void main() {
     test('AyahLinkQrDialog decodeLink gracefully rejects invalid payloads', () {
       expect(AyahLinkQrDialog.decodeLink(''), isNull);
       expect(AyahLinkQrDialog.decodeLink('https://example.com'), isNull);
-      expect(AyahLinkQrDialog.decodeLink('tadbeer://link?data=invalid_base64!!!'), isNull);
-      expect(AyahLinkQrDialog.decodeLink('tadbeer://link?data=YWJj'), isNull); // not JSON
+      expect(
+        AyahLinkQrDialog.decodeLink('tadbeer://link?data=invalid_base64!!!'),
+        isNull,
+      );
+      expect(
+        AyahLinkQrDialog.decodeLink('tadbeer://link?data=YWJj'),
+        isNull,
+      ); // not JSON
     });
   });
 }

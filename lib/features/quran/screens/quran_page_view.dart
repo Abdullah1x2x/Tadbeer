@@ -3,17 +3,17 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../../../app/theme.dart';
-import '../../../core/storage/user_data_store.dart';
+import '../../../core/theme/theme.dart';
+import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../data/quran_models.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../../memorization/memorization_model.dart';
 import '../widgets/ayah_rosette.dart';
 import '../widgets/mushaf_frame_painter.dart';
 import '../widgets/surah_header_banner.dart';
 import '../../../core/design_system/app_icons.dart';
-import '../../settings/user_settings_model.dart';
+import '../../../data/models/user_settings_model.dart';
 import '../qcf/qcf_page_body.dart';
 
 /// متعرف إيماءات مخصص للآيات القرآنية المدمجة داخل TextSpan.

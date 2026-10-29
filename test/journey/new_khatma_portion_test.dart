@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/features/journey/reading_journey.dart';
+import 'package:tadbeer/data/models/reading_journey.dart';
 
 void main() {
   final morning = DateTime(2026, 10, 26, 8);

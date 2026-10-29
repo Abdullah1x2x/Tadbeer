@@ -83,11 +83,7 @@ class TasbeehDhikr {
   bool get isTasbeeh => section == DhikrSection.tasbeeh;
 
   /// التصنيفات المعتمدة: استغفار وتسبيح فقط دون أي تعقيد.
-  static const List<String> categories = [
-    'الكل',
-    'استغفار',
-    'تسبيح',
-  ];
+  static const List<String> categories = ['الكل', 'استغفار', 'تسبيح'];
 
   /// قائمة صيغ الاستغفار فقط.
   static List<TasbeehDhikr> get istighfarDhikrs =>
@@ -156,7 +152,8 @@ class TasbeehRepository extends ChangeNotifier {
         final content = await file.readAsString();
         final jsonMap = jsonDecode(content) as Map<String, dynamic>;
 
-        _lifetimeTotalCount = (jsonMap['lifetimeTotalCount'] as num?)?.toInt() ?? 0;
+        _lifetimeTotalCount =
+            (jsonMap['lifetimeTotalCount'] as num?)?.toInt() ?? 0;
         final savedDate = jsonMap['lastDateIso'] as String? ?? '';
         if (savedDate == today) {
           _todayTotalCount = (jsonMap['todayTotalCount'] as num?)?.toInt() ?? 0;
@@ -172,7 +169,9 @@ class TasbeehRepository extends ChangeNotifier {
           );
         }
 
-        _targetCount = (jsonMap['targetCount'] as num?)?.toInt() ?? _activeDhikr.defaultTarget;
+        _targetCount =
+            (jsonMap['targetCount'] as num?)?.toInt() ??
+            _activeDhikr.defaultTarget;
         _currentCount = (jsonMap['currentCount'] as num?)?.toInt() ?? 0;
         _autoAdvanceEnabled = jsonMap['autoAdvanceEnabled'] as bool? ?? true;
       } else {
@@ -260,8 +259,7 @@ class TasbeehRepository extends ChangeNotifier {
         ? pool
         : TasbeehDhikr.defaultDhikrs;
     final currentIndex = list.indexWhere((d) => d.id == _activeDhikr.id);
-    final nextIndex =
-        currentIndex == -1 ? 0 : (currentIndex + 1) % list.length;
+    final nextIndex = currentIndex == -1 ? 0 : (currentIndex + 1) % list.length;
     setActiveDhikr(list[nextIndex]);
   }
 

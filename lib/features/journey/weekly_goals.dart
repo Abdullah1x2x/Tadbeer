@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../core/theme/theme.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../core/design_system/app_icons.dart';
 

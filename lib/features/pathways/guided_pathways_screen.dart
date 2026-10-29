@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../ayah_links/curated_pathways.dart';
-import '../quran/data/quran_repository.dart';
-import '../tadbeer/tadbeer_model.dart';
+import '../ayah_links/data/curated_pathways.dart';
+import '../../data/quran/quran_repository.dart';
+import '../../data/models/tadbeer_model.dart';
 import '../tadbeer/tadbeer_questions.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../continue/last_activity.dart';

@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/app/theme.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/core/theme/theme.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/journey/journey_screen.dart';
 import 'package:tadbeer/features/journey/monthly_report.dart';
-import 'package:tadbeer/features/journey/reading_journey.dart';
+import 'package:tadbeer/data/models/reading_journey.dart';
 import 'package:tadbeer/features/journey/streak_reminder.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 
 /// The streak counts calendar days, its reminder speaks only when the
 /// streak is at stake, and the journey screen's texts and report follow

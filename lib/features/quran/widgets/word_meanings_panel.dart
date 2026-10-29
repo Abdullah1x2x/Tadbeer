@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../data/quran_models.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
 /// لوحة معاني الكلمات القرآنية المصاحبة لقراءة المصحف الشريف.

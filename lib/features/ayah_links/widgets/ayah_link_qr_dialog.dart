@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../../quran/data/quran_repository.dart';
-import '../ayah_link_detail_screen.dart';
-import '../ayah_link_model.dart';
-import '../ayah_link_repository.dart';
+import '../../../data/quran/quran_repository.dart';
+import '../screens/ayah_link_detail_screen.dart';
+import '../../../data/models/ayah_link_model.dart';
+import '../data/ayah_link_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
 /// أدوات مشاركة واستيراد روابط الآيات دون اتصال بالإنترنت عبر رمز الاستجابة السريعة (QR).

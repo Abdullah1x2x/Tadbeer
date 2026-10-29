@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/motion/app_motion.dart';
-import '../../core/services/local_reminder_service.dart';
-import '../../core/storage/user_data_store.dart';
+import 'local_reminder_service.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../features/reminders/reminder_model.dart';
+import '../../data/models/reminder_model.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// شاشة إدارة التذكيرات والمنبهات المحلية لقراءة الورد القرآني.
@@ -91,7 +91,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
                     decoration: InputDecoration(
                       labelText: l10n.reminderTitle,
-                      labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                      labelStyle: const TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                      ),
                       filled: true,
                       fillColor: isDark
                           ? AppColors.darkSurface
@@ -115,7 +117,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
                     leading: Icon(AppIcons.clock, color: AppColors.olive),
                     title: Text(
                       l10n.reminderTime,
-                      style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
+                      style: const TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                        fontSize: 14,
+                      ),
                     ),
                     trailing: Text(
                       ReminderItem.formatTime12Hour(
@@ -215,7 +220,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.repeatDaily,
-                            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSansArabic',
+                            ),
                           ),
                         ),
                         RadioListTile<ReminderRepeatMode>(
@@ -223,7 +230,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.repeatOnce,
-                            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSansArabic',
+                            ),
                           ),
                         ),
                         RadioListTile<ReminderRepeatMode>(
@@ -231,7 +240,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                           activeColor: AppColors.olive,
                           title: Text(
                             l10n.selectDays,
-                            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSansArabic',
+                            ),
                           ),
                         ),
                       ],
@@ -338,7 +349,9 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       SnackBar(
                         content: Text(
                           l10n.reminderScheduledSuccess(modeLabel),
-                          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
                         ),
                         duration: const Duration(seconds: 2),
                       ),
@@ -725,9 +738,7 @@ class _ReminderCard extends StatelessWidget {
 
     final isAlarm = reminder.alertType == ReminderAlertType.alarm;
     final alertTypeLabel = isAlarm ? l10n.alarmAlert : l10n.notificationAlert;
-    final alertTypeIcon = isAlarm
-        ? AppIcons.alarm
-        : AppIcons.bell;
+    final alertTypeIcon = isAlarm ? AppIcons.alarm : AppIcons.bell;
     final accent = reminder.isEnabled
         ? AppColors.cyberEmerald
         : AppColors.olive.withValues(alpha: 0.5);

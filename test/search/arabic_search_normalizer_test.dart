@@ -50,7 +50,10 @@ void main() {
       expect(ArabicSearchNormalizer.toEnglishDigits('١١٤'), equals('114'));
       expect(ArabicSearchNormalizer.toEnglishDigits('٦٢٣٦'), equals('6236'));
       expect(ArabicSearchNormalizer.toEnglishDigits('۱۲۳'), equals('123'));
-      expect(ArabicSearchNormalizer.toEnglishDigits('صفحة ١٥٠'), equals('صفحة 150'));
+      expect(
+        ArabicSearchNormalizer.toEnglishDigits('صفحة ١٥٠'),
+        equals('صفحة 150'),
+      );
     });
 
     test('Real Quran Verse Search Matching (Ayat Al-Kursi)', () {
@@ -161,16 +164,28 @@ void main() {
       expect(ArabicSearchNormalizer.normalize('ٱلرِّبَوٰا۟'), equals('الربا'));
 
       // Uthmani Medial Alef Maqsura + Dagger Alif
-      expect(ArabicSearchNormalizer.normalize('أَلْهَىٰكُمُ'), equals('الهاكم'));
+      expect(
+        ArabicSearchNormalizer.normalize('أَلْهَىٰكُمُ'),
+        equals('الهاكم'),
+      );
       expect(ArabicSearchNormalizer.normalize('هَدَىٰهُمْ'), equals('هداهم'));
       expect(ArabicSearchNormalizer.normalize('سَوَّىٰهُ'), equals('سواه'));
 
       // Uthmani Medial Dagger Alif words restored for search
       expect(ArabicSearchNormalizer.normalize('كِتَٰب'), equals('كتاب'));
       expect(ArabicSearchNormalizer.normalize('ٱلْكِتَٰبُ'), equals('الكتاب'));
-      expect(ArabicSearchNormalizer.normalize('ٱلصَّٰبِرِينَ'), equals('الصابرين'));
-      expect(ArabicSearchNormalizer.normalize('ٱلظَّٰلِمِينَ'), equals('الظالمين'));
-      expect(ArabicSearchNormalizer.normalize('ٱلصَّٰلِحِينَ'), equals('الصالحين'));
+      expect(
+        ArabicSearchNormalizer.normalize('ٱلصَّٰبِرِينَ'),
+        equals('الصابرين'),
+      );
+      expect(
+        ArabicSearchNormalizer.normalize('ٱلظَّٰلِمِينَ'),
+        equals('الظالمين'),
+      );
+      expect(
+        ArabicSearchNormalizer.normalize('ٱلصَّٰلِحِينَ'),
+        equals('الصالحين'),
+      );
     });
 
     test('Real Quran Search Matching with Dagger Alif and Phonetic Input', () {
@@ -197,8 +212,14 @@ void main() {
       // 1. "الرحمان" matches Surah Al-Fatiha
       final rahmanMatches = searchAyahs('الرحمان');
       expect(rahmanMatches.isNotEmpty, isTrue);
-      expect(rahmanMatches.any((a) => a['surahNumber'] == 1 && a['ayahNumber'] == 1), isTrue);
-      expect(rahmanMatches.any((a) => a['surahNumber'] == 1 && a['ayahNumber'] == 3), isTrue);
+      expect(
+        rahmanMatches.any((a) => a['surahNumber'] == 1 && a['ayahNumber'] == 1),
+        isTrue,
+      );
+      expect(
+        rahmanMatches.any((a) => a['surahNumber'] == 1 && a['ayahNumber'] == 3),
+        isTrue,
+      );
 
       // 2. "ذالك الكتاب" matches Surah Al-Baqarah:2
       final dhalikaMatches = searchAyahs('ذالك الكتاب');
@@ -209,21 +230,41 @@ void main() {
       // 3. "لا إلاه إلا هو" matches Al-Baqarah:255, and "لا إلاه إلا الله" matches Muhammad:19
       final ilahHuwaMatches = searchAyahs('لا إلاه إلا هو');
       expect(ilahHuwaMatches.isNotEmpty, isTrue);
-      expect(ilahHuwaMatches.any((a) => a['surahNumber'] == 2 && a['ayahNumber'] == 255), isTrue);
+      expect(
+        ilahHuwaMatches.any(
+          (a) => a['surahNumber'] == 2 && a['ayahNumber'] == 255,
+        ),
+        isTrue,
+      );
 
       final ilahAllahMatches = searchAyahs('لا إلاه إلا الله');
       expect(ilahAllahMatches.isNotEmpty, isTrue);
-      expect(ilahAllahMatches.any((a) => a['surahNumber'] == 47 && a['ayahNumber'] == 19), isTrue);
+      expect(
+        ilahAllahMatches.any(
+          (a) => a['surahNumber'] == 47 && a['ayahNumber'] == 19,
+        ),
+        isTrue,
+      );
 
       // 4. "الصابرين" matches Al-Baqarah:153
       final sabirMatches = searchAyahs('الصابرين');
       expect(sabirMatches.isNotEmpty, isTrue);
-      expect(sabirMatches.any((a) => a['surahNumber'] == 2 && a['ayahNumber'] == 153), isTrue);
+      expect(
+        sabirMatches.any(
+          (a) => a['surahNumber'] == 2 && a['ayahNumber'] == 153,
+        ),
+        isTrue,
+      );
 
       // 5. "داوود" matches Al-Baqarah:251
       final dawudMatches = searchAyahs('داوود');
       expect(dawudMatches.isNotEmpty, isTrue);
-      expect(dawudMatches.any((a) => a['surahNumber'] == 2 && a['ayahNumber'] == 251), isTrue);
+      expect(
+        dawudMatches.any(
+          (a) => a['surahNumber'] == 2 && a['ayahNumber'] == 251,
+        ),
+        isTrue,
+      );
 
       // 6. "الهاكم التكاثر" matches Surah At-Takathur:1
       final takathurMatches = searchAyahs('الهاكم التكاثر');

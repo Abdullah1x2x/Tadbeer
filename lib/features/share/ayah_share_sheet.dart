@@ -10,16 +10,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/app_logo.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../quran/data/quran_models.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_models.dart';
+import '../../data/quran/quran_repository.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
 import '../quran/qcf/qcf_fonts.dart';
 import '../quran/qcf/qcf_layout.dart';
-import '../settings/user_settings_model.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// مقاس بطاقة المشاركة.

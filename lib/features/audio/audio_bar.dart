@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/app_icons.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import 'downloads_screen.dart';
 import 'quran_audio.dart';
 import 'reciters.dart';

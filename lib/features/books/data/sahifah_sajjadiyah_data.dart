@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../curated_books.dart';
+import 'curated_books.dart';
 import '../../../core/design_system/app_icons.dart';
 
 // =============================================================================

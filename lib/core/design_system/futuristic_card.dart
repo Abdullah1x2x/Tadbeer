@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 import '../motion/app_motion.dart';
 import 'app_tokens.dart';
 
@@ -161,7 +161,8 @@ class _FuturisticCardState extends State<FuturisticCard> {
                   focusColor: accent.withValues(alpha: 0.08),
                   child: Padding(
                     padding:
-                        widget.padding ?? const EdgeInsets.all(AppTokens.spaceMd),
+                        widget.padding ??
+                        const EdgeInsets.all(AppTokens.spaceMd),
                     child: widget.child,
                   ),
                 ),

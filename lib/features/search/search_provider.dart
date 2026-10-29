@@ -168,8 +168,8 @@ class SearchRegistry {
 
     final targetProviders = providerId != null
         ? (_providers.containsKey(providerId)
-            ? [_providers[providerId]!]
-            : <SearchProvider>[])
+              ? [_providers[providerId]!]
+              : <SearchProvider>[])
         : _providers.values.toList();
 
     if (targetProviders.isEmpty) return const [];

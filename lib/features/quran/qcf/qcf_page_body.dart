@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../data/quran_models.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../widgets/surah_header_banner.dart';
 import 'qcf_fonts.dart';
 import 'qcf_layout.dart';

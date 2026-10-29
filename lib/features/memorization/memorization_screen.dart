@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import 'memorization_model.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
@@ -50,11 +50,7 @@ class MemorizationScreen extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Icon(
-                              AppIcons.brainFill,
-                              color: gold,
-                              size: 30,
-                            ),
+                            Icon(AppIcons.brainFill, color: gold, size: 30),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
@@ -120,8 +116,7 @@ class MemorizationScreen extends StatelessWidget {
                               title: surah.name,
                             );
                             _startSession(context, [
-                              for (var a = 1; a <= surah.ayahCount; a++)
-                                (s, a),
+                              for (var a = 1; a <= surah.ayahCount; a++) (s, a),
                             ]);
                           },
                           leading: CircleAvatar(

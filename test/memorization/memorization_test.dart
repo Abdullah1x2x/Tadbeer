@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/app/theme.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/core/theme/theme.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/memorization/memorization_model.dart';
 import 'package:tadbeer/features/memorization/memorization_screen.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 
 void main() {
   final day0 = DateTime(2026, 10, 19, 8);
@@ -23,10 +23,7 @@ void main() {
     });
 
     test('failure goes back to box 1, due tomorrow', () {
-      final c = HifzCard(
-        box: 4,
-        due: day0,
-      ).grade(remembered: false, now: day0);
+      final c = HifzCard(box: 4, due: day0).grade(remembered: false, now: day0);
       expect(c.box, 1);
       expect(c.due, DateTime(2026, 10, 20));
     });

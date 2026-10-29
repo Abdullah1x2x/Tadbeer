@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
-import '../../../app/theme.dart';
+import '../../../core/theme/theme.dart';
 import '../../../core/design_system/design_system.dart';
 import '../../../core/motion/app_motion.dart';
-import '../../../core/storage/user_data_store.dart';
+import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../data/quran_models.dart';
-import '../data/quran_repository.dart';
+import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../widgets/ayah_rosette.dart';
 import '../widgets/text_scale_control.dart';
 import '../../audio/audio_bar.dart';
@@ -20,7 +20,7 @@ import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
 import 'quran_page_view.dart';
 import '../widgets/quran_side_menu.dart';
-import '../../settings/user_settings_model.dart';
+import '../../../data/models/user_settings_model.dart';
 import '../../../core/design_system/app_icons.dart';
 
 /// Fullscreen Medina Mushaf reading experience for Tadbeer (1421H layout, 604 pages).

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/app/theme.dart';
+import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/core/design_system/design_system.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
 

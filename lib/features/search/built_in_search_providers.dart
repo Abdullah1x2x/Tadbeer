@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
-import '../../core/storage/user_data_store.dart';
+import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_root_search_helper.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import '../../features/ayah_links/ayah_link_detail_screen.dart';
-import '../../features/ayah_links/ayah_link_repository.dart';
-import '../../features/ayah_links/curated_pathways.dart';
+import '../ayah_links/screens/ayah_link_detail_screen.dart';
+import '../ayah_links/data/ayah_link_repository.dart';
+import '../ayah_links/data/curated_pathways.dart';
 import '../../features/pathways/guided_pathways_screen.dart';
-import '../../features/books/book_reader_screen.dart';
-import '../../features/books/book_repository.dart';
-import '../../features/duas/quran_duas_repository.dart';
+import '../books/screens/book_reader_screen.dart';
+import '../books/data/book_repository.dart';
+import '../duas/data/quran_duas_repository.dart';
 import '../../features/notes/note_editor_screen.dart';
-import '../../features/quran/data/quran_repository.dart';
+import '../../data/quran/quran_repository.dart';
 import '../../features/quran/screens/quran_screen.dart';
-import '../../features/reminders/reminder_model.dart';
+import '../../data/models/reminder_model.dart';
 import '../../features/reminders/reminders_screen.dart';
 import 'search_provider.dart';
 import '../../core/design_system/app_icons.dart';
@@ -675,7 +675,10 @@ class BooksSearchProvider implements SearchProvider {
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
     if (normalizedQuery.isEmpty) return const [];
 
-    final tokens = normalizedQuery.split(' ').where((w) => w.isNotEmpty).toList();
+    final tokens = normalizedQuery
+        .split(' ')
+        .where((w) => w.isNotEmpty)
+        .toList();
     if (tokens.isEmpty) return const [];
 
     final results = <SearchResultItem>[];
@@ -698,7 +701,8 @@ class BooksSearchProvider implements SearchProvider {
         match = true;
       } else if (tokens.length > 1) {
         // ٢. مطابقة الكلمات المتعددة عبر حقول الملزمة مع مرونة السوابق
-        final combined = '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
+        final combined =
+            '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
         match = tokens.every((token) {
           if (combined.contains(token)) return true;
           if (token.startsWith('ال') && token.length >= 4) {
@@ -706,10 +710,13 @@ class BooksSearchProvider implements SearchProvider {
           }
           return false;
         });
-      } else if (tokens.length == 1 && tokens.first.startsWith('ال') && tokens.first.length >= 4) {
+      } else if (tokens.length == 1 &&
+          tokens.first.startsWith('ال') &&
+          tokens.first.length >= 4) {
         // كلمة مفردة بمرونة "ال" التعريف
         final withoutAl = tokens.first.substring(2);
-        final combined = '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
+        final combined =
+            '$titleNorm $subtitleNorm $authorNorm $categoryNorm $badgeNorm';
         if (combined.contains(withoutAl)) {
           match = true;
         }
@@ -723,7 +730,8 @@ class BooksSearchProvider implements SearchProvider {
             match = true;
             break;
           }
-          if (tokens.length > 1 && tokens.every((t) => chTitleNorm.contains(t))) {
+          if (tokens.length > 1 &&
+              tokens.every((t) => chTitleNorm.contains(t))) {
             match = true;
             break;
           }
@@ -734,10 +742,10 @@ class BooksSearchProvider implements SearchProvider {
         final snippet = book.subtitle.isNotEmpty
             ? book.subtitle
             : (book.author.isNotEmpty
-                ? 'المؤلف: ${book.author}'
-                : (book.badgeText != null && book.badgeText!.isNotEmpty
-                    ? book.badgeText!
-                    : book.category));
+                  ? 'المؤلف: ${book.author}'
+                  : (book.badgeText != null && book.badgeText!.isNotEmpty
+                        ? book.badgeText!
+                        : book.category));
 
         final badge = book.isPdf ? 'ملزمة PDF' : 'كتاب نصي';
 
@@ -753,9 +761,7 @@ class BooksSearchProvider implements SearchProvider {
             onTap: (ctx) {
               Navigator.push(
                 ctx,
-                MaterialPageRoute(
-                  builder: (_) => BookReaderScreen(book: book),
-                ),
+                MaterialPageRoute(builder: (_) => BookReaderScreen(book: book)),
               );
             },
           ),
@@ -766,7 +772,6 @@ class BooksSearchProvider implements SearchProvider {
     return results;
   }
 }
-
 
 /// مزود البحث في مسارات التدبر الموجّهة (العنوان والوصف وإضاءات الآيات).
 ///

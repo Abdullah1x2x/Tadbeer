@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/features/quran/data/quran_models.dart';
+import 'package:tadbeer/data/quran/quran_models.dart';
 
 void main() {
   late Map<String, dynamic> quranJson;

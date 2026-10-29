@@ -6,10 +6,10 @@ import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/core/services/backup_crypto_service.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/bookmarks/bookmark_model.dart';
-import 'package:tadbeer/features/notes/note_model.dart';
+import 'package:tadbeer/features/backup/backup_crypto_service.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/models/bookmark_model.dart';
+import 'package:tadbeer/data/models/note_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -143,43 +143,46 @@ void main() {
       expect(restoreRes.success, isFalse);
     });
 
-    test('Partial backup restore keeps sections that were not exported', () async {
-      final store = UserDataStore.instance;
-      await store.saveNote(
-        id: 'keep-me',
-        type: NoteType.free,
-        title: 'ملاحظة يجب أن تبقى',
-        content: 'لا تُحذف عند استعادة نسخة بلا ملاحظات',
-      );
-      await store.putBookmark(
-        BookmarkItem(
-          id: 'bm-in-backup',
-          ayahId: 1,
-          surahNumber: 1,
-          ayahNumber: 1,
-          page: 1,
-          createdAt: DateTime(2026, 1, 1),
-        ),
-      );
+    test(
+      'Partial backup restore keeps sections that were not exported',
+      () async {
+        final store = UserDataStore.instance;
+        await store.saveNote(
+          id: 'keep-me',
+          type: NoteType.free,
+          title: 'ملاحظة يجب أن تبقى',
+          content: 'لا تُحذف عند استعادة نسخة بلا ملاحظات',
+        );
+        await store.putBookmark(
+          BookmarkItem(
+            id: 'bm-in-backup',
+            ayahId: 1,
+            surahNumber: 1,
+            ayahNumber: 1,
+            page: 1,
+            createdAt: DateTime(2026, 1, 1),
+          ),
+        );
 
-      // Export WITHOUT notes.
-      final exportRes = await BackupCryptoService.createBackupFile(
-        targetPath: backupFile.path,
-        password: 'pw',
-        notes: false,
-      );
-      expect(exportRes.success, isTrue);
+        // Export WITHOUT notes.
+        final exportRes = await BackupCryptoService.createBackupFile(
+          targetPath: backupFile.path,
+          password: 'pw',
+          notes: false,
+        );
+        expect(exportRes.success, isTrue);
 
-      final restoreRes = await BackupCryptoService.restoreFromFile(
-        file: backupFile,
-        password: 'pw',
-      );
-      expect(restoreRes.success, isTrue);
+        final restoreRes = await BackupCryptoService.restoreFromFile(
+          file: backupFile,
+          password: 'pw',
+        );
+        expect(restoreRes.success, isTrue);
 
-      // Notes were not in the backup -> must still be there.
-      expect(store.notes.map((n) => n.id), contains('keep-me'));
-      expect(store.bookmarks.map((b) => b.id), contains('bm-in-backup'));
-    });
+        // Notes were not in the backup -> must still be there.
+        expect(store.notes.map((n) => n.id), contains('keep-me'));
+        expect(store.bookmarks.map((b) => b.id), contains('bm-in-backup'));
+      },
+    );
 
     test('Tampered v2 backup is rejected by the MAC check', () async {
       await BackupCryptoService.createBackupFile(
@@ -217,15 +220,14 @@ void main() {
         }),
       );
       final salt = Uint8List.fromList(List<int>.generate(16, (i) => i));
-      final ivBytes = Uint8List.fromList(List<int>.generate(16, (i) => 100 + i));
-      final key = enc.Key(
-        Uint8List.fromList(
-          sha256.convert(utf8.encode(password) + salt).bytes,
-        ),
+      final ivBytes = Uint8List.fromList(
+        List<int>.generate(16, (i) => 100 + i),
       );
-      final cipher = enc.Encrypter(
-        enc.AES(key, mode: enc.AESMode.cbc),
-      ).encryptBytes(gzip.encode(payload), iv: enc.IV(ivBytes));
+      final key = enc.Key(
+        Uint8List.fromList(sha256.convert(utf8.encode(password) + salt).bytes),
+      );
+      final cipher = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc))
+          .encryptBytes(gzip.encode(payload), iv: enc.IV(ivBytes));
       backupFile.writeAsStringSync(
         jsonEncode({
           'magic': BackupCryptoService.magicHeader,

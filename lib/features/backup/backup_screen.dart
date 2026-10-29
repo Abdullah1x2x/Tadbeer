@@ -6,8 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
-import '../../core/services/backup_crypto_service.dart';
+import '../../core/theme/theme.dart';
+import 'backup_crypto_service.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// شاشة إنشاء واستعادة النسخ الاحتياطية المشفرة لبيانات المستخدم.
@@ -117,9 +117,8 @@ class _BackupScreenState extends State<BackupScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.errorSavingFile(e))),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.errorSavingFile(e))));
       }
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -137,16 +136,12 @@ class _BackupScreenState extends State<BackupScreen> {
       if (filePath == null) return;
 
       await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(filePath)],
-          subject: 'Tadbeer Backup',
-        ),
+        ShareParams(files: [XFile(filePath)], subject: 'Tadbeer Backup'),
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -334,268 +329,293 @@ class _BackupScreenState extends State<BackupScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                    Row(
-                      children: [
-                        Icon(
-                          AppIcons.uploadSimple,
-                          color: AppColors.olive,
-                          size: 24,
+                      Row(
+                        children: [
+                          Icon(
+                            AppIcons.uploadSimple,
+                            color: AppColors.olive,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            l10n.exportBackup,
+                            style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: isDark
+                                  ? AppColors.comsilk
+                                  : AppColors.oliveDark,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.exportBackupSubtitle,
+                        style: TextStyle(
+                          fontFamily: 'IBMPlexSansArabic',
+                          fontSize: 13,
+                          color: isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle,
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          l10n.exportBackup,
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? AppColors.comsilk
-                                : AppColors.oliveDark,
+                      ),
+                      const SizedBox(height: 8),
+                      CheckboxListTile(
+                        dense: true,
+                        // Keep each checkbox right beside its label.
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: const EdgeInsetsDirectional.only(
+                          start: 4,
+                        ),
+                        title: Text(
+                          l10n.notes,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.exportBackupSubtitle,
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                        fontSize: 13,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
+                        value: _includeNotes,
+                        onChanged: (val) =>
+                            setState(() => _includeNotes = val ?? true),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    CheckboxListTile(
-                      dense: true,
-                      // Keep each checkbox right beside its label.
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
-                      title: Text(
-                        l10n.notes,
-                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                      CheckboxListTile(
+                        dense: true,
+                        // Keep each checkbox right beside its label.
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: const EdgeInsetsDirectional.only(
+                          start: 4,
+                        ),
+                        title: Text(
+                          l10n.bookmarks,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
+                        ),
+                        value: _includeBookmarks,
+                        onChanged: (val) =>
+                            setState(() => _includeBookmarks = val ?? true),
                       ),
-                      value: _includeNotes,
-                      onChanged: (val) =>
-                          setState(() => _includeNotes = val ?? true),
-                    ),
-                    CheckboxListTile(
-                      dense: true,
-                      // Keep each checkbox right beside its label.
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
-                      title: Text(
-                        l10n.bookmarks,
-                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                      CheckboxListTile(
+                        dense: true,
+                        // Keep each checkbox right beside its label.
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: const EdgeInsetsDirectional.only(
+                          start: 4,
+                        ),
+                        title: Text(
+                          l10n.highlights,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
+                        ),
+                        value: _includeHighlights,
+                        onChanged: (val) =>
+                            setState(() => _includeHighlights = val ?? true),
                       ),
-                      value: _includeBookmarks,
-                      onChanged: (val) =>
-                          setState(() => _includeBookmarks = val ?? true),
-                    ),
-                    CheckboxListTile(
-                      dense: true,
-                      // Keep each checkbox right beside its label.
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
-                      title: Text(
-                        l10n.highlights,
-                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                      CheckboxListTile(
+                        dense: true,
+                        // Keep each checkbox right beside its label.
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: const EdgeInsetsDirectional.only(
+                          start: 4,
+                        ),
+                        title: Text(
+                          l10n.reminders,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
+                        ),
+                        value: _includeReminders,
+                        onChanged: (val) =>
+                            setState(() => _includeReminders = val ?? true),
                       ),
-                      value: _includeHighlights,
-                      onChanged: (val) =>
-                          setState(() => _includeHighlights = val ?? true),
-                    ),
-                    CheckboxListTile(
-                      dense: true,
-                      // Keep each checkbox right beside its label.
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
-                      title: Text(
-                        l10n.reminders,
-                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                      CheckboxListTile(
+                        dense: true,
+                        // Keep each checkbox right beside its label.
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: const EdgeInsetsDirectional.only(
+                          start: 4,
+                        ),
+                        title: Text(
+                          l10n.settings,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
+                        ),
+                        value: _includeSettings,
+                        onChanged: (val) =>
+                            setState(() => _includeSettings = val ?? true),
                       ),
-                      value: _includeReminders,
-                      onChanged: (val) =>
-                          setState(() => _includeReminders = val ?? true),
-                    ),
-                    CheckboxListTile(
-                      dense: true,
-                      // Keep each checkbox right beside its label.
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
-                      title: Text(
-                        l10n.settings,
-                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                      CheckboxListTile(
+                        dense: true,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: const EdgeInsetsDirectional.only(
+                          start: 4,
+                        ),
+                        title: Text(
+                          l10n.journeyBackupSection,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
+                        ),
+                        value: _includeJourney,
+                        onChanged: (val) =>
+                            setState(() => _includeJourney = val ?? true),
                       ),
-                      value: _includeSettings,
-                      onChanged: (val) =>
-                          setState(() => _includeSettings = val ?? true),
-                    ),
-                    CheckboxListTile(
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsetsDirectional.only(start: 4),
-                      title: Text(
-                        l10n.journeyBackupSection,
-                        style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-                      ),
-                      value: _includeJourney,
-                      onChanged: (val) =>
-                          setState(() => _includeJourney = val ?? true),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: l10n.enterBackupPassword,
-                        labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-                        filled: true,
-                        fillColor: isDark
-                            ? AppColors.darkBackground
-                            : AppColors.comsilkLight,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: l10n.enterBackupPassword,
+                          labelStyle: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                          ),
+                          filled: true,
+                          fillColor: isDark
+                              ? AppColors.darkBackground
+                              : AppColors.comsilkLight,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: _isProcessing ? null : _exportBackupToFiles,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.olive,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: _isProcessing ? null : _exportBackupToFiles,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.olive,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: _isProcessing
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(AppIcons.downloadSimple),
+                        label: Text(
+                          l10n.saveToDeviceFiles,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
                         ),
                       ),
-                      icon: _isProcessing
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Icon(AppIcons.downloadSimple),
-                      label: Text(
-                        l10n.saveToDeviceFiles,
-                        style: const TextStyle(
-                          fontFamily: 'IBMPlexSansArabic',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                      const SizedBox(height: 10),
+                      OutlinedButton.icon(
+                        onPressed: _isProcessing ? null : _shareBackup,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: isDark
+                              ? AppColors.comsilk
+                              : AppColors.olive,
+                          side: BorderSide(
+                            color:
+                                (isDark ? AppColors.comsilk : AppColors.olive)
+                                    .withValues(alpha: 0.45),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: const Icon(AppIcons.shareNetwork, size: 20),
+                        label: Text(
+                          l10n.shareViaApps,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    OutlinedButton.icon(
-                      onPressed: _isProcessing ? null : _shareBackup,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor:
-                            isDark ? AppColors.comsilk : AppColors.olive,
-                        side: BorderSide(
-                          color: (isDark ? AppColors.comsilk : AppColors.olive)
-                              .withValues(alpha: 0.45),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      icon: const Icon(AppIcons.shareNetwork, size: 20),
-                      label: Text(
-                        l10n.shareViaApps,
-                        style: const TextStyle(
-                          fontFamily: 'IBMPlexSansArabic',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // Restore Section Card
-            Material(
-              color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: AppColors.border(context)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          AppIcons.cloudArrowDown,
-                          color: AppColors.olive,
-                          size: 24,
+              // Restore Section Card
+              Material(
+                color: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(color: AppColors.border(context)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            AppIcons.cloudArrowDown,
+                            color: AppColors.olive,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            l10n.restoreBackup,
+                            style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: isDark
+                                  ? AppColors.comsilk
+                                  : AppColors.oliveDark,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.restoreBackupSubtitle,
+                        style: TextStyle(
+                          fontFamily: 'IBMPlexSansArabic',
+                          fontSize: 13,
+                          color: isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle,
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          l10n.restoreBackup,
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? AppColors.comsilk
-                                : AppColors.oliveDark,
+                      ),
+                      const SizedBox(height: 16),
+                      OutlinedButton.icon(
+                        onPressed: _isProcessing ? null : _pickAndRestore,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: isDark
+                              ? AppColors.comsilk
+                              : AppColors.oliveDark,
+                          side: BorderSide(color: AppColors.olive, width: 1.5),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.restoreBackupSubtitle,
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                        fontSize: 13,
-                        color: isDark
-                            ? AppColors.nightSubtitle
-                            : AppColors.daySubtitle,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    OutlinedButton.icon(
-                      onPressed: _isProcessing ? null : _pickAndRestore,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: isDark
-                            ? AppColors.comsilk
-                            : AppColors.oliveDark,
-                        side: BorderSide(
-                          color: AppColors.olive,
-                          width: 1.5,
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        icon: const Icon(AppIcons.folderOpen),
+                        label: Text(
+                          l10n.restoreBackup,
+                          style: const TextStyle(
+                            fontFamily: 'IBMPlexSansArabic',
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      icon: const Icon(AppIcons.folderOpen),
-                      label: Text(
-                        l10n.restoreBackup,
-                        style: const TextStyle(
-                          fontFamily: 'IBMPlexSansArabic',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 
 /// Builds an eight-pointed star (two overlapping squares) centred on [c].
 Path eightPointStar(Offset c, double radius) {

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tadbeer/app/theme.dart';
+import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
-import 'package:tadbeer/features/settings/user_settings_model.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
 
 void main() {
   late Directory tempDir;

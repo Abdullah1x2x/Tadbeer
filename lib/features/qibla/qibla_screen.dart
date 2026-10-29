@@ -3,11 +3,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_compass/flutter_compass.dart';
+import 'package:flutter_device_compass/flutter_device_compass.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
+import '../../core/theme/theme.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
 import 'qibla.dart';

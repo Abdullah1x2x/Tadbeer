@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 
 /// محددات نظام التصميم المستقبلي لتطبيق تَدْبِير.
 ///

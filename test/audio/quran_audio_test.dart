@@ -5,13 +5,13 @@ import 'package:fake_async/fake_async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/app/theme.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
+import 'package:tadbeer/core/theme/theme.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/audio/audio_bar.dart';
 import 'package:tadbeer/features/audio/audio_downloads.dart';
 import 'package:tadbeer/features/audio/quran_audio.dart';
 import 'package:tadbeer/features/audio/reciters.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 
 /// A player that records what it is asked and plays nothing.
 class _FakeEngine implements AudioEngine {

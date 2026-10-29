@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/features/duas/adhkar_repository.dart';
-import 'package:tadbeer/features/duas/ahlulbayt_dua_reader_screen.dart';
-import 'package:tadbeer/features/duas/ahlulbayt_duas_repository.dart';
-import 'package:tadbeer/features/duas/ahlulbayt_duas_screen.dart';
-import 'package:tadbeer/features/duas/duas_screen.dart';
-import 'package:tadbeer/features/duas/general_duas_list_screen.dart';
-import 'package:tadbeer/features/duas/morning_evening_adhkar_screen.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/features/duas/data/adhkar_repository.dart';
+import 'package:tadbeer/features/duas/screens/ahlulbayt_dua_reader_screen.dart';
+import 'package:tadbeer/features/duas/data/ahlulbayt_duas_repository.dart';
+import 'package:tadbeer/features/duas/screens/ahlulbayt_duas_screen.dart';
+import 'package:tadbeer/features/duas/screens/duas_screen.dart';
+import 'package:tadbeer/features/duas/screens/general_duas_list_screen.dart';
+import 'package:tadbeer/features/duas/screens/morning_evening_adhkar_screen.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
 
 Widget buildTestWidget(Widget child) {
@@ -17,10 +17,7 @@ Widget buildTestWidget(Widget child) {
     strings: const AppStrings(AppLanguage.arabic),
     onLanguageChanged: (_) {},
     child: MaterialApp(
-      home: Directionality(
-        textDirection: TextDirection.rtl,
-        child: child,
-      ),
+      home: Directionality(textDirection: TextDirection.rtl, child: child),
     ),
   );
 }
@@ -42,8 +39,14 @@ void main() {
 
       // Check Sayyidah Fatimah Al-Zahra's supplication
       final zahraDhikr = morning.firstWhere((d) => d.id == 'm_zahra_dua');
-      expect(zahraDhikr.text, contains('يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ'));
-      expect(zahraDhikr.text, contains('لَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ'));
+      expect(
+        zahraDhikr.text,
+        contains('يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ'),
+      );
+      expect(
+        zahraDhikr.text,
+        contains('لَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ'),
+      );
     });
 
     testWidgets('MorningEveningAdhkarScreen renders and switches tabs', (
@@ -59,7 +62,12 @@ void main() {
       expect(find.textContaining('أذكار المساء'), findsWidgets);
 
       // Verify first morning dhikr is present
-      expect(find.textContaining('اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ'), findsOneWidget);
+      expect(
+        find.textContaining(
+          'اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
+        ),
+        findsOneWidget,
+      );
 
       // Tap on evening adhkar tab
       final eveningTab = find.textContaining('أذكار المساء').first;
@@ -113,19 +121,32 @@ void main() {
 
       // 1. دعاء مكارم الأخلاق
       expect(titles, anyElement(contains('مكارم الأخلاق')));
-      final makarim = allDuas.firstWhere((d) => d.title.contains('مكارم الأخلاق'));
+      final makarim = allDuas.firstWhere(
+        (d) => d.title.contains('مكارم الأخلاق'),
+      );
       expect(makarim.attributedTo, contains('زين العابدين'));
-      expect(makarim.fullText, contains('بَلِّغْ بِإِيمَانِي أَكْمَلَ الإِيمَانِ'));
+      expect(
+        makarim.fullText,
+        contains('بَلِّغْ بِإِيمَانِي أَكْمَلَ الإِيمَانِ'),
+      );
 
       // 2. دعاء أهل الثغور
       expect(titles, anyElement(contains('الثغور')));
       final thughoor = allDuas.firstWhere((d) => d.title.contains('الثغور'));
-      expect(thughoor.fullText, contains('حَصِّنْ ثُغُورَ الْمُسْلِمِينَ بِعِزَّتِكَ'));
+      expect(
+        thughoor.fullText,
+        contains('حَصِّنْ ثُغُورَ الْمُسْلِمِينَ بِعِزَّتِكَ'),
+      );
 
       // 3. دعاء كميل بن زياد
       expect(titles, anyElement(contains('كميل')));
       final kumayl = allDuas.firstWhere((d) => d.title.contains('كميل'));
-      expect(kumayl.fullText, contains('اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ الَّتِي وَسِعَتْ كُلَّ شَيْءٍ'));
+      expect(
+        kumayl.fullText,
+        contains(
+          'اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ الَّتِي وَسِعَتْ كُلَّ شَيْءٍ',
+        ),
+      );
 
       // 4. دعاء الندبة
       expect(titles, anyElement(contains('الندبة')));
@@ -135,7 +156,10 @@ void main() {
       // 5. دعاء التوسل
       expect(titles, anyElement(contains('التوسل')));
       final tawassul = allDuas.firstWhere((d) => d.title.contains('التوسل'));
-      expect(tawassul.fullText, contains('يَا وَجِيهاً عِنْدَ اللَّهِ اشْفَعْ لَنَا عِنْدَ اللَّهِ'));
+      expect(
+        tawassul.fullText,
+        contains('يَا وَجِيهاً عِنْدَ اللَّهِ اشْفَعْ لَنَا عِنْدَ اللَّهِ'),
+      );
 
       // 6. دعاء الإمام الحسين (يوم عرفة)
       expect(titles, anyElement(contains('عرفة')));
@@ -144,19 +168,30 @@ void main() {
 
       // 7. دعاء الجوشن الكبير
       expect(titles, anyElement(contains('الجوشن الكبير')));
-      final jawshan = allDuas.firstWhere((d) => d.title.contains('الجوشن الكبير'));
-      expect(jawshan.fullText, contains('سُبْحَانَكَ يَا لا إِلَهَ إِلا أَنْتَ، الْغَوْثَ الْغَوْثَ'));
+      final jawshan = allDuas.firstWhere(
+        (d) => d.title.contains('الجوشن الكبير'),
+      );
+      expect(
+        jawshan.fullText,
+        contains('سُبْحَانَكَ يَا لا إِلَهَ إِلا أَنْتَ، الْغَوْثَ الْغَوْثَ'),
+      );
 
       // 8. دعاء الإمام الصادق لقضاء الحوائج
       expect(titles, anyElement(contains('الصادق')));
       final sadiq = allDuas.firstWhere((d) => d.title.contains('الصادق'));
-      expect(sadiq.fullText, contains('اللّهُمَّ اجْعَلْني أخْشاكَ كأني أراكَ'));
+      expect(
+        sadiq.fullText,
+        contains('اللّهُمَّ اجْعَلْني أخْشاكَ كأني أراكَ'),
+      );
       expect(sadiq.fullText, contains('وَأسْعِدْني بِتَقْواكَ'));
 
       // 9. دعاء السيدة فاطمة الزهراء (عليها السلام)
       expect(titles, anyElement(contains('الزهراء')));
       final zahra = allDuas.firstWhere((d) => d.title.contains('الزهراء'));
-      expect(zahra.fullText, contains('يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ'));
+      expect(
+        zahra.fullText,
+        contains('يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ'),
+      );
 
       // 10. أدعية إضافية
       expect(titles, anyElement(contains('الفرج')));
@@ -195,26 +230,35 @@ void main() {
     testWidgets(
       'AhlulbaytDuaReaderScreen renders complete dua as a single unified piece and handles font size',
       (WidgetTester tester) async {
-      final dua = AhlulbaytDuasRepository.instance.getDuaById('dua_kumayl')!;
-      await tester.pumpWidget(buildTestWidget(AhlulbaytDuaReaderScreen(dua: dua)));
-      await tester.pumpAndSettle();
+        final dua = AhlulbaytDuasRepository.instance.getDuaById('dua_kumayl')!;
+        await tester.pumpWidget(
+          buildTestWidget(AhlulbaytDuaReaderScreen(dua: dua)),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('دعاء كميل بن زياد'), findsWidgets);
-      expect(find.textContaining('اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ'), findsOneWidget);
+        expect(find.text('دعاء كميل بن زياد'), findsWidgets);
+        expect(
+          find.textContaining('اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ'),
+          findsOneWidget,
+        );
 
-      // Font size increase
-      final increaseBtn = find.byTooltip('تكبير الخط');
-      expect(increaseBtn, findsOneWidget);
-      await tester.tap(increaseBtn);
-      await tester.pumpAndSettle();
+        // Font size increase
+        final increaseBtn = find.byTooltip('تكبير الخط');
+        expect(increaseBtn, findsOneWidget);
+        await tester.tap(increaseBtn);
+        await tester.pumpAndSettle();
 
-      // Copy all text
-      final copyAllBtn = find.byTooltip('نسخ الدعاء كاملاً');
-      await tester.tap(copyAllBtn);
-      await tester.pumpAndSettle();
+        // Copy all text
+        final copyAllBtn = find.byTooltip('نسخ الدعاء كاملاً');
+        await tester.tap(copyAllBtn);
+        await tester.pumpAndSettle();
 
-      expect(find.text('تم نسخ نص الدعاء كاملاً إلى الحافظة'), findsOneWidget);
-    });
+        expect(
+          find.text('تم نسخ نص الدعاء كاملاً إلى الحافظة'),
+          findsOneWidget,
+        );
+      },
+    );
   });
 
   group('DuasScreen Hub Flow Integration Tests', () {

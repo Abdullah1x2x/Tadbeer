@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../core/storage/user_data_store.dart';
-import '../core/storage/user_database.dart';
+import '../data/storage/user_data_store.dart';
+import '../data/storage/user_database.dart';
 import 'main_shell.dart';
 import '../features/tadbeer/tadbeer_intro_screen.dart';
 import 'localization.dart';
-import 'theme.dart';
+import '../core/theme/theme.dart';
 import '../l10n/app_localizations.dart';
 import '../features/onboarding/theme_picker_screen.dart';
 import '../features/onboarding/name_screen.dart';

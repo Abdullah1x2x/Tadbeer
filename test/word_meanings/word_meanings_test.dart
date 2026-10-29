@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/core/storage/user_data_store.dart';
-import 'package:tadbeer/features/quran/data/quran_models.dart';
-import 'package:tadbeer/features/quran/data/quran_repository.dart';
+import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/data/quran/quran_models.dart';
+import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/quran/widgets/word_meanings_panel.dart';
-import 'package:tadbeer/features/word_meanings/data/custom_word_meanings.dart';
+import 'package:tadbeer/data/quran/custom_word_meanings.dart';
 import 'package:tadbeer/features/word_meanings/word_meanings_screen.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
 

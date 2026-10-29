@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../quran/data/quran_models.dart';
+import '../../data/quran/quran_models.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
 
 /// آية اليوم كما تُرسم صورةً لودجت الشاشة الرئيسية.

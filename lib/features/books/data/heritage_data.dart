@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../book_model.dart';
-import '../curated_books.dart' show BookConfig, BookSectionConfig;
+import 'book_model.dart';
+import 'curated_books.dart' show BookConfig, BookSectionConfig;
 import 'sahifah_sajjadiyah_data.dart';
 import '../../../core/design_system/app_icons.dart';
 

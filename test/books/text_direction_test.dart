@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
-import 'package:tadbeer/features/books/book_model.dart';
-import 'package:tadbeer/features/books/book_reader_screen.dart';
+import 'package:tadbeer/features/books/data/book_model.dart';
+import 'package:tadbeer/features/books/screens/book_reader_screen.dart';
 import 'package:tadbeer/core/utils/text_direction.dart';
 
 void main() {

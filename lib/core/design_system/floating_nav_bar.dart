@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../app/theme.dart';
+import '../theme/theme.dart';
 import '../motion/app_motion.dart';
 
 /// عنصر واحد في شريط التنقل العائم.

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
-import '../../app/theme.dart';
-import '../ayah_links/ayah_links_screen.dart';
+import '../../core/theme/theme.dart';
+import '../ayah_links/screens/ayah_links_screen.dart';
 import '../backup/backup_screen.dart';
 import '../bookmarks/bookmarks_screen.dart';
-import '../books/books_screen.dart';
+import '../books/screens/books_screen.dart';
 import '../highlights/highlights_screen.dart';
 import '../journey/journey_screen.dart';
 import '../journey/mushaf_map_screen.dart';

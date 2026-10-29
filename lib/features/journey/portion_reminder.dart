@@ -8,9 +8,9 @@ library;
 
 import 'dart:math' as math;
 
-import '../../core/services/local_reminder_service.dart';
-import '../../core/storage/user_data_store.dart';
-import 'reading_journey.dart';
+import '../reminders/local_reminder_service.dart';
+import '../../data/storage/user_data_store.dart';
+import '../../data/models/reading_journey.dart';
 
 /// Fixed id so a new khatma updates the same reminder instead of adding.
 const portionReminderId = 'khatma_daily_portion';
