@@ -27,10 +27,6 @@ class AdhkarItem {
     required this.virtue,
     required this.source,
   });
-
-  bool get isMorning => category == AdhkarCategory.morning;
-
-  bool get isEvening => category == AdhkarCategory.evening;
 }
 
 /// أذكار الصباح والمساء الموثقة.

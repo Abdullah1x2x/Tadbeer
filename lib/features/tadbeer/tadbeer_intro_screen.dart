@@ -20,9 +20,6 @@ class TadbeerIntroScreen extends StatefulWidget {
   State<TadbeerIntroScreen> createState() => _TadbeerIntroScreenState();
 }
 
-/// الاسم القديم، يبقى للتوافق.
-typedef TadabburIntroScreen = TadbeerIntroScreen;
-
 class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
     with SingleTickerProviderStateMixin {
   /// آيات الترحيب (سورة، آية)؛ تُختار واحدة عشوائياً عند كل فتح.

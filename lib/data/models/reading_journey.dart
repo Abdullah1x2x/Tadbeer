@@ -61,9 +61,6 @@ class KhatmaPlan {
     return (today.difference(startDate).inDays + 1).clamp(1, days);
   }
 
-  /// الأيام المتبقية، ومنها اليوم.
-  int daysLeft(DateTime now) => days - dayNumber(now) + 1;
-
   /// الصفحات المفترض إنجازها قبل اليوم؛ ورد اليوم لا يُعدّ تأخراً حتى ينتهي
   /// اليوم.
   int expectedPagesBefore(DateTime now) =>

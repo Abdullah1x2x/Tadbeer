@@ -53,12 +53,6 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
-  static const IconData arrowsLeftRight = IconData(
-    0xe0a0,
-    fontFamily: _regular,
-    fontPackage: _package,
-    matchTextDirection: true,
-  );
   static const IconData bell = IconData(
     0xe0ce,
     fontFamily: _regular,
@@ -236,11 +230,6 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
-  static const IconData dotsThree = IconData(
-    0xe1fe,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
   static const IconData dotsThreeVertical = IconData(
     0xe208,
     fontFamily: _regular,
@@ -409,11 +398,6 @@ abstract final class AppIcons {
   );
   static const IconData info = IconData(
     0xe2ce,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
-  static const IconData leaf = IconData(
-    0xe2da,
     fontFamily: _regular,
     fontPackage: _package,
   );
@@ -644,18 +628,6 @@ abstract final class AppIcons {
     fontFamily: _fill,
     fontPackage: _package,
   );
-  static const IconData signIn = IconData(
-    0xe428,
-    fontFamily: _regular,
-    fontPackage: _package,
-    matchTextDirection: true,
-  );
-  static const IconData signOut = IconData(
-    0xe42a,
-    fontFamily: _regular,
-    fontPackage: _package,
-    matchTextDirection: true,
-  );
   static const IconData slidersHorizontal = IconData(
     0xe434,
     fontFamily: _regular,
@@ -733,11 +705,6 @@ abstract final class AppIcons {
   );
   static const IconData userMinus = IconData(
     0xe4ce,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
-  static const IconData usersThree = IconData(
-    0xe68e,
     fontFamily: _regular,
     fontPackage: _package,
   );

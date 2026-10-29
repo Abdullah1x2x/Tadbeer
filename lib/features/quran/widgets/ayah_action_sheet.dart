@@ -75,9 +75,6 @@ enum AyahSheetMode {
   highlight,
 }
 
-/// الاسم القديم، يبقى للتوافق.
-typedef AyahActionDialog = AyahActionSheet;
-
 class _AyahActionSheetState extends State<AyahActionSheet> {
   late bool _isNoteEditorOpen = widget.mode == AyahSheetMode.note;
   late bool _isHighlightPickerOpen = widget.mode == AyahSheetMode.highlight;
