@@ -255,20 +255,11 @@ class BookmarksSearchProvider implements SearchProvider {
   ) async {
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
     final bookmarks = UserDataStore.instance.bookmarks.where((b) {
-      final surah = QuranRepository.instance.getSurah(b.surahNumber);
-      final ayah = QuranRepository.instance.getAyah(
+      return QuranRepository.instance.ayahMatches(
         b.surahNumber,
         b.ayahNumber,
+        normalizedQuery,
       );
-      final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
-      final ayahTextNorm = ayah != null
-          ? ArabicSearchNormalizer.normalize(ayah.text)
-          : '';
-      final ayahNumStr = b.ayahNumber.toString();
-
-      return surahNorm.contains(normalizedQuery) ||
-          ayahTextNorm.contains(normalizedQuery) ||
-          ayahNumStr.contains(normalizedQuery);
     }).toList();
 
     return bookmarks.map((b) {
@@ -327,20 +318,11 @@ class HighlightsSearchProvider implements SearchProvider {
   ) async {
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
     final highlights = UserDataStore.instance.highlights.where((h) {
-      final surah = QuranRepository.instance.getSurah(h.surahNumber);
-      final ayah = QuranRepository.instance.getAyah(
+      return QuranRepository.instance.ayahMatches(
         h.surahNumber,
         h.ayahNumber,
+        normalizedQuery,
       );
-      final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
-      final ayahTextNorm = ayah != null
-          ? ArabicSearchNormalizer.normalize(ayah.text)
-          : '';
-      final ayahNumStr = h.ayahNumber.toString();
-
-      return surahNorm.contains(normalizedQuery) ||
-          ayahTextNorm.contains(normalizedQuery) ||
-          ayahNumStr.contains(normalizedQuery);
     }).toList();
 
     return highlights.map((h) {
