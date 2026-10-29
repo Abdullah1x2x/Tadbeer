@@ -3,13 +3,9 @@ part of 'user_data_store.dart';
 /// قسم الفواصل.
 mixin _BookmarksSection on _StoreState {
   /// هل الآية محفوظة في الفواصل؛ فوري من الفهرس.
-  bool hasBookmark(int surahNumber, int ayahNumber) {
+  bool isBookmarked(int surahNumber, int ayahNumber) {
     return _bookmarkLookup.containsKey('$surahNumber:$ayahNumber');
   }
-
-  /// الاسم القديم لـ[hasBookmark].
-  bool isBookmarked(int surahNumber, int ayahNumber) =>
-      hasBookmark(surahNumber, ayahNumber);
 
   Future<void> putBookmark(BookmarkItem bookmark) async {
     final idx = _bookmarks.indexWhere((b) => b.id == bookmark.id);
@@ -29,7 +25,7 @@ mixin _BookmarksSection on _StoreState {
 
   /// يضيف الفاصل أو يحذفه، ويعيد true إن صارت الآية محفوظة.
   Future<bool> toggleBookmark(Ayah ayah) async {
-    final currentlyBookmarked = hasBookmark(ayah.surahNumber, ayah.ayahNumber);
+    final currentlyBookmarked = isBookmarked(ayah.surahNumber, ayah.ayahNumber);
     if (currentlyBookmarked) {
       final existing = _bookmarks.firstWhere(
         (b) =>

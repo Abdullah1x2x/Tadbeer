@@ -51,7 +51,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
       final normTitle = ArabicSearchNormalizer.normalize(d.title);
       final normAuthor = ArabicSearchNormalizer.normalize(d.attributedTo);
       final normSummary = ArabicSearchNormalizer.normalize(d.summary);
-      final normText = ArabicSearchNormalizer.normalize(d.fullText);
+      final normText = ArabicSearchNormalizer.normalize(d.content);
 
       return normTitle.contains(normQuery) ||
           normAuthor.contains(normQuery) ||
@@ -64,7 +64,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     Clipboard.setData(
       ClipboardData(
         text:
-            '${dua.title}\n(${dua.attributedTo})\n\n${dua.fullText}\n\n— تطبيق تَدْبِير',
+            '${dua.title}\n(${dua.attributedTo})\n\n${dua.content}\n\n— تطبيق تَدْبِير',
       ),
     );
     HapticFeedback.selectionClick();

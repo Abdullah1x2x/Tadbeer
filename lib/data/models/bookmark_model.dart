@@ -62,7 +62,7 @@ class BookmarkRepository {
   List<BookmarkItem> get allBookmarks => _store.bookmarks;
 
   bool isBookmarked(int surahNumber, int ayahNumber) {
-    return _store.hasBookmark(surahNumber, ayahNumber);
+    return _store.isBookmarked(surahNumber, ayahNumber);
   }
 
   /// يضيف الفاصل أو يحذفه، ويعيد true إن صارت الآية محفوظة.

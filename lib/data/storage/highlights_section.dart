@@ -3,13 +3,9 @@ part of 'user_data_store.dart';
 /// قسم التظليل.
 mixin _HighlightsSection on _StoreState {
   /// تظليل الآية، أو null؛ فوري من الفهرس.
-  HighlightItem? findHighlight(int surahNumber, int ayahNumber) {
+  HighlightItem? getHighlight(int surahNumber, int ayahNumber) {
     return _highlightLookup['$surahNumber:$ayahNumber'];
   }
-
-  /// الاسم القديم لـ[findHighlight].
-  HighlightItem? getHighlight(int surahNumber, int ayahNumber) =>
-      findHighlight(surahNumber, ayahNumber);
 
   /// يحفظ تظليلاً، أو يغيّر لونه.
   Future<void> putHighlight(HighlightItem highlight) async {
@@ -34,7 +30,7 @@ mixin _HighlightsSection on _StoreState {
 
   /// يظلّل الآية بـ[colorIndex].
   Future<void> setHighlight(Ayah ayah, int colorIndex) async {
-    final existing = findHighlight(ayah.surahNumber, ayah.ayahNumber);
+    final existing = getHighlight(ayah.surahNumber, ayah.ayahNumber);
     final item = HighlightItem(
       id: existing?.id ?? const Uuid().v4(),
       ayahId: ayah.id,

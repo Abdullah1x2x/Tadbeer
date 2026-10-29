@@ -3,7 +3,7 @@ part of 'user_data_store.dart';
 /// قسم الإعدادات.
 mixin _SettingsSection on _StoreState {
   /// يحفظ [newSettings] ويُعلم المستمعين.
-  Future<void> putSettings(UserSettings newSettings) async {
+  Future<void> updateSettings(UserSettings newSettings) async {
     _settings = newSettings;
     settingsNotifier.value = newSettings;
     notifyListeners();
@@ -13,10 +13,6 @@ mixin _SettingsSection on _StoreState {
     }
     await saveToDisk();
   }
-
-  /// الاسم القديم لـ[putSettings].
-  Future<void> updateSettings(UserSettings newSettings) =>
-      putSettings(newSettings);
 
   /// حجم خط المصحف من الإصدارات السابقة؛ المصحف اليوم يحدد حجمه من الشاشة،
   /// ويبقى هذا لتوافق النسخ الاحتياطية.

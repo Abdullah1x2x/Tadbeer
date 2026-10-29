@@ -36,7 +36,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
     Clipboard.setData(
       ClipboardData(
         text:
-            '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.fullText}\n\n— تطبيق تَدْبِير',
+            '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.content}\n\n— تطبيق تَدْبِير',
       ),
     );
     HapticFeedback.selectionClick();
@@ -203,7 +203,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                   ],
                 ),
                 child: SelectableText(
-                  widget.dua.fullText,
+                  widget.dua.content,
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontFamily: 'Amiri',

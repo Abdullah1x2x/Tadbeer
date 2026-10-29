@@ -9,7 +9,7 @@ mixin _TadbeerSection on _StoreState {
 
   /// أنسب خاطرة للآية: من الملاحظات أو من وقفة التدبر.
   String? getReflectionForAyah(int surahNumber, int ayahNumber) {
-    final notes = findNotesForAyah(surahNumber, ayahNumber);
+    final notes = getNotesForAyah(surahNumber, ayahNumber);
     if (notes.isNotEmpty && notes.first.content.trim().isNotEmpty) {
       return notes.first.content.trim();
     }

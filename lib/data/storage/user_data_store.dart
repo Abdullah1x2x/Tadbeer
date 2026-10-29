@@ -413,9 +413,6 @@ class UserDataStore extends _StoreState
     await saveToDisk();
   }
 
-  /// الاسم القديم لـ[resetAllData].
-  Future<void> resetAllUserData() => resetAllData();
-
   /// لقطة من بيانات القارئ للنسخ الاحتياطي، كاملة أو لأقسام مختارة.
   Map<String, dynamic> exportSnapshot({
     bool notes = true,

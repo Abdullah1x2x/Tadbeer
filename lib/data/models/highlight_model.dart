@@ -69,7 +69,7 @@ class HighlightRepository {
 
   /// تظليل الآية، أو null إن لم تكن مظلّلة.
   HighlightItem? getHighlight(int surahNumber, int ayahNumber) {
-    return _store.findHighlight(surahNumber, ayahNumber);
+    return _store.getHighlight(surahNumber, ayahNumber);
   }
 
   /// يظلّل الآية بـ[colorIndex]، أو يغيّر لونها.

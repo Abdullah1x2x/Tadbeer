@@ -34,7 +34,7 @@ void main() {
     await QuranRepository.instance.init();
     await UserDataStore.instance.updateSettings(
       UserDataStore.instance.settings.copyWith(
-        hideTadabburIntroPermanently: true,
+        hideTadbeerIntroPermanently: true,
       ),
     );
   });

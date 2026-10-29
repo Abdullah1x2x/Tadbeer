@@ -148,14 +148,14 @@ void main() {
       final updated = store.settings.copyWith(
         themeMode: ThemeMode.dark,
         languageCode: 'en',
-        hideTadabburIntroPermanently: true,
+        hideTadbeerIntroPermanently: true,
         quranFontSize: 28.0,
       );
 
       await store.updateSettings(updated);
       expect(store.settings.themeMode, equals(ThemeMode.dark));
       expect(store.settings.languageCode, equals('en'));
-      expect(store.settings.hideTadabburIntroPermanently, isTrue);
+      expect(store.settings.hideTadbeerIntroPermanently, isTrue);
       expect(store.settings.quranFontSize, equals(28.0));
     });
   });
