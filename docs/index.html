@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="light"
+      data-title-ar="تَدْبِير | Tadbeer — رفيق رحلة التدبر في كتاب الله" data-title-en="Tadbeer — Your Offline-First Quran Contemplation Companion"
+      data-desc-ar="تَدْبِير (Tadbeer) — تطبيق قرآني مفتوح المصدر يعمل دون إنترنت. يجمع بين مصحف المدينة، والتلاوة المسموعة، ومعجم معاني الكلمات المتزامن، ووقفات التدبر المنهجية، وروابط الآيات، بخصوصية تامة."
+      data-desc-en="Tadbeer — An open-source, offline-first Quran contemplation app featuring the Madinah Mushaf, audio recitation, a synchronized vocabulary lexicon, a 4-step reflection framework, and thematic verse links.">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    (function() {
+      try {
+        const storedTheme = localStorage.getItem("tadbeer-theme");
+        if (storedTheme === "dark" || storedTheme === "light") {
+          document.documentElement.setAttribute("data-theme", storedTheme);
+        } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+
+        const storedLang = localStorage.getItem("tadbeer-lang");
+        if (storedLang === "en" || storedLang === "ar") {
+          document.documentElement.setAttribute("lang", storedLang);
+          document.documentElement.setAttribute("dir", storedLang === "ar" ? "rtl" : "ltr");
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <meta name="theme-color" content="#1E3A5F" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="تَدْبِير (Tadbeer) — تطبيق قرآني مفتوح المصدر يعمل دون إنترنت. يجمع بين مصحف المدينة، والتلاوة المسموعة، ومعجم معاني الكلمات المتزامن، ووقفات التدبر المنهجية، وروابط الآيات، بخصوصية تامة.">
+  <link rel="icon" type="image/png" href="./assets/icons/app_logo.png">
+  <title>تَدْبِير | Tadbeer — رفيق رحلة التدبر في كتاب الله</title>
+
+  <link rel="stylesheet" href="./site.css">
+</head>
+
+<body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z"/><path d="M12 6.5v13"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14"/><path d="M5 19l7-7"/></symbol>
+    <symbol id="i-lexicon" viewBox="0 0 24 24"><path d="M3.5 18l4.5-12 4.5 12"/><path d="M5.2 14h5.6"/><circle cx="17.5" cy="15.5" r="2.5"/><path d="M20 13v5"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></symbol>
+    <symbol id="i-notebook" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5v17"/><path d="M12.5 8h3.5M12.5 11.5h3.5"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10z"/><path d="M17 4v3M15.5 5.5h3"/></symbol>
+    <symbol id="i-beads" viewBox="0 0 24 24"><circle cx="12" cy="10" r="6" stroke-width="2.6" stroke-dasharray="0 3.14"/><path d="M12 16v2.5"/><circle cx="12" cy="20" r="1.2"/></symbol>
+    <symbol id="i-books" viewBox="0 0 24 24"><path d="M4 4.5h4v15H4zM8 4.5h4v15H8z"/><path d="M14 5.5l3.8-1 3.7 14.5-3.8 1z"/></symbol>
+    <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3.5" y="14" width="4" height="6" rx="1.5"/><rect x="16.5" y="14" width="4" height="6" rx="1.5"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></symbol>
+    <symbol id="i-cards" viewBox="0 0 24 24"><rect x="4" y="7" width="12" height="13" rx="2"/><path d="M8 4h10a2 2 0 0 1 2 2v11"/><path d="M7.5 13.5l2 2 3.5-4"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.2-1-1.6-1-2.6 0-.9.7-1.6 1.7-1.6H17a3.5 3.5 0 0 0 3.5-3.5c0-4.3-3.8-7.6-8.5-7.6z"/><circle cx="7.8" cy="11.5" r="1.1"/><circle cx="10.5" cy="7.6" r="1.1"/><circle cx="15" cy="8" r="1.1"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></symbol>
+  </svg>
+
+  <!-- -----------------------------------------------------------------------
+       HEADER & NAVIGATION
+       ----------------------------------------------------------------------- -->
+  <header>
+    <nav class="container" aria-label="Main Navigation">
+      <a class="brand-wrap" href="#">
+        <img class="brand-logo" src="./assets/icons/app_logo.png" alt="Tadbeer Logo" width="42" height="42">
+        <div class="brand-text">
+          <span class="brand-title">
+            <span data-lang="ar">تَدْبِير</span>
+            <span data-lang="en">Tadbeer</span>
+          </span>
+          <span class="brand-tagline">
+            <span data-lang="ar">رفيق رحلة التدبر</span>
+            <span data-lang="en">Quran Contemplation</span>
+          </span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <ul class="nav-menu">
+          <li>
+            <a href="#features">
+              <span data-lang="ar">المميزات</span>
+              <span data-lang="en">Features</span>
+            </a>
+          </li>
+          <li>
+            <a href="#about">
+              <span data-lang="ar">عن التطبيق</span>
+              <span data-lang="en">About</span>
+            </a>
+          </li>
+          <li>
+            <a href="#privacy">
+              <span data-lang="ar">الخصوصية</span>
+              <span data-lang="en">Privacy</span>
+            </a>
+          </li>
+          <li>
+            <a href="#licenses">
+              <span data-lang="ar">التراخيص</span>
+              <span data-lang="en">Licenses</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Language Toggle Button (Arabic <-> English) -->
+        <button id="langToggleBtn" class="lang-toggle-btn" type="button" aria-label="Switch Language / تغيير اللغة" title="English / العربية">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span data-lang="ar">EN</span>
+          <span data-lang="en">العربية</span>
+        </button>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="تبديل وضع المظهر (فاتح / داكن)" title="Toggle Theme">
+          <!-- Sun Icon for switching to light -->
+          <svg class="sun-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <!-- Moon Icon for switching to dark -->
+          <svg class="moon-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- GitHub Repo Button -->
+        <a class="btn-github" href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener" aria-label="GitHub Repository">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- -----------------------------------------------------------------------
+       MAIN CONTENT
+       ----------------------------------------------------------------------- -->
+  <main>
+    <!-- HERO -->
+    <div class="container">
+      <section class="hero" style="border-top: none;">
+        <div class="hero-badge-wrap">
+          <span data-lang="ar">تطبيق قرآني مفتوح المصدر · يعمل دون إنترنت</span>
+          <span data-lang="en">Open Source Quran App · Offline-First</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span data-lang="ar">القرآن هدى لخطواتك<br><span>وميدان تدبّرك</span></span>
+          <span data-lang="en">Guidance for Your Path,<br><span>Depth for Your Reflection</span></span>
+        </h1>
+
+        <div class="hero-verse-card">
+          <span class="verse-text">﴿كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ وَلِيَتَذَكَّرَ أُولُو الْأَلْبَابِ﴾</span>
+          <p class="verse-translation" data-lang="en">
+            "[This is] a blessed Book which We have revealed to you, [O Muhammad], that they might reflect upon its verses and that those of understanding would be reminded."
+          </p>
+          <span class="verse-ref">
+            <span data-lang="ar">سورة ص · الآية ٢٩</span>
+            <span data-lang="en">Surah Sad · Ayah 29</span>
+          </span>
+        </div>
+
+        <p class="hero-description">
+          <span data-lang="ar">مساحة هادئة ومفتوحة المصدر صُمّمت لتنقل قراءتك للقرآن الكريم من مجرد التلاوة السريعة إلى الفهم العميق، والتدبر المنهجي، وربط الآيات، والعمل بهداياتها في حياتك اليومية — يعمل دون إنترنت، دون أي مساس بخصوصيتك.</span>
+          <span data-lang="en">A serene, open-source application crafted to elevate your relationship with the Noble Quran from quick recitation into deep comprehension, structured reflection, thematic verse links, and practical daily action — offline-first, with zero compromise on privacy.</span>
+        </p>
+
+        <div class="hero-cta-group">
+          <a class="btn btn-primary" href="https://github.com/Abdullah-Alshami/Tadbeer/releases" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span data-lang="ar">تحميل التطبيق (Releases / APK)</span>
+            <span data-lang="en">Download App (Releases / APK)</span>
+          </a>
+          <a class="btn btn-outline" href="#features">
+            <span data-lang="ar">استكشف المميزات</span>
+            <span data-lang="en">Explore Features</span>
+          </a>
+          <a class="btn btn-outline" href="./privacy.html">
+            <span data-lang="ar">سياسة الخصوصية</span>
+            <span data-lang="en">Privacy Policy</span>
+          </a>
+        </div>
+
+        <div class="trust-chips">
+          <span class="chip">
+            <span class="chip-icon">✦</span>
+            <span data-lang="ar">يعمل دون إنترنت</span>
+            <span data-lang="en">Works Offline</span>
+          </span>
+          <span class="chip">
+            <span class="chip-icon">✦</span>
+            <span data-lang="ar">مفتوح المصدر (MIT)</span>
+            <span data-lang="en">Open Source (MIT)</span>
+          </span>
+          <span class="chip">
+            <span class="chip-icon">✦</span>
+            <span data-lang="ar">صفر إعلانات أو تتبع</span>
+            <span data-lang="en">Zero Ads &amp; Trackers</span>
+          </span>
+          <span class="chip">
+            <span class="chip-icon">✦</span>
+            <span data-lang="ar">مصحف المدينة بصفحاته الـ 604</span>
+            <span data-lang="en">The 604-Page Madinah Mushaf</span>
+          </span>
+          <span class="chip">
+            <span class="chip-icon">✦</span>
+            <span data-lang="ar">تلاوة مسموعة بـ 7 قرّاء</span>
+            <span data-lang="en">Audio Recitation by 7 Reciters</span>
+          </span>
+        </div>
+      </section>
+    </div>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">
+            <span data-lang="ar">إمكانات متكاملة للتدبر</span>
+            <span data-lang="en">Comprehensive Contemplation Tools</span>
+          </span>
+          <h2 class="section-title">
+            <span data-lang="ar">صُمّم ليعينك على الفهم والعمل</span>
+            <span data-lang="en">Crafted for Understanding and Action</span>
+          </h2>
+          <p class="section-subtitle">
+            <span data-lang="ar">أدوات عملية ومبتكرة تمزج بين جمال التلاوة وعمق التفكر، دون أي تعقيد أو تشتيت.</span>
+            <span data-lang="en">Intuitive, purposeful tools combining the beauty of recitation with deep reflection, free from clutter and distractions.</span>
+          </p>
+        </div>
+
+        <div class="feature-group">
+          <h3 class="feature-group-title">
+            <span data-lang="ar">القراءة والاستماع</span>
+            <span data-lang="en">Reading &amp; Listening</span>
+          </h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-book"/></svg></div>
+              <h4>
+                <span data-lang="ar">مصحف المدينة و5 خطوط قرآنية</span>
+                <span data-lang="en">The Madinah Mushaf &amp; 5 Quran Fonts</span>
+              </h4>
+              <p>
+                <span data-lang="ar">صفحات مصحف المدينة الـ 604 بخطوط مجمع الملك فهد، سطراً بسطر كما في المصحف المطبوع، يتكيّف حجمها مع كل شاشة، مع العرض المزدوج للأجهزة اللوحية. وللنص المتدفق بالرسم العثماني من مشروع تنزيل حجم قابل للتكبير، وخط تختاره من 5 خطوط قرآنية حرة: أميري قرآني، شهرزاد الجديد، نوتو نسخ، لطيف، وهرمتان. ويتلوّن إطار الصفحة وعناوين السور بلون الثيم.</span>
+                <span data-lang="en">The 604 pages of the Madinah Mushaf in the King Fahd Complex fonts, line by line as in the printed copy, sized to fit every screen, with a dual-page spread on tablets. The flowing Uthmani text from Tanzil can be enlarged and set in one of 5 open-source Quran fonts: Amiri Quran, Scheherazade New, Noto Naskh, Lateef, and Harmattan. The page frame and surah headers take the theme's colour.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">يتكيّف مع كل شاشة</span>
+                <span data-lang="en">Fits Every Screen</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-headphones"/></svg></div>
+              <h4>
+                <span data-lang="ar">التلاوة المسموعة آيةً آية</span>
+                <span data-lang="en">Audio Recitation, Ayah by Ayah</span>
+              </h4>
+              <p>
+                <span data-lang="ar">استمع إلى المصحف بأصوات 7 قرّاء، منهم الحصري والمنشاوي وعبد الباسط والعفاسي. ابدأ من أي آية، وكرّرها، أو توقّف بعدها، وتستمر التلاوة حين تغلق الشاشة مع أزرار التحكم في الإشعار. ونزّل السور، أو جزء عمّ دفعة واحدة، لتسمعها دون إنترنت.</span>
+                <span data-lang="en">Listen to the Mushaf in the voices of 7 reciters, including Al-Husary, Al-Minshawi, Abdul Basit and Alafasy. Start at any ayah, repeat it, or pause after it, and keep listening with the screen off, with controls in the notification. Download surahs, or all of Juz Amma at once, to listen offline.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">تنزيل للاستماع دون إنترنت</span>
+                <span data-lang="en">Download to Listen Offline</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-lexicon"/></svg></div>
+              <h4>
+                <span data-lang="ar">معجم معاني الكلمات المتزامن</span>
+                <span data-lang="en">Synchronized Vocabulary Lexicon</span>
+              </h4>
+              <p>
+                <span data-lang="ar">لوحة هامشية متزامنة لحظياً مع قارئ المصحف تتحدث آلياً عند تقليب كل صفحة، تضم 6,465 معنى لغوياً معجمياً مفرداً يغطي كافة صفحات المصحف الـ 604 بنسبة 100%، مستمدة من الموسوعة القرآنية والمعاجم التراثية المعتمدة.</span>
+                <span data-lang="en">A contextual side panel that synchronizes automatically with every page turn, featuring 6,465 verified individual word meanings covering 100% of all 604 pages, sourced from Quranpedia and classical Arabic lexicons.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">تغطية تامة لكافة الصفحات</span>
+                <span data-lang="en">100% Page Coverage</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-group">
+          <h3 class="feature-group-title">
+            <span data-lang="ar">التدبر والفهم</span>
+            <span data-lang="en">Reflection &amp; Understanding</span>
+          </h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-leaf"/></svg></div>
+              <h4>
+                <span data-lang="ar">منهجية وقفات التدبّر الأربعة</span>
+                <span data-lang="en">Four-Pillar Contemplation Framework</span>
+              </h4>
+              <p>
+                <span data-lang="ar">بطاقة تدبرية منهجية ترافق كل آية، توجه القارئ للإجابة عن أربعة أسئلة تأصيلية: ماذا أفهم من الآية؟ ما الشعور الوجداني الذي تحركه؟ ماذا تعالج في نفسي؟ وما العمل التطبيقي الذي سألتزم به اليوم؟</span>
+                <span data-lang="en">A structured reflection card accompanying each ayah, prompting four foundational questions: What do I understand? What emotion does it evoke? What internal state does it rectify? And what practical action will I commit to today?</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">تأصيل الفهم والتطبيق</span>
+                <span data-lang="en">Comprehension &amp; Action</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-link"/></svg></div>
+              <h4>
+                <span data-lang="ar">شبكة روابط الآيات ومشاركة QR</span>
+                <span data-lang="en">Thematic Verse Links &amp; QR Sharing</span>
+              </h4>
+              <p>
+                <span data-lang="ar">ربط موضوعي تفاعلي بين الآيات المتناظرة في المعنى عبر السور، مع عرضين متميزين (مخطط شبكي بصري وقائمة متسلسلة)، ومكتبة مسارات تدبرية جاهزة، ومشاركة فورية بين الأجهزة عبر رمز QR دون الحاجة لأي اتصال بالإنترنت.</span>
+                <span data-lang="en">Interactive thematic connections between corresponding verses across surahs, with dual views (visual graph and sequential list), curated contemplation pathways, and instant peer-to-peer QR code sharing without internet.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">مشاركة دون خوادم سحابية</span>
+                <span data-lang="en">Serverless Offline Sharing</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-notebook"/></svg></div>
+              <h4>
+                <span data-lang="ar">دفتر التدبر والخواطر وتصدير PDF</span>
+                <span data-lang="en">Reflection Journal &amp; PDF Export</span>
+              </h4>
+              <p>
+                <span data-lang="ar">تدوين الخواطر المرتبطة بآيات معينة أو الخواطر العامة، مع إمكانية تصدير الخاطرة كـ PDF، أو تصدير «دفتر التدبر الشامل» أسبوعياً أو شهرياً في ملفات PDF وMarkdown منسقة تتضمن إحصاءات تدبرية دقيقة.</span>
+                <span data-lang="en">Record verse-specific and general reflections, with instant PDF generation for individual notes, or export your comprehensive weekly/monthly journal in formatted PDF and Markdown with insightful contemplation statistics.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">أرشفة شخصية وإحصاءات</span>
+                <span data-lang="en">Personal Archive &amp; Analytics</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-moon"/></svg></div>
+              <h4>
+                <span data-lang="ar">الأدعية القرآنية والبحث بالجذور</span>
+                <span data-lang="en">Quranic Duas &amp; Root Search</span>
+              </h4>
+              <p>
+                <span data-lang="ar">موسوعة تضم 88 دعاءً قرآنياً مباشراً مصنفة في 12 باباً موضوعياً، مع محرك بحث فوري موحد يستعلم 9 أقسام بالتوازي ويدعم البحث بالجذور اللغوية العربية (مثل <code>جذر:صبر</code> أو <code>جذر:رحم</code>).</span>
+                <span data-lang="en">A collection of 88 authentic Quranic supplications categorized into 12 themes, powered by a unified instant search engine querying 9 categories concurrently with Arabic root-search support (e.g., <code>root:صبر</code>).</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">بحث معجمي دقيق</span>
+                <span data-lang="en">Lexical Search Engine</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-group">
+          <h3 class="feature-group-title">
+            <span data-lang="ar">العبادة والالتزام</span>
+            <span data-lang="en">Worship &amp; Daily Practice</span>
+          </h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-flag"/></svg></div>
+              <h4>
+                <span data-lang="ar">رحلة القراءة والختمة والتذكيرات</span>
+                <span data-lang="en">Reading Journey, Khatma &amp; Reminders</span>
+              </h4>
+              <p>
+                <span data-lang="ar">موضع قراءة واحد تتبعه الختمة تلقائياً، وأهداف أسبوعية، وسلسلة أيام متصلة يُحتسب فيها التسبيح والأذكار، وخريطة للمصحف تُظهر ما قرأت، وتقرير شهري قابل للمشاركة. وتذكّرك التنبيهات بالصفحات المتبقية من ورد اليوم، وقبل أن تنقطع سلسلتك، وتناديك باسمك.</span>
+                <span data-lang="en">One reading position that the khatma follows automatically, weekly goals, a daily streak that counts tasbeeh and adhkar, a Mushaf map of what you have read, and a shareable monthly report. Reminders tell you the pages left in today's portion, warn you before your streak breaks, and address you by name.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">تذكيرات محلية فقط</span>
+                <span data-lang="en">Local Reminders Only</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-cards"/></svg></div>
+              <h4>
+                <span data-lang="ar">الحفظ والمراجعة المتباعدة</span>
+                <span data-lang="en">Memorization with Spaced Review</span>
+              </h4>
+              <p>
+                <span data-lang="ar">احفظ الآيات وراجعها بنظام صناديق لايتنر: كل آية تتقدّم صندوقاً كلما أتقنتها فتتباعد مراجعتها، وتعود إلى الصندوق الأول إن نسيتها، ويعرض لك التطبيق كل يوم ما حان وقت مراجعته.</span>
+                <span data-lang="en">Memorize ayahs and review them with Leitner boxes: each ayah moves up a box as you master it, so its reviews space out, and returns to the first box if forgotten. Every day the app shows you what is due for review.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">مراجعة يومية مستحقة</span>
+                <span data-lang="en">Daily Due Reviews</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-beads"/></svg></div>
+              <h4>
+                <span data-lang="ar">استغفار وتسبيح (سبحة إلكترونية مبسطة)</span>
+                <span data-lang="en">Istighfar &amp; Tasbeeh (Simplified Counter)</span>
+              </h4>
+              <p>
+                <span data-lang="ar">فصل مبسط وهادئ بين الاستغفار والتسبيح، مع مربع عرض ثابت الحجم لا يقفز ولا يتغير حجمه مع اختلاف طول النصوص، و49 صيغة موثقة مع نسخ فوري وتبديل تلقائي ذكي.</span>
+                <span data-lang="en">Streamlined dual sections for Istighfar and Tasbeeh, featuring a fixed-height display box that never jumps across varying text lengths, 49 authentic formulas, and auto-advance.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">استغفار وتسبيح • مربع ثابت الحجم</span>
+                <span data-lang="en">Istighfar &amp; Tasbeeh • Fixed-Size Card</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-compass"/></svg></div>
+              <h4>
+                <span data-lang="ar">اتجاه القبلة</span>
+                <span data-lang="en">Qibla Direction</span>
+              </h4>
+              <p>
+                <span data-lang="ar">بوصلة تحدد اتجاه القبلة من موقعك عبر GPS دون إنترنت، ويُحسب الاتجاه على جهازك. ويُحفظ آخر موقع على جهازك فقط، ليظهر لك الاتجاه فوراً في المرة القادمة.</span>
+                <span data-lang="en">A compass that finds the Qibla from your GPS location without internet, with the bearing computed on your device. The last location is saved on your device only, so the direction appears instantly next time.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">موقعك لا يغادر جهازك</span>
+                <span data-lang="en">Your Location Stays on Device</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-group">
+          <h3 class="feature-group-title">
+            <span data-lang="ar">مكتبتك ومظهر تطبيقك</span>
+            <span data-lang="en">Your Library &amp; Your App</span>
+          </h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-books"/></svg></div>
+              <h4>
+                <span data-lang="ar">كتب وملازم (أقسام مخصصة وإرفاق ملفات)</span>
+                <span data-lang="en">Books &amp; Booklets (Sections &amp; Attachments)</span>
+              </h4>
+              <p>
+                <span data-lang="ar">مكتبة دراسية مرنة تتيح إنشاء أقسام وتصنيفات مخصصة وإضافة الملازم والكتب مع إرفاق مستندات PDF وملفات نصية محلياً، وقارئ مدمج يدعم تكبير الخط ومطالعة ومشاركة الملفات دون إنترنت.</span>
+                <span data-lang="en">A customizable study library allowing you to organize custom sections, add booklets and books, attach local PDF and text files, and read or share documents offline with adjustable typography.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">أقسام مخصصة وإرفاق PDF محلياً</span>
+                <span data-lang="en">Custom Sections &amp; Offline PDFs</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-palette"/></svg></div>
+              <h4>
+                <span data-lang="ar">5 ثيمات وبطاقات الآيات</span>
+                <span data-lang="en">5 Themes &amp; Ayah Cards</span>
+              </h4>
+              <p>
+                <span data-lang="ar">اختر لون التطبيق من 5 ثيمات: كحلي، وزمردي، وعنابي، وبني خشبي، وتركوازي، لكل منها وضع فاتح وداكن. وشارك الآية في بطاقة بلون ثيمك وبخط مصحفك، بدقة 2160 بكسل، واحفظها في الصور.</span>
+                <span data-lang="en">Choose the app's colour from 5 themes: navy, emerald, burgundy, wooden brown and turquoise, each with a light and dark mode. Share an ayah as a card in your theme and Mushaf font, at 2160 px, and save it to Photos.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">فاتح وداكن لكل ثيم</span>
+                <span data-lang="en">Light &amp; Dark per Theme</span>
+              </span>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon-wrap"><svg aria-hidden="true"><use href="#i-phone"/></svg></div>
+              <h4>
+                <span data-lang="ar">ودجت الشاشة الرئيسية</span>
+                <span data-lang="en">Home-Screen Widgets</span>
+              </h4>
+              <p>
+                <span data-lang="ar">ودجت على شاشة هاتفك الرئيسية تعرض آية جديدة كل ربع ساعة بالخط القرآني وبلون ثيمك، مع تقدّم ختمتك، بتصميم زجاجي هادئ، ويعمل دون أن تفتح التطبيق.</span>
+                <span data-lang="en">A widget on your phone's home screen showing a new ayah every quarter hour in the Quranic font and your theme's colour, along with your khatma progress, in a calm frosted-glass design. It works without opening the app.</span>
+              </p>
+              <span class="feature-badge">
+                <span data-lang="ar">آية كل ربع ساعة</span>
+                <span data-lang="en">A New Ayah Every Quarter Hour</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT & METHODOLOGY -->
+    <section id="about">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">
+            <span data-lang="ar">رؤية تدبير</span>
+            <span data-lang="en">The Tadbeer Vision</span>
+          </span>
+          <h2 class="section-title">
+            <span data-lang="ar">لماذا «تَدْبِير»؟</span>
+            <span data-lang="en">Why Tadbeer?</span>
+          </h2>
+          <p class="section-subtitle">
+            <span data-lang="ar">الانتقال بالعلاقة مع القرآن من مجرد التلاوة السريعة إلى التدبّر الواعي والعمل المستمر.</span>
+            <span data-lang="en">Transforming engagement with the Quran from quick recitation into mindful reflection and lasting action.</span>
+          </p>
+        </div>
+
+        <div class="about-card">
+          <p>
+            <span data-lang="ar">أنشئ مشروع <strong>تَدْبِير (Tadbeer)</strong> ليكون تطبيقاً قرآنياً هادئاً، خالياً من الإعلانات والإشعارات المشتتة، مبنياً على مبدأ <strong>العمل المحلي دون اتصال (Offline-First)</strong>: كل شيء يعمل على جهازك، والإنترنت لا يُستخدم إلا لسماع التلاوة أو تنزيلها حين تطلبها. تظل جميع خواطرك وتأملاتك ووقفاتك التدبرية محفوظة محلياً داخل جهازك فقط في قاعدة بيانات SQLite مخصصة.</span>
+            <span data-lang="en"><strong>Tadbeer</strong> was created to be a serene, mindful sanctuary free from ads and distracting notifications, built on an <strong>Offline-First</strong> philosophy: everything runs on your device, and the internet is used only to stream or download audio recitation when you ask for it. All your private thoughts, notes, reflections, and bookmarks remain solely on your device within a local SQLite database.</span>
+          </p>
+
+          <div class="methodology-grid">
+            <div class="method-step">
+              <span class="method-step-num">
+                <span data-lang="ar">١</span>
+                <span data-lang="en">1</span>
+              </span>
+              <h4>
+                <span data-lang="ar">الفهم المعرفي</span>
+                <span data-lang="en">Cognitive Understanding</span>
+              </h4>
+              <p>
+                <span data-lang="ar">تجريد معاني المفردات الغريبة والوقوف على المعنى المباشر للآية.</span>
+                <span data-lang="en">Clarifying unfamiliar vocabulary to grasp the direct, foundational meaning of the ayah.</span>
+              </p>
+            </div>
+            <div class="method-step">
+              <span class="method-step-num">
+                <span data-lang="ar">٢</span>
+                <span data-lang="en">2</span>
+              </span>
+              <h4>
+                <span data-lang="ar">الأثر الوجداني</span>
+                <span data-lang="en">Emotional Impact</span>
+              </h4>
+              <p>
+                <span data-lang="ar">استحضار المشاعر الإيمانية والخشوع التي تثيرها الآية في القلب.</span>
+                <span data-lang="en">Awakening feelings of reverence, hope, and humility stirred in the heart by divine words.</span>
+              </p>
+            </div>
+            <div class="method-step">
+              <span class="method-step-num">
+                <span data-lang="ar">٣</span>
+                <span data-lang="en">3</span>
+              </span>
+              <h4>
+                <span data-lang="ar">التزكية والمحاسبة</span>
+                <span data-lang="en">Soul Rectification</span>
+              </h4>
+              <p>
+                <span data-lang="ar">فحص النفس وكشف ما تعالجه الآية من أمراض باطنة وسلوكيات.</span>
+                <span data-lang="en">Examining the inner self to address shortcomings and spiritual ailments cured by the ayah.</span>
+              </p>
+            </div>
+            <div class="method-step">
+              <span class="method-step-num">
+                <span data-lang="ar">٤</span>
+                <span data-lang="en">4</span>
+              </span>
+              <h4>
+                <span data-lang="ar">العمل التطبيقي</span>
+                <span data-lang="en">Practical Action</span>
+              </h4>
+              <p>
+                <span data-lang="ar">تحويل الهداية القرآنية إلى التزام وسلوك ملموس في اليوم والليلة.</span>
+                <span data-lang="en">Translating Quranic guidance into a tangible, measurable commitment in daily life.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRIVACY SUMMARY (the full policy is privacy.html) -->
+    <section id="privacy">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">
+            <span data-lang="ar">الخصوصية بالتصميم</span>
+            <span data-lang="en">Privacy by Design</span>
+          </span>
+          <h2 class="section-title">
+            <span data-lang="ar">بياناتك تبقى على جهازك</span>
+            <span data-lang="en">Your Data Stays on Your Device</span>
+          </h2>
+        </div>
+
+        <div class="privacy-card">
+          <ul class="privacy-list" data-lang="ar">
+            <li><div class="privacy-bullet">✓</div><div><strong>لا جمع ولا تتبع:</strong> لا يجمع التطبيق أي بيانات شخصية، ولا يحتوي على أي إعلانات أو أدوات تحليل.</div></li>
+            <li><div class="privacy-bullet">✓</div><div><strong>كل شيء محلي:</strong> ملاحظاتك وتدبراتك وفواصلك على جهازك فقط، والنسخ الاحتياطي مشفّر بـ AES-256 بكلمة مرور تختارها أنت.</div></li>
+            <li><div class="privacy-bullet">✓</div><div><strong>أقل ما يلزم من الاتصال:</strong> الإنترنت للتلاوة المسموعة فقط، والموقع لاتجاه القبلة فقط ولا يغادر جهازك.</div></li>
+          </ul>
+          <ul class="privacy-list" data-lang="en">
+            <li><div class="privacy-bullet">✓</div><div><strong>No collection, no tracking:</strong> The app collects no personal data and contains no ads or analytics.</div></li>
+            <li><div class="privacy-bullet">✓</div><div><strong>Everything local:</strong> Your notes, reflections and bookmarks stay on your device, and backups are AES-256 encrypted with a password you choose.</div></li>
+            <li><div class="privacy-bullet">✓</div><div><strong>Minimal connectivity:</strong> The internet is used only for audio recitation, and location only for the Qibla direction, which never leaves your device.</div></li>
+          </ul>
+
+          <div class="legal-links">
+            <a class="legal-link-btn" href="./privacy.html">
+              <span data-lang="ar">اقرأ سياسة الخصوصية كاملة</span>
+              <span data-lang="en">Read the Full Privacy Policy</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LICENSES & ATTRIBUTION -->
+    <section id="licenses">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">
+            <span data-lang="ar">المصادر والتراخيص المفتوحة</span>
+            <span data-lang="en">Open Source &amp; Attributions</span>
+          </span>
+          <h2 class="section-title">
+            <span data-lang="ar">سجل التراخيص والإسناد</span>
+            <span data-lang="en">Licenses &amp; Attributions</span>
+          </h2>
+          <p class="section-subtitle">
+            <span data-lang="ar">التزام كامل بنسب الفضل لأهله وتوافق تام مع تراخيص البرمجيات الحرة والمصادر القرآنية.</span>
+            <span data-lang="en">Full compliance with open source licenses, scholarly attributions, and verified Quranic sources.</span>
+          </p>
+        </div>
+
+        <div class="table-scroll-hint" data-lang="ar">
+          <span>↔ يمكنك سحب الجدول أفقياً للاطلاع على كامل التفاصيل</span>
+        </div>
+        <div class="table-scroll-hint" data-lang="en">
+          <span>↔ Swipe table horizontally to view complete details</span>
+        </div>
+
+        <div class="licenses-table-wrap">
+          <table class="licenses-table">
+            <thead>
+              <tr>
+                <th>
+                  <span data-lang="ar">المكوّن</span>
+                  <span data-lang="en">Component</span>
+                </th>
+                <th>
+                  <span data-lang="ar">المصدر الرسمي</span>
+                  <span data-lang="en">Official Source</span>
+                </th>
+                <th>
+                  <span data-lang="ar">نوع الترخيص</span>
+                  <span data-lang="en">License Type</span>
+                </th>
+                <th>
+                  <span data-lang="ar">الاستخدام في التطبيق</span>
+                  <span data-lang="en">Usage in Tadbeer</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">الشيفرة المصدرية لتطبيق تدبير</span>
+                    <span data-lang="en">Tadbeer App Source Code</span>
+                  </strong>
+                </td>
+                <td>
+                  <span data-lang="ar">مستودع المشروع المفتوح</span>
+                  <span data-lang="en">Official Open Source Repository</span>
+                </td>
+                <td><span class="license-badge">MIT</span></td>
+                <td>
+                  <span data-lang="ar">البرمجية الرئيسية المفتوحة المصدر</span>
+                  <span data-lang="en">Core Application Architecture</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">النص القرآني بالرسم العثماني</span>
+                    <span data-lang="en">Quran Text in Uthmani Script</span>
+                  </strong>
+                </td>
+                <td>
+                  <span data-lang="ar">مشروع تنزيل (Tanzil.net)</span>
+                  <span data-lang="en">Tanzil Project (Tanzil.net)</span>
+                </td>
+                <td><span class="license-badge">CC BY 3.0</span></td>
+                <td>
+                  <span data-lang="ar">نص المصحف الشريف المعتمد (6,236 آية)</span>
+                  <span data-lang="en">Verified Quran Text (6,236 Ayahs)</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">معجم معاني كلمات القرآن (6,465 مدخلاً)</span>
+                    <span data-lang="en">Quran Vocabulary Lexicon (6,465 entries)</span>
+                  </strong>
+                </td>
+                <td>
+                  <span data-lang="ar">الموسوعة القرآنية (Quranpedia.net)</span>
+                  <span data-lang="en">Quranic Encyclopedia (Quranpedia.net)</span>
+                </td>
+                <td><span class="license-badge">CC0 1.0</span></td>
+                <td>
+                  <span data-lang="ar">المعجم اللغوي المفرد المتزامن للمصحف</span>
+                  <span data-lang="en">Synchronized Individual Word Meanings</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">الخطوط القرآنية الخمسة المعتمدة</span>
+                    <span data-lang="en">Five Authentic Quran Fonts</span>
+                  </strong>
+                </td>
+                <td>SIL International, Dr. Khaled Hosny &amp; Google</td>
+                <td><span class="license-badge">SIL OFL-1.1</span></td>
+                <td>
+                  <span data-lang="ar">أميري قرآني، شهرزاد الجديد، نوتو نسخ، لطيف، وهرمتان</span>
+                  <span data-lang="en">Amiri Quran, Scheherazade New, Noto Naskh, Lateef, Harmattan</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">خط الواجهة وأيقوناتها</span>
+                    <span data-lang="en">UI Font &amp; Icons</span>
+                  </strong>
+                </td>
+                <td>IBM (IBM Plex Sans Arabic) &amp; Phosphor Icons</td>
+                <td>
+                  <span class="license-badge">SIL OFL-1.1</span>
+                  <span class="license-badge">MIT</span>
+                </td>
+                <td>
+                  <span data-lang="ar">نصوص الواجهة وأيقونات التطبيق</span>
+                  <span data-lang="en">Interface text and app icons</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">خطوط صفحات مصحف المدينة (QCF v1)</span>
+                    <span data-lang="en">Madinah Mushaf Page Fonts (QCF v1)</span>
+                  </strong>
+                </td>
+                <td>
+                  <span data-lang="ar">مجمع الملك فهد لطباعة المصحف الشريف</span>
+                  <span data-lang="en">King Fahd Glorious Quran Printing Complex</span>
+                </td>
+                <td>
+                  <span class="license-badge" data-lang="ar">توزيع مجاني غير تجاري</span>
+                  <span class="license-badge" data-lang="en">Free, Non-Commercial</span>
+                </td>
+                <td>
+                  <span data-lang="ar">صفحات المصحف الـ 604، دون أي تعديل على الخطوط</span>
+                  <span data-lang="en">The 604 Mushaf pages, with the glyphs unaltered</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">ترتيب أسطر المصحف</span>
+                    <span data-lang="en">Mushaf Line Layout</span>
+                  </strong>
+                </td>
+                <td>Quran.com API v4 (Quran Foundation)</td>
+                <td>
+                  <span class="license-badge" data-lang="ar">استخدام مع الإسناد</span>
+                  <span class="license-badge" data-lang="en">Used with Attribution</span>
+                </td>
+                <td>
+                  <span data-lang="ar">وضع كل كلمة في سطرها كما في المصحف المطبوع</span>
+                  <span data-lang="en">Places each word on its printed line</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">التلاوات المسموعة (7 قرّاء)</span>
+                    <span data-lang="en">Audio Recitations (7 Reciters)</span>
+                  </strong>
+                </td>
+                <td>Islamic Network (cdn.islamic.network)</td>
+                <td>
+                  <span class="license-badge" data-lang="ar">تُشغَّل من المصدر</span>
+                  <span class="license-badge" data-lang="en">Streamed from Source</span>
+                </td>
+                <td>
+                  <span data-lang="ar">ملف صوتي لكل آية، يُشغَّل أو يُنزَّل حين يطلبه المستخدم ولا يُضمَّن في التطبيق</span>
+                  <span data-lang="en">One audio file per ayah, played or downloaded on request; not bundled in the app</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>
+                    <span data-lang="ar">إطار العمل وحزم واجهة المستخدم</span>
+                    <span data-lang="en">Flutter Framework &amp; Core Packages</span>
+                  </strong>
+                </td>
+                <td>Flutter SDK &amp; Flutter Authors</td>
+                <td><span class="license-badge">BSD-3-Clause</span></td>
+                <td>
+                  <span data-lang="ar">محرك واجهة المستخدم وإضافات النظام</span>
+                  <span data-lang="en">User Interface Engine &amp; Native Plugins</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="legal-links">
+          <a class="legal-link-btn" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/LICENSE" target="_blank" rel="noopener">
+            <span data-lang="ar">ملف الترخيص (LICENSE)</span>
+            <span data-lang="en">License File (LICENSE)</span>
+          </a>
+          <a class="legal-link-btn" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/ATTRIBUTION.md" target="_blank" rel="noopener">
+            <span data-lang="ar">ملف الإسناد (ATTRIBUTION.md)</span>
+            <span data-lang="en">Attribution File (ATTRIBUTION.md)</span>
+          </a>
+          <a class="legal-link-btn" href="https://github.com/Abdullah-Alshami/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">
+            <span data-lang="ar">سجل إشعارات الأطراف الثالثة (THIRD_PARTY_NOTICES.md)</span>
+            <span data-lang="en">Third-Party Notices (THIRD_PARTY_NOTICES.md)</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- -----------------------------------------------------------------------
+       FOOTER
+       ----------------------------------------------------------------------- -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="./assets/icons/app_logo.png" alt="Tadbeer Logo" width="32" height="32" style="border-radius: 8px;">
+          <strong>تَدْبِير · Tadbeer</strong>
+        </div>
+
+        <ul class="footer-links">
+          <li>
+            <a href="#features">
+              <span data-lang="ar">المميزات</span>
+              <span data-lang="en">Features</span>
+            </a>
+          </li>
+          <li>
+            <a href="#about">
+              <span data-lang="ar">عن التطبيق</span>
+              <span data-lang="en">About</span>
+            </a>
+          </li>
+          <li>
+            <a href="./privacy.html">
+              <span data-lang="ar">سياسة الخصوصية</span>
+              <span data-lang="en">Privacy Policy</span>
+            </a>
+          </li>
+          <li>
+            <a href="#licenses">
+              <span data-lang="ar">التراخيص</span>
+              <span data-lang="en">Licenses</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/Abdullah-Alshami/Tadbeer" target="_blank" rel="noopener">
+              <span data-lang="ar">مستودع GitHub</span>
+              <span data-lang="en">GitHub Repo</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-copy">
+        <span data-lang="ar">حقوق النشر © 2026 مساهمو مشروع تَدْبِير (Tadbeer Contributors) · مرخّص بموجب رخصة MIT الحرة</span>
+        <span data-lang="en">Copyright © 2026 Tadbeer Contributors · Open source under the MIT License</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./site.js"></script>
+</body>
+</html>

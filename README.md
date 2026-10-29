@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%5E3.4.0-0175C2.svg?logo=dart)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-246%20passed-success.svg)](test/)
+[![Tests](https://img.shields.io/badge/Tests-588%20passed-success.svg)](test/)
 [![Offline](https://img.shields.io/badge/Offline--First-100%25-blueviolet.svg)](#privacy--offline-first)
 [![Website](https://img.shields.io/badge/Website-GitHub%20Pages-informational.svg)](https://abdullah-alshami.github.io/Tadbeer/)
 
@@ -104,7 +104,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 
 Tadbeer is built with **Privacy by Design**:
 - **Zero Data Collection:** No personal data, device identifiers, or analytics are ever collected, transmitted, or sold.
-- **100% Offline Operation:** Tadbeer does not request `android.permission.INTERNET` in its Android manifest and makes zero network requests.
+- **Offline-First:** Everything runs on the device without a connection. The only network use is audio recitation: `android.permission.INTERNET` is requested solely to stream or download recitations, on the user's request, from `cdn.islamic.network`, which receives the device's IP address and the requested file name only.
 - **Local SQLite Persistence:** All user notes, reflections, bookmarks, highlights, and links are stored locally on the user's device (`tadbeer_user_data.db`).
 - **AES-256 Encrypted Backups:** User-controlled backup export and import (`.quranbackup`) encrypted locally using AES-256-CBC with a user-defined password, Gzip compression, and SHA-256 checksum integrity verification.
 
@@ -151,11 +151,13 @@ flutter run
 # Verify static analysis (0 warnings / 0 errors)
 dart analyze
 
-# Run all automated tests (246 tests, 26 test files, 100% passing)
+# Run all automated tests (588 tests, 81 test files)
 flutter test
 
 # Build production release packages
-flutter build apk --release
+# One APK per CPU architecture (about a third of the size of a universal APK)
+flutter build apk --release --split-per-abi
+# The app bundle for Google Play, which serves each device only what it needs
 flutter build appbundle --release
 ```
 
@@ -165,42 +167,58 @@ flutter build appbundle --release
 
 ```text
 tadbeer/
-├── assets/                     # Bundled assets (~6.6MB total)
+├── assets/                     # Bundled assets (~130MB, most of it the 604 Madinah Mushaf page fonts)
 │   ├── fonts/                  # 5 Quran fonts + Amiri UI font (SIL OFL-1.1)
 │   ├── icons/                  # Application icons & logo
 │   └── quran/
 │       ├── quran_data.json     # Verified Tanzil Uthmani text (2.0MB)
 │       └── word_meanings.json  # 6,465 verified lexical entries (1.1MB)
-├── lib/                        # Production Dart code (81 cohesive files)
-│   ├── app/                    # App bootstrap, localization (ar/en), theme
-│   ├── core/
-│   │   ├── design_system/      # Futuristic design tokens & components (Cards, Buttons, Badges)
-│   │   ├── motion/             # Unified motion engine AppMotion & tactile ScaleOnPress
-│   │   ├── services/           # AES-256 crypto & local reminders
-│   │   ├── storage/            # SQLite database & reactive UserDataStore
-│   │   └── utils/              # Phonetic search normalizer, root search, & PDF export
-│   ├── features/               # Feature domain modules (cohesive, consolidated models):
-│   │   ├── ayah_links/         # Thematic verse links, network views, & picker sheet
-│   │   ├── backup/             # Encrypted backup & restore screen
-│   │   ├── bookmarks/          # Consolidated bookmark model/repository & screen
-│   │   ├── books/              # Curated booklets, Ahlulbayt heritage, & reader
-│   │   ├── duas/               # 88 Quranic duas, morning/evening adhkar, & Ahlulbayt duas
-│   │   ├── highlights/         # Consolidated highlight model/repository & screen
-│   │   ├── home/               # Dashboard & reading resume
-│   │   ├── notes/              # Consolidated notes model/repository & PDF export
-│   │   ├── quran/              # Responsive Mushaf engine, page view, & meanings panel
-│   │   ├── reminders/          # Reading reminders scheduling
-│   │   ├── search/             # Unified search registry & 10 search providers
-│   │   ├── settings/           # Font family/size, theme, and about
-│   │   ├── tadbeer/            # Tadbeer pause worksheet & intro
-│   │   ├── tasbeeh/            # Consolidated tasbeeh model/repository & sanctuary
-│   │   └── word_meanings/      # Word meanings explorer & sources
-│   └── main.dart               # Entrypoint & service initialization
-├── test/                       # Comprehensive test suite (246 tests, 26 files, 100% passing)
+├── lib/
+│   ├── app/                # App shell: bootstrap, navigation, localization, licenses
+│   ├── core/               # Foundations that know no app data (imports nothing above it)
+│   │   ├── design_system/  # Tokens, cards, buttons, menus, icons
+│   │   ├── motion/         # Motion and reduced-motion handling
+│   │   ├── theme/          # The five colour themes and ThemeData
+│   │   └── utils/          # Arabic normalization, root search, text direction
+│   ├── data/               # App data; depends only on core
+│   │   ├── models/         # Data models and their repositories
+│   │   ├── quran/          # Quran text, models and word meanings
+│   │   └── storage/        # SQLite database and UserDataStore
+│   ├── features/           # One folder per feature; screens/, widgets/, data/ once it grows past six files
+│   │   ├── audio/          # Ayah-by-ayah recitation, background playback, downloads
+│   │   ├── ayah_links/     # Thematic links between ayahs, network view, QR sharing
+│   │   ├── backup/         # AES-256 encrypted backup and restore
+│   │   ├── bookmarks/      # Bookmarks screen
+│   │   ├── books/          # Books and booklets library, PDF reader
+│   │   ├── continue/       # Continue where you left off
+│   │   ├── daily/          # Ayah of the day
+│   │   ├── duas/           # Quranic duas, morning and evening adhkar, Ahlulbayt duas
+│   │   ├── focus/          # Focus (contemplation) mode
+│   │   ├── highlights/     # Highlights screen
+│   │   ├── home/           # Home screen
+│   │   ├── journey/        # Reading journey, streak, weekly goals, Mushaf map
+│   │   ├── memorization/   # Memorization with Leitner boxes
+│   │   ├── more/           # The More tab
+│   │   ├── notes/          # Reflection notes, PDF and journal export
+│   │   ├── onboarding/     # First launch: name and theme
+│   │   ├── pathways/       # Curated contemplation pathways
+│   │   ├── qibla/          # Qibla direction (GPS and compass)
+│   │   ├── quran/          # Madinah Mushaf (QCF), page view, ayah actions
+│   │   ├── reminders/      # Reminders and the notification scheduler
+│   │   ├── search/         # Unified search and its providers
+│   │   ├── settings/       # Settings
+│   │   ├── share/          # Ayah cards to share
+│   │   ├── tadbeer/        # The four-question reflection pause
+│   │   ├── tasbeeh/        # Istighfar and tasbeeh counter
+│   │   ├── widgets/        # Home-screen widget
+│   │   └── word_meanings/  # Word meanings explorer
+│   ├── l10n/               # ARB translations (gen-l10n)
+│   └── main.dart           # Entrypoint: bootstrap(), then runApp()
+├── test/                       # Comprehensive test suite (588 tests, 81 files)
 │   ├── design_system/          # Design system component tests (Cards, Buttons, Badges)
 │   ├── motion/                 # Motion engine & reduced-motion accessibility tests
 │   └── ...                     # Comprehensive unit & widget tests across all features
-├── docs/                       # Technical documentation
+├── docs/                       # Official website (index.html) & privacy policy (privacy.html), GitHub Pages
 │   ├── ARCHITECTURE_AND_CODE_GUIDE.md # Comprehensive engineering & architectural guide
 │   └── CONTENT_GUIDE.md        # Content addition & extension manual for developers
 ├── DEVELOPMENT_GUIDE.md        # Technical developer & maintenance guide
@@ -208,7 +226,6 @@ tadbeer/
 ├── ATTRIBUTION.md              # Attribution statements & source details
 ├── THIRD_PARTY_NOTICES.md      # Full third-party license notices
 ├── LICENSE                     # MIT License
-└── index.html                  # Official GitHub Pages website & privacy policy
 ```
 
 For detailed technical architecture, database schemas, and contribution guides, see:
