@@ -505,7 +505,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       _ActionButton(
                         icon: inHifz ? AppIcons.brainFill : AppIcons.brain,
                         label: inHifz
-                            ? l10n.removeFromMemorization
+                            ? l10n.memorizedDone
                             : l10n.addToMemorization,
                         iconColor: inHifz
                             ? AppColors.accentGold(context)

@@ -56,7 +56,13 @@ class AudioDownloads extends ChangeNotifier {
   final failed = <(String, int)>{};
 
   /// يقرأ ما على الجهاز مرة واحدة، وكل ما بعده يُبنى عليه.
-  Future<void> ready() => _ready ??= () async {
+  Future<void> ready() => _ready ??= _scan().catchError((Object e) {
+    // تُعاد المحاولة في المرة القادمة بدل أن يبقى الفشل محفوظاً.
+    _ready = null;
+    throw e;
+  });
+
+  Future<void> _scan() async {
     final dir = _dir = await _root();
     if (!dir.existsSync()) return;
     for (final folder in dir.listSync().whereType<Directory>()) {
@@ -69,7 +75,7 @@ class AudioDownloads extends ChangeNotifier {
       }
       _have[folder.uri.pathSegments.where((s) => s.isNotEmpty).last] = ids;
     }
-  }();
+  }
 
   File _file(Reciter r, int ayahId) =>
       File('${_dir!.path}/${r.id}/$ayahId.mp3');

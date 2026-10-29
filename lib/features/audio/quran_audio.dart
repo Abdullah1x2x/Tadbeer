@@ -32,6 +32,9 @@ abstract class AudioEngine {
   Stream<void> get completed;
   Stream<Object> get errors;
 
+  /// هل توقف المشغّل فلا شيء فيه يُستأنف (بعد خطأ أو انقطاع من النظام).
+  bool get idle;
+
   /// يحمّل [tracks] قائمةً جاهزة للتشغيل من [start]، ويرمي خطأ إن تعذّر جلب
   /// الملف الأول.
   Future<void> load(List<AudioTrack> tracks, {int start = 0});
@@ -69,6 +72,9 @@ class JustAudioEngine implements AudioEngine {
 
   @override
   Stream<Object> get errors => _player.errorStream;
+
+  @override
+  bool get idle => _player.processingState == ProcessingState.idle;
 
   @override
   Future<void> load(List<AudioTrack> tracks, {int start = 0}) {
@@ -124,7 +130,8 @@ class AudioQueue {
   /// مصدر كل عنصر.
   List<Uri> get urls => [for (final t in tracks) t.uri];
 
-  /// من [from] إلى آخر سورتها، كل آية [repeat] مرة، بصوت [reciter].
+  /// من [from] إلى آخر سورتها، أو [from] وحدها إن كان [single]، كل آية
+  /// [repeat] مرة، بصوت [reciter].
   ///
   /// السورة التي تبدأ من أولها تُفتتح بالبسملة، إلا الفاتحة (فهي أولها)
   /// والتوبة. ومصدر كل ملف [source]: التنزيل، أو الإنترنت افتراضياً.
@@ -132,6 +139,7 @@ class AudioQueue {
     Ayah from,
     Reciter reciter, {
     int repeat = 1,
+    bool single = false,
     Uri Function(int ayahId)? source,
   }) {
     final repo = QuranRepository.instance;
@@ -152,10 +160,13 @@ class AudioQueue {
       ayahs.add(ayah);
     }
 
-    for (var n = from.ayahNumber; n <= surah.ayahCount; n++) {
+    final last = single ? from.ayahNumber : surah.ayahCount;
+    for (var n = from.ayahNumber; n <= last; n++) {
       final ayah = repo.getAyah(surah.number, n);
       if (ayah == null) continue;
-      if (n == 1 && surah.number != 1 && surah.number != 9) add(1, ayah);
+      if (!single && n == 1 && surah.number != 1 && surah.number != 9) {
+        add(1, ayah);
+      }
       for (var i = 0; i < repeat; i++) {
         add(ayah.id, ayah);
       }
@@ -220,6 +231,18 @@ class QuranAudio extends ChangeNotifier {
   AudioQueue? _queue;
   Timer? _pauseTimer;
 
+  /// رقم آخر طلب تشغيل؛ يُبطل ما قبله.
+  int _request = 0;
+
+  /// تُتلى آية واحدة ثم يتوقف التشغيل.
+  bool _single = false;
+
+  /// القفز بالتالي والسابق لا ينتظر وقفة التدبر.
+  bool _jumping = false;
+
+  /// أقصى انتظار لجلب أول ملف قبل اعتبار التشغيل متعذراً.
+  static const loadTimeout = Duration(seconds: 20);
+
   /// الآية الجارية، أو null حين لا شيء يُتلى.
   Ayah? current;
   bool playing = false;
@@ -270,28 +293,39 @@ class QuranAudio extends ChangeNotifier {
   Future<void> setPauseSeconds(int seconds) => _save('pause', seconds);
 
   /// يبدأ التلاوة من [ayah] حتى آخر السورة ثم ما بعدها.
-  Future<void> playFrom(Ayah ayah) async {
+  Future<void> playFrom(Ayah ayah) => _start(ayah, single: false);
+
+  /// يتلو [ayah] وحدها ثم يتوقف.
+  Future<void> playAyah(Ayah ayah) => _start(ayah, single: true);
+
+  Future<void> _start(Ayah ayah, {required bool single}) async {
+    // كل طلب يأخذ رقماً، فالطلب الأحدث وحده يكمل بعد أي انتظار.
+    final request = ++_request;
     _pauseTimer?.cancel();
     failed = false;
+    _single = single;
+    _queue = null;
     current = ayah;
     loading = true;
     notifyListeners();
-    // الآيات المنزّلة تُشغّل من الجهاز، والباقي من الإنترنت.
-    final downloads = AudioDownloads.instance;
-    await downloads.ready();
-    final reciter = this.reciter;
-    final queue = _queue = AudioQueue.from(
-      ayah,
-      reciter,
-      repeat: repeat,
-      source: (id) => downloads.sourceFor(reciter, id),
-    );
     try {
-      await _player.load(queue.tracks);
-      if (!identical(queue, _queue)) return;
+      // الآيات المنزّلة تُشغّل من الجهاز، والباقي من الإنترنت.
+      final downloads = AudioDownloads.instance;
+      await downloads.ready();
+      if (request != _request) return;
+      final reciter = this.reciter;
+      final queue = _queue = AudioQueue.from(
+        ayah,
+        reciter,
+        repeat: repeat,
+        single: single,
+        source: (id) => downloads.sourceFor(reciter, id),
+      );
+      await _player.load(queue.tracks).timeout(loadTimeout);
+      if (request != _request) return;
       await _player.play();
     } on Object {
-      if (identical(queue, _queue)) _fail();
+      if (request == _request) _fail();
     }
   }
 
@@ -305,7 +339,13 @@ class QuranAudio extends ChangeNotifier {
     } else if (playing) {
       await _player.pause();
     } else if (active) {
-      await _player.play();
+      // المشغّل الذي أوقفه النظام لا يُستأنف، فتبدأ الآية من جديد.
+      final now = current!;
+      if (_player.idle) {
+        await _start(now, single: _single);
+      } else {
+        await _player.play();
+      }
     }
   }
 
@@ -317,10 +357,11 @@ class QuranAudio extends ChangeNotifier {
     final index = _queue?.startOf(following);
     if (index != null) {
       _pauseTimer?.cancel();
+      _jumping = true;
       await _player.seekTo(index);
       await _player.play();
     } else {
-      await playFrom(following);
+      await _start(following, single: _single);
     }
   }
 
@@ -332,15 +373,17 @@ class QuranAudio extends ChangeNotifier {
     final index = _queue?.startOf(before);
     if (index != null) {
       _pauseTimer?.cancel();
+      _jumping = true;
       await _player.seekTo(index);
       await _player.play();
     } else {
-      await playFrom(before);
+      await _start(before, single: _single);
     }
   }
 
   /// يوقف التلاوة ويغلق المشغّل.
   Future<void> stop() async {
+    _request++;
     _pauseTimer?.cancel();
     _queue = null;
     current = null;
@@ -363,8 +406,13 @@ class QuranAudio extends ChangeNotifier {
     final ayah = queue.ayahs[index];
     final previous = current;
     current = ayah;
+    final jumped = _jumping;
+    _jumping = false;
     // تبدأ آية جديدة: الوقفة أولاً إن طلبها القارئ.
-    if (previous != null && previous.id != ayah.id && pauseSeconds > 0) {
+    if (!jumped &&
+        previous != null &&
+        previous.id != ayah.id &&
+        pauseSeconds > 0) {
       _player.pause();
       _pauseTimer?.cancel();
       _pauseTimer = Timer(Duration(seconds: pauseSeconds), () {
@@ -376,9 +424,9 @@ class QuranAudio extends ChangeNotifier {
   }
 
   void _onCompleted() {
-    final last = _queue?.ayahs.last;
-    if (last == null) return;
-    final following = _neighbour(last, 1);
+    final ayahs = _queue?.ayahs;
+    if (ayahs == null || ayahs.isEmpty) return;
+    final following = _single ? null : _neighbour(ayahs.last, 1);
     if (following == null) {
       stop();
       return;
@@ -396,7 +444,9 @@ class QuranAudio extends ChangeNotifier {
     }
   }
 
+  /// يوقف كل شيء عند خطأ، فلا يبقى مشغّل عالق ينتظر صوتاً لن يأتي.
   void _fail() {
+    _request++;
     _pauseTimer?.cancel();
     _queue = null;
     current = null;
@@ -404,6 +454,7 @@ class QuranAudio extends ChangeNotifier {
     loading = false;
     failed = true;
     notifyListeners();
+    unawaited(_engine?.stop().catchError((Object _) {}));
   }
 
   @override

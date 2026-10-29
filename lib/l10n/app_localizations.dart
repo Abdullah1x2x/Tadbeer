@@ -440,11 +440,11 @@ abstract class AppLocalizations {
   /// **'أضف للحفظ'**
   String get addToMemorization;
 
-  /// No description provided for @removeFromMemorization.
+  /// No description provided for @memorizedDone.
   ///
   /// In ar, this message translates to:
-  /// **'إزالة من الحفظ'**
-  String get removeFromMemorization;
+  /// **'تم الحفظ'**
+  String get memorizedDone;
 
   /// No description provided for @journeyBackupSection.
   ///

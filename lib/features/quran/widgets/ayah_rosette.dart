@@ -237,7 +237,7 @@ class _RosetteState extends State<_Rosette>
       ),
       _Petal(
         icon: inHifz ? AppIcons.brainFill : AppIcons.brain,
-        label: inHifz ? l10n.removeFromMemorization : l10n.addToMemorization,
+        label: inHifz ? l10n.memorizedDone : l10n.addToMemorization,
         active: inHifz,
         run: () => HifzStore.toggle(s, a),
       ),
@@ -270,7 +270,7 @@ class _RosetteState extends State<_Rosette>
         icon: AppIcons.headphones,
         label: l10n.listen,
         active: QuranAudio.instance.current?.id == _ayah.id,
-        run: () => QuranAudio.instance.playFrom(_ayah),
+        run: () => QuranAudio.instance.playAyah(_ayah),
       ),
     ];
   }

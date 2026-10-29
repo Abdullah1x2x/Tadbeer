@@ -185,7 +185,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addToMemorization => 'Add to memorization';
 
   @override
-  String get removeFromMemorization => 'Remove from memorization';
+  String get memorizedDone => 'Memorized';
 
   @override
   String get journeyBackupSection => 'Khatma, stats, memorization and pathways';

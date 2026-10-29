@@ -2,6 +2,31 @@ part of 'quran_page_view.dart';
 
 /// أجزاء صفحة المصحف: الرأس والتذييل ونص الآيات.
 extension _QuranPageParts on _QuranPageViewState {
+  /// أيقونات ما على الآية بألوانها: فاصل، وخاطرة، وتدبر، وحفظ.
+  List<(IconData, Color)> _ayahMarkers(
+    UserDataStore storage,
+    Set<String> memorized,
+    bool isDark,
+    int surah,
+    int ayah,
+  ) {
+    final gold = isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold;
+    final reflection = storage.getTadbeer(surah, ayah);
+    return [
+      if (storage.isBookmarked(surah, ayah))
+        (
+          AppIcons.bookmarkSimpleFill,
+          isDark ? AppColors.darkAccentGold : AppColors.lightPrimary,
+        ),
+      if (storage.getNotesForAyah(surah, ayah).isNotEmpty)
+        (AppIcons.notePencil, gold),
+      if (reflection != null && !reflection.isEmpty)
+        (AppIcons.flowerLotusFill, gold),
+      if (memorized.contains('$surah:$ayah'))
+        (AppIcons.brainFill, AppColors.statusSuccess),
+    ];
+  }
+
   /// صفحة مصحف المدينة: الترويسة والأسطر المطبوعة والتذييل.
   Widget _buildQcfPage(
     BuildContext context, {
@@ -57,13 +82,8 @@ extension _QuranPageParts on _QuranPageViewState {
               final base = AppColors.highlightColors[highlight.colorIndex];
               return base.withValues(alpha: isDark ? 0.35 : 0.25);
             },
-            isMarked: (s, a) {
-              final reflection = storage.getTadbeer(s, a);
-              return storage.isBookmarked(s, a) ||
-                  storage.getNotesForAyah(s, a).isNotEmpty ||
-                  (reflection != null && !reflection.isEmpty) ||
-                  memorized.contains('$s:$a');
-            },
+            markersFor: (s, a) =>
+                _ayahMarkers(storage, memorized, isDark, s, a),
             recognizerFor: _getOrCreateRecognizer,
             fallback: fallback,
           ),
@@ -337,31 +357,13 @@ extension _QuranPageParts on _QuranPageViewState {
     for (final ayah in ayahs) {
       final isSelected = widget.selectedAyah?.id == ayah.id;
       final highlight = storage.getHighlight(ayah.surahNumber, ayah.ayahNumber);
-      final isBookmarked = storage.isBookmarked(
+      final markers = _ayahMarkers(
+        storage,
+        memorized,
+        isDark,
         ayah.surahNumber,
         ayah.ayahNumber,
       );
-      final hasNote = storage
-          .getNotesForAyah(ayah.surahNumber, ayah.ayahNumber)
-          .isNotEmpty;
-      final reflection = storage.getTadbeer(ayah.surahNumber, ayah.ayahNumber);
-      final hasReflection = reflection != null && !reflection.isEmpty;
-      final inHifz = memorized.contains(
-        '${ayah.surahNumber}:${ayah.ayahNumber}',
-      );
-      final markerColor = isDark
-          ? AppColors.darkAccentGold
-          : AppColors.lightAccentGold;
-      final markers = <(IconData, Color)>[
-        if (isBookmarked)
-          (
-            AppIcons.bookmarkSimpleFill,
-            isDark ? AppColors.darkAccentGold : AppColors.lightPrimary,
-          ),
-        if (hasNote) (AppIcons.notePencil, markerColor),
-        if (hasReflection) (AppIcons.flowerLotusFill, markerColor),
-        if (inHifz) (AppIcons.brainFill, AppColors.statusSuccess),
-      ];
       final hasIndicators = markers.isNotEmpty;
 
       final ayahText = _QuranPageViewState._formatAyahText(ayah.text);

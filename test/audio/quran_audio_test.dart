@@ -25,6 +25,10 @@ class _FakeEngine implements AudioEngine {
   List<Uri> loaded = const [];
   List<String> titles = const [];
   bool failLoad = false;
+  bool isIdle = false;
+
+  @override
+  bool get idle => isIdle;
 
   @override
   Stream<int?> get index => indexes.stream;
@@ -290,6 +294,58 @@ void main() {
       await audio.playFrom(repo.getAyah(1, 1)!);
       expect(audio.failed, isTrue);
       expect(audio.active, isFalse);
+    });
+
+    test('one ayah plays alone and stops at its end', () async {
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      await audio.playAyah(repo.getAyah(2, 1)!);
+      // No basmala, and nothing after it.
+      expect(engine.loaded, [audio.reciter.urlFor(repo.getAyah(2, 1)!.id)]);
+      engine.completions.add(null);
+      await Future<void>.delayed(Duration.zero);
+      expect(audio.active, isFalse);
+    });
+
+    test('an error mid-recitation stops the player', () async {
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      await audio.playFrom(repo.getAyah(1, 1)!);
+      engine.calls.clear();
+      engine.failures.add(Exception('dropped'));
+      await Future<void>.delayed(Duration.zero);
+      expect(audio.failed, isTrue);
+      expect(audio.active, isFalse);
+      expect(engine.calls, ['stop']);
+    });
+
+    test('a player the system stopped starts the ayah again', () async {
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      await audio.playFrom(repo.getAyah(2, 255)!);
+      await audio.toggle();
+      engine
+        ..isIdle = true
+        ..calls.clear();
+      await audio.toggle();
+      expect(engine.calls, ['load', 'play']);
+      expect(audio.current!.ayahNumber, 255);
+    });
+
+    test('next and previous skip the reflection pause', () {
+      fakeAsync((async) {
+        final engine = _FakeEngine();
+        final audio = QuranAudio.withEngine(engine);
+        audio.setPauseSeconds(5);
+        async.flushMicrotasks();
+        audio.playFrom(repo.getAyah(112, 1)!);
+        async.flushMicrotasks();
+        engine.calls.clear();
+        audio.next();
+        async.flushMicrotasks();
+        expect(engine.calls, isNot(contains('pause')));
+        expect(audio.resting, isFalse);
+      });
     });
 
     test('remembers the reciter and replays the ayah in their voice', () async {
