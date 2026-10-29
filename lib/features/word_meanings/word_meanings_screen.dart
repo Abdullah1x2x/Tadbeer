@@ -9,6 +9,7 @@ import '../quran/screens/quran_screen.dart';
 import '../quran/widgets/word_details_sheet.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_select.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// معاني كلمات القرآن: استعراض الكلمات الغريبة والبحث فيها وتصفيتها بالسورة،
 /// والانتقال إلى موضع الكلمة في المصحف، والمصادر.
@@ -96,6 +97,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
             ),
           ),
           centerTitle: true,
+          actions: [GuideButton(topic: GuideTopic.wordMeanings)],
         ),
         body: Column(
           children: [

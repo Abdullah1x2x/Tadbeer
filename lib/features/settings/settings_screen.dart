@@ -11,6 +11,8 @@ import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_select.dart';
 import '../quran/widgets/text_scale_control.dart';
 import '../quran/qcf/madinah_preview.dart';
+import '../onboarding/tour/section_guide.dart';
+import '../onboarding/tour/tour_screen.dart';
 
 part 'settings_widgets.dart';
 part 'settings_dialogs.dart';
@@ -535,6 +537,63 @@ class SettingsScreen extends StatelessWidget {
                             builder: (_) => const RemindersScreen(),
                           ),
                         ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: Icon(
+                          AppIcons.sparkleFill,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        title: Text(
+                          l10n.tourReplay,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          l10n.tourReplayHint,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
+                          ),
+                        ),
+                        trailing: Icon(AppIcons.caretRight, size: 20),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const TourScreen()),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: Icon(
+                          AppIcons.info,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        title: Text(
+                          l10n.guidesReset,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          l10n.guidesResetHint,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
+                          ),
+                        ),
+                        trailing: Icon(AppIcons.caretRight, size: 20),
+                        onTap: () async {
+                          final messenger = ScaffoldMessenger.of(context);
+                          final done = l10n.guidesResetDone;
+                          await SectionGuide.resetAll();
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text(done, textAlign: TextAlign.center),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

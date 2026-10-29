@@ -8,6 +8,7 @@ import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/onboarding/name_screen.dart';
 import 'package:tadbeer/features/onboarding/theme_picker_screen.dart';
+import 'package:tadbeer/features/onboarding/tour/tour_screen.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/data/models/user_settings_model.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_intro_screen.dart';
@@ -80,7 +81,23 @@ void main() {
       expect(UserDataStore.instance.settings.themeMode, ThemeMode.dark);
 
       await tester.tap(find.text('ابدأ'));
-      // Saving the choice is real I/O; the welcome opens once it is done.
+      // Saving the choice is real I/O; the tour opens once it is done.
+      for (
+        var i = 0;
+        i < 20 && find.byType(TourScreen).evaluate().isEmpty;
+        i++
+      ) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)),
+        );
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(TourScreen), findsOneWidget);
+      expect(TourScreen.seen, isFalse);
+
+      // Skipping the tour leads to the welcome, and the tour is not shown again.
+      await tester.tap(find.text('تخطٍّ'));
       for (
         var i = 0;
         i < 20 && find.byType(TadbeerIntroScreen).evaluate().isEmpty;
@@ -94,6 +111,7 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
       expect(UserDataStore.instance.settings.themeChosen, isTrue);
       expect(find.byType(TadbeerIntroScreen), findsOneWidget);
+      expect(TourScreen.seen, isTrue);
       expect(tester.takeException(), isNull);
     },
   );

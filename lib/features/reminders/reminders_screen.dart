@@ -10,6 +10,7 @@ import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/models/reminder_model.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// إدارة التذكيرات: إضافتها وتعديلها وتجربتها، بإشعار عادي أو منبه.
 class RemindersScreen extends StatefulWidget {
@@ -415,6 +416,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
             ),
           ),
           actions: [
+            GuideButton(topic: GuideTopic.reminders),
             PopupMenuButton<ReminderAlertType>(
               tooltip: l10n.testAlertTooltip,
               icon: const Icon(AppIcons.bellRinging),

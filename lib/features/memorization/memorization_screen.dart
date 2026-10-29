@@ -10,6 +10,7 @@ import '../../data/quran/quran_repository.dart';
 import 'memorization_model.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// شاشة الحفظ: الإحصاءات، ومراجعة اليوم، واختيار سورة.
 class MemorizationScreen extends StatelessWidget {
@@ -32,7 +33,10 @@ class MemorizationScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        appBar: AppBar(title: Text(l10n.memorization)),
+        appBar: AppBar(
+          title: Text(l10n.memorization),
+          actions: [GuideButton(topic: GuideTopic.memorization)],
+        ),
         body: ListenableBuilder(
           listenable: UserDataStore.instance,
           builder: (context, _) {

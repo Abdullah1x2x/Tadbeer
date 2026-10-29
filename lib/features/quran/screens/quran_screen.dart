@@ -22,6 +22,7 @@ import 'quran_page_view.dart';
 import '../widgets/quran_side_menu.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../onboarding/tour/section_guide.dart';
 
 part 'quran_screen_dialogs.dart';
 
@@ -824,6 +825,13 @@ class _QuranScreenState extends State<QuranScreen> {
                   ),
                 ),
               ),
+            ),
+
+            // شرح المصحف عند أول فتح.
+            const Positioned(
+              left: 0,
+              top: 0,
+              child: GuideAutoShow(topic: GuideTopic.mushaf),
             ),
 
             // التلاوة، فوق الشريط السفلي مباشرة حين يظهر.

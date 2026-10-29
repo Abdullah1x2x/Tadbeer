@@ -2238,4 +2238,259 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get booksAndBookletsCardHint => 'الملازم والكتب للقراءة';
+
+  @override
+  String get tourSkip => 'تخطٍّ';
+
+  @override
+  String get tourNext => 'التالي';
+
+  @override
+  String get tourStart => 'ابدأ رحلتك';
+
+  @override
+  String get tourGotIt => 'فهمت';
+
+  @override
+  String get guideButton => 'شرح هذا القسم';
+
+  @override
+  String get tour1Title => 'مصحف المدينة بين يديك';
+
+  @override
+  String get tour1Body =>
+      'اضغط مطوّلاً على أي آية لتتدبّرها، أو تحفظها، أو تستمع إليها، أو تربطها بغيرها.';
+
+  @override
+  String get tour2Title => 'من القراءة إلى التدبّر';
+
+  @override
+  String get tour2Body =>
+      'أربعة أسئلة لكل آية تفتح لك معانيها، وروابط تجمع الآيات في موضوع واحد.';
+
+  @override
+  String get tour3Title => 'استمع بأصوات كبار القرّاء';
+
+  @override
+  String get tour3Body =>
+      'تابع السورة أو قف عند آية واحدة، ونزّل التلاوة لتسمعها دون إنترنت.';
+
+  @override
+  String get tour4Title => 'وردك اليومي يمشي معك';
+
+  @override
+  String get tour4Body =>
+      'ختمة بخطة، وسلسلة أيام، وتسبيح، وودجت يضع آية على شاشة هاتفك.';
+
+  @override
+  String get tour5Title => 'كل شيء على جهازك';
+
+  @override
+  String get tour5Body =>
+      'بلا حساب ولا تتبّع ولا إعلانات، ونسختك الاحتياطية مشفّرة وبيدك.';
+
+  @override
+  String get tourSampleAnswer => 'أن الله معي في كل حال';
+
+  @override
+  String get tourSampleAnswer2 => 'مع العسر يسر، فلا أيأس';
+
+  @override
+  String get tourSampleAnswer3 => 'ذكر الله يُسكن قلبي';
+
+  @override
+  String get tourCreateLink => 'رابط جديد';
+
+  @override
+  String get tourSampleLink => 'الصبر';
+
+  @override
+  String get tourLinkNote1 => 'الصبر عَونٌ تستعين به';
+
+  @override
+  String get tourLinkNote2 => 'أجرٌ بغير حساب';
+
+  @override
+  String get tourLinkNote3 => 'صبرٌ جميل بلا شكوى';
+
+  @override
+  String get tourSamplePathway => 'مسار الصبر';
+
+  @override
+  String get tourSamplePathwayHint => 'سبعة أيام، في كل يوم آية وسؤال';
+
+  @override
+  String get tourDayOne => 'اليوم الأول';
+
+  @override
+  String get tourSampleQuestion => 'متى استعنت بالصبر آخر مرة؟';
+
+  @override
+  String get tourSampleReciter => 'محمود خليل الحصري';
+
+  @override
+  String get tourKhatma => 'الختمة';
+
+  @override
+  String get tourStreak => 'يوم متتالٍ';
+
+  @override
+  String get tourReplay => 'جولة في التطبيق';
+
+  @override
+  String get tourReplayHint => 'شاهد الجولة التعريفية من جديد';
+
+  @override
+  String get guidesReset => 'إعادة عرض الشروحات';
+
+  @override
+  String get guidesResetHint => 'يشرح كل قسم نفسه عند دخوله التالي';
+
+  @override
+  String get guidesResetDone => 'ستظهر الشروحات من جديد';
+
+  @override
+  String get guideReflections1Title => 'ابدأ وقفتك من الآية';
+
+  @override
+  String get guideReflections1Body =>
+      'اضغط مطوّلاً على أي آية في المصحف، ثم اختر «وقفة تدبر» من وسط القائمة.';
+
+  @override
+  String get guideReflections2Title => 'أربعة أسئلة تفتح المعنى';
+
+  @override
+  String get guideReflections2Body =>
+      'أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما الذي ستفعله بها اليوم.';
+
+  @override
+  String get guideReflections3Title => 'وقفاتك محفوظة هنا';
+
+  @override
+  String get guideReflections3Body =>
+      'تجد كل وقفة في «وقفاتي»، وتظهر زهرة التدبّر فوق رقم الآية في المصحف لتعود إليها.';
+
+  @override
+  String get guideLinks1Title => 'موضوع يجمع الآيات';
+
+  @override
+  String get guideLinks1Body =>
+      'أنشئ رابطاً باسم موضوع يشغلك، مثل الصبر أو الشكر أو الرحمة.';
+
+  @override
+  String get guideLinks2Title => 'آيات متفرّقة، وملاحظة لكل آية';
+
+  @override
+  String get guideLinks2Body =>
+      'أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في البقرة الاستعانة بالصبر، وفي الزمر أجره بغير حساب، وفي يوسف الصبر الجميل.';
+
+  @override
+  String get guideLinks3Title => 'انظر الصورة كاملة، وشاركها';
+
+  @override
+  String get guideLinks3Body =>
+      'اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب، وشاركه برمز QR دون إنترنت.';
+
+  @override
+  String get guidePathways1Title => 'رحلة تدبّر يوماً بيوم';
+
+  @override
+  String get guidePathways1Body =>
+      'اختر مساراً في موضوع، وفي كل يوم خطوة صغيرة واحدة لا تثقل عليك.';
+
+  @override
+  String get guidePathways2Title => 'آية اليوم وسؤالها';
+
+  @override
+  String get guidePathways2Body =>
+      'اقرأ الآية بتمهّل، ثم أجب عن سؤال اليوم بما يحضرك.';
+
+  @override
+  String get guidePathways3Title => 'خطوة بعد خطوة';
+
+  @override
+  String get guidePathways3Body =>
+      'كلما أتممت يوماً أُضيء الذي بعده، ويحفظ التطبيق موضعك لتكمل متى عدت.';
+
+  @override
+  String get guideMushafTitle => 'المصحف';
+
+  @override
+  String get guideMushafBody =>
+      'اسحب لتقليب الصفحات، واضغط مطوّلاً على الآية لقائمتها. وتظهر علاماتك من حفظ وملاحظة وتدبّر فوق رقم الآية.';
+
+  @override
+  String get guideMemorizationTitle => 'الحفظ والمراجعة';
+
+  @override
+  String get guideMemorizationBody =>
+      'أضف الآيات التي تحفظها، وراجع كل يوم ما حان وقته. ما تتقنه تتباعد مراجعته، وما تنساه يعود إليك قريباً.';
+
+  @override
+  String get guideWordMeaningsTitle => 'معاني الكلمات';
+
+  @override
+  String get guideWordMeaningsBody =>
+      'معاني الكلمات الغريبة بترتيب المصحف. ابحث بكلمة أو معنى، أو اختر سورة لتراها وحدها.';
+
+  @override
+  String get guideNotesTitle => 'الملاحظات';
+
+  @override
+  String get guideNotesBody =>
+      'اكتب خاطرتك على آية أو خاطرة عامة، وصدّرها PDF أو اجمعها في دفتر تدبّر.';
+
+  @override
+  String get guideSearchTitle => 'البحث';
+
+  @override
+  String get guideSearchBody =>
+      'ابحث في القرآن وكل ما حفظته في 11 قسماً معاً. وللبحث بالجذر اكتب: جذر:صبر';
+
+  @override
+  String get guideBooksTitle => 'الكتب والملازم';
+
+  @override
+  String get guideBooksBody =>
+      'اقرأ الملازم والكتب داخل التطبيق، وأنشئ أقساماً تضيف إليها ملفات PDF أو نصوصاً من هاتفك.';
+
+  @override
+  String get guideDuasTitle => 'الأدعية';
+
+  @override
+  String get guideDuasBody =>
+      'أدعية من القرآن، وأذكار الصباح والمساء بعدّاد، وأدعية أهل البيت والسنة. انسخ الدعاء أو افتحه في المصحف.';
+
+  @override
+  String get guideTasbeehTitle => 'التسبيح والاستغفار';
+
+  @override
+  String get guideTasbeehBody =>
+      'اضغط على الدائرة للعدّ، واختر الهدف ٣٣ أو ١٠٠، ويمكن أن يعدّ عنك تلقائياً وينتقل إلى الذكر التالي.';
+
+  @override
+  String get guideJourneyTitle => 'رحلتي والختمة';
+
+  @override
+  String get guideJourneyBody =>
+      'ضع خطة ختمة يتابعها موضع قراءتك تلقائياً، وراقب سلسلة أيامك وخريطة ما قرأت من المصحف.';
+
+  @override
+  String get guideRemindersTitle => 'التذكيرات';
+
+  @override
+  String get guideRemindersBody =>
+      'اضبط تذكيراً لوردك أو أذكارك في الوقت الذي يناسبك، ويصلك ولو كان التطبيق مغلقاً.';
+
+  @override
+  String get guideBackupTitle => 'النسخ الاحتياطي';
+
+  @override
+  String get guideBackupBody =>
+      'صدّر نسخة مشفّرة بكلمة سرّ من بياناتك واحفظها خارج الهاتف، لتستعيدها إن غيّرت جهازك.';
+
+  @override
+  String guideStep(String step, String total) {
+    return 'الخطوة $step من $total';
+  }
 }

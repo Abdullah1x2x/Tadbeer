@@ -12,6 +12,7 @@ import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import 'note_editor_screen.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// الخواطر كلها في قائمة واحدة، خواطر الآيات والحرة معاً، الأحدث أولاً.
 ///
@@ -61,6 +62,7 @@ class _NotesScreenState extends State<NotesScreen> {
             ),
           ),
           actions: [
+            GuideButton(topic: GuideTopic.notes),
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: FuturisticIconButton(

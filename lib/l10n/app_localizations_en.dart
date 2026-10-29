@@ -2240,4 +2240,262 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get booksAndBookletsCardHint => 'Booklets and books to read';
+
+  @override
+  String get tourSkip => 'Skip';
+
+  @override
+  String get tourNext => 'Next';
+
+  @override
+  String get tourStart => 'Begin your journey';
+
+  @override
+  String get tourGotIt => 'Got it';
+
+  @override
+  String get guideButton => 'About this section';
+
+  @override
+  String get tour1Title => 'The Madinah Mushaf in your hands';
+
+  @override
+  String get tour1Body =>
+      'Long-press any ayah to reflect on it, memorize it, listen to it or link it to others.';
+
+  @override
+  String get tour2Title => 'From reading to reflection';
+
+  @override
+  String get tour2Body =>
+      'Four questions for each ayah open its meaning, and links gather ayahs around one theme.';
+
+  @override
+  String get tour3Title => 'Listen to great reciters';
+
+  @override
+  String get tour3Body =>
+      'Play on through the surah or stop at one ayah, and download recitations to listen offline.';
+
+  @override
+  String get tour4Title => 'Your daily portion goes with you';
+
+  @override
+  String get tour4Body =>
+      'A khatma plan, a daily streak, tasbeeh, and a widget that puts an ayah on your home screen.';
+
+  @override
+  String get tour5Title => 'Everything stays on your device';
+
+  @override
+  String get tour5Body =>
+      'No account, no tracking, no ads. Your backup is encrypted and yours alone.';
+
+  @override
+  String get tourSampleAnswer => 'That Allah is with me in every state';
+
+  @override
+  String get tourSampleAnswer2 =>
+      'With hardship comes ease, so I won’t despair';
+
+  @override
+  String get tourSampleAnswer3 => 'Remembering Allah calms my heart';
+
+  @override
+  String get tourCreateLink => 'New link';
+
+  @override
+  String get tourSampleLink => 'Patience';
+
+  @override
+  String get tourLinkNote1 => 'Patience is a help to lean on';
+
+  @override
+  String get tourLinkNote2 => 'A reward beyond counting';
+
+  @override
+  String get tourLinkNote3 => 'Beautiful patience, without complaint';
+
+  @override
+  String get tourSamplePathway => 'The path of patience';
+
+  @override
+  String get tourSamplePathwayHint =>
+      'Seven days, an ayah and a question each day';
+
+  @override
+  String get tourDayOne => 'Day one';
+
+  @override
+  String get tourSampleQuestion => 'When did you last lean on patience?';
+
+  @override
+  String get tourSampleReciter => 'Mahmoud Khalil Al-Husary';
+
+  @override
+  String get tourKhatma => 'Khatma';
+
+  @override
+  String get tourStreak => 'day streak';
+
+  @override
+  String get tourReplay => 'App tour';
+
+  @override
+  String get tourReplayHint => 'Watch the introduction again';
+
+  @override
+  String get guidesReset => 'Show section guides again';
+
+  @override
+  String get guidesResetHint =>
+      'Each section explains itself on your next visit';
+
+  @override
+  String get guidesResetDone => 'The guides will show again';
+
+  @override
+  String get guideReflections1Title => 'Start from the ayah';
+
+  @override
+  String get guideReflections1Body =>
+      'Long-press any ayah in the Mushaf, then choose “Reflection pause” in the middle of the menu.';
+
+  @override
+  String get guideReflections2Title => 'Four questions that open the meaning';
+
+  @override
+  String get guideReflections2Body =>
+      'Answer what comes to you, even a word: what stopped you, what the ayah tells you, what it stirred in you, and what you will do with it today.';
+
+  @override
+  String get guideReflections3Title => 'Your pauses live here';
+
+  @override
+  String get guideReflections3Body =>
+      'Every pause is kept in “My reflections”, and a lotus marks the ayah number in the Mushaf so you can return to it.';
+
+  @override
+  String get guideLinks1Title => 'A theme that gathers ayahs';
+
+  @override
+  String get guideLinks1Body =>
+      'Create a link named after a theme on your mind, like patience, gratitude or mercy.';
+
+  @override
+  String get guideLinks2Title => 'Ayahs from across the Quran, a note for each';
+
+  @override
+  String get guideLinks2Body =>
+      'Add the theme’s ayahs and note what each adds: in Al-Baqarah, seeking help through patience; in Az-Zumar, its reward beyond counting; in Yusuf, beautiful patience.';
+
+  @override
+  String get guideLinks3Title => 'See the whole picture, and share it';
+
+  @override
+  String get guideLinks3Body =>
+      'View the link as a network to see how the ayahs complete each other, or as a list to read in order, and share it by QR code without internet.';
+
+  @override
+  String get guidePathways1Title => 'A reflection journey, day by day';
+
+  @override
+  String get guidePathways1Body =>
+      'Choose a pathway on a theme; each day brings one small step.';
+
+  @override
+  String get guidePathways2Title => 'Today’s ayah and its question';
+
+  @override
+  String get guidePathways2Body =>
+      'Read the ayah slowly, then answer today’s question with what comes to you.';
+
+  @override
+  String get guidePathways3Title => 'Step after step';
+
+  @override
+  String get guidePathways3Body =>
+      'Each day you finish lights up the next, and the app keeps your place so you can continue whenever you return.';
+
+  @override
+  String get guideMushafTitle => 'The Mushaf';
+
+  @override
+  String get guideMushafBody =>
+      'Swipe to turn pages and long-press an ayah for its menu. Your marks for memorization, notes and reflections appear above the ayah number.';
+
+  @override
+  String get guideMemorizationTitle => 'Memorization and review';
+
+  @override
+  String get guideMemorizationBody =>
+      'Add the ayahs you memorize and review what is due each day. What you master comes back less often; what you forget returns soon.';
+
+  @override
+  String get guideWordMeaningsTitle => 'Word meanings';
+
+  @override
+  String get guideWordMeaningsBody =>
+      'Meanings of unusual words in Mushaf order. Search by word or meaning, or pick a surah to see it alone.';
+
+  @override
+  String get guideNotesTitle => 'Notes';
+
+  @override
+  String get guideNotesBody =>
+      'Write a thought on an ayah or a general one, and export it as PDF or gather it into a reflection journal.';
+
+  @override
+  String get guideSearchTitle => 'Search';
+
+  @override
+  String get guideSearchBody =>
+      'Search the Quran and everything you saved across 11 sections at once. For a root search, type جذر:صبر';
+
+  @override
+  String get guideBooksTitle => 'Books and booklets';
+
+  @override
+  String get guideBooksBody =>
+      'Read booklets and books inside the app, and create sections to add PDF or text files from your phone.';
+
+  @override
+  String get guideDuasTitle => 'Supplications';
+
+  @override
+  String get guideDuasBody =>
+      'Quranic duas, morning and evening adhkar with a counter, and duas of Ahlulbayt and the Sunnah. Copy a dua or open it in the Mushaf.';
+
+  @override
+  String get guideTasbeehTitle => 'Tasbeeh and istighfar';
+
+  @override
+  String get guideTasbeehBody =>
+      'Tap the circle to count and choose a target of 33 or 100. It can also count for you and move on to the next dhikr.';
+
+  @override
+  String get guideJourneyTitle => 'My journey and khatma';
+
+  @override
+  String get guideJourneyBody =>
+      'Set a khatma plan that follows your reading position, and watch your streak and a map of what you have read.';
+
+  @override
+  String get guideRemindersTitle => 'Reminders';
+
+  @override
+  String get guideRemindersBody =>
+      'Set a reminder for your portion or adhkar at a time that suits you; it arrives even when the app is closed.';
+
+  @override
+  String get guideBackupTitle => 'Backup';
+
+  @override
+  String get guideBackupBody =>
+      'Export a password-encrypted copy of your data and keep it off the phone, to restore it if you change devices.';
+
+  @override
+  String guideStep(String step, String total) {
+    return 'Step $step of $total';
+  }
 }

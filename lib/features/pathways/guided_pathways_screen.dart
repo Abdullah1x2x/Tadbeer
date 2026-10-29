@@ -13,6 +13,7 @@ import '../tadbeer/tadbeer_questions.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// تقدّم المسارات الموجّهة: الأيام المكتملة في كل مسار.
 class GuidedPathwayProgress {
@@ -49,7 +50,10 @@ class GuidedPathwaysScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        appBar: AppBar(title: Text(l10n.guidedPathways)),
+        appBar: AppBar(
+          title: Text(l10n.guidedPathways),
+          actions: [GuideButton(topic: GuideTopic.pathways)],
+        ),
         body: ListenableBuilder(
           listenable: UserDataStore.instance,
           builder: (context, _) => ListView(

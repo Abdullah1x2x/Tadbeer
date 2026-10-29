@@ -9,6 +9,7 @@ import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import 'backup_crypto_service.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// إنشاء النسخ الاحتياطية المشفرة واستعادتها.
 ///
@@ -296,6 +297,7 @@ class _BackupScreenState extends State<BackupScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          actions: [GuideButton(topic: GuideTopic.backup)],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

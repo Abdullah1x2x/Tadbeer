@@ -19,6 +19,7 @@ import '../../core/design_system/app_menu.dart';
 import '../../core/design_system/ornaments.dart';
 import 'portion_reminder.dart';
 import 'streak_reminder.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// «رحلتي مع القرآن»: خطة الختمة، وورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
@@ -33,6 +34,7 @@ class JourneyScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(l10n.myJourney),
           actions: [
+            GuideButton(topic: GuideTopic.journey),
             IconButton(
               tooltip: l10n.monthlyReport,
               icon: const Icon(AppIcons.chartLineUp),

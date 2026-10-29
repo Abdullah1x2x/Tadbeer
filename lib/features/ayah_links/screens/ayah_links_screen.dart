@@ -14,6 +14,7 @@ import '../widgets/ayah_link_qr_dialog.dart';
 import '../widgets/create_link_dialog.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_menu.dart';
+import '../../onboarding/tour/section_guide.dart';
 
 /// روابط الآيات للقارئ: بحث وإنشاء واستيراد.
 class AyahLinksScreen extends StatefulWidget {
@@ -317,6 +318,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           actions: [
+            GuideButton(topic: GuideTopic.ayahLinks),
             IconButton(
               icon: const Icon(AppIcons.compass),
               tooltip: l10n.curatedPathways,
