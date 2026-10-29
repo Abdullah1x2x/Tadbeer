@@ -45,9 +45,6 @@ class TadbeerPauseSheet extends StatefulWidget {
   State<TadbeerPauseSheet> createState() => _TadbeerPauseSheetState();
 }
 
-/// الاسم القديم، يبقى للتوافق.
-typedef TadabburPauseSheet = TadbeerPauseSheet;
-
 class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
   int _currentQuestionIndex = 0; // 0..3, see TadbeerItem.questionKeys
   late final List<String> _questions = TadbeerQuestions.forAyah(widget.ayah);

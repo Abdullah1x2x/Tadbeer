@@ -174,9 +174,6 @@ class AyahOfTheDay {
   /// أي الأسئلة الأربعة تطرحه البطاقة، ليفتح التدبر عليه.
   static int questionIndex(DateTime day, int index) =>
       (_dayIndex(day) + index) % TadbeerItem.questions.length;
-
-  /// سؤال التدبر لهذا اليوم.
-  static String questionForDay(DateTime day) => questionFor(day, 0);
 }
 
 /// بطاقة «آية للتدبّر» في الرئيسية: آيات اليوم تتتابع تلقائياً.

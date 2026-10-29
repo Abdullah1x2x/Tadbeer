@@ -26,9 +26,6 @@ extension DhikrSectionX on DhikrSection {
         return 'التسبيح';
     }
   }
-
-  /// العنوان القصير للأزرار والتبويبات.
-  String get shortTitle => title;
 }
 
 /// ذكر في السبحة: نصه وفضله وهدفه الافتراضي وقسمه.

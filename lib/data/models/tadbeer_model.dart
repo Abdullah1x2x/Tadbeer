@@ -147,6 +147,3 @@ class TadbeerItem {
     );
   }
 }
-
-/// الاسم القديم، يبقى للتوافق.
-typedef TadabburItem = TadbeerItem;

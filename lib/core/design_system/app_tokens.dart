@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
 
-/// قيم التصميم الموحّدة: المسافات والانحناءات وسماكة الإطارات والظلال
-/// والتدرجات.
+/// قيم التصميم الموحّدة: المسافات والانحناءات وسماكة الإطارات والظلال.
 class AppTokens {
   AppTokens._();
 
   // المسافات (على مقياس 8 نقاط)
-  static const double spaceMicro = 2.0;
-
   static const double spaceXxs = 4.0;
 
   static const double spaceXs = 8.0;
@@ -21,15 +18,7 @@ class AppTokens {
 
   static const double spaceLg = 20.0;
 
-  /// مسافة بين الأقسام.
-  static const double spaceXl = 24.0;
-
-  static const double spaceXxl = 32.0;
-
   // انحناء الزوايا
-  /// للشارات الصغيرة.
-  static const double radiusXs = 6.0;
-
   /// للأزرار والشرائح.
   static const double radiusSm = 10.0;
 
@@ -41,9 +30,6 @@ class AppTokens {
 
   /// للبطاقات البارزة والحوارات.
   static const double radiusXl = 24.0;
-
-  /// للحاويات الكبيرة واللوحات السفلية.
-  static const double radiusXxl = 30.0;
 
   /// كبسولة كاملة.
   static const double radiusPill = 999.0;
@@ -57,9 +43,6 @@ class AppTokens {
 
   /// للحالات النشطة والمركّزة.
   static const double borderEmphasized = 1.8;
-
-  /// للتحديد البارز.
-  static const double borderActive = 2.2;
 
   // الظلال والوهج
 
@@ -131,47 +114,5 @@ class AppTokens {
         spreadRadius: 1,
       ),
     ];
-  }
-
-  // التدرجات
-
-  /// تدرج خفيف لسطح البطاقات.
-  static LinearGradient subtleSurfaceGradient({
-    required bool isDark,
-    Color? baseColor,
-    Color? tintColor,
-  }) {
-    final bg =
-        baseColor ?? (isDark ? AppColors.darkSurface : AppColors.lightSurface);
-    final tint =
-        tintColor ??
-        (isDark
-            ? AppColors.darkPrimary.withValues(alpha: 0.15)
-            : Colors.white.withValues(alpha: 0.40));
-
-    return LinearGradient(
-      begin: AlignmentDirectional.topStart,
-      end: AlignmentDirectional.bottomEnd,
-      colors: [Color.alphaBlend(tint, bg), bg],
-    );
-  }
-
-  /// تدرج لإطارات البطاقات.
-  static LinearGradient borderGradient({
-    required bool isDark,
-    required Color accentColor,
-    double startAlpha = 0.55,
-    double endAlpha = 0.15,
-  }) {
-    return LinearGradient(
-      begin: AlignmentDirectional.topStart,
-      end: AlignmentDirectional.bottomEnd,
-      colors: [
-        accentColor.withValues(alpha: startAlpha),
-        (isDark ? AppColors.darkBorder : AppColors.lightBorder).withValues(
-          alpha: endAlpha,
-        ),
-      ],
-    );
   }
 }

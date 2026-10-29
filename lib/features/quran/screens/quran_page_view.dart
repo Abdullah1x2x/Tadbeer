@@ -1182,6 +1182,3 @@ class _QuranPageViewState extends State<QuranPageView> {
     );
   }
 }
-
-/// الاسم القديم، يبقى للتوافق.
-typedef QuranPageWidget = QuranPageView;

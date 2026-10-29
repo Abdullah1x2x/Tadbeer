@@ -348,8 +348,6 @@ class AppColors {
   // ألوان الحالة متوسطة السطوع لتُقرأ في الوضعين الفاتح والداكن.
   static const Color statusSuccess = Color(0xFF3F9A72);
   static const Color statusWarning = Color(0xFFD39B32);
-  static const Color statusError = Color(0xFFD0574E);
-  static const Color statusInfo = Color(0xFF4F86C6);
 
   // ورق المصحف (لون الورق الكلاسيكي في الوضع الفاتح)
   static const Color mushafBackground = Color(0xFFF8F4EA);
