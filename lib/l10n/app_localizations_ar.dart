@@ -2255,7 +2255,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get guideButton => 'شرح هذا القسم';
 
   @override
-  String get tour1Title => 'مصحف المدينة بين يديك';
+  String get tour1Title => 'كتاب أنزلناه إليك مبارك ليدبروا آياته';
 
   @override
   String get tour1Body =>
@@ -2283,11 +2283,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'ختمة بخطة، وسلسلة أيام، وتسبيح، وودجت يضع آية على شاشة هاتفك.';
 
   @override
-  String get tour5Title => 'كل شيء على جهازك';
+  String get tour5Title => 'رفيقك في رحلتك مع القرآن';
 
   @override
   String get tour5Body =>
-      'بلا حساب ولا تتبّع ولا إعلانات، ونسختك الاحتياطية مشفّرة وبيدك.';
+      'كل ما تحتاجه للقراءة والتدبّر والذكر في مكان واحد، ويعمل دون إنترنت.';
 
   @override
   String get tourSampleAnswer => 'أن الله معي في كل حال';
@@ -2302,16 +2302,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tourCreateLink => 'رابط جديد';
 
   @override
-  String get tourSampleLink => 'الصبر';
+  String get tourSampleLink => 'أبواب الرزق';
 
   @override
-  String get tourLinkNote1 => 'الصبر عَونٌ تستعين به';
+  String get tourLinkNote1 => 'الباب الأول: التقوى';
 
   @override
-  String get tourLinkNote2 => 'أجرٌ بغير حساب';
+  String get tourLinkNote2 => 'الباب الثاني: الاستغفار';
 
   @override
-  String get tourLinkNote3 => 'صبرٌ جميل بلا شكوى';
+  String get tourLinkNote3 => 'الباب الثالث: الشكر';
 
   @override
   String get tourSamplePathway => 'مسار الصبر';
@@ -2333,6 +2333,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tourStreak => 'يوم متتالٍ';
+
+  @override
+  String get guideQiblaTitle => 'اتجاه القبلة';
+
+  @override
+  String get guideQiblaBody =>
+      'حدّد موقعك مرة، ثم أمسك الهاتف مستوياً وأدره حتى يشير السهم إلى الكعبة.';
+
+  @override
+  String get walkAyahTitle => 'آية للتدبّر';
+
+  @override
+  String get walkAyahBody =>
+      'آيات تتجدّد كل يوم، اسحب بينها واضغط «تدبّرها» لتكتب وقفتك.';
+
+  @override
+  String get walkQuranTitle => 'مصحفك ورحلتك';
+
+  @override
+  String get walkQuranBody =>
+      'تابع القراءة من حيث توقفت، ومن هنا تبدأ ختمتك وترى تقدّمك.';
+
+  @override
+  String get walkSearchTitle => 'ابحث في كل شيء';
+
+  @override
+  String get walkSearchBody =>
+      'اكتب كلمة فتجد الآيات وملاحظاتك ووقفاتك في مكان واحد.';
+
+  @override
+  String get walkTabsTitle => 'تنقّل بين الأقسام';
+
+  @override
+  String get walkTabsBody =>
+      'الرئيسية والمصحف والاستغفار والأدعية، بلمسة واحدة من أي مكان.';
+
+  @override
+  String get walkMoreTitle => 'المزيد';
+
+  @override
+  String get walkMoreBody =>
+      'هنا روابط الآيات ومسارات التدبّر والحفظ والكتب وكل الأقسام.';
+
+  @override
+  String get walkTipTitle => 'نصيحة أخيرة';
+
+  @override
+  String get walkTipBody =>
+      'إن لم تعرف ما يفعله زر، فاضغط عليه مطوّلاً ليظهر لك وصفه.';
+
+  @override
+  String get walkReplay => 'دليل الشاشة الرئيسية';
+
+  @override
+  String get walkReplayHint => 'أعد التعرّف على أهم ما في الرئيسية';
 
   @override
   String get tourReplay => 'جولة في التطبيق';
@@ -2375,14 +2430,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get guideLinks1Body =>
-      'أنشئ رابطاً باسم موضوع يشغلك، مثل الصبر أو الشكر أو الرحمة.';
+      'أنشئ رابطاً باسم موضوع يشغلك، مثل أبواب الرزق أو الصبر أو الرحمة.';
 
   @override
   String get guideLinks2Title => 'آيات متفرّقة، وملاحظة لكل آية';
 
   @override
   String get guideLinks2Body =>
-      'أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في البقرة الاستعانة بالصبر، وفي الزمر أجره بغير حساب، وفي يوسف الصبر الجميل.';
+      'أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في الطلاق باب التقوى، وفي نوح باب الاستغفار، وفي إبراهيم باب الشكر.';
 
   @override
   String get guideLinks3Title => 'انظر الصورة كاملة، وشاركها';
@@ -2444,15 +2499,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get guideSearchTitle => 'البحث';
 
   @override
-  String get guideSearchBody =>
-      'ابحث في القرآن وكل ما حفظته في 11 قسماً معاً. وللبحث بالجذر اكتب: جذر:صبر';
+  String get guideSearchBody => 'ابحث في القرآن وكل ما حفظته في 11 قسماً معاً.';
 
   @override
   String get guideBooksTitle => 'الكتب والملازم';
 
   @override
   String get guideBooksBody =>
-      'اقرأ الملازم والكتب داخل التطبيق، وأنشئ أقساماً تضيف إليها ملفات PDF أو نصوصاً من هاتفك.';
+      'اقرأ الملازم والكتب داخل التطبيق، وتابع من حيث توقفت.';
 
   @override
   String get guideDuasTitle => 'الأدعية';

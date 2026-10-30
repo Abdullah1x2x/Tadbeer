@@ -25,6 +25,7 @@ enum GuideTopic {
   journey,
   reminders,
   backup,
+  qibla,
 }
 
 /// خطوة في شرح قسم: مشهدها، وعنوانها، وشرحها.
@@ -44,7 +45,7 @@ abstract final class SectionGuide {
   static const _key = 'section_guides';
 
   /// في الاختبارات لا يظهر شرح من تلقاء نفسه، فلا يحجب الشاشات المختبرة.
-  static bool get _autoShowAllowed {
+  static bool get autoShowAllowed {
     final binding = WidgetsBinding.instance.runtimeType.toString();
     return !binding.contains('Test');
   }
@@ -65,7 +66,7 @@ abstract final class SectionGuide {
 
   /// يعرض الشرح إن لم يره القارئ، بعد أن تُرسم الشاشة.
   static void showOnce(BuildContext context, GuideTopic topic) {
-    if (!_autoShowAllowed || seen(topic)) return;
+    if (!autoShowAllowed || seen(topic)) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted || seen(topic)) return;
       // لا يُفتح فوق شاشة أخرى غطّت القسم قبل أن يظهر.
@@ -203,6 +204,9 @@ abstract final class SectionGuide {
           l10n.guideRemindersTitle,
           l10n.guideRemindersBody,
         ),
+      ],
+      GuideTopic.qibla => [
+        single(AppIcons.compassFill, l10n.guideQiblaTitle, l10n.guideQiblaBody),
       ],
       GuideTopic.backup => [
         single(

@@ -6,6 +6,7 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
+import 'package:tadbeer/features/onboarding/tour/home_walkthrough.dart';
 import 'package:tadbeer/features/onboarding/tour/scene_story.dart';
 import 'package:tadbeer/features/onboarding/tour/section_guide.dart';
 import 'package:tadbeer/features/onboarding/tour/tour_scenes.dart';
@@ -72,7 +73,7 @@ void main() {
     'today ayah': (t) => TodayAyahScene(t: t),
     'listen': (t) => ListenScene(t: t),
     'journey': (t) => JourneyScene(t: t),
-    'privacy': (t) => PrivacyScene(t: t),
+    'companion': (t) => CompanionScene(t: t),
   };
 
   for (final entry in scenes.entries) {
@@ -100,18 +101,59 @@ void main() {
       host(TourScreen(next: (_) => const Scaffold(body: Text('home')))),
     );
     await advance(tester);
-    expect(find.text('مصحف المدينة بين يديك'), findsOneWidget);
+    expect(find.textContaining('أَنزَلْنَٰهُ'), findsOneWidget);
     for (var i = 0; i < 4; i++) {
       await tester.tap(find.text('التالي'));
       await advance(tester);
     }
-    expect(find.text('كل شيء على جهازك'), findsOneWidget);
+    expect(find.text('رفيقك في رحلتك مع القرآن'), findsOneWidget);
     await tester.tap(find.text('ابدأ رحلتك'));
     await io(tester);
     await advance(tester);
     expect(find.text('home'), findsOneWidget);
     expect(TourScreen.seen, isTrue);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the home walkthrough lights each target, then ends', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        Column(
+          children: [
+            SizedBox(key: HomeWalkthrough.searchBar, height: 40),
+            SizedBox(key: HomeWalkthrough.ayahCard, height: 200),
+            SizedBox(key: HomeWalkthrough.quranCard, height: 80),
+            const Spacer(),
+            SizedBox(key: HomeWalkthrough.homeTab, height: 40),
+            SizedBox(key: HomeWalkthrough.moreTab, height: 40),
+          ],
+        ),
+      ),
+    );
+    final context = tester.element(find.byType(Column).first);
+    expect(HomeWalkthrough.seen, isFalse);
+    await tester.runAsync(() async {
+      // Pushing the route needs the save first; the route stays open.
+      HomeWalkthrough.show(context).ignore();
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+    });
+    await advance(tester);
+    expect(HomeWalkthrough.seen, isTrue);
+
+    final l10n = context.l10n;
+    expect(find.text(l10n.walkAyahTitle), findsOneWidget);
+    for (var i = 0; i < 5; i++) {
+      await tester.tap(find.text(l10n.tourNext));
+      await advance(tester);
+    }
+    expect(find.text(l10n.walkTipTitle), findsOneWidget);
+    expect(find.text(l10n.tourSkip), findsNothing);
+
+    await tester.tap(find.text(l10n.tourGotIt));
+    await advance(tester);
+    expect(find.text(l10n.walkTipTitle), findsNothing);
   });
 
   testWidgets('with less motion a scene shows its ending at once', (
@@ -156,7 +198,8 @@ void main() {
     expect(SectionGuide.seen(GuideTopic.ayahLinks), isTrue);
     await tester.tap(find.text('التالي'));
     await advance(tester);
-    expect(find.text('الصبر عَونٌ تستعين به'), findsOneWidget);
+    expect(find.text('الباب الأول: التقوى'), findsOneWidget);
+    expect(find.textContaining('مَخْرَجًا'), findsOneWidget);
     await tester.tap(find.text('التالي'));
     await advance(tester);
     await tester.tap(find.text('فهمت'));

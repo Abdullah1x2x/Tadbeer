@@ -11,6 +11,8 @@ import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_select.dart';
 import '../quran/widgets/text_scale_control.dart';
 import '../quran/qcf/madinah_preview.dart';
+import '../../app/main_shell.dart';
+import '../onboarding/tour/home_walkthrough.dart';
 import '../onboarding/tour/section_guide.dart';
 import '../onboarding/tour/tour_screen.dart';
 
@@ -562,6 +564,40 @@ class SettingsScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(builder: (_) => const TourScreen()),
                         ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: Icon(
+                          AppIcons.house,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        title: Text(
+                          l10n.walkReplay,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          l10n.walkReplayHint,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
+                          ),
+                        ),
+                        trailing: Icon(AppIcons.caretRight, size: 20),
+                        onTap: () async {
+                          final navigator = MainShell.showFromOutside(
+                            ShellTab.home,
+                          );
+                          if (navigator == null) return;
+                          // ينتظر انتهاء انتقال التبويب، فتثبت أماكن العناصر.
+                          await Future<void>.delayed(
+                            const Duration(milliseconds: 400),
+                          );
+                          if (navigator.mounted) {
+                            await HomeWalkthrough.show(navigator.context);
+                          }
+                        },
                       ),
                       const Divider(height: 1),
                       ListTile(

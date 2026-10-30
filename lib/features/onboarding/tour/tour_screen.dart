@@ -44,19 +44,21 @@ class _TourScreenState extends State<TourScreen>
   List<_TourPage> _content(AppStrings l10n) => [
     _TourPage(
       (t) => MushafScene(t: t),
-      l10n.tour1Title,
+      tourOpeningAyah(l10n.tour1Title),
       l10n.tour1Body,
       duration: const Duration(milliseconds: 5600),
+      ayahTitle: true,
     ),
     _TourPage(
       (t) => ReflectScene(t: t),
       l10n.tour2Title,
       l10n.tour2Body,
-      duration: const Duration(milliseconds: 6000),
+      // قرابة ثانية ونصف لكل سؤال، وثانيتان للبطاقة قبل أن تصير شبكة.
+      duration: const Duration(milliseconds: 14000),
     ),
     _TourPage((t) => ListenScene(t: t), l10n.tour3Title, l10n.tour3Body),
     _TourPage((t) => JourneyScene(t: t), l10n.tour4Title, l10n.tour4Body),
-    _TourPage((t) => PrivacyScene(t: t), l10n.tour5Title, l10n.tour5Body),
+    _TourPage((t) => CompanionScene(t: t), l10n.tour5Title, l10n.tour5Body),
   ];
 
   @override
@@ -259,11 +261,15 @@ class _TourPage {
   final String body;
   final Duration duration;
 
+  /// عنوان من القرآن، فيُكتب بخط المصحف.
+  final bool ayahTitle;
+
   const _TourPage(
     this.scene,
     this.title,
     this.body, {
     this.duration = const Duration(milliseconds: 4800),
+    this.ayahTitle = false,
   });
 }
 
@@ -311,9 +317,12 @@ class _TourPageView extends StatelessWidget {
               page.title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Amiri',
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
+                fontFamily: page.ayahTitle
+                    ? UserDataStore.instance.quranFontFamily
+                    : 'Amiri',
+                fontSize: page.ayahTitle ? 24 : 26,
+                height: page.ayahTitle ? 1.7 : null,
+                fontWeight: page.ayahTitle ? null : FontWeight.bold,
                 color: AppColors.textPrimary(context),
               ),
             ),

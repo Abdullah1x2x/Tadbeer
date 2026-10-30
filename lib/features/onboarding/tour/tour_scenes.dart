@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../../core/design_system/ornaments.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/models/tadbeer_model.dart';
@@ -72,7 +73,7 @@ String _ayahText(int surah, int ayah, String fallback) {
   }
 }
 
-/// «السورة رقم» مختصراً، لعُقد الروابط.
+/// «السورة رقم» مختصراً.
 String _ref(BuildContext context, int surah, int ayah) {
   try {
     final name = QuranRepository.instance.getSurah(surah).name;
@@ -80,6 +81,18 @@ String _ref(BuildContext context, int surah, int ayah) {
   } on Object {
     return context.l10n.digits(ayah);
   }
+}
+
+/// كلمات من [start] إلى ما قبل [end] من الآية، فيبقى رسمها كما في المصحف.
+String _ayahWords(int surah, int ayah, int start, int end) {
+  final words = _ayahText(surah, ayah, '').split(' ');
+  return end > words.length ? '' : words.sublist(start, end).join(' ');
+}
+
+/// الآية التي تفتتح الجولة: غاية التطبيق بلفظ القرآن.
+String tourOpeningAyah(String fallback) {
+  final words = _ayahWords(38, 29, 0, 6);
+  return words.isEmpty ? fallback : '﴿$words﴾';
 }
 
 TextStyle _quran(double size, Color color) => TextStyle(
@@ -379,8 +392,8 @@ class ReflectScene extends StatelessWidget {
     final c = _Palette(context);
     final l10n = context.l10n;
     const questions = TadbeerItem.questions;
-    final typing = answer ? phase(t, 0.0, 0.42) : phase(t, 0.0, 0.5);
-    final shrink = answer ? 0.0 : phase(t, 0.55, 0.68);
+    final typing = answer ? phase(t, 0.0, 0.42) : phase(t, 0.0, 0.55);
+    final shrink = answer ? 0.0 : phase(t, 0.74, 0.8);
     final answerType = answer ? phase(t, 0.45, 0.72) : 0.0;
     final savePress = answer ? math.sin(phase(t, 0.78, 0.86) * math.pi) : 0.0;
     final saved = answer ? phase(t, 0.86, 0.94) : 0.0;
@@ -469,9 +482,8 @@ class ReflectScene extends StatelessWidget {
         if (!answer && shrink > 0)
           Positioned.fill(
             child: LinkNetwork(
-              t: phase(t, 0.6, 0.95),
-              centreLabel: l10n.tadbeerPause,
-              centreIcon: AppIcons.flowerLotusFill,
+              t: phase(t, 0.76, 1),
+              centreLabel: l10n.tourSampleLink,
             ),
           ),
         if (answer)
@@ -608,10 +620,10 @@ class ReflectionsListScene extends StatelessWidget {
 
 // ─────────────────────────────── الروابط ───────────────────────────────
 
-/// شبكة روابط عن الصبر: ثلاث آيات تنضم إلى الموضوع، ولكل منها ملاحظة.
+/// شبكة روابط عن أبواب الرزق: ثلاث آيات تنضم إلى الموضوع، ولكل منها ملاحظة.
 ///
-/// البقرة ١٥٣ (الاستعانة بالصبر)، والزمر ١٠ (أجره بغير حساب)، ويوسف ٨٣ (الصبر
-/// الجميل)؛ فتصل فكرة الربط: موضوع واحد تجمعه آيات من سور متفرقة.
+/// الطلاق ٢-٣ (التقوى)، ونوح ١٠-١١ (الاستغفار)، وإبراهيم ٧ (الشكر)؛ فتصل فكرة
+/// الربط: آيات من سور متفرقة تهدف إلى معنى واحد ويدعم بعضها بعضاً.
 class LinkNetwork extends StatelessWidget {
   final double t;
   final String centreLabel;
@@ -633,8 +645,20 @@ class LinkNetwork extends StatelessWidget {
   });
 
   static const _centre = Offset(160, 104);
-  static const _spots = [Offset(64, 40), Offset(256, 40), Offset(160, 184)];
-  static const _refs = [(2, 153), (39, 10), (12, 83)];
+  static const _spots = [Offset(72, 40), Offset(248, 40), Offset(160, 184)];
+
+  static String _verse(int i, AppStrings l10n) {
+    final text = switch (i) {
+      0 =>
+        '${_ayahWords(65, 2, 26, 32)} ۝ '
+            '${_ayahWords(65, 3, 0, 5)}',
+      1 =>
+        '${_ayahWords(71, 10, 1, 3)} ۝ '
+            '${_ayahWords(71, 11, 0, 4)}',
+      _ => _ayahWords(14, 7, 3, 6),
+    };
+    return text.trim() == '۝' ? '' : text;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -671,13 +695,13 @@ class LinkNetwork extends StatelessWidget {
         ),
         for (var i = 0; i < n; i++)
           Positioned(
-            left: _spots[i].dx - 62,
-            top: _spots[i].dy - 26,
+            left: _spots[i].dx - _nodeWidth(i) / 2,
+            top: i == 2 ? _spots[i].dy - 22 : 2,
             child: popIn(
               join[i],
               Container(
-                width: 124,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                width: _nodeWidth(i),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 decoration: BoxDecoration(
                   color: c.surface,
                   borderRadius: BorderRadius.circular(14),
@@ -694,24 +718,10 @@ class LinkNetwork extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          AppIcons.bookOpenTextFill,
-                          size: 11,
-                          color: c.gold,
-                        ),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            _ref(context, _refs[i].$1, _refs[i].$2),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: _ui(10, c.text, bold: true),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      _verse(i, l10n),
+                      textAlign: TextAlign.center,
+                      style: _quran(10, c.text).copyWith(height: 1.55),
                     ),
                     if (notes)
                       Opacity(
@@ -721,7 +731,6 @@ class LinkNetwork extends StatelessWidget {
                           child: Text(
                             noteTexts[i],
                             textAlign: TextAlign.center,
-                            maxLines: 2,
                             style: _ui(8.5, c.primary, bold: true),
                           ),
                         ),
@@ -766,6 +775,8 @@ class LinkNetwork extends StatelessWidget {
     );
   }
 }
+
+double _nodeWidth(int i) => i == 2 ? 150 : 136;
 
 class _ThreadsPainter extends CustomPainter {
   final Offset centre;
@@ -1545,94 +1556,103 @@ class _BeadsPainter extends CustomPainter {
   bool shouldRepaint(_BeadsPainter old) => old.bead != bead;
 }
 
-// ─────────────────────────────── الخصوصية ───────────────────────────────
+// ─────────────────────────────── الرفيق ───────────────────────────────
 
-/// ما في التطبيق يدخل الهاتف، ويُغلق عليه قفل ذهبي.
-class PrivacyScene extends StatelessWidget {
+/// أقسام التطبيق تجتمع حول نجمة ذهبية: كل ما يحتاجه القارئ في مكان واحد.
+class CompanionScene extends StatelessWidget {
   final double t;
 
-  const PrivacyScene({super.key, required this.t});
+  const CompanionScene({super.key, required this.t});
 
-  static const _phone = Offset(160, 110);
+  static const _centre = Offset(160, 110);
+  static const _icons = [
+    AppIcons.bookOpenTextFill,
+    AppIcons.flowerLotusFill,
+    AppIcons.graphFill,
+    AppIcons.handHeartFill,
+    AppIcons.sparkleFill,
+    AppIcons.books,
+  ];
 
   @override
   Widget build(BuildContext context) {
     final c = _Palette(context);
-    const items = [
-      (AppIcons.bookOpenTextFill, Offset(40, 40)),
-      (AppIcons.flowerLotusFill, Offset(280, 40)),
-      (AppIcons.headphones, Offset(40, 180)),
-      (AppIcons.chartLineUp, Offset(280, 180)),
-    ];
-    final lock = phase(t, 0.55, 0.7, Curves.easeOutBack);
-    final pulse = math.sin(phase(t, 0.72, 0.86) * math.pi);
+    final star = phase(t, 0.5, 0.7, Curves.easeOutBack);
+    final pulse = math.sin(phase(t, 0.7, 0.95) * math.pi);
     return _Canvas(
       children: [
-        Positioned(
-          left: _phone.dx - 62,
-          top: 6,
-          child: Container(
-            width: 124,
-            height: 208,
-            decoration: BoxDecoration(
-              color: c.primary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(26),
-              border: Border.all(color: c.gold, width: 2),
-            ),
-          ),
-        ),
-        for (var i = 0; i < items.length; i++)
+        for (var i = 0; i < _icons.length; i++)
           () {
-            final p = phase(t, i * 0.1, 0.3 + i * 0.1, Curves.easeInCubic);
-            final at = _lerp(items[i].$2, _phone, p);
+            final p = phase(t, i * 0.07, 0.3 + i * 0.07, Curves.easeOutCubic);
+            final angle = -math.pi / 2 + i * math.pi / 3;
+            // تأتي من بعيد ثم تستقر في مدار حول النجمة.
+            final radius = 150 - 66 * p;
+            final at =
+                _centre +
+                Offset(
+                  radius * math.cos(angle) * 1.25,
+                  radius * math.sin(angle),
+                );
             return Positioned(
-              left: at.dx - 20,
-              top: at.dy - 20,
+              left: at.dx - 21,
+              top: at.dy - 21,
               child: Opacity(
-                opacity: 1 - p * 0.9,
-                child: Transform.scale(
-                  scale: 1 - 0.6 * p,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: c.surface,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: c.gold.withValues(alpha: 0.6)),
-                    ),
-                    child: Icon(items[i].$1, size: 20, color: c.primary),
+                opacity: p.clamp(0.0, 1.0),
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: c.surface,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: c.gold.withValues(alpha: 0.7)),
                   ),
+                  child: Icon(_icons[i], size: 21, color: c.primary),
                 ),
               ),
             );
           }(),
         Positioned(
-          left: _phone.dx - 36,
-          top: _phone.dy - 36,
+          left: _centre.dx - 40,
+          top: _centre.dy - 40,
           child: popIn(
-            lock,
+            star,
             Container(
-              width: 72,
-              height: 72,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: c.primary,
-                border: Border.all(color: c.gold, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: c.gold.withValues(alpha: 0.3 + 0.4 * pulse),
-                    blurRadius: 12 + 14 * pulse,
+                    blurRadius: 16 + 14 * pulse,
                     spreadRadius: 2 * pulse,
                   ),
                 ],
               ),
-              child: Icon(AppIcons.lockKey, size: 34, color: c.gold),
+              child: CustomPaint(painter: _StarPainter(c.gold)),
             ),
           ),
         ),
       ],
     );
   }
+}
+
+class _StarPainter extends CustomPainter {
+  final Color color;
+
+  _StarPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawPath(
+      eightPointStar(size.center(Offset.zero), size.width / 2),
+      Paint()..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_StarPainter old) => old.color != color;
 }
 
 // ─────────────────────────────── عام ───────────────────────────────

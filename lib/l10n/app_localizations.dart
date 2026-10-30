@@ -4017,7 +4017,7 @@ abstract class AppLocalizations {
   /// No description provided for @tour1Title.
   ///
   /// In ar, this message translates to:
-  /// **'مصحف المدينة بين يديك'**
+  /// **'كتاب أنزلناه إليك مبارك ليدبروا آياته'**
   String get tour1Title;
 
   /// No description provided for @tour1Body.
@@ -4065,13 +4065,13 @@ abstract class AppLocalizations {
   /// No description provided for @tour5Title.
   ///
   /// In ar, this message translates to:
-  /// **'كل شيء على جهازك'**
+  /// **'رفيقك في رحلتك مع القرآن'**
   String get tour5Title;
 
   /// No description provided for @tour5Body.
   ///
   /// In ar, this message translates to:
-  /// **'بلا حساب ولا تتبّع ولا إعلانات، ونسختك الاحتياطية مشفّرة وبيدك.'**
+  /// **'كل ما تحتاجه للقراءة والتدبّر والذكر في مكان واحد، ويعمل دون إنترنت.'**
   String get tour5Body;
 
   /// No description provided for @tourSampleAnswer.
@@ -4101,25 +4101,25 @@ abstract class AppLocalizations {
   /// No description provided for @tourSampleLink.
   ///
   /// In ar, this message translates to:
-  /// **'الصبر'**
+  /// **'أبواب الرزق'**
   String get tourSampleLink;
 
   /// No description provided for @tourLinkNote1.
   ///
   /// In ar, this message translates to:
-  /// **'الصبر عَونٌ تستعين به'**
+  /// **'الباب الأول: التقوى'**
   String get tourLinkNote1;
 
   /// No description provided for @tourLinkNote2.
   ///
   /// In ar, this message translates to:
-  /// **'أجرٌ بغير حساب'**
+  /// **'الباب الثاني: الاستغفار'**
   String get tourLinkNote2;
 
   /// No description provided for @tourLinkNote3.
   ///
   /// In ar, this message translates to:
-  /// **'صبرٌ جميل بلا شكوى'**
+  /// **'الباب الثالث: الشكر'**
   String get tourLinkNote3;
 
   /// No description provided for @tourSamplePathway.
@@ -4163,6 +4163,102 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'يوم متتالٍ'**
   String get tourStreak;
+
+  /// No description provided for @guideQiblaTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتجاه القبلة'**
+  String get guideQiblaTitle;
+
+  /// No description provided for @guideQiblaBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدّد موقعك مرة، ثم أمسك الهاتف مستوياً وأدره حتى يشير السهم إلى الكعبة.'**
+  String get guideQiblaBody;
+
+  /// No description provided for @walkAyahTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية للتدبّر'**
+  String get walkAyahTitle;
+
+  /// No description provided for @walkAyahBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'آيات تتجدّد كل يوم، اسحب بينها واضغط «تدبّرها» لتكتب وقفتك.'**
+  String get walkAyahBody;
+
+  /// No description provided for @walkQuranTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مصحفك ورحلتك'**
+  String get walkQuranTitle;
+
+  /// No description provided for @walkQuranBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تابع القراءة من حيث توقفت، ومن هنا تبدأ ختمتك وترى تقدّمك.'**
+  String get walkQuranBody;
+
+  /// No description provided for @walkSearchTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث في كل شيء'**
+  String get walkSearchTitle;
+
+  /// No description provided for @walkSearchBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب كلمة فتجد الآيات وملاحظاتك ووقفاتك في مكان واحد.'**
+  String get walkSearchBody;
+
+  /// No description provided for @walkTabsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنقّل بين الأقسام'**
+  String get walkTabsTitle;
+
+  /// No description provided for @walkTabsBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرئيسية والمصحف والاستغفار والأدعية، بلمسة واحدة من أي مكان.'**
+  String get walkTabsBody;
+
+  /// No description provided for @walkMoreTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المزيد'**
+  String get walkMoreTitle;
+
+  /// No description provided for @walkMoreBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'هنا روابط الآيات ومسارات التدبّر والحفظ والكتب وكل الأقسام.'**
+  String get walkMoreBody;
+
+  /// No description provided for @walkTipTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نصيحة أخيرة'**
+  String get walkTipTitle;
+
+  /// No description provided for @walkTipBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'إن لم تعرف ما يفعله زر، فاضغط عليه مطوّلاً ليظهر لك وصفه.'**
+  String get walkTipBody;
+
+  /// No description provided for @walkReplay.
+  ///
+  /// In ar, this message translates to:
+  /// **'دليل الشاشة الرئيسية'**
+  String get walkReplay;
+
+  /// No description provided for @walkReplayHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'أعد التعرّف على أهم ما في الرئيسية'**
+  String get walkReplayHint;
 
   /// No description provided for @tourReplay.
   ///
@@ -4239,7 +4335,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLinks1Body.
   ///
   /// In ar, this message translates to:
-  /// **'أنشئ رابطاً باسم موضوع يشغلك، مثل الصبر أو الشكر أو الرحمة.'**
+  /// **'أنشئ رابطاً باسم موضوع يشغلك، مثل أبواب الرزق أو الصبر أو الرحمة.'**
   String get guideLinks1Body;
 
   /// No description provided for @guideLinks2Title.
@@ -4251,7 +4347,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideLinks2Body.
   ///
   /// In ar, this message translates to:
-  /// **'أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في البقرة الاستعانة بالصبر، وفي الزمر أجره بغير حساب، وفي يوسف الصبر الجميل.'**
+  /// **'أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في الطلاق باب التقوى، وفي نوح باب الاستغفار، وفي إبراهيم باب الشكر.'**
   String get guideLinks2Body;
 
   /// No description provided for @guideLinks3Title.
@@ -4359,7 +4455,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideSearchBody.
   ///
   /// In ar, this message translates to:
-  /// **'ابحث في القرآن وكل ما حفظته في 11 قسماً معاً. وللبحث بالجذر اكتب: جذر:صبر'**
+  /// **'ابحث في القرآن وكل ما حفظته في 11 قسماً معاً.'**
   String get guideSearchBody;
 
   /// No description provided for @guideBooksTitle.
@@ -4371,7 +4467,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideBooksBody.
   ///
   /// In ar, this message translates to:
-  /// **'اقرأ الملازم والكتب داخل التطبيق، وأنشئ أقساماً تضيف إليها ملفات PDF أو نصوصاً من هاتفك.'**
+  /// **'اقرأ الملازم والكتب داخل التطبيق، وتابع من حيث توقفت.'**
   String get guideBooksBody;
 
   /// No description provided for @guideDuasTitle.

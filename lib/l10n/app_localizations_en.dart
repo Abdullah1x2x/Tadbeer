@@ -2257,7 +2257,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideButton => 'About this section';
 
   @override
-  String get tour1Title => 'The Madinah Mushaf in your hands';
+  String get tour1Title =>
+      'A blessed Book, sent down so they may reflect on its verses';
 
   @override
   String get tour1Body =>
@@ -2285,11 +2286,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'A khatma plan, a daily streak, tasbeeh, and a widget that puts an ayah on your home screen.';
 
   @override
-  String get tour5Title => 'Everything stays on your device';
+  String get tour5Title => 'Your companion on your Quran journey';
 
   @override
   String get tour5Body =>
-      'No account, no tracking, no ads. Your backup is encrypted and yours alone.';
+      'Everything you need for reading, reflection and remembrance in one place, and it works offline.';
 
   @override
   String get tourSampleAnswer => 'That Allah is with me in every state';
@@ -2305,16 +2306,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tourCreateLink => 'New link';
 
   @override
-  String get tourSampleLink => 'Patience';
+  String get tourSampleLink => 'Doors of provision';
 
   @override
-  String get tourLinkNote1 => 'Patience is a help to lean on';
+  String get tourLinkNote1 => 'First door: mindfulness of God';
 
   @override
-  String get tourLinkNote2 => 'A reward beyond counting';
+  String get tourLinkNote2 => 'Second door: seeking forgiveness';
 
   @override
-  String get tourLinkNote3 => 'Beautiful patience, without complaint';
+  String get tourLinkNote3 => 'Third door: gratitude';
 
   @override
   String get tourSamplePathway => 'The path of patience';
@@ -2337,6 +2338,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tourStreak => 'day streak';
+
+  @override
+  String get guideQiblaTitle => 'Qibla direction';
+
+  @override
+  String get guideQiblaBody =>
+      'Set your location once, then hold the phone flat and turn it until the arrow points to the Kaaba.';
+
+  @override
+  String get walkAyahTitle => 'An ayah to reflect on';
+
+  @override
+  String get walkAyahBody =>
+      'Fresh ayahs every day. Swipe between them and tap Reflect to write your pause.';
+
+  @override
+  String get walkQuranTitle => 'Your Mushaf and journey';
+
+  @override
+  String get walkQuranBody =>
+      'Continue from where you stopped, start a khatma here and watch your progress.';
+
+  @override
+  String get walkSearchTitle => 'Search everything';
+
+  @override
+  String get walkSearchBody =>
+      'Type a word to find ayahs, your notes and your reflections in one place.';
+
+  @override
+  String get walkTabsTitle => 'Move between sections';
+
+  @override
+  String get walkTabsBody =>
+      'Home, Mushaf, istighfar and duas are one tap away from anywhere.';
+
+  @override
+  String get walkMoreTitle => 'More';
+
+  @override
+  String get walkMoreBody =>
+      'Ayah links, reflection pathways, memorization, books and every other section live here.';
+
+  @override
+  String get walkTipTitle => 'One last tip';
+
+  @override
+  String get walkTipBody =>
+      'Not sure what a button does? Long-press it to see its description.';
+
+  @override
+  String get walkReplay => 'Home screen guide';
+
+  @override
+  String get walkReplayHint => 'See the main home screen features again';
 
   @override
   String get tourReplay => 'App tour';
@@ -2380,14 +2436,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLinks1Body =>
-      'Create a link named after a theme on your mind, like patience, gratitude or mercy.';
+      'Create a link named after a theme on your mind, like the doors of provision, patience or mercy.';
 
   @override
   String get guideLinks2Title => 'Ayahs from across the Quran, a note for each';
 
   @override
   String get guideLinks2Body =>
-      'Add the theme’s ayahs and note what each adds: in Al-Baqarah, seeking help through patience; in Az-Zumar, its reward beyond counting; in Yusuf, beautiful patience.';
+      'Add the verses of the theme and note what each one adds: Surah At-Talaq the door of mindfulness, Surah Nuh the door of forgiveness, Surah Ibrahim the door of gratitude.';
 
   @override
   String get guideLinks3Title => 'See the whole picture, and share it';
@@ -2450,14 +2506,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideSearchBody =>
-      'Search the Quran and everything you saved across 11 sections at once. For a root search, type جذر:صبر';
+      'Search the Quran and everything you saved across 11 sections at once.';
 
   @override
   String get guideBooksTitle => 'Books and booklets';
 
   @override
   String get guideBooksBody =>
-      'Read booklets and books inside the app, and create sections to add PDF or text files from your phone.';
+      'Read booklets and books inside the app, and pick up where you left off.';
 
   @override
   String get guideDuasTitle => 'Supplications';
