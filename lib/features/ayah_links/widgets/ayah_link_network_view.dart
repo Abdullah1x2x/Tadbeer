@@ -295,7 +295,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
       _centerViewport(MediaQuery.of(context).size);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('تمت إعادة الترتيب تلقائيًا'),
+          content: Text(context.l10n.linksReordered),
           backgroundColor: Theme.of(context).colorScheme.primary,
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),

@@ -1353,5 +1353,110 @@
         "type": "String"
       }
     }
+  },
+  "linksReordered": "تمت إعادة الترتيب تلقائيًا",
+  "pdfFileMissing": "ملف الـ PDF غير موجود على الجهاز.",
+  "attachedFileMissing": "الملف المرفق غير موجود على الجهاز.",
+  "pdfReadFailed": "تعذر قراءة ملف الـ PDF: {error}",
+  "@pdfReadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fileReadFailed": "تعذر قراءة محتوى الملف: {error}",
+  "@fileReadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfShowFailed": "خطأ أثناء عرض الملف: {error}",
+  "@pdfShowFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfPageFailed": "تعذر تحميل الصفحة {page}: {error}",
+  "@pdfPageFailed": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "booksCountLabel": "{count} كتاب/ملزمة",
+  "@booksCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "mushafMenu": "القائمة",
+  "pageMeaningsTooltip": "معاني كلمات الصفحة",
+  "previousPage": "الصفحة السابقة",
+  "nextPage": "الصفحة التالية",
+  "meaningsBadge": "المعاني ({count})",
+  "@meaningsBadge": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "enterPageRange": "أدخل رقم الصفحة بين ١ و ٦٠٤",
+  "doneLabel": "تم",
+  "wordMeaningsCount": "معاني الكلمات ({count})",
+  "@wordMeaningsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "hideBar": "إخفاء الشريط",
+  "pageWordMeanings": "معاني كلمات صفحة {page}",
+  "@pageWordMeanings": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "wordsCount": "{count} كلمات",
+  "@wordsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "closePanel": "إغلاق اللوحة",
+  "noPageMeanings": "لا توجد كلمات تحتاج إلى شرح في هذه الصفحة",
+  "stopAlarm": "إيقاف المنبه",
+  "testAlarmTitle": "منبه تجريبي — تَدْبِير",
+  "testNoticeTitle": "إشعار تجريبي — تَدْبِير",
+  "testAlarmBody": "هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»",
+  "testNoticeBody": "نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير",
+  "reminderDefaultTitle": "ورد القرآن الكريم",
+  "scrollDown": "مرّر للأسفل",
+  "pageAbbrOfTotal": "ص {page} من {total}",
+  "@pageAbbrOfTotal": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -241,7 +241,7 @@ class _NotesScreenState extends State<NotesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'تعذر تصدير الملاحظة إلى PDF: $e',
+              context.l10n.exportNoteFailed(e),
               style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
           ),

@@ -2441,4 +2441,112 @@ class AppLocalizationsAr extends AppLocalizations {
   String widgetPortionLeft(String left, String portion) {
     return 'ورد اليوم: بقي $left من $portion صفحة';
   }
+
+  @override
+  String get linksReordered => 'تمت إعادة الترتيب تلقائيًا';
+
+  @override
+  String get pdfFileMissing => 'ملف الـ PDF غير موجود على الجهاز.';
+
+  @override
+  String get attachedFileMissing => 'الملف المرفق غير موجود على الجهاز.';
+
+  @override
+  String pdfReadFailed(String error) {
+    return 'تعذر قراءة ملف الـ PDF: $error';
+  }
+
+  @override
+  String fileReadFailed(String error) {
+    return 'تعذر قراءة محتوى الملف: $error';
+  }
+
+  @override
+  String pdfShowFailed(String error) {
+    return 'خطأ أثناء عرض الملف: $error';
+  }
+
+  @override
+  String pdfPageFailed(String page, String error) {
+    return 'تعذر تحميل الصفحة $page: $error';
+  }
+
+  @override
+  String booksCountLabel(String count) {
+    return '$count كتاب/ملزمة';
+  }
+
+  @override
+  String get mushafMenu => 'القائمة';
+
+  @override
+  String get pageMeaningsTooltip => 'معاني كلمات الصفحة';
+
+  @override
+  String get previousPage => 'الصفحة السابقة';
+
+  @override
+  String get nextPage => 'الصفحة التالية';
+
+  @override
+  String meaningsBadge(String count) {
+    return 'المعاني ($count)';
+  }
+
+  @override
+  String get enterPageRange => 'أدخل رقم الصفحة بين ١ و ٦٠٤';
+
+  @override
+  String get doneLabel => 'تم';
+
+  @override
+  String wordMeaningsCount(String count) {
+    return 'معاني الكلمات ($count)';
+  }
+
+  @override
+  String get hideBar => 'إخفاء الشريط';
+
+  @override
+  String pageWordMeanings(String page) {
+    return 'معاني كلمات صفحة $page';
+  }
+
+  @override
+  String wordsCount(String count) {
+    return '$count كلمات';
+  }
+
+  @override
+  String get closePanel => 'إغلاق اللوحة';
+
+  @override
+  String get noPageMeanings => 'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة';
+
+  @override
+  String get stopAlarm => 'إيقاف المنبه';
+
+  @override
+  String get testAlarmTitle => 'منبه تجريبي — تَدْبِير';
+
+  @override
+  String get testNoticeTitle => 'إشعار تجريبي — تَدْبِير';
+
+  @override
+  String get testAlarmBody =>
+      'هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»';
+
+  @override
+  String get testNoticeBody => 'نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير';
+
+  @override
+  String get reminderDefaultTitle => 'ورد القرآن الكريم';
+
+  @override
+  String get scrollDown => 'مرّر للأسفل';
+
+  @override
+  String pageAbbrOfTotal(String page, String total) {
+    return 'ص $page من $total';
+  }
 }

@@ -4361,6 +4361,180 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ورد اليوم: بقي {left} من {portion} صفحة'**
   String widgetPortionLeft(String left, String portion);
+
+  /// No description provided for @linksReordered.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت إعادة الترتيب تلقائيًا'**
+  String get linksReordered;
+
+  /// No description provided for @pdfFileMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملف الـ PDF غير موجود على الجهاز.'**
+  String get pdfFileMissing;
+
+  /// No description provided for @attachedFileMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملف المرفق غير موجود على الجهاز.'**
+  String get attachedFileMissing;
+
+  /// No description provided for @pdfReadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر قراءة ملف الـ PDF: {error}'**
+  String pdfReadFailed(String error);
+
+  /// No description provided for @fileReadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر قراءة محتوى الملف: {error}'**
+  String fileReadFailed(String error);
+
+  /// No description provided for @pdfShowFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطأ أثناء عرض الملف: {error}'**
+  String pdfShowFailed(String error);
+
+  /// No description provided for @pdfPageFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحميل الصفحة {page}: {error}'**
+  String pdfPageFailed(String page, String error);
+
+  /// No description provided for @booksCountLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} كتاب/ملزمة'**
+  String booksCountLabel(String count);
+
+  /// No description provided for @mushafMenu.
+  ///
+  /// In ar, this message translates to:
+  /// **'القائمة'**
+  String get mushafMenu;
+
+  /// No description provided for @pageMeaningsTooltip.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني كلمات الصفحة'**
+  String get pageMeaningsTooltip;
+
+  /// No description provided for @previousPage.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصفحة السابقة'**
+  String get previousPage;
+
+  /// No description provided for @nextPage.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصفحة التالية'**
+  String get nextPage;
+
+  /// No description provided for @meaningsBadge.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعاني ({count})'**
+  String meaningsBadge(String count);
+
+  /// No description provided for @enterPageRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم الصفحة بين ١ و ٦٠٤'**
+  String get enterPageRange;
+
+  /// No description provided for @doneLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم'**
+  String get doneLabel;
+
+  /// No description provided for @wordMeaningsCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني الكلمات ({count})'**
+  String wordMeaningsCount(String count);
+
+  /// No description provided for @hideBar.
+  ///
+  /// In ar, this message translates to:
+  /// **'إخفاء الشريط'**
+  String get hideBar;
+
+  /// No description provided for @pageWordMeanings.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني كلمات صفحة {page}'**
+  String pageWordMeanings(String page);
+
+  /// No description provided for @wordsCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} كلمات'**
+  String wordsCount(String count);
+
+  /// No description provided for @closePanel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إغلاق اللوحة'**
+  String get closePanel;
+
+  /// No description provided for @noPageMeanings.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة'**
+  String get noPageMeanings;
+
+  /// No description provided for @stopAlarm.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف المنبه'**
+  String get stopAlarm;
+
+  /// No description provided for @testAlarmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'منبه تجريبي — تَدْبِير'**
+  String get testAlarmTitle;
+
+  /// No description provided for @testNoticeTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعار تجريبي — تَدْبِير'**
+  String get testNoticeTitle;
+
+  /// No description provided for @testAlarmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»'**
+  String get testAlarmBody;
+
+  /// No description provided for @testNoticeBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير'**
+  String get testNoticeBody;
+
+  /// No description provided for @reminderDefaultTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ورد القرآن الكريم'**
+  String get reminderDefaultTitle;
+
+  /// No description provided for @scrollDown.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرّر للأسفل'**
+  String get scrollDown;
+
+  /// No description provided for @pageAbbrOfTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'ص {page} من {total}'**
+  String pageAbbrOfTotal(String page, String total);
 }
 
 class _AppLocalizationsDelegate

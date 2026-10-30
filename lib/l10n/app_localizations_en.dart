@@ -2448,4 +2448,112 @@ class AppLocalizationsEn extends AppLocalizations {
   String widgetPortionLeft(String left, String portion) {
     return 'Today’s portion: $left of $portion pages left';
   }
+
+  @override
+  String get linksReordered => 'Rearranged automatically';
+
+  @override
+  String get pdfFileMissing => 'The PDF file is not on this device.';
+
+  @override
+  String get attachedFileMissing => 'The attached file is not on this device.';
+
+  @override
+  String pdfReadFailed(String error) {
+    return 'Could not read the PDF file: $error';
+  }
+
+  @override
+  String fileReadFailed(String error) {
+    return 'Could not read the file: $error';
+  }
+
+  @override
+  String pdfShowFailed(String error) {
+    return 'Could not display the file: $error';
+  }
+
+  @override
+  String pdfPageFailed(String page, String error) {
+    return 'Could not load page $page: $error';
+  }
+
+  @override
+  String booksCountLabel(String count) {
+    return '$count books/booklets';
+  }
+
+  @override
+  String get mushafMenu => 'Menu';
+
+  @override
+  String get pageMeaningsTooltip => 'Word meanings on this page';
+
+  @override
+  String get previousPage => 'Previous page';
+
+  @override
+  String get nextPage => 'Next page';
+
+  @override
+  String meaningsBadge(String count) {
+    return 'Meanings ($count)';
+  }
+
+  @override
+  String get enterPageRange => 'Enter a page number from 1 to 604';
+
+  @override
+  String get doneLabel => 'Done';
+
+  @override
+  String wordMeaningsCount(String count) {
+    return 'Word meanings ($count)';
+  }
+
+  @override
+  String get hideBar => 'Hide the bar';
+
+  @override
+  String pageWordMeanings(String page) {
+    return 'Word meanings of page $page';
+  }
+
+  @override
+  String wordsCount(String count) {
+    return '$count words';
+  }
+
+  @override
+  String get closePanel => 'Close the panel';
+
+  @override
+  String get noPageMeanings => 'No words on this page need explaining';
+
+  @override
+  String get stopAlarm => 'Stop alarm';
+
+  @override
+  String get testAlarmTitle => 'Test alarm — Tadbeer';
+
+  @override
+  String get testNoticeTitle => 'Test notification — Tadbeer';
+
+  @override
+  String get testAlarmBody =>
+      'This alarm keeps ringing. Press Stop alarm or Open Mushaf.';
+
+  @override
+  String get testNoticeBody => 'Notifications are working in Tadbeer.';
+
+  @override
+  String get reminderDefaultTitle => 'Quran reading';
+
+  @override
+  String get scrollDown => 'Scroll down';
+
+  @override
+  String pageAbbrOfTotal(String page, String total) {
+    return 'p. $page of $total';
+  }
 }

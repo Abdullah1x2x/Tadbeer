@@ -23,7 +23,7 @@ extension _QuranScreenDialogs on _QuranScreenState {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'أدخل رقم الصفحة بين ١ و ٦٠٤',
+              context.l10n.enterPageRange,
               style: TextStyle(
                 fontSize: 13,
                 color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
@@ -125,9 +125,9 @@ extension _QuranScreenDialogs on _QuranScreenState {
                     const SizedBox(height: 16),
                     // اختيار الخط يخص النص المتدفق وحده.
                     if (settings.mushafStyle == MushafStyle.text) ...[
-                      const Text(
-                        'نوع خط المصحف',
-                        style: TextStyle(
+                      Text(
+                        context.l10n.quranFontFamily,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
@@ -200,7 +200,7 @@ extension _QuranScreenDialogs on _QuranScreenState {
                       children: [
                         ElevatedButton(
                           onPressed: () => Navigator.pop(ctx),
-                          child: const Text('تم'),
+                          child: Text(context.l10n.doneLabel),
                         ),
                       ],
                     ),

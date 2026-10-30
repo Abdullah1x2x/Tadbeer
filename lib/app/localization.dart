@@ -808,6 +808,37 @@ class AppStrings {
   String get wakingAdhkar => _l.wakingAdhkar;
   String get afterPrayerAdhkar => _l.afterPrayerAdhkar;
   String get mosqueAdhkar => _l.mosqueAdhkar;
+  String get linksReordered => _l.linksReordered;
+  String get pdfFileMissing => _l.pdfFileMissing;
+  String get attachedFileMissing => _l.attachedFileMissing;
+  String pdfReadFailed(String error) => _l.pdfReadFailed(error);
+  String fileReadFailed(String error) => _l.fileReadFailed(error);
+  String pdfShowFailed(String error) => _l.pdfShowFailed(error);
+  String pdfPageFailed(String page, String error) =>
+      _l.pdfPageFailed(page, error);
+  String booksCountLabel(String count) => _l.booksCountLabel(count);
+  String get mushafMenu => _l.mushafMenu;
+  String get pageMeaningsTooltip => _l.pageMeaningsTooltip;
+  String get previousPage => _l.previousPage;
+  String get nextPage => _l.nextPage;
+  String meaningsBadge(String count) => _l.meaningsBadge(count);
+  String get enterPageRange => _l.enterPageRange;
+  String get doneLabel => _l.doneLabel;
+  String wordMeaningsCount(String count) => _l.wordMeaningsCount(count);
+  String get hideBar => _l.hideBar;
+  String pageWordMeanings(String page) => _l.pageWordMeanings(page);
+  String wordsCount(String count) => _l.wordsCount(count);
+  String get closePanel => _l.closePanel;
+  String get noPageMeanings => _l.noPageMeanings;
+  String get stopAlarm => _l.stopAlarm;
+  String get testAlarmTitle => _l.testAlarmTitle;
+  String get testNoticeTitle => _l.testNoticeTitle;
+  String get testAlarmBody => _l.testAlarmBody;
+  String get testNoticeBody => _l.testNoticeBody;
+  String get reminderDefaultTitle => _l.reminderDefaultTitle;
+  String get scrollDown => _l.scrollDown;
+  String pageAbbrOfTotal(dynamic page, dynamic total) =>
+      _l.pageAbbrOfTotal(digits(page), digits(total));
   String get tourReplay => _l.tourReplay;
   String get tourReplayHint => _l.tourReplayHint;
   String get guidesReset => _l.guidesReset;

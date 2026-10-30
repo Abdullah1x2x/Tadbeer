@@ -255,7 +255,7 @@ class _SectionDirectoryCard extends StatelessWidget {
     if (section.countLabel != null && section.countLabel!.isNotEmpty) {
       return '$count ${section.countLabel}';
     }
-    return '$count كتاب/ملزمة';
+    return context.l10n.booksCountLabel(count);
   }
 
   @override

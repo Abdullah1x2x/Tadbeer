@@ -242,7 +242,7 @@ class _SurahRow extends StatelessWidget {
         ),
       ),
       title: Text(
-        'سورة ${info.name}',
+        context.l10n.surahTitle(info.name),
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: Text(

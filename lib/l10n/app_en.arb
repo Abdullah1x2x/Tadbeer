@@ -771,5 +771,110 @@
   "guideBackupTitle": "Backup",
   "guideBackupBody": "Export a password-encrypted copy of your data and keep it off the phone, to restore it if you change devices.",
   "guideStep": "Step {step} of {total}",
-  "widgetPortionLeft": "Today’s portion: {left} of {portion} pages left"
+  "widgetPortionLeft": "Today’s portion: {left} of {portion} pages left",
+  "linksReordered": "Rearranged automatically",
+  "pdfFileMissing": "The PDF file is not on this device.",
+  "attachedFileMissing": "The attached file is not on this device.",
+  "pdfReadFailed": "Could not read the PDF file: {error}",
+  "@pdfReadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fileReadFailed": "Could not read the file: {error}",
+  "@fileReadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfShowFailed": "Could not display the file: {error}",
+  "@pdfShowFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfPageFailed": "Could not load page {page}: {error}",
+  "@pdfPageFailed": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "booksCountLabel": "{count} books/booklets",
+  "@booksCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "mushafMenu": "Menu",
+  "pageMeaningsTooltip": "Word meanings on this page",
+  "previousPage": "Previous page",
+  "nextPage": "Next page",
+  "meaningsBadge": "Meanings ({count})",
+  "@meaningsBadge": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "enterPageRange": "Enter a page number from 1 to 604",
+  "doneLabel": "Done",
+  "wordMeaningsCount": "Word meanings ({count})",
+  "@wordMeaningsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "hideBar": "Hide the bar",
+  "pageWordMeanings": "Word meanings of page {page}",
+  "@pageWordMeanings": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "wordsCount": "{count} words",
+  "@wordsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "closePanel": "Close the panel",
+  "noPageMeanings": "No words on this page need explaining",
+  "stopAlarm": "Stop alarm",
+  "testAlarmTitle": "Test alarm — Tadbeer",
+  "testNoticeTitle": "Test notification — Tadbeer",
+  "testAlarmBody": "This alarm keeps ringing. Press Stop alarm or Open Mushaf.",
+  "testNoticeBody": "Notifications are working in Tadbeer.",
+  "reminderDefaultTitle": "Quran reading",
+  "scrollDown": "Scroll down",
+  "pageAbbrOfTotal": "p. {page} of {total}",
+  "@pageAbbrOfTotal": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
 }

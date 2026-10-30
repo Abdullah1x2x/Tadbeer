@@ -15,6 +15,7 @@ import '../widgets/surah_header_banner.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../qcf/qcf_page_body.dart';
+import '../../../app/localization.dart';
 
 part 'quran_page_parts.dart';
 
@@ -648,6 +649,8 @@ class _QuranPageViewState extends State<QuranPageView> {
                                                   ),
                                                   child: Icon(
                                                     AppIcons.caretDown,
+                                                    semanticLabel:
+                                                        context.l10n.scrollDown,
                                                     size: 16,
                                                     color: isDark
                                                         ? AppColors

@@ -463,7 +463,7 @@ class _QuranScreenState extends State<QuranScreen> {
         children: [
           FuturisticIconButton(
             icon: AppIcons.list,
-            tooltip: 'القائمة',
+            tooltip: context.l10n.mushafMenu,
             size: 38,
             iconSize: 20,
             onTap: () => _scaffoldKey.currentState?.openDrawer(),
@@ -522,7 +522,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 icon: _showMeaningsPanel
                     ? AppIcons.bookOpenTextFill
                     : AppIcons.bookOpenText,
-                tooltip: 'معاني كلمات الصفحة',
+                tooltip: context.l10n.pageMeaningsTooltip,
                 size: 38,
                 iconSize: 20,
                 iconColor: _showMeaningsPanel
@@ -557,16 +557,15 @@ class _QuranScreenState extends State<QuranScreen> {
     // أثناء السحب يُظهر الشريط الصفحة المقصودة، ويقفز المصحف إليها عند رفع
     // الإصبع.
     final sliderPage = _sliderPage ?? currentPageNumber;
-    final pageDigits = ArabicSearchNormalizer.toArabicDigits(sliderPage);
+    final l10n = context.l10n;
     final pageData = repo.getPage(currentPageNumber);
     final firstAyah = pageData.ayahs.isNotEmpty ? pageData.ayahs.first : null;
     final surahName = firstAyah != null
         ? repo.getSurah(firstAyah.surahNumber).name
         : '';
     final juzNumber = firstAyah?.juz ?? 1;
-    final juzDigits = ArabicSearchNormalizer.toArabicDigits(juzNumber);
     final meaningsCount = repo.getWordMeaningsForPage(currentPageNumber).length;
-    final meaningsDigits = ArabicSearchNormalizer.toArabicDigits(meaningsCount);
+    final meaningsDigits = l10n.digits(meaningsCount);
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return Center(
@@ -595,8 +594,8 @@ class _QuranScreenState extends State<QuranScreen> {
                   Flexible(
                     child: Text(
                       surahName.isNotEmpty
-                          ? '$surahName • الجزء $juzDigits'
-                          : 'الجزء $juzDigits',
+                          ? '$surahName • ${l10n.juzNumber(juzNumber)}'
+                          : l10n.juzNumber(juzNumber),
                       style: TextStyle(
                         fontFamily: 'IBMPlexSansArabic',
                         fontSize: 14.5,
@@ -617,7 +616,7 @@ class _QuranScreenState extends State<QuranScreen> {
                     },
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
                     child: FuturisticBadge(
-                      label: 'المعاني ($meaningsDigits)',
+                      label: context.l10n.meaningsBadge(meaningsDigits),
                       icon: AppIcons.books,
                       color: _showMeaningsPanel
                           ? (isDark ? AppColors.cyberEmerald : primary)
@@ -633,7 +632,7 @@ class _QuranScreenState extends State<QuranScreen> {
                     onTap: _showJumpToPageDialog,
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
                     child: FuturisticBadge(
-                      label: 'ص $pageDigits من ٦٠٤',
+                      label: l10n.pageAbbrOfTotal(sliderPage, 604),
                       color: isDark
                           ? AppColors.electricGold
                           : AppColors.lightPrimary,
@@ -650,7 +649,7 @@ class _QuranScreenState extends State<QuranScreen> {
                   // السابقة: في RTL يشير لليمين نحو الصفحات الأولى.
                   FuturisticIconButton(
                     icon: AppIcons.caretRight,
-                    tooltip: 'الصفحة السابقة',
+                    tooltip: context.l10n.previousPage,
                     size: 36,
                     iconSize: 22,
                     isEnabled: currentPageNumber > 1,
@@ -684,7 +683,7 @@ class _QuranScreenState extends State<QuranScreen> {
                         min: 1.0,
                         max: 604.0,
                         divisions: 603,
-                        label: 'ص $pageDigits',
+                        label: l10n.pageAbbr(sliderPage),
                         onChanged: (val) =>
                             setState(() => _sliderPage = val.round()),
                         onChangeEnd: (val) {
@@ -701,7 +700,7 @@ class _QuranScreenState extends State<QuranScreen> {
                   // التالية: في RTL يشير لليسار نحو الصفحات اللاحقة.
                   FuturisticIconButton(
                     icon: AppIcons.caretLeft,
-                    tooltip: 'الصفحة التالية',
+                    tooltip: context.l10n.nextPage,
                     size: 36,
                     iconSize: 22,
                     isEnabled: currentPageNumber < 604,

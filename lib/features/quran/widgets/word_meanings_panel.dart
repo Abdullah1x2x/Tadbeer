@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 import 'word_details_sheet.dart';
+import '../../../app/localization.dart';
 
 /// لوحة معاني كلمات الصفحة الحالية، تطفو فوق المصحف دون أن تغيّر تخطيطه.
 ///
@@ -37,7 +37,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     final repo = QuranRepository.instance;
     final meanings = repo.getWordMeaningsForPage(widget.pageNumber);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final pageDigits = ArabicSearchNormalizer.toArabicDigits(widget.pageNumber);
+    final pageDigits = context.l10n.digits(widget.pageNumber);
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -91,7 +91,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
     List<QuranWordMeaning> meanings,
     bool isDark,
   ) {
-    final countDigits = ArabicSearchNormalizer.toArabicDigits(meanings.length);
+    final countDigits = context.l10n.digits(meanings.length);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -114,7 +114,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'معاني الكلمات ($countDigits)',
+                    context.l10n.wordMeaningsCount(countDigits),
                     style: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',
                       fontSize: 15,
@@ -140,7 +140,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
             const SizedBox(width: 4),
             IconButton(
               icon: const Icon(AppIcons.x, size: 18),
-              tooltip: 'إخفاء الشريط',
+              tooltip: context.l10n.hideBar,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
               color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
@@ -200,7 +200,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                     children: [
                       Flexible(
                         child: Text(
-                          'معاني كلمات صفحة $pageDigits',
+                          context.l10n.pageWordMeanings(pageDigits),
                           style: TextStyle(
                             fontFamily: 'IBMPlexSansArabic',
                             fontSize: 16,
@@ -225,7 +225,9 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          '${ArabicSearchNormalizer.toArabicDigits(meanings.length)} كلمات',
+                          context.l10n.wordsCount(
+                            context.l10n.digits(meanings.length),
+                          ),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -240,7 +242,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
                 ),
                 IconButton(
                   icon: const Icon(AppIcons.x, size: 22),
-                  tooltip: 'إغلاق اللوحة',
+                  tooltip: context.l10n.closePanel,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 32,
@@ -307,7 +309,7 @@ class _WordMeaningsPanelState extends State<WordMeaningsPanel> {
             ),
             const SizedBox(height: 10),
             Text(
-              'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة',
+              context.l10n.noPageMeanings,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'IBMPlexSansArabic',
@@ -338,8 +340,6 @@ class _WordMeaningTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ayahDigits = ArabicSearchNormalizer.toArabicDigits(item.ayah);
-
     return InkWell(
       onTap: () => showWordDetailsSheet(context, item, surahName, isDark),
       borderRadius: BorderRadius.circular(8),
@@ -365,7 +365,7 @@ class _WordMeaningTile extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'سورة $surahName · آية $ayahDigits',
+                  context.l10n.ayahReference(surahName, item.ayah),
                   style: TextStyle(
                     fontSize: 12,
                     color: isDark

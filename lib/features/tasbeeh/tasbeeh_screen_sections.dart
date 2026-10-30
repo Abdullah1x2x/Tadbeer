@@ -328,8 +328,9 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
             ),
           ],
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             InkWell(
               onTap: _toggleAutoCount,
