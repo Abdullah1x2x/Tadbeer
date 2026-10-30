@@ -440,7 +440,7 @@
   "reflectionsAll": "All",
   "reflectionsCommitments": "Commitments",
   "noReflectionsHint": "Tap an ayah in the Mushaf and choose “Tadbeer pause”.",
-  "noCommitmentsYet": "What you write for “What will you do with it today?” shows here.",
+  "noCommitmentsYet": "What you write for “What action does this ayah call you to?” shows here.",
   "commitmentDid": "I did it",
   "commitmentNotYet": "Not yet",
   "commitmentPending": "Pending",
@@ -737,9 +737,9 @@
   "guideReflections3Title": "Your pauses live here",
   "guideReflections3Body": "Every pause is kept in “My reflections”, and a lotus marks the ayah number in the Mushaf so you can return to it.",
   "guideLinks1Title": "A theme that gathers ayahs",
-  "guideLinks1Body": "Create a link named after a theme on your mind, like the doors of provision, patience or mercy.",
-  "guideLinks2Title": "Ayahs from across the Quran, a note for each",
-  "guideLinks2Body": "Add the verses of the theme and note what each one adds: Surah At-Talaq the door of mindfulness, Surah Nuh the door of forgiveness, Surah Ibrahim the door of gratitude.",
+  "guideLinks1Body": "Create a link named after a theme you want to reflect on, like the doors of provision, patience or mercy.",
+  "guideLinks2Title": "Ayahs joined by one meaning",
+  "guideLinks2Body": "Add the verses of the theme, and write what you understood beside each one.",
   "guideLinks3Title": "See the whole picture",
   "guideLinks3Body": "View the link as a network to see how the ayahs complete each other, or as a list to read in order.",
   "guidePathways1Title": "A reflection journey, day by day",
@@ -761,7 +761,7 @@
   "guideBooksTitle": "Books and booklets",
   "guideBooksBody": "Read booklets and books inside the app, and pick up where you left off.",
   "guideDuasTitle": "Supplications",
-  "guideDuasBody": "Quranic duas, morning and evening adhkar with a counter, and duas of Ahlulbayt and the Sunnah. Copy a dua or open it in the Mushaf.",
+  "guideDuasBody": "Duas from the Quran, the Sunnah and the Ahlulbayt, with daily adhkar and counters. Copy a dua or open it in the Mushaf.",
   "guideTasbeehTitle": "Tasbeeh and istighfar",
   "guideTasbeehBody": "Tap the circle to count and choose a target of 33 or 100. It can also count for you and move on to the next dhikr.",
   "guideJourneyTitle": "My journey and khatma",
@@ -876,5 +876,17 @@
         "type": "String"
       }
     }
-  }
+  },
+  "tourTodayPortion": "Today's portion",
+  "tourPagesToday": "4 of 5 pages",
+  "tourSampleNote": "Mindfulness opens doors I cannot see",
+  "tourRemembered": "Remembered",
+  "tourForgot": "Forgot",
+  "tourNextReview": "Review in 3 days",
+  "tourMeaningLabel": "Meaning",
+  "tourBookSample": "Guidance of the Quran",
+  "dhikrSubhanAllah": "Subhan Allah",
+  "tourDuaQuran": "Quran",
+  "tourDuaSunnah": "Sunnah",
+  "tourDuaAdhkar": "Adhkar"
 }

@@ -1511,7 +1511,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noCommitmentsYet =>
-      'ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.';
+      'ما تكتبه جواباً عن «ما العمل الذي تدعوك إليه هذه الآية؟» يظهر هنا.';
 
   @override
   String get commitmentDid => 'فعلته';
@@ -2305,7 +2305,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get guideReflections2Body =>
-      'أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما الذي ستفعله بها اليوم.';
+      'أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما العمل الذي تدعوك إليه.';
 
   @override
   String get guideReflections3Title => 'وقفاتك محفوظة هنا';
@@ -2319,14 +2319,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get guideLinks1Body =>
-      'أنشئ رابطاً باسم موضوع يشغلك، مثل أبواب الرزق أو الصبر أو الرحمة.';
+      'أنشئ رابطاً باسم موضوع تريد تدبّره، مثل أبواب الرزق أو الصبر أو الرحمة.';
 
   @override
-  String get guideLinks2Title => 'آيات متفرّقة، وملاحظة لكل آية';
+  String get guideLinks2Title => 'آيات يجمعها معنى واحد';
 
   @override
   String get guideLinks2Body =>
-      'أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في الطلاق باب التقوى، وفي نوح باب الاستغفار، وفي إبراهيم باب الشكر.';
+      'أضف آيات الموضوع، واكتب عند كل آية ما فهمته منها.';
 
   @override
   String get guideLinks3Title => 'انظر الصورة كاملة';
@@ -2402,7 +2402,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get guideDuasBody =>
-      'أدعية من القرآن، وأذكار الصباح والمساء بعدّاد، وأدعية أهل البيت والسنة. انسخ الدعاء أو افتحه في المصحف.';
+      'أدعية القرآن والسنة وأهل البيت، وأذكار يومية بعدّاد. انسخ الدعاء أو افتحه في المصحف.';
 
   @override
   String get guideTasbeehTitle => 'التسبيح والاستغفار';
@@ -2549,4 +2549,40 @@ class AppLocalizationsAr extends AppLocalizations {
   String pageAbbrOfTotal(String page, String total) {
     return 'ص $page من $total';
   }
+
+  @override
+  String get tourTodayPortion => 'ورد اليوم';
+
+  @override
+  String get tourPagesToday => '٤ من ٥ صفحات';
+
+  @override
+  String get tourSampleNote => 'التقوى تفتح أبواباً لا أراها';
+
+  @override
+  String get tourRemembered => 'تذكّرت';
+
+  @override
+  String get tourForgot => 'نسيت';
+
+  @override
+  String get tourNextReview => 'المراجعة بعد ٣ أيام';
+
+  @override
+  String get tourMeaningLabel => 'المعنى';
+
+  @override
+  String get tourBookSample => 'هدي القرآن';
+
+  @override
+  String get dhikrSubhanAllah => 'سبحان الله';
+
+  @override
+  String get tourDuaQuran => 'القرآن';
+
+  @override
+  String get tourDuaSunnah => 'السنة';
+
+  @override
+  String get tourDuaAdhkar => 'الأذكار';
 }

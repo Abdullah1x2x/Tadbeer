@@ -1,7 +1,6 @@
 part of '../tour_scenes.dart';
 
-/// الختمة تتقدّم، والسلسلة تزيد يوماً، والسبحة تكمل ثلاثاً وثلاثين، والودجت
-/// يظهر على شاشة الهاتف.
+/// يوم القارئ في بطاقة واحدة: ورد يكتمل، وأيام الأسبوع تُضاء، وسلسلة تزيد.
 class JourneyScene extends StatelessWidget {
   final double t;
 
@@ -11,181 +10,103 @@ class JourneyScene extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = _Palette(context);
     final l10n = context.l10n;
-    final ring = phase(t, 0.0, 0.35);
-    final flip = phase(t, 0.32, 0.46);
-    final beads = phase(t, 0.42, 0.66);
-    final count = 30 + (3 * beads).round();
-    final sparkle = phase(t, 0.64, 0.74, Curves.easeOutBack);
-    final phone = phase(t, 0.66, 0.84);
+    final ring = phase(t, 0.05, 0.42);
+    final week = phase(t, 0.42, 0.74, Curves.linear);
+    final flame = phase(t, 0.74, 0.88, Curves.easeOutBack);
     return _Canvas(
       children: [
-        // حلقة الختمة.
         Positioned(
-          right: 18,
-          top: 20,
-          child: Column(
-            children: [
-              SizedBox(
-                width: 84,
-                height: 84,
-                child: CustomPaint(
-                  painter: _RingPainter(0.4 * ring, c.gold, c.muted),
-                  child: Center(
-                    child: Text(
-                      '${l10n.digits((40 * ring).round())}٪',
-                      style: _ui(16, c.text, bold: true),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(l10n.tourKhatma, style: _ui(10, c.muted)),
-            ],
-          ),
-        ),
-        // السلسلة.
-        Positioned(
-          right: 128,
-          top: 30,
-          child: Column(
-            children: [
-              Icon(
-                AppIcons.fire,
-                size: 30 + 6 * math.sin(flip * math.pi),
-                color: const Color(0xFFE0782E),
-              ),
-              SizedBox(
-                height: 24,
-                width: 36,
-                child: Stack(
-                  alignment: Alignment.center,
+          left: 22,
+          right: 22,
+          top: 8,
+          child: _card(
+            c,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   children: [
-                    Opacity(
-                      opacity: 1 - flip,
-                      child: Transform.translate(
-                        offset: Offset(0, -12 * flip),
-                        child: Text(
-                          l10n.digits(6),
-                          style: _ui(18, c.text, bold: true),
+                    SizedBox(
+                      width: 78,
+                      height: 78,
+                      child: CustomPaint(
+                        painter: _RingPainter(0.8 * ring, c.gold, c.muted),
+                        child: Center(
+                          child: Text(
+                            '${l10n.digits((80 * ring).round())}٪',
+                            style: _ui(16, c.text, bold: true),
+                          ),
                         ),
                       ),
                     ),
-                    Opacity(
-                      opacity: flip,
-                      child: Transform.translate(
-                        offset: Offset(0, 12 * (1 - flip)),
-                        child: Text(
-                          l10n.digits(7),
-                          style: _ui(18, c.text, bold: true),
-                        ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.tourTodayPortion,
+                            style: _ui(16, c.text, bold: true),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(l10n.tourPagesToday, style: _ui(12, c.muted)),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-              Text(l10n.tourStreak, style: _ui(10, c.muted)),
-            ],
-          ),
-        ),
-        // السبحة.
-        Positioned(
-          right: 26,
-          top: 130,
-          child: SizedBox(
-            width: 76,
-            height: 76,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Transform.rotate(
-                  angle: beads * math.pi * 0.6,
-                  child: CustomPaint(
-                    size: const Size(76, 76),
-                    painter: _BeadsPainter(c.primary, c.gold),
-                  ),
+                const SizedBox(height: 14),
+                _FitRow(
+                  children: [
+                    for (var i = 0; i < 7; i++)
+                      _day(
+                        c,
+                        phase(week, i / 7, (i + 1) / 7, Curves.easeOutBack),
+                      ),
+                  ],
                 ),
-                Text(l10n.digits(count), style: _ui(15, c.text, bold: true)),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: popIn(
-                    sparkle,
-                    Icon(AppIcons.sparkleFill, size: 18, color: c.gold),
-                  ),
+                const SizedBox(height: 14),
+                _FitRow(
+                  children: [
+                    Transform.scale(
+                      scale: 0.8 + 0.2 * flame,
+                      child: const Icon(
+                        AppIcons.fire,
+                        size: 22,
+                        color: Color(0xFFE0782E),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${l10n.digits((7 * week).ceil())} ${l10n.tourStreak}',
+                      style: _ui(13, c.text, bold: true),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
-        // الهاتف والودجت.
-        Positioned(
-          left: 22 - 60 * (1 - phone),
-          top: 24,
-          child: Opacity(
-            opacity: phone,
-            child: Container(
-              width: 112,
-              height: 182,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: c.dark
-                    ? const Color(0xFF0E1622)
-                    : const Color(0xFF1B2535),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: c.gold.withValues(alpha: 0.6),
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: c.primary,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          l10n.widgetAyahTitle,
-                          style: _ui(7, c.gold, bold: true),
-                        ),
-                        Text(
-                          _ayahText(
-                            13,
-                            28,
-                            'أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ',
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: _quran(9, Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      for (var i = 0; i < 4; i++)
-                        Container(
-                          width: 16,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.25),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
       ],
+    );
+  }
+
+  /// يوم في الأسبوع: دائرة تمتلئ ذهباً ويظهر عليها الصح.
+  Widget _day(_Palette c, double p) {
+    return Container(
+      width: 28,
+      height: 28,
+      margin: const EdgeInsets.symmetric(horizontal: 3),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Color.lerp(c.surface, c.gold, p.clamp(0.0, 1.0)),
+        border: Border.all(color: c.gold.withValues(alpha: 0.6)),
+      ),
+      child: popIn(
+        p,
+        const Icon(AppIcons.check, size: 15, color: Colors.white),
+      ),
     );
   }
 }
@@ -219,28 +140,4 @@ class _RingPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RingPainter old) =>
       old.value != value || old.color != color;
-}
-
-class _BeadsPainter extends CustomPainter {
-  final Color bead;
-  final Color accent;
-
-  _BeadsPainter(this.bead, this.accent);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final c = size.center(Offset.zero);
-    final r = size.width / 2 - 6;
-    for (var i = 0; i < 16; i++) {
-      final a = i * 2 * math.pi / 16;
-      canvas.drawCircle(
-        c + Offset(r * math.cos(a), r * math.sin(a)),
-        4.2,
-        Paint()..color = i == 0 ? accent : bead.withValues(alpha: 0.8),
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(_BeadsPainter old) => old.bead != bead;
 }

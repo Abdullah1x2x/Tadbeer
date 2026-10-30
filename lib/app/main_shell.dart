@@ -246,6 +246,8 @@ class _MainShellState extends State<MainShell>
           _select(ShellTab.home);
         },
         child: Scaffold(
+          // المصحف يأخذ الشاشة كاملة دائماً، فلا يتغير حجم خطه بظهور الشريط.
+          extendBody: _tab == ShellTab.quran,
           body: Stack(
             fit: StackFit.expand,
             children: [
@@ -257,25 +259,22 @@ class _MainShellState extends State<MainShell>
             valueListenable: _quranControlsVisible,
             builder: (context, controlsVisible, bar) {
               final hidden = _tab == ShellTab.quran && !controlsVisible;
-              // ينزلق ويتلاشى أثناء الانطواء، فتأخذ قراءة المصحف الشاشة كاملة.
-              return TweenAnimationBuilder<double>(
-                tween: Tween(end: hidden ? 0 : 1),
-                duration: AppMotion.duration(context, AppMotion.slow),
-                curve: Curves.easeOutCubic,
-                builder: (context, t, child) => ClipRect(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    heightFactor: t,
-                    child: Opacity(
-                      opacity: t,
-                      child: Transform.translate(
-                        offset: Offset(0, 40 * (1 - t)),
-                        child: child,
-                      ),
+              // ينزلق ويتلاشى دون أن يتغير ارتفاعه.
+              return IgnorePointer(
+                ignoring: hidden,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: hidden ? 0 : 1),
+                  duration: AppMotion.duration(context, AppMotion.slow),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, t, child) => Opacity(
+                    opacity: t,
+                    child: Transform.translate(
+                      offset: Offset(0, 96 * (1 - t)),
+                      child: child,
                     ),
                   ),
+                  child: bar,
                 ),
-                child: bar,
               );
             },
             child: FloatingNavBar(

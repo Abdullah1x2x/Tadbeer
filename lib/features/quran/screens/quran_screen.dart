@@ -74,7 +74,7 @@ class _QuranScreenState extends State<QuranScreen> {
   static const _settleDelay = Duration(milliseconds: 500);
 
   /// الصفحة المعروضة على شريط التمرير أثناء سحبه.
-  int? _sliderPage;
+  final ValueNotifier<int?> _sliderPage = ValueNotifier(null);
   Timer? _autoCountTimer;
   Timer? _saveTimer;
   final List<int> _pagesToCount = [];
@@ -282,6 +282,7 @@ class _QuranScreenState extends State<QuranScreen> {
     if (_pagesToCount.isNotEmpty) _saveCountedPages();
     _pagerPosition?.isScrollingNotifier.removeListener(_onPagerScrolling);
     _pageSnapshots.dispose();
+    _sliderPage.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -556,7 +557,6 @@ class _QuranScreenState extends State<QuranScreen> {
     final repo = QuranRepository.instance;
     // أثناء السحب يُظهر الشريط الصفحة المقصودة، ويقفز المصحف إليها عند رفع
     // الإصبع.
-    final sliderPage = _sliderPage ?? currentPageNumber;
     final l10n = context.l10n;
     final pageData = repo.getPage(currentPageNumber);
     final firstAyah = pageData.ayahs.isNotEmpty ? pageData.ayahs.first : null;
@@ -631,13 +631,19 @@ class _QuranScreenState extends State<QuranScreen> {
                   InkWell(
                     onTap: _showJumpToPageDialog,
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
-                    child: FuturisticBadge(
-                      label: l10n.pageAbbrOfTotal(sliderPage, 604),
-                      color: isDark
-                          ? AppColors.electricGold
-                          : AppColors.lightPrimary,
-                      showDot: true,
-                      isCompact: true,
+                    child: ValueListenableBuilder<int?>(
+                      valueListenable: _sliderPage,
+                      builder: (context, dragged, _) => FuturisticBadge(
+                        label: l10n.pageAbbrOfTotal(
+                          dragged ?? currentPageNumber,
+                          604,
+                        ),
+                        color: isDark
+                            ? AppColors.electricGold
+                            : AppColors.lightPrimary,
+                        showDot: true,
+                        isCompact: true,
+                      ),
                     ),
                   ),
                 ],
@@ -646,9 +652,9 @@ class _QuranScreenState extends State<QuranScreen> {
               // الصفحة السابقة، والشريط، والتالية.
               Row(
                 children: [
-                  // السابقة: في RTL يشير لليمين نحو الصفحات الأولى.
+                  // السابقة: الأيقونة تنعكس في RTL فتشير لليمين.
                   FuturisticIconButton(
-                    icon: AppIcons.caretRight,
+                    icon: AppIcons.caretLeft,
                     tooltip: context.l10n.previousPage,
                     size: 36,
                     iconSize: 22,
@@ -678,28 +684,34 @@ class _QuranScreenState extends State<QuranScreen> {
                             ? AppColors.cyberEmerald
                             : AppColors.lightPrimary,
                       ),
-                      child: Slider(
-                        value: sliderPage.toDouble().clamp(1.0, 604.0),
-                        min: 1.0,
-                        max: 604.0,
-                        divisions: 603,
-                        label: l10n.pageAbbr(sliderPage),
-                        onChanged: (val) =>
-                            setState(() => _sliderPage = val.round()),
-                        onChangeEnd: (val) {
-                          setState(() => _sliderPage = null);
-                          final targetPage = val.round();
-                          if (targetPage != currentPageNumber) {
-                            _jumpToMushafPage(targetPage);
-                          }
+                      // الشريط وحده يُعاد بناؤه أثناء السحب.
+                      child: ValueListenableBuilder<int?>(
+                        valueListenable: _sliderPage,
+                        builder: (context, dragged, _) {
+                          final page = dragged ?? currentPageNumber;
+                          return Slider(
+                            value: page.toDouble().clamp(1.0, 604.0),
+                            min: 1.0,
+                            max: 604.0,
+                            divisions: 603,
+                            label: l10n.pageAbbr(page),
+                            onChanged: (val) => _sliderPage.value = val.round(),
+                            onChangeEnd: (val) {
+                              _sliderPage.value = null;
+                              final targetPage = val.round();
+                              if (targetPage != currentPageNumber) {
+                                _jumpToMushafPage(targetPage);
+                              }
+                            },
+                          );
                         },
                       ),
                     ),
                   ),
                   const SizedBox(width: 4),
-                  // التالية: في RTL يشير لليسار نحو الصفحات اللاحقة.
+                  // التالية: الأيقونة تنعكس في RTL فتشير لليسار.
                   FuturisticIconButton(
-                    icon: AppIcons.caretLeft,
+                    icon: AppIcons.caretRight,
                     tooltip: context.l10n.nextPage,
                     size: 36,
                     iconSize: 22,
@@ -745,6 +757,8 @@ class _QuranScreenState extends State<QuranScreen> {
 
   Widget _buildPager(bool isDark) {
     return SafeArea(
+      // تبويب المصحف يمتد تحت الشريط السفلي، فالحافة حافة الشاشة لا الشريط.
+      bottom: false,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: _toggleTopBar,
@@ -753,6 +767,7 @@ class _QuranScreenState extends State<QuranScreen> {
             final isWideSpread = constraints.maxWidth >= 900;
             return PageView.builder(
               controller: _pageController,
+              physics: const _MushafPagePhysics(),
               // الصفحتان المجاورتان جاهزتان قبل أن يبدأ السحب.
               allowImplicitScrolling: true,
               itemCount: 604,
@@ -760,7 +775,13 @@ class _QuranScreenState extends State<QuranScreen> {
               itemBuilder: (context, index) {
                 final pageNumber = index + 1;
                 if (!isWideSpread) {
-                  return RepaintBoundary(child: _mushafPage(pageNumber));
+                  return RepaintBoundary(
+                    child: _SettledPage(
+                      controller: _pageController,
+                      index: index,
+                      child: _mushafPage(pageNumber),
+                    ),
+                  );
                 }
 
                 // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
@@ -895,9 +916,9 @@ class _QuranScreenState extends State<QuranScreen> {
               left: 12,
               right: 12,
               // مرفوع قليلاً عن الحافة؛ لا يلاصق أسفل الشاشة ولا الشريط.
-              bottom:
-                  MediaQuery.paddingOf(context).bottom +
-                  (_showTopBar ? _bottomBarHeight + 16 : 32),
+              bottom: _showTopBar
+                  ? MediaQuery.paddingOf(context).bottom + _bottomBarHeight + 16
+                  : MediaQuery.viewPaddingOf(context).bottom + 32,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 560),
@@ -968,4 +989,83 @@ class _QuranScreenState extends State<QuranScreen> {
       ),
     );
   }
+}
+
+/// تقليب صفحة ينتهي بسرعة ودون ارتداد، فيتبع الإصبع مباشرة.
+class _MushafPagePhysics extends PageScrollPhysics {
+  const _MushafPagePhysics({super.parent});
+
+  @override
+  _MushafPagePhysics applyTo(ScrollPhysics? ancestor) =>
+      _MushafPagePhysics(parent: buildParent(ancestor));
+
+  @override
+  SpringDescription get spring => SpringDescription.withDampingRatio(
+    mass: 0.4,
+    stiffness: 180,
+    ratio: 1.05,
+  );
+}
+
+/// صفحة تُخلق أثناء السحب تُرجأ حتى يهدأ، فلا يقطع بناؤها حركة الصفحة الظاهرة.
+///
+/// تقع خارج الشاشة، فلا يرى القارئ انتظارها؛ وإن واصل التقليب بُنيت قبل أن
+/// تظهر.
+class _SettledPage extends StatefulWidget {
+  final PageController controller;
+  final int index;
+  final Widget child;
+
+  const _SettledPage({
+    required this.controller,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  State<_SettledPage> createState() => _SettledPageState();
+}
+
+class _SettledPageState extends State<_SettledPage> {
+  bool _ready = true;
+
+  ScrollPosition get _position => widget.controller.position;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.controller.hasClients) return;
+    if (!_position.isScrollingNotifier.value) return;
+    _ready = false;
+    widget.controller.addListener(_check);
+    _position.isScrollingNotifier.addListener(_check);
+  }
+
+  void _stopListening() {
+    widget.controller.removeListener(_check);
+    if (widget.controller.hasClients) {
+      _position.isScrollingNotifier.removeListener(_check);
+    }
+  }
+
+  void _check() {
+    final page = widget.controller.page;
+    final near = page != null && (page - widget.index).abs() < 1;
+    if (_position.isScrollingNotifier.value && !near) return;
+    _stopListening();
+    // قد يأتي الإعلام أثناء تخطيط الإطار (عند تدوير الشاشة مثلاً).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _ready = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    if (!_ready) _stopListening();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      _ready ? widget.child : const SizedBox.expand();
 }

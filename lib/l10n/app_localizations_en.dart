@@ -1514,7 +1514,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noCommitmentsYet =>
-      'What you write for “What will you do with it today?” shows here.';
+      'What you write for “What action does this ayah call you to?” shows here.';
 
   @override
   String get commitmentDid => 'I did it';
@@ -2325,14 +2325,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideLinks1Body =>
-      'Create a link named after a theme on your mind, like the doors of provision, patience or mercy.';
+      'Create a link named after a theme you want to reflect on, like the doors of provision, patience or mercy.';
 
   @override
-  String get guideLinks2Title => 'Ayahs from across the Quran, a note for each';
+  String get guideLinks2Title => 'Ayahs joined by one meaning';
 
   @override
   String get guideLinks2Body =>
-      'Add the verses of the theme and note what each one adds: Surah At-Talaq the door of mindfulness, Surah Nuh the door of forgiveness, Surah Ibrahim the door of gratitude.';
+      'Add the verses of the theme, and write what you understood beside each one.';
 
   @override
   String get guideLinks3Title => 'See the whole picture';
@@ -2409,7 +2409,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideDuasBody =>
-      'Quranic duas, morning and evening adhkar with a counter, and duas of Ahlulbayt and the Sunnah. Copy a dua or open it in the Mushaf.';
+      'Duas from the Quran, the Sunnah and the Ahlulbayt, with daily adhkar and counters. Copy a dua or open it in the Mushaf.';
 
   @override
   String get guideTasbeehTitle => 'Tasbeeh and istighfar';
@@ -2556,4 +2556,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String pageAbbrOfTotal(String page, String total) {
     return 'p. $page of $total';
   }
+
+  @override
+  String get tourTodayPortion => 'Today\'s portion';
+
+  @override
+  String get tourPagesToday => '4 of 5 pages';
+
+  @override
+  String get tourSampleNote => 'Mindfulness opens doors I cannot see';
+
+  @override
+  String get tourRemembered => 'Remembered';
+
+  @override
+  String get tourForgot => 'Forgot';
+
+  @override
+  String get tourNextReview => 'Review in 3 days';
+
+  @override
+  String get tourMeaningLabel => 'Meaning';
+
+  @override
+  String get tourBookSample => 'Guidance of the Quran';
+
+  @override
+  String get dhikrSubhanAllah => 'Subhan Allah';
+
+  @override
+  String get tourDuaQuran => 'Quran';
+
+  @override
+  String get tourDuaSunnah => 'Sunnah';
+
+  @override
+  String get tourDuaAdhkar => 'Adhkar';
 }

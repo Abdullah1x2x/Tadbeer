@@ -839,6 +839,18 @@ class AppStrings {
   String get scrollDown => _l.scrollDown;
   String pageAbbrOfTotal(dynamic page, dynamic total) =>
       _l.pageAbbrOfTotal(digits(page), digits(total));
+  String get tourTodayPortion => _l.tourTodayPortion;
+  String get tourPagesToday => _l.tourPagesToday;
+  String get tourSampleNote => _l.tourSampleNote;
+  String get tourRemembered => _l.tourRemembered;
+  String get tourForgot => _l.tourForgot;
+  String get tourNextReview => _l.tourNextReview;
+  String get tourMeaningLabel => _l.tourMeaningLabel;
+  String get tourBookSample => _l.tourBookSample;
+  String get dhikrSubhanAllah => _l.dhikrSubhanAllah;
+  String get tourDuaQuran => _l.tourDuaQuran;
+  String get tourDuaSunnah => _l.tourDuaSunnah;
+  String get tourDuaAdhkar => _l.tourDuaAdhkar;
   String get tourReplay => _l.tourReplay;
   String get tourReplayHint => _l.tourReplayHint;
   String get guidesReset => _l.guidesReset;

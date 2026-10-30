@@ -17,6 +17,7 @@ import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
 import '../../tadbeer/tadbeer_pause_sheet.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../../core/motion/app_motion.dart';
 
 /// نافذة إجراءات الآية: التدبر، والربط، والخاطرة، والفاصل، والتظليل، والنسخ.
 class AyahActionSheet extends StatefulWidget {
@@ -127,8 +128,18 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
     // تُغلق النافذة بعد الحفظ، فلا تعود إلى الإجراءات.
   }
 
+  /// النافذة تصعد فوق لوحة المفاتيح، وتتوسط ما تبقّى من الشاشة.
   @override
   Widget build(BuildContext context) {
+    return AnimatedPadding(
+      duration: AppMotion.normal,
+      curve: AppMotion.emphasized,
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Center(child: SingleChildScrollView(child: _sheet(context))),
+    );
+  }
+
+  Widget _sheet(BuildContext context) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surah = QuranRepository.instance.getSurah(widget.ayah.surahNumber);
@@ -246,7 +257,12 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
               // الآية كما يراها القارئ في المصحف: بخط المدينة، أو بخطه في النص
               // المتدفق.
               ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 200),
+                // تصغر عند الكتابة لتبقى مساحة المحرر ظاهرة.
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.viewInsetsOf(context).bottom > 0
+                      ? 96
+                      : 200,
+                ),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                   child: storage.settings.mushafStyle == MushafStyle.madinah

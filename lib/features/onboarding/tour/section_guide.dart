@@ -151,21 +151,25 @@ abstract final class SectionGuide {
         ),
       ],
       GuideTopic.memorization => [
-        single(
-          AppIcons.brainFill,
+        _GuideStep(
+          (t) => MemorizeScene(t: t),
           l10n.guideMemorizationTitle,
           l10n.guideMemorizationBody,
         ),
       ],
       GuideTopic.wordMeanings => [
-        single(
-          AppIcons.books,
+        _GuideStep(
+          (t) => MeaningsScene(t: t),
           l10n.guideWordMeaningsTitle,
           l10n.guideWordMeaningsBody,
         ),
       ],
       GuideTopic.notes => [
-        single(AppIcons.notePencil, l10n.guideNotesTitle, l10n.guideNotesBody),
+        _GuideStep(
+          (t) => NotesScene(t: t),
+          l10n.guideNotesTitle,
+          l10n.guideNotesBody,
+        ),
       ],
       GuideTopic.search => [
         single(
@@ -175,18 +179,22 @@ abstract final class SectionGuide {
         ),
       ],
       GuideTopic.books => [
-        single(
-          AppIcons.bookOpenTextFill,
+        _GuideStep(
+          (t) => BooksScene(t: t),
           l10n.guideBooksTitle,
           l10n.guideBooksBody,
         ),
       ],
       GuideTopic.duas => [
-        single(AppIcons.handHeartFill, l10n.guideDuasTitle, l10n.guideDuasBody),
+        _GuideStep(
+          (t) => DuasScene(t: t),
+          l10n.guideDuasTitle,
+          l10n.guideDuasBody,
+        ),
       ],
       GuideTopic.tasbeeh => [
-        single(
-          AppIcons.sparkleFill,
+        _GuideStep(
+          (t) => TasbeehScene(t: t),
           l10n.guideTasbeehTitle,
           l10n.guideTasbeehBody,
         ),

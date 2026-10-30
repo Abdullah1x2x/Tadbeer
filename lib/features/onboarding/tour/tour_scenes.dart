@@ -20,6 +20,7 @@ import 'scene_story.dart';
 
 part 'scenes/mushaf_scenes.dart';
 part 'scenes/reflect_scenes.dart';
+part 'scenes/section_scenes.dart';
 part 'scenes/links_scenes.dart';
 part 'scenes/pathways_scenes.dart';
 part 'scenes/listen_scenes.dart';

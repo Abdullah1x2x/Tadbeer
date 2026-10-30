@@ -2745,7 +2745,7 @@ abstract class AppLocalizations {
   /// No description provided for @noCommitmentsYet.
   ///
   /// In ar, this message translates to:
-  /// **'ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.'**
+  /// **'ما تكتبه جواباً عن «ما العمل الذي تدعوك إليه هذه الآية؟» يظهر هنا.'**
   String get noCommitmentsYet;
 
   /// No description provided for @commitmentDid.
@@ -4131,7 +4131,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideReflections2Body.
   ///
   /// In ar, this message translates to:
-  /// **'أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما الذي ستفعله بها اليوم.'**
+  /// **'أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما العمل الذي تدعوك إليه.'**
   String get guideReflections2Body;
 
   /// No description provided for @guideReflections3Title.
@@ -4155,19 +4155,19 @@ abstract class AppLocalizations {
   /// No description provided for @guideLinks1Body.
   ///
   /// In ar, this message translates to:
-  /// **'أنشئ رابطاً باسم موضوع يشغلك، مثل أبواب الرزق أو الصبر أو الرحمة.'**
+  /// **'أنشئ رابطاً باسم موضوع تريد تدبّره، مثل أبواب الرزق أو الصبر أو الرحمة.'**
   String get guideLinks1Body;
 
   /// No description provided for @guideLinks2Title.
   ///
   /// In ar, this message translates to:
-  /// **'آيات متفرّقة، وملاحظة لكل آية'**
+  /// **'آيات يجمعها معنى واحد'**
   String get guideLinks2Title;
 
   /// No description provided for @guideLinks2Body.
   ///
   /// In ar, this message translates to:
-  /// **'أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في الطلاق باب التقوى، وفي نوح باب الاستغفار، وفي إبراهيم باب الشكر.'**
+  /// **'أضف آيات الموضوع، واكتب عند كل آية ما فهمته منها.'**
   String get guideLinks2Body;
 
   /// No description provided for @guideLinks3Title.
@@ -4299,7 +4299,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideDuasBody.
   ///
   /// In ar, this message translates to:
-  /// **'أدعية من القرآن، وأذكار الصباح والمساء بعدّاد، وأدعية أهل البيت والسنة. انسخ الدعاء أو افتحه في المصحف.'**
+  /// **'أدعية القرآن والسنة وأهل البيت، وأذكار يومية بعدّاد. انسخ الدعاء أو افتحه في المصحف.'**
   String get guideDuasBody;
 
   /// No description provided for @guideTasbeehTitle.
@@ -4535,6 +4535,78 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ص {page} من {total}'**
   String pageAbbrOfTotal(String page, String total);
+
+  /// No description provided for @tourTodayPortion.
+  ///
+  /// In ar, this message translates to:
+  /// **'ورد اليوم'**
+  String get tourTodayPortion;
+
+  /// No description provided for @tourPagesToday.
+  ///
+  /// In ar, this message translates to:
+  /// **'٤ من ٥ صفحات'**
+  String get tourPagesToday;
+
+  /// No description provided for @tourSampleNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقوى تفتح أبواباً لا أراها'**
+  String get tourSampleNote;
+
+  /// No description provided for @tourRemembered.
+  ///
+  /// In ar, this message translates to:
+  /// **'تذكّرت'**
+  String get tourRemembered;
+
+  /// No description provided for @tourForgot.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسيت'**
+  String get tourForgot;
+
+  /// No description provided for @tourNextReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'المراجعة بعد ٣ أيام'**
+  String get tourNextReview;
+
+  /// No description provided for @tourMeaningLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعنى'**
+  String get tourMeaningLabel;
+
+  /// No description provided for @tourBookSample.
+  ///
+  /// In ar, this message translates to:
+  /// **'هدي القرآن'**
+  String get tourBookSample;
+
+  /// No description provided for @dhikrSubhanAllah.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبحان الله'**
+  String get dhikrSubhanAllah;
+
+  /// No description provided for @tourDuaQuran.
+  ///
+  /// In ar, this message translates to:
+  /// **'القرآن'**
+  String get tourDuaQuran;
+
+  /// No description provided for @tourDuaSunnah.
+  ///
+  /// In ar, this message translates to:
+  /// **'السنة'**
+  String get tourDuaSunnah;
+
+  /// No description provided for @tourDuaAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأذكار'**
+  String get tourDuaAdhkar;
 }
 
 class _AppLocalizationsDelegate
