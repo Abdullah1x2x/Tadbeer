@@ -163,7 +163,7 @@ void main() {
         );
         expect(
           find.textContaining(
-            'Supplications, Adhkar & Tasbeeh: 88 Quranic duas',
+            'Supplications, Adhkar & Tasbeeh: 89 Quranic duas',
           ),
           findsOneWidget,
         );
