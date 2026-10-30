@@ -41,7 +41,7 @@ All fonts bundled with the application are free, open source, and licensed under
 | Component | Source | Terms | Usage in Application |
 | :--- | :--- | :--- | :--- |
 | **QCF page fonts, version 1** (604 fonts, *خطوط صفحات مصحف المدينة*) | [King Fahd Glorious Quran Printing Complex](https://qurancomplex.gov.sa/) | Distributed free of charge by the Complex for non-commercial use; the glyphs must not be altered | Primary Mushaf view; bundled as `assets/fonts/qcf/p1.ttf` … `p604.ttf` and loaded page by page |
-| **Mushaf line layout** (word glyph codes and line numbers) | [Quran.com API v4](https://api-docs.quran.com/) (Quran Foundation) | Terms in the [Quran Foundation developer terms](https://api-docs.quran.foundation/legal/developer-terms/); permission for the bundled copy is pending | Places each word on its printed line; bundled as `assets/quran/qcf_v1_layout.json.gz` (built by `tool/qcf/build_layout.py`) |
+| **Mushaf line layout** (word glyph codes and line numbers) | [Quran.com API v4](https://api-docs.quran.com/) (Quran Foundation) | Used with attribution | Places each word on its printed line; bundled as `assets/quran/qcf_v1_layout.json.gz` (built by `tool/qcf/build_layout.py`) |
 
 ---
 
