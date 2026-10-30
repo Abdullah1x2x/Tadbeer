@@ -231,11 +231,14 @@ class _Bubble extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Row(
+              // مع النص الكبير ينزل الزر تحت الآخر بدل أن يفيضا.
+              OverflowBar(
+                alignment: last
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.spaceBetween,
                 children: [
                   if (!last)
                     TextButton(onPressed: onSkip, child: Text(l10n.tourSkip)),
-                  const Spacer(),
                   FilledButton(
                     onPressed: onNext,
                     child: Text(last ? l10n.tourGotIt : l10n.tourNext),

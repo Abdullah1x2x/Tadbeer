@@ -26,9 +26,7 @@ class DuasScreen extends StatelessWidget {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final totalQuranDuas = QuranDuasRepository.instance.getDuas().length;
-    final totalAdhkar =
-        AdhkarRepository.morningAdhkar.length +
-        AdhkarRepository.eveningAdhkar.length;
+    final totalAdhkar = AdhkarRepository.instance.total;
     final totalAhlulbaytDuas = AhlulbaytDuasRepository.defaultDuas.length;
     final totalSunnahDuas = SunnahDuasRepository.sunnahDuas.length;
     final totalJawamiDuas = SunnahDuasRepository.jawamiDuas.length;

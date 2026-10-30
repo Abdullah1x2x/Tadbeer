@@ -5,7 +5,6 @@ import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/models/user_settings_model.dart';
-import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../../data/storage/user_data_store.dart';
 import '../../quran/qcf/qcf_ayah_text.dart';
@@ -357,33 +356,22 @@ class _DuaTextState extends State<_DuaText> {
     _loadGlyphs();
   }
 
-  /// آيات الدعاء كاملة، أو null إن كان فيه مقطع من آية.
-  List<Ayah>? get _wholeAyahs {
-    final repo = QuranRepository.instance;
-    final ayahs = <Ayah>[];
-    for (final v in widget.dua.verses) {
-      final ayah = repo.getAyah(widget.dua.surahNumber, v.ayahNumber);
-      if (ayah == null ||
-          ArabicSearchNormalizer.normalize(ayah.text) !=
-              ArabicSearchNormalizer.normalize(v.text)) {
-        return null;
-      }
-      ayahs.add(ayah);
-    }
-    return ayahs;
-  }
-
   Future<void> _loadGlyphs() async {
     if (UserDataStore.instance.settings.mushafStyle != MushafStyle.madinah) {
       return;
     }
-    final ayahs = _wholeAyahs;
-    if (ayahs == null) return;
-    for (final a in ayahs) {
-      if (!await QcfGlyphs.prepare(a)) return;
+    final glyphs = <QcfGlyphs>[];
+    for (final v in widget.dua.verses) {
+      final ayah = QuranRepository.instance.getAyah(
+        widget.dua.surahNumber,
+        v.ayahNumber,
+      );
+      if (ayah == null || !await QcfGlyphs.prepare(ayah)) return;
+      final part = QcfGlyphs.ofExcerpt(ayah, v.text);
+      if (part == null) return;
+      glyphs.add(part);
     }
-    if (!mounted) return;
-    setState(() => _glyphs = [for (final a in ayahs) QcfGlyphs.of(a)!]);
+    if (mounted) setState(() => _glyphs = glyphs);
   }
 
   @override

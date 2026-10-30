@@ -2400,6 +2400,18 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعذّر فتح الكاميرا. تأكد من السماح للتطبيق باستخدامها، أو الصق نص الرمز.';
 
   @override
+  String get sleepAdhkar => 'أذكار النوم';
+
+  @override
+  String get wakingAdhkar => 'أذكار الاستيقاظ';
+
+  @override
+  String get afterPrayerAdhkar => 'أذكار بعد الصلاة';
+
+  @override
+  String get mosqueAdhkar => 'أذكار المسجد';
+
+  @override
   String get tourReplay => 'جولة في التطبيق';
 
   @override

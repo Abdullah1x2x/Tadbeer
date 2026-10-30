@@ -53,7 +53,7 @@ void main() {
 
         // Prominent sub-section card: "أدعية من القرآن"
         expect(find.text('أدعية من القرآن'), findsOneWidget);
-        expect(find.text('٨٨ دعاء'), findsOneWidget);
+        expect(find.text('٨٩ دعاء'), findsOneWidget);
 
         // Other sections remain present
         expect(find.text('أدعية من السنة النبوية'), findsOneWidget);
@@ -119,8 +119,8 @@ void main() {
         expect(find.byType(TextField), findsOneWidget);
         expect(find.text('ابحث في أدعية القرآن الكريم...'), findsOneWidget);
 
-        // Count badge (88 duas)
-        expect(find.text('٨٨ دعاء'), findsOneWidget);
+        // Count badge (89 duas)
+        expect(find.text('٨٩ دعاء'), findsOneWidget);
 
         // Cards should be rendered
         expect(find.byType(QuranDuaCard), findsWidgets);
@@ -151,8 +151,8 @@ void main() {
         await tester.tap(clearButton);
         await tester.pumpAndSettle();
 
-        // Should restore 88
-        expect(find.text('٨٨ دعاء'), findsOneWidget);
+        // Should restore 89
+        expect(find.text('٨٩ دعاء'), findsOneWidget);
       },
     );
 

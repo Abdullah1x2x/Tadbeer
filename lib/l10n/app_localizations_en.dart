@@ -2405,6 +2405,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not open the camera. Check the app can use it, or paste the code text.';
 
   @override
+  String get sleepAdhkar => 'Before sleep';
+
+  @override
+  String get wakingAdhkar => 'On waking';
+
+  @override
+  String get afterPrayerAdhkar => 'After prayer';
+
+  @override
+  String get mosqueAdhkar => 'At the mosque';
+
+  @override
   String get tourReplay => 'App tour';
 
   @override

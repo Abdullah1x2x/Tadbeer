@@ -83,7 +83,10 @@ class _AdhkarRemindersSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              for (final c in AdhkarCategory.values)
+              for (final c in const [
+                AdhkarCategory.morning,
+                AdhkarCategory.evening,
+              ])
                 _ReminderRow(
                   category: c,
                   title: c == AdhkarCategory.morning
@@ -119,7 +122,7 @@ class _ReminderRow extends StatelessWidget {
         ? null
         : TimeOfDay(hour: reminder.hour, minute: reminder.minute);
 
-    Future<void> pickAndEnable() async {
+    Future<void> changeTime() async {
       final picked = await showTimePicker(
         context: context,
         initialTime: time ?? defaultTime,
@@ -140,7 +143,7 @@ class _ReminderRow extends StatelessWidget {
       subtitle: time == null
           ? null
           : InkWell(
-              onTap: pickAndEnable,
+              onTap: changeTime,
               child: Text(
                 time.format(context),
                 style: const TextStyle(fontWeight: FontWeight.bold),
@@ -150,7 +153,8 @@ class _ReminderRow extends StatelessWidget {
       onChanged: (on) async {
         HapticFeedback.selectionClick();
         if (on) {
-          await pickAndEnable();
+          // يبدأ فوراً بالوقت المعتاد، ويغيّره القارئ بالضغط عليه.
+          await AdhkarReminders.enable(category, defaultTime, title);
         } else {
           await AdhkarReminders.disable(category);
         }

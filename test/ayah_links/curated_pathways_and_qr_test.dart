@@ -33,11 +33,11 @@ void main() {
 
   group('CuratedPathwaysRegistry & AyahLinkQrDialog Tests', () {
     test(
-      'Curated pathways registry provides 7 thematic pathways of real ayahs',
+      'Curated pathways registry provides 15 thematic pathways of real ayahs',
       () {
         final pathways = CuratedPathwaysRegistry.pathways;
-        expect(pathways.length, equals(7));
-        expect(pathways.map((p) => p.id).toSet(), hasLength(7));
+        expect(pathways.length, equals(15));
+        expect(pathways.map((p) => p.id).toSet(), hasLength(15));
         expect(
           pathways.map((p) => p.id),
           containsAll(['doors_of_provision', 'allah_is_near', 'gratitude']),
@@ -48,7 +48,7 @@ void main() {
           expect(p.title, isNotEmpty);
           expect(p.description, isNotEmpty);
           expect(p.category, isNotEmpty);
-          expect(p.verses.length, greaterThanOrEqualTo(3));
+          expect(p.verses.length, greaterThanOrEqualTo(7));
           for (final v in p.verses) {
             expect(
               QuranRepository.instance.getAyah(v.surah, v.ayah),

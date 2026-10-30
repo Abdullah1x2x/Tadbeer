@@ -4278,6 +4278,30 @@ abstract class AppLocalizations {
   /// **'تعذّر فتح الكاميرا. تأكد من السماح للتطبيق باستخدامها، أو الصق نص الرمز.'**
   String get cameraUnavailable;
 
+  /// No description provided for @sleepAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار النوم'**
+  String get sleepAdhkar;
+
+  /// No description provided for @wakingAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار الاستيقاظ'**
+  String get wakingAdhkar;
+
+  /// No description provided for @afterPrayerAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار بعد الصلاة'**
+  String get afterPrayerAdhkar;
+
+  /// No description provided for @mosqueAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار المسجد'**
+  String get mosqueAdhkar;
+
   /// No description provided for @tourReplay.
   ///
   /// In ar, this message translates to:

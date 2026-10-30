@@ -320,56 +320,69 @@ class _GuideSheetState extends State<_GuideSheet> {
                   controller: _pages,
                   itemCount: steps.length,
                   onPageChanged: (i) => setState(() => _index = i),
-                  itemBuilder: (context, i) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 22),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 420),
-                              child: SceneStory(
-                                playing: i == _index,
-                                duration: const Duration(milliseconds: 5200),
-                                builder: (context, t) => steps[i].scene(t),
+                  itemBuilder: (context, i) => CustomScrollView(
+                    // النص الكبير يطول، فتُمرّر الخطوة بدل أن تفيض.
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 22),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      maxWidth: 420,
+                                    ),
+                                    child: SceneStory(
+                                      playing: i == _index,
+                                      duration: const Duration(
+                                        milliseconds: 5200,
+                                      ),
+                                      builder: (context, t) =>
+                                          steps[i].scene(t),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              if (steps.length > 1)
+                                Text(
+                                  l10n.guideStep(i + 1, steps.length),
+                                  style: TextStyle(
+                                    fontFamily: AppTheme.appFontFamily,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: gold,
+                                  ),
+                                ),
+                              const SizedBox(height: 4),
+                              Text(
+                                steps[i].title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary(context),
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                steps[i].body,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: AppTheme.appFontFamily,
+                                  fontSize: 14.5,
+                                  height: 1.6,
+                                  color: AppColors.textSecondary(context),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        if (steps.length > 1)
-                          Text(
-                            l10n.guideStep(i + 1, steps.length),
-                            style: TextStyle(
-                              fontFamily: AppTheme.appFontFamily,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: gold,
-                            ),
-                          ),
-                        const SizedBox(height: 4),
-                        Text(
-                          steps[i].title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary(context),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          steps[i].body,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: AppTheme.appFontFamily,
-                            fontSize: 14.5,
-                            height: 1.6,
-                            color: AppColors.textSecondary(context),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -37,11 +37,15 @@ class _MorningEveningAdhkarScreenState
     _recordActivity();
   }
 
-  void _recordActivity() => LastActivityStore.record(
-    ActivityKind.adhkar,
-    ref: _currentCategory.name,
-    title: _currentCategory.name,
-  );
+  /// أذكار الصباح والمساء وحدها يُستأنف منها، فهي ورد يومي له وقته.
+  void _recordActivity() {
+    if (_currentCategory.index > AdhkarCategory.evening.index) return;
+    LastActivityStore.record(
+      ActivityKind.adhkar,
+      ref: _currentCategory.name,
+      title: _currentCategory.name,
+    );
+  }
 
   void _switchCategory(AdhkarCategory cat) {
     if (_currentCategory == cat) return;
@@ -144,7 +148,7 @@ class _MorningEveningAdhkarScreenState
         appBar: AppBar(
           leading: const BackButton(),
           title: Text(
-            l10n.morningEveningAdhkarTitle,
+            l10n.adhkarKind,
             style: const TextStyle(
               fontFamily: 'IBMPlexSansArabic',
               fontWeight: FontWeight.bold,
@@ -186,34 +190,58 @@ class _MorningEveningAdhkarScreenState
                           : AppColors.lightBorder,
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _TabButton(
-                          title: l10n.morningAdhkar,
-                          icon: AppIcons.sunFill,
-                          count: AdhkarRepository.morningAdhkar.length,
-                          isSelected:
-                              _currentCategory == AdhkarCategory.morning,
-                          isDark: isDark,
-                          primaryColor: primaryColor,
-                          onTap: () => _switchCategory(AdhkarCategory.morning),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: _TabButton(
-                          title: l10n.eveningAdhkar,
-                          icon: AppIcons.moon,
-                          count: AdhkarRepository.eveningAdhkar.length,
-                          isSelected:
-                              _currentCategory == AdhkarCategory.evening,
-                          isDark: isDark,
-                          primaryColor: primaryColor,
-                          onTap: () => _switchCategory(AdhkarCategory.evening),
-                        ),
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (final (category, title, icon) in [
+                          (
+                            AdhkarCategory.morning,
+                            l10n.morningAdhkar,
+                            AppIcons.sunFill,
+                          ),
+                          (
+                            AdhkarCategory.evening,
+                            l10n.eveningAdhkar,
+                            AppIcons.moon,
+                          ),
+                          (
+                            AdhkarCategory.sleep,
+                            l10n.sleepAdhkar,
+                            AppIcons.moonStars,
+                          ),
+                          (
+                            AdhkarCategory.waking,
+                            l10n.wakingAdhkar,
+                            AppIcons.sunFill,
+                          ),
+                          (
+                            AdhkarCategory.afterPrayer,
+                            l10n.afterPrayerAdhkar,
+                            AppIcons.handHeart,
+                          ),
+                          (
+                            AdhkarCategory.mosque,
+                            l10n.mosqueAdhkar,
+                            AppIcons.bookOpen,
+                          ),
+                        ])
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                            child: _TabButton(
+                              title: title,
+                              icon: icon,
+                              count: AdhkarRepository.instance
+                                  .getAdhkar(category)
+                                  .length,
+                              isSelected: _currentCategory == category,
+                              isDark: isDark,
+                              primaryColor: primaryColor,
+                              onTap: () => _switchCategory(category),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),

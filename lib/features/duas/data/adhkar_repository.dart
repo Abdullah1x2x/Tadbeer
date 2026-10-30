@@ -1,5 +1,5 @@
 /// فئة الذكر.
-enum AdhkarCategory { morning, evening }
+enum AdhkarCategory { morning, evening, sleep, waking, afterPrayer, mosque }
 
 /// ذكر مع تكراره وفضله ومصدره.
 class AdhkarItem {
@@ -35,8 +35,7 @@ class AdhkarRepository {
 
   static final AdhkarRepository instance = AdhkarRepository._();
 
-  // لإضافة ذكر: أضف [AdhkarItem] إلى [morningAdhkar] أو [eveningAdhkar] بعدد
-  // تكراره وفضله ومصدره، فيظهر في الشاشة مع عدّاده.
+  // لإضافة ذكر: أضف [AdhkarItem] إلى قائمة فئته بعدد تكراره وفضله ومصدره، فيظهر في الشاشة مع عدّاده.
 
   static const List<AdhkarItem> morningAdhkar = [
     AdhkarItem(
@@ -249,7 +248,252 @@ class AdhkarRepository {
     ),
   ];
 
-  List<AdhkarItem> getAdhkar(AdhkarCategory category) {
-    return category == AdhkarCategory.morning ? morningAdhkar : eveningAdhkar;
-  }
+  static const List<AdhkarItem> sleepAdhkar = [
+    AdhkarItem(
+      id: 's_kursi',
+      category: AdhkarCategory.sleep,
+      text: '﴿ اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ ﴾',
+      repeatCount: 1,
+      virtue: 'من قرأها إذا أوى إلى فراشه لم يزل عليه من الله حافظ حتى يصبح.',
+      source: 'صحيح البخاري',
+    ),
+    AdhkarItem(
+      id: 's_baqara',
+      category: AdhkarCategory.sleep,
+      text: '﴿ آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِنْ رُسُلِهِ وَقَالُوا سَمِعْنَا وَأَطَعْنَا غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ ۝ لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا أَنْتَ مَوْلَانَا فَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ ﴾',
+      repeatCount: 1,
+      virtue: 'من قرأهما في ليلة كفتاه.',
+      source: 'متفق عليه',
+    ),
+    AdhkarItem(
+      id: 's_ikhlas',
+      category: AdhkarCategory.sleep,
+      text: '﴿ قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴾',
+      repeatCount: 3,
+      virtue: 'كان النبي صلى الله عليه وآله يقرأ السور الثلاث وينفث في كفيه ويمسح بهما جسده عند نومه.',
+      source: 'صحيح البخاري',
+    ),
+    AdhkarItem(
+      id: 's_falaq',
+      category: AdhkarCategory.sleep,
+      text: '﴿ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِنْ شَرِّ مَا خَلَقَ ۝ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴾',
+      repeatCount: 3,
+      virtue: 'من السور الثلاث عند النوم.',
+      source: 'صحيح البخاري',
+    ),
+    AdhkarItem(
+      id: 's_nas',
+      category: AdhkarCategory.sleep,
+      text: '﴿ قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَهِ النَّاسِ ۝ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ ﴾',
+      repeatCount: 3,
+      virtue: 'من السور الثلاث عند النوم.',
+      source: 'صحيح البخاري',
+    ),
+    AdhkarItem(
+      id: 's_bismika',
+      category: AdhkarCategory.sleep,
+      text: 'بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، إِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ.',
+      repeatCount: 1,
+      virtue: 'يقوله إذا أوى إلى فراشه.',
+      source: 'متفق عليه',
+    ),
+    AdhkarItem(
+      id: 's_qini',
+      category: AdhkarCategory.sleep,
+      text: 'اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.',
+      repeatCount: 3,
+      virtue: 'كان النبي صلى الله عليه وآله يقوله إذا أراد أن ينام.',
+      source: 'رواه أبو داود',
+    ),
+    AdhkarItem(
+      id: 's_tasbih',
+      category: AdhkarCategory.sleep,
+      text: 'سُبْحَانَ اللَّهِ.',
+      repeatCount: 33,
+      virtue: 'تسبيح الزهراء عليها السلام: خير من خادم.',
+      source: 'متفق عليه',
+    ),
+    AdhkarItem(
+      id: 's_tahmid',
+      category: AdhkarCategory.sleep,
+      text: 'الْحَمْدُ لِلَّهِ.',
+      repeatCount: 33,
+      virtue: 'تسبيح الزهراء عليها السلام.',
+      source: 'متفق عليه',
+    ),
+    AdhkarItem(
+      id: 's_takbir',
+      category: AdhkarCategory.sleep,
+      text: 'اللَّهُ أَكْبَرُ.',
+      repeatCount: 34,
+      virtue: 'تسبيح الزهراء عليها السلام.',
+      source: 'متفق عليه',
+    ),
+    AdhkarItem(
+      id: 's_amut',
+      category: AdhkarCategory.sleep,
+      text: 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا.',
+      repeatCount: 1,
+      virtue: 'آخر ما يقوله عند النوم.',
+      source: 'صحيح البخاري',
+    ),
+  ];
+
+  static const List<AdhkarItem> wakingAdhkar = [
+    AdhkarItem(
+      id: 'w_ahyana',
+      category: AdhkarCategory.waking,
+      text: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا، وَإِلَيْهِ النُّشُورُ.',
+      repeatCount: 1,
+      virtue: 'أول ما يقوله إذا استيقظ.',
+      source: 'صحيح البخاري',
+    ),
+    AdhkarItem(
+      id: 'w_afani',
+      category: AdhkarCategory.waking,
+      text: 'الْحَمْدُ لِلَّهِ الَّذِي عَافَانِي فِي جَسَدِي، وَرَدَّ عَلَيَّ رُوحِي، وَأَذِنَ لِي بِذِكْرِهِ.',
+      repeatCount: 1,
+      virtue: 'حمد على العافية ونعمة الاستيقاظ.',
+      source: 'رواه الترمذي',
+    ),
+    AdhkarItem(
+      id: 'w_taarra',
+      category: AdhkarCategory.waking,
+      text: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، الْحَمْدُ لِلَّهِ، وَسُبْحَانَ اللَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ.',
+      repeatCount: 1,
+      virtue: 'من قاله إذا استيقظ من الليل ثم دعا استُجيب له.',
+      source: 'صحيح البخاري',
+    ),
+  ];
+
+  static const List<AdhkarItem> afterPrayerAdhkar = [
+    AdhkarItem(
+      id: 'p_istighfar',
+      category: AdhkarCategory.afterPrayer,
+      text: 'أَسْتَغْفِرُ اللَّهَ.',
+      repeatCount: 3,
+      virtue: 'أول ما يقال بعد السلام.',
+      source: 'صحيح مسلم',
+    ),
+    AdhkarItem(
+      id: 'p_salam',
+      category: AdhkarCategory.afterPrayer,
+      text: 'اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ.',
+      repeatCount: 1,
+      virtue: 'يقال بعد الاستغفار.',
+      source: 'صحيح مسلم',
+    ),
+    AdhkarItem(
+      id: 'p_tahlil',
+      category: AdhkarCategory.afterPrayer,
+      text: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، اللَّهُمَّ لَا مَانِعَ لِمَا أَعْطَيْتَ، وَلَا مُعْطِيَ لِمَا مَنَعْتَ، وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ.',
+      repeatCount: 1,
+      virtue: 'كان النبي صلى الله عليه وآله يقوله دبر كل صلاة.',
+      source: 'متفق عليه',
+    ),
+    AdhkarItem(
+      id: 'p_tasbih',
+      category: AdhkarCategory.afterPrayer,
+      text: 'سُبْحَانَ اللَّهِ.',
+      repeatCount: 33,
+      virtue: 'التسبيح دبر كل صلاة.',
+      source: 'صحيح مسلم',
+    ),
+    AdhkarItem(
+      id: 'p_tahmid',
+      category: AdhkarCategory.afterPrayer,
+      text: 'الْحَمْدُ لِلَّهِ.',
+      repeatCount: 33,
+      virtue: 'التحميد دبر كل صلاة.',
+      source: 'صحيح مسلم',
+    ),
+    AdhkarItem(
+      id: 'p_takbir',
+      category: AdhkarCategory.afterPrayer,
+      text: 'اللَّهُ أَكْبَرُ.',
+      repeatCount: 33,
+      virtue: 'التكبير دبر كل صلاة.',
+      source: 'صحيح مسلم',
+    ),
+    AdhkarItem(
+      id: 'p_tamam',
+      category: AdhkarCategory.afterPrayer,
+      text: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
+      repeatCount: 1,
+      virtue: 'تمام المئة: غُفرت خطاياه وإن كانت مثل زبد البحر.',
+      source: 'صحيح مسلم',
+    ),
+    AdhkarItem(
+      id: 'p_kursi',
+      category: AdhkarCategory.afterPrayer,
+      text: '﴿ اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ ﴾',
+      repeatCount: 1,
+      virtue: 'من قرأها دبر كل صلاة مكتوبة.',
+      source: 'رواه النسائي في السنن الكبرى',
+    ),
+    AdhkarItem(
+      id: 'p_ikhlas',
+      category: AdhkarCategory.afterPrayer,
+      text: '﴿ قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴾',
+      repeatCount: 1,
+      virtue: 'القراءة دبر كل صلاة.',
+      source: 'رواه أبو داود والترمذي',
+    ),
+    AdhkarItem(
+      id: 'p_falaq',
+      category: AdhkarCategory.afterPrayer,
+      text: '﴿ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِنْ شَرِّ مَا خَلَقَ ۝ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴾',
+      repeatCount: 1,
+      virtue: 'القراءة دبر كل صلاة.',
+      source: 'رواه أبو داود والترمذي',
+    ),
+    AdhkarItem(
+      id: 'p_nas',
+      category: AdhkarCategory.afterPrayer,
+      text: '﴿ قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَهِ النَّاسِ ۝ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ ﴾',
+      repeatCount: 1,
+      virtue: 'القراءة دبر كل صلاة.',
+      source: 'رواه أبو داود والترمذي',
+    ),
+  ];
+
+  static const List<AdhkarItem> mosqueAdhkar = [
+    AdhkarItem(
+      id: 'q_enter',
+      category: AdhkarCategory.mosque,
+      text: 'أَعُوذُ بِاللَّهِ الْعَظِيمِ، وَبِوَجْهِهِ الْكَرِيمِ، وَسُلْطَانِهِ الْقَدِيمِ، مِنَ الشَّيْطَانِ الرَّجِيمِ.',
+      repeatCount: 1,
+      virtue: 'من قاله قال الشيطان: حُفظ مني سائر اليوم.',
+      source: 'رواه أبو داود',
+    ),
+    AdhkarItem(
+      id: 'q_open',
+      category: AdhkarCategory.mosque,
+      text: 'اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ.',
+      repeatCount: 1,
+      virtue: 'عند دخول المسجد.',
+      source: 'صحيح مسلم',
+    ),
+    AdhkarItem(
+      id: 'q_exit',
+      category: AdhkarCategory.mosque,
+      text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ.',
+      repeatCount: 1,
+      virtue: 'عند الخروج من المسجد.',
+      source: 'صحيح مسلم',
+    ),
+  ];
+
+  List<AdhkarItem> getAdhkar(AdhkarCategory category) => switch (category) {
+    AdhkarCategory.morning => morningAdhkar,
+    AdhkarCategory.evening => eveningAdhkar,
+    AdhkarCategory.sleep => sleepAdhkar,
+    AdhkarCategory.waking => wakingAdhkar,
+    AdhkarCategory.afterPrayer => afterPrayerAdhkar,
+    AdhkarCategory.mosque => mosqueAdhkar,
+  };
+
+  /// عدد الأذكار كلها.
+  int get total =>
+      AdhkarCategory.values.fold(0, (sum, c) => sum + getAdhkar(c).length);
 }

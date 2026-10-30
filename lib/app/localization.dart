@@ -829,6 +829,10 @@ class AppStrings {
   String get fileSavedToDevice => _l.fileSavedToDevice;
   String get scanWithCamera => _l.scanWithCamera;
   String get cameraUnavailable => _l.cameraUnavailable;
+  String get sleepAdhkar => _l.sleepAdhkar;
+  String get wakingAdhkar => _l.wakingAdhkar;
+  String get afterPrayerAdhkar => _l.afterPrayerAdhkar;
+  String get mosqueAdhkar => _l.mosqueAdhkar;
   String get tourReplay => _l.tourReplay;
   String get tourReplayHint => _l.tourReplayHint;
   String get guidesReset => _l.guidesReset;

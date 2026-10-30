@@ -30,11 +30,7 @@ void main() {
       ),
     );
 
-    shareOrSaveFile(
-      context,
-      file: File('a.pdf'),
-      fileName: 'a.pdf',
-    ).ignore();
+    shareOrSaveFile(context, file: File('a.pdf'), fileName: 'a.pdf').ignore();
     await tester.pumpAndSettle();
 
     expect(find.text('مشاركة'), findsOneWidget);
