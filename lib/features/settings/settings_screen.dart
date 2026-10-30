@@ -815,8 +815,9 @@ class SettingsScreen extends StatelessWidget {
                                         'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
                                         'Quran Text: Tanzil.net (CC BY 3.0)\n'
                                         'Word Meanings Dataset: Quranpedia.net (Version 2026-10-10)\n'
-                                        'Fonts: SIL Open Font License 1.1\n'
-                                        'Books & Malazem: Authentic Public Domain & Heritage Works',
+                                        'Fonts: SIL Open Font License 1.1; Madinah Mushaf fonts: King Fahd Complex\n'
+                                        'Mushaf layout: Quran Foundation\n'
+                                        'Books: rights remain with their owners',
                                   );
                                 },
                                 icon: const Icon(AppIcons.fileText, size: 17),

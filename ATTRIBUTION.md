@@ -16,7 +16,7 @@
 
 | Component | Source & Digitization | Scholarly & Lexicographical References | License Type |
 | :--- | :--- | :--- | :--- |
-| **Quran Vocabulary Lexicon (6,465 entries)** | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) — Release `2026-10-10` | • **Classical Arabic Dictionaries (Public Domain):** *Lisan al-Arab* (Ibn Manzur), *Maqayis al-Lughah* (Ibn Faris), *Taj al-Arus* (al-Zabidi), *Mufradat Alfadh al-Quran* (al-Raghib al-Isfahani).<br>• **Linguistic References:** *Al-Mu'jam al-Wasit* (Academy of the Arabic Language, Cairo). | [CC0 1.0 Universal Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) (Encyclopedia dataset) + Classical Public Domain heritage |
+| **Quran Vocabulary Lexicon (6,465 entries)** | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) — Release `2026-10-10` | • **Classical Arabic Dictionaries (Public Domain):** *Lisan al-Arab* (Ibn Manzur), *Maqayis al-Lughah* (Ibn Faris), *Taj al-Arus* (al-Zabidi), *Mufradat Alfadh al-Quran* (al-Raghib al-Isfahani).<br>• **Linguistic References:** *Al-Mu'jam al-Wasit* (Academy of the Arabic Language, Cairo). | [Quranpedia data license](https://quranpedia.net/dumps/LICENSE.md); contemporary works remain with their authors and publishers |
 
 ---
 
@@ -41,7 +41,7 @@ All fonts bundled with the application are free, open source, and licensed under
 | Component | Source | Terms | Usage in Application |
 | :--- | :--- | :--- | :--- |
 | **QCF page fonts, version 1** (604 fonts, *خطوط صفحات مصحف المدينة*) | [King Fahd Glorious Quran Printing Complex](https://qurancomplex.gov.sa/) | Distributed free of charge by the Complex for non-commercial use; the glyphs must not be altered | Primary Mushaf view; bundled as `assets/fonts/qcf/p1.ttf` … `p604.ttf` and loaded page by page |
-| **Mushaf line layout** (word glyph codes and line numbers) | [Quran.com API v4](https://api-docs.quran.com/) (Quran Foundation) | Used with attribution | Places each word on its printed line; bundled as `assets/quran/qcf_v1_layout.json.gz` (built by `tool/qcf/build_layout.py`) |
+| **Mushaf line layout** (word glyph codes and line numbers) | [Quran.com API v4](https://api-docs.quran.com/) (Quran Foundation) | Terms in the [Quran Foundation developer terms](https://api-docs.quran.foundation/legal/developer-terms/); permission for the bundled copy is pending | Places each word on its printed line; bundled as `assets/quran/qcf_v1_layout.json.gz` (built by `tool/qcf/build_layout.py`) |
 
 ---
 
@@ -49,7 +49,7 @@ All fonts bundled with the application are free, open source, and licensed under
 
 | Component | Source | Terms | Usage in Application |
 | :--- | :--- | :--- | :--- |
-| **Ayah-by-ayah recitations** by 7 reciters (Mahmoud Khalil Al-Husary, Muhammad Siddiq Al-Minshawi, Abdul Basit Abdul Samad, Mishary Alafasy, Maher Al-Muaiqly, Abu Bakr Al-Shatri, Shahriar Parhizgar) | [Islamic Network CDN](https://cdn.islamic.network/) (the audio behind [AlQuran.cloud](https://alquran.cloud/)) | Served freely by Islamic Network; not bundled in the app | Streamed, or downloaded on the user's request, from `cdn.islamic.network/quran/audio/` (see `lib/features/audio/reciters.dart`) |
+| **Ayah-by-ayah recitations** by 7 reciters (Mahmoud Khalil Al-Husary, Muhammad Siddiq Al-Minshawi, Abdul Basit Abdul Samad, Mishary Alafasy, Maher Al-Muaiqly, Abu Bakr Al-Shatri, Shahriar Parhizgar) | [Islamic Network CDN](https://cdn.islamic.network/) (the audio behind [AlQuran.cloud](https://alquran.cloud/)) | Licensed to Islamic Network for free, non-commercial redistribution; copyright remains with the reciters or their estates; not bundled in the app | Streamed, or downloaded on the user's request, from `cdn.islamic.network/quran/audio/` (see `lib/features/audio/reciters.dart`) |
 
 ---
 
@@ -57,10 +57,11 @@ All fonts bundled with the application are free, open source, and licensed under
 
 | Collection / Work | Author / Scholar | Origin & Digital Source | License / Public Domain Status |
 | :--- | :--- | :--- | :--- |
-| **Lessons from the Guidance of the Holy Quran** (*ملازم هدي القرآن الكريم* — 86 Pamphlets) | Martyr Leader Sayyed Hussein Badreddin al-Houthi (*الشهيد القائد السيد حسين بدر الدين الحوثي*) | Official transcripts and verified PDF publications ([Al-Masirah / Ansar Allah Media](https://almasirah.net.ye)) | Freely available for religious, non-commercial education, and Quranic contemplation. |
+| **Lessons from the Guidance of the Holy Quran** (*ملازم هدي القرآن الكريم* — 86 Pamphlets) | Martyr Leader Sayyed Hussein Badreddin al-Houthi (*الشهيد القائد السيد حسين بدر الدين الحوثي*) | Official transcripts and verified PDF publications ([Al-Masirah / Ansar Allah Media](https://almasirah.net.ye)) | Rights remain with their owners; not covered by the MIT License. |
 | **Ahlulbayt Heritage** (*تراث أهل البيت عليهم السلام*) | Imam Ali ibn Abi Talib, Imam Ali Zayn al-Abidin, Ibn Shu'ba al-Harrani | Classical Islamic Heritage: *Nahj al-Balagha* (*نهج البلاغة*), *Al-Sahifah al-Sajjadiyah* (*الصحيفة السجادية*), *Risalat al-Huquq* (*رسالة الحقوق*), *Tuhaf al-Uqul* (*تحف العقول*) | Public Domain (Classical Islamic Heritage) |
 | **Quranic Sciences & Contemplation** (*علوم وتدبر القرآن الكريم*) | Al-Ajurri (*الآجري*), Al-Sa'di (*السعدي*), Al-Nawawi (*النووي*) | Classical Treatises: *Akhlaq Hamalat al-Quran* (*أخلاق حملة القرآن*), *Al-Tibyan fi Adab Hamalat al-Quran* (*التبيان في آداب حملة القرآن*), *Qawa'id al-Hisan* (*القواعد الحسان*) | Public Domain (Classical Islamic Heritage) |
-| **Quranic Duas & Mihrab Tasbeeh/Istighfar** (*أدعية القرآن ومحراب التسبيح والاستغفار*) | Holy Quran & Prophetic and Ahlulbayt Traditions (88 Duas, 49 Formulas) | Authentic Quranic verses and documented classical Athar & Zikr collections | Public Domain / CC BY 3.0 (Texts) + MIT (Application code and curated schema) |
+| **Twelve duas of Al-Sahifa Al-Sajjadiyya** | Imam Ali Zayn al-Abidin | Digitized by [Arabic Wikisource](https://ar.wikisource.org/wiki/الصحيفة_السجادية) contributors; paragraphs split and five typing errors corrected | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
+| **Quranic Duas & Mihrab Tasbeeh/Istighfar** (*أدعية القرآن ومحراب التسبيح والاستغفار*) | Holy Quran & Prophetic and Ahlulbayt Traditions (89 Duas, 49 Formulas) | Authentic Quranic verses and documented classical Athar & Zikr collections | Public Domain / CC BY 3.0 (Texts) + MIT (Application code and curated schema) |
 
 ---
 
@@ -76,6 +77,7 @@ All fonts bundled with the application are free, open source, and licensed under
 
 - The entire Tadbeer source code is freely available under the **[MIT License](LICENSE)**.
 - The application logo, icons, and visual design assets follow the project's open-source license.
+- The MIT License does not cover bundled third-party content: the Quran text, fonts, word meanings, books and recitations keep their own terms.
 
 ---
 

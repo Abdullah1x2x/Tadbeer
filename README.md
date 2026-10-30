@@ -71,7 +71,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 ### 📚 Quranic Word Meanings (معاني كلمات القرآن)
 - **Extensive Single-Word Lexicon:** Curated dataset of **6,465 single-word entries** covering all 604 pages and 114 surahs with 100% coverage.
 - **Pure Lexical Definitions:** Focused lexical meanings in concise Arabic, free from extraneous commentary or speculative tafsir.
-- **Authoritative Attributions:** Derived from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10`, CC0-1.0), *Al-Mu'jam Al-Waseet* (Academy of the Arabic Language in Cairo), and classical lexicons (*Lisan Al-Arab*, *Maqayis Al-Lughah*, *Taj Al-Arus*, *Mufradat Al-Raghib*).
+- **Authoritative Attributions:** Derived from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10`), *Al-Mu'jam Al-Waseet* (Academy of the Arabic Language in Cairo), and classical lexicons (*Lisan Al-Arab*, *Maqayis Al-Lughah*, *Taj Al-Arus*, *Mufradat Al-Raghib*).
 - **Synchronized Margin Panel:** Built-in collapsible reader panel updating dynamically on every page turn, alongside a dedicated standalone lexicon browser screen.
 - **Light Diacritics & Mushaf Order:** Meanings carry light tashkeel (shadda, tanween and the vowels a reader could misread) and are listed by surah and ayah; search still matches text typed without diacritics.
 
@@ -252,7 +252,8 @@ For detailed technical architecture, database schemas, and contribution guides, 
 
 - **Application Code:** Licensed under the **[MIT License](LICENSE)**.
 - **Quranic Text:** [Tanzil Project](https://tanzil.net/) (`CC-BY 3.0`).
-- **Word Meanings:** [Quranpedia.net](https://quranpedia.net) (`CC0 1.0 Public Domain`) and classical Arabic lexicons in the public domain.
-- **Typography:** All 5 Quranic and interface fonts are licensed under the **SIL Open Font License 1.1** (`OFL-1.1`).
+- **Word Meanings:** [Quranpedia.net](https://quranpedia.net) under its [data license](https://quranpedia.net/dumps/LICENSE.md); contemporary works remain with their authors and publishers.
+- **Typography:** All Quranic text and interface fonts are licensed under the **SIL Open Font License 1.1** (`OFL-1.1`), with the full text in `assets/fonts/OFL.txt`.
+- **Madinah Mushaf fonts and layout:** King Fahd Complex and Quran Foundation, under their own terms.
 
 Complete legal details and verbatim license texts are available in [ATTRIBUTION.md](ATTRIBUTION.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
