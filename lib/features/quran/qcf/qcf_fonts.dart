@@ -5,6 +5,8 @@
 /// المفتوحة.
 library;
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -40,7 +42,7 @@ class QcfFonts {
       _ready.add(page);
       return true;
     } catch (e) {
-      _loading.remove(page);
+      unawaited(_loading.remove(page));
       debugPrint('QCF font for page $page failed to load: $e');
       return false;
     }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -511,7 +513,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                             ? AppColors.accentGold(context)
                             : null,
                         onTap: () async {
-                          HapticFeedback.selectionClick();
+                          unawaited(HapticFeedback.selectionClick());
                           await HifzStore.toggle(
                             widget.ayah.surahNumber,
                             widget.ayah.ayahNumber,

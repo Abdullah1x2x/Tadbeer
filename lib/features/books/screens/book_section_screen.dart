@@ -129,7 +129,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
       return b.subtitle.contains(series);
     }).length;
 
-    var cleanName = series
+    final cleanName = series
         .replaceAll('سلسلة هدي القرآن: مدارسة ', '')
         .replaceAll('سلسلة ', '');
     return '$cleanName (${context.l10n.digits(count)})';

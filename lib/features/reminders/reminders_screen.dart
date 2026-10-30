@@ -47,7 +47,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
         existing?.repeatMode ?? ReminderRepeatMode.daily;
     ReminderAlertType alertType =
         existing?.alertType ?? ReminderAlertType.notification;
-    List<int> selectedDays = List.from(
+    final List<int> selectedDays = List.from(
       existing?.selectedDays ?? [1, 2, 3, 4, 5, 6, 7],
     );
     final titleController = TextEditingController(

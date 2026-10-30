@@ -185,9 +185,9 @@ _DuaCatalogEntry(
 )
 ```
 
-### ب. أذكار الصباح والمساء التفاعلية
+### ب. الأذكار التفاعلية
 - **الملف:** `lib/features/duas/data/adhkar_repository.dart`
-- **القائمتان:** `morningAdhkar` (للصباح) و `eveningAdhkar` (للمساء)
+- **القوائم:** `morningAdhkar` و`eveningAdhkar` و`sleepAdhkar` و`wakingAdhkar` و`afterPrayerAdhkar` و`mosqueAdhkar`
 
 ```dart
 AdhkarItem(

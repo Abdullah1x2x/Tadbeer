@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -66,7 +68,7 @@ class AppSelectField<T> extends StatelessWidget {
       ),
     );
     if (chosen != null && chosen.value != value) {
-      HapticFeedback.selectionClick();
+      unawaited(HapticFeedback.selectionClick());
       onChanged(chosen.value);
     }
   }

@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-%5E3.4.0-0175C2.svg?logo=dart)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-594%20passed-success.svg)](test/)
+[![Tests](https://img.shields.io/badge/Tests-653%20passed-success.svg)](test/)
 [![Offline](https://img.shields.io/badge/Offline--First-100%25-blueviolet.svg)](#privacy--offline-first)
 [![Website](https://img.shields.io/badge/Website-GitHub%20Pages-informational.svg)](https://abdullah-alshami.github.io/Tadbeer/)
 
@@ -55,6 +55,11 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Local File Attachments (PDF & Text):** Easily attach and import PDF documents and text files (`.txt`, `.md`) directly from your device, safely stored in offline application documents.
 - **Built-in Dedicated Reader & Sharing:** Clean reading interface with dynamic font resizing, chapter/outline navigation, external PDF app opening, and offline document sharing.
 
+### 🧭 Guided First Launch
+- **App Tour:** A short animated tour of the Mushaf, reflection, listening and the daily journey.
+- **Section Guides:** Each main section explains itself on first visit, and the guide button replays it.
+- **Home Walkthrough:** A spotlight on the real home widgets after the tour, replayable from Settings.
+
 ### 🌿 Reflection & Study Tools
 - **Tadbeer Pause (وقفة تدبر):** Structured reflection worksheet anchored to individual verses with four foundational prompts: *What do I understand? What feeling does it evoke? What does it heal in me? What practical action will I take?*
 - **Thematic Verse Links (روابط الآيات):** Thematic cross-referencing system linking related ayahs across surahs, viewable in both interactive topological network and sequential ordered list views.
@@ -72,6 +77,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 
 ### 🤲 Organized Duas & Adhkar Section
 - **Quranic Duas:** Catalog of **89 direct Quranic supplications** extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
+- **Daily Adhkar Beyond Morning & Evening:** Sleep, waking, after prayer and mosque adhkar with counters.
 - **Interactive Morning & Evening Adhkar:** Authentic fortress of the Muslim supplications with responsive per-dhikr countdown counters, instant copy, and documented virtues and sources.
 - **Ahlulbayt & Sahifah Sajjadiyah Duas (Complete Unabridged Texts):** Dedicated spiritual reader presenting each supplication as a single unified continuous text without segmented cuts, with font resizing and instant copying, featuring:
   - *Dua Makarim al-Akhlaq* (Noble Moral Traits by Imam Ali Zayn al-Abidin)
@@ -158,7 +164,7 @@ flutter run
 # Verify static analysis (0 warnings / 0 errors)
 dart analyze
 
-# Run all automated tests (594 tests, 81 test files)
+# Run all automated tests (653 tests, 86 test files)
 flutter test
 
 # Build production release packages
@@ -221,7 +227,7 @@ tadbeer/
 │   │   └── word_meanings/  # Word meanings explorer
 │   ├── l10n/               # ARB translations (gen-l10n)
 │   └── main.dart           # Entrypoint: bootstrap(), then runApp()
-├── test/                       # Comprehensive test suite (594 tests, 81 files)
+├── test/                       # Comprehensive test suite (653 tests, 86 files)
 │   ├── design_system/          # Design system component tests (Cards, Buttons, Badges)
 │   ├── motion/                 # Motion engine & reduced-motion accessibility tests
 │   └── ...                     # Comprehensive unit & widget tests across all features

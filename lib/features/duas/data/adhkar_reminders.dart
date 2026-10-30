@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -151,7 +153,7 @@ class _ReminderRow extends StatelessWidget {
             ),
       value: reminder != null,
       onChanged: (on) async {
-        HapticFeedback.selectionClick();
+        unawaited(HapticFeedback.selectionClick());
         if (on) {
           // يبدأ فوراً بالوقت المعتاد، ويغيّره القارئ بالضغط عليه.
           await AdhkarReminders.enable(category, defaultTime, title);

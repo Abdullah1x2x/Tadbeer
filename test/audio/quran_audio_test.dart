@@ -1,3 +1,4 @@
+// ignore_for_file: close_sinks
 import 'dart:async';
 import 'dart:io';
 

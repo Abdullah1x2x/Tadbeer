@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,7 +34,7 @@ class _NameScreenState extends State<NameScreen> {
   }
 
   Future<void> _go({required bool keep}) async {
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     final navigator = Navigator.of(context);
     if (keep) await UserDataStore.instance.setUserName(_name.text);
     navigator.pushReplacement(MaterialPageRoute(builder: widget.next));

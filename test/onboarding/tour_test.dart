@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -197,7 +198,7 @@ void main() {
         ),
       ),
     );
-    SectionGuide.show(context, GuideTopic.ayahLinks);
+    unawaited(SectionGuide.show(context, GuideTopic.ayahLinks));
     await io(tester);
     await advance(tester);
     expect(find.text('موضوع يجمع الآيات'), findsOneWidget);

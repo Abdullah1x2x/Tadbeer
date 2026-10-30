@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -90,7 +91,6 @@ class _BackupScreenState extends State<BackupScreen> {
         dialogTitle: l10n.selectBackupLocation,
         fileName: fileName,
         bytes: bytes,
-        type: FileType.any,
       );
 
       if (savedUri != null && mounted) {
@@ -249,33 +249,35 @@ class _BackupScreenState extends State<BackupScreen> {
         ),
       );
     } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.comsilkLight,
-          title: Text(
-            l10n.restoreFailed,
-            style: const TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
-              fontWeight: FontWeight.bold,
-              color: Colors.redAccent,
-            ),
-          ),
-          content: Text(
-            result.errorMessage ?? l10n.corruptBackupError,
-            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                l10n.close,
-                style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+      unawaited(
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: isDark
+                ? AppColors.darkBackground
+                : AppColors.comsilkLight,
+            title: Text(
+              l10n.restoreFailed,
+              style: const TextStyle(
+                fontFamily: 'IBMPlexSansArabic',
+                fontWeight: FontWeight.bold,
+                color: Colors.redAccent,
               ),
             ),
-          ],
+            content: Text(
+              result.errorMessage ?? l10n.corruptBackupError,
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  l10n.close,
+                  style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }

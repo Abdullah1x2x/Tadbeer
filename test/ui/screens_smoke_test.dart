@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:tadbeer/features/audio/downloads_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
@@ -105,6 +106,7 @@ void main() {
     'WordMeanings': () => const WordMeaningsScreen(),
     'AyahLinks': () => const AyahLinksScreen(),
     'Books': () => const BooksScreen(),
+    'Downloads': () => const RecitationDownloadsScreen(),
     'Focus': () =>
         FocusModeScreen(startAyah: QuranRepository.instance.getAyah(2, 255)!),
   };

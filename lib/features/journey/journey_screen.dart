@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -209,7 +210,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
             const SizedBox(height: 14),
             FilledButton.icon(
               onPressed: () async {
-                HapticFeedback.mediumImpact();
+                unawaited(HapticFeedback.mediumImpact());
                 final navigator = Navigator.of(context);
                 final messenger = ScaffoldMessenger.of(context);
                 final l10n = context.l10n;

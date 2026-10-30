@@ -53,7 +53,6 @@ Future<void> shareOrSaveFile(
   final saved = await FilePicker.saveFile(
     fileName: fileName,
     bytes: await file.readAsBytes(),
-    type: FileType.any,
   );
   if (saved == null || !context.mounted) return;
   ScaffoldMessenger.of(context).showSnackBar(

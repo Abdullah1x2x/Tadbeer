@@ -45,10 +45,10 @@ List<Rect> mergeTextBoxes(List<TextBox> boxes, double maxWidth) {
 
   final mergedLines = <Rect>[];
   for (final group in lineGroups) {
-    double minLeft = group.map((r) => r.left).reduce(math.min);
-    double maxRight = group.map((r) => r.right).reduce(math.max);
-    double minTop = group.map((r) => r.top).reduce(math.min);
-    double maxBottom = group.map((r) => r.bottom).reduce(math.max);
+    final double minLeft = group.map((r) => r.left).reduce(math.min);
+    final double maxRight = group.map((r) => r.right).reduce(math.max);
+    final double minTop = group.map((r) => r.top).reduce(math.min);
+    final double maxBottom = group.map((r) => r.bottom).reduce(math.max);
 
     mergedLines.add(Rect.fromLTRB(minLeft, minTop, maxRight, maxBottom));
   }

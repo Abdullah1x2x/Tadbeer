@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -102,7 +104,7 @@ class WeeklyGoalsCard extends StatelessWidget {
       ),
     );
     if (ok != true) return;
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     await WeeklyGoals(
       pages: (parse(pages) ?? goals.pages).clamp(1, 604),
       reflections: (parse(reflections) ?? goals.reflections).clamp(0, 100),

@@ -383,7 +383,7 @@ class _QuranScreenState extends State<QuranScreen> {
       _activeSelectedAyah = ayah;
     });
 
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
 
     await AyahRosette.show(context, ayah, at: at);
 

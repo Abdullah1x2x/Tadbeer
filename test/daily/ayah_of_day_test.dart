@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -98,9 +99,11 @@ void main() {
   testWidgets('the card holds still under an open sheet', (tester) async {
     await pumpCard(tester);
     final today = AyahOfTheDay.forDayAll(DateTime.now());
-    showModalBottomSheet<void>(
-      context: tester.element(find.byType(AyahOfTheDayCard)),
-      builder: (_) => const SizedBox(height: 100),
+    unawaited(
+      showModalBottomSheet<void>(
+        context: tester.element(find.byType(AyahOfTheDayCard)),
+        builder: (_) => const SizedBox(height: 100),
+      ),
     );
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 20));

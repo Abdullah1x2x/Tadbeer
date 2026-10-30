@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -185,7 +187,7 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
 
   Future<void> _grade(bool remembered) async {
     final (s, a) = widget.verses[_index];
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     await HifzStore.grade(s, a, remembered: remembered);
     if (!mounted) return;
     setState(() {

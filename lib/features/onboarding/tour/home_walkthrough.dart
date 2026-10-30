@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -93,7 +95,7 @@ class _WalkthroughState extends State<_Walkthrough> {
   }
 
   Future<void> _next(List<_Step> steps) async {
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     final next = _index + 1;
     if (next >= steps.length) {
       Navigator.pop(context);

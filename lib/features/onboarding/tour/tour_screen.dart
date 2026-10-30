@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -79,7 +81,7 @@ class _TourScreenState extends State<TourScreen>
   }
 
   Future<void> _finish() async {
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     final navigator = Navigator.of(context);
     await UserDataStore.instance.saveFeatureState(TourScreen._key, {
       'seen': true,
