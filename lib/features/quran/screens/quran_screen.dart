@@ -75,6 +75,9 @@ class _QuranScreenState extends State<QuranScreen> {
   /// ثانية.
   bool _ignoreNextPageChange = false;
 
+  /// آخر موضع قراءة تبعه المصحف، لتمييز تغيّر الموضع من غيره.
+  int? _lastSavedPage;
+
   /// آخر آية رُئيت عليها التلاوة، لتتبعها صفحة بصفحة.
   int? _audioAyahId;
 
@@ -144,6 +147,7 @@ class _QuranScreenState extends State<QuranScreen> {
       // تغيّر الموضع من قارئ فُتح في مكان آخر (من فاصل مثلاً).
       _showTopBar = true;
       widget.controlsVisible!.value = true;
+      _lastSavedPage = UserDataStore.instance.readingPosition.page;
       UserDataStore.instance.addListener(_syncToSavedPosition);
     }
 
@@ -218,6 +222,9 @@ class _QuranScreenState extends State<QuranScreen> {
   /// ينقل مصحف التبويب إلى الموضع المحفوظ حين يحرّكه قارئ آخر.
   void _syncToSavedPosition() {
     final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
+    // المخزن يُعلم بكل تغيير؛ وحفظ القارئ أو الإعدادات لا يحرّك الصفحة.
+    if (page == _lastSavedPage) return;
+    _lastSavedPage = page;
     if (page - 1 != _currentPageIndex && _pageController.hasClients) {
       _ignoreNextPageChange = true;
       _pageController.jumpToPage(page - 1);
