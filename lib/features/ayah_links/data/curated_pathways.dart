@@ -167,6 +167,90 @@ class CuratedPathwaysRegistry {
         ),
       ],
     ),
+    CuratedPathway(
+      id: 'doors_of_provision',
+      title: 'أبواب الرزق',
+      description: 'آيات من سور متفرّقة تفتح كلٌّ منها باباً للرزق: التقوى، والاستغفار، والشكر؛ فالرزق له مفاتيح بيد العبد.',
+      category: 'الرزق والبركة',
+      verses: [
+        CuratedPathwayVerse(
+          surah: 65,
+          ayah: 2,
+          note: 'الباب الأول: التقوى؛ من يتّق الله يجعل له من كل ضيق مخرجاً.',
+        ),
+        CuratedPathwayVerse(
+          surah: 65,
+          ayah: 3,
+          note: 'ويرزقه من حيث لا يحتسب، ومن توكّل على الله فهو كافيه.',
+        ),
+        CuratedPathwayVerse(
+          surah: 71,
+          ayah: 10,
+          note: 'الباب الثاني: الاستغفار؛ أمرٌ به مقروناً بأن الله غفّار.',
+        ),
+        CuratedPathwayVerse(
+          surah: 71,
+          ayah: 11,
+          note: 'ثمرته الأولى: مطرٌ متتابع يحيي الأرض.',
+        ),
+        CuratedPathwayVerse(
+          surah: 71,
+          ayah: 12,
+          note: 'وثمرته الثانية: أموالٌ وبنون وجنّات وأنهار.',
+        ),
+        CuratedPathwayVerse(
+          surah: 14,
+          ayah: 7,
+          note: 'الباب الثالث: الشكر؛ وعدٌ مؤكّد بالزيادة لمن شكر.',
+        ),
+      ],
+    ),
+    CuratedPathway(
+      id: 'allah_is_near',
+      title: 'الله قريبٌ يُجيب',
+      description: 'ثلاث آيات تجتمع على معنى واحد: الله قريب من عبده، ووعد بالإجابة، ويكشف الضيق عن المضطر.',
+      category: 'الدعاء والمناجاة',
+      verses: [
+        CuratedPathwayVerse(
+          surah: 2,
+          ayah: 186,
+          note: 'قُربه منك: لم يقل «قل إني قريب»، بل أجاب بنفسه «فإني قريب».',
+        ),
+        CuratedPathwayVerse(
+          surah: 40,
+          ayah: 60,
+          note: 'وعده بالإجابة: «ادعوني أستجب لكم»، وتسمية الدعاء عبادة.',
+        ),
+        CuratedPathwayVerse(
+          surah: 27,
+          ayah: 62,
+          note: 'في أشدّ الضيق: هو وحده من يجيب المضطر ويكشف السوء.',
+        ),
+      ],
+    ),
+    CuratedPathway(
+      id: 'gratitude',
+      title: 'الشكر',
+      description: 'الشكر في ثلاث آيات: أمرٌ به، ووعدٌ بالزيادة عليه، ونفعه عائدٌ على الشاكر.',
+      category: 'التزكية والإصلاح',
+      verses: [
+        CuratedPathwayVerse(
+          surah: 2,
+          ayah: 152,
+          note: 'أمرٌ بالشكر مقروناً بالذكر: اذكروني أذكركم.',
+        ),
+        CuratedPathwayVerse(
+          surah: 14,
+          ayah: 7,
+          note: 'جزاؤه: وعدٌ مؤكّد بالزيادة، وتحذير من الكفران.',
+        ),
+        CuratedPathwayVerse(
+          surah: 31,
+          ayah: 12,
+          note: 'نفعه يعود عليك: من يشكر فإنما يشكر لنفسه، والله غنيٌّ حميد.',
+        ),
+      ],
+    ),
   ];
 
   /// ينسخ المسار إلى روابط القارئ.
