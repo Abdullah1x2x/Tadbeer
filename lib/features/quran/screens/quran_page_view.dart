@@ -154,7 +154,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     final s = store.settings;
     final pageNumber = widget.page?.pageNumber ?? widget.pageNumber!;
     final page = widget.page ?? QuranRepository.instance.getPage(pageNumber);
-    final memorized = HifzStore.all().keys.toSet();
+    final memorized = HifzStore.ids();
     final out = StringBuffer(
       '${s.quranFontSize}|${s.flowingTextScale}|${s.quranFontFamilyName}|${s.mushafPaperTone}|'
       '${s.mushafStyle}',

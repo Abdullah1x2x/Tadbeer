@@ -101,8 +101,8 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     super.dispose();
   }
 
-  int? _measuredPage;
-  double _widestLine = 0;
+  /// أعرض سطر في كل صفحة بحجم [_probe]؛ لا يتغير، فيبقى عند الرجوع إليها.
+  static final Map<int, double> _widestLines = {};
 
   @override
   void initState() {
@@ -138,7 +138,8 @@ class _QcfPageBodyState extends State<QcfPageBody> {
 
   /// أعرض سطر في الصفحة بحجم [_probe]، يُقاس مرة لكل صفحة.
   double _measure(List<QcfLine> lines) {
-    if (_measuredPage == widget.pageNumber) return _widestLine;
+    final known = _widestLines[widget.pageNumber];
+    if (known != null) return known;
     var widest = 1.0;
     for (final line in lines) {
       if (line.kind != QcfLineKind.words) continue;
@@ -152,8 +153,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       widest = math.max(widest, painter.width);
       painter.dispose();
     }
-    _measuredPage = widget.pageNumber;
-    return _widestLine = widest;
+    return _widestLines[widget.pageNumber] = widest;
   }
 
   @override

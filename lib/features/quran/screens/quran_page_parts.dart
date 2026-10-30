@@ -40,7 +40,7 @@ extension _QuranPageParts on _QuranPageViewState {
     required double fontSize,
     required Widget fallback,
   }) {
-    final memorized = HifzStore.all().keys.toSet();
+    final memorized = HifzStore.ids();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -352,7 +352,7 @@ extension _QuranPageParts on _QuranPageViewState {
 
     final spanChildren = <InlineSpan>[];
     // تُقرأ مرة للصفحة، وتُفحص لكل آية أدناه.
-    final memorized = HifzStore.all().keys.toSet();
+    final memorized = HifzStore.ids();
 
     for (final ayah in ayahs) {
       final isSelected = widget.selectedAyah?.id == ayah.id;

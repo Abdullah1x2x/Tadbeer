@@ -67,9 +67,24 @@ class _QuranScreenState extends State<QuranScreen> {
   /// تقليبها.
   static const _autoCountDwell = Duration(seconds: 40);
 
+  /// ما يُنتظر بعد آخر تقليب قبل الحفظ.
+  static const _settleDelay = Duration(milliseconds: 500);
+
   /// الصفحة المعروضة على شريط التمرير أثناء سحبه.
   int? _sliderPage;
   Timer? _autoCountTimer;
+  Timer? _saveTimer;
+  final List<int> _pagesToCount = [];
+  int? _pageToPersist;
+
+  /// حروف المصحف ثقيلة الرسم، فتُرسم مرة في صورة تتحرّك أثناء السحب.
+  final _pageSnapshots = SnapshotController();
+  ScrollPosition? _pagerPosition;
+
+  /// شجرة الصفحات محفوظة، فتغيّر رقم الصفحة لا يعيد بناءها أثناء السحب.
+  Widget? _pager;
+  int? _pagerSelectedAyah;
+  bool? _pagerIsDark;
 
   /// يُضبط قبل انتقال لم يقم به القارئ (كمزامنة التبويب)، فلا يُحسب ولا يُحفظ
   /// ثانية.
@@ -96,12 +111,30 @@ class _QuranScreenState extends State<QuranScreen> {
 
   /// لا يتحرك موضع القراءة (ومعه الختمة) إلا بقراءة فعلية: التقدم بعد قراءة
   /// الصفحة، أو البقاء عليها. النظرة ونتيجة البحث وقفزة الشريط لا تحرّك شيئاً.
-  Future<void> _maybeCountPage(int fromIndex, int toIndex) async {
+  void _maybeCountPage(int fromIndex, int toIndex) {
     if (toIndex != fromIndex + 1) return;
     if (DateTime.now().difference(_pageShownAt) < _readDwell) return;
+    _pagesToCount.add(fromIndex + 1);
+    _pageToPersist = toIndex + 1;
+  }
+
+  /// الحفظ يكتب ملف القارئ كله، فينتظر حتى تستقر الصفحة ولا يقطع حركة التقليب.
+  void _saveAfterSettling() {
+    _saveTimer?.cancel();
+    if (_pagesToCount.isEmpty) return;
+    _saveTimer = Timer(_settleDelay, _saveCountedPages);
+  }
+
+  Future<void> _saveCountedPages() async {
+    final pages = List.of(_pagesToCount);
+    final next = _pageToPersist;
+    _pagesToCount.clear();
+    _pageToPersist = null;
     // يُحسب أولاً، فتكتمل الختمة بقراءة صفحتها الأخيرة.
-    await UserDataStore.instance.recordPageRead(fromIndex + 1);
-    _persistCurrentPagePosition(toIndex + 1);
+    for (final page in pages) {
+      await UserDataStore.instance.recordPageRead(page);
+    }
+    if (next != null) _persistCurrentPagePosition(next);
   }
 
   /// يعيد بدء الانتظار الذي تُحسب بعده الصفحة المعروضة مقروءة.
@@ -153,6 +186,16 @@ class _QuranScreenState extends State<QuranScreen> {
 
     _startAutoCount();
     QuranAudio.instance.addListener(_onAudio);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_pageController.hasClients) return;
+      _pagerPosition = _pageController.position;
+      _pagerPosition!.isScrollingNotifier.addListener(_onPagerScrolling);
+    });
+  }
+
+  void _onPagerScrolling() {
+    _pageSnapshots.allowSnapshotting =
+        _pagerPosition!.isScrollingNotifier.value;
   }
 
   /// يتبع التلاوة: يقلب إلى صفحة الآية المتلوّة (دون حسابها مقروءة)، ويقول إن
@@ -215,6 +258,10 @@ class _QuranScreenState extends State<QuranScreen> {
     QuranAudio.instance.removeListener(_onAudio);
     _suppressTimer?.cancel();
     _autoCountTimer?.cancel();
+    _saveTimer?.cancel();
+    if (_pagesToCount.isNotEmpty) _saveCountedPages();
+    _pagerPosition?.isScrollingNotifier.removeListener(_onPagerScrolling);
+    _pageSnapshots.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -244,10 +291,12 @@ class _QuranScreenState extends State<QuranScreen> {
     _startAutoCount();
     if (programmatic) {
       _pageShownAt = DateTime.now();
+      _saveAfterSettling();
       return;
     }
     _maybeCountPage(from, index);
     _pageShownAt = DateTime.now();
+    _saveAfterSettling();
   }
 
   /// يحفظ موضع القراءة: الصفحة والسورة والآية.
@@ -256,6 +305,8 @@ class _QuranScreenState extends State<QuranScreen> {
     final page = repo.getPage(pageNumber);
     if (page.ayahs.isNotEmpty) {
       final firstAyah = page.ayahs.first;
+      // حفظ هذا القارئ لا يحرّكه: ربما تقدّم صفحة أخرى منذ بدأ الانتظار.
+      _lastSavedPage = pageNumber;
       UserDataStore.instance.saveReadingPosition(
         page: pageNumber,
         surahNumber: firstAyah.surahNumber,
@@ -645,10 +696,133 @@ class _QuranScreenState extends State<QuranScreen> {
     );
   }
 
+  /// صفحات المصحف، ولا تُبنى من جديد إلا إن تغيّرت الآية المحددة أو السطوع.
+  Widget _pagerFor(bool isDark) {
+    final selected = (_activeSelectedAyah ?? QuranAudio.instance.current)?.id;
+    if (_pager == null ||
+        selected != _pagerSelectedAyah ||
+        isDark != _pagerIsDark) {
+      _pagerSelectedAyah = selected;
+      _pagerIsDark = isDark;
+      _pager = _buildPager(isDark);
+    }
+    return _pager!;
+  }
+
+  Widget _buildPager(bool isDark) {
+    final repo = QuranRepository.instance;
+    return SafeArea(
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _toggleTopBar,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWideSpread = constraints.maxWidth >= 900;
+            return PageView.builder(
+              controller: _pageController,
+              // الصفحتان المجاورتان جاهزتان قبل أن يبدأ السحب.
+              allowImplicitScrolling: true,
+              itemCount: 604,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (context, index) {
+                final pageNumber = index + 1;
+                if (!isWideSpread) {
+                  final page = repo.getPage(pageNumber);
+                  return RepaintBoundary(
+                    child: SnapshotWidget(
+                      controller: _pageSnapshots,
+                      mode: SnapshotMode.permissive,
+                      child: QuranPageView(
+                        page: page,
+                        pageNumber: pageNumber,
+                        selectedAyah:
+                            _activeSelectedAyah ?? QuranAudio.instance.current,
+                        onAyahTap: _handleAyahTap,
+                        onAyahLongPress: _handleAyahLongPress,
+                        onAyahHighlight: _handleAyahHighlight,
+                        onAyahHighlightClear: _handleAyahHighlightClear,
+                      ),
+                    ),
+                  );
+                }
+
+                // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
+                // فأكثر).
+                if (pageNumber == 1) {
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 480),
+                      child: QuranPageView(
+                        page: repo.getPage(1),
+                        pageNumber: 1,
+                        selectedAyah:
+                            _activeSelectedAyah ?? QuranAudio.instance.current,
+                        onAyahTap: _handleAyahTap,
+                        onAyahLongPress: _handleAyahLongPress,
+                        onAyahHighlight: _handleAyahHighlight,
+                        onAyahHighlightClear: _handleAyahHighlightClear,
+                      ),
+                    ),
+                  );
+                }
+
+                final int rightPageNum;
+                final int leftPageNum;
+                if (pageNumber.isEven) {
+                  leftPageNum = pageNumber;
+                  rightPageNum = (pageNumber + 1).clamp(1, 604);
+                } else {
+                  rightPageNum = pageNumber;
+                  leftPageNum = (pageNumber - 1).clamp(1, 604);
+                }
+
+                return Row(
+                  children: [
+                    Expanded(
+                      child: QuranPageView(
+                        page: repo.getPage(rightPageNum),
+                        pageNumber: rightPageNum,
+                        selectedAyah:
+                            _activeSelectedAyah ?? QuranAudio.instance.current,
+                        onAyahTap: _handleAyahTap,
+                        onAyahLongPress: _handleAyahLongPress,
+                        onAyahHighlight: _handleAyahHighlight,
+                        onAyahHighlightClear: _handleAyahHighlightClear,
+                      ),
+                    ),
+                    Container(
+                      width: 1.0,
+                      color:
+                          (isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder)
+                              .withValues(alpha: 0.5),
+                    ),
+                    Expanded(
+                      child: QuranPageView(
+                        page: repo.getPage(leftPageNum),
+                        pageNumber: leftPageNum,
+                        selectedAyah:
+                            _activeSelectedAyah ?? QuranAudio.instance.current,
+                        onAyahTap: _handleAyahTap,
+                        onAyahLongPress: _handleAyahLongPress,
+                        onAyahHighlight: _handleAyahHighlight,
+                        onAyahHighlightClear: _handleAyahHighlightClear,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final repo = QuranRepository.instance;
     final currentPageNumber = _currentPageIndex + 1;
     final shouldAnimate = AppMotion.shouldAnimate(context);
 
@@ -662,120 +836,7 @@ class _QuranScreenState extends State<QuranScreen> {
         ),
         body: Stack(
           children: [
-            Positioned.fill(
-              child: SafeArea(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: _toggleTopBar,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final isWideSpread = constraints.maxWidth >= 900;
-                      return PageView.builder(
-                        controller: _pageController,
-                        itemCount: 604,
-                        onPageChanged: _onPageChanged,
-                        itemBuilder: (context, index) {
-                          final pageNumber = index + 1;
-                          if (!isWideSpread) {
-                            final page = repo.getPage(pageNumber);
-                            // طبقة لكل صفحة، فيحرّك السحب الصفحات دون إعادة
-                            // رسمها.
-                            return RepaintBoundary(
-                              child: QuranPageView(
-                                page: page,
-                                pageNumber: pageNumber,
-                                selectedAyah:
-                                    _activeSelectedAyah ??
-                                    QuranAudio.instance.current,
-                                onAyahTap: _handleAyahTap,
-                                onAyahLongPress: _handleAyahLongPress,
-                                onAyahHighlight: _handleAyahHighlight,
-                                onAyahHighlightClear: _handleAyahHighlightClear,
-                              ),
-                            );
-                          }
-
-                          // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
-                          // فأكثر).
-                          if (pageNumber == 1) {
-                            return Center(
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 480,
-                                ),
-                                child: QuranPageView(
-                                  page: repo.getPage(1),
-                                  pageNumber: 1,
-                                  selectedAyah:
-                                      _activeSelectedAyah ??
-                                      QuranAudio.instance.current,
-                                  onAyahTap: _handleAyahTap,
-                                  onAyahLongPress: _handleAyahLongPress,
-                                  onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear:
-                                      _handleAyahHighlightClear,
-                                ),
-                              ),
-                            );
-                          }
-
-                          final int rightPageNum;
-                          final int leftPageNum;
-                          if (pageNumber.isEven) {
-                            leftPageNum = pageNumber;
-                            rightPageNum = (pageNumber + 1).clamp(1, 604);
-                          } else {
-                            rightPageNum = pageNumber;
-                            leftPageNum = (pageNumber - 1).clamp(1, 604);
-                          }
-
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: QuranPageView(
-                                  page: repo.getPage(rightPageNum),
-                                  pageNumber: rightPageNum,
-                                  selectedAyah:
-                                      _activeSelectedAyah ??
-                                      QuranAudio.instance.current,
-                                  onAyahTap: _handleAyahTap,
-                                  onAyahLongPress: _handleAyahLongPress,
-                                  onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear:
-                                      _handleAyahHighlightClear,
-                                ),
-                              ),
-                              Container(
-                                width: 1.0,
-                                color:
-                                    (isDark
-                                            ? AppColors.darkBorder
-                                            : AppColors.lightBorder)
-                                        .withValues(alpha: 0.5),
-                              ),
-                              Expanded(
-                                child: QuranPageView(
-                                  page: repo.getPage(leftPageNum),
-                                  pageNumber: leftPageNum,
-                                  selectedAyah:
-                                      _activeSelectedAyah ??
-                                      QuranAudio.instance.current,
-                                  onAyahTap: _handleAyahTap,
-                                  onAyahLongPress: _handleAyahLongPress,
-                                  onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear:
-                                      _handleAyahHighlightClear,
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            Positioned.fill(child: _pagerFor(isDark)),
 
             Positioned(
               top: 0,

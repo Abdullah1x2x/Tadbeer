@@ -52,6 +52,10 @@ class HifzStore {
       e.key: HifzCard.fromJson(Map<String, dynamic>.from(e.value as Map)),
   };
 
+  /// مفاتيح الآيات المضافة للحفظ، دون كلفة قراءة بطاقاتها.
+  static Set<String> ids() =>
+      UserDataStore.instance.featureState(_key).keys.toSet();
+
   /// حالة حفظ الآية، أو null.
   static HifzCard? card(int surah, int ayah) => all()[_id(surah, ayah)];
 
