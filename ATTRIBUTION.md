@@ -16,7 +16,7 @@
 
 | Component | Source & Digitization | Scholarly & Lexicographical References | License Type |
 | :--- | :--- | :--- | :--- |
-| **Quran Vocabulary Lexicon (6,465 entries)** | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) — Release `2026-10-10` | • **Classical Arabic Dictionaries (Public Domain):** *Lisan al-Arab* (Ibn Manzur), *Maqayis al-Lughah* (Ibn Faris), *Taj al-Arus* (al-Zabidi), *Mufradat Alfadh al-Quran* (al-Raghib al-Isfahani).<br>• **Linguistic References:** *Al-Mu'jam al-Wasit* (Academy of the Arabic Language, Cairo). | [Quranpedia data license](https://quranpedia.net/dumps/LICENSE.md); contemporary works remain with their authors and publishers |
+| **Quran Vocabulary Lexicon (6,465 entries)** | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) — Release `2026-10-10` | Digitized and structured by Quranpedia.net | [Quranpedia data license](https://quranpedia.net/dumps/LICENSE.md); contemporary works remain with their authors and publishers |
 
 ---
 
@@ -40,7 +40,7 @@ All fonts bundled with the application are free, open source, and licensed under
 
 | Component | Source | Terms | Usage in Application |
 | :--- | :--- | :--- | :--- |
-| **QCF page fonts, version 1** (604 fonts, *خطوط صفحات مصحف المدينة*) | [King Fahd Glorious Quran Printing Complex](https://qurancomplex.gov.sa/) | Distributed free of charge by the Complex for non-commercial use; the glyphs must not be altered | Primary Mushaf view; bundled as `assets/fonts/qcf/p1.ttf` … `p604.ttf` and loaded page by page |
+| **QCF page fonts, version 1** (604 fonts, *خطوط صفحات مصحف المدينة*) | [King Fahd Glorious Quran Printing Complex](https://qurancomplex.gov.sa/) | Provided by the Complex; the glyphs are not altered | Primary Mushaf view; bundled as `assets/fonts/qcf/p1.ttf` … `p604.ttf` and loaded page by page |
 | **Mushaf line layout** (word glyph codes and line numbers) | [Quran.com API v4](https://api-docs.quran.com/) (Quran Foundation) | Used with attribution | Places each word on its printed line; bundled as `assets/quran/qcf_v1_layout.json.gz` (built by `tool/qcf/build_layout.py`) |
 
 ---
@@ -55,13 +55,12 @@ All fonts bundled with the application are free, open source, and licensed under
 
 ## 4. Books, Pamphlets & Heritage Works (مكتبة الكتب والملازم وتراث التدبر)
 
-| Collection / Work | Author / Scholar | Origin & Digital Source | License / Public Domain Status |
+| Collection / Work | Author / Scholar | Origin & Digital Source | Notes |
 | :--- | :--- | :--- | :--- |
 | **Lessons from the Guidance of the Holy Quran** (*ملازم هدي القرآن الكريم* — 86 Pamphlets) | Martyr Leader Sayyed Hussein Badreddin al-Houthi (*الشهيد القائد السيد حسين بدر الدين الحوثي*) | Official transcripts and verified PDF publications ([Al-Masirah / Ansar Allah Media](https://almasirah.net.ye)) | Rights remain with their owners; not covered by the MIT License. |
-| **Ahlulbayt Heritage** (*تراث أهل البيت عليهم السلام*) | Imam Ali ibn Abi Talib, Imam Ali Zayn al-Abidin, Ibn Shu'ba al-Harrani | Classical Islamic Heritage: *Nahj al-Balagha* (*نهج البلاغة*), *Al-Sahifah al-Sajjadiyah* (*الصحيفة السجادية*), *Risalat al-Huquq* (*رسالة الحقوق*), *Tuhaf al-Uqul* (*تحف العقول*) | Public Domain (Classical Islamic Heritage) |
-| **Quranic Sciences & Contemplation** (*علوم وتدبر القرآن الكريم*) | Al-Ajurri (*الآجري*), Al-Sa'di (*السعدي*), Al-Nawawi (*النووي*) | Classical Treatises: *Akhlaq Hamalat al-Quran* (*أخلاق حملة القرآن*), *Al-Tibyan fi Adab Hamalat al-Quran* (*التبيان في آداب حملة القرآن*), *Qawa'id al-Hisan* (*القواعد الحسان*) | Public Domain (Classical Islamic Heritage) |
+| **Ahlulbayt Heritage** (*تراث أهل البيت عليهم السلام*) | Imam Ali ibn Abi Talib, Imam Ali Zayn al-Abidin, Ibn Shu'ba al-Harrani | Classical Islamic Heritage: *Nahj al-Balagha* (*نهج البلاغة*), *Al-Sahifah al-Sajjadiyah* (*الصحيفة السجادية*), *Risalat al-Huquq* (*رسالة الحقوق*), *Tuhaf al-Uqul* (*تحف العقول*) | Classical work |
+| **Quranic Sciences & Contemplation** (*علوم وتدبر القرآن الكريم*) | Al-Ajurri (*الآجري*), Al-Sa'di (*السعدي*), Al-Nawawi (*النووي*) | Classical Treatises: *Akhlaq Hamalat al-Quran* (*أخلاق حملة القرآن*), *Al-Tibyan fi Adab Hamalat al-Quran* (*التبيان في آداب حملة القرآن*), *Qawa'id al-Hisan* (*القواعد الحسان*) | Classical work |
 | **Twelve duas of Al-Sahifa Al-Sajjadiyya** | Imam Ali Zayn al-Abidin | Digitized by [Arabic Wikisource](https://ar.wikisource.org/wiki/الصحيفة_السجادية) contributors; paragraphs split and five typing errors corrected | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) |
-| **Quranic Duas & Mihrab Tasbeeh/Istighfar** (*أدعية القرآن ومحراب التسبيح والاستغفار*) | Holy Quran & Prophetic and Ahlulbayt Traditions (89 Duas, 49 Formulas) | Authentic Quranic verses and documented classical Athar & Zikr collections | Public Domain / CC BY 3.0 (Texts) + MIT (Application code and curated schema) |
 
 ---
 

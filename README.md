@@ -71,7 +71,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 ### 📚 Quranic Word Meanings (معاني كلمات القرآن)
 - **Extensive Single-Word Lexicon:** Curated dataset of **6,465 single-word entries** covering all 604 pages and 114 surahs with 100% coverage.
 - **Pure Lexical Definitions:** Focused lexical meanings in concise Arabic, free from extraneous commentary or speculative tafsir.
-- **Authoritative Attributions:** Derived from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10`), *Al-Mu'jam Al-Waseet* (Academy of the Arabic Language in Cairo), and classical lexicons (*Lisan Al-Arab*, *Maqayis Al-Lughah*, *Taj Al-Arus*, *Mufradat Al-Raghib*).
+- **Attribution:** Data from [Quranpedia.net](https://quranpedia.net) (`Version 2026-10-10`).
 - **Synchronized Margin Panel:** Built-in collapsible reader panel updating dynamically on every page turn, alongside a dedicated standalone lexicon browser screen.
 - **Light Diacritics & Mushaf Order:** Meanings carry light tashkeel (shadda, tanween and the vowels a reader could misread) and are listed by surah and ayah; search still matches text typed without diacritics.
 

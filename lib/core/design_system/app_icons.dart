@@ -305,11 +305,6 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
-  static const IconData gavel = IconData(
-    0xea32,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
   static const IconData gear = IconData(
     0xe270,
     fontFamily: _regular,

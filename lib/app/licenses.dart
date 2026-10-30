@@ -27,11 +27,7 @@ License: https://quranpedia.net/dumps/LICENSE.md
 
 - Free to use inside apps, websites, bots, and research tools.
 - Republishing this data as a downloadable dataset credits Quranpedia.net
-  (https://quranpedia.net) with dump version 2026-10-10.
-- Classical heritage lexicons (Lisan Al-Arab, Maqayis Al-Lughah, Taj Al-Arus,
-  Mufradat Al-Raghib, Al-Tibyan by Ibn Al-Ha'im, Tadhkirat Al-Arib by Ibn Al-Jawzi)
-  are in the Public Domain. Contemporary references remain the property of their
-  respective authors and publishers.''',
+  (https://quranpedia.net) with dump version 2026-10-10.''',
     );
 
     yield const LicenseEntryWithLineBreaks(

@@ -27,7 +27,7 @@ class CustomWordMeaningConfig {
   /// المعنى الأصلي أو المرجع التفصيلي.
   final String? originalMeaning;
 
-  /// اسم المعجم؛ الافتراضي "المعجم الوسيط".
+  /// اسم المعجم؛ الافتراضي "الموسوعة القرآنية".
   final String? sourceName;
 
   /// رابط المصدر.
@@ -56,7 +56,7 @@ class CustomWordMeaningConfig {
       meaning: meaning,
       originalMeaning: originalMeaning ?? meaning,
       sourceId: 999, // معرّف الإضافات البرمجية المخصصة
-      sourceName: sourceName ?? 'المعجم الوسيط، مجمع اللغة العربية بالقاهرة',
+      sourceName: sourceName ?? 'الموسوعة القرآنية',
       sourceUrl: sourceUrl,
       page: pageNumber,
       status: 'approved',
