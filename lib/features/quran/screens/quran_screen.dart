@@ -729,8 +729,22 @@ class _QuranScreenState extends State<QuranScreen> {
     return _pager!;
   }
 
+  /// صفحة المصحف [pageNumber]، تتحرّك صورةً أثناء السحب.
+  Widget _mushafPage(int pageNumber) => SnapshotWidget(
+    controller: _pageSnapshots,
+    mode: SnapshotMode.permissive,
+    child: QuranPageView(
+      page: QuranRepository.instance.getPage(pageNumber),
+      pageNumber: pageNumber,
+      selectedAyah: _activeSelectedAyah ?? QuranAudio.instance.current,
+      onAyahTap: _handleAyahTap,
+      onAyahLongPress: _handleAyahLongPress,
+      onAyahHighlight: _handleAyahHighlight,
+      onAyahHighlightClear: _handleAyahHighlightClear,
+    ),
+  );
+
   Widget _buildPager(bool isDark) {
-    final repo = QuranRepository.instance;
     return SafeArea(
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -747,23 +761,7 @@ class _QuranScreenState extends State<QuranScreen> {
               itemBuilder: (context, index) {
                 final pageNumber = index + 1;
                 if (!isWideSpread) {
-                  final page = repo.getPage(pageNumber);
-                  return RepaintBoundary(
-                    child: SnapshotWidget(
-                      controller: _pageSnapshots,
-                      mode: SnapshotMode.permissive,
-                      child: QuranPageView(
-                        page: page,
-                        pageNumber: pageNumber,
-                        selectedAyah:
-                            _activeSelectedAyah ?? QuranAudio.instance.current,
-                        onAyahTap: _handleAyahTap,
-                        onAyahLongPress: _handleAyahLongPress,
-                        onAyahHighlight: _handleAyahHighlight,
-                        onAyahHighlightClear: _handleAyahHighlightClear,
-                      ),
-                    ),
-                  );
+                  return RepaintBoundary(child: _mushafPage(pageNumber));
                 }
 
                 // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
@@ -772,16 +770,7 @@ class _QuranScreenState extends State<QuranScreen> {
                   return Center(
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 480),
-                      child: QuranPageView(
-                        page: repo.getPage(1),
-                        pageNumber: 1,
-                        selectedAyah:
-                            _activeSelectedAyah ?? QuranAudio.instance.current,
-                        onAyahTap: _handleAyahTap,
-                        onAyahLongPress: _handleAyahLongPress,
-                        onAyahHighlight: _handleAyahHighlight,
-                        onAyahHighlightClear: _handleAyahHighlightClear,
-                      ),
+                      child: _mushafPage(1),
                     ),
                   );
                 }
@@ -798,18 +787,7 @@ class _QuranScreenState extends State<QuranScreen> {
 
                 return Row(
                   children: [
-                    Expanded(
-                      child: QuranPageView(
-                        page: repo.getPage(rightPageNum),
-                        pageNumber: rightPageNum,
-                        selectedAyah:
-                            _activeSelectedAyah ?? QuranAudio.instance.current,
-                        onAyahTap: _handleAyahTap,
-                        onAyahLongPress: _handleAyahLongPress,
-                        onAyahHighlight: _handleAyahHighlight,
-                        onAyahHighlightClear: _handleAyahHighlightClear,
-                      ),
-                    ),
+                    Expanded(child: _mushafPage(rightPageNum)),
                     Container(
                       width: 1.0,
                       color:
@@ -818,18 +796,7 @@ class _QuranScreenState extends State<QuranScreen> {
                                   : AppColors.lightBorder)
                               .withValues(alpha: 0.5),
                     ),
-                    Expanded(
-                      child: QuranPageView(
-                        page: repo.getPage(leftPageNum),
-                        pageNumber: leftPageNum,
-                        selectedAyah:
-                            _activeSelectedAyah ?? QuranAudio.instance.current,
-                        onAyahTap: _handleAyahTap,
-                        onAyahLongPress: _handleAyahLongPress,
-                        onAyahHighlight: _handleAyahHighlight,
-                        onAyahHighlightClear: _handleAyahHighlightClear,
-                      ),
-                    ),
+                    Expanded(child: _mushafPage(leftPageNum)),
                   ],
                 );
               },

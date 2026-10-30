@@ -169,6 +169,7 @@ class _QcfAyahTextState extends State<QcfAyahText> {
   }
 
   Widget _text(QcfGlyphs glyphs) => Text(
+    semanticsLabel: widget.ayah.text,
     glyphs.text,
     textAlign: TextAlign.center,
     textDirection: TextDirection.rtl,

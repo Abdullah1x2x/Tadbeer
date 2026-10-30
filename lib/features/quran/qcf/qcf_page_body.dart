@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import '../../../core/utils/arabic_search_normalizer.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -278,6 +280,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       case QcfLineKind.basmala:
         return Text(
           QcfPageBody.basmalaGlyphs,
+          semanticsLabel: QuranRepository.instance.getAyah(1, 1)?.text,
           maxLines: 1,
           softWrap: false,
           textDirection: TextDirection.rtl,
@@ -305,12 +308,37 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     }
   }
 
+  /// نص كلمات [run] من [ayah]: الرموز لا تعني شيئاً لقارئ الشاشة.
+  ///
+  /// علامات الوقف المنفصلة لا تقابلها كلمة في تخطيط الصفحة. وإن اختلف العددان
+  /// قُرئت الآية كاملة عند أول أجزائها.
+  String? _spokenWords(Ayah ayah, List<QcfWord> run) {
+    final layout = [
+      for (final line in QcfLayout.instance.page(widget.pageNumber))
+        for (final word in line.words)
+          if (word.surah == ayah.surahNumber &&
+              word.ayah == ayah.ayahNumber &&
+              !word.isEnd)
+            word,
+    ];
+    final spoken = [
+      for (final word in ayah.text.split(' '))
+        if (ArabicSearchNormalizer.normalize(word).isNotEmpty) word,
+    ];
+    final at = layout.indexOf(run.first);
+    if (at < 0) return null;
+    if (spoken.length != layout.length) return at == 0 ? ayah.text : '';
+    final length = run.where((w) => !w.isEnd).length;
+    return spoken.sublist(at, at + length).join(' ');
+  }
+
   /// مقطع لكل آية، فالنقر في أي موضع منها يختارها.
   TextSpan _spans(List<QcfWord> words, double size) {
     final runs = <InlineSpan>[];
     var i = 0;
     while (i < words.length) {
       final first = words[i];
+      final start = i;
       final text = StringBuffer();
       String? end;
       while (i < words.length &&
@@ -330,6 +358,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         runs.add(
           TextSpan(
             text: text.toString(),
+            semanticsLabel: ayah == null
+                ? null
+                : _spokenWords(ayah, words.sublist(start, i)),
             recognizer: recognizer,
             style: TextStyle(backgroundColor: background),
           ),
@@ -342,6 +373,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         runs.add(
           TextSpan(
             text: end,
+            semanticsLabel: ArabicSearchNormalizer.toArabicDigits(first.ayah),
             recognizer: recognizer,
             style: TextStyle(
               backgroundColor: background,

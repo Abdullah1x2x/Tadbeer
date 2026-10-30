@@ -356,6 +356,9 @@ class UserDataStore extends _StoreState
     );
   }
 
+  int _lastWrite = 0;
+  int _lastSaved = 0;
+
   /// يكتب الحالة في ملف JSON بكتابة ذرّية.
   @override
   Future<void> saveToDisk() async {
@@ -380,9 +383,16 @@ class UserDataStore extends _StoreState
 
       final jsonString = jsonEncode(data);
 
-      final tempFile = File('${_dataFile!.path}.tmp');
+      // لكل كتابة ملفها المؤقت، وآخر حالة تبقى ولو سبقتها كتابة أقدم.
+      final turn = ++_lastWrite;
+      final tempFile = File('${_dataFile!.path}.$turn.tmp');
       await tempFile.writeAsString(jsonString, flush: true);
-      await tempFile.rename(_dataFile!.path);
+      if (turn < _lastSaved) {
+        await tempFile.delete();
+        return;
+      }
+      _lastSaved = turn;
+      tempFile.renameSync(_dataFile!.path);
     } catch (e) {
       debugPrint('UserDataStore.saveToDisk: $e');
     }

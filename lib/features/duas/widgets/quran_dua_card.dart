@@ -383,6 +383,7 @@ class _DuaTextState extends State<_DuaText> {
     final glyphs = _glyphs;
     if (glyphs != null) {
       return Text.rich(
+        semanticsLabel: widget.dua.duaText,
         TextSpan(
           children: [
             for (final g in glyphs)

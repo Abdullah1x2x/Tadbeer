@@ -543,20 +543,26 @@ class LocalReminderService implements ReminderScheduler {
     for (int i = 0; i <= 7; i++) {
       try {
         await _notificationsPlugin.cancel(id: baseId + i);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('cancelReminder: ${baseId + i}: $e');
+      }
     }
     if (reminder.id == portionReminderId) {
       for (int i = 0; i < portionReminderDays; i++) {
         try {
           await _notificationsPlugin.cancel(id: _portionBaseId + i);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('cancelReminder: portion $i: $e');
+        }
       }
     }
     if (reminder.id == streakReminderId) {
       for (int i = 0; i < 2; i++) {
         try {
           await _notificationsPlugin.cancel(id: _streakBaseId + i);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('cancelReminder: streak $i: $e');
+        }
       }
     }
   }
@@ -615,7 +621,9 @@ class LocalReminderService implements ReminderScheduler {
           return AndroidScheduleMode.inexactAllowWhileIdle;
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Could not check exact alarms: $e');
+    }
     return alertType == ReminderAlertType.alarm
         ? AndroidScheduleMode.alarmClock
         : AndroidScheduleMode.exactAllowWhileIdle;
