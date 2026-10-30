@@ -134,15 +134,22 @@ void main() {
     );
     final context = tester.element(find.byType(Column).first);
     expect(HomeWalkthrough.seen, isFalse);
-    await tester.runAsync(() async {
-      // Pushing the route needs the save first; the route stays open.
-      HomeWalkthrough.show(context).ignore();
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-    });
+    // Pushing the route needs the save first; the route stays open.
+    HomeWalkthrough.show(context).ignore();
+    final l10n = context.l10n;
+    for (
+      var i = 0;
+      i < 200 && find.text(l10n.walkAyahTitle).evaluate().isEmpty;
+      i++
+    ) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 10)),
+      );
+      await tester.pump();
+    }
     await advance(tester);
     expect(HomeWalkthrough.seen, isTrue);
 
-    final l10n = context.l10n;
     expect(find.text(l10n.walkAyahTitle), findsOneWidget);
     for (var i = 0; i < 5; i++) {
       await tester.tap(find.text(l10n.tourNext));

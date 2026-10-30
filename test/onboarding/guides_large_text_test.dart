@@ -67,6 +67,26 @@ void main() {
     return context;
   }
 
+  /// Waits for the saved flag, however slow the disk, then for the sheet.
+  Future<void> showGuide(
+    WidgetTester tester,
+    BuildContext context,
+    GuideTopic topic,
+  ) async {
+    SectionGuide.show(context, topic).ignore();
+    for (
+      var i = 0;
+      i < 200 && find.byType(BottomSheet).evaluate().isEmpty;
+      i++
+    ) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 10)),
+      );
+      await tester.pump();
+    }
+    expect(find.byType(BottomSheet), findsOneWidget);
+  }
+
   Future<void> frames(WidgetTester tester) async {
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 120));
@@ -81,10 +101,7 @@ void main() {
     ) async {
       final context = await pumpHost(tester, dark: dark);
       for (final topic in GuideTopic.values) {
-        await tester.runAsync(() async {
-          SectionGuide.show(context, topic).ignore();
-          await Future<void>.delayed(const Duration(milliseconds: 60));
-        });
+        await showGuide(tester, context, topic);
         await frames(tester);
         expect(tester.takeException(), isNull, reason: topic.name);
         Navigator.of(context).pop();
@@ -96,10 +113,13 @@ void main() {
       tester,
     ) async {
       final context = await pumpHost(tester, dark: dark);
-      await tester.runAsync(() async {
-        HomeWalkthrough.show(context).ignore();
-        await Future<void>.delayed(const Duration(milliseconds: 100));
-      });
+      HomeWalkthrough.show(context).ignore();
+      for (var i = 0; i < 200 && find.text('التالي').evaluate().isEmpty; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 10)),
+        );
+        await tester.pump();
+      }
       await frames(tester);
       for (var i = 0; i < 5; i++) {
         expect(tester.takeException(), isNull);
