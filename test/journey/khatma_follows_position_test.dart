@@ -54,6 +54,15 @@ void main() {
     expect(store.journey.completedKhatmas, 1);
   });
 
+  test('saving the page just read keeps the khatma ahead of it', () async {
+    final store = UserDataStore.instance;
+    await store.startKhatma(30);
+    await store.recordPageRead(1);
+    await moveTo(1);
+    expect(store.journey.plan!.currentPage, 2);
+    expect(store.journey.plan!.advanced, 1);
+  });
+
   test('starting a khatma from a page brings the reader there', () async {
     final store = UserDataStore.instance;
     await store.startKhatma(30, startPage: 100);

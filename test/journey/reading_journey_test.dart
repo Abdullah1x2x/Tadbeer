@@ -60,10 +60,34 @@ void main() {
       expect(j.plan!.advanced, 2);
     });
 
-    test('wraps from the last page back to the first', () {
-      var j = const ReadingJourney().startPlan(30, monday, startPage: 604);
+    test('a khatma started mid-Mushaf completes at the last page', () {
+      var j = const ReadingJourney().startPlan(10, monday, startPage: 505);
+      expect(j.plan!.totalPages, 100);
+      expect(j.plan!.pagesPerDay, 10);
+
+      j = j.moveKhatmaTo(604);
+      expect(j.plan!.progress, closeTo(99 / 100, 1e-9));
+
       j = j.recordPage(604, monday);
-      expect(j.plan!.currentPage, 1);
+      expect(j.plan, isNull);
+      expect(j.completedKhatmas, 1);
+    });
+
+    test('a glance at the last page does not complete the khatma', () {
+      final j = const ReadingJourney()
+          .startPlan(30, monday)
+          .recordPage(604, monday);
+      expect(j.plan, isNotNull);
+      expect(j.completedKhatmas, 0);
+    });
+
+    test('moving before the start makes that page the start', () {
+      final j = const ReadingJourney()
+          .startPlan(30, monday, startPage: 100)
+          .moveKhatmaTo(40);
+      expect(j.plan!.startPage, 40);
+      expect(j.plan!.advanced, 0);
+      expect(j.plan!.totalPages, 565);
     });
 
     test('moving the position by hand counts the pages before it', () {

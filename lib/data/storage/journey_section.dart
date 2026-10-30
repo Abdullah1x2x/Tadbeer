@@ -48,6 +48,8 @@ mixin _JourneySection on _StoreState {
   Future<void> followReadingPosition(int page) async {
     final plan = _journey.plan;
     if (plan == null || plan.currentPage == page) return;
+    // الصفحة التي قُرئت للتو: الختمة تقدّمت عنها، ولا ترجع إليها.
+    if (plan.currentPage == page + 1) return;
     await _saveJourney(_journey.moveKhatmaTo(page));
   }
 

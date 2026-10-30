@@ -67,6 +67,9 @@ class _QuranScreenState extends State<QuranScreen> {
   /// تقليبها.
   static const _autoCountDwell = Duration(seconds: 40);
 
+  /// آخر صفحة قصيرة ولا صفحة بعدها يُتقدّم إليها، فتُحسب بانتظار أقصر.
+  static const _lastPageDwell = Duration(seconds: 15);
+
   /// ما يُنتظر بعد آخر تقليب قبل الحفظ.
   static const _settleDelay = Duration(milliseconds: 500);
 
@@ -132,22 +135,39 @@ class _QuranScreenState extends State<QuranScreen> {
     _pageToPersist = null;
     // يُحسب أولاً، فتكتمل الختمة بقراءة صفحتها الأخيرة.
     for (final page in pages) {
-      await UserDataStore.instance.recordPageRead(page);
+      await _recordPage(page);
     }
     if (next != null) _persistCurrentPagePosition(next);
+  }
+
+  /// يحسب الصفحة مقروءة، ويهنّئ القارئ إن أتمّت ختمته.
+  Future<void> _recordPage(int page) async {
+    final store = UserDataStore.instance;
+    final before = store.journey.completedKhatmas;
+    await store.recordPageRead(page);
+    final completed = store.journey.completedKhatmas;
+    if (completed == before || !mounted) return;
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(
+        content: Text(
+          context.l10n.completedKhatmas(completed),
+          textAlign: TextAlign.center,
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   /// يعيد بدء الانتظار الذي تُحسب بعده الصفحة المعروضة مقروءة.
   void _startAutoCount() {
     _autoCountTimer?.cancel();
     final page = _currentPageIndex + 1;
-    _autoCountTimer = Timer(_autoCountDwell, () {
+    final dwell = page == 604 ? _lastPageDwell : _autoCountDwell;
+    _autoCountTimer = Timer(dwell, () {
       // فقط حين يكون المصحف التبويب أو الصفحة الظاهرة.
       if (!mounted || !TickerMode.valuesOf(context).enabled) return;
       if (_currentPageIndex + 1 == page) {
-        UserDataStore.instance
-            .recordPageRead(page)
-            .then((_) => _persistCurrentPagePosition(page));
+        _recordPage(page).then((_) => _persistCurrentPagePosition(page));
       }
     });
   }
