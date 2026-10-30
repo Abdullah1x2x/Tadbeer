@@ -627,7 +627,7 @@
   "privacyStorageTitle": "Local Storage & AES-256 Encryption",
   "privacyStorageBody": "All reflections and notes reside strictly in on-device SQLite storage. Exported backups are encrypted locally with AES-256-CBC and verified via SHA-256.",
   "privacyPermissionsTitle": "Strictly Scoped Device Permissions",
-  "privacyPermissionsBody": "Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.",
+  "privacyPermissionsBody": "Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user. The camera is requested only when you scan an ayah link code, and its images are never saved or sent.",
   "privacyNoAdsTitle": "Zero Advertisements & Trackers",
   "privacyNoAdsBody": "The app is completely free from advertising SDKs, marketing trackers, and analytics frameworks.",
   "privacyOpenSourceBody": "Tadbeer is an open-source project licensed under MIT, fully accessible for public review and audit on GitHub.",

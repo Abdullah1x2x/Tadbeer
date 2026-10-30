@@ -1952,7 +1952,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPermissionsBody =>
-      'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.';
+      'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user. The camera is requested only when you scan an ayah link code, and its images are never saved or sent.';
 
   @override
   String get privacyNoAdsTitle => 'Zero Advertisements & Trackers';

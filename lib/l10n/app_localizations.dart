@@ -3495,7 +3495,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPermissionsBody.
   ///
   /// In ar, this message translates to:
-  /// **'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.'**
+  /// **'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية. والكاميرا تُطلب فقط عند مسح رمز رابط آيات، ولا تُحفظ صورها ولا تُرسل.'**
   String get privacyPermissionsBody;
 
   /// No description provided for @privacyNoAdsTitle.

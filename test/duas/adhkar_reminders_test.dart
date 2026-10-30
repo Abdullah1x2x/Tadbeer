@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/duas/data/adhkar_reminders.dart';
 import 'package:tadbeer/features/duas/data/adhkar_repository.dart';
@@ -40,5 +41,43 @@ void main() {
 
     await AdhkarReminders.disable(AdhkarCategory.morning);
     expect(AdhkarReminders.reminderFor(AdhkarCategory.morning), isNull);
+  });
+
+  testWidgets('switching a reminder on starts at the default time', (
+    tester,
+  ) async {
+    late BuildContext context;
+    await tester.pumpWidget(
+      AppLocalizationScope(
+        currentLanguage: AppLanguage.arabic,
+        strings: const AppStrings(AppLanguage.arabic),
+        onLanguageChanged: (_) {},
+        child: MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (c) {
+                context = c;
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    AdhkarReminders.showSettingsSheet(context).ignore();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(Switch).first);
+    await tester.pump();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 100)),
+    );
+    await tester.pump();
+
+    expect(find.byType(TimePickerDialog), findsNothing);
+    final morning = AdhkarReminders.reminderFor(AdhkarCategory.morning);
+    expect(morning?.hour, 6);
+    expect(morning?.minute, 0);
+    expect(AdhkarReminders.reminderFor(AdhkarCategory.evening), isNull);
   });
 }

@@ -45,7 +45,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
           foregroundColor: Colors.white,
         ),
         body: Stack(
-          alignment: Alignment.center,
+          fit: StackFit.expand,
           children: [
             MobileScanner(
               controller: _controller,
@@ -69,12 +69,14 @@ class _QrScanScreenState extends State<QrScanScreen> {
               ),
             ),
             IgnorePointer(
-              child: Container(
-                width: 240,
-                height: 240,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 3),
-                  borderRadius: BorderRadius.circular(20),
+              child: Center(
+                child: Container(
+                  width: 240,
+                  height: 240,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 3),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
             ),

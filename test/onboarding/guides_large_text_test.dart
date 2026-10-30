@@ -39,9 +39,8 @@ void main() {
         child: MaterialApp(
           theme: dark ? AppTheme.darkTheme : AppTheme.lightTheme,
           builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(textScaler: const TextScaler.linear(1.6)),
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(1.6)),
             child: child!,
           ),
           home: Scaffold(

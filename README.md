@@ -72,7 +72,7 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Light Diacritics & Mushaf Order:** Meanings carry light tashkeel (shadda, tanween and the vowels a reader could misread) and are listed by surah and ayah; search still matches text typed without diacritics.
 
 ### 🤲 Organized Duas & Adhkar Section
-- **Quranic Duas:** Catalog of **88 direct Quranic supplications** extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
+- **Quranic Duas:** Catalog of **89 direct Quranic supplications** extracted directly from verified Uthmani text across 12 thematic categories, with multi-verse rosette markers and direct navigation to their exact page in the Mushaf.
 - **Interactive Morning & Evening Adhkar:** Authentic fortress of the Muslim supplications with responsive per-dhikr countdown counters, instant copy, and documented virtues and sources.
 - **Ahlulbayt & Sahifah Sajjadiyah Duas (Complete Unabridged Texts):** Dedicated spiritual reader presenting each supplication as a single unified continuous text without segmented cuts, with font resizing and instant copying, featuring:
   - *Dua Makarim al-Akhlaq* (Noble Moral Traits by Imam Ali Zayn al-Abidin)
