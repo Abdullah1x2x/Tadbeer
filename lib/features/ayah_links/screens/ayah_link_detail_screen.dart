@@ -8,7 +8,6 @@ import '../data/ayah_link_repository.dart';
 import '../widgets/ayah_link_network_view.dart';
 import '../widgets/ayah_link_ordered_view.dart';
 import '../widgets/add_verse_to_link_dialog.dart';
-import '../widgets/ayah_link_qr_dialog.dart';
 import '../widgets/create_link_dialog.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_menu.dart';
@@ -271,12 +270,6 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
               actions: [
-                IconButton(
-                  icon: const Icon(AppIcons.qrCode),
-                  tooltip: l10n.shareViaQrCode,
-                  onPressed: () =>
-                      AyahLinkQrDialog.showShareDialog(context, link),
-                ),
                 PopupMenuButton<String>(
                   icon: appMenuIcon,
                   tooltip: l10n.more,

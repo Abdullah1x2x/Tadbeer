@@ -60,7 +60,6 @@ Official Website & Privacy Policy: **[abdullah-alshami.github.io/Tadbeer](https:
 - **Thematic Verse Links (روابط الآيات):** Thematic cross-referencing system linking related ayahs across surahs, viewable in both interactive topological network and sequential ordered list views.
 - **Overhauled Ayah Link Picker:** Streamlined, responsive bottom sheet dialog for quickly searching, selecting, and attaching verses to thematic pathways with real-time validation.
 - **Curated Thematic Pathways (المسارات التدبرية المقترحة):** Built-in pathways across major Quranic themes (e.g., Divine Names in Surah Al-Hashr, Prophetic Duas in Surah Al-Anbiya, Personal & Societal Transformation) with one-tap import.
-- **Zero-Network QR Sharing:** Export and import Ayah Links offline via standard QR codes without cloud sync.
 - **Reflections Journal (PDF & Markdown Export):** Personal contemplative journaling per ayah or general reflection, with single-note PDF export and periodic reflection journal archiving (weekly, monthly, or full archive) complete with reflection statistics.
 - **Highlights & Bookmarks:** Four-color verse highlighting rendered smoothly via `AyahHighlightPainter`, plus instant reading bookmarks.
 
@@ -194,7 +193,7 @@ tadbeer/
 │   │   └── storage/        # SQLite database and UserDataStore
 │   ├── features/           # One folder per feature; screens/, widgets/, data/ once it grows past six files
 │   │   ├── audio/          # Ayah-by-ayah recitation, background playback, downloads
-│   │   ├── ayah_links/     # Thematic links between ayahs, network view, QR sharing
+│   │   ├── ayah_links/     # Thematic links between ayahs, network view
 │   │   ├── backup/         # AES-256 encrypted backup and restore
 │   │   ├── bookmarks/      # Bookmarks screen
 │   │   ├── books/          # Books and booklets library, PDF reader

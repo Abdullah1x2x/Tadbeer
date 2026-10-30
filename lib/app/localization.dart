@@ -63,9 +63,7 @@ class AppStrings {
   String get duas => _l.duas;
   String get quranDuas => _l.quranDuas;
   String get tasbeehAndIstighfar => _l.tasbeehAndIstighfar;
-  String get tasbeehSubtitle => _l.tasbeehSubtitle;
   String get booksAndBooklets => _l.booksAndBooklets;
-  String get booksSubtitle => _l.booksSubtitle;
   String get about => _l.about;
   String get more => _l.more;
 
@@ -145,7 +143,6 @@ class AppStrings {
       _l.sessionSummary(digits(a), digits(b));
 
   // آية اليوم
-  String get ayahOfTheDay => _l.ayahOfTheDay;
   String get reflectOnIt => _l.reflectOnIt;
 
   // الختمة المتتابعة
@@ -177,7 +174,6 @@ class AppStrings {
   String get themeAuto => _l.themeAuto;
   String get mushafStyleMadinahHint => _l.mushafStyleMadinahHint;
   String get mushafStyleTextHint => _l.mushafStyleTextHint;
-  String get pageSize => _l.pageSize;
   String get khatmaStartNow => _l.khatmaStartNow;
   String get askNameTitle => _l.askNameTitle;
   String get askNameHint => _l.askNameHint;
@@ -188,7 +184,6 @@ class AppStrings {
   String get reminderQuranBody => _l.reminderQuranBody;
   String get reminderAdhkarBody => _l.reminderAdhkarBody;
   String get myReflections => _l.myReflections;
-  String get myReflectionsSubtitle => _l.myReflectionsSubtitle;
   String get reflectionsAll => _l.reflectionsAll;
   String get reflectionsCommitments => _l.reflectionsCommitments;
   String get noReflectionsHint => _l.noReflectionsHint;
@@ -312,7 +307,6 @@ class AppStrings {
   String get onTrack => _l.onTrack;
   String behindBy(int n) => _l.behindBy(digits(n));
   String khatmaInDays(int n) => _l.khatmaInDays(n, digits(n));
-  String pagesOfMushaf(int n) => _l.pagesOfMushaf(digits(n));
   String dayOfPlan(int d, int total) => _l.dayOfPlan(digits(d), digits(total));
   String get todayPortion => _l.todayPortion;
   String pagesOfTarget(int a, int b) => _l.pagesOfTarget(digits(a), digits(b));
@@ -337,7 +331,6 @@ class AppStrings {
 
   // نافذة إجراءات الآية
   String get addNote => _l.addNote;
-  String get saveBookmark => _l.saveBookmark;
   String get removeBookmark => _l.removeBookmark;
   String get continueReflection => _l.continueReflection;
   String get markAyah => _l.markAyah;
@@ -362,7 +355,6 @@ class AppStrings {
   String get downloadJuzAmma => _l.downloadJuzAmma;
   String get downloadsHint => _l.downloadsHint;
   String get listen => _l.listen;
-  String get listenFromHere => _l.listenFromHere;
   String get audioSettings => _l.audioSettings;
   String get reciterLabel => _l.reciterLabel;
   String get lowerQuality => _l.lowerQuality;
@@ -523,8 +515,6 @@ class AppStrings {
 
   // بطاقات الشاشة الرئيسية
   String get resumeReading => _l.resumeReading;
-  String get additionalTools => _l.additionalTools;
-  String get quranAndSunnahDuas => _l.quranAndSunnahDuas;
   String get quranDuasTitle => _l.quranDuasTitle;
   String get quranDuasSubtitle => _l.quranDuasSubtitle;
   String duasCountBadge(dynamic count) => _l.duasCountBadge(digits(count));
@@ -537,11 +527,6 @@ class AppStrings {
   String get sunnahDuasSubtitle => _l.sunnahDuasSubtitle;
   String get jawamiDuasTitle => _l.jawamiDuasTitle;
   String get jawamiDuasSubtitle => _l.jawamiDuasSubtitle;
-  String get wordsOfQuran => _l.wordsOfQuran;
-  String get yourThoughtsAndReflections => _l.yourThoughtsAndReflections;
-  String get connectionsAndThemes => _l.connectionsAndThemes;
-  String get dailyPortion => _l.dailyPortion;
-  String get tadbeerLibrary => _l.tadbeerLibrary;
   String get offlineQuranAndReflection => _l.offlineQuranAndReflection;
 
   // صيغ المراجع القرآنية
@@ -580,7 +565,6 @@ class AppStrings {
   String get continueLabel => _l.continueLabel;
   String get doNotShowAgain => _l.doNotShowAgain;
   String get curatedPathways => _l.curatedPathways;
-  String get importFromQrCode => _l.importFromQrCode;
   String get searchAyahLinksHint => _l.searchAyahLinksHint;
   String get noAyahLinkSearchResults => _l.noAyahLinkSearchResults;
   String get tryAnotherAyahLinkSearch => _l.tryAnotherAyahLinkSearch;
@@ -592,10 +576,7 @@ class AppStrings {
   // الإعدادات وإدارة البيانات
   String get typographyAndReading => _l.typographyAndReading;
   String get quranFontFamily => _l.quranFontFamily;
-  String fontSizePoints(dynamic points) => _l.fontSizePoints(digits(points));
   String get resetToDefault => _l.resetToDefault;
-  String resetToDefaultWithVal(dynamic val) =>
-      _l.resetToDefaultWithVal(digits(val));
   String get applicationSection => _l.applicationSection;
   String get dataSection => _l.dataSection;
   String get dailyRemindersSubtitle => _l.dailyRemindersSubtitle;
@@ -652,7 +633,6 @@ class AppStrings {
   // الأدعية والأذكار
   String get viewAyah => _l.viewAyah;
   String get duaCopiedSuccess => _l.duaCopiedSuccess;
-  String get searchDuasHint => _l.searchDuasHint;
   String get noDuasFound => _l.noDuasFound;
   String get allDuasFilter => _l.allDuasFilter;
   String get morningAdhkar => _l.morningAdhkar;
@@ -707,9 +687,6 @@ class AppStrings {
   String get textCopied => _l.textCopied;
   String get fileNotFound => _l.fileNotFound;
   String fileShareError(dynamic error) => _l.fileShareError('$error');
-  String pdfReadError(dynamic error) => _l.pdfReadError('$error');
-  String fileContentReadError(dynamic error) =>
-      _l.fileContentReadError('$error');
   String get noTextContent => _l.noTextContent;
   String get textFile => _l.textFile;
 
@@ -827,8 +804,6 @@ class AppStrings {
   String get walkReplay => _l.walkReplay;
   String get walkReplayHint => _l.walkReplayHint;
   String get fileSavedToDevice => _l.fileSavedToDevice;
-  String get scanWithCamera => _l.scanWithCamera;
-  String get cameraUnavailable => _l.cameraUnavailable;
   String get sleepAdhkar => _l.sleepAdhkar;
   String get wakingAdhkar => _l.wakingAdhkar;
   String get afterPrayerAdhkar => _l.afterPrayerAdhkar;
@@ -900,10 +875,6 @@ class AppStrings {
       _l.noteWordCharCount(digits(words), digits(chars));
   String searchInSection(String section) => _l.searchInSection(section);
   String verseAddedToLink(String title) => _l.verseAddedToLink(title);
-  String linkIncludesVerses(int count) => _l.linkIncludesVerses(digits(count));
-  String importedLinkTitle(String title) => _l.importedLinkTitle(title);
-  String importedVersesCount(int count) =>
-      _l.importedVersesCount(digits(count));
   String reflectionNotesCount(int count) =>
       _l.reflectionNotesCount(digits(count));
   String connectedVersesCount(int count) =>
@@ -947,15 +918,6 @@ class AppStrings {
   String get privacyOpenSourceBody => _l.privacyOpenSourceBody;
   String get createLinkWithVerseHint => _l.createLinkWithVerseHint;
   String get alreadyAdded => _l.alreadyAdded;
-  String get shareAyahLinkOffline => _l.shareAyahLinkOffline;
-  String get qrScanHint => _l.qrScanHint;
-  String get linkDataCopiedToClipboard => _l.linkDataCopiedToClipboard;
-  String get copyData => _l.copyData;
-  String get importAyahLink => _l.importAyahLink;
-  String get importLinkHint => _l.importLinkHint;
-  String get importLinkFieldHint => _l.importLinkFieldHint;
-  String get pasteFromClipboard => _l.pasteFromClipboard;
-  String get importNow => _l.importNow;
   String get editAyahLink => _l.editAyahLink;
   String get titleRequired => _l.titleRequired;
   String get create => _l.create;
@@ -976,7 +938,6 @@ class AppStrings {
   String get noteTitleOptional => _l.noteTitleOptional;
   String get noteCardAddedSuccessfully => _l.noteCardAddedSuccessfully;
   String get linkNotFound => _l.linkNotFound;
-  String get shareViaQrCode => _l.shareViaQrCode;
   String get addNoteShort => _l.addNoteShort;
   String get searchQuranicSupplications => _l.searchQuranicSupplications;
   String get clearedEmptyAnswersSuccessfully =>

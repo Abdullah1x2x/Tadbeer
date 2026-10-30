@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
-import 'package:tadbeer/data/models/ayah_link_model.dart';
 import 'package:tadbeer/features/ayah_links/data/ayah_link_repository.dart';
 import 'package:tadbeer/features/ayah_links/data/curated_pathways.dart';
-import 'package:tadbeer/features/ayah_links/widgets/ayah_link_qr_dialog.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 
 void main() {
@@ -16,9 +14,7 @@ void main() {
   late AyahLinkRepository repo;
 
   setUpAll(() async {
-    tempDir = await Directory.systemTemp.createTemp(
-      'tadbeer_pathways_qr_test_',
-    );
+    tempDir = await Directory.systemTemp.createTemp('tadbeer_pathways_test_');
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
     await QuranRepository.instance.init();
@@ -31,7 +27,7 @@ void main() {
     }
   });
 
-  group('CuratedPathwaysRegistry & AyahLinkQrDialog Tests', () {
+  group('CuratedPathwaysRegistry Tests', () {
     test(
       'Curated pathways registry provides 15 thematic pathways of real ayahs',
       () {
@@ -79,64 +75,5 @@ void main() {
         expect(retrieved.verses.length, equals(pathway.verses.length));
       },
     );
-
-    test('AyahLinkQrDialog link encoding and decoding roundtrip', () {
-      final link = AyahLinkItem(
-        id: 'test_qr_link_1',
-        title: 'رابط تدبري لاختبار QR',
-        description:
-            'وصف الرابط التدبري للتحقق من التشفير وفك التشفير دون إنترنت',
-        verses: [
-          AyahLinkVerse(
-            ayahId: 255,
-            surahNumber: 2,
-            ayahNumber: 255,
-            page: 42,
-            note: 'آية الكرسي',
-            addedAt: DateTime.now(),
-          ),
-          AyahLinkVerse(
-            ayahId: 5148,
-            surahNumber: 59,
-            ayahNumber: 23,
-            page: 548,
-            note: 'الملك القدوس',
-            addedAt: DateTime.now(),
-          ),
-        ],
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      final encoded = AyahLinkQrDialog.encodeLink(link);
-      expect(encoded, isNotEmpty);
-      expect(encoded, startsWith('tadbeer://link?data='));
-
-      final decoded = AyahLinkQrDialog.decodeLink(encoded);
-      expect(decoded, isNotNull);
-      expect(decoded!['t'], equals(link.title));
-      expect(decoded['d'], equals(link.description));
-
-      final ayahs = (decoded['ay'] as List).cast<Map<String, dynamic>>();
-      expect(ayahs.length, equals(2));
-      expect(ayahs[0]['s'], equals(2));
-      expect(ayahs[0]['a'], equals(255));
-      expect(ayahs[0]['n'], equals('آية الكرسي'));
-      expect(ayahs[1]['s'], equals(59));
-      expect(ayahs[1]['a'], equals(23));
-    });
-
-    test('AyahLinkQrDialog decodeLink gracefully rejects invalid payloads', () {
-      expect(AyahLinkQrDialog.decodeLink(''), isNull);
-      expect(AyahLinkQrDialog.decodeLink('https://example.com'), isNull);
-      expect(
-        AyahLinkQrDialog.decodeLink('tadbeer://link?data=invalid_base64!!!'),
-        isNull,
-      );
-      expect(
-        AyahLinkQrDialog.decodeLink('tadbeer://link?data=YWJj'),
-        isNull,
-      ); // not JSON
-    });
   });
 }

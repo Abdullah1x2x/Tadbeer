@@ -55,13 +55,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasbeehAndIstighfar => 'Istighfar & Tasbeeh';
 
   @override
-  String get tasbeehSubtitle => 'Digital Tasbeeh & Istighfar Counter';
-
-  @override
   String get booksAndBooklets => 'Books & Booklets';
-
-  @override
-  String get booksSubtitle => 'Tadbeer Library & Study Booklets';
 
   @override
   String get about => 'About Tadbeer';
@@ -150,9 +144,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sessionDone => 'Session done!';
-
-  @override
-  String get ayahOfTheDay => 'Verse of the day';
 
   @override
   String get reflectOnIt => 'Reflect';
@@ -305,9 +296,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addNote => 'Note';
-
-  @override
-  String get saveBookmark => 'Bookmark';
 
   @override
   String get removeBookmark => 'Remove Bookmark';
@@ -603,12 +591,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resumeReading => 'Resume Reading';
 
   @override
-  String get additionalTools => 'Additional Tools';
-
-  @override
-  String get quranAndSunnahDuas => 'Quran & Sunnah Duas';
-
-  @override
   String get quranDuasTitle => 'Quranic Duas';
 
   @override
@@ -642,21 +624,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get jawamiDuasSubtitle =>
       'Comprehensive prayers for goodness in this life and the hereafter';
-
-  @override
-  String get wordsOfQuran => 'Quran Vocabulary';
-
-  @override
-  String get yourThoughtsAndReflections => 'Thoughts & Reflections';
-
-  @override
-  String get connectionsAndThemes => 'Connections & Themes';
-
-  @override
-  String get dailyPortion => 'Daily Portion';
-
-  @override
-  String get tadbeerLibrary => 'Contemplative Library';
 
   @override
   String get offlineQuranAndReflection => 'Offline Quran & Contemplation';
@@ -712,9 +679,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get curatedPathways => 'Curated Pathways';
-
-  @override
-  String get importFromQrCode => 'Import Ayah Link via QR Code';
 
   @override
   String get searchAyahLinksHint => 'Search ayah links or surahs...';
@@ -877,10 +841,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get duaCopiedSuccess => 'Supplication text copied successfully';
-
-  @override
-  String get searchDuasHint =>
-      'Search Quranic supplications by word or Surah...';
 
   @override
   String get noDuasFound => 'No supplications match your search';
@@ -1225,11 +1185,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String pagesOfMushaf(String n) {
-    return '$n of 604 pages';
-  }
-
-  @override
   String dayOfPlan(String d, String total) {
     return 'Day $d of $total';
   }
@@ -1319,16 +1274,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String fontSizePoints(String points) {
-    return '$points pt';
-  }
-
-  @override
-  String resetToDefaultWithVal(String val) {
-    return 'Reset to default ($val)';
-  }
-
-  @override
   String reminderScheduledSuccess(String mode) {
     return 'Reminder scheduled successfully ($mode)';
   }
@@ -1399,16 +1344,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String pdfReadError(String error) {
-    return 'Could not read PDF file: $error';
-  }
-
-  @override
-  String fileContentReadError(String error) {
-    return 'Could not read file content: $error';
-  }
-
-  @override
   String removeAyahFromLinkConfirm(String ayah, String surah) {
     return 'Do you want to remove Ayah $ayah of Surah $surah from this link?';
   }
@@ -1474,11 +1409,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Mushaf font: King Fahd Glorious Quran Printing Complex';
 
   @override
-  String widgetPortionLeft(String left, String portion) {
-    return 'Today’s portion: $left of $portion pages left';
-  }
-
-  @override
   String get widgetPortionDone => 'Today’s portion is done';
 
   @override
@@ -1540,9 +1470,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mushafStyleTextHint => 'Flowing text in the font you choose.';
 
   @override
-  String get pageSize => 'Page size';
-
-  @override
   String get khatmaStartNow => 'Start now';
 
   @override
@@ -1574,9 +1501,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myReflections => 'My reflections';
-
-  @override
-  String get myReflectionsSubtitle => 'What you wrote on ayahs';
 
   @override
   String get reflectionsAll => 'All';
@@ -1769,9 +1693,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listen => 'Listen';
 
   @override
-  String get listenFromHere => 'Listen from here';
-
-  @override
   String get audioSettings => 'Recitation settings';
 
   @override
@@ -1952,7 +1873,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPermissionsBody =>
-      'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user. The camera is requested only when you scan an ayah link code, and its images are never saved or sent.';
+      'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.';
 
   @override
   String get privacyNoAdsTitle => 'Zero Advertisements & Trackers';
@@ -1971,35 +1892,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alreadyAdded => 'Already added';
-
-  @override
-  String get shareAyahLinkOffline => 'Share Ayah Link Offline';
-
-  @override
-  String get qrScanHint =>
-      'This code can be scanned from another Tadbeer device to import the link offline.';
-
-  @override
-  String get linkDataCopiedToClipboard => 'Link data copied to clipboard';
-
-  @override
-  String get copyData => 'Copy Data';
-
-  @override
-  String get importAyahLink => 'Import Ayah Link';
-
-  @override
-  String get importLinkHint =>
-      'Paste the share code or link data below to import it into your links:';
-
-  @override
-  String get importLinkFieldHint => 'Paste link or scanned text here...';
-
-  @override
-  String get pasteFromClipboard => 'Paste from clipboard';
-
-  @override
-  String get importNow => 'Import Now';
 
   @override
   String get editAyahLink => 'Edit Ayah Link';
@@ -2062,9 +1954,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get linkNotFound => 'Link not found or has been deleted';
-
-  @override
-  String get shareViaQrCode => 'Share via QR Code';
 
   @override
   String get addNoteShort => 'Add Note';
@@ -2143,21 +2032,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String verseAddedToLink(String title) {
     return 'Verse added to link \"$title\"';
-  }
-
-  @override
-  String linkIncludesVerses(String count) {
-    return 'Includes $count linked verses';
-  }
-
-  @override
-  String importedLinkTitle(String title) {
-    return 'Title: $title';
-  }
-
-  @override
-  String importedVersesCount(String count) {
-    return 'Included verses: $count verses';
   }
 
   @override
@@ -2398,13 +2272,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fileSavedToDevice => 'Saved to your device';
 
   @override
-  String get scanWithCamera => 'Scan with camera';
-
-  @override
-  String get cameraUnavailable =>
-      'Could not open the camera. Check the app can use it, or paste the code text.';
-
-  @override
   String get sleepAdhkar => 'Before sleep';
 
   @override
@@ -2468,11 +2335,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add the verses of the theme and note what each one adds: Surah At-Talaq the door of mindfulness, Surah Nuh the door of forgiveness, Surah Ibrahim the door of gratitude.';
 
   @override
-  String get guideLinks3Title => 'See the whole picture, and share it';
+  String get guideLinks3Title => 'See the whole picture';
 
   @override
   String get guideLinks3Body =>
-      'View the link as a network to see how the ayahs complete each other, or as a list to read in order, and share it by QR code without internet.';
+      'View the link as a network to see how the ayahs complete each other, or as a list to read in order.';
 
   @override
   String get guidePathways1Title => 'A reflection journey, day by day';
@@ -2575,5 +2442,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String guideStep(String step, String total) {
     return 'Step $step of $total';
+  }
+
+  @override
+  String widgetPortionLeft(String left, String portion) {
+    return 'Today’s portion: $left of $portion pages left';
   }
 }

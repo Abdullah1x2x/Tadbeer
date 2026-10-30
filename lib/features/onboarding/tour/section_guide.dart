@@ -121,7 +121,7 @@ abstract final class SectionGuide {
           l10n.guideLinks2Body,
         ),
         _GuideStep(
-          (t) => ShareNetworkScene(t: t),
+          (t) => WholeNetworkScene(t: t),
           l10n.guideLinks3Title,
           l10n.guideLinks3Body,
         ),

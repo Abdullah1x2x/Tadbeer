@@ -188,23 +188,11 @@ abstract class AppLocalizations {
   /// **'استغفار وتسبيح'**
   String get tasbeehAndIstighfar;
 
-  /// No description provided for @tasbeehSubtitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'سبحة إلكترونية وأوراد الاستغفار والتسبيح'**
-  String get tasbeehSubtitle;
-
   /// No description provided for @booksAndBooklets.
   ///
   /// In ar, this message translates to:
   /// **'كتب وملازم'**
   String get booksAndBooklets;
-
-  /// No description provided for @booksSubtitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'مكتبة الملازم التدبرية ومختصرات علوم القرآن'**
-  String get booksSubtitle;
 
   /// No description provided for @about.
   ///
@@ -373,12 +361,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أحسنت! انتهت الجلسة'**
   String get sessionDone;
-
-  /// No description provided for @ayahOfTheDay.
-  ///
-  /// In ar, this message translates to:
-  /// **'آية اليوم'**
-  String get ayahOfTheDay;
 
   /// No description provided for @reflectOnIt.
   ///
@@ -679,12 +661,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ملاحظة'**
   String get addNote;
-
-  /// No description provided for @saveBookmark.
-  ///
-  /// In ar, this message translates to:
-  /// **'حفظ'**
-  String get saveBookmark;
 
   /// No description provided for @removeBookmark.
   ///
@@ -1244,18 +1220,6 @@ abstract class AppLocalizations {
   /// **'استئناف القراءة'**
   String get resumeReading;
 
-  /// No description provided for @additionalTools.
-  ///
-  /// In ar, this message translates to:
-  /// **'أدوات إضافية'**
-  String get additionalTools;
-
-  /// No description provided for @quranAndSunnahDuas.
-  ///
-  /// In ar, this message translates to:
-  /// **'أدعية الكتاب والسنة'**
-  String get quranAndSunnahDuas;
-
   /// No description provided for @quranDuasTitle.
   ///
   /// In ar, this message translates to:
@@ -1315,36 +1279,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية'**
   String get jawamiDuasSubtitle;
-
-  /// No description provided for @wordsOfQuran.
-  ///
-  /// In ar, this message translates to:
-  /// **'غريب ألفاظ القرآن'**
-  String get wordsOfQuran;
-
-  /// No description provided for @yourThoughtsAndReflections.
-  ///
-  /// In ar, this message translates to:
-  /// **'خواطرك وتدبراتك'**
-  String get yourThoughtsAndReflections;
-
-  /// No description provided for @connectionsAndThemes.
-  ///
-  /// In ar, this message translates to:
-  /// **'الربط والعلاقات'**
-  String get connectionsAndThemes;
-
-  /// No description provided for @dailyPortion.
-  ///
-  /// In ar, this message translates to:
-  /// **'الورد اليومي'**
-  String get dailyPortion;
-
-  /// No description provided for @tadbeerLibrary.
-  ///
-  /// In ar, this message translates to:
-  /// **'مكتبة المتدبر'**
-  String get tadbeerLibrary;
 
   /// No description provided for @offlineQuranAndReflection.
   ///
@@ -1453,12 +1387,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المسارات التدبرية المقترحة'**
   String get curatedPathways;
-
-  /// No description provided for @importFromQrCode.
-  ///
-  /// In ar, this message translates to:
-  /// **'استيراد رابط آيات عبر الرمز'**
-  String get importFromQrCode;
 
   /// No description provided for @searchAyahLinksHint.
   ///
@@ -1765,12 +1693,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تم نسخ نص الدعاء بنجاح'**
   String get duaCopiedSuccess;
-
-  /// No description provided for @searchDuasHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'ابحث في أدعية القرآن الكريم بالكلمة أو السورة...'**
-  String get searchDuasHint;
 
   /// No description provided for @noDuasFound.
   ///
@@ -2342,12 +2264,6 @@ abstract class AppLocalizations {
   /// **'ختمة في {count, plural, =1{يوم واحد} =2{يومين} few{{n} أيام} many{{n} يومًا} other{{n} يوم}}'**
   String khatmaInDays(int count, String n);
 
-  /// No description provided for @pagesOfMushaf.
-  ///
-  /// In ar, this message translates to:
-  /// **'{n} من ٦٠٤ صفحة'**
-  String pagesOfMushaf(String n);
-
   /// No description provided for @dayOfPlan.
   ///
   /// In ar, this message translates to:
@@ -2454,18 +2370,6 @@ abstract class AppLocalizations {
   /// **'{count} آيات مرتبطة'**
   String linkedAyahsCount(String count);
 
-  /// No description provided for @fontSizePoints.
-  ///
-  /// In ar, this message translates to:
-  /// **'{points} نقطة'**
-  String fontSizePoints(String points);
-
-  /// No description provided for @resetToDefaultWithVal.
-  ///
-  /// In ar, this message translates to:
-  /// **'إعادة للوضع الافتراضي ({val})'**
-  String resetToDefaultWithVal(String val);
-
   /// No description provided for @reminderScheduledSuccess.
   ///
   /// In ar, this message translates to:
@@ -2549,18 +2453,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تعذر مشاركة أو فتح الملف: {error}'**
   String fileShareError(String error);
-
-  /// No description provided for @pdfReadError.
-  ///
-  /// In ar, this message translates to:
-  /// **'تعذر قراءة ملف الـ PDF: {error}'**
-  String pdfReadError(String error);
-
-  /// No description provided for @fileContentReadError.
-  ///
-  /// In ar, this message translates to:
-  /// **'تعذر قراءة محتوى الملف: {error}'**
-  String fileContentReadError(String error);
 
   /// No description provided for @removeAyahFromLinkConfirm.
   ///
@@ -2651,12 +2543,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف'**
   String get qcfAttribution;
-
-  /// No description provided for @widgetPortionLeft.
-  ///
-  /// In ar, this message translates to:
-  /// **'ورد اليوم: بقي {left} من {portion} صفحة'**
-  String widgetPortionLeft(String left, String portion);
 
   /// No description provided for @widgetPortionDone.
   ///
@@ -2778,12 +2664,6 @@ abstract class AppLocalizations {
   /// **'نص متدفق بالخط الذي تختاره.'**
   String get mushafStyleTextHint;
 
-  /// No description provided for @pageSize.
-  ///
-  /// In ar, this message translates to:
-  /// **'حجم الصفحة'**
-  String get pageSize;
-
   /// No description provided for @khatmaStartNow.
   ///
   /// In ar, this message translates to:
@@ -2843,12 +2723,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'وقفاتي'**
   String get myReflections;
-
-  /// No description provided for @myReflectionsSubtitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'ما كتبته عند الآيات'**
-  String get myReflectionsSubtitle;
 
   /// No description provided for @reflectionsAll.
   ///
@@ -3161,12 +3035,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'استماع'**
   String get listen;
-
-  /// No description provided for @listenFromHere.
-  ///
-  /// In ar, this message translates to:
-  /// **'استماع من هنا'**
-  String get listenFromHere;
 
   /// No description provided for @audioSettings.
   ///
@@ -3495,7 +3363,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPermissionsBody.
   ///
   /// In ar, this message translates to:
-  /// **'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية. والكاميرا تُطلب فقط عند مسح رمز رابط آيات، ولا تُحفظ صورها ولا تُرسل.'**
+  /// **'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.'**
   String get privacyPermissionsBody;
 
   /// No description provided for @privacyNoAdsTitle.
@@ -3527,60 +3395,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'مضافة بالفعل'**
   String get alreadyAdded;
-
-  /// No description provided for @shareAyahLinkOffline.
-  ///
-  /// In ar, this message translates to:
-  /// **'مشاركة رابط الآيات دون إنترنت'**
-  String get shareAyahLinkOffline;
-
-  /// No description provided for @qrScanHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.'**
-  String get qrScanHint;
-
-  /// No description provided for @linkDataCopiedToClipboard.
-  ///
-  /// In ar, this message translates to:
-  /// **'تم نسخ بيانات الرابط إلى الحافظة'**
-  String get linkDataCopiedToClipboard;
-
-  /// No description provided for @copyData.
-  ///
-  /// In ar, this message translates to:
-  /// **'نسخ البيانات'**
-  String get copyData;
-
-  /// No description provided for @importAyahLink.
-  ///
-  /// In ar, this message translates to:
-  /// **'استيراد رابط آيات'**
-  String get importAyahLink;
-
-  /// No description provided for @importLinkHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:'**
-  String get importLinkHint;
-
-  /// No description provided for @importLinkFieldHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'الصق الرابط أو النص الممسوح هنا...'**
-  String get importLinkFieldHint;
-
-  /// No description provided for @pasteFromClipboard.
-  ///
-  /// In ar, this message translates to:
-  /// **'لصق من الحافظة'**
-  String get pasteFromClipboard;
-
-  /// No description provided for @importNow.
-  ///
-  /// In ar, this message translates to:
-  /// **'استيراد الآن'**
-  String get importNow;
 
   /// No description provided for @editAyahLink.
   ///
@@ -3701,12 +3515,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الرابط غير موجود أو تم حذفه'**
   String get linkNotFound;
-
-  /// No description provided for @shareViaQrCode.
-  ///
-  /// In ar, this message translates to:
-  /// **'مشاركة عبر رمز الاستجابة السريعة (QR)'**
-  String get shareViaQrCode;
 
   /// No description provided for @addNoteShort.
   ///
@@ -3833,24 +3641,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تمت إضافة الآية إلى رابط «{title}»'**
   String verseAddedToLink(String title);
-
-  /// No description provided for @linkIncludesVerses.
-  ///
-  /// In ar, this message translates to:
-  /// **'يتضمن {count} آيات مرتبطة'**
-  String linkIncludesVerses(String count);
-
-  /// No description provided for @importedLinkTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'العنوان: {title}'**
-  String importedLinkTitle(String title);
-
-  /// No description provided for @importedVersesCount.
-  ///
-  /// In ar, this message translates to:
-  /// **'الآيات المتضمنة: {count} آية'**
-  String importedVersesCount(String count);
 
   /// No description provided for @reflectionNotesCount.
   ///
@@ -4266,18 +4056,6 @@ abstract class AppLocalizations {
   /// **'تم الحفظ في الجهاز'**
   String get fileSavedToDevice;
 
-  /// No description provided for @scanWithCamera.
-  ///
-  /// In ar, this message translates to:
-  /// **'مسح بالكاميرا'**
-  String get scanWithCamera;
-
-  /// No description provided for @cameraUnavailable.
-  ///
-  /// In ar, this message translates to:
-  /// **'تعذّر فتح الكاميرا. تأكد من السماح للتطبيق باستخدامها، أو الصق نص الرمز.'**
-  String get cameraUnavailable;
-
   /// No description provided for @sleepAdhkar.
   ///
   /// In ar, this message translates to:
@@ -4395,13 +4173,13 @@ abstract class AppLocalizations {
   /// No description provided for @guideLinks3Title.
   ///
   /// In ar, this message translates to:
-  /// **'انظر الصورة كاملة، وشاركها'**
+  /// **'انظر الصورة كاملة'**
   String get guideLinks3Title;
 
   /// No description provided for @guideLinks3Body.
   ///
   /// In ar, this message translates to:
-  /// **'اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب، وشاركه برمز QR دون إنترنت.'**
+  /// **'اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب.'**
   String get guideLinks3Body;
 
   /// No description provided for @guidePathways1Title.
@@ -4577,6 +4355,12 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الخطوة {step} من {total}'**
   String guideStep(String step, String total);
+
+  /// No description provided for @widgetPortionLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'ورد اليوم: بقي {left} من {portion} صفحة'**
+  String widgetPortionLeft(String left, String portion);
 }
 
 class _AppLocalizationsDelegate

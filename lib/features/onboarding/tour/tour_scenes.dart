@@ -935,62 +935,21 @@ class AddVersesScene extends StatelessWidget {
   }
 }
 
-/// الشبكة كاملة، ثم رمز QR لمشاركتها دون إنترنت.
-class ShareNetworkScene extends StatelessWidget {
+/// الشبكة تكتمل آية بعد آية، ولكل آية ملاحظتها.
+class WholeNetworkScene extends StatelessWidget {
   final double t;
 
-  const ShareNetworkScene({super.key, required this.t});
+  const WholeNetworkScene({super.key, required this.t});
 
   @override
   Widget build(BuildContext context) {
-    final c = _Palette(context);
-    final qr = phase(t, 0.5, 0.7, Curves.easeOutBack);
-    final wave = phase(t, 0.7, 1.0);
     return _Canvas(
       children: [
         Positioned.fill(
-          child: Opacity(
-            opacity: 1 - 0.55 * qr.clamp(0.0, 1.0),
-            child: LinkNetwork(
-              t: 1,
-              notes: true,
-              centreLabel: context.l10n.tourSampleLink,
-            ),
-          ),
-        ),
-        Positioned(
-          left: 160 - 44,
-          top: 110 - 44,
-          child: Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              for (final r in [0.0, 0.33])
-                Opacity(
-                  opacity: (1 - ((wave + r) % 1)) * qr.clamp(0.0, 1.0),
-                  child: Container(
-                    width: 88 + 70 * ((wave + r) % 1),
-                    height: 88 + 70 * ((wave + r) % 1),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: c.gold, width: 1.5),
-                    ),
-                  ),
-                ),
-              popIn(
-                qr,
-                Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: c.gold, width: 2),
-                  ),
-                  child: Icon(AppIcons.qrCode, size: 60, color: c.primary),
-                ),
-              ),
-            ],
+          child: LinkNetwork(
+            t: t,
+            notes: true,
+            centreLabel: context.l10n.tourSampleLink,
           ),
         ),
       ],

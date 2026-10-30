@@ -74,8 +74,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>يستخدم تدبير الكاميرا لمسح رمز رابط الآيات فقط، ولا تُحفظ الصور ولا تُرسل.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>يحتاج تدبير موقعك التقريبي لحساب اتجاه القبلة، ولا يُرسل إلى أي مكان.</string>
 	<key>UIBackgroundModes</key>

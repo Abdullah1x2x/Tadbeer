@@ -10,7 +10,6 @@ import '../../../data/quran/quran_repository.dart';
 import 'ayah_link_detail_screen.dart';
 import '../../pathways/guided_pathways_screen.dart';
 import '../data/curated_pathways.dart';
-import '../widgets/ayah_link_qr_dialog.dart';
 import '../widgets/create_link_dialog.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_menu.dart';
@@ -89,11 +88,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
         );
       }
     }
-  }
-
-  /// يستورد رابطاً من رمز QR.
-  Future<void> _importFromQr() async {
-    await AyahLinkQrDialog.showImportDialog(context, repo: _repo);
   }
 
   /// لوحة المسارات المقترحة الجاهزة للاستيراد.
@@ -323,11 +317,6 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
               icon: const Icon(AppIcons.compass),
               tooltip: l10n.curatedPathways,
               onPressed: _showCuratedPathwaysSheet,
-            ),
-            IconButton(
-              icon: const Icon(AppIcons.scan),
-              tooltip: l10n.importFromQrCode,
-              onPressed: _importFromQr,
             ),
           ],
         ),

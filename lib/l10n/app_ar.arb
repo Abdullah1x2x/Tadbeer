@@ -15,9 +15,7 @@
   "duas": "الأدعية",
   "quranDuas": "أدعية من القرآن",
   "tasbeehAndIstighfar": "استغفار وتسبيح",
-  "tasbeehSubtitle": "سبحة إلكترونية وأوراد الاستغفار والتسبيح",
   "booksAndBooklets": "كتب وملازم",
-  "booksSubtitle": "مكتبة الملازم التدبرية ومختصرات علوم القرآن",
   "about": "عن تَدْبِير",
   "more": "المزيد",
   "tadbeerVerseRef": "سورة محمد · آية ٢٤",
@@ -46,7 +44,6 @@
   "needsReview": "أحتاج مراجعة",
   "mastered": "أتقنتها",
   "sessionDone": "أحسنت! انتهت الجلسة",
-  "ayahOfTheDay": "آية اليوم",
   "reflectOnIt": "تدبّرها",
   "fromMushafStart": "من أول المصحف",
   "setKhatmaPosition": "تعديل موضعي في الختمة",
@@ -97,7 +94,6 @@
   "increase": "زيادة",
   "sajdah": "سجدة تلاوة",
   "addNote": "ملاحظة",
-  "saveBookmark": "حفظ",
   "removeBookmark": "إزالة الحفظ",
   "highlight": "تمييز",
   "removeHighlight": "إزالة التمييز",
@@ -191,8 +187,6 @@
   "paperSepia": "سيبيا دافئ",
   "aboutContent": "تدبير مشروع قرآني يهدف إلى تعزيز التدبّر في آيات الله، ومساعدة المسلم على التأمل في معاني القرآن الكريم، والتفكّر في هداياته، واستحضار أثر آياته في الحياة والعمل بها، لتكون علاقتنا بالقرآن قائمة على التدبّر والفهم والاهتداء، لا على التلاوة وحدها.",
   "resumeReading": "استئناف القراءة",
-  "additionalTools": "أدوات إضافية",
-  "quranAndSunnahDuas": "أدعية الكتاب والسنة",
   "quranDuasTitle": "أدعية من القرآن",
   "quranDuasSubtitle": "أدعية الأنبياء والصالحين وخواتيم السور المأثورة في كتاب الله",
   "morningEveningAdhkarTitle": "أذكار الصباح والمساء",
@@ -203,11 +197,6 @@
   "sunnahDuasSubtitle": "أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب",
   "jawamiDuasTitle": "جوامع الدعاء والرجاء",
   "jawamiDuasSubtitle": "أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية",
-  "wordsOfQuran": "غريب ألفاظ القرآن",
-  "yourThoughtsAndReflections": "خواطرك وتدبراتك",
-  "connectionsAndThemes": "الربط والعلاقات",
-  "dailyPortion": "الورد اليومي",
-  "tadbeerLibrary": "مكتبة المتدبر",
   "offlineQuranAndReflection": "مصحف وتدبّر بدون إنترنت",
   "meccan": "مكية",
   "medinan": "مدنية",
@@ -226,7 +215,6 @@
   "continueLabel": "متابعة",
   "doNotShowAgain": "لا تظهر لي هذه النافذة مرة أخرى",
   "curatedPathways": "المسارات التدبرية المقترحة",
-  "importFromQrCode": "استيراد رابط آيات عبر الرمز",
   "searchAyahLinksHint": "ابحث في روابط الآيات أو السور...",
   "noAyahLinkSearchResults": "لا توجد نتائج مطابقة لبحثك",
   "tryAnotherAyahLinkSearch": "جرّب البحث بكلمة أخرى أو اسم سورة",
@@ -278,7 +266,6 @@
   "backupCreateFailed": "فشل إنشاء النسخة الاحتياطية",
   "viewAyah": "عرض الآية",
   "duaCopiedSuccess": "تم نسخ نص الدعاء بنجاح",
-  "searchDuasHint": "ابحث في أدعية القرآن الكريم بالكلمة أو السورة...",
   "noDuasFound": "لا توجد أدعية مطابقة لبحثك",
   "allDuasFilter": "الكل",
   "morningAdhkar": "أذكار الصباح",
@@ -522,14 +509,6 @@
       }
     }
   },
-  "pagesOfMushaf": "{n} من ٦٠٤ صفحة",
-  "@pagesOfMushaf": {
-    "placeholders": {
-      "n": {
-        "type": "String"
-      }
-    }
-  },
   "dayOfPlan": "اليوم {d} من {total}",
   "@dayOfPlan": {
     "placeholders": {
@@ -684,22 +663,6 @@
       }
     }
   },
-  "fontSizePoints": "{points} نقطة",
-  "@fontSizePoints": {
-    "placeholders": {
-      "points": {
-        "type": "String"
-      }
-    }
-  },
-  "resetToDefaultWithVal": "إعادة للوضع الافتراضي ({val})",
-  "@resetToDefaultWithVal": {
-    "placeholders": {
-      "val": {
-        "type": "String"
-      }
-    }
-  },
   "reminderScheduledSuccess": "تم حفظ وجدولة التنبيه ({mode}) بنجاح",
   "@reminderScheduledSuccess": {
     "placeholders": {
@@ -818,22 +781,6 @@
       }
     }
   },
-  "pdfReadError": "تعذر قراءة ملف الـ PDF: {error}",
-  "@pdfReadError": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "fileContentReadError": "تعذر قراءة محتوى الملف: {error}",
-  "@fileContentReadError": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
   "removeAyahFromLinkConfirm": "هل تريد إزالة الآية {ayah} من سورة {surah} من هذا الرابط؟",
   "@removeAyahFromLinkConfirm": {
     "placeholders": {
@@ -918,17 +865,6 @@
   "mushafStyleMadinah": "مصحف المدينة",
   "mushafStyleText": "نص متدفق",
   "qcfAttribution": "خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف",
-  "widgetPortionLeft": "ورد اليوم: بقي {left} من {portion} صفحة",
-  "@widgetPortionLeft": {
-    "placeholders": {
-      "left": {
-        "type": "String"
-      },
-      "portion": {
-        "type": "String"
-      }
-    }
-  },
   "widgetPortionDone": "أتممت ورد اليوم",
   "widgetAyahTitle": "آية للتدبّر",
   "themePickerTitle": "اختر مظهر التطبيق",
@@ -949,7 +885,6 @@
   "addVerseSearchSurah": "ابحث باسم السورة أو رقمها",
   "mushafStyleMadinahHint": "صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.",
   "mushafStyleTextHint": "نص متدفق بالخط الذي تختاره.",
-  "pageSize": "حجم الصفحة",
   "khatmaStartNow": "ابدأ الآن",
   "askNameTitle": "ما اسمك؟",
   "askNameHint": "نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.",
@@ -960,7 +895,6 @@
   "reminderQuranBody": "حان وقت تلاوة وتدبّر القرآن الكريم",
   "reminderAdhkarBody": "حان وقت الأذكار، ذكّر قلبك بالله",
   "myReflections": "وقفاتي",
-  "myReflectionsSubtitle": "ما كتبته عند الآيات",
   "reflectionsAll": "الكل",
   "reflectionsCommitments": "ما التزمت به",
   "noReflectionsHint": "اضغط على آية في المصحف واختر «وقفة تدبر».",
@@ -1061,7 +995,6 @@
   "qiblaSouth": "ج",
   "qiblaWest": "غ",
   "listen": "استماع",
-  "listenFromHere": "استماع من هنا",
   "audioSettings": "إعدادات التلاوة",
   "reciterLabel": "القارئ",
   "lowerQuality": "جودة أقل",
@@ -1137,21 +1070,12 @@
   "privacyStorageTitle": "تخزين محلي وتشفير عالي (AES-256)",
   "privacyStorageBody": "تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.",
   "privacyPermissionsTitle": "استخدام حصري ومحدد للأذونات (Device Permissions)",
-  "privacyPermissionsBody": "تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية. والكاميرا تُطلب فقط عند مسح رمز رابط آيات، ولا تُحفظ صورها ولا تُرسل.",
+  "privacyPermissionsBody": "تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.",
   "privacyNoAdsTitle": "خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)",
   "privacyNoAdsBody": "التطبيق خالٍ بنسبة 100% من أي منصات إعلانية أو حزم تتبع أو أدوات تحليل أداء خارجية.",
   "privacyOpenSourceBody": "تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.",
   "createLinkWithVerseHint": "إنشاء رابط جديد وربط هذه الآية به مباشرة",
   "alreadyAdded": "مضافة بالفعل",
-  "shareAyahLinkOffline": "مشاركة رابط الآيات دون إنترنت",
-  "qrScanHint": "يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.",
-  "linkDataCopiedToClipboard": "تم نسخ بيانات الرابط إلى الحافظة",
-  "copyData": "نسخ البيانات",
-  "importAyahLink": "استيراد رابط آيات",
-  "importLinkHint": "الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:",
-  "importLinkFieldHint": "الصق الرابط أو النص الممسوح هنا...",
-  "pasteFromClipboard": "لصق من الحافظة",
-  "importNow": "استيراد الآن",
   "editAyahLink": "تعديل رابط الآيات",
   "titleRequired": "يرجى إدخال عنوان الرابط",
   "create": "إنشاء",
@@ -1172,7 +1096,6 @@
   "noteTitleOptional": "عنوان الملاحظة (اختياري)",
   "noteCardAddedSuccessfully": "تمت إضافة كرت الملاحظة بنجاح",
   "linkNotFound": "الرابط غير موجود أو تم حذفه",
-  "shareViaQrCode": "مشاركة عبر رمز الاستجابة السريعة (QR)",
   "addNoteShort": "إضافة ملاحظة",
   "searchQuranicSupplications": "ابحث في أدعية القرآن الكريم...",
   "clearedEmptyAnswersSuccessfully": "تم مسح الإجابات الفارغة بنجاح",
@@ -1235,30 +1158,6 @@
   "@verseAddedToLink": {
     "placeholders": {
       "title": {
-        "type": "String"
-      }
-    }
-  },
-  "linkIncludesVerses": "يتضمن {count} آيات مرتبطة",
-  "@linkIncludesVerses": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
-  "importedLinkTitle": "العنوان: {title}",
-  "@importedLinkTitle": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "importedVersesCount": "الآيات المتضمنة: {count} آية",
-  "@importedVersesCount": {
-    "placeholders": {
-      "count": {
         "type": "String"
       }
     }
@@ -1384,8 +1283,6 @@
   "walkReplay": "دليل الشاشة الرئيسية",
   "walkReplayHint": "أعد التعرّف على أهم ما في الرئيسية",
   "fileSavedToDevice": "تم الحفظ في الجهاز",
-  "scanWithCamera": "مسح بالكاميرا",
-  "cameraUnavailable": "تعذّر فتح الكاميرا. تأكد من السماح للتطبيق باستخدامها، أو الصق نص الرمز.",
   "sleepAdhkar": "أذكار النوم",
   "wakingAdhkar": "أذكار الاستيقاظ",
   "afterPrayerAdhkar": "أذكار بعد الصلاة",
@@ -1405,8 +1302,8 @@
   "guideLinks1Body": "أنشئ رابطاً باسم موضوع يشغلك، مثل أبواب الرزق أو الصبر أو الرحمة.",
   "guideLinks2Title": "آيات متفرّقة، وملاحظة لكل آية",
   "guideLinks2Body": "أضف آيات الموضوع، واكتب لكل آية ما تضيفه: في الطلاق باب التقوى، وفي نوح باب الاستغفار، وفي إبراهيم باب الشكر.",
-  "guideLinks3Title": "انظر الصورة كاملة، وشاركها",
-  "guideLinks3Body": "اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب، وشاركه برمز QR دون إنترنت.",
+  "guideLinks3Title": "انظر الصورة كاملة",
+  "guideLinks3Body": "اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب.",
   "guidePathways1Title": "رحلة تدبّر يوماً بيوم",
   "guidePathways1Body": "اختر مساراً في موضوع، وفي كل يوم خطوة صغيرة واحدة لا تثقل عليك.",
   "guidePathways2Title": "آية اليوم وسؤالها",
@@ -1442,6 +1339,17 @@
         "type": "String"
       },
       "total": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetPortionLeft": "ورد اليوم: بقي {left} من {portion} صفحة",
+  "@widgetPortionLeft": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "portion": {
         "type": "String"
       }
     }

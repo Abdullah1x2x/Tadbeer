@@ -45,7 +45,6 @@ dependencies:
   sqflite_common_ffi: ^2.4.3
   path: ^1.9.1
   flutter_timezone: ^5.1.1
-  qr_flutter: ^4.1.0
   flutter_islamic_icons: ^1.0.2
   flutter_pdfview: ^1.4.5
   cupertino_icons: ^2.0.0
@@ -59,7 +58,6 @@ dependencies:
   flutter_device_compass: ^2.2.0
   just_audio: ^0.10.6
   audio_service: ^0.18.19
-  mobile_scanner: ^7.4.2
 
 dev_dependencies:
   flutter_test:

@@ -573,11 +573,6 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
-  static const IconData qrCode = IconData(
-    0xe3e6,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
   static const IconData rectangle = IconData(
     0xe3f0,
     fontFamily: _regular,
@@ -585,11 +580,6 @@ abstract final class AppIcons {
   );
   static const IconData scales = IconData(
     0xe750,
-    fontFamily: _regular,
-    fontPackage: _package,
-  );
-  static const IconData scan = IconData(
-    0xebb6,
     fontFamily: _regular,
     fontPackage: _package,
   );

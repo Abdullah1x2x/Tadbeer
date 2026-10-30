@@ -68,7 +68,7 @@ void main() {
     'reflections list': (t) => ReflectionsListScene(t: t),
     'create link': (t) => CreateLinkScene(t: t),
     'add verses': (t) => AddVersesScene(t: t),
-    'share network': (t) => ShareNetworkScene(t: t),
+    'whole network': (t) => WholeNetworkScene(t: t),
     'pathway days': (t) => PathwayDaysScene(t: t),
     'today ayah': (t) => TodayAyahScene(t: t),
     'listen': (t) => ListenScene(t: t),
