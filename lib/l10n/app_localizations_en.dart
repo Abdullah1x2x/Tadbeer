@@ -2395,6 +2395,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get walkReplayHint => 'See the main home screen features again';
 
   @override
+  String get fileSavedToDevice => 'Saved to your device';
+
+  @override
+  String get scanWithCamera => 'Scan with camera';
+
+  @override
+  String get cameraUnavailable =>
+      'Could not open the camera. Check the app can use it, or paste the code text.';
+
+  @override
   String get tourReplay => 'App tour';
 
   @override

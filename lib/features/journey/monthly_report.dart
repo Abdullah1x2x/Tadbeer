@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
@@ -12,6 +11,7 @@ import '../../core/design_system/app_logo.dart';
 import '../../data/storage/user_data_store.dart';
 import '../memorization/memorization_model.dart';
 import '../../core/design_system/app_icons.dart';
+import '../share/export_actions.dart';
 
 /// إحصاءات شهر لتقرير الشهر.
 class MonthStats {
@@ -94,8 +94,12 @@ class _MonthlyReportSheetState extends State<MonthlyReportSheet> {
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/tadbeer_month_report.png');
       await file.writeAsBytes(bytes.buffer.asUint8List());
-      await SharePlus.instance.share(
-        ShareParams(files: [XFile(file.path, mimeType: 'image/png')]),
+      if (!mounted) return;
+      await shareOrSaveFile(
+        context,
+        file: file,
+        fileName: 'tadbeer_month_report.png',
+        mimeType: 'image/png',
       );
     } finally {
       if (mounted) setState(() => _sharing = false);

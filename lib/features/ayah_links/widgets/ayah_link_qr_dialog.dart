@@ -11,6 +11,7 @@ import '../screens/ayah_link_detail_screen.dart';
 import '../../../data/models/ayah_link_model.dart';
 import '../data/ayah_link_repository.dart';
 import '../../../core/design_system/app_icons.dart';
+import 'qr_scan_screen.dart';
 
 /// مشاركة الروابط واستيرادها برمز QR، دون إنترنت.
 class AyahLinkQrDialog {
@@ -186,7 +187,7 @@ class AyahLinkQrDialog {
     );
   }
 
-  /// يستورد رابطاً بلصق نص رمز QR.
+  /// يستورد رابطاً بتصوير رمز QR أو لصق نصه.
   static Future<void> showImportDialog(
     BuildContext context, {
     AyahLinkRepository? repo,
@@ -268,6 +269,21 @@ class AyahLinkQrDialog {
                           ),
                         ),
                         onChanged: (_) => setState(() {}),
+                      ),
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        icon: const Icon(AppIcons.scan, size: 20),
+                        label: Text(l10n.scanWithCamera),
+                        onPressed: () async {
+                          final scanned = await Navigator.of(ctx).push<String>(
+                            MaterialPageRoute(
+                              builder: (_) => const QrScanScreen(),
+                            ),
+                          );
+                          if (scanned == null) return;
+                          textController.text = scanned;
+                          setState(() {});
+                        },
                       ),
                       if (isValid) ...[
                         const SizedBox(height: 14),

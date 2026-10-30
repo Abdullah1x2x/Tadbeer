@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
@@ -13,6 +12,7 @@ import '../data/book_model.dart';
 import '../../continue/last_activity.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/utils/text_direction.dart';
+import '../../share/export_actions.dart';
 
 part 'book_reader_views.dart';
 

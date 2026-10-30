@@ -4260,6 +4260,24 @@ abstract class AppLocalizations {
   /// **'أعد التعرّف على أهم ما في الرئيسية'**
   String get walkReplayHint;
 
+  /// No description provided for @fileSavedToDevice.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الحفظ في الجهاز'**
+  String get fileSavedToDevice;
+
+  /// No description provided for @scanWithCamera.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسح بالكاميرا'**
+  String get scanWithCamera;
+
+  /// No description provided for @cameraUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر فتح الكاميرا. تأكد من السماح للتطبيق باستخدامها، أو الصق نص الرمز.'**
+  String get cameraUnavailable;
+
   /// No description provided for @tourReplay.
   ///
   /// In ar, this message translates to:

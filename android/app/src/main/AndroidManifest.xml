@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <!-- Only the Quran recitation streams from the internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- لمسح رمز رابط الآيات؛ ولا يُطلب إلا عند فتح الماسح. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <!-- The Qibla needs only a city-level location. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- Saving share cards to the gallery on Android 10 and older. -->

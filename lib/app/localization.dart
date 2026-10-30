@@ -826,6 +826,9 @@ class AppStrings {
   String get walkTipBody => _l.walkTipBody;
   String get walkReplay => _l.walkReplay;
   String get walkReplayHint => _l.walkReplayHint;
+  String get fileSavedToDevice => _l.fileSavedToDevice;
+  String get scanWithCamera => _l.scanWithCamera;
+  String get cameraUnavailable => _l.cameraUnavailable;
   String get tourReplay => _l.tourReplay;
   String get tourReplayHint => _l.tourReplayHint;
   String get guidesReset => _l.guidesReset;

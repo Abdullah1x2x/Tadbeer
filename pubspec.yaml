@@ -59,6 +59,7 @@ dependencies:
   flutter_device_compass: ^2.2.0
   just_audio: ^0.10.6
   audio_service: ^0.18.19
+  mobile_scanner: ^7.4.2
 
 dev_dependencies:
   flutter_test:

@@ -235,7 +235,7 @@ class _NotesScreenState extends State<NotesScreen> {
   /// يصدّر الخاطرة PDF ويفتح المشاركة.
   void _exportNotePdf(NoteItem note) async {
     try {
-      await NotePdfExporter.exportAndShareNote(note);
+      await NotePdfExporter.exportAndShareNote(context, note);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -163,7 +163,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
         );
 
     try {
-      await NotePdfExporter.exportAndShareNote(note);
+      await NotePdfExporter.exportAndShareNote(context, note);
     } catch (e) {
       if (mounted) {
         final l10n = context.l10n;

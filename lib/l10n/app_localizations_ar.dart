@@ -2390,6 +2390,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get walkReplayHint => 'أعد التعرّف على أهم ما في الرئيسية';
 
   @override
+  String get fileSavedToDevice => 'تم الحفظ في الجهاز';
+
+  @override
+  String get scanWithCamera => 'مسح بالكاميرا';
+
+  @override
+  String get cameraUnavailable =>
+      'تعذّر فتح الكاميرا. تأكد من السماح للتطبيق باستخدامها، أو الصق نص الرمز.';
+
+  @override
   String get tourReplay => 'جولة في التطبيق';
 
   @override
