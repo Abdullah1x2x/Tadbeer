@@ -12,7 +12,7 @@
 Tadbeer is an **offline-first**, privacy-focused Flutter application designed for Quranic reflection (*Tadabbur*).
 
 ### Core Architectural Tenets
-- **Offline-First:** Zero network dependencies. The app does not declare `android.permission.INTERNET`, includes zero telemetry or analytics SDKs, and runs completely locally.
+- **Offline-First:** All core reading, reflection, notes, bookmarks, and search run 100% locally with zero server reliance. The network permission (`android.permission.INTERNET`) is used strictly for streaming Quran recitation audio, with zero telemetry, analytics SDKs, or external ads.
 - **Single Source of Truth:** `UserDataStore` (a singleton extending `ChangeNotifier`) acts as the central in-memory reactive cache. Modifying user data immediately updates $O(1)$ memory lookup maps, notifies UI listeners, and asynchronously persists changes to SQLite (`tadbeer_user_data.db`) and a JSON backup snapshot.
 - **Responsive Quran Layout:** Digital Quran rendering built with `LayoutBuilder` and `SingleChildScrollView` to guarantee zero `RenderFlex` overflows across all device form factors (small phones, foldables, tablets in portrait/landscape, and dual-page spreads).
 - **5 Open-Source Quranic Fonts:** Independent typography using SIL OFL-1.1 fonts (`AmiriQuran`, `ScheherazadeNew`, `NotoNaskhArabic`, `Lateef`, `Harmattan`).

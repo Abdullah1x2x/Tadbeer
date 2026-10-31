@@ -123,7 +123,7 @@ void main() {
       await frames(tester);
       for (var i = 0; i < 5; i++) {
         expect(tester.takeException(), isNull);
-        await tester.tap(find.text('التالي'));
+        await tester.tap(find.text('التالي'), warnIfMissed: false);
         await frames(tester);
       }
       expect(tester.takeException(), isNull);
