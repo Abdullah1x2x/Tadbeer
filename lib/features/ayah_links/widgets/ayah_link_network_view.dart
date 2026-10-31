@@ -378,7 +378,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 '﴿ ${ayah.text} ﴾',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'AmiriQuran',
+                  fontFamily: UserDataStore.instance.quranFontFamily,
                   fontSize: 18,
                   height: 1.8,
                   color: isDark

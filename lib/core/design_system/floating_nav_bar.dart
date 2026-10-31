@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,8 +25,8 @@ class FloatingNavItem {
   });
 }
 
-/// شريط تنقل سفلي عائم: العنصر المحدد يتسع ليظهر اسمه، وكبسولة ذهبية تنزلق
-/// تحته.
+/// شريط تنقل سفلي عائم: بتأثير زجاجي مصقول فاخر (Frosted Glass)،
+/// والعنصر المحدد يتسع ليظهر اسمه، وكبسولة ذهبية تنزلق تحته.
 ///
 /// لكل عنصر تلميح ووصف لقارئ الشاشة، فتبقى العناصر التي بلا اسم واضحة.
 class FloatingNavBar extends StatelessWidget {
@@ -68,24 +70,36 @@ class FloatingNavBar extends StatelessWidget {
         child: Container(
           height: _height,
           decoration: BoxDecoration(
-            color: AppColors.surfaceElevated(context),
             borderRadius: BorderRadius.circular(_radius),
-            border: Border.all(
-              color: gold.withValues(alpha: isDark ? 0.22 : 0.18),
-            ),
             boxShadow: [
               BoxShadow(
                 color: (isDark ? Colors.black : AppColors.lightPrimary)
-                    .withValues(alpha: isDark ? 0.55 : 0.14),
+                    .withValues(alpha: isDark ? 0.45 : 0.12),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
             ],
           ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final inner = constraints.maxWidth - _inset * 2;
-              final wide = inner * _selectedShare;
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(_radius),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceElevated(context)
+                      .withValues(alpha: isDark ? 0.85 : 0.88),
+                  borderRadius: BorderRadius.circular(_radius),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.14)
+                        : gold.withValues(alpha: 0.22),
+                    width: 0.8,
+                  ),
+                ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final inner = constraints.maxWidth - _inset * 2;
+                    final wide = inner * _selectedShare;
               final narrow = (inner - wide) / (items.length - 1);
               final isRtl = Directionality.of(context) == TextDirection.rtl;
 
@@ -151,6 +165,9 @@ class FloatingNavBar extends StatelessWidget {
           ),
         ),
       ),
+    ),
+    ),
+    ),
     );
   }
 }

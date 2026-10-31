@@ -518,3 +518,142 @@ class BooksScene extends StatelessWidget {
     );
   }
 }
+
+/// القبلة: بوصلة تدور حتى تستقر باتجاه الكعبة وتتوهج بالذهب والزمرد.
+class QiblaScene extends StatelessWidget {
+  final double t;
+
+  const QiblaScene({super.key, required this.t});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = _Palette(context);
+    final turn = phase(t, 0.05, 0.70, Curves.easeOutCubic);
+    final angle = (1.0 - turn) * 1.3;
+    final aligned = phase(t, 0.70, 0.95, Curves.easeOutBack);
+    final glow = phase(t, 0.75, 1.0, Curves.easeInOut);
+
+    return _Canvas(
+      children: [
+        Center(
+          child: SizedBox(
+            width: 170,
+            height: 170,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                if (aligned > 0)
+                  Container(
+                    width: 160 + 16 * glow,
+                    height: 160 + 16 * glow,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: (c.dark ? AppColors.cyberEmerald : c.primary)
+                              .withValues(alpha: 0.35 * aligned),
+                          blurRadius: 24,
+                          spreadRadius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: c.surface,
+                    border: Border.all(
+                      color: aligned > 0.5
+                          ? (c.dark ? AppColors.cyberEmerald : c.primary)
+                          : c.muted.withValues(alpha: 0.3),
+                      width: 2.2,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 14,
+                  child: Text(
+                    'N',
+                    style: TextStyle(
+                      fontFamily: AppTheme.appFontFamily,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: c.muted.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 28,
+                  child: Icon(
+                    AppIcons.compassFill,
+                    size: 24,
+                    color: aligned > 0.5
+                        ? c.gold
+                        : c.muted.withValues(alpha: 0.5),
+                  ),
+                ),
+                Transform.rotate(
+                  angle: angle,
+                  child: SizedBox(
+                    width: 110,
+                    height: 110,
+                    child: CustomPaint(
+                      painter: _QiblaNeedlePainter(
+                        color: aligned > 0.5
+                            ? (c.dark ? AppColors.cyberEmerald : c.primary)
+                            : c.gold,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: aligned > 0.5 ? c.gold : c.primary,
+                    border: Border.all(color: c.surface, width: 2),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _QiblaNeedlePainter extends CustomPainter {
+  final Color color;
+
+  _QiblaNeedlePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final path = Path()
+      ..moveTo(cx, 14)
+      ..lineTo(cx - 5, cy)
+      ..lineTo(cx + 5, cy)
+      ..close();
+    canvas.drawPath(path, Paint()..color = color);
+
+    final southPath = Path()
+      ..moveTo(cx, size.height - 14)
+      ..lineTo(cx - 5, cy)
+      ..lineTo(cx + 5, cy)
+      ..close();
+    canvas.drawPath(
+      southPath,
+      Paint()..color = color.withValues(alpha: 0.35),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _QiblaNeedlePainter old) => old.color != color;
+}
+

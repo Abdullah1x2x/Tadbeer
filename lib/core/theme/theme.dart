@@ -971,13 +971,35 @@ class AppTheme {
       ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurfaceHighest : AppColors.lightPrimary,
-          borderRadius: BorderRadius.circular(10),
+          color: (isDark
+                  ? AppColors.darkSurfaceHighest
+                  : AppColors.lightPrimaryDark)
+              .withValues(alpha: 0.94),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: gold.withValues(alpha: isDark ? 0.35 : 0.45),
+            width: 0.8,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.40 : 0.16),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        verticalOffset: 24,
+        preferBelow: false,
+        waitDuration: const Duration(milliseconds: 300),
+        showDuration: const Duration(milliseconds: 2500),
+        triggerMode: TooltipTriggerMode.longPress,
+        enableFeedback: true,
         textStyle: label(
-          12,
+          12.5,
           weight: FontWeight.w600,
-        ).copyWith(color: Colors.white),
+        ).copyWith(color: Colors.white, height: 1.3),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

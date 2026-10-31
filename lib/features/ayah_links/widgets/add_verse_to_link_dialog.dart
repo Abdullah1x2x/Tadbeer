@@ -298,8 +298,8 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               textAlign: TextAlign.center,
               maxLines: 6,
               overflow: TextOverflow.fade,
-              style: const TextStyle(
-                fontFamily: 'AmiriQuran',
+              style: TextStyle(
+                fontFamily: UserDataStore.instance.quranFontFamily,
                 fontSize: 17,
                 height: 1.9,
               ),
@@ -560,7 +560,10 @@ class _AyahTile extends StatelessWidget {
         ayah.text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontFamily: 'AmiriQuran', fontSize: 15),
+        style: TextStyle(
+          fontFamily: UserDataStore.instance.quranFontFamily,
+          fontSize: 15,
+        ),
       ),
       subtitle: Text(
         added

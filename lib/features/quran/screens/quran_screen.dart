@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -437,28 +438,31 @@ class _QuranScreenState extends State<QuranScreen> {
     final l10n = context.l10n;
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
-    return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
-            .withValues(alpha: 0.94),
-        border: Border(
-          bottom: BorderSide(
-            color: (isDark ? AppColors.darkBorder : AppColors.lightBorder)
-                .withValues(alpha: 0.8),
-            width: AppTokens.borderRegular,
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Container(
+          height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
+                .withValues(alpha: isDark ? 0.85 : 0.88),
+            border: Border(
+              bottom: BorderSide(
+                color: (isDark ? AppColors.darkBorder : AppColors.lightBorder)
+                    .withValues(alpha: 0.8),
+                width: AppTokens.borderRegular,
+              ),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
+          child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -548,6 +552,8 @@ class _QuranScreenState extends State<QuranScreen> {
           ),
         ],
       ),
+    ),
+    ),
     );
   }
 
@@ -573,20 +579,28 @@ class _QuranScreenState extends State<QuranScreen> {
         constraints: const BoxConstraints(maxWidth: 600),
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
-                .withValues(alpha: 0.95),
             borderRadius: BorderRadius.circular(AppTokens.radiusXl),
-            border: Border.all(
-              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-              width: AppTokens.borderRegular,
-            ),
             boxShadow: AppTokens.cardShadow(isDark: isDark, glowColor: primary),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppTokens.radiusXl),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                decoration: BoxDecoration(
+                  color: (isDark ? AppColors.darkSurface : AppColors.lightSurface)
+                      .withValues(alpha: isDark ? 0.85 : 0.88),
+                  borderRadius: BorderRadius.circular(AppTokens.radiusXl),
+                  border: Border.all(
+                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    width: AppTokens.borderRegular,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
               // السورة والجزء، وشارة المعاني، وشارة الصفحة.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -724,6 +738,9 @@ class _QuranScreenState extends State<QuranScreen> {
           ),
         ),
       ),
+    ),
+    ),
+    ),
     );
   }
 
@@ -841,6 +858,9 @@ class _QuranScreenState extends State<QuranScreen> {
           currentPage: currentPageNumber,
           onPageSelected: _jumpToMushafPage,
         ),
+        onDrawerChanged: (isOpen) {
+          widget.controlsVisible?.value = isOpen ? false : _showTopBar;
+        },
         body: Stack(
           children: [
             Positioned.fill(child: _pagerFor(isDark)),

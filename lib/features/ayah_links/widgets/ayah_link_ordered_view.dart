@@ -351,7 +351,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                           '﴿ ${ayah.text} ﴾',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontFamily: 'AmiriQuran',
+                            fontFamily: UserDataStore.instance.quranFontFamily,
                             fontSize: fontSize,
                             height: 1.8,
                             color: isDark

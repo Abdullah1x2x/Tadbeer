@@ -221,6 +221,14 @@ class _AyahPanel extends StatelessWidget {
 
   const _AyahPanel({required this.ayah, required this.active});
 
+  static final RegExp _waqfRegex = RegExp(r' ([\u06D6-\u06DB]) ');
+  static String _formatAyahText(String text) {
+    return text.replaceAllMapped(
+      _waqfRegex,
+      (m) => '\u00A0\u00A0${m.group(1)} ',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
@@ -228,12 +236,13 @@ class _AyahPanel extends StatelessWidget {
     const gold = Color(0xFFD9B566);
 
     return AnimatedOpacity(
-      duration: const Duration(milliseconds: 700),
-      opacity: active ? 1 : 0.25,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+      opacity: active ? 1 : 0.6,
       child: AnimatedScale(
-        duration: const Duration(milliseconds: 900),
+        duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutCubic,
-        scale: active ? 1 : 0.94,
+        scale: active ? 1 : 0.98,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(28, 90, 28, 150),
           child: Column(
@@ -259,7 +268,7 @@ class _AyahPanel extends StatelessWidget {
                     child: Text.rich(
                       TextSpan(
                         children: [
-                          TextSpan(text: ayah.text),
+                          TextSpan(text: _formatAyahText(ayah.text)),
                           TextSpan(
                             text:
                                 ' ﴿${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}﴾',

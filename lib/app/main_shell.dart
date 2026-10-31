@@ -248,12 +248,28 @@ class _MainShellState extends State<MainShell>
         child: Scaffold(
           // المصحف يأخذ الشاشة كاملة دائماً، فلا يتغير حجم خطه بظهور الشريط.
           extendBody: _tab == ShellTab.quran,
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              for (final tab in ShellTab.values)
-                if (_visited.contains(tab)) _tabLayer(tab),
-            ],
+          body: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragEnd: _tab == ShellTab.quran
+                ? null
+                : (details) {
+                    final velocity = details.primaryVelocity ?? 0;
+                    if (velocity.abs() < 200) return;
+                    final isRtl =
+                        Directionality.of(context) == TextDirection.rtl;
+                    final forward = isRtl ? velocity > 0 : velocity < 0;
+                    final nextIndex = forward ? _tab.index + 1 : _tab.index - 1;
+                    if (nextIndex >= 0 && nextIndex < ShellTab.values.length) {
+                      _select(ShellTab.values[nextIndex]);
+                    }
+                  },
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                for (final tab in ShellTab.values)
+                  if (_visited.contains(tab)) _tabLayer(tab),
+              ],
+            ),
           ),
           bottomNavigationBar: ValueListenableBuilder<bool>(
             valueListenable: _quranControlsVisible,

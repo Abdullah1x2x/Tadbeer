@@ -15,10 +15,18 @@ class AppLogo extends StatelessWidget {
 
   static const _asset = 'assets/icons/app_logo.png';
 
-  /// لون البرونز في قوس الشعار.
-  static const _bronze = Color(0xFF946C33);
-  static const _shadow = Color(0xFF5E401C);
-  static const _gold = Color(0xFFE3C06A);
+  /// لون البرونز في قوس الشعار (مُفتّح وأكثر إشراقاً).
+  static const _bronze = Color(0xFFA67D42);
+  static const _shadow = Color(0xFF6E4E28);
+  static const _gold = Color(0xFFECCB7A);
+
+  /// مصفوفة تفتيح ناعمة لإنارة تفاصيل الشعار.
+  static const _brightenMatrix = <double>[
+    1.08, 0, 0, 0, 12,
+    0, 1.08, 0, 0, 12,
+    0, 0, 1.08, 0, 12,
+    0, 0, 0, 1, 0,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +41,8 @@ class AppLogo extends StatelessWidget {
       borderRadius: radius,
       side: BorderSide(
         color: isDark
-            ? _gold.withValues(alpha: 0.35)
-            : _bronze.withValues(alpha: 0.45),
+            ? _gold.withValues(alpha: 0.40)
+            : _bronze.withValues(alpha: 0.50),
         width: (size / 90).clamp(0.6, 1.4),
         strokeAlign: BorderSide.strokeAlignInside,
       ),
@@ -45,7 +53,7 @@ class AppLogo extends StatelessWidget {
         shadows: elevated
             ? [
                 BoxShadow(
-                  color: _shadow.withValues(alpha: isDark ? 0.4 : 0.22),
+                  color: _shadow.withValues(alpha: isDark ? 0.35 : 0.18),
                   blurRadius: size * 0.18,
                   offset: Offset(0, size * 0.05),
                 ),
@@ -59,12 +67,15 @@ class AppLogo extends StatelessWidget {
         position: DecorationPosition.foreground,
         child: ClipPath(
           clipper: ShapeBorderClipper(shape: shape),
-          child: Image.asset(
-            _asset,
-            width: size,
-            height: size,
-            fit: BoxFit.cover,
-            excludeFromSemantics: true,
+          child: ColorFiltered(
+            colorFilter: const ColorFilter.matrix(_brightenMatrix),
+            child: Image.asset(
+              _asset,
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+            ),
           ),
         ),
       ),

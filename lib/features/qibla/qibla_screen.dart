@@ -72,6 +72,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
     _location = widget.locator.saved();
     _listenToCompass();
     _locate();
+    SectionGuide.showOnce(context, GuideTopic.qibla);
   }
 
   @override

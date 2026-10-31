@@ -25,6 +25,7 @@ import '../quran/screens/quran_screen.dart';
 import '../search/search_provider.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
+import '../qibla/qibla_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// الشاشة الرئيسية.
@@ -193,6 +194,19 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
+        FuturisticIconButton(
+          icon: AppIcons.compass,
+          tooltip: l10n.qibla,
+          size: isVeryCompact ? 36 : (isCompact ? 40 : 42),
+          iconSize: isVeryCompact ? 18 : (isCompact ? 19 : 20),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const QiblaScreen()),
+            );
+          },
+        ),
+        const SizedBox(width: 8),
         FuturisticIconButton(
           icon: AppIcons.gear,
           tooltip: l10n.settings,

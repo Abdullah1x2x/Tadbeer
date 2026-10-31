@@ -243,7 +243,7 @@ class _VerseCanvasNode extends StatelessWidget {
                 '﴿ ${ayah.text} ﴾',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'AmiriQuran',
+                  fontFamily: UserDataStore.instance.quranFontFamily,
                   fontSize: fontSize * 0.78,
                   height: 1.6,
                   color: isDark

@@ -214,7 +214,11 @@ abstract final class SectionGuide {
         ),
       ],
       GuideTopic.qibla => [
-        single(AppIcons.compassFill, l10n.guideQiblaTitle, l10n.guideQiblaBody),
+        _GuideStep(
+          (t) => QiblaScene(t: t),
+          l10n.guideQiblaTitle,
+          l10n.guideQiblaBody,
+        ),
       ],
       GuideTopic.backup => [
         single(
