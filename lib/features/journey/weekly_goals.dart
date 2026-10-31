@@ -66,49 +66,13 @@ class WeeklyGoalsCard extends StatelessWidget {
   const WeeklyGoalsCard({super.key, required this.now});
 
   Future<void> _edit(BuildContext context, WeeklyGoals goals) async {
-    final l10n = context.l10n;
-    final pages = TextEditingController(text: '${goals.pages}');
-    final reflections = TextEditingController(text: '${goals.reflections}');
-    int? parse(TextEditingController c) =>
-        int.tryParse(ArabicSearchNormalizer.toEnglishDigits(c.text.trim()));
-    final ok = await showDialog<bool>(
+    final updated = await showDialog<WeeklyGoals>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.weeklyGoals),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: pages,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: l10n.pagesGoal),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: reflections,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: l10n.reflectionsGoal),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.save),
-          ),
-        ],
-      ),
+      builder: (ctx) => _EditWeeklyGoalsDialog(goals: goals),
     );
-    if (ok != true) return;
+    if (updated == null) return;
     unawaited(HapticFeedback.selectionClick());
-    await WeeklyGoals(
-      pages: (parse(pages) ?? goals.pages).clamp(1, 604),
-      reflections: (parse(reflections) ?? goals.reflections).clamp(0, 100),
-    ).save();
+    await updated.save();
   }
 
   @override
@@ -206,3 +170,80 @@ class WeeklyGoalsCard extends StatelessWidget {
     );
   }
 }
+
+/// حوار تعديل الأهداف الأسبوعية مع دورة حياة منضبطة للمتحكمات النصية.
+class _EditWeeklyGoalsDialog extends StatefulWidget {
+  final WeeklyGoals goals;
+
+  const _EditWeeklyGoalsDialog({required this.goals});
+
+  @override
+  State<_EditWeeklyGoalsDialog> createState() => _EditWeeklyGoalsDialogState();
+}
+
+class _EditWeeklyGoalsDialogState extends State<_EditWeeklyGoalsDialog> {
+  late final TextEditingController _pages;
+  late final TextEditingController _reflections;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = TextEditingController(text: '${widget.goals.pages}');
+    _reflections = TextEditingController(text: '${widget.goals.reflections}');
+  }
+
+  @override
+  void dispose() {
+    _pages.dispose();
+    _reflections.dispose();
+    super.dispose();
+  }
+
+  int? _parse(TextEditingController c) =>
+      int.tryParse(ArabicSearchNormalizer.toEnglishDigits(c.text.trim()));
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.weeklyGoals),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _pages,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: l10n.pagesGoal),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _reflections,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: l10n.reflectionsGoal),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: () {
+            final targetPages =
+                (_parse(_pages) ?? widget.goals.pages).clamp(1, 604);
+            final targetReflections =
+                (_parse(_reflections) ?? widget.goals.reflections)
+                    .clamp(0, 100);
+            Navigator.pop(
+              context,
+              WeeklyGoals(pages: targetPages, reflections: targetReflections),
+            );
+          },
+          child: Text(l10n.save),
+        ),
+      ],
+    );
+  }
+}
+

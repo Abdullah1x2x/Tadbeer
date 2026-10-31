@@ -38,342 +38,32 @@ class _RemindersScreenState extends State<RemindersScreen> {
   }
 
   /// يفتح حوار إضافة تذكير أو تعديل [existing].
-  void _openReminderDialog([ReminderItem? existing]) {
+  Future<void> _openReminderDialog([ReminderItem? existing]) async {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    TimeOfDay selectedTime =
-        existing?.time ?? const TimeOfDay(hour: 6, minute: 0);
-    ReminderRepeatMode repeatMode =
-        existing?.repeatMode ?? ReminderRepeatMode.daily;
-    ReminderAlertType alertType =
-        existing?.alertType ?? ReminderAlertType.notification;
-    final List<int> selectedDays = List.from(
-      existing?.selectedDays ?? [1, 2, 3, 4, 5, 6, 7],
-    );
-    final titleController = TextEditingController(
-      text: existing?.title ?? l10n.defaultReminderTitle,
-    );
-
-    showDialog(
+    final reminder = await showDialog<ReminderItem>(
       context: context,
-      builder: (dialogCtx) => StatefulBuilder(
-        builder: (ctx, setDialogState) {
-          return AlertDialog(
-            backgroundColor: isDark
-                ? AppColors.darkBackground
-                : AppColors.comsilkLight,
-            title: Text(
-              existing == null ? l10n.addReminder : l10n.editReminder,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: titleController,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-                    decoration: InputDecoration(
-                      labelText: l10n.reminderTitle,
-                      labelStyle: const TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                      ),
-                      filled: true,
-                      fillColor: isDark
-                          ? AppColors.darkSurface
-                          : AppColors.comsilk,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: AppColors.border(context)),
-                    ),
-                    tileColor: isDark
-                        ? AppColors.darkSurface
-                        : AppColors.comsilk,
-                    leading: Icon(AppIcons.clock, color: AppColors.olive),
-                    title: Text(
-                      l10n.reminderTime,
-                      style: const TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                        fontSize: 14,
-                      ),
-                    ),
-                    trailing: Text(
-                      ReminderItem.formatTime12Hour(
-                        selectedTime.hour,
-                        selectedTime.minute,
-                      ),
-                      style: TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.olive,
-                      ),
-                    ),
-                    onTap: () async {
-                      final picked = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime,
-                        builder: (context, child) {
-                          return MediaQuery(
-                            data: MediaQuery.of(context)
-                                .copyWith(alwaysUse24HourFormat: false),
-                            child: child!,
-                          );
-                        },
-                      );
-                      if (picked != null) {
-                        setDialogState(() => selectedTime = picked);
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // نوع التنبيه: إشعار أو منبه.
-                  Text(
-                    l10n.alertType,
-                    style: TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? AppColors.comsilk : AppColors.oliveDark,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _AlertTypeOptionCard(
-                          icon: AppIcons.bell,
-                          title: l10n.notificationAlert,
-                          subtitle: l10n.notificationSubtitle,
-                          selected: alertType == ReminderAlertType.notification,
-                          isDark: isDark,
-                          onTap: () => setDialogState(
-                            () => alertType = ReminderAlertType.notification,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _AlertTypeOptionCard(
-                          icon: AppIcons.alarmFill,
-                          title: l10n.alarmAlert,
-                          subtitle: l10n.alarmSubtitle,
-                          selected: alertType == ReminderAlertType.alarm,
-                          isDark: isDark,
-                          onTap: () => setDialogState(
-                            () => alertType = ReminderAlertType.alarm,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  Text(
-                    l10n.repeatMode,
-                    style: TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? AppColors.comsilk : AppColors.oliveDark,
-                    ),
-                  ),
-                  RadioGroup<ReminderRepeatMode>(
-                    groupValue: repeatMode,
-                    onChanged: (val) {
-                      if (val != null) {
-                        setDialogState(() => repeatMode = val);
-                      }
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RadioListTile<ReminderRepeatMode>(
-                          value: ReminderRepeatMode.daily,
-                          activeColor: AppColors.olive,
-                          title: Text(
-                            l10n.repeatDaily,
-                            style: const TextStyle(
-                              fontFamily: 'IBMPlexSansArabic',
-                            ),
-                          ),
-                        ),
-                        RadioListTile<ReminderRepeatMode>(
-                          value: ReminderRepeatMode.once,
-                          activeColor: AppColors.olive,
-                          title: Text(
-                            l10n.repeatOnce,
-                            style: const TextStyle(
-                              fontFamily: 'IBMPlexSansArabic',
-                            ),
-                          ),
-                        ),
-                        RadioListTile<ReminderRepeatMode>(
-                          value: ReminderRepeatMode.weekdays,
-                          activeColor: AppColors.olive,
-                          title: Text(
-                            l10n.selectDays,
-                            style: const TextStyle(
-                              fontFamily: 'IBMPlexSansArabic',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // اختيار الأيام، لتكرار "أيام محددة".
-                  if (repeatMode == ReminderRepeatMode.weekdays) ...[
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        _DayChip(
-                          day: 6,
-                          label: l10n.daySat,
-                          selected: selectedDays.contains(6),
-                          onToggle: () =>
-                              _toggleDay(setDialogState, selectedDays, 6),
-                        ),
-                        _DayChip(
-                          day: 7,
-                          label: l10n.daySun,
-                          selected: selectedDays.contains(7),
-                          onToggle: () =>
-                              _toggleDay(setDialogState, selectedDays, 7),
-                        ),
-                        _DayChip(
-                          day: 1,
-                          label: l10n.dayMon,
-                          selected: selectedDays.contains(1),
-                          onToggle: () =>
-                              _toggleDay(setDialogState, selectedDays, 1),
-                        ),
-                        _DayChip(
-                          day: 2,
-                          label: l10n.dayTue,
-                          selected: selectedDays.contains(2),
-                          onToggle: () =>
-                              _toggleDay(setDialogState, selectedDays, 2),
-                        ),
-                        _DayChip(
-                          day: 3,
-                          label: l10n.dayWed,
-                          selected: selectedDays.contains(3),
-                          onToggle: () =>
-                              _toggleDay(setDialogState, selectedDays, 3),
-                        ),
-                        _DayChip(
-                          day: 4,
-                          label: l10n.dayThu,
-                          selected: selectedDays.contains(4),
-                          onToggle: () =>
-                              _toggleDay(setDialogState, selectedDays, 4),
-                        ),
-                        _DayChip(
-                          day: 5,
-                          label: l10n.dayFri,
-                          selected: selectedDays.contains(5),
-                          onToggle: () =>
-                              _toggleDay(setDialogState, selectedDays, 5),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogCtx),
-                child: Text(
-                  l10n.cancel,
-                  style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final reminder = ReminderItem(
-                    id: existing?.id ?? const Uuid().v4(),
-                    title: titleController.text.trim().isNotEmpty
-                        ? titleController.text.trim()
-                        : l10n.defaultReminderTitle,
-                    hour: selectedTime.hour,
-                    minute: selectedTime.minute,
-                    repeatMode: repeatMode,
-                    alertType: alertType,
-                    selectedDays: selectedDays,
-                    isEnabled: existing?.isEnabled ?? true,
-                    createdAt: existing?.createdAt ?? DateTime.now(),
-                  );
-
-                  await UserDataStore.instance.putReminder(reminder);
-                  await LocalReminderService.instance.scheduleReminder(
-                    reminder,
-                  );
-                  if (dialogCtx.mounted) Navigator.pop(dialogCtx);
-                  if (mounted) {
-                    final modeLabel = alertType == ReminderAlertType.alarm
-                        ? l10n.alarmAlert
-                        : l10n.notificationAlert;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          l10n.reminderScheduledSuccess(modeLabel),
-                          style: const TextStyle(
-                            fontFamily: 'IBMPlexSansArabic',
-                          ),
-                        ),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.olive,
-                  foregroundColor: Colors.white,
-                ),
-                child: Text(
-                  l10n.save,
-                  style: const TextStyle(
-                    fontFamily: 'IBMPlexSansArabic',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+      builder: (dialogCtx) => _AddOrEditReminderDialog(
+        existing: existing,
+        defaultTitle: l10n.defaultReminderTitle,
       ),
     );
-  }
 
-  /// يختار يوماً أو يلغيه، مع بقاء يوم واحد على الأقل.
-  void _toggleDay(StateSetter setDialogState, List<int> days, int day) {
-    setDialogState(() {
-      if (days.contains(day)) {
-        if (days.length > 1) days.remove(day);
-      } else {
-        days.add(day);
-      }
-    });
+    if (reminder != null && mounted) {
+      final modeLabel = reminder.alertType == ReminderAlertType.alarm
+          ? l10n.alarmAlert
+          : l10n.notificationAlert;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            l10n.reminderScheduledSuccess(modeLabel),
+            style: const TextStyle(
+              fontFamily: 'IBMPlexSansArabic',
+            ),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   /// يرسل تنبيهاً تجريبياً للتأكد من عمل الإشعارات على الجهاز.
@@ -537,6 +227,345 @@ class _RemindersScreenState extends State<RemindersScreen> {
           },
         ),
       ),
+    );
+  }
+}
+
+/// حوار إضافة أو تعديل تنبيه قراءة مع إدارة دورة حياة حقول الإدخال بأمان.
+class _AddOrEditReminderDialog extends StatefulWidget {
+  final ReminderItem? existing;
+  final String defaultTitle;
+
+  const _AddOrEditReminderDialog({
+    this.existing,
+    required this.defaultTitle,
+  });
+
+  @override
+  State<_AddOrEditReminderDialog> createState() =>
+      _AddOrEditReminderDialogState();
+}
+
+class _AddOrEditReminderDialogState extends State<_AddOrEditReminderDialog> {
+  late final TextEditingController _titleController;
+  late TimeOfDay _selectedTime;
+  late ReminderRepeatMode _repeatMode;
+  late ReminderAlertType _alertType;
+  late final List<int> _selectedDays;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTime =
+        widget.existing?.time ?? const TimeOfDay(hour: 6, minute: 0);
+    _repeatMode = widget.existing?.repeatMode ?? ReminderRepeatMode.daily;
+    _alertType =
+        widget.existing?.alertType ?? ReminderAlertType.notification;
+    _selectedDays = List.from(
+      widget.existing?.selectedDays ?? [1, 2, 3, 4, 5, 6, 7],
+    );
+    _titleController = TextEditingController(
+      text: widget.existing?.title ?? widget.defaultTitle,
+    );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  void _toggleDay(int day) {
+    setState(() {
+      if (_selectedDays.contains(day)) {
+        if (_selectedDays.length > 1) _selectedDays.remove(day);
+      } else {
+        _selectedDays.add(day);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return AlertDialog(
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.comsilkLight,
+      title: Text(
+        widget.existing == null ? l10n.addReminder : l10n.editReminder,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontFamily: 'IBMPlexSansArabic',
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _titleController,
+              textDirection: TextDirection.rtl,
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+              decoration: InputDecoration(
+                labelText: l10n.reminderTitle,
+                labelStyle: const TextStyle(
+                  fontFamily: 'IBMPlexSansArabic',
+                ),
+                filled: true,
+                fillColor:
+                    isDark ? AppColors.darkSurface : AppColors.comsilk,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: AppColors.border(context)),
+              ),
+              tileColor:
+                  isDark ? AppColors.darkSurface : AppColors.comsilk,
+              leading: Icon(AppIcons.clock, color: AppColors.olive),
+              title: Text(
+                l10n.reminderTime,
+                style: const TextStyle(
+                  fontFamily: 'IBMPlexSansArabic',
+                  fontSize: 14,
+                ),
+              ),
+              trailing: Text(
+                ReminderItem.formatTime12Hour(
+                  _selectedTime.hour,
+                  _selectedTime.minute,
+                ),
+                style: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.olive,
+                ),
+              ),
+              onTap: () async {
+                final picked = await showTimePicker(
+                  context: context,
+                  initialTime: _selectedTime,
+                  builder: (context, child) {
+                    return MediaQuery(
+                      data: MediaQuery.of(context)
+                          .copyWith(alwaysUse24HourFormat: false),
+                      child: child!,
+                    );
+                  },
+                );
+                if (picked != null) {
+                  setState(() => _selectedTime = picked);
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // نوع التنبيه: إشعار أو منبه.
+            Text(
+              l10n.alertType,
+              style: TextStyle(
+                fontFamily: 'IBMPlexSansArabic',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: isDark ? AppColors.comsilk : AppColors.oliveDark,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: _AlertTypeOptionCard(
+                    icon: AppIcons.bell,
+                    title: l10n.notificationAlert,
+                    subtitle: l10n.notificationSubtitle,
+                    selected:
+                        _alertType == ReminderAlertType.notification,
+                    isDark: isDark,
+                    onTap: () => setState(
+                      () => _alertType = ReminderAlertType.notification,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _AlertTypeOptionCard(
+                    icon: AppIcons.alarmFill,
+                    title: l10n.alarmAlert,
+                    subtitle: l10n.alarmSubtitle,
+                    selected: _alertType == ReminderAlertType.alarm,
+                    isDark: isDark,
+                    onTap: () => setState(
+                      () => _alertType = ReminderAlertType.alarm,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            Text(
+              l10n.repeatMode,
+              style: TextStyle(
+                fontFamily: 'IBMPlexSansArabic',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: isDark ? AppColors.comsilk : AppColors.oliveDark,
+              ),
+            ),
+            RadioGroup<ReminderRepeatMode>(
+              groupValue: _repeatMode,
+              onChanged: (val) {
+                if (val != null) {
+                  setState(() => _repeatMode = val);
+                }
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RadioListTile<ReminderRepeatMode>(
+                    value: ReminderRepeatMode.daily,
+                    activeColor: AppColors.olive,
+                    title: Text(
+                      l10n.repeatDaily,
+                      style: const TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                      ),
+                    ),
+                  ),
+                  RadioListTile<ReminderRepeatMode>(
+                    value: ReminderRepeatMode.once,
+                    activeColor: AppColors.olive,
+                    title: Text(
+                      l10n.repeatOnce,
+                      style: const TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                      ),
+                    ),
+                  ),
+                  RadioListTile<ReminderRepeatMode>(
+                    value: ReminderRepeatMode.weekdays,
+                    activeColor: AppColors.olive,
+                    title: Text(
+                      l10n.selectDays,
+                      style: const TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // اختيار الأيام، لتكرار "أيام محددة".
+            if (_repeatMode == ReminderRepeatMode.weekdays) ...[
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                alignment: WrapAlignment.center,
+                children: [
+                  _DayChip(
+                    day: 6,
+                    label: l10n.daySat,
+                    selected: _selectedDays.contains(6),
+                    onToggle: () => _toggleDay(6),
+                  ),
+                  _DayChip(
+                    day: 7,
+                    label: l10n.daySun,
+                    selected: _selectedDays.contains(7),
+                    onToggle: () => _toggleDay(7),
+                  ),
+                  _DayChip(
+                    day: 1,
+                    label: l10n.dayMon,
+                    selected: _selectedDays.contains(1),
+                    onToggle: () => _toggleDay(1),
+                  ),
+                  _DayChip(
+                    day: 2,
+                    label: l10n.dayTue,
+                    selected: _selectedDays.contains(2),
+                    onToggle: () => _toggleDay(2),
+                  ),
+                  _DayChip(
+                    day: 3,
+                    label: l10n.dayWed,
+                    selected: _selectedDays.contains(3),
+                    onToggle: () => _toggleDay(3),
+                  ),
+                  _DayChip(
+                    day: 4,
+                    label: l10n.dayThu,
+                    selected: _selectedDays.contains(4),
+                    onToggle: () => _toggleDay(4),
+                  ),
+                  _DayChip(
+                    day: 5,
+                    label: l10n.dayFri,
+                    selected: _selectedDays.contains(5),
+                    onToggle: () => _toggleDay(5),
+                  ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            l10n.cancel,
+            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            final reminder = ReminderItem(
+              id: widget.existing?.id ?? const Uuid().v4(),
+              title: _titleController.text.trim().isNotEmpty
+                  ? _titleController.text.trim()
+                  : widget.defaultTitle,
+              hour: _selectedTime.hour,
+              minute: _selectedTime.minute,
+              repeatMode: _repeatMode,
+              alertType: _alertType,
+              selectedDays: _selectedDays,
+              isEnabled: widget.existing?.isEnabled ?? true,
+              createdAt: widget.existing?.createdAt ?? DateTime.now(),
+            );
+
+            await UserDataStore.instance.putReminder(reminder);
+            await LocalReminderService.instance.scheduleReminder(
+              reminder,
+            );
+            if (context.mounted) Navigator.pop(context, reminder);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.olive,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(
+            l10n.save,
+            style: const TextStyle(
+              fontFamily: 'IBMPlexSansArabic',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

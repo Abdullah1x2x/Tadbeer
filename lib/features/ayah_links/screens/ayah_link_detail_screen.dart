@@ -55,135 +55,16 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
   /// يفتح حوار إضافة بطاقة خاطرة إلى الرابط.
   Future<void> _openAddNote(AyahLinkItem link) async {
     final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final titleController = TextEditingController();
-    final contentController = TextEditingController();
-
-    final result = await showDialog<bool>(
+    final result = await showDialog<({String? title, String content})>(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.comsilkLight,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(
-              AppIcons.notePencil,
-              color: Theme.of(context).colorScheme.primary,
-              size: 26,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                l10n.addNoteCard,
-                style: const TextStyle(
-                  fontFamily: 'Amiri',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                l10n.addNoteCardHint,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: titleController,
-                style: const TextStyle(fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: l10n.noteTitleOptional,
-                  filled: true,
-                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: contentController,
-                minLines: 3,
-                maxLines: 8,
-                autofocus: true,
-                style: const TextStyle(fontSize: 14, height: 1.5),
-                decoration: InputDecoration(
-                  hintText: l10n.noteContent,
-                  filled: true,
-                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx, false),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (contentController.text.trim().isNotEmpty) {
-                Navigator.pop(dialogCtx, true);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(l10n.save),
-          ),
-        ],
-      ),
+      builder: (dialogCtx) => const _AddNoteToLinkDialog(),
     );
 
-    if (result == true && mounted) {
-      final content = contentController.text.trim();
-      final title = titleController.text.trim();
+    if (result != null && mounted) {
       await _repo.addNoteToLink(
         link.id,
-        content: content,
-        title: title.isEmpty ? null : title,
+        content: result.content,
+        title: result.title,
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -478,3 +359,158 @@ class _ViewTabButton extends StatelessWidget {
     );
   }
 }
+
+/// حوار إضافة بطاقة خاطرة إلى الرابط مع إدارة سليمة للذاكرة والمتحكمات.
+class _AddNoteToLinkDialog extends StatefulWidget {
+  const _AddNoteToLinkDialog();
+
+  @override
+  State<_AddNoteToLinkDialog> createState() => _AddNoteToLinkDialogState();
+}
+
+class _AddNoteToLinkDialogState extends State<_AddNoteToLinkDialog> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _contentController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController();
+    _contentController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return AlertDialog(
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.comsilkLight,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Row(
+        children: [
+          Icon(
+            AppIcons.notePencil,
+            color: Theme.of(context).colorScheme.primary,
+            size: 26,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              l10n.addNoteCard,
+              style: const TextStyle(
+                fontFamily: 'Amiri',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.addNoteCardHint,
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _titleController,
+              style: const TextStyle(fontSize: 14),
+              decoration: InputDecoration(
+                hintText: l10n.noteTitleOptional,
+                filled: true,
+                fillColor:
+                    isDark ? AppColors.darkSurface : AppColors.comsilk,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _contentController,
+              minLines: 3,
+              maxLines: 8,
+              autofocus: true,
+              style: const TextStyle(fontSize: 14, height: 1.5),
+              decoration: InputDecoration(
+                hintText: l10n.noteContent,
+                filled: true,
+                fillColor:
+                    isDark ? AppColors.darkSurface : AppColors.comsilk,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 1.5,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final content = _contentController.text.trim();
+            if (content.isNotEmpty) {
+              final title = _titleController.text.trim();
+              Navigator.pop(
+                context,
+                (title: title.isEmpty ? null : title, content: content),
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(l10n.save),
+        ),
+      ],
+    );
+  }
+}
+
