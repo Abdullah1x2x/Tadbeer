@@ -8,6 +8,7 @@ import '../data/book_model.dart';
 import '../data/book_repository.dart';
 import 'book_section_screen.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../onboarding/tour/section_guide.dart';
 
 export 'book_section_screen.dart';
 
@@ -84,6 +85,7 @@ class _BooksScreenState extends State<BooksScreen> {
             ),
           ),
           centerTitle: true,
+          actions: [GuideButton(topic: GuideTopic.books)],
         ),
         body: SafeArea(
           child: sections.isEmpty
@@ -253,7 +255,7 @@ class _SectionDirectoryCard extends StatelessWidget {
     if (section.countLabel != null && section.countLabel!.isNotEmpty) {
       return '$count ${section.countLabel}';
     }
-    return '$count كتاب/ملزمة';
+    return context.l10n.booksCountLabel(count);
   }
 
   @override

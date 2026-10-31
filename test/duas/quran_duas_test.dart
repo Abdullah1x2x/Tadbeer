@@ -26,15 +26,15 @@ void main() {
   });
 
   group('Quranic Duas Data Integrity Tests (أدعية من القرآن)', () {
-    test('Verified Duas Count and Complete Inventory (88 Entries)', () {
+    test('Verified Duas Count and Complete Inventory (89 Entries)', () {
       final repo = QuranDuasRepository.instance;
       repo.resetCache();
       final duas = repo.getDuas();
 
       expect(
         duas.length,
-        equals(88),
-        reason: 'Catalog must contain exactly 88 verified direct Quranic supplications',
+        equals(89),
+        reason: 'Catalog must contain exactly 89 verified direct Quranic supplications',
       );
     });
 
@@ -42,7 +42,7 @@ void main() {
       final repo = QuranDuasRepository.instance;
       final duas = repo.getDuas();
 
-      // IDs must be sequential 1 to 88
+      // IDs must be sequential 1 to 89
       for (int i = 0; i < duas.length; i++) {
         expect(duas[i].id, equals(i + 1));
       }
@@ -97,7 +97,7 @@ void main() {
       final repo = QuranDuasRepository.instance;
       final duas = repo.getDuas();
 
-      // All 88 entries must be direct supplications without alerts
+      // All 89 entries must be direct supplications without alerts
       for (final dua in duas) {
         expect(
           dua.isDirectDua,
@@ -250,9 +250,9 @@ void main() {
       final combined = repo.search('نوح', categoryFilter: 'المغفرة والتوبة');
       expect(combined.isNotEmpty, isTrue);
 
-      // 8. Empty Search returns all 88
-      expect(repo.search('').length, equals(88));
-      expect(repo.search('   ').length, equals(88));
+      // 8. Empty Search returns all 89
+      expect(repo.search('').length, equals(89));
+      expect(repo.search('   ').length, equals(89));
 
       // 9. Non-existent query returns empty
       expect(repo.search('كلمة غير موجودة بتاتا').isEmpty, isTrue);
@@ -323,7 +323,7 @@ void main() {
       final duas = repo.getDuas();
 
       final singleAyahDuas = duas.where((d) => !d.isMultiAyah).toList();
-      expect(singleAyahDuas.length, equals(79));
+      expect(singleAyahDuas.length, equals(80));
 
       for (final dua in singleAyahDuas) {
         expect(dua.verses.length, equals(1));

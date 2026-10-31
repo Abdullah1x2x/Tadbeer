@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,6 +12,7 @@ import '../../data/quran/quran_repository.dart';
 import 'memorization_model.dart';
 import '../continue/last_activity.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// شاشة الحفظ: الإحصاءات، ومراجعة اليوم، واختيار سورة.
 class MemorizationScreen extends StatelessWidget {
@@ -32,7 +35,10 @@ class MemorizationScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
-        appBar: AppBar(title: Text(l10n.memorization)),
+        appBar: AppBar(
+          title: Text(l10n.memorization),
+          actions: [GuideButton(topic: GuideTopic.memorization)],
+        ),
         body: ListenableBuilder(
           listenable: UserDataStore.instance,
           builder: (context, _) {
@@ -181,7 +187,7 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
 
   Future<void> _grade(bool remembered) async {
     final (s, a) = widget.verses[_index];
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     await HifzStore.grade(s, a, remembered: remembered);
     if (!mounted) return;
     setState(() {

@@ -88,7 +88,7 @@ class _FuturisticCardState extends State<FuturisticCard> {
       );
     }
 
-    Widget content = Card(
+    final Widget content = Card(
       elevation: 0,
       margin: EdgeInsets.zero,
       color: Colors.transparent,

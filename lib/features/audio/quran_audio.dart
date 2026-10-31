@@ -237,6 +237,9 @@ class QuranAudio extends ChangeNotifier {
   /// تُتلى آية واحدة ثم يتوقف التشغيل.
   bool _single = false;
 
+  /// انتهت الآية الواحدة: يبقى الشريط ظاهراً، والتشغيل يعيدها.
+  bool finished = false;
+
   /// القفز بالتالي والسابق لا ينتظر وقفة التدبر.
   bool _jumping = false;
 
@@ -264,6 +267,12 @@ class QuranAudio extends ChangeNotifier {
   /// كم مرة تُقرأ كل آية.
   int get repeat => (_saved['repeat'] as int? ?? 1).clamp(1, 10);
 
+  /// هل تتابع التلاوة بعد الآية، أم تقف عند آية واحدة؛ يختاره القارئ من
+  /// الشريط ويُحفظ.
+  bool get continuous => !_single;
+
+  bool get _continuousSaved => _saved['continuous'] as bool? ?? true;
+
   /// ثواني الوقفة بعد كل آية للتدبر.
   int get pauseSeconds => (_saved['pause'] as int? ?? 0).clamp(0, 30);
 
@@ -289,11 +298,24 @@ class QuranAudio extends ChangeNotifier {
     if (now != null) await playFrom(now);
   }
 
+  /// يتابع التلاوة أو يقف عند آية واحدة، من الآية الجارية فصاعداً.
+  Future<void> setContinuous(bool value) async {
+    _single = !value;
+    await _save('continuous', value);
+    // الآية الواحدة المنتهية تُكمل الآن من التي بعدها.
+    final now = current;
+    if (value && finished && now != null) {
+      final following = _neighbour(now, 1);
+      if (following != null) await _start(following, single: false);
+    }
+  }
+
   /// الوقفة بعد كل آية؛ تسري من الآية التالية.
   Future<void> setPauseSeconds(int seconds) => _save('pause', seconds);
 
-  /// يبدأ التلاوة من [ayah] حتى آخر السورة ثم ما بعدها.
-  Future<void> playFrom(Ayah ayah) => _start(ayah, single: false);
+  /// يبدأ التلاوة من [ayah]: حتى آخر السورة وما بعدها، أو [ayah] وحدها إن
+  /// اختار القارئ آية واحدة.
+  Future<void> playFrom(Ayah ayah) => _start(ayah, single: !_continuousSaved);
 
   /// يتلو [ayah] وحدها ثم يتوقف.
   Future<void> playAyah(Ayah ayah) => _start(ayah, single: true);
@@ -303,6 +325,7 @@ class QuranAudio extends ChangeNotifier {
     final request = ++_request;
     _pauseTimer?.cancel();
     failed = false;
+    finished = false;
     _single = single;
     _queue = null;
     current = ayah;
@@ -339,9 +362,9 @@ class QuranAudio extends ChangeNotifier {
     } else if (playing) {
       await _player.pause();
     } else if (active) {
-      // المشغّل الذي أوقفه النظام لا يُستأنف، فتبدأ الآية من جديد.
+      // الآية المنتهية والمشغّل الذي أوقفه النظام يبدآن الآية من جديد.
       final now = current!;
-      if (_player.idle) {
+      if (finished || _player.idle) {
         await _start(now, single: _single);
       } else {
         await _player.play();
@@ -358,6 +381,7 @@ class QuranAudio extends ChangeNotifier {
     if (index != null) {
       _pauseTimer?.cancel();
       _jumping = true;
+      finished = false;
       await _player.seekTo(index);
       await _player.play();
     } else {
@@ -374,6 +398,7 @@ class QuranAudio extends ChangeNotifier {
     if (index != null) {
       _pauseTimer?.cancel();
       _jumping = true;
+      finished = false;
       await _player.seekTo(index);
       await _player.play();
     } else {
@@ -389,6 +414,7 @@ class QuranAudio extends ChangeNotifier {
     current = null;
     playing = false;
     loading = false;
+    finished = false;
     notifyListeners();
     await _engine?.stop();
   }
@@ -405,9 +431,14 @@ class QuranAudio extends ChangeNotifier {
     if (index == null || queue == null || index >= queue.ayahs.length) return;
     final ayah = queue.ayahs[index];
     final previous = current;
-    current = ayah;
     final jumped = _jumping;
     _jumping = false;
+    // اختار القارئ آية واحدة أثناء التلاوة: تقف عند نهاية الجارية.
+    if (!jumped && _single && previous != null && previous.id != ayah.id) {
+      _finish();
+      return;
+    }
+    current = ayah;
     // تبدأ آية جديدة: الوقفة أولاً إن طلبها القارئ.
     if (!jumped &&
         previous != null &&
@@ -426,7 +457,11 @@ class QuranAudio extends ChangeNotifier {
   void _onCompleted() {
     final ayahs = _queue?.ayahs;
     if (ayahs == null || ayahs.isEmpty) return;
-    final following = _single ? null : _neighbour(ayahs.last, 1);
+    if (_single) {
+      _finish();
+      return;
+    }
+    final following = _neighbour(ayahs.last, 1);
     if (following == null) {
       stop();
       return;
@@ -442,6 +477,16 @@ class QuranAudio extends ChangeNotifier {
     } else {
       playFrom(following);
     }
+  }
+
+  /// تقف التلاوة عند نهاية الآية، ويبقى الشريط عليها.
+  void _finish() {
+    _pauseTimer?.cancel();
+    finished = true;
+    playing = false;
+    loading = false;
+    unawaited(_engine?.pause().catchError((Object _) {}));
+    notifyListeners();
   }
 
   /// يوقف كل شيء عند خطأ، فلا يبقى مشغّل عالق ينتظر صوتاً لن يأتي.

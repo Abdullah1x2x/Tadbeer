@@ -163,11 +163,12 @@ extension _BookReaderViews on _BookReaderScreenState {
       }
 
       if (fileToShare != null && await fileToShare.exists()) {
-        await SharePlus.instance.share(
-          ShareParams(
-            files: [XFile(fileToShare.path, name: targetFileName)],
-            text: '${widget.book.title} — تطبيق تَدْبِير',
-          ),
+        if (!mounted) return;
+        await shareOrSaveFile(
+          context,
+          file: fileToShare,
+          fileName: targetFileName,
+          text: '${widget.book.title} — تطبيق تَدْبِير',
         );
       } else {
         if (mounted) {

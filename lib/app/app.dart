@@ -9,6 +9,7 @@ import '../core/theme/theme.dart';
 import '../l10n/app_localizations.dart';
 import '../features/onboarding/theme_picker_screen.dart';
 import '../features/onboarding/name_screen.dart';
+import '../features/onboarding/tour/tour_screen.dart';
 
 /// يفتح الشاشات من خارج شجرة الواجهة، كالنقر على إشعار.
 final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
@@ -146,7 +147,10 @@ class _TadbeerAppState extends State<TadbeerApp> {
                 ? _afterThemePicker(context)
                 // الإقلاع الأول: اسم القارئ، ثم اختيار الثيم.
                 : NameScreen(
-                    next: (_) => ThemePickerScreen(next: _afterThemePicker),
+                    next: (_) => ThemePickerScreen(
+                      // جولة التعريف بالتطبيق، بألوان الثيم الذي اختاره للتو.
+                      next: (_) => TourScreen(next: _afterThemePicker),
+                    ),
                   ),
           ),
         );

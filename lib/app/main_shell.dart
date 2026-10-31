@@ -6,6 +6,7 @@ import '../core/motion/app_motion.dart';
 import '../features/duas/screens/duas_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/more/more_screen.dart';
+import '../features/onboarding/tour/home_walkthrough.dart';
 import '../features/quran/screens/quran_screen.dart';
 import '../features/quran/widgets/ayah_rosette.dart';
 import '../features/reminders/startup_permissions.dart';
@@ -74,8 +75,15 @@ class _MainShellState extends State<MainShell>
     MainShell._mountedCount++;
     MainShell.requestedTab.addListener(_onTabRequested);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) StartupPermissions.askOnce(context);
+      if (mounted) _welcome();
     });
+  }
+
+  /// الأذونات أولاً، ثم دليل الرئيسية لمن وصلها أول مرة.
+  Future<void> _welcome() async {
+    await StartupPermissions.askOnce(context);
+    if (!mounted || _tab != ShellTab.home) return;
+    await HomeWalkthrough.showOnce(context);
   }
 
   void _onTabRequested() {
@@ -197,6 +205,7 @@ class _MainShellState extends State<MainShell>
 
     final items = [
       FloatingNavItem(
+        key: HomeWalkthrough.homeTab,
         icon: AppIcons.house,
         selectedIcon: AppIcons.houseFill,
         label: l10n.home,
@@ -218,6 +227,7 @@ class _MainShellState extends State<MainShell>
         label: l10n.duas,
       ),
       FloatingNavItem(
+        key: HomeWalkthrough.moreTab,
         icon: AppIcons.squaresFour,
         selectedIcon: AppIcons.squaresFourFill,
         label: l10n.more,
@@ -236,6 +246,8 @@ class _MainShellState extends State<MainShell>
           _select(ShellTab.home);
         },
         child: Scaffold(
+          // المصحف يأخذ الشاشة كاملة دائماً، فلا يتغير حجم خطه بظهور الشريط.
+          extendBody: _tab == ShellTab.quran,
           body: Stack(
             fit: StackFit.expand,
             children: [
@@ -247,25 +259,22 @@ class _MainShellState extends State<MainShell>
             valueListenable: _quranControlsVisible,
             builder: (context, controlsVisible, bar) {
               final hidden = _tab == ShellTab.quran && !controlsVisible;
-              // ينزلق ويتلاشى أثناء الانطواء، فتأخذ قراءة المصحف الشاشة كاملة.
-              return TweenAnimationBuilder<double>(
-                tween: Tween(end: hidden ? 0 : 1),
-                duration: AppMotion.duration(context, AppMotion.slow),
-                curve: Curves.easeOutCubic,
-                builder: (context, t, child) => ClipRect(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    heightFactor: t,
-                    child: Opacity(
-                      opacity: t,
-                      child: Transform.translate(
-                        offset: Offset(0, 40 * (1 - t)),
-                        child: child,
-                      ),
+              // ينزلق ويتلاشى دون أن يتغير ارتفاعه.
+              return IgnorePointer(
+                ignoring: hidden,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: hidden ? 0 : 1),
+                  duration: AppMotion.duration(context, AppMotion.slow),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, t, child) => Opacity(
+                    opacity: t,
+                    child: Transform.translate(
+                      offset: Offset(0, 96 * (1 - t)),
+                      child: child,
                     ),
                   ),
+                  child: bar,
                 ),
-                child: bar,
               );
             },
             child: FloatingNavBar(

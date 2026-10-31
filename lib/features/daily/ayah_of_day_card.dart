@@ -381,6 +381,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                               ],
                               child: Text(
                                 looks[_index].text,
+                                semanticsLabel: looks[_index].spoken,
                                 textAlign: TextAlign.center,
                                 style: looks[_index].at(21, 2),
                               ),
@@ -531,10 +532,13 @@ double _tallest(
 class _VerseLook {
   final String text;
 
+  /// نص الآية لقارئ الشاشة؛ رموز خط المدينة لا تعني له شيئاً.
+  final String spoken;
+
   /// نمط الآية بحجم [size] وتباعد أسطر [height].
   final TextStyle Function(double size, double height) at;
 
-  const _VerseLook(this.text, this.at);
+  const _VerseLook(this.text, this.spoken, this.at);
 
   static const _color = Color(0xFFF2EEE4);
 
@@ -549,9 +553,10 @@ class _VerseLook {
       final glyphs = [for (final a in ayahs) QcfGlyphs.of(a)];
       if (glyphs.every((g) => g != null)) {
         return [
-          for (final g in glyphs)
+          for (final (i, g) in glyphs.indexed)
             _VerseLook(
               g!.text,
+              ayahs[i].text,
               (size, height) =>
                   g.style(fontSize: size, height: height, color: _color),
             ),
@@ -563,6 +568,7 @@ class _VerseLook {
       for (final a in ayahs)
         _VerseLook(
           '${a.text} ﴿${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}﴾',
+          a.text,
           (size, height) => TextStyle(
             fontFamily: font,
             fontSize: size,
@@ -618,6 +624,7 @@ class _FittedVerse extends StatelessWidget {
         return Center(
           child: Text(
             shown.text,
+            semanticsLabel: shown.spoken,
             textAlign: TextAlign.center,
             maxLines: lines,
             overflow: lines == null ? null : TextOverflow.ellipsis,

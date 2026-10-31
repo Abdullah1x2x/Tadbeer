@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -19,7 +21,7 @@ class ThemePickerScreen extends StatelessWidget {
   const ThemePickerScreen({super.key, required this.next});
 
   Future<void> _start(BuildContext context) async {
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     final navigator = Navigator.of(context);
     final store = UserDataStore.instance;
     await store.updateSettings(store.settings.copyWith(themeChosen: true));

@@ -15,9 +15,7 @@
   "duas": "الأدعية",
   "quranDuas": "أدعية من القرآن",
   "tasbeehAndIstighfar": "استغفار وتسبيح",
-  "tasbeehSubtitle": "سبحة إلكترونية وأوراد الاستغفار والتسبيح",
   "booksAndBooklets": "كتب وملازم",
-  "booksSubtitle": "مكتبة الملازم التدبرية ومختصرات علوم القرآن",
   "about": "عن تَدْبِير",
   "more": "المزيد",
   "tadbeerVerseRef": "سورة محمد · آية ٢٤",
@@ -46,7 +44,6 @@
   "needsReview": "أحتاج مراجعة",
   "mastered": "أتقنتها",
   "sessionDone": "أحسنت! انتهت الجلسة",
-  "ayahOfTheDay": "آية اليوم",
   "reflectOnIt": "تدبّرها",
   "fromMushafStart": "من أول المصحف",
   "setKhatmaPosition": "تعديل موضعي في الختمة",
@@ -97,7 +94,6 @@
   "increase": "زيادة",
   "sajdah": "سجدة تلاوة",
   "addNote": "ملاحظة",
-  "saveBookmark": "حفظ",
   "removeBookmark": "إزالة الحفظ",
   "highlight": "تمييز",
   "removeHighlight": "إزالة التمييز",
@@ -191,8 +187,6 @@
   "paperSepia": "سيبيا دافئ",
   "aboutContent": "تدبير مشروع قرآني يهدف إلى تعزيز التدبّر في آيات الله، ومساعدة المسلم على التأمل في معاني القرآن الكريم، والتفكّر في هداياته، واستحضار أثر آياته في الحياة والعمل بها، لتكون علاقتنا بالقرآن قائمة على التدبّر والفهم والاهتداء، لا على التلاوة وحدها.",
   "resumeReading": "استئناف القراءة",
-  "additionalTools": "أدوات إضافية",
-  "quranAndSunnahDuas": "أدعية الكتاب والسنة",
   "quranDuasTitle": "أدعية من القرآن",
   "quranDuasSubtitle": "أدعية الأنبياء والصالحين وخواتيم السور المأثورة في كتاب الله",
   "morningEveningAdhkarTitle": "أذكار الصباح والمساء",
@@ -203,11 +197,6 @@
   "sunnahDuasSubtitle": "أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب",
   "jawamiDuasTitle": "جوامع الدعاء والرجاء",
   "jawamiDuasSubtitle": "أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية",
-  "wordsOfQuran": "غريب ألفاظ القرآن",
-  "yourThoughtsAndReflections": "خواطرك وتدبراتك",
-  "connectionsAndThemes": "الربط والعلاقات",
-  "dailyPortion": "الورد اليومي",
-  "tadbeerLibrary": "مكتبة المتدبر",
   "offlineQuranAndReflection": "مصحف وتدبّر بدون إنترنت",
   "meccan": "مكية",
   "medinan": "مدنية",
@@ -226,7 +215,6 @@
   "continueLabel": "متابعة",
   "doNotShowAgain": "لا تظهر لي هذه النافذة مرة أخرى",
   "curatedPathways": "المسارات التدبرية المقترحة",
-  "importFromQrCode": "استيراد رابط آيات عبر الرمز",
   "searchAyahLinksHint": "ابحث في روابط الآيات أو السور...",
   "noAyahLinkSearchResults": "لا توجد نتائج مطابقة لبحثك",
   "tryAnotherAyahLinkSearch": "جرّب البحث بكلمة أخرى أو اسم سورة",
@@ -278,7 +266,6 @@
   "backupCreateFailed": "فشل إنشاء النسخة الاحتياطية",
   "viewAyah": "عرض الآية",
   "duaCopiedSuccess": "تم نسخ نص الدعاء بنجاح",
-  "searchDuasHint": "ابحث في أدعية القرآن الكريم بالكلمة أو السورة...",
   "noDuasFound": "لا توجد أدعية مطابقة لبحثك",
   "allDuasFilter": "الكل",
   "morningAdhkar": "أذكار الصباح",
@@ -522,14 +509,6 @@
       }
     }
   },
-  "pagesOfMushaf": "{n} من ٦٠٤ صفحة",
-  "@pagesOfMushaf": {
-    "placeholders": {
-      "n": {
-        "type": "String"
-      }
-    }
-  },
   "dayOfPlan": "اليوم {d} من {total}",
   "@dayOfPlan": {
     "placeholders": {
@@ -684,22 +663,6 @@
       }
     }
   },
-  "fontSizePoints": "{points} نقطة",
-  "@fontSizePoints": {
-    "placeholders": {
-      "points": {
-        "type": "String"
-      }
-    }
-  },
-  "resetToDefaultWithVal": "إعادة للوضع الافتراضي ({val})",
-  "@resetToDefaultWithVal": {
-    "placeholders": {
-      "val": {
-        "type": "String"
-      }
-    }
-  },
   "reminderScheduledSuccess": "تم حفظ وجدولة التنبيه ({mode}) بنجاح",
   "@reminderScheduledSuccess": {
     "placeholders": {
@@ -818,22 +781,6 @@
       }
     }
   },
-  "pdfReadError": "تعذر قراءة ملف الـ PDF: {error}",
-  "@pdfReadError": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "fileContentReadError": "تعذر قراءة محتوى الملف: {error}",
-  "@fileContentReadError": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
   "removeAyahFromLinkConfirm": "هل تريد إزالة الآية {ayah} من سورة {surah} من هذا الرابط؟",
   "@removeAyahFromLinkConfirm": {
     "placeholders": {
@@ -918,17 +865,6 @@
   "mushafStyleMadinah": "مصحف المدينة",
   "mushafStyleText": "نص متدفق",
   "qcfAttribution": "خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف",
-  "widgetPortionLeft": "ورد اليوم: بقي {left} من {portion} صفحة",
-  "@widgetPortionLeft": {
-    "placeholders": {
-      "left": {
-        "type": "String"
-      },
-      "portion": {
-        "type": "String"
-      }
-    }
-  },
   "widgetPortionDone": "أتممت ورد اليوم",
   "widgetAyahTitle": "آية للتدبّر",
   "themePickerTitle": "اختر مظهر التطبيق",
@@ -949,7 +885,6 @@
   "addVerseSearchSurah": "ابحث باسم السورة أو رقمها",
   "mushafStyleMadinahHint": "صفحات مطابقة للمصحف المطبوع، وعند التكبير تلتفّ الأسطر.",
   "mushafStyleTextHint": "نص متدفق بالخط الذي تختاره.",
-  "pageSize": "حجم الصفحة",
   "khatmaStartNow": "ابدأ الآن",
   "askNameTitle": "ما اسمك؟",
   "askNameHint": "نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.",
@@ -960,11 +895,10 @@
   "reminderQuranBody": "حان وقت تلاوة وتدبّر القرآن الكريم",
   "reminderAdhkarBody": "حان وقت الأذكار، ذكّر قلبك بالله",
   "myReflections": "وقفاتي",
-  "myReflectionsSubtitle": "ما كتبته عند الآيات",
   "reflectionsAll": "الكل",
   "reflectionsCommitments": "ما التزمت به",
   "noReflectionsHint": "اضغط على آية في المصحف واختر «وقفة تدبر».",
-  "noCommitmentsYet": "ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.",
+  "noCommitmentsYet": "ما تكتبه جواباً عن «ما العمل الذي تدعوك إليه هذه الآية؟» يظهر هنا.",
   "commitmentDid": "فعلته",
   "commitmentNotYet": "ليس بعد",
   "commitmentPending": "باقٍ",
@@ -1061,7 +995,6 @@
   "qiblaSouth": "ج",
   "qiblaWest": "غ",
   "listen": "استماع",
-  "listenFromHere": "استماع من هنا",
   "audioSettings": "إعدادات التلاوة",
   "reciterLabel": "القارئ",
   "lowerQuality": "جودة أقل",
@@ -1112,7 +1045,7 @@
   "downloadsHint": "السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.",
   "mushaf": "المصحف",
   "appColorTheme": "لون التطبيق",
-  "sourcesAndCreditsDetails": "• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.",
+  "sourcesAndCreditsDetails": "• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 89 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.\n• خطوط مصحف المدينة: مجمع الملك فهد لطباعة المصحف الشريف، عبر Quran Foundation، ومنها بيانات تخطيط الأسطر.\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).",
   "unsavedChanges": "تغييرات غير محفوظة",
   "discardChangesConfirm": "هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟",
   "discard": "تجاهل والخروج",
@@ -1143,15 +1076,6 @@
   "privacyOpenSourceBody": "تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.",
   "createLinkWithVerseHint": "إنشاء رابط جديد وربط هذه الآية به مباشرة",
   "alreadyAdded": "مضافة بالفعل",
-  "shareAyahLinkOffline": "مشاركة رابط الآيات دون إنترنت",
-  "qrScanHint": "يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.",
-  "linkDataCopiedToClipboard": "تم نسخ بيانات الرابط إلى الحافظة",
-  "copyData": "نسخ البيانات",
-  "importAyahLink": "استيراد رابط آيات",
-  "importLinkHint": "الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:",
-  "importLinkFieldHint": "الصق الرابط أو النص الممسوح هنا...",
-  "pasteFromClipboard": "لصق من الحافظة",
-  "importNow": "استيراد الآن",
   "editAyahLink": "تعديل رابط الآيات",
   "titleRequired": "يرجى إدخال عنوان الرابط",
   "create": "إنشاء",
@@ -1172,7 +1096,6 @@
   "noteTitleOptional": "عنوان الملاحظة (اختياري)",
   "noteCardAddedSuccessfully": "تمت إضافة كرت الملاحظة بنجاح",
   "linkNotFound": "الرابط غير موجود أو تم حذفه",
-  "shareViaQrCode": "مشاركة عبر رمز الاستجابة السريعة (QR)",
   "addNoteShort": "إضافة ملاحظة",
   "searchQuranicSupplications": "ابحث في أدعية القرآن الكريم...",
   "clearedEmptyAnswersSuccessfully": "تم مسح الإجابات الفارغة بنجاح",
@@ -1239,30 +1162,6 @@
       }
     }
   },
-  "linkIncludesVerses": "يتضمن {count} آيات مرتبطة",
-  "@linkIncludesVerses": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
-  "importedLinkTitle": "العنوان: {title}",
-  "@importedLinkTitle": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "importedVersesCount": "الآيات المتضمنة: {count} آية",
-  "@importedVersesCount": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
   "reflectionNotesCount": "كروت الملاحظات والتدبرات ({count})",
   "@reflectionNotesCount": {
     "placeholders": {
@@ -1325,5 +1224,251 @@
   "permissionsTitle": "أذونات التطبيق",
   "permissionsBody": "يحتاج تدبير إذن الإشعارات والمنبهات ليذكّرك بوردك وأذكارك في وقتها، ولو كان التطبيق مغلقاً. لا يُرسَل شيء خارج جهازك.",
   "permissionsAllow": "سماح",
-  "permissionsLater": "لاحقاً"
+  "permissionsLater": "لاحقاً",
+  "continuousRecitation": "متابعة التلاوة (اضغط لآية واحدة)",
+  "singleAyahRecitation": "آية واحدة (اضغط للمتابعة)",
+  "ayahFinished": "انتهت الآية",
+  "myReflectionsCardHint": "وقفات التدبر التي كتبتها",
+  "notesCardHint": "خواطرك على الآيات",
+  "memorizationCardHint": "احفظ وراجع في وقته",
+  "searchCardHint": "في القرآن وكل ما حفظت",
+  "wordMeaningsCardHint": "معاني الكلمات بترتيب المصحف",
+  "ayahLinksCardHint": "اربط الآيات بموضوع واحد",
+  "guidedPathwaysCardHint": "رحلات تدبر يومًا بيوم",
+  "booksAndBookletsCardHint": "الملازم والكتب للقراءة",
+  "tourSkip": "تخطٍّ",
+  "tourNext": "التالي",
+  "tourStart": "ابدأ رحلتك",
+  "tourGotIt": "فهمت",
+  "guideButton": "شرح هذا القسم",
+  "tour1Title": "كتاب أنزلناه إليك مبارك ليدبروا آياته",
+  "tour1Body": "اضغط مطوّلاً على أي آية لتتدبّرها، أو تحفظها، أو تستمع إليها، أو تربطها بغيرها.",
+  "tour2Title": "من القراءة إلى التدبّر",
+  "tour2Body": "أربعة أسئلة لكل آية تفتح لك معانيها، وروابط تجمع الآيات في موضوع واحد.",
+  "tour3Title": "استمع بأصوات كبار القرّاء",
+  "tour3Body": "تابع السورة أو قف عند آية واحدة، ونزّل التلاوة لتسمعها دون إنترنت.",
+  "tour4Title": "وردك اليومي يمشي معك",
+  "tour4Body": "ختمة بخطة، وسلسلة أيام، وتسبيح، وودجت يضع آية على شاشة هاتفك.",
+  "tour5Title": "رفيقك في رحلتك مع القرآن",
+  "tour5Body": "كل ما تحتاجه للقراءة والتدبّر والذكر في مكان واحد، ويعمل دون إنترنت.",
+  "tourSampleAnswer": "أن الله معي في كل حال",
+  "tourSampleAnswer2": "مع العسر يسر، فلا أيأس",
+  "tourSampleAnswer3": "ذكر الله يُسكن قلبي",
+  "tourCreateLink": "رابط جديد",
+  "tourSampleLink": "أبواب الرزق",
+  "tourLinkNote1": "الباب الأول: التقوى",
+  "tourLinkNote2": "الباب الثاني: الاستغفار",
+  "tourLinkNote3": "الباب الثالث: الشكر",
+  "tourSamplePathway": "مسار الصبر",
+  "tourSamplePathwayHint": "سبعة أيام، في كل يوم آية وسؤال",
+  "tourDayOne": "اليوم الأول",
+  "tourSampleQuestion": "متى استعنت بالصبر آخر مرة؟",
+  "tourSampleReciter": "محمود خليل الحصري",
+  "tourKhatma": "الختمة",
+  "tourStreak": "يوم متتالٍ",
+  "guideQiblaTitle": "اتجاه القبلة",
+  "guideQiblaBody": "حدّد موقعك مرة، ثم أمسك الهاتف مستوياً وأدره حتى يشير السهم إلى الكعبة.",
+  "walkAyahTitle": "آية للتدبّر",
+  "walkAyahBody": "آيات تتجدّد كل يوم، اسحب بينها واضغط «تدبّرها» لتكتب وقفتك.",
+  "walkQuranTitle": "مصحفك ورحلتك",
+  "walkQuranBody": "تابع القراءة من حيث توقفت، ومن هنا تبدأ ختمتك وترى تقدّمك.",
+  "walkSearchTitle": "ابحث في كل شيء",
+  "walkSearchBody": "اكتب كلمة فتجد الآيات وملاحظاتك ووقفاتك في مكان واحد.",
+  "walkTabsTitle": "تنقّل بين الأقسام",
+  "walkTabsBody": "الرئيسية والمصحف والاستغفار والأدعية، بلمسة واحدة من أي مكان.",
+  "walkMoreTitle": "المزيد",
+  "walkMoreBody": "هنا روابط الآيات ومسارات التدبّر والحفظ والكتب وكل الأقسام.",
+  "walkTipTitle": "نصيحة أخيرة",
+  "walkTipBody": "إن لم تعرف ما يفعله زر، فاضغط عليه مطوّلاً ليظهر لك وصفه.",
+  "walkReplay": "دليل الشاشة الرئيسية",
+  "walkReplayHint": "أعد التعرّف على أهم ما في الرئيسية",
+  "fileSavedToDevice": "تم الحفظ في الجهاز",
+  "sleepAdhkar": "أذكار النوم",
+  "wakingAdhkar": "أذكار الاستيقاظ",
+  "afterPrayerAdhkar": "أذكار بعد الصلاة",
+  "mosqueAdhkar": "أذكار المسجد",
+  "tourReplay": "جولة في التطبيق",
+  "tourReplayHint": "شاهد الجولة التعريفية من جديد",
+  "guidesReset": "إعادة عرض الشروحات",
+  "guidesResetHint": "يشرح كل قسم نفسه عند دخوله التالي",
+  "guidesResetDone": "ستظهر الشروحات من جديد",
+  "guideReflections1Title": "ابدأ وقفتك من الآية",
+  "guideReflections1Body": "اضغط مطوّلاً على أي آية في المصحف، ثم اختر «وقفة تدبر» من وسط القائمة.",
+  "guideReflections2Title": "أربعة أسئلة تفتح المعنى",
+  "guideReflections2Body": "أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما العمل الذي تدعوك إليه.",
+  "guideReflections3Title": "وقفاتك محفوظة هنا",
+  "guideReflections3Body": "تجد كل وقفة في «وقفاتي»، وتظهر زهرة التدبّر فوق رقم الآية في المصحف لتعود إليها.",
+  "guideLinks1Title": "موضوع يجمع الآيات",
+  "guideLinks1Body": "أنشئ رابطاً باسم موضوع تريد تدبّره، مثل أبواب الرزق أو الصبر أو الرحمة.",
+  "guideLinks2Title": "آيات يجمعها معنى واحد",
+  "guideLinks2Body": "أضف آيات الموضوع، واكتب عند كل آية ما فهمته منها.",
+  "guideLinks3Title": "انظر الصورة كاملة",
+  "guideLinks3Body": "اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب.",
+  "guidePathways1Title": "رحلة تدبّر يوماً بيوم",
+  "guidePathways1Body": "اختر مساراً في موضوع، وفي كل يوم خطوة صغيرة واحدة لا تثقل عليك.",
+  "guidePathways2Title": "آية اليوم وسؤالها",
+  "guidePathways2Body": "اقرأ الآية بتمهّل، ثم أجب عن سؤال اليوم بما يحضرك.",
+  "guidePathways3Title": "خطوة بعد خطوة",
+  "guidePathways3Body": "كلما أتممت يوماً أُضيء الذي بعده، ويحفظ التطبيق موضعك لتكمل متى عدت.",
+  "guideMushafTitle": "المصحف",
+  "guideMushafBody": "اسحب لتقليب الصفحات، واضغط مطوّلاً على الآية لقائمتها. وتظهر علاماتك من حفظ وملاحظة وتدبّر فوق رقم الآية.",
+  "guideMemorizationTitle": "الحفظ والمراجعة",
+  "guideMemorizationBody": "أضف الآيات التي تحفظها، وراجع كل يوم ما حان وقته. ما تتقنه تتباعد مراجعته، وما تنساه يعود إليك قريباً.",
+  "guideWordMeaningsTitle": "معاني الكلمات",
+  "guideWordMeaningsBody": "معاني الكلمات الغريبة بترتيب المصحف. ابحث بكلمة أو معنى، أو اختر سورة لتراها وحدها.",
+  "guideNotesTitle": "الملاحظات",
+  "guideNotesBody": "اكتب خاطرتك على آية أو خاطرة عامة، وصدّرها PDF أو اجمعها في دفتر تدبّر.",
+  "guideSearchTitle": "البحث",
+  "guideSearchBody": "ابحث في القرآن وكل ما حفظته في 11 قسماً معاً.",
+  "guideBooksTitle": "الكتب والملازم",
+  "guideBooksBody": "اقرأ الملازم والكتب داخل التطبيق، وتابع من حيث توقفت.",
+  "guideDuasTitle": "الأدعية",
+  "guideDuasBody": "أدعية القرآن والسنة وأهل البيت، وأذكار يومية بعدّاد. انسخ الدعاء أو افتحه في المصحف.",
+  "guideTasbeehTitle": "التسبيح والاستغفار",
+  "guideTasbeehBody": "اضغط على الدائرة للعدّ، واختر الهدف ٣٣ أو ١٠٠، ويمكن أن يعدّ عنك تلقائياً وينتقل إلى الذكر التالي.",
+  "guideJourneyTitle": "رحلتي والختمة",
+  "guideJourneyBody": "ضع خطة ختمة يتابعها موضع قراءتك تلقائياً، وراقب سلسلة أيامك وخريطة ما قرأت من المصحف.",
+  "guideRemindersTitle": "التذكيرات",
+  "guideRemindersBody": "اضبط تذكيراً لوردك أو أذكارك في الوقت الذي يناسبك، ويصلك ولو كان التطبيق مغلقاً.",
+  "guideBackupTitle": "النسخ الاحتياطي",
+  "guideBackupBody": "صدّر نسخة مشفّرة بكلمة سرّ من بياناتك واحفظها خارج الهاتف، لتستعيدها إن غيّرت جهازك.",
+  "guideStep": "الخطوة {step} من {total}",
+  "@guideStep": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetPortionLeft": "ورد اليوم: بقي {left} من {portion} صفحة",
+  "@widgetPortionLeft": {
+    "placeholders": {
+      "left": {
+        "type": "String"
+      },
+      "portion": {
+        "type": "String"
+      }
+    }
+  },
+  "linksReordered": "تمت إعادة الترتيب تلقائيًا",
+  "pdfFileMissing": "ملف الـ PDF غير موجود على الجهاز.",
+  "attachedFileMissing": "الملف المرفق غير موجود على الجهاز.",
+  "pdfReadFailed": "تعذر قراءة ملف الـ PDF: {error}",
+  "@pdfReadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "fileReadFailed": "تعذر قراءة محتوى الملف: {error}",
+  "@fileReadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfShowFailed": "خطأ أثناء عرض الملف: {error}",
+  "@pdfShowFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfPageFailed": "تعذر تحميل الصفحة {page}: {error}",
+  "@pdfPageFailed": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "booksCountLabel": "{count} كتاب/ملزمة",
+  "@booksCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "mushafMenu": "القائمة",
+  "pageMeaningsTooltip": "معاني كلمات الصفحة",
+  "previousPage": "الصفحة السابقة",
+  "nextPage": "الصفحة التالية",
+  "meaningsBadge": "المعاني ({count})",
+  "@meaningsBadge": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "enterPageRange": "أدخل رقم الصفحة بين ١ و ٦٠٤",
+  "doneLabel": "تم",
+  "wordMeaningsCount": "معاني الكلمات ({count})",
+  "@wordMeaningsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "hideBar": "إخفاء الشريط",
+  "pageWordMeanings": "معاني كلمات صفحة {page}",
+  "@pageWordMeanings": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "wordsCount": "{count} كلمات",
+  "@wordsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "closePanel": "إغلاق اللوحة",
+  "noPageMeanings": "لا توجد كلمات تحتاج إلى شرح في هذه الصفحة",
+  "stopAlarm": "إيقاف المنبه",
+  "testAlarmTitle": "منبه تجريبي — تَدْبِير",
+  "testNoticeTitle": "إشعار تجريبي — تَدْبِير",
+  "testAlarmBody": "هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»",
+  "testNoticeBody": "نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير",
+  "reminderDefaultTitle": "ورد القرآن الكريم",
+  "scrollDown": "مرّر للأسفل",
+  "pageAbbrOfTotal": "ص {page} من {total}",
+  "@pageAbbrOfTotal": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "tourTodayPortion": "ورد اليوم",
+  "tourPagesToday": "٤ من ٥ صفحات",
+  "tourSampleNote": "التقوى تفتح أبواباً لا أراها",
+  "tourRemembered": "تذكّرت",
+  "tourForgot": "نسيت",
+  "tourNextReview": "المراجعة بعد ٣ أيام",
+  "tourMeaningLabel": "المعنى",
+  "tourBookSample": "هدي القرآن",
+  "dhikrSubhanAllah": "سبحان الله",
+  "tourDuaQuran": "القرآن",
+  "tourDuaSunnah": "السنة",
+  "tourDuaAdhkar": "الأذكار"
 }

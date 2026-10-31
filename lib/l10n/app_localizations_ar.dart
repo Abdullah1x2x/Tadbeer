@@ -55,13 +55,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tasbeehAndIstighfar => 'استغفار وتسبيح';
 
   @override
-  String get tasbeehSubtitle => 'سبحة إلكترونية وأوراد الاستغفار والتسبيح';
-
-  @override
   String get booksAndBooklets => 'كتب وملازم';
-
-  @override
-  String get booksSubtitle => 'مكتبة الملازم التدبرية ومختصرات علوم القرآن';
 
   @override
   String get about => 'عن تَدْبِير';
@@ -150,9 +144,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sessionDone => 'أحسنت! انتهت الجلسة';
-
-  @override
-  String get ayahOfTheDay => 'آية اليوم';
 
   @override
   String get reflectOnIt => 'تدبّرها';
@@ -305,9 +296,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addNote => 'ملاحظة';
-
-  @override
-  String get saveBookmark => 'حفظ';
 
   @override
   String get removeBookmark => 'إزالة الحفظ';
@@ -603,12 +591,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resumeReading => 'استئناف القراءة';
 
   @override
-  String get additionalTools => 'أدوات إضافية';
-
-  @override
-  String get quranAndSunnahDuas => 'أدعية الكتاب والسنة';
-
-  @override
   String get quranDuasTitle => 'أدعية من القرآن';
 
   @override
@@ -641,21 +623,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get jawamiDuasSubtitle =>
       'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية';
-
-  @override
-  String get wordsOfQuran => 'غريب ألفاظ القرآن';
-
-  @override
-  String get yourThoughtsAndReflections => 'خواطرك وتدبراتك';
-
-  @override
-  String get connectionsAndThemes => 'الربط والعلاقات';
-
-  @override
-  String get dailyPortion => 'الورد اليومي';
-
-  @override
-  String get tadbeerLibrary => 'مكتبة المتدبر';
 
   @override
   String get offlineQuranAndReflection => 'مصحف وتدبّر بدون إنترنت';
@@ -711,9 +678,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get curatedPathways => 'المسارات التدبرية المقترحة';
-
-  @override
-  String get importFromQrCode => 'استيراد رابط آيات عبر الرمز';
 
   @override
   String get searchAyahLinksHint => 'ابحث في روابط الآيات أو السور...';
@@ -875,10 +839,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get duaCopiedSuccess => 'تم نسخ نص الدعاء بنجاح';
-
-  @override
-  String get searchDuasHint =>
-      'ابحث في أدعية القرآن الكريم بالكلمة أو السورة...';
 
   @override
   String get noDuasFound => 'لا توجد أدعية مطابقة لبحثك';
@@ -1227,11 +1187,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String pagesOfMushaf(String n) {
-    return '$n من ٦٠٤ صفحة';
-  }
-
-  @override
   String dayOfPlan(String d, String total) {
     return 'اليوم $d من $total';
   }
@@ -1321,16 +1276,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String fontSizePoints(String points) {
-    return '$points نقطة';
-  }
-
-  @override
-  String resetToDefaultWithVal(String val) {
-    return 'إعادة للوضع الافتراضي ($val)';
-  }
-
-  @override
   String reminderScheduledSuccess(String mode) {
     return 'تم حفظ وجدولة التنبيه ($mode) بنجاح';
   }
@@ -1401,16 +1346,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String pdfReadError(String error) {
-    return 'تعذر قراءة ملف الـ PDF: $error';
-  }
-
-  @override
-  String fileContentReadError(String error) {
-    return 'تعذر قراءة محتوى الملف: $error';
-  }
-
-  @override
   String removeAyahFromLinkConfirm(String ayah, String surah) {
     return 'هل تريد إزالة الآية $ayah من سورة $surah من هذا الرابط؟';
   }
@@ -1474,11 +1409,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get qcfAttribution => 'خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف';
 
   @override
-  String widgetPortionLeft(String left, String portion) {
-    return 'ورد اليوم: بقي $left من $portion صفحة';
-  }
-
-  @override
   String get widgetPortionDone => 'أتممت ورد اليوم';
 
   @override
@@ -1540,9 +1470,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mushafStyleTextHint => 'نص متدفق بالخط الذي تختاره.';
 
   @override
-  String get pageSize => 'حجم الصفحة';
-
-  @override
   String get khatmaStartNow => 'ابدأ الآن';
 
   @override
@@ -1574,9 +1501,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get myReflections => 'وقفاتي';
 
   @override
-  String get myReflectionsSubtitle => 'ما كتبته عند الآيات';
-
-  @override
   String get reflectionsAll => 'الكل';
 
   @override
@@ -1587,7 +1511,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noCommitmentsYet =>
-      'ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.';
+      'ما تكتبه جواباً عن «ما العمل الذي تدعوك إليه هذه الآية؟» يظهر هنا.';
 
   @override
   String get commitmentDid => 'فعلته';
@@ -1767,9 +1691,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get listen => 'استماع';
 
   @override
-  String get listenFromHere => 'استماع من هنا';
-
-  @override
   String get audioSettings => 'إعدادات التلاوة';
 
   @override
@@ -1866,7 +1787,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sourcesAndCreditsDetails =>
-      '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.';
+      '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 89 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.\n• خطوط مصحف المدينة: مجمع الملك فهد لطباعة المصحف الشريف، عبر Quran Foundation، ومنها بيانات تخطيط الأسطر.\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).';
 
   @override
   String get unsavedChanges => 'تغييرات غير محفوظة';
@@ -1974,35 +1895,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alreadyAdded => 'مضافة بالفعل';
 
   @override
-  String get shareAyahLinkOffline => 'مشاركة رابط الآيات دون إنترنت';
-
-  @override
-  String get qrScanHint =>
-      'يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.';
-
-  @override
-  String get linkDataCopiedToClipboard => 'تم نسخ بيانات الرابط إلى الحافظة';
-
-  @override
-  String get copyData => 'نسخ البيانات';
-
-  @override
-  String get importAyahLink => 'استيراد رابط آيات';
-
-  @override
-  String get importLinkHint =>
-      'الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:';
-
-  @override
-  String get importLinkFieldHint => 'الصق الرابط أو النص الممسوح هنا...';
-
-  @override
-  String get pasteFromClipboard => 'لصق من الحافظة';
-
-  @override
-  String get importNow => 'استيراد الآن';
-
-  @override
   String get editAyahLink => 'تعديل رابط الآيات';
 
   @override
@@ -2062,9 +1954,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get linkNotFound => 'الرابط غير موجود أو تم حذفه';
-
-  @override
-  String get shareViaQrCode => 'مشاركة عبر رمز الاستجابة السريعة (QR)';
 
   @override
   String get addNoteShort => 'إضافة ملاحظة';
@@ -2144,21 +2033,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String linkIncludesVerses(String count) {
-    return 'يتضمن $count آيات مرتبطة';
-  }
-
-  @override
-  String importedLinkTitle(String title) {
-    return 'العنوان: $title';
-  }
-
-  @override
-  String importedVersesCount(String count) {
-    return 'الآيات المتضمنة: $count آية';
-  }
-
-  @override
   String reflectionNotesCount(String count) {
     return 'كروت الملاحظات والتدبرات ($count)';
   }
@@ -2205,4 +2079,510 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get permissionsLater => 'لاحقاً';
+
+  @override
+  String get continuousRecitation => 'متابعة التلاوة (اضغط لآية واحدة)';
+
+  @override
+  String get singleAyahRecitation => 'آية واحدة (اضغط للمتابعة)';
+
+  @override
+  String get ayahFinished => 'انتهت الآية';
+
+  @override
+  String get myReflectionsCardHint => 'وقفات التدبر التي كتبتها';
+
+  @override
+  String get notesCardHint => 'خواطرك على الآيات';
+
+  @override
+  String get memorizationCardHint => 'احفظ وراجع في وقته';
+
+  @override
+  String get searchCardHint => 'في القرآن وكل ما حفظت';
+
+  @override
+  String get wordMeaningsCardHint => 'معاني الكلمات بترتيب المصحف';
+
+  @override
+  String get ayahLinksCardHint => 'اربط الآيات بموضوع واحد';
+
+  @override
+  String get guidedPathwaysCardHint => 'رحلات تدبر يومًا بيوم';
+
+  @override
+  String get booksAndBookletsCardHint => 'الملازم والكتب للقراءة';
+
+  @override
+  String get tourSkip => 'تخطٍّ';
+
+  @override
+  String get tourNext => 'التالي';
+
+  @override
+  String get tourStart => 'ابدأ رحلتك';
+
+  @override
+  String get tourGotIt => 'فهمت';
+
+  @override
+  String get guideButton => 'شرح هذا القسم';
+
+  @override
+  String get tour1Title => 'كتاب أنزلناه إليك مبارك ليدبروا آياته';
+
+  @override
+  String get tour1Body =>
+      'اضغط مطوّلاً على أي آية لتتدبّرها، أو تحفظها، أو تستمع إليها، أو تربطها بغيرها.';
+
+  @override
+  String get tour2Title => 'من القراءة إلى التدبّر';
+
+  @override
+  String get tour2Body =>
+      'أربعة أسئلة لكل آية تفتح لك معانيها، وروابط تجمع الآيات في موضوع واحد.';
+
+  @override
+  String get tour3Title => 'استمع بأصوات كبار القرّاء';
+
+  @override
+  String get tour3Body =>
+      'تابع السورة أو قف عند آية واحدة، ونزّل التلاوة لتسمعها دون إنترنت.';
+
+  @override
+  String get tour4Title => 'وردك اليومي يمشي معك';
+
+  @override
+  String get tour4Body =>
+      'ختمة بخطة، وسلسلة أيام، وتسبيح، وودجت يضع آية على شاشة هاتفك.';
+
+  @override
+  String get tour5Title => 'رفيقك في رحلتك مع القرآن';
+
+  @override
+  String get tour5Body =>
+      'كل ما تحتاجه للقراءة والتدبّر والذكر في مكان واحد، ويعمل دون إنترنت.';
+
+  @override
+  String get tourSampleAnswer => 'أن الله معي في كل حال';
+
+  @override
+  String get tourSampleAnswer2 => 'مع العسر يسر، فلا أيأس';
+
+  @override
+  String get tourSampleAnswer3 => 'ذكر الله يُسكن قلبي';
+
+  @override
+  String get tourCreateLink => 'رابط جديد';
+
+  @override
+  String get tourSampleLink => 'أبواب الرزق';
+
+  @override
+  String get tourLinkNote1 => 'الباب الأول: التقوى';
+
+  @override
+  String get tourLinkNote2 => 'الباب الثاني: الاستغفار';
+
+  @override
+  String get tourLinkNote3 => 'الباب الثالث: الشكر';
+
+  @override
+  String get tourSamplePathway => 'مسار الصبر';
+
+  @override
+  String get tourSamplePathwayHint => 'سبعة أيام، في كل يوم آية وسؤال';
+
+  @override
+  String get tourDayOne => 'اليوم الأول';
+
+  @override
+  String get tourSampleQuestion => 'متى استعنت بالصبر آخر مرة؟';
+
+  @override
+  String get tourSampleReciter => 'محمود خليل الحصري';
+
+  @override
+  String get tourKhatma => 'الختمة';
+
+  @override
+  String get tourStreak => 'يوم متتالٍ';
+
+  @override
+  String get guideQiblaTitle => 'اتجاه القبلة';
+
+  @override
+  String get guideQiblaBody =>
+      'حدّد موقعك مرة، ثم أمسك الهاتف مستوياً وأدره حتى يشير السهم إلى الكعبة.';
+
+  @override
+  String get walkAyahTitle => 'آية للتدبّر';
+
+  @override
+  String get walkAyahBody =>
+      'آيات تتجدّد كل يوم، اسحب بينها واضغط «تدبّرها» لتكتب وقفتك.';
+
+  @override
+  String get walkQuranTitle => 'مصحفك ورحلتك';
+
+  @override
+  String get walkQuranBody =>
+      'تابع القراءة من حيث توقفت، ومن هنا تبدأ ختمتك وترى تقدّمك.';
+
+  @override
+  String get walkSearchTitle => 'ابحث في كل شيء';
+
+  @override
+  String get walkSearchBody =>
+      'اكتب كلمة فتجد الآيات وملاحظاتك ووقفاتك في مكان واحد.';
+
+  @override
+  String get walkTabsTitle => 'تنقّل بين الأقسام';
+
+  @override
+  String get walkTabsBody =>
+      'الرئيسية والمصحف والاستغفار والأدعية، بلمسة واحدة من أي مكان.';
+
+  @override
+  String get walkMoreTitle => 'المزيد';
+
+  @override
+  String get walkMoreBody =>
+      'هنا روابط الآيات ومسارات التدبّر والحفظ والكتب وكل الأقسام.';
+
+  @override
+  String get walkTipTitle => 'نصيحة أخيرة';
+
+  @override
+  String get walkTipBody =>
+      'إن لم تعرف ما يفعله زر، فاضغط عليه مطوّلاً ليظهر لك وصفه.';
+
+  @override
+  String get walkReplay => 'دليل الشاشة الرئيسية';
+
+  @override
+  String get walkReplayHint => 'أعد التعرّف على أهم ما في الرئيسية';
+
+  @override
+  String get fileSavedToDevice => 'تم الحفظ في الجهاز';
+
+  @override
+  String get sleepAdhkar => 'أذكار النوم';
+
+  @override
+  String get wakingAdhkar => 'أذكار الاستيقاظ';
+
+  @override
+  String get afterPrayerAdhkar => 'أذكار بعد الصلاة';
+
+  @override
+  String get mosqueAdhkar => 'أذكار المسجد';
+
+  @override
+  String get tourReplay => 'جولة في التطبيق';
+
+  @override
+  String get tourReplayHint => 'شاهد الجولة التعريفية من جديد';
+
+  @override
+  String get guidesReset => 'إعادة عرض الشروحات';
+
+  @override
+  String get guidesResetHint => 'يشرح كل قسم نفسه عند دخوله التالي';
+
+  @override
+  String get guidesResetDone => 'ستظهر الشروحات من جديد';
+
+  @override
+  String get guideReflections1Title => 'ابدأ وقفتك من الآية';
+
+  @override
+  String get guideReflections1Body =>
+      'اضغط مطوّلاً على أي آية في المصحف، ثم اختر «وقفة تدبر» من وسط القائمة.';
+
+  @override
+  String get guideReflections2Title => 'أربعة أسئلة تفتح المعنى';
+
+  @override
+  String get guideReflections2Body =>
+      'أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما العمل الذي تدعوك إليه.';
+
+  @override
+  String get guideReflections3Title => 'وقفاتك محفوظة هنا';
+
+  @override
+  String get guideReflections3Body =>
+      'تجد كل وقفة في «وقفاتي»، وتظهر زهرة التدبّر فوق رقم الآية في المصحف لتعود إليها.';
+
+  @override
+  String get guideLinks1Title => 'موضوع يجمع الآيات';
+
+  @override
+  String get guideLinks1Body =>
+      'أنشئ رابطاً باسم موضوع تريد تدبّره، مثل أبواب الرزق أو الصبر أو الرحمة.';
+
+  @override
+  String get guideLinks2Title => 'آيات يجمعها معنى واحد';
+
+  @override
+  String get guideLinks2Body =>
+      'أضف آيات الموضوع، واكتب عند كل آية ما فهمته منها.';
+
+  @override
+  String get guideLinks3Title => 'انظر الصورة كاملة';
+
+  @override
+  String get guideLinks3Body =>
+      'اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب.';
+
+  @override
+  String get guidePathways1Title => 'رحلة تدبّر يوماً بيوم';
+
+  @override
+  String get guidePathways1Body =>
+      'اختر مساراً في موضوع، وفي كل يوم خطوة صغيرة واحدة لا تثقل عليك.';
+
+  @override
+  String get guidePathways2Title => 'آية اليوم وسؤالها';
+
+  @override
+  String get guidePathways2Body =>
+      'اقرأ الآية بتمهّل، ثم أجب عن سؤال اليوم بما يحضرك.';
+
+  @override
+  String get guidePathways3Title => 'خطوة بعد خطوة';
+
+  @override
+  String get guidePathways3Body =>
+      'كلما أتممت يوماً أُضيء الذي بعده، ويحفظ التطبيق موضعك لتكمل متى عدت.';
+
+  @override
+  String get guideMushafTitle => 'المصحف';
+
+  @override
+  String get guideMushafBody =>
+      'اسحب لتقليب الصفحات، واضغط مطوّلاً على الآية لقائمتها. وتظهر علاماتك من حفظ وملاحظة وتدبّر فوق رقم الآية.';
+
+  @override
+  String get guideMemorizationTitle => 'الحفظ والمراجعة';
+
+  @override
+  String get guideMemorizationBody =>
+      'أضف الآيات التي تحفظها، وراجع كل يوم ما حان وقته. ما تتقنه تتباعد مراجعته، وما تنساه يعود إليك قريباً.';
+
+  @override
+  String get guideWordMeaningsTitle => 'معاني الكلمات';
+
+  @override
+  String get guideWordMeaningsBody =>
+      'معاني الكلمات الغريبة بترتيب المصحف. ابحث بكلمة أو معنى، أو اختر سورة لتراها وحدها.';
+
+  @override
+  String get guideNotesTitle => 'الملاحظات';
+
+  @override
+  String get guideNotesBody =>
+      'اكتب خاطرتك على آية أو خاطرة عامة، وصدّرها PDF أو اجمعها في دفتر تدبّر.';
+
+  @override
+  String get guideSearchTitle => 'البحث';
+
+  @override
+  String get guideSearchBody => 'ابحث في القرآن وكل ما حفظته في 11 قسماً معاً.';
+
+  @override
+  String get guideBooksTitle => 'الكتب والملازم';
+
+  @override
+  String get guideBooksBody =>
+      'اقرأ الملازم والكتب داخل التطبيق، وتابع من حيث توقفت.';
+
+  @override
+  String get guideDuasTitle => 'الأدعية';
+
+  @override
+  String get guideDuasBody =>
+      'أدعية القرآن والسنة وأهل البيت، وأذكار يومية بعدّاد. انسخ الدعاء أو افتحه في المصحف.';
+
+  @override
+  String get guideTasbeehTitle => 'التسبيح والاستغفار';
+
+  @override
+  String get guideTasbeehBody =>
+      'اضغط على الدائرة للعدّ، واختر الهدف ٣٣ أو ١٠٠، ويمكن أن يعدّ عنك تلقائياً وينتقل إلى الذكر التالي.';
+
+  @override
+  String get guideJourneyTitle => 'رحلتي والختمة';
+
+  @override
+  String get guideJourneyBody =>
+      'ضع خطة ختمة يتابعها موضع قراءتك تلقائياً، وراقب سلسلة أيامك وخريطة ما قرأت من المصحف.';
+
+  @override
+  String get guideRemindersTitle => 'التذكيرات';
+
+  @override
+  String get guideRemindersBody =>
+      'اضبط تذكيراً لوردك أو أذكارك في الوقت الذي يناسبك، ويصلك ولو كان التطبيق مغلقاً.';
+
+  @override
+  String get guideBackupTitle => 'النسخ الاحتياطي';
+
+  @override
+  String get guideBackupBody =>
+      'صدّر نسخة مشفّرة بكلمة سرّ من بياناتك واحفظها خارج الهاتف، لتستعيدها إن غيّرت جهازك.';
+
+  @override
+  String guideStep(String step, String total) {
+    return 'الخطوة $step من $total';
+  }
+
+  @override
+  String widgetPortionLeft(String left, String portion) {
+    return 'ورد اليوم: بقي $left من $portion صفحة';
+  }
+
+  @override
+  String get linksReordered => 'تمت إعادة الترتيب تلقائيًا';
+
+  @override
+  String get pdfFileMissing => 'ملف الـ PDF غير موجود على الجهاز.';
+
+  @override
+  String get attachedFileMissing => 'الملف المرفق غير موجود على الجهاز.';
+
+  @override
+  String pdfReadFailed(String error) {
+    return 'تعذر قراءة ملف الـ PDF: $error';
+  }
+
+  @override
+  String fileReadFailed(String error) {
+    return 'تعذر قراءة محتوى الملف: $error';
+  }
+
+  @override
+  String pdfShowFailed(String error) {
+    return 'خطأ أثناء عرض الملف: $error';
+  }
+
+  @override
+  String pdfPageFailed(String page, String error) {
+    return 'تعذر تحميل الصفحة $page: $error';
+  }
+
+  @override
+  String booksCountLabel(String count) {
+    return '$count كتاب/ملزمة';
+  }
+
+  @override
+  String get mushafMenu => 'القائمة';
+
+  @override
+  String get pageMeaningsTooltip => 'معاني كلمات الصفحة';
+
+  @override
+  String get previousPage => 'الصفحة السابقة';
+
+  @override
+  String get nextPage => 'الصفحة التالية';
+
+  @override
+  String meaningsBadge(String count) {
+    return 'المعاني ($count)';
+  }
+
+  @override
+  String get enterPageRange => 'أدخل رقم الصفحة بين ١ و ٦٠٤';
+
+  @override
+  String get doneLabel => 'تم';
+
+  @override
+  String wordMeaningsCount(String count) {
+    return 'معاني الكلمات ($count)';
+  }
+
+  @override
+  String get hideBar => 'إخفاء الشريط';
+
+  @override
+  String pageWordMeanings(String page) {
+    return 'معاني كلمات صفحة $page';
+  }
+
+  @override
+  String wordsCount(String count) {
+    return '$count كلمات';
+  }
+
+  @override
+  String get closePanel => 'إغلاق اللوحة';
+
+  @override
+  String get noPageMeanings => 'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة';
+
+  @override
+  String get stopAlarm => 'إيقاف المنبه';
+
+  @override
+  String get testAlarmTitle => 'منبه تجريبي — تَدْبِير';
+
+  @override
+  String get testNoticeTitle => 'إشعار تجريبي — تَدْبِير';
+
+  @override
+  String get testAlarmBody =>
+      'هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»';
+
+  @override
+  String get testNoticeBody => 'نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير';
+
+  @override
+  String get reminderDefaultTitle => 'ورد القرآن الكريم';
+
+  @override
+  String get scrollDown => 'مرّر للأسفل';
+
+  @override
+  String pageAbbrOfTotal(String page, String total) {
+    return 'ص $page من $total';
+  }
+
+  @override
+  String get tourTodayPortion => 'ورد اليوم';
+
+  @override
+  String get tourPagesToday => '٤ من ٥ صفحات';
+
+  @override
+  String get tourSampleNote => 'التقوى تفتح أبواباً لا أراها';
+
+  @override
+  String get tourRemembered => 'تذكّرت';
+
+  @override
+  String get tourForgot => 'نسيت';
+
+  @override
+  String get tourNextReview => 'المراجعة بعد ٣ أيام';
+
+  @override
+  String get tourMeaningLabel => 'المعنى';
+
+  @override
+  String get tourBookSample => 'هدي القرآن';
+
+  @override
+  String get dhikrSubhanAllah => 'سبحان الله';
+
+  @override
+  String get tourDuaQuran => 'القرآن';
+
+  @override
+  String get tourDuaSunnah => 'السنة';
+
+  @override
+  String get tourDuaAdhkar => 'الأذكار';
 }

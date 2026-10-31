@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
 import 'qcf_fonts.dart';
 import 'qcf_layout.dart';
@@ -31,6 +32,66 @@ class QcfGlyphs {
     ];
     return words.isEmpty ? null : QcfGlyphs._('${words.join(' ')} ', ayah.page);
   }
+
+  /// رموز المقطع [excerpt] من [ayah]، أو null إن لم تطابق كلماته كلمات الآية.
+  ///
+  /// النص المكتوب بالرسم الإملائي يطابق رسم المصحف (انظر [_skeleton]).
+  static QcfGlyphs? ofExcerpt(Ayah ayah, String excerpt) {
+    if (!QcfLayout.instance.isReady ||
+        !QcfFonts.instance.isPageLoaded(ayah.page)) {
+      return null;
+    }
+    final codes = excerptCodes(ayah, excerpt);
+    return codes == null ? null : QcfGlyphs._('${codes.join(' ')} ', ayah.page);
+  }
+
+  /// رموز كلمات [excerpt] في [ayah]، ومعها علامة الآية إن بلغ آخرها.
+  static List<String>? excerptCodes(Ayah ayah, String excerpt) {
+    final all = [
+      for (final line in QcfLayout.instance.page(ayah.page))
+        for (final word in line.words)
+          if (word.surah == ayah.surahNumber && word.ayah == ayah.ayahNumber)
+            word,
+    ];
+    final ayahWords = _skeletonWords(ayah.text);
+    final wanted = _skeletonWords(excerpt);
+    if (wanted.isEmpty) return null;
+    // الآية كاملة، وإن اختلف تقسيم كلماتها («يا أيها» و«يأيها»).
+    if (ayahWords.join() == wanted.join()) {
+      return [for (final w in all) w.code];
+    }
+    final words = [
+      for (final w in all)
+        if (!w.isEnd) w,
+    ];
+    if (ayahWords.length != words.length) return null;
+    for (var start = 0; start + wanted.length <= words.length; start++) {
+      var same = true;
+      for (var i = 0; same && i < wanted.length; i++) {
+        same = ayahWords[start + i] == wanted[i];
+      }
+      if (!same) continue;
+      final end = start + wanted.length;
+      return [
+        for (final w in words.sublist(start, end)) w.code,
+        if (end == words.length)
+          for (final w in all)
+            if (w.isEnd) w.code,
+      ];
+    }
+    return null;
+  }
+
+  /// حروف المد والهمز تختلف بين الرسمين، فتُقارن الكلمات بما عداها؛ وعلامات
+  /// الوقف المنفصلة لا تُعد كلمات.
+  static List<String> _skeletonWords(String text) => [
+    for (final word in text.split(RegExp(r'\s+')))
+      if (ArabicSearchNormalizer.normalize(word).isNotEmpty) _skeleton(word),
+  ];
+
+  static String _skeleton(String word) =>
+      ArabicSearchNormalizer.normalize(word)
+          .replaceAll(RegExp('[اأإآٱءئؤىيوة]'), '');
 
   /// يحمّل ما يحتاجه [of] للآية [ayah]؛ true متى أمكن رسمها.
   static Future<bool> prepare(Ayah ayah) async {
@@ -108,6 +169,7 @@ class _QcfAyahTextState extends State<QcfAyahText> {
   }
 
   Widget _text(QcfGlyphs glyphs) => Text(
+    semanticsLabel: widget.ayah.text,
     glyphs.text,
     textAlign: TextAlign.center,
     textDirection: TextDirection.rtl,

@@ -210,7 +210,7 @@ class QuranWordMeaning {
     required this.meaning,
     String? originalMeaning,
     required this.sourceId,
-    this.sourceName = 'المعجم الوسيط، مجمع اللغة العربية بالقاهرة',
+    this.sourceName = 'الموسوعة القرآنية',
     this.sourceUrl,
     required this.page,
     this.status = 'approved',
@@ -230,7 +230,7 @@ class QuranWordMeaning {
     final srcName =
         json['source_name'] as String? ??
         json['sourceName'] as String? ??
-        'المعجم الوسيط، مجمع اللغة العربية بالقاهرة';
+        'الموسوعة القرآنية';
     final srcUrl =
         json['source_url'] as String? ??
         json['sourceUrl'] as String? ??

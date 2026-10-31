@@ -47,13 +47,17 @@ class KhatmaPlan {
   }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
        currentPage = currentPage ?? startPage;
 
+  /// صفحات الختمة: من صفحة البدء إلى آخر المصحف.
+  int get totalPages => mushafPageCount - startPage + 1;
+
   /// الورد اليومي بالصفحات.
-  int get pagesPerDay => (mushafPageCount / days).ceil();
+  int get pagesPerDay => (totalPages / days).ceil();
 
   /// نسبة الإنجاز من ٠ إلى ١.
-  double get progress => advanced / mushafPageCount;
+  double get progress => (advanced / totalPages).clamp(0.0, 1.0);
 
-  bool get isComplete => advanced >= mushafPageCount;
+  /// تكتمل الختمة بقراءة آخر صفحة في المصحف.
+  bool get isComplete => advanced >= totalPages;
 
   /// رقم اليوم في الخطة (من ١)، محصوراً بين ١ وعدد الأيام.
   int dayNumber(DateTime now) {
@@ -64,28 +68,35 @@ class KhatmaPlan {
   /// الصفحات المفترض إنجازها قبل اليوم؛ ورد اليوم لا يُعدّ تأخراً حتى ينتهي
   /// اليوم.
   int expectedPagesBefore(DateTime now) =>
-      (pagesPerDay * (dayNumber(now) - 1)).clamp(0, mushafPageCount);
+      (pagesPerDay * (dayNumber(now) - 1)).clamp(0, totalPages);
 
   /// يتقدم المؤشر إن كانت [page] هي صفحته الحالية.
   KhatmaPlan read(int page) => page != currentPage
       ? this
-      : _copy(currentPage: nextMushafPage(page), advanced: advanced + 1);
+      : _copy(
+          currentPage: nextMushafPage(page),
+          advanced: page == mushafPageCount ? totalPages : advanced + 1,
+        );
 
-  /// ينقل الختمة يدوياً إلى [page]، ويُحسب ما قبلها منجزاً.
-  KhatmaPlan moveTo(int page) => _copy(
-    currentPage: page,
-    advanced: (page - startPage + mushafPageCount) % mushafPageCount,
+  /// ينقل الختمة يدوياً إلى [page]، ويُحسب ما قبلها منجزاً؛ والرجوع قبل صفحة
+  /// البدء يجعلها البداية.
+  KhatmaPlan moveTo(int page) {
+    final start = page < startPage ? page : startPage;
+    return _copy(currentPage: page, advanced: page - start, startPage: start);
+  }
+
+  KhatmaPlan _copy({
+    required int currentPage,
+    required int advanced,
+    int? startPage,
+  }) => KhatmaPlan(
+    startDate: startDate,
+    days: days,
+    startPage: startPage ?? this.startPage,
+    currentPage: currentPage,
+    advanced: advanced,
+    pagesBeforeStart: pagesBeforeStart,
   );
-
-  KhatmaPlan _copy({required int currentPage, required int advanced}) =>
-      KhatmaPlan(
-        startDate: startDate,
-        days: days,
-        startPage: startPage,
-        currentPage: currentPage,
-        advanced: advanced,
-        pagesBeforeStart: pagesBeforeStart,
-      );
 
   Map<String, dynamic> toJson() => {
     'startDate': dayKey(startDate),

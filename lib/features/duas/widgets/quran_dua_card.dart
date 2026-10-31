@@ -4,13 +4,17 @@ import 'package:flutter/services.dart';
 import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
+import '../../../data/models/user_settings_model.dart';
+import '../../../data/quran/quran_repository.dart';
+import '../../../data/storage/user_data_store.dart';
+import '../../quran/qcf/qcf_ayah_text.dart';
 import '../../quran/screens/quran_screen.dart';
 import '../data/quran_dua_model.dart';
 import '../../../core/design_system/app_icons.dart';
 
 /// بطاقة دعاء قرآني، مع نسخه وفتحه في المصحف.
 ///
-/// النص القرآني بخط أميري قرآني مشكولاً، ومنفصل عن العنوان والتصنيف والتنبيه.
+/// النص القرآني بخط المصحف المختار، ومنفصل عن العنوان والتصنيف والتنبيه.
 /// والنسخ ينسخ النص القرآني وحده، و'عرض الآية' يفتح المصحف على الآية.
 class QuranDuaCard extends StatelessWidget {
   final QuranDua dua;
@@ -145,53 +149,8 @@ class QuranDuaCard extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // ٢. النص القرآني.
-          if (!dua.isMultiAyah)
-            Text(
-              '﴿ ${dua.duaText} ﴾',
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'AmiriQuran',
-                fontSize: 20,
-                height: 1.85,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
-            )
-          else
-            Text.rich(
-              TextSpan(
-                style: TextStyle(
-                  fontFamily: 'AmiriQuran',
-                  fontSize: 20,
-                  height: 1.85,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
-                ),
-                children: [
-                  for (int i = 0; i < dua.verses.length; i++) ...[
-                    TextSpan(text: dua.verses[i].text),
-                    TextSpan(
-                      text:
-                          ' ﴿${ArabicSearchNormalizer.toArabicDigits(dua.verses[i].ayahNumber)}﴾',
-                      style: TextStyle(
-                        fontFamily: 'AmiriQuran',
-                        color: isDark
-                            ? AppColors.darkAccentGold
-                            : AppColors.lightPrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    if (i < dua.verses.length - 1) const TextSpan(text: ' '),
-                  ],
-                ],
-              ),
-              textDirection: TextDirection.rtl,
-              textAlign: TextAlign.center,
-            ),
+          // ٢. النص القرآني بخط المصحف المختار.
+          _DuaText(dua: dua),
 
           const SizedBox(height: 14),
 
@@ -370,6 +329,112 @@ class QuranDuaCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// نص الدعاء بخط المصحف الذي اختاره القارئ.
+///
+/// مع مصحف المدينة يُرسم بخطوط مجمع الملك فهد متى كانت آيات الدعاء كاملة؛
+/// فالمقطع من آية لا رموز له وحده، فيُكتب كله بالخط المتدفق المختار بدل خلط
+/// خطين في دعاء واحد.
+class _DuaText extends StatefulWidget {
+  final QuranDua dua;
+
+  const _DuaText({required this.dua});
+
+  @override
+  State<_DuaText> createState() => _DuaTextState();
+}
+
+class _DuaTextState extends State<_DuaText> {
+  List<QcfGlyphs>? _glyphs;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGlyphs();
+  }
+
+  Future<void> _loadGlyphs() async {
+    if (UserDataStore.instance.settings.mushafStyle != MushafStyle.madinah) {
+      return;
+    }
+    final glyphs = <QcfGlyphs>[];
+    for (final v in widget.dua.verses) {
+      final ayah = QuranRepository.instance.getAyah(
+        widget.dua.surahNumber,
+        v.ayahNumber,
+      );
+      if (ayah == null || !await QcfGlyphs.prepare(ayah)) return;
+      final part = QcfGlyphs.ofExcerpt(ayah, v.text);
+      if (part == null) return;
+      glyphs.add(part);
+    }
+    if (mounted) setState(() => _glyphs = glyphs);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final glyphs = _glyphs;
+    if (glyphs != null) {
+      return Text.rich(
+        semanticsLabel: widget.dua.duaText,
+        TextSpan(
+          children: [
+            for (final g in glyphs)
+              TextSpan(
+                text: g.text,
+                style: g.style(fontSize: 22, height: 1.9, color: color),
+              ),
+          ],
+        ),
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.center,
+      );
+    }
+    final font = UserDataStore.instance.quranFontFamily;
+    final dua = widget.dua;
+    final style = TextStyle(
+      fontFamily: font,
+      fontSize: 20,
+      height: 1.85,
+      color: color,
+    );
+    if (!dua.isMultiAyah) {
+      return Text(
+        '﴿ ${dua.duaText} ﴾',
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.center,
+        style: style,
+      );
+    }
+    return Text.rich(
+      TextSpan(
+        style: style,
+        children: [
+          for (int i = 0; i < dua.verses.length; i++) ...[
+            TextSpan(text: dua.verses[i].text),
+            TextSpan(
+              text:
+                  ' ﴿${ArabicSearchNormalizer.toArabicDigits(dua.verses[i].ayahNumber)}﴾',
+              style: TextStyle(
+                color: isDark
+                    ? AppColors.darkAccentGold
+                    : AppColors.lightPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            if (i < dua.verses.length - 1) const TextSpan(text: ' '),
+          ],
+        ],
+      ),
+      textDirection: TextDirection.rtl,
+      textAlign: TextAlign.center,
     );
   }
 }

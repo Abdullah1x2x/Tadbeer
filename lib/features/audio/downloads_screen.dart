@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -36,14 +38,14 @@ class _RecitationDownloadsScreenState extends State<RecitationDownloadsScreen> {
       setState(() => _bytes = AudioDownloads.instance.bytesOf(_reciter));
 
   Future<void> _download(int surah) async {
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     await AudioDownloads.instance.downloadSurah(_reciter, surah);
     if (mounted) _refreshSize();
   }
 
   /// ينزّل سور جزء عمّ (من النبأ إلى الناس) واحدة بعد أخرى.
   Future<void> _downloadJuzAmma() async {
-    HapticFeedback.selectionClick();
+    unawaited(HapticFeedback.selectionClick());
     for (var s = 78; s <= 114; s++) {
       if (!mounted) return;
       if (AudioDownloads.instance.isDownloaded(_reciter, s)) continue;
@@ -242,7 +244,7 @@ class _SurahRow extends StatelessWidget {
         ),
       ),
       title: Text(
-        'سورة ${info.name}',
+        context.l10n.surahTitle(info.name),
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: Text(

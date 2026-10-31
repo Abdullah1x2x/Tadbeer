@@ -364,7 +364,9 @@ class BookRepository extends ChangeNotifier {
       if (await file.exists()) {
         await file.delete();
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('BookRepository: could not delete $filePath: $e');
+    }
   }
 
   Future<Directory> _getBooksStorageDirectory() async {

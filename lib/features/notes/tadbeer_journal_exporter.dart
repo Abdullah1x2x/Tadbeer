@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme/theme.dart';
 import '../../data/storage/user_data_store.dart';
@@ -15,6 +14,7 @@ import '../tadbeer/tadbeer_questions.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'note_pdf_exporter.dart';
 import '../../core/design_system/app_icons.dart';
+import '../share/export_actions.dart';
 
 /// فترات تصدير دفتر التدبر.
 enum JournalPeriod {
@@ -632,8 +632,9 @@ class TadbeerJournalExporter {
     );
   }
 
-  /// يصدّر الدفتر PDF أو Markdown ويفتح المشاركة.
-  static Future<void> exportAndShareJournal({
+  /// يصدّر الدفتر PDF أو Markdown، ثم يشاركه القارئ أو يحفظه في جهازه.
+  static Future<void> exportAndShareJournal(
+    BuildContext context, {
     required JournalPeriod period,
     required bool asPdf,
   }) async {
@@ -641,11 +642,12 @@ class TadbeerJournalExporter {
 
     if (asPdf) {
       final pdfFile = await generatePdf(summary);
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(pdfFile.path)],
-          subject: 'دفتر تدبّر — ${period.label}',
-        ),
+      if (!context.mounted) return;
+      await shareOrSaveFile(
+        context,
+        file: pdfFile,
+        fileName: pdfFile.uri.pathSegments.last,
+        subject: 'دفتر تدبّر — ${period.label}',
       );
     } else {
       final mdString = generateMarkdown(summary);
@@ -654,12 +656,12 @@ class TadbeerJournalExporter {
         '${dir.path}/tadbeer_journal_${period.name}_${DateTime.now().millisecondsSinceEpoch}.md',
       );
       await mdFile.writeAsString(mdString);
-
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(mdFile.path)],
-          subject: 'دفتر تدبّر — ${period.label}',
-        ),
+      if (!context.mounted) return;
+      await shareOrSaveFile(
+        context,
+        file: mdFile,
+        fileName: mdFile.uri.pathSegments.last,
+        subject: 'دفتر تدبّر — ${period.label}',
       );
     }
   }
@@ -843,6 +845,7 @@ class TadbeerJournalExporter {
                         onPressed: () async {
                           Navigator.pop(sheetCtx);
                           await exportAndShareJournal(
+                            context,
                             period: selectedPeriod,
                             asPdf: exportAsPdf,
                           );

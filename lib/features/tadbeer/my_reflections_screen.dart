@@ -9,6 +9,7 @@ import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../data/models/tadbeer_model.dart';
 import 'tadbeer_pause_sheet.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// «وقفاتي»: كل ما كتبه القارئ عند الآيات، وما التزم به منها.
 class MyReflectionsScreen extends StatelessWidget {
@@ -30,6 +31,7 @@ class MyReflectionsScreen extends StatelessWidget {
                 Tab(text: l10n.reflectionsCommitments),
               ],
             ),
+            actions: [GuideButton(topic: GuideTopic.reflections)],
           ),
           // كل تبويب يستمع للمخزن بنفسه: الابن الثابت (const) لا يُعاد بناؤه
           // تحت builder هنا.

@@ -1,14 +1,15 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart' show BuildContext;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:share_plus/share_plus.dart';
 
 import '../../data/models/note_model.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
+import '../share/export_actions.dart';
 
 /// يصدّر خاطرة واحدة PDF للمشاركة أو الطباعة، لا للنسخ الاحتياطي.
 ///
@@ -261,14 +262,18 @@ class NotePdfExporter {
     return file;
   }
 
-  /// يصدّر الخاطرة PDF ويفتح قائمة المشاركة.
-  static Future<void> exportAndShareNote(NoteItem note) async {
+  /// يصدّر الخاطرة PDF، ثم يشاركها القارئ أو يحفظها في جهازه.
+  static Future<void> exportAndShareNote(
+    BuildContext context,
+    NoteItem note,
+  ) async {
     final file = await generateNotePdf(note);
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [XFile(file.path)],
-        subject: note.title ?? 'ملاحظة وتدبر من تَدْبِير',
-      ),
+    if (!context.mounted) return;
+    await shareOrSaveFile(
+      context,
+      file: file,
+      fileName: file.uri.pathSegments.last,
+      subject: note.title ?? 'ملاحظة وتدبر من تَدْبِير',
     );
   }
 }

@@ -16,7 +16,8 @@ A comprehensive legal and architectural audit was conducted across all component
 
 ### Audit Verdict
 - **Legal Compliance:** **100% compliant** with open-source licensing standards and official application distribution requirements (**Google Play**, **Apple App Store**, and **F-Droid**).
-- **License Conflicts:** **Zero conflicts** (strictly free of restrictive viral copyleft licenses like GPLv3, commercial use prohibitions, or distribution barriers).
+- **Software Packages:** Permissive licenses only (MIT, BSD, Apache-2.0); `dbus` is MPL-2.0 and used on Linux only.
+- **Content:** The Mushaf fonts and layout, recitations and some books have their own terms and are not covered by the MIT License.
 - **Automated In-App Attribution:** All software package licenses are registered into Flutter's native `LicenseRegistry`, rendered automatically within the app via `showLicensePage`.
 
 ---
@@ -26,13 +27,9 @@ A comprehensive legal and architectural audit was conducted across all component
 | Component | Official Source | Version | License Type | Distribution Terms & Obligations |
 | :--- | :--- | :--- | :--- | :--- |
 | **Holy Quran Text in Uthmani Script** (`quran_data.json`) | [Tanzil Project](https://tanzil.net/) | Tanzil 1.1 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) | • Modification or alteration of the Quranic text is strictly prohibited.<br>• Explicit attribution to the Tanzil Project with an official link. |
-| **Quran Vocabulary Lexicon** (`word_meanings.json` — 6,465 entries) | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) | `2026-10-10` | [CC0 1.0 Public Domain](https://creativecommons.org/publicdomain/zero/1.0/) + Classical Lexicons | • Free for commercial and non-commercial bundling and redistribution.<br>• Attribution of digitization to Quranpedia with release specification. |
-| **Quranic Duas Repository** (`quran_duas_repository.dart` — 88 Duas) | Quran texts from Tanzil / Categorization & code by Tadbeer | `1.0.0` | Texts: `CC BY 3.0`<br>Code: `MIT` | Preserve Quranic textual accuracy and provide source attribution. |
-| **Books, Pamphlets & Heritage Works** (`lib/features/books/data/`, `assets/books/`) | Sayyed Hussein Badreddin al-Houthi, Ahlulbayt Heritage, Classical Quranic Scholars | `1.0.0` | Public Domain / Educational Non-Commercial Heritage | Public domain Islamic classical heritage and non-commercial educational texts for Quranic contemplation and cultural enrichment. |
-| **Mihrab Tasbeeh & Istighfar Repository** (`lib/features/tasbeeh/data/curated_dhikrs.dart` — 49 formulas) | Authentic Prophetic & Ahlulbayt Traditions / Curated by Tadbeer | `1.0.0` | Texts: Public Domain<br>Code: `MIT` | Free distribution and offline religious contemplation. |
-| **Curated Contemplation Pathways** (`curated_pathways.dart`) | Tadbeer Authors | `1.0.0` | [MIT](LICENSE) | Original project authorship covered under the primary MIT License. |
-| **Brand Identity, Logo & Icons** (`assets/icons/*`) | Tadbeer Design | `1.0.0` | [MIT](LICENSE) | Original visual brand identity covered under the primary MIT License. |
-| **Audio Recitations** (7 reciters, one file per ayah) | [Islamic Network CDN](https://cdn.islamic.network/) | Online | Served freely by Islamic Network | Not bundled: streamed, or downloaded on the user's request, from `cdn.islamic.network`. |
+| **Quran Vocabulary Lexicon** (`word_meanings.json` — 6,465 entries) | [Quranic Encyclopedia (Quranpedia.net)](https://quranpedia.net) | `2026-10-10` | [Quranpedia data license](https://quranpedia.net/dumps/LICENSE.md); contemporary works remain with their authors and publishers | • Free for commercial and non-commercial bundling and redistribution.<br>• Attribution of digitization to Quranpedia with release specification. |
+| **Books, Pamphlets & Heritage Works** (`lib/features/books/data/`, `assets/books/`) | Sayyed Hussein Badreddin al-Houthi, Ahlulbayt Heritage, Classical Quranic Scholars | `1.0.0` | Rights of contemporary works remain with their owners | Author and work credited in the app. |
+| **Audio Recitations** (7 reciters, one file per ayah) | [Islamic Network CDN](https://cdn.islamic.network/) | Online | Licensed to Islamic Network for free, non-commercial redistribution; copyright remains with the reciters or their estates | Not bundled: streamed, or downloaded on the user's request, from `cdn.islamic.network`. |
 
 ---
 
@@ -82,7 +79,6 @@ Packages explicitly declared in [`pubspec.yaml`](pubspec.yaml) and bundled into 
 | **`path_provider`** | `2.1.6` | Access to persistent local storage directories | BSD-3-Clause | Copyright 2013 The Flutter Authors. |
 | **`pdf`** | `3.13.1` | PDF generation for notes and reflection journals | Apache-2.0 | Copyright (c) 2017, David PHAM-VAN. |
 | **`phosphor_flutter`** | `2.1.0` | Phosphor icon set used across the app | MIT | Copyright (c) 2020-2021 Phosphor Icons. |
-| **`qr_flutter`** | `4.1.0` | Offline QR code generation for peer sharing | BSD-3-Clause | Copyright (c) 2020, Luke Freeman. |
 | **`share_plus`** | `13.3.1` | Native system share sheet integration | BSD-3-Clause | Copyright 2017, the Flutter project authors. |
 | **`sqflite`** | `2.4.4+1` | SQLite database engine on mobile devices | BSD-2-Clause | Copyright (c) 2019, Alexandre Roux Tekartik. |
 | **`sqflite_common`** | `2.5.13+1` | Common SQLite database abstraction interface | BSD-2-Clause | Copyright (c) 2019, Alexandre Roux Tekartik. |

@@ -44,47 +44,55 @@ class MoreScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             children: [
-              _Group(
+              _SectionsGrid(
                 title: l10n.sectionsTitle,
                 children: [
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.flowerLotusFill,
                     label: l10n.myReflections,
+                    hint: l10n.myReflectionsCardHint,
                     onTap: () => open(const MyReflectionsScreen()),
                   ),
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.notePencil,
                     label: l10n.notes,
+                    hint: l10n.notesCardHint,
                     onTap: () => open(const NotesScreen()),
                   ),
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.brainFill,
                     label: l10n.memorization,
+                    hint: l10n.memorizationCardHint,
                     onTap: () => open(const MemorizationScreen()),
                   ),
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.magnifyingGlass,
                     label: l10n.search,
+                    hint: l10n.searchCardHint,
                     onTap: () => open(const SearchScreen()),
                   ),
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.books,
                     label: l10n.wordMeanings,
+                    hint: l10n.wordMeaningsCardHint,
                     onTap: () => open(const WordMeaningsScreen()),
                   ),
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.graphFill,
                     label: l10n.ayahLinks,
+                    hint: l10n.ayahLinksCardHint,
                     onTap: () => open(const AyahLinksScreen()),
                   ),
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.path,
                     label: l10n.guidedPathways,
+                    hint: l10n.guidedPathwaysCardHint,
                     onTap: () => open(const GuidedPathwaysScreen()),
                   ),
-                  _Tile(
+                  _SectionCard(
                     icon: AppIcons.bookOpenTextFill,
                     label: l10n.booksAndBooklets,
+                    hint: l10n.booksAndBookletsCardHint,
                     onTap: () => open(const BooksScreen()),
                   ),
                 ],
@@ -243,6 +251,145 @@ class _Tile extends StatelessWidget {
       trailing: Icon(
         AppIcons.caretRight,
         color: AppColors.textSecondary(context),
+      ),
+    );
+  }
+}
+
+/// الأقسام الرئيسية في شبكة بطاقات، فتتقدّم على بقية المزيد.
+class _SectionsGrid extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _SectionsGrid({required this.title, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 8, bottom: 8),
+            child: Row(
+              children: [
+                const OrnamentStar(size: 10),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: AppTheme.appFontFamily,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textSecondary(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          LayoutBuilder(
+            builder: (context, box) {
+              // عمودان على الهاتف، وثلاثة حين يتسع العرض.
+              final columns = box.maxWidth >= 560 ? 3 : 2;
+              const gap = 10.0;
+              final width = (box.maxWidth - gap * (columns - 1)) / columns;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: [
+                  for (final c in children) SizedBox(width: width, child: c),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// بطاقة قسم: أيقونة بارزة، واسمه، وسطر يقول ما فيه.
+class _SectionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String hint;
+  final VoidCallback onTap;
+
+  const _SectionCard({
+    required this.icon,
+    required this.label,
+    required this.hint,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
+    final gold = AppColors.accentGold(context);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            gradient: LinearGradient(
+              begin: AlignmentDirectional.topStart,
+              end: AlignmentDirectional.bottomEnd,
+              colors: [
+                primary.withValues(alpha: isDark ? 0.34 : 0.10),
+                gold.withValues(alpha: isDark ? 0.12 : 0.10),
+              ],
+            ),
+            border: Border.all(color: gold.withValues(alpha: 0.35)),
+          ),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 124),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isDark ? gold.withValues(alpha: 0.2) : primary,
+                    ),
+                    child: Icon(
+                      icon,
+                      size: 23,
+                      color: isDark ? gold : Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontFamily: AppTheme.appFontFamily,
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    hint,
+                    style: TextStyle(
+                      fontFamily: AppTheme.appFontFamily,
+                      fontSize: 12.5,
+                      height: 1.35,
+                      color: AppColors.textSecondary(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

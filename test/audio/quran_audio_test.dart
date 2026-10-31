@@ -1,3 +1,4 @@
+// ignore_for_file: close_sinks
 import 'dart:async';
 import 'dart:io';
 
@@ -296,7 +297,7 @@ void main() {
       expect(audio.active, isFalse);
     });
 
-    test('one ayah plays alone and stops at its end', () async {
+    test('one ayah plays alone, stops, and keeps the bar', () async {
       final engine = _FakeEngine();
       final audio = QuranAudio.withEngine(engine);
       await audio.playAyah(repo.getAyah(2, 1)!);
@@ -304,7 +305,47 @@ void main() {
       expect(engine.loaded, [audio.reciter.urlFor(repo.getAyah(2, 1)!.id)]);
       engine.completions.add(null);
       await Future<void>.delayed(Duration.zero);
-      expect(audio.active, isFalse);
+      expect(audio.finished, isTrue);
+      expect(audio.active, isTrue);
+      expect(audio.current!.ayahNumber, 1);
+
+      // Play starts the same ayah again.
+      engine.calls.clear();
+      await audio.toggle();
+      expect(engine.calls, ['load', 'play']);
+      expect(audio.finished, isFalse);
+    });
+
+    test('the one-ayah choice is saved and used by playFrom', () async {
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      await audio.setContinuous(false);
+      await audio.playFrom(repo.getAyah(2, 255)!);
+      expect(engine.loaded, hasLength(1));
+      expect(audio.continuous, isFalse);
+    });
+
+    test('choosing one ayah mid-recitation stops at the next ayah', () async {
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      await audio.playFrom(repo.getAyah(2, 255)!);
+      await audio.setContinuous(false);
+      engine.calls.clear();
+      engine.indexes.add(1); // Ayah 256 begins.
+      expect(engine.calls, ['pause']);
+      expect(audio.finished, isTrue);
+      expect(audio.current!.ayahNumber, 255);
+    });
+
+    test('choosing to continue after a finished ayah goes on', () async {
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      await audio.playAyah(repo.getAyah(2, 255)!);
+      engine.completions.add(null);
+      await Future<void>.delayed(Duration.zero);
+      await audio.setContinuous(true);
+      expect(audio.current!.ayahNumber, 256);
+      expect(audio.finished, isFalse);
     });
 
     test('an error mid-recitation stops the player', () async {

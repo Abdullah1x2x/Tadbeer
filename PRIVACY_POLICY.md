@@ -62,7 +62,7 @@
 
 ### 7. تواصل واستفسارات الخصوصية (Contact & Inquiries)
 لأي استفسار بخصوص الأمان والخصوصية أو لمراجعة الكود المصدري المفتوح، يرجى فتح تذكرة عبر مستودع المشروع الرسمي على GitHub:  
-👉 **[github.com/Abdullah-Alshami/Tadbeer/issues](https://github.com/Abdullah-Alshami/Tadbeer/issues)**
+👉 **[github.com/Abdullah1x2x/Tadbeer/issues](https://github.com/Abdullah1x2x/Tadbeer/issues)**
 
 ---
 
@@ -112,5 +112,5 @@ Tadbeer is 100% free of advertising SDKs, marketing trackers, and telemetry serv
 
 ### 7. Compliance & Open-Source Verification
 The full source code of Tadbeer is licensed under the permissive **MIT License** and is open for public audit and verification:  
-Repository: [https://github.com/Abdullah-Alshami/Tadbeer](https://github.com/Abdullah-Alshami/Tadbeer)  
-Issue Tracker: [https://github.com/Abdullah-Alshami/Tadbeer/issues](https://github.com/Abdullah-Alshami/Tadbeer/issues)
+Repository: [https://github.com/Abdullah1x2x/Tadbeer](https://github.com/Abdullah1x2x/Tadbeer)  
+Issue Tracker: [https://github.com/Abdullah1x2x/Tadbeer/issues](https://github.com/Abdullah1x2x/Tadbeer/issues)

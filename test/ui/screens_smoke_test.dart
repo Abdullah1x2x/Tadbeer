@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:tadbeer/features/audio/downloads_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
@@ -105,6 +106,7 @@ void main() {
     'WordMeanings': () => const WordMeaningsScreen(),
     'AyahLinks': () => const AyahLinksScreen(),
     'Books': () => const BooksScreen(),
+    'Downloads': () => const RecitationDownloadsScreen(),
     'Focus': () =>
         FocusModeScreen(startAyah: QuranRepository.instance.getAyah(2, 255)!),
   };
@@ -112,11 +114,15 @@ void main() {
   const sizes = [Size(360, 640), Size(412, 915)];
 
   for (final entry in screens.entries) {
-    for (final dark in [false, true]) {
-      for (final size in sizes) {
+    for (final (dark, size, scale) in [
+      for (final dark in [false, true])
+        for (final size in sizes) (dark, size, 1.0),
+      (false, sizes.first, 1.6),
+    ]) {
+      {
         final mode = dark ? 'dark' : 'light';
         testWidgets(
-          '${entry.key} renders cleanly ($mode, ${size.width.toInt()}x${size.height.toInt()})',
+          '${entry.key} renders cleanly ($mode, ${size.width.toInt()}x${size.height.toInt()}, text x$scale)',
           (tester) async {
             tester.view.physicalSize = size;
             tester.view.devicePixelRatio = 1;
@@ -131,6 +137,11 @@ void main() {
                   theme: AppTheme.lightTheme,
                   darkTheme: AppTheme.darkTheme,
                   themeMode: dark ? ThemeMode.dark : ThemeMode.light,
+                  builder: (context, child) => MediaQuery(
+                    data: MediaQuery.of(context)
+                        .copyWith(textScaler: TextScaler.linear(scale)),
+                    child: child!,
+                  ),
                   home: Directionality(
                     textDirection: TextDirection.rtl,
                     child: entry.value(),

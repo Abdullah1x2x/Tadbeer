@@ -45,10 +45,8 @@ dependencies:
   sqflite_common_ffi: ^2.4.3
   path: ^1.9.1
   flutter_timezone: ^5.1.1
-  qr_flutter: ^4.1.0
   flutter_islamic_icons: ^1.0.2
   flutter_pdfview: ^1.4.5
-  cupertino_icons: ^2.0.0
   flutter_localizations:
     sdk: flutter
   intl: any

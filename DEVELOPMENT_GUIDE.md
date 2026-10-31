@@ -5,12 +5,14 @@
 
 ---
 
+> For the complete walkthrough of every project file, see the [project guide](docs/PROJECT_GUIDE.md) (Arabic).
+
 ## 1. Architectural Overview
 
 Tadbeer is an **offline-first**, privacy-focused Flutter application designed for Quranic reflection (*Tadabbur*).
 
 ### Core Architectural Tenets
-- **Offline-First:** Zero network dependencies. The app does not declare `android.permission.INTERNET`, includes zero telemetry or analytics SDKs, and runs completely locally.
+- **Offline-First:** All core reading, reflection, notes, bookmarks, and search run 100% locally with zero server reliance. The network permission (`android.permission.INTERNET`) is used strictly for streaming Quran recitation audio, with zero telemetry, analytics SDKs, or external ads.
 - **Single Source of Truth:** `UserDataStore` (a singleton extending `ChangeNotifier`) acts as the central in-memory reactive cache. Modifying user data immediately updates $O(1)$ memory lookup maps, notifies UI listeners, and asynchronously persists changes to SQLite (`tadbeer_user_data.db`) and a JSON backup snapshot.
 - **Responsive Quran Layout:** Digital Quran rendering built with `LayoutBuilder` and `SingleChildScrollView` to guarantee zero `RenderFlex` overflows across all device form factors (small phones, foldables, tablets in portrait/landscape, and dual-page spreads).
 - **5 Open-Source Quranic Fonts:** Independent typography using SIL OFL-1.1 fonts (`AmiriQuran`, `ScheherazadeNew`, `NotoNaskhArabic`, `Lateef`, `Harmattan`).
@@ -28,7 +30,7 @@ Tadbeer is an **offline-first**, privacy-focused Flutter application designed fo
 ## 2. Quick Start & Toolchain
 
 ### Requirements
-- **Flutter SDK:** `>=3.22.0`
+- **Flutter SDK:** `3.47.6`
 - **Dart SDK:** `^3.4.0`
 - **Primary Targets:** Android & iOS (Linux, macOS, and Windows supported for local development and test automation via `sqflite_common_ffi`).
 
@@ -41,7 +43,7 @@ flutter pub get
 # 2. Run static analysis (must report 0 issues)
 dart analyze
 
-# 3. Run automated tests (594 tests across 81 test files)
+# 3. Run automated tests (659 tests across 86 test files)
 flutter test
 
 # 4. Run application in debug mode
@@ -74,7 +76,7 @@ lib/
 │   └── storage/        # SQLite database and UserDataStore
 ├── features/           # One folder per feature; screens/, widgets/, data/ once it grows past six files
 │   ├── audio/          # Ayah-by-ayah recitation, background playback, downloads
-│   ├── ayah_links/     # Thematic links between ayahs, network view, QR sharing
+│   ├── ayah_links/     # Thematic links between ayahs, network view
 │   ├── backup/         # AES-256 encrypted backup and restore
 │   ├── bookmarks/      # Bookmarks screen
 │   ├── books/          # Books and booklets library, PDF reader
@@ -88,7 +90,7 @@ lib/
 │   ├── memorization/   # Memorization with Leitner boxes
 │   ├── more/           # The More tab
 │   ├── notes/          # Reflection notes, PDF and journal export
-│   ├── onboarding/     # First launch: name and theme
+│   ├── onboarding/     # First launch: name, theme, tour and guides
 │   ├── pathways/       # Curated contemplation pathways
 │   ├── qibla/          # Qibla direction (GPS and compass)
 │   ├── quran/          # Madinah Mushaf (QCF), page view, ayah actions
@@ -166,7 +168,7 @@ Managed by `BackupCryptoService`:
 
 ### 4.8. Books & Booklets Library (`lib/features/books/`)
 - **Curated Sections Included in App:**
-  1. **Sayyed Hussein Al-Houthi Quranic Guidance Booklets («ملازم هدي القرآن الكريم»):** 86 unabridged booklets and lectures from the Quranic guidance series, safely organized under `assets/books/malazem/` to guarantee smooth builds across Android, iOS, and Linux.
+  1. **Sayyed Hussein Al-Houthi Quranic Guidance Booklets («ملازم هدي القرآن الكريم»):** 91 unabridged booklets and lectures from the Quranic guidance series, safely organized under `assets/books/malazem/` to guarantee smooth builds across Android, iOS, and Linux.
   2. **Ahlulbayt Heritage («تراث وأدعية أهل البيت (عليهم السلام)»):** Open Islamic heritage books with in-app interactive reading and companion high-resolution PDF attachments: **Al-Sahifah Al-Sajjadiyah**, **Risalat Al-Huquq**, and **Nahj Al-Balagha** (consolidated cleanly in `heritage_data.dart`).
   3. **Quranic Sciences & Reflection («علوم وتدبر القرآن الكريم»):** Open public heritage works including **Akhlaq Hamalat Al-Quran** by Al-Ajurri, **Qawaid Wa Usul fi Tadabbur Al-Quran**, and **Al-Tibyan fi Adab Hamalat Al-Quran** by Imam Al-Nawawi.
 - **Developer Extensibility (`lib/features/books/data/curated_books.dart`):** Easily declare new sections and books in Dart code via `BookSectionConfig` and `BookConfig` with PDF attachments, text files, or in-code chapters (`BookChapter`).
@@ -194,7 +196,7 @@ Managed by `BackupCryptoService`:
 4. **Pre-Commit Verification:**
    ```bash
    dart analyze    # Must report "No issues found!"
-   flutter test    # All 594 tests must pass
+   flutter test    # All tests must pass
    ```
 5. **Interface Text:** Every visible string goes in `lib/l10n/app_ar.arb` and `app_en.arb` (then `flutter gen-l10n`) and is read through `context.l10n`; no inline `isArabic ? … : …` text. Pass numbers as `int` and let `AppStrings` localize the digits.
 6. **Preserve Sanctity & Offline Guarantee:** Never introduce external network requests, third-party analytics, or unverified changes to Quranic datasets in `assets/quran/`.

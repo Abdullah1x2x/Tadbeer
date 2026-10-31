@@ -439,10 +439,16 @@ void main() {
         expect(find.text('تغيير'), findsOneWidget);
         expect(tester.widget<FilledButton>(add).onPressed, isNotNull);
 
-        await tester.runAsync(() async {
-          await tester.tap(add);
-          await Future<void>.delayed(const Duration(milliseconds: 150));
-        });
+        await tester.tap(add);
+        // The save is real file I/O and shows a repeating spinner until done,
+        // so wait for it rather than for a fixed time.
+        for (var i = 0; i < 500; i++) {
+          if (find.text('إضافة آية إلى الرابط').evaluate().isEmpty) break;
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 10)),
+          );
+          await tester.pump(const Duration(milliseconds: 16));
+        }
         await tester.pumpAndSettle();
         expect(find.text('إضافة آية إلى الرابط'), findsNothing);
         final saved = AyahLinkRepository().getLink(link.id);

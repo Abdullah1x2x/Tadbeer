@@ -8,6 +8,7 @@ import '../../core/theme/theme.dart';
 import 'tasbeeh_model.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
+import '../onboarding/tour/section_guide.dart';
 
 part 'tasbeeh_widgets.dart';
 part 'tasbeeh_screen_sections.dart';
@@ -282,6 +283,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
           ),
           centerTitle: true,
           actions: [
+            GuideButton(topic: GuideTopic.tasbeeh),
             IconButton(
               tooltip: l10n.countSettings,
               icon: const Icon(AppIcons.slidersHorizontal),

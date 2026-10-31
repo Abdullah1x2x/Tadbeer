@@ -70,7 +70,7 @@ void main() {
       expect(first['word'], isNotEmpty);
       expect(first['meaning'], isNotEmpty);
       final firstModel = QuranWordMeaning.fromJson(first);
-      expect(firstModel.sourceName, contains('المعجم الوسيط'));
+      expect(firstModel.sourceName, contains('الموسوعة القرآنية'));
       expect(
         firstModel.sourceUrl,
         equals('https://www.arabicacademy.gov.eg/ar/'),
@@ -129,7 +129,7 @@ void main() {
     test('4. عدم فقدان مصادر المداخل: approved entries preserve their source attribution', () {
       final repo = QuranRepository.instance;
       for (final item in repo.allWordMeanings) {
-        expect(item.sourceName, contains('المعجم الوسيط'));
+        expect(item.sourceName, contains('الموسوعة القرآنية'));
         expect(item.sourceUrl, equals('https://www.arabicacademy.gov.eg/ar/'));
       }
     });
@@ -140,7 +140,7 @@ void main() {
         'ayah': 31,
         'word': 'أَبًّا',
         'meaning': 'الكلأ والمرعى',
-        'source_name': 'المعجم الوسيط، مجمع اللغة العربية بالقاهرة',
+        'source_name': 'الموسوعة القرآنية',
         'source_url': 'https://www.arabicacademy.gov.eg/ar/',
         'status': 'approved',
       };
@@ -163,7 +163,7 @@ void main() {
       };
 
       final word = QuranWordMeaning.fromJson(minimalJson, page: 527);
-      expect(word.sourceName, contains('المعجم الوسيط'));
+      expect(word.sourceName, contains('الموسوعة القرآنية'));
       expect(word.sourceUrl, equals('https://www.arabicacademy.gov.eg/ar/'));
       expect(word.status, equals('approved'));
       expect(word.page, equals(527));
@@ -319,23 +319,10 @@ void main() {
         // Title
         expect(find.text('المصادر المعتمدة'), findsOneWidget);
 
-        // Primary source: Al-Mu'jam Al-Waseet
-        expect(find.text('المعجم الوسيط'), findsOneWidget);
-        expect(
-          find.textContaining('مجمع اللغة العربية بالقاهرة'),
-          findsWidgets,
-        );
-        expect(find.textContaining('arabicacademy.gov.eg'), findsWidgets);
-
-        // Verification source: Doha Historical Dictionary
-        expect(find.text('معجم الدوحة التاريخي للغة العربية'), findsOneWidget);
-        expect(find.textContaining('dohadictionary.org'), findsWidgets);
-
-        // Legal & Licensing compliance card
-        expect(
-          find.text('تحقيق الملكية الفكرية وتراخيص الاستخدام'),
-          findsOneWidget,
-        );
+        // The only source is the dataset the meanings come from.
+        expect(find.textContaining('الموسوعة القرآنية'), findsWidgets);
+        expect(find.textContaining('quranpedia.net'), findsWidgets);
+        expect(find.textContaining('معجم الدوحة'), findsNothing);
       },
     );
 

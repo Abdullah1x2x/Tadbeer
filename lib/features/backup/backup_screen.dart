@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -9,6 +10,7 @@ import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import 'backup_crypto_service.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// إنشاء النسخ الاحتياطية المشفرة واستعادتها.
 ///
@@ -89,7 +91,6 @@ class _BackupScreenState extends State<BackupScreen> {
         dialogTitle: l10n.selectBackupLocation,
         fileName: fileName,
         bytes: bytes,
-        type: FileType.any,
       );
 
       if (savedUri != null && mounted) {
@@ -149,89 +150,18 @@ class _BackupScreenState extends State<BackupScreen> {
 
     if (!mounted) return;
 
-    // تحذير قبل الاستعادة.
-    final passwordRestoreController = TextEditingController();
-    final shouldProceed = await showDialog<bool>(
+    // تحذير قبل الاستعادة وإدخال كلمة المرور.
+    final enteredPassword = await showDialog<String>(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.comsilkLight,
-        title: Row(
-          children: [
-            const Icon(AppIcons.warning, color: Colors.orangeAccent),
-            const SizedBox(width: 8),
-            Text(
-              l10n.restoreWarningTitle,
-              style: const TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.restoreWarningMessage,
-              style: TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
-                fontSize: 14,
-                color: isDark
-                    ? AppColors.nightQuranText
-                    : AppColors.dayQuranText,
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordRestoreController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: l10n.enterBackupPassword,
-                labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-                filled: true,
-                fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx, false),
-            child: Text(
-              l10n.cancel,
-              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(dialogCtx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              l10n.confirmRestore,
-              style: const TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
+      builder: (dialogCtx) => const _RestoreBackupPasswordDialog(),
     );
 
-    if (shouldProceed != true) return;
+    if (enteredPassword == null) return;
 
     setState(() => _isProcessing = true);
     final result = await BackupCryptoService.restoreFromFile(
       file: file,
-      password: passwordRestoreController.text,
+      password: enteredPassword,
     );
 
     if (!mounted) return;
@@ -248,33 +178,35 @@ class _BackupScreenState extends State<BackupScreen> {
         ),
       );
     } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.comsilkLight,
-          title: Text(
-            l10n.restoreFailed,
-            style: const TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
-              fontWeight: FontWeight.bold,
-              color: Colors.redAccent,
-            ),
-          ),
-          content: Text(
-            result.errorMessage ?? l10n.corruptBackupError,
-            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                l10n.close,
-                style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+      unawaited(
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: isDark
+                ? AppColors.darkBackground
+                : AppColors.comsilkLight,
+            title: Text(
+              l10n.restoreFailed,
+              style: const TextStyle(
+                fontFamily: 'IBMPlexSansArabic',
+                fontWeight: FontWeight.bold,
+                color: Colors.redAccent,
               ),
             ),
-          ],
+            content: Text(
+              result.errorMessage ?? l10n.corruptBackupError,
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  l10n.close,
+                  style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -296,6 +228,7 @@ class _BackupScreenState extends State<BackupScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          actions: [GuideButton(topic: GuideTopic.backup)],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -564,3 +497,105 @@ class _BackupCard extends StatelessWidget {
     );
   }
 }
+
+/// حوار تأكيد الاستعادة وكلمة المرور مع دورة حياة منضبطة للمتحكم النصي.
+class _RestoreBackupPasswordDialog extends StatefulWidget {
+  const _RestoreBackupPasswordDialog();
+
+  @override
+  State<_RestoreBackupPasswordDialog> createState() =>
+      _RestoreBackupPasswordDialogState();
+}
+
+class _RestoreBackupPasswordDialogState
+    extends State<_RestoreBackupPasswordDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return AlertDialog(
+      backgroundColor:
+          isDark ? AppColors.darkBackground : AppColors.comsilkLight,
+      title: Row(
+        children: [
+          const Icon(AppIcons.warning, color: Colors.orangeAccent),
+          const SizedBox(width: 8),
+          Text(
+            l10n.restoreWarningTitle,
+            style: const TextStyle(
+              fontFamily: 'IBMPlexSansArabic',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.restoreWarningMessage,
+            style: TextStyle(
+              fontFamily: 'IBMPlexSansArabic',
+              fontSize: 14,
+              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _controller,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: l10n.enterBackupPassword,
+              labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+              filled: true,
+              fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            l10n.cancel,
+            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, _controller.text),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.redAccent,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(
+            l10n.confirmRestore,
+            style: const TextStyle(
+              fontFamily: 'IBMPlexSansArabic',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+

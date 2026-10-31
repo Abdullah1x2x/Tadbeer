@@ -10,6 +10,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/quran/quran_repository.dart';
 import 'search_provider.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// البحث الشامل الفوري دون إنترنت في كل أقسام التطبيق.
 ///
@@ -168,6 +169,7 @@ class _SearchScreenState extends State<SearchScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          actions: [GuideButton(topic: GuideTopic.search)],
         ),
         body: Column(
           children: [

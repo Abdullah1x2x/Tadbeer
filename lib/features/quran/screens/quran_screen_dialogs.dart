@@ -4,78 +4,11 @@ part of 'quran_screen.dart';
 extension _QuranScreenDialogs on _QuranScreenState {
   /// حوار الانتقال إلى صفحة برقمها.
   void _showJumpToPageDialog() {
-    final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final controller = TextEditingController(text: '${_currentPageIndex + 1}');
-
     showDialog(
       context: context,
-      builder: (dialogCtx) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.comsilkLight,
-        title: Text(
-          l10n.jumpToPage,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'أدخل رقم الصفحة بين ١ و ٦٠٤',
-              style: TextStyle(
-                fontSize: 13,
-                color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                hintText: '1 - 604',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    color: isDark
-                        ? AppColors.darkSurfaceVariant
-                        : AppColors.lightBorder,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogCtx),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final raw = ArabicSearchNormalizer.toEnglishDigits(
-                controller.text.trim(),
-              );
-              final val = int.tryParse(raw);
-              if (val != null && val >= 1 && val <= 604) {
-                Navigator.pop(dialogCtx);
-                _jumpToMushafPage(val);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.olive,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              l10n.go,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+      builder: (dialogCtx) => _JumpToPageDialog(
+        initialPage: _currentPageIndex + 1,
+        onPageSelected: (page) => _jumpToMushafPage(page),
       ),
     );
   }
@@ -125,9 +58,9 @@ extension _QuranScreenDialogs on _QuranScreenState {
                     const SizedBox(height: 16),
                     // اختيار الخط يخص النص المتدفق وحده.
                     if (settings.mushafStyle == MushafStyle.text) ...[
-                      const Text(
-                        'نوع خط المصحف',
-                        style: TextStyle(
+                      Text(
+                        context.l10n.quranFontFamily,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
@@ -200,7 +133,7 @@ extension _QuranScreenDialogs on _QuranScreenState {
                       children: [
                         ElevatedButton(
                           onPressed: () => Navigator.pop(ctx),
-                          child: const Text('تم'),
+                          child: Text(context.l10n.doneLabel),
                         ),
                       ],
                     ),
@@ -214,3 +147,107 @@ extension _QuranScreenDialogs on _QuranScreenState {
     );
   }
 }
+
+/// حوار إدخال رقم الصفحة مع إدارة دورة حياة المتحكم النصي بأمان.
+class _JumpToPageDialog extends StatefulWidget {
+  final int initialPage;
+  final ValueChanged<int> onPageSelected;
+
+  const _JumpToPageDialog({
+    required this.initialPage,
+    required this.onPageSelected,
+  });
+
+  @override
+  State<_JumpToPageDialog> createState() => _JumpToPageDialogState();
+}
+
+class _JumpToPageDialogState extends State<_JumpToPageDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: '${widget.initialPage}');
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return AlertDialog(
+      backgroundColor:
+          isDark ? AppColors.darkSurface : AppColors.comsilkLight,
+      title: Text(
+        l10n.jumpToPage,
+        textAlign: TextAlign.center,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            context.l10n.enterPageRange,
+            style: TextStyle(
+              fontSize: 13,
+              color: isDark ? AppColors.nightSubtitle : AppColors.oliveDark,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              hintText: '1 - 604',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: isDark
+                      ? AppColors.darkSurfaceVariant
+                      : AppColors.lightBorder,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final raw = ArabicSearchNormalizer.toEnglishDigits(
+              _controller.text.trim(),
+            );
+            final val = int.tryParse(raw);
+            if (val != null && val >= 1 && val <= 604) {
+              Navigator.pop(context);
+              widget.onPageSelected(val);
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.olive,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(
+            l10n.go,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
+  }
+}
+

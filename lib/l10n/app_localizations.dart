@@ -188,23 +188,11 @@ abstract class AppLocalizations {
   /// **'استغفار وتسبيح'**
   String get tasbeehAndIstighfar;
 
-  /// No description provided for @tasbeehSubtitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'سبحة إلكترونية وأوراد الاستغفار والتسبيح'**
-  String get tasbeehSubtitle;
-
   /// No description provided for @booksAndBooklets.
   ///
   /// In ar, this message translates to:
   /// **'كتب وملازم'**
   String get booksAndBooklets;
-
-  /// No description provided for @booksSubtitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'مكتبة الملازم التدبرية ومختصرات علوم القرآن'**
-  String get booksSubtitle;
 
   /// No description provided for @about.
   ///
@@ -373,12 +361,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أحسنت! انتهت الجلسة'**
   String get sessionDone;
-
-  /// No description provided for @ayahOfTheDay.
-  ///
-  /// In ar, this message translates to:
-  /// **'آية اليوم'**
-  String get ayahOfTheDay;
 
   /// No description provided for @reflectOnIt.
   ///
@@ -679,12 +661,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'ملاحظة'**
   String get addNote;
-
-  /// No description provided for @saveBookmark.
-  ///
-  /// In ar, this message translates to:
-  /// **'حفظ'**
-  String get saveBookmark;
 
   /// No description provided for @removeBookmark.
   ///
@@ -1244,18 +1220,6 @@ abstract class AppLocalizations {
   /// **'استئناف القراءة'**
   String get resumeReading;
 
-  /// No description provided for @additionalTools.
-  ///
-  /// In ar, this message translates to:
-  /// **'أدوات إضافية'**
-  String get additionalTools;
-
-  /// No description provided for @quranAndSunnahDuas.
-  ///
-  /// In ar, this message translates to:
-  /// **'أدعية الكتاب والسنة'**
-  String get quranAndSunnahDuas;
-
   /// No description provided for @quranDuasTitle.
   ///
   /// In ar, this message translates to:
@@ -1315,36 +1279,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية'**
   String get jawamiDuasSubtitle;
-
-  /// No description provided for @wordsOfQuran.
-  ///
-  /// In ar, this message translates to:
-  /// **'غريب ألفاظ القرآن'**
-  String get wordsOfQuran;
-
-  /// No description provided for @yourThoughtsAndReflections.
-  ///
-  /// In ar, this message translates to:
-  /// **'خواطرك وتدبراتك'**
-  String get yourThoughtsAndReflections;
-
-  /// No description provided for @connectionsAndThemes.
-  ///
-  /// In ar, this message translates to:
-  /// **'الربط والعلاقات'**
-  String get connectionsAndThemes;
-
-  /// No description provided for @dailyPortion.
-  ///
-  /// In ar, this message translates to:
-  /// **'الورد اليومي'**
-  String get dailyPortion;
-
-  /// No description provided for @tadbeerLibrary.
-  ///
-  /// In ar, this message translates to:
-  /// **'مكتبة المتدبر'**
-  String get tadbeerLibrary;
 
   /// No description provided for @offlineQuranAndReflection.
   ///
@@ -1453,12 +1387,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المسارات التدبرية المقترحة'**
   String get curatedPathways;
-
-  /// No description provided for @importFromQrCode.
-  ///
-  /// In ar, this message translates to:
-  /// **'استيراد رابط آيات عبر الرمز'**
-  String get importFromQrCode;
 
   /// No description provided for @searchAyahLinksHint.
   ///
@@ -1765,12 +1693,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تم نسخ نص الدعاء بنجاح'**
   String get duaCopiedSuccess;
-
-  /// No description provided for @searchDuasHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'ابحث في أدعية القرآن الكريم بالكلمة أو السورة...'**
-  String get searchDuasHint;
 
   /// No description provided for @noDuasFound.
   ///
@@ -2342,12 +2264,6 @@ abstract class AppLocalizations {
   /// **'ختمة في {count, plural, =1{يوم واحد} =2{يومين} few{{n} أيام} many{{n} يومًا} other{{n} يوم}}'**
   String khatmaInDays(int count, String n);
 
-  /// No description provided for @pagesOfMushaf.
-  ///
-  /// In ar, this message translates to:
-  /// **'{n} من ٦٠٤ صفحة'**
-  String pagesOfMushaf(String n);
-
   /// No description provided for @dayOfPlan.
   ///
   /// In ar, this message translates to:
@@ -2454,18 +2370,6 @@ abstract class AppLocalizations {
   /// **'{count} آيات مرتبطة'**
   String linkedAyahsCount(String count);
 
-  /// No description provided for @fontSizePoints.
-  ///
-  /// In ar, this message translates to:
-  /// **'{points} نقطة'**
-  String fontSizePoints(String points);
-
-  /// No description provided for @resetToDefaultWithVal.
-  ///
-  /// In ar, this message translates to:
-  /// **'إعادة للوضع الافتراضي ({val})'**
-  String resetToDefaultWithVal(String val);
-
   /// No description provided for @reminderScheduledSuccess.
   ///
   /// In ar, this message translates to:
@@ -2549,18 +2453,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تعذر مشاركة أو فتح الملف: {error}'**
   String fileShareError(String error);
-
-  /// No description provided for @pdfReadError.
-  ///
-  /// In ar, this message translates to:
-  /// **'تعذر قراءة ملف الـ PDF: {error}'**
-  String pdfReadError(String error);
-
-  /// No description provided for @fileContentReadError.
-  ///
-  /// In ar, this message translates to:
-  /// **'تعذر قراءة محتوى الملف: {error}'**
-  String fileContentReadError(String error);
 
   /// No description provided for @removeAyahFromLinkConfirm.
   ///
@@ -2651,12 +2543,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'خط المصحف: مجمع الملك فهد لطباعة المصحف الشريف'**
   String get qcfAttribution;
-
-  /// No description provided for @widgetPortionLeft.
-  ///
-  /// In ar, this message translates to:
-  /// **'ورد اليوم: بقي {left} من {portion} صفحة'**
-  String widgetPortionLeft(String left, String portion);
 
   /// No description provided for @widgetPortionDone.
   ///
@@ -2778,12 +2664,6 @@ abstract class AppLocalizations {
   /// **'نص متدفق بالخط الذي تختاره.'**
   String get mushafStyleTextHint;
 
-  /// No description provided for @pageSize.
-  ///
-  /// In ar, this message translates to:
-  /// **'حجم الصفحة'**
-  String get pageSize;
-
   /// No description provided for @khatmaStartNow.
   ///
   /// In ar, this message translates to:
@@ -2844,12 +2724,6 @@ abstract class AppLocalizations {
   /// **'وقفاتي'**
   String get myReflections;
 
-  /// No description provided for @myReflectionsSubtitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'ما كتبته عند الآيات'**
-  String get myReflectionsSubtitle;
-
   /// No description provided for @reflectionsAll.
   ///
   /// In ar, this message translates to:
@@ -2871,7 +2745,7 @@ abstract class AppLocalizations {
   /// No description provided for @noCommitmentsYet.
   ///
   /// In ar, this message translates to:
-  /// **'ما تكتبه جواباً عن «ما الذي ستفعله بها اليوم؟» يظهر هنا.'**
+  /// **'ما تكتبه جواباً عن «ما العمل الذي تدعوك إليه هذه الآية؟» يظهر هنا.'**
   String get noCommitmentsYet;
 
   /// No description provided for @commitmentDid.
@@ -3162,12 +3036,6 @@ abstract class AppLocalizations {
   /// **'استماع'**
   String get listen;
 
-  /// No description provided for @listenFromHere.
-  ///
-  /// In ar, this message translates to:
-  /// **'استماع من هنا'**
-  String get listenFromHere;
-
   /// No description provided for @audioSettings.
   ///
   /// In ar, this message translates to:
@@ -3345,7 +3213,7 @@ abstract class AppLocalizations {
   /// No description provided for @sourcesAndCreditsDetails.
   ///
   /// In ar, this message translates to:
-  /// **'• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10) وأمهات المعاجم اللغوية التراثية والمعاصرة (لسان العرب، مقاييس اللغة، التبيان، تذكرة الأريب، مفردات الراغب، والمعجم الوسيط).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 88 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• خط مصحف المدينة: خطوط صفحات المصحف (QCF) من مجمع الملك فهد لطباعة المصحف الشريف، وتخطيط الأسطر من بيانات Quran.com.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.'**
+  /// **'• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 89 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.\n• خطوط مصحف المدينة: مجمع الملك فهد لطباعة المصحف الشريف، عبر Quran Foundation، ومنها بيانات تخطيط الأسطر.\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).'**
   String get sourcesAndCreditsDetails;
 
   /// No description provided for @unsavedChanges.
@@ -3528,60 +3396,6 @@ abstract class AppLocalizations {
   /// **'مضافة بالفعل'**
   String get alreadyAdded;
 
-  /// No description provided for @shareAyahLinkOffline.
-  ///
-  /// In ar, this message translates to:
-  /// **'مشاركة رابط الآيات دون إنترنت'**
-  String get shareAyahLinkOffline;
-
-  /// No description provided for @qrScanHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'يمكن مسح هذا الرمز من تطبيق تَدْبِير في جهاز آخر لاستيراد الرابط بالكامل دون اتصال بالإنترنت.'**
-  String get qrScanHint;
-
-  /// No description provided for @linkDataCopiedToClipboard.
-  ///
-  /// In ar, this message translates to:
-  /// **'تم نسخ بيانات الرابط إلى الحافظة'**
-  String get linkDataCopiedToClipboard;
-
-  /// No description provided for @copyData.
-  ///
-  /// In ar, this message translates to:
-  /// **'نسخ البيانات'**
-  String get copyData;
-
-  /// No description provided for @importAyahLink.
-  ///
-  /// In ar, this message translates to:
-  /// **'استيراد رابط آيات'**
-  String get importAyahLink;
-
-  /// No description provided for @importLinkHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'الصق رمز المشاركة أو بيانات الرابط أدناه لاستيراده إلى روابطك:'**
-  String get importLinkHint;
-
-  /// No description provided for @importLinkFieldHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'الصق الرابط أو النص الممسوح هنا...'**
-  String get importLinkFieldHint;
-
-  /// No description provided for @pasteFromClipboard.
-  ///
-  /// In ar, this message translates to:
-  /// **'لصق من الحافظة'**
-  String get pasteFromClipboard;
-
-  /// No description provided for @importNow.
-  ///
-  /// In ar, this message translates to:
-  /// **'استيراد الآن'**
-  String get importNow;
-
   /// No description provided for @editAyahLink.
   ///
   /// In ar, this message translates to:
@@ -3701,12 +3515,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الرابط غير موجود أو تم حذفه'**
   String get linkNotFound;
-
-  /// No description provided for @shareViaQrCode.
-  ///
-  /// In ar, this message translates to:
-  /// **'مشاركة عبر رمز الاستجابة السريعة (QR)'**
-  String get shareViaQrCode;
 
   /// No description provided for @addNoteShort.
   ///
@@ -3834,24 +3642,6 @@ abstract class AppLocalizations {
   /// **'تمت إضافة الآية إلى رابط «{title}»'**
   String verseAddedToLink(String title);
 
-  /// No description provided for @linkIncludesVerses.
-  ///
-  /// In ar, this message translates to:
-  /// **'يتضمن {count} آيات مرتبطة'**
-  String linkIncludesVerses(String count);
-
-  /// No description provided for @importedLinkTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'العنوان: {title}'**
-  String importedLinkTitle(String title);
-
-  /// No description provided for @importedVersesCount.
-  ///
-  /// In ar, this message translates to:
-  /// **'الآيات المتضمنة: {count} آية'**
-  String importedVersesCount(String count);
-
   /// No description provided for @reflectionNotesCount.
   ///
   /// In ar, this message translates to:
@@ -3917,6 +3707,906 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'لاحقاً'**
   String get permissionsLater;
+
+  /// No description provided for @continuousRecitation.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة التلاوة (اضغط لآية واحدة)'**
+  String get continuousRecitation;
+
+  /// No description provided for @singleAyahRecitation.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية واحدة (اضغط للمتابعة)'**
+  String get singleAyahRecitation;
+
+  /// No description provided for @ayahFinished.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت الآية'**
+  String get ayahFinished;
+
+  /// No description provided for @myReflectionsCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفات التدبر التي كتبتها'**
+  String get myReflectionsCardHint;
+
+  /// No description provided for @notesCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'خواطرك على الآيات'**
+  String get notesCardHint;
+
+  /// No description provided for @memorizationCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'احفظ وراجع في وقته'**
+  String get memorizationCardHint;
+
+  /// No description provided for @searchCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'في القرآن وكل ما حفظت'**
+  String get searchCardHint;
+
+  /// No description provided for @wordMeaningsCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني الكلمات بترتيب المصحف'**
+  String get wordMeaningsCardHint;
+
+  /// No description provided for @ayahLinksCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اربط الآيات بموضوع واحد'**
+  String get ayahLinksCardHint;
+
+  /// No description provided for @guidedPathwaysCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلات تدبر يومًا بيوم'**
+  String get guidedPathwaysCardHint;
+
+  /// No description provided for @booksAndBookletsCardHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملازم والكتب للقراءة'**
+  String get booksAndBookletsCardHint;
+
+  /// No description provided for @tourSkip.
+  ///
+  /// In ar, this message translates to:
+  /// **'تخطٍّ'**
+  String get tourSkip;
+
+  /// No description provided for @tourNext.
+  ///
+  /// In ar, this message translates to:
+  /// **'التالي'**
+  String get tourNext;
+
+  /// No description provided for @tourStart.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابدأ رحلتك'**
+  String get tourStart;
+
+  /// No description provided for @tourGotIt.
+  ///
+  /// In ar, this message translates to:
+  /// **'فهمت'**
+  String get tourGotIt;
+
+  /// No description provided for @guideButton.
+  ///
+  /// In ar, this message translates to:
+  /// **'شرح هذا القسم'**
+  String get guideButton;
+
+  /// No description provided for @tour1Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'كتاب أنزلناه إليك مبارك ليدبروا آياته'**
+  String get tour1Title;
+
+  /// No description provided for @tour1Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط مطوّلاً على أي آية لتتدبّرها، أو تحفظها، أو تستمع إليها، أو تربطها بغيرها.'**
+  String get tour1Body;
+
+  /// No description provided for @tour2Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'من القراءة إلى التدبّر'**
+  String get tour2Title;
+
+  /// No description provided for @tour2Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'أربعة أسئلة لكل آية تفتح لك معانيها، وروابط تجمع الآيات في موضوع واحد.'**
+  String get tour2Body;
+
+  /// No description provided for @tour3Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'استمع بأصوات كبار القرّاء'**
+  String get tour3Title;
+
+  /// No description provided for @tour3Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'تابع السورة أو قف عند آية واحدة، ونزّل التلاوة لتسمعها دون إنترنت.'**
+  String get tour3Body;
+
+  /// No description provided for @tour4Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'وردك اليومي يمشي معك'**
+  String get tour4Title;
+
+  /// No description provided for @tour4Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'ختمة بخطة، وسلسلة أيام، وتسبيح، وودجت يضع آية على شاشة هاتفك.'**
+  String get tour4Body;
+
+  /// No description provided for @tour5Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'رفيقك في رحلتك مع القرآن'**
+  String get tour5Title;
+
+  /// No description provided for @tour5Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل ما تحتاجه للقراءة والتدبّر والذكر في مكان واحد، ويعمل دون إنترنت.'**
+  String get tour5Body;
+
+  /// No description provided for @tourSampleAnswer.
+  ///
+  /// In ar, this message translates to:
+  /// **'أن الله معي في كل حال'**
+  String get tourSampleAnswer;
+
+  /// No description provided for @tourSampleAnswer2.
+  ///
+  /// In ar, this message translates to:
+  /// **'مع العسر يسر، فلا أيأس'**
+  String get tourSampleAnswer2;
+
+  /// No description provided for @tourSampleAnswer3.
+  ///
+  /// In ar, this message translates to:
+  /// **'ذكر الله يُسكن قلبي'**
+  String get tourSampleAnswer3;
+
+  /// No description provided for @tourCreateLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط جديد'**
+  String get tourCreateLink;
+
+  /// No description provided for @tourSampleLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'أبواب الرزق'**
+  String get tourSampleLink;
+
+  /// No description provided for @tourLinkNote1.
+  ///
+  /// In ar, this message translates to:
+  /// **'الباب الأول: التقوى'**
+  String get tourLinkNote1;
+
+  /// No description provided for @tourLinkNote2.
+  ///
+  /// In ar, this message translates to:
+  /// **'الباب الثاني: الاستغفار'**
+  String get tourLinkNote2;
+
+  /// No description provided for @tourLinkNote3.
+  ///
+  /// In ar, this message translates to:
+  /// **'الباب الثالث: الشكر'**
+  String get tourLinkNote3;
+
+  /// No description provided for @tourSamplePathway.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسار الصبر'**
+  String get tourSamplePathway;
+
+  /// No description provided for @tourSamplePathwayHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبعة أيام، في كل يوم آية وسؤال'**
+  String get tourSamplePathwayHint;
+
+  /// No description provided for @tourDayOne.
+  ///
+  /// In ar, this message translates to:
+  /// **'اليوم الأول'**
+  String get tourDayOne;
+
+  /// No description provided for @tourSampleQuestion.
+  ///
+  /// In ar, this message translates to:
+  /// **'متى استعنت بالصبر آخر مرة؟'**
+  String get tourSampleQuestion;
+
+  /// No description provided for @tourSampleReciter.
+  ///
+  /// In ar, this message translates to:
+  /// **'محمود خليل الحصري'**
+  String get tourSampleReciter;
+
+  /// No description provided for @tourKhatma.
+  ///
+  /// In ar, this message translates to:
+  /// **'الختمة'**
+  String get tourKhatma;
+
+  /// No description provided for @tourStreak.
+  ///
+  /// In ar, this message translates to:
+  /// **'يوم متتالٍ'**
+  String get tourStreak;
+
+  /// No description provided for @guideQiblaTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'اتجاه القبلة'**
+  String get guideQiblaTitle;
+
+  /// No description provided for @guideQiblaBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حدّد موقعك مرة، ثم أمسك الهاتف مستوياً وأدره حتى يشير السهم إلى الكعبة.'**
+  String get guideQiblaBody;
+
+  /// No description provided for @walkAyahTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية للتدبّر'**
+  String get walkAyahTitle;
+
+  /// No description provided for @walkAyahBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'آيات تتجدّد كل يوم، اسحب بينها واضغط «تدبّرها» لتكتب وقفتك.'**
+  String get walkAyahBody;
+
+  /// No description provided for @walkQuranTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مصحفك ورحلتك'**
+  String get walkQuranTitle;
+
+  /// No description provided for @walkQuranBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تابع القراءة من حيث توقفت، ومن هنا تبدأ ختمتك وترى تقدّمك.'**
+  String get walkQuranBody;
+
+  /// No description provided for @walkSearchTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث في كل شيء'**
+  String get walkSearchTitle;
+
+  /// No description provided for @walkSearchBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب كلمة فتجد الآيات وملاحظاتك ووقفاتك في مكان واحد.'**
+  String get walkSearchBody;
+
+  /// No description provided for @walkTabsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنقّل بين الأقسام'**
+  String get walkTabsTitle;
+
+  /// No description provided for @walkTabsBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرئيسية والمصحف والاستغفار والأدعية، بلمسة واحدة من أي مكان.'**
+  String get walkTabsBody;
+
+  /// No description provided for @walkMoreTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المزيد'**
+  String get walkMoreTitle;
+
+  /// No description provided for @walkMoreBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'هنا روابط الآيات ومسارات التدبّر والحفظ والكتب وكل الأقسام.'**
+  String get walkMoreBody;
+
+  /// No description provided for @walkTipTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'نصيحة أخيرة'**
+  String get walkTipTitle;
+
+  /// No description provided for @walkTipBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'إن لم تعرف ما يفعله زر، فاضغط عليه مطوّلاً ليظهر لك وصفه.'**
+  String get walkTipBody;
+
+  /// No description provided for @walkReplay.
+  ///
+  /// In ar, this message translates to:
+  /// **'دليل الشاشة الرئيسية'**
+  String get walkReplay;
+
+  /// No description provided for @walkReplayHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'أعد التعرّف على أهم ما في الرئيسية'**
+  String get walkReplayHint;
+
+  /// No description provided for @fileSavedToDevice.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الحفظ في الجهاز'**
+  String get fileSavedToDevice;
+
+  /// No description provided for @sleepAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار النوم'**
+  String get sleepAdhkar;
+
+  /// No description provided for @wakingAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار الاستيقاظ'**
+  String get wakingAdhkar;
+
+  /// No description provided for @afterPrayerAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار بعد الصلاة'**
+  String get afterPrayerAdhkar;
+
+  /// No description provided for @mosqueAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'أذكار المسجد'**
+  String get mosqueAdhkar;
+
+  /// No description provided for @tourReplay.
+  ///
+  /// In ar, this message translates to:
+  /// **'جولة في التطبيق'**
+  String get tourReplay;
+
+  /// No description provided for @tourReplayHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'شاهد الجولة التعريفية من جديد'**
+  String get tourReplayHint;
+
+  /// No description provided for @guidesReset.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة عرض الشروحات'**
+  String get guidesReset;
+
+  /// No description provided for @guidesResetHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'يشرح كل قسم نفسه عند دخوله التالي'**
+  String get guidesResetHint;
+
+  /// No description provided for @guidesResetDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستظهر الشروحات من جديد'**
+  String get guidesResetDone;
+
+  /// No description provided for @guideReflections1Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابدأ وقفتك من الآية'**
+  String get guideReflections1Title;
+
+  /// No description provided for @guideReflections1Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط مطوّلاً على أي آية في المصحف، ثم اختر «وقفة تدبر» من وسط القائمة.'**
+  String get guideReflections1Body;
+
+  /// No description provided for @guideReflections2Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'أربعة أسئلة تفتح المعنى'**
+  String get guideReflections2Title;
+
+  /// No description provided for @guideReflections2Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'أجب عمّا يحضرك ولو بكلمة: ما الذي توقّفت عنده، وماذا تقول لك الآية، وماذا حرّكت فيك، وما العمل الذي تدعوك إليه.'**
+  String get guideReflections2Body;
+
+  /// No description provided for @guideReflections3Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفاتك محفوظة هنا'**
+  String get guideReflections3Title;
+
+  /// No description provided for @guideReflections3Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجد كل وقفة في «وقفاتي»، وتظهر زهرة التدبّر فوق رقم الآية في المصحف لتعود إليها.'**
+  String get guideReflections3Body;
+
+  /// No description provided for @guideLinks1Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'موضوع يجمع الآيات'**
+  String get guideLinks1Title;
+
+  /// No description provided for @guideLinks1Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنشئ رابطاً باسم موضوع تريد تدبّره، مثل أبواب الرزق أو الصبر أو الرحمة.'**
+  String get guideLinks1Body;
+
+  /// No description provided for @guideLinks2Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'آيات يجمعها معنى واحد'**
+  String get guideLinks2Title;
+
+  /// No description provided for @guideLinks2Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف آيات الموضوع، واكتب عند كل آية ما فهمته منها.'**
+  String get guideLinks2Body;
+
+  /// No description provided for @guideLinks3Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'انظر الصورة كاملة'**
+  String get guideLinks3Title;
+
+  /// No description provided for @guideLinks3Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'اعرض الرابط شبكةً ترى فيها كيف تتكامل الآيات، أو قائمة تقرؤها بالترتيب.'**
+  String get guideLinks3Body;
+
+  /// No description provided for @guidePathways1Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلة تدبّر يوماً بيوم'**
+  String get guidePathways1Title;
+
+  /// No description provided for @guidePathways1Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر مساراً في موضوع، وفي كل يوم خطوة صغيرة واحدة لا تثقل عليك.'**
+  String get guidePathways1Body;
+
+  /// No description provided for @guidePathways2Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'آية اليوم وسؤالها'**
+  String get guidePathways2Title;
+
+  /// No description provided for @guidePathways2Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقرأ الآية بتمهّل، ثم أجب عن سؤال اليوم بما يحضرك.'**
+  String get guidePathways2Body;
+
+  /// No description provided for @guidePathways3Title.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطوة بعد خطوة'**
+  String get guidePathways3Title;
+
+  /// No description provided for @guidePathways3Body.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلما أتممت يوماً أُضيء الذي بعده، ويحفظ التطبيق موضعك لتكمل متى عدت.'**
+  String get guidePathways3Body;
+
+  /// No description provided for @guideMushafTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المصحف'**
+  String get guideMushafTitle;
+
+  /// No description provided for @guideMushafBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اسحب لتقليب الصفحات، واضغط مطوّلاً على الآية لقائمتها. وتظهر علاماتك من حفظ وملاحظة وتدبّر فوق رقم الآية.'**
+  String get guideMushafBody;
+
+  /// No description provided for @guideMemorizationTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الحفظ والمراجعة'**
+  String get guideMemorizationTitle;
+
+  /// No description provided for @guideMemorizationBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف الآيات التي تحفظها، وراجع كل يوم ما حان وقته. ما تتقنه تتباعد مراجعته، وما تنساه يعود إليك قريباً.'**
+  String get guideMemorizationBody;
+
+  /// No description provided for @guideWordMeaningsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني الكلمات'**
+  String get guideWordMeaningsTitle;
+
+  /// No description provided for @guideWordMeaningsBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني الكلمات الغريبة بترتيب المصحف. ابحث بكلمة أو معنى، أو اختر سورة لتراها وحدها.'**
+  String get guideWordMeaningsBody;
+
+  /// No description provided for @guideNotesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملاحظات'**
+  String get guideNotesTitle;
+
+  /// No description provided for @guideNotesBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب خاطرتك على آية أو خاطرة عامة، وصدّرها PDF أو اجمعها في دفتر تدبّر.'**
+  String get guideNotesBody;
+
+  /// No description provided for @guideSearchTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'البحث'**
+  String get guideSearchTitle;
+
+  /// No description provided for @guideSearchBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابحث في القرآن وكل ما حفظته في 11 قسماً معاً.'**
+  String get guideSearchBody;
+
+  /// No description provided for @guideBooksTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكتب والملازم'**
+  String get guideBooksTitle;
+
+  /// No description provided for @guideBooksBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقرأ الملازم والكتب داخل التطبيق، وتابع من حيث توقفت.'**
+  String get guideBooksBody;
+
+  /// No description provided for @guideDuasTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأدعية'**
+  String get guideDuasTitle;
+
+  /// No description provided for @guideDuasBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدعية القرآن والسنة وأهل البيت، وأذكار يومية بعدّاد. انسخ الدعاء أو افتحه في المصحف.'**
+  String get guideDuasBody;
+
+  /// No description provided for @guideTasbeehTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التسبيح والاستغفار'**
+  String get guideTasbeehTitle;
+
+  /// No description provided for @guideTasbeehBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط على الدائرة للعدّ، واختر الهدف ٣٣ أو ١٠٠، ويمكن أن يعدّ عنك تلقائياً وينتقل إلى الذكر التالي.'**
+  String get guideTasbeehBody;
+
+  /// No description provided for @guideJourneyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رحلتي والختمة'**
+  String get guideJourneyTitle;
+
+  /// No description provided for @guideJourneyBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ضع خطة ختمة يتابعها موضع قراءتك تلقائياً، وراقب سلسلة أيامك وخريطة ما قرأت من المصحف.'**
+  String get guideJourneyBody;
+
+  /// No description provided for @guideRemindersTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التذكيرات'**
+  String get guideRemindersTitle;
+
+  /// No description provided for @guideRemindersBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضبط تذكيراً لوردك أو أذكارك في الوقت الذي يناسبك، ويصلك ولو كان التطبيق مغلقاً.'**
+  String get guideRemindersBody;
+
+  /// No description provided for @guideBackupTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'النسخ الاحتياطي'**
+  String get guideBackupTitle;
+
+  /// No description provided for @guideBackupBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'صدّر نسخة مشفّرة بكلمة سرّ من بياناتك واحفظها خارج الهاتف، لتستعيدها إن غيّرت جهازك.'**
+  String get guideBackupBody;
+
+  /// No description provided for @guideStep.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخطوة {step} من {total}'**
+  String guideStep(String step, String total);
+
+  /// No description provided for @widgetPortionLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'ورد اليوم: بقي {left} من {portion} صفحة'**
+  String widgetPortionLeft(String left, String portion);
+
+  /// No description provided for @linksReordered.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت إعادة الترتيب تلقائيًا'**
+  String get linksReordered;
+
+  /// No description provided for @pdfFileMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملف الـ PDF غير موجود على الجهاز.'**
+  String get pdfFileMissing;
+
+  /// No description provided for @attachedFileMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملف المرفق غير موجود على الجهاز.'**
+  String get attachedFileMissing;
+
+  /// No description provided for @pdfReadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر قراءة ملف الـ PDF: {error}'**
+  String pdfReadFailed(String error);
+
+  /// No description provided for @fileReadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر قراءة محتوى الملف: {error}'**
+  String fileReadFailed(String error);
+
+  /// No description provided for @pdfShowFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطأ أثناء عرض الملف: {error}'**
+  String pdfShowFailed(String error);
+
+  /// No description provided for @pdfPageFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تحميل الصفحة {page}: {error}'**
+  String pdfPageFailed(String page, String error);
+
+  /// No description provided for @booksCountLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} كتاب/ملزمة'**
+  String booksCountLabel(String count);
+
+  /// No description provided for @mushafMenu.
+  ///
+  /// In ar, this message translates to:
+  /// **'القائمة'**
+  String get mushafMenu;
+
+  /// No description provided for @pageMeaningsTooltip.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني كلمات الصفحة'**
+  String get pageMeaningsTooltip;
+
+  /// No description provided for @previousPage.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصفحة السابقة'**
+  String get previousPage;
+
+  /// No description provided for @nextPage.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصفحة التالية'**
+  String get nextPage;
+
+  /// No description provided for @meaningsBadge.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعاني ({count})'**
+  String meaningsBadge(String count);
+
+  /// No description provided for @enterPageRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقم الصفحة بين ١ و ٦٠٤'**
+  String get enterPageRange;
+
+  /// No description provided for @doneLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم'**
+  String get doneLabel;
+
+  /// No description provided for @wordMeaningsCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني الكلمات ({count})'**
+  String wordMeaningsCount(String count);
+
+  /// No description provided for @hideBar.
+  ///
+  /// In ar, this message translates to:
+  /// **'إخفاء الشريط'**
+  String get hideBar;
+
+  /// No description provided for @pageWordMeanings.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاني كلمات صفحة {page}'**
+  String pageWordMeanings(String page);
+
+  /// No description provided for @wordsCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} كلمات'**
+  String wordsCount(String count);
+
+  /// No description provided for @closePanel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إغلاق اللوحة'**
+  String get closePanel;
+
+  /// No description provided for @noPageMeanings.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة'**
+  String get noPageMeanings;
+
+  /// No description provided for @stopAlarm.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف المنبه'**
+  String get stopAlarm;
+
+  /// No description provided for @testAlarmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'منبه تجريبي — تَدْبِير'**
+  String get testAlarmTitle;
+
+  /// No description provided for @testNoticeTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعار تجريبي — تَدْبِير'**
+  String get testNoticeTitle;
+
+  /// No description provided for @testAlarmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»'**
+  String get testAlarmBody;
+
+  /// No description provided for @testNoticeBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير'**
+  String get testNoticeBody;
+
+  /// No description provided for @reminderDefaultTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'ورد القرآن الكريم'**
+  String get reminderDefaultTitle;
+
+  /// No description provided for @scrollDown.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرّر للأسفل'**
+  String get scrollDown;
+
+  /// No description provided for @pageAbbrOfTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'ص {page} من {total}'**
+  String pageAbbrOfTotal(String page, String total);
+
+  /// No description provided for @tourTodayPortion.
+  ///
+  /// In ar, this message translates to:
+  /// **'ورد اليوم'**
+  String get tourTodayPortion;
+
+  /// No description provided for @tourPagesToday.
+  ///
+  /// In ar, this message translates to:
+  /// **'٤ من ٥ صفحات'**
+  String get tourPagesToday;
+
+  /// No description provided for @tourSampleNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقوى تفتح أبواباً لا أراها'**
+  String get tourSampleNote;
+
+  /// No description provided for @tourRemembered.
+  ///
+  /// In ar, this message translates to:
+  /// **'تذكّرت'**
+  String get tourRemembered;
+
+  /// No description provided for @tourForgot.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسيت'**
+  String get tourForgot;
+
+  /// No description provided for @tourNextReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'المراجعة بعد ٣ أيام'**
+  String get tourNextReview;
+
+  /// No description provided for @tourMeaningLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'المعنى'**
+  String get tourMeaningLabel;
+
+  /// No description provided for @tourBookSample.
+  ///
+  /// In ar, this message translates to:
+  /// **'هدي القرآن'**
+  String get tourBookSample;
+
+  /// No description provided for @dhikrSubhanAllah.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبحان الله'**
+  String get dhikrSubhanAllah;
+
+  /// No description provided for @tourDuaQuran.
+  ///
+  /// In ar, this message translates to:
+  /// **'القرآن'**
+  String get tourDuaQuran;
+
+  /// No description provided for @tourDuaSunnah.
+  ///
+  /// In ar, this message translates to:
+  /// **'السنة'**
+  String get tourDuaSunnah;
+
+  /// No description provided for @tourDuaAdhkar.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأذكار'**
+  String get tourDuaAdhkar;
 }
 
 class _AppLocalizationsDelegate

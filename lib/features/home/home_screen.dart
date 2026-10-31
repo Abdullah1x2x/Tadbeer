@@ -17,6 +17,7 @@ import '../journey/journey_screen.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import '../notes/notes_screen.dart';
+import '../onboarding/tour/home_walkthrough.dart';
 import '../tadbeer/commitment_card.dart';
 import '../tadbeer/my_reflections_screen.dart';
 import '../../data/quran/quran_repository.dart';
@@ -85,12 +86,15 @@ class HomeScreen extends StatelessWidget {
                                 isVeryCompact: isVeryCompact,
                               ),
                               SizedBox(height: gap * 0.6),
-                              _buildGlobalSearchBar(
-                                context,
-                                l10n,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
+                              KeyedSubtree(
+                                key: HomeWalkthrough.searchBar,
+                                child: _buildGlobalSearchBar(
+                                  context,
+                                  l10n,
+                                  isDark,
+                                  isCompact: isCompact,
+                                  isVeryCompact: isVeryCompact,
+                                ),
                               ),
                               SizedBox(height: gap),
 
@@ -102,7 +106,10 @@ class HomeScreen extends StatelessWidget {
                                         context,
                                         width,
                                       ),
-                                  child: const AyahOfTheDayCard(),
+                                  child: KeyedSubtree(
+                                    key: HomeWalkthrough.ayahCard,
+                                    child: const AyahOfTheDayCard(),
+                                  ),
                                 ),
                               ),
                               SizedBox(height: gap),
@@ -112,6 +119,7 @@ class HomeScreen extends StatelessWidget {
 
                               // المصحف ورحلة القراءة.
                               _QuranHeroCard(
+                                key: HomeWalkthrough.quranCard,
                                 onTap: () {
                                   if (MainShell.selectTab(
                                     context,
@@ -458,6 +466,7 @@ class _QuranHeroCard extends StatelessWidget {
   final bool isVeryCompact;
 
   const _QuranHeroCard({
+    super.key,
     required this.onTap,
     this.isCompact = false,
     this.isVeryCompact = false,

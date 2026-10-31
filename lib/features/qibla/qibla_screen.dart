@@ -12,6 +12,7 @@ import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
 import 'qibla.dart';
 import 'qibla_location.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// اتجاه القبلة: بوصلة تدور مع الجهاز وعليها علامة الكعبة.
 ///
@@ -136,6 +137,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
         appBar: AppBar(
           title: Text(l10n.qibla),
           actions: [
+            const GuideButton(topic: GuideTopic.qibla),
             IconButton(
               tooltip: l10n.qiblaUpdateLocation,
               onPressed: _locating ? null : _locate,

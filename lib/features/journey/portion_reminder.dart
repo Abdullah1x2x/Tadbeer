@@ -48,7 +48,7 @@ List<PortionNotice> portionNotices(
 }) {
   final plan = journey.plan;
   if (plan == null || plan.isComplete) return const [];
-  var remaining = mushafPageCount - plan.advanced;
+  var remaining = plan.totalPages - plan.advanced;
   final notices = <PortionNotice>[];
   for (var d = 0; d < days && remaining > 0; d++) {
     final target = d == 0

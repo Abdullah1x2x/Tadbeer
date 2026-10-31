@@ -22,6 +22,7 @@ import 'quran_page_view.dart';
 import '../widgets/quran_side_menu.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../onboarding/tour/section_guide.dart';
 
 part 'quran_screen_dialogs.dart';
 
@@ -66,13 +67,34 @@ class _QuranScreenState extends State<QuranScreen> {
   /// تقليبها.
   static const _autoCountDwell = Duration(seconds: 40);
 
+  /// آخر صفحة قصيرة ولا صفحة بعدها يُتقدّم إليها، فتُحسب بانتظار أقصر.
+  static const _lastPageDwell = Duration(seconds: 15);
+
+  /// ما يُنتظر بعد آخر تقليب قبل الحفظ.
+  static const _settleDelay = Duration(milliseconds: 500);
+
   /// الصفحة المعروضة على شريط التمرير أثناء سحبه.
-  int? _sliderPage;
+  final ValueNotifier<int?> _sliderPage = ValueNotifier(null);
   Timer? _autoCountTimer;
+  Timer? _saveTimer;
+  final List<int> _pagesToCount = [];
+  int? _pageToPersist;
+
+  /// حروف المصحف ثقيلة الرسم، فتُرسم مرة في صورة تتحرّك أثناء السحب.
+  final _pageSnapshots = SnapshotController();
+  ScrollPosition? _pagerPosition;
+
+  /// شجرة الصفحات محفوظة، فتغيّر رقم الصفحة لا يعيد بناءها أثناء السحب.
+  Widget? _pager;
+  int? _pagerSelectedAyah;
+  bool? _pagerIsDark;
 
   /// يُضبط قبل انتقال لم يقم به القارئ (كمزامنة التبويب)، فلا يُحسب ولا يُحفظ
   /// ثانية.
   bool _ignoreNextPageChange = false;
+
+  /// آخر موضع قراءة تبعه المصحف، لتمييز تغيّر الموضع من غيره.
+  int? _lastSavedPage;
 
   /// آخر آية رُئيت عليها التلاوة، لتتبعها صفحة بصفحة.
   int? _audioAyahId;
@@ -92,25 +114,60 @@ class _QuranScreenState extends State<QuranScreen> {
 
   /// لا يتحرك موضع القراءة (ومعه الختمة) إلا بقراءة فعلية: التقدم بعد قراءة
   /// الصفحة، أو البقاء عليها. النظرة ونتيجة البحث وقفزة الشريط لا تحرّك شيئاً.
-  Future<void> _maybeCountPage(int fromIndex, int toIndex) async {
+  void _maybeCountPage(int fromIndex, int toIndex) {
     if (toIndex != fromIndex + 1) return;
     if (DateTime.now().difference(_pageShownAt) < _readDwell) return;
+    _pagesToCount.add(fromIndex + 1);
+    _pageToPersist = toIndex + 1;
+  }
+
+  /// الحفظ يكتب ملف القارئ كله، فينتظر حتى تستقر الصفحة ولا يقطع حركة التقليب.
+  void _saveAfterSettling() {
+    _saveTimer?.cancel();
+    if (_pagesToCount.isEmpty) return;
+    _saveTimer = Timer(_settleDelay, _saveCountedPages);
+  }
+
+  Future<void> _saveCountedPages() async {
+    final pages = List.of(_pagesToCount);
+    final next = _pageToPersist;
+    _pagesToCount.clear();
+    _pageToPersist = null;
     // يُحسب أولاً، فتكتمل الختمة بقراءة صفحتها الأخيرة.
-    await UserDataStore.instance.recordPageRead(fromIndex + 1);
-    _persistCurrentPagePosition(toIndex + 1);
+    for (final page in pages) {
+      await _recordPage(page);
+    }
+    if (next != null) _persistCurrentPagePosition(next);
+  }
+
+  /// يحسب الصفحة مقروءة، ويهنّئ القارئ إن أتمّت ختمته.
+  Future<void> _recordPage(int page) async {
+    final store = UserDataStore.instance;
+    final before = store.journey.completedKhatmas;
+    await store.recordPageRead(page);
+    final completed = store.journey.completedKhatmas;
+    if (completed == before || !mounted) return;
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(
+        content: Text(
+          context.l10n.completedKhatmas(completed),
+          textAlign: TextAlign.center,
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   /// يعيد بدء الانتظار الذي تُحسب بعده الصفحة المعروضة مقروءة.
   void _startAutoCount() {
     _autoCountTimer?.cancel();
     final page = _currentPageIndex + 1;
-    _autoCountTimer = Timer(_autoCountDwell, () {
+    final dwell = page == 604 ? _lastPageDwell : _autoCountDwell;
+    _autoCountTimer = Timer(dwell, () {
       // فقط حين يكون المصحف التبويب أو الصفحة الظاهرة.
       if (!mounted || !TickerMode.valuesOf(context).enabled) return;
       if (_currentPageIndex + 1 == page) {
-        UserDataStore.instance
-            .recordPageRead(page)
-            .then((_) => _persistCurrentPagePosition(page));
+        _recordPage(page).then((_) => _persistCurrentPagePosition(page));
       }
     });
   }
@@ -143,11 +200,22 @@ class _QuranScreenState extends State<QuranScreen> {
       // تغيّر الموضع من قارئ فُتح في مكان آخر (من فاصل مثلاً).
       _showTopBar = true;
       widget.controlsVisible!.value = true;
+      _lastSavedPage = UserDataStore.instance.readingPosition.page;
       UserDataStore.instance.addListener(_syncToSavedPosition);
     }
 
     _startAutoCount();
     QuranAudio.instance.addListener(_onAudio);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_pageController.hasClients) return;
+      _pagerPosition = _pageController.position;
+      _pagerPosition!.isScrollingNotifier.addListener(_onPagerScrolling);
+    });
+  }
+
+  void _onPagerScrolling() {
+    _pageSnapshots.allowSnapshotting =
+        _pagerPosition!.isScrollingNotifier.value;
   }
 
   /// يتبع التلاوة: يقلب إلى صفحة الآية المتلوّة (دون حسابها مقروءة)، ويقول إن
@@ -210,6 +278,11 @@ class _QuranScreenState extends State<QuranScreen> {
     QuranAudio.instance.removeListener(_onAudio);
     _suppressTimer?.cancel();
     _autoCountTimer?.cancel();
+    _saveTimer?.cancel();
+    if (_pagesToCount.isNotEmpty) _saveCountedPages();
+    _pagerPosition?.isScrollingNotifier.removeListener(_onPagerScrolling);
+    _pageSnapshots.dispose();
+    _sliderPage.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -217,6 +290,9 @@ class _QuranScreenState extends State<QuranScreen> {
   /// ينقل مصحف التبويب إلى الموضع المحفوظ حين يحرّكه قارئ آخر.
   void _syncToSavedPosition() {
     final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
+    // المخزن يُعلم بكل تغيير؛ وحفظ القارئ أو الإعدادات لا يحرّك الصفحة.
+    if (page == _lastSavedPage) return;
+    _lastSavedPage = page;
     if (page - 1 != _currentPageIndex && _pageController.hasClients) {
       _ignoreNextPageChange = true;
       _pageController.jumpToPage(page - 1);
@@ -236,10 +312,12 @@ class _QuranScreenState extends State<QuranScreen> {
     _startAutoCount();
     if (programmatic) {
       _pageShownAt = DateTime.now();
+      _saveAfterSettling();
       return;
     }
     _maybeCountPage(from, index);
     _pageShownAt = DateTime.now();
+    _saveAfterSettling();
   }
 
   /// يحفظ موضع القراءة: الصفحة والسورة والآية.
@@ -248,6 +326,8 @@ class _QuranScreenState extends State<QuranScreen> {
     final page = repo.getPage(pageNumber);
     if (page.ayahs.isNotEmpty) {
       final firstAyah = page.ayahs.first;
+      // حفظ هذا القارئ لا يحرّكه: ربما تقدّم صفحة أخرى منذ بدأ الانتظار.
+      _lastSavedPage = pageNumber;
       UserDataStore.instance.saveReadingPosition(
         page: pageNumber,
         surahNumber: firstAyah.surahNumber,
@@ -304,7 +384,7 @@ class _QuranScreenState extends State<QuranScreen> {
       _activeSelectedAyah = ayah;
     });
 
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
 
     await AyahRosette.show(context, ayah, at: at);
 
@@ -384,7 +464,7 @@ class _QuranScreenState extends State<QuranScreen> {
         children: [
           FuturisticIconButton(
             icon: AppIcons.list,
-            tooltip: 'القائمة',
+            tooltip: context.l10n.mushafMenu,
             size: 38,
             iconSize: 20,
             onTap: () => _scaffoldKey.currentState?.openDrawer(),
@@ -443,7 +523,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 icon: _showMeaningsPanel
                     ? AppIcons.bookOpenTextFill
                     : AppIcons.bookOpenText,
-                tooltip: 'معاني كلمات الصفحة',
+                tooltip: context.l10n.pageMeaningsTooltip,
                 size: 38,
                 iconSize: 20,
                 iconColor: _showMeaningsPanel
@@ -477,17 +557,15 @@ class _QuranScreenState extends State<QuranScreen> {
     final repo = QuranRepository.instance;
     // أثناء السحب يُظهر الشريط الصفحة المقصودة، ويقفز المصحف إليها عند رفع
     // الإصبع.
-    final sliderPage = _sliderPage ?? currentPageNumber;
-    final pageDigits = ArabicSearchNormalizer.toArabicDigits(sliderPage);
+    final l10n = context.l10n;
     final pageData = repo.getPage(currentPageNumber);
     final firstAyah = pageData.ayahs.isNotEmpty ? pageData.ayahs.first : null;
     final surahName = firstAyah != null
         ? repo.getSurah(firstAyah.surahNumber).name
         : '';
     final juzNumber = firstAyah?.juz ?? 1;
-    final juzDigits = ArabicSearchNormalizer.toArabicDigits(juzNumber);
     final meaningsCount = repo.getWordMeaningsForPage(currentPageNumber).length;
-    final meaningsDigits = ArabicSearchNormalizer.toArabicDigits(meaningsCount);
+    final meaningsDigits = l10n.digits(meaningsCount);
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return Center(
@@ -516,8 +594,8 @@ class _QuranScreenState extends State<QuranScreen> {
                   Flexible(
                     child: Text(
                       surahName.isNotEmpty
-                          ? '$surahName • الجزء $juzDigits'
-                          : 'الجزء $juzDigits',
+                          ? '$surahName • ${l10n.juzNumber(juzNumber)}'
+                          : l10n.juzNumber(juzNumber),
                       style: TextStyle(
                         fontFamily: 'IBMPlexSansArabic',
                         fontSize: 14.5,
@@ -538,7 +616,7 @@ class _QuranScreenState extends State<QuranScreen> {
                     },
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
                     child: FuturisticBadge(
-                      label: 'المعاني ($meaningsDigits)',
+                      label: context.l10n.meaningsBadge(meaningsDigits),
                       icon: AppIcons.books,
                       color: _showMeaningsPanel
                           ? (isDark ? AppColors.cyberEmerald : primary)
@@ -553,13 +631,19 @@ class _QuranScreenState extends State<QuranScreen> {
                   InkWell(
                     onTap: _showJumpToPageDialog,
                     borderRadius: BorderRadius.circular(AppTokens.radiusPill),
-                    child: FuturisticBadge(
-                      label: 'ص $pageDigits من ٦٠٤',
-                      color: isDark
-                          ? AppColors.electricGold
-                          : AppColors.lightPrimary,
-                      showDot: true,
-                      isCompact: true,
+                    child: ValueListenableBuilder<int?>(
+                      valueListenable: _sliderPage,
+                      builder: (context, dragged, _) => FuturisticBadge(
+                        label: l10n.pageAbbrOfTotal(
+                          dragged ?? currentPageNumber,
+                          604,
+                        ),
+                        color: isDark
+                            ? AppColors.electricGold
+                            : AppColors.lightPrimary,
+                        showDot: true,
+                        isCompact: true,
+                      ),
                     ),
                   ),
                 ],
@@ -568,10 +652,10 @@ class _QuranScreenState extends State<QuranScreen> {
               // الصفحة السابقة، والشريط، والتالية.
               Row(
                 children: [
-                  // السابقة: في RTL يشير لليمين نحو الصفحات الأولى.
+                  // السابقة: الأيقونة تنعكس في RTL فتشير لليمين.
                   FuturisticIconButton(
-                    icon: AppIcons.caretRight,
-                    tooltip: 'الصفحة السابقة',
+                    icon: AppIcons.caretLeft,
+                    tooltip: context.l10n.previousPage,
                     size: 36,
                     iconSize: 22,
                     isEnabled: currentPageNumber > 1,
@@ -600,29 +684,35 @@ class _QuranScreenState extends State<QuranScreen> {
                             ? AppColors.cyberEmerald
                             : AppColors.lightPrimary,
                       ),
-                      child: Slider(
-                        value: sliderPage.toDouble().clamp(1.0, 604.0),
-                        min: 1.0,
-                        max: 604.0,
-                        divisions: 603,
-                        label: 'ص $pageDigits',
-                        onChanged: (val) =>
-                            setState(() => _sliderPage = val.round()),
-                        onChangeEnd: (val) {
-                          setState(() => _sliderPage = null);
-                          final targetPage = val.round();
-                          if (targetPage != currentPageNumber) {
-                            _jumpToMushafPage(targetPage);
-                          }
+                      // الشريط وحده يُعاد بناؤه أثناء السحب.
+                      child: ValueListenableBuilder<int?>(
+                        valueListenable: _sliderPage,
+                        builder: (context, dragged, _) {
+                          final page = dragged ?? currentPageNumber;
+                          return Slider(
+                            value: page.toDouble().clamp(1.0, 604.0),
+                            min: 1.0,
+                            max: 604.0,
+                            divisions: 603,
+                            label: l10n.pageAbbr(page),
+                            onChanged: (val) => _sliderPage.value = val.round(),
+                            onChangeEnd: (val) {
+                              _sliderPage.value = null;
+                              final targetPage = val.round();
+                              if (targetPage != currentPageNumber) {
+                                _jumpToMushafPage(targetPage);
+                              }
+                            },
+                          );
                         },
                       ),
                     ),
                   ),
                   const SizedBox(width: 4),
-                  // التالية: في RTL يشير لليسار نحو الصفحات اللاحقة.
+                  // التالية: الأيقونة تنعكس في RTL فتشير لليسار.
                   FuturisticIconButton(
-                    icon: AppIcons.caretLeft,
-                    tooltip: 'الصفحة التالية',
+                    icon: AppIcons.caretRight,
+                    tooltip: context.l10n.nextPage,
                     size: 36,
                     iconSize: 22,
                     isEnabled: currentPageNumber < 604,
@@ -637,10 +727,109 @@ class _QuranScreenState extends State<QuranScreen> {
     );
   }
 
+  /// صفحات المصحف، ولا تُبنى من جديد إلا إن تغيّرت الآية المحددة أو السطوع.
+  Widget _pagerFor(bool isDark) {
+    final selected = (_activeSelectedAyah ?? QuranAudio.instance.current)?.id;
+    if (_pager == null ||
+        selected != _pagerSelectedAyah ||
+        isDark != _pagerIsDark) {
+      _pagerSelectedAyah = selected;
+      _pagerIsDark = isDark;
+      _pager = _buildPager(isDark);
+    }
+    return _pager!;
+  }
+
+  /// صفحة المصحف [pageNumber]، تتحرّك صورةً أثناء السحب.
+  Widget _mushafPage(int pageNumber) => SnapshotWidget(
+    controller: _pageSnapshots,
+    mode: SnapshotMode.permissive,
+    child: QuranPageView(
+      page: QuranRepository.instance.getPage(pageNumber),
+      pageNumber: pageNumber,
+      selectedAyah: _activeSelectedAyah ?? QuranAudio.instance.current,
+      onAyahTap: _handleAyahTap,
+      onAyahLongPress: _handleAyahLongPress,
+      onAyahHighlight: _handleAyahHighlight,
+      onAyahHighlightClear: _handleAyahHighlightClear,
+    ),
+  );
+
+  Widget _buildPager(bool isDark) {
+    return SafeArea(
+      // تبويب المصحف يمتد تحت الشريط السفلي، فالحافة حافة الشاشة لا الشريط.
+      bottom: false,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _toggleTopBar,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWideSpread = constraints.maxWidth >= 900;
+            return PageView.builder(
+              controller: _pageController,
+              physics: const _MushafPagePhysics(),
+              // الصفحتان المجاورتان جاهزتان قبل أن يبدأ السحب.
+              allowImplicitScrolling: true,
+              itemCount: 604,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (context, index) {
+                final pageNumber = index + 1;
+                if (!isWideSpread) {
+                  return RepaintBoundary(
+                    child: _SettledPage(
+                      controller: _pageController,
+                      index: index,
+                      child: _mushafPage(pageNumber),
+                    ),
+                  );
+                }
+
+                // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
+                // فأكثر).
+                if (pageNumber == 1) {
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 480),
+                      child: _mushafPage(1),
+                    ),
+                  );
+                }
+
+                final int rightPageNum;
+                final int leftPageNum;
+                if (pageNumber.isEven) {
+                  leftPageNum = pageNumber;
+                  rightPageNum = (pageNumber + 1).clamp(1, 604);
+                } else {
+                  rightPageNum = pageNumber;
+                  leftPageNum = (pageNumber - 1).clamp(1, 604);
+                }
+
+                return Row(
+                  children: [
+                    Expanded(child: _mushafPage(rightPageNum)),
+                    Container(
+                      width: 1.0,
+                      color:
+                          (isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder)
+                              .withValues(alpha: 0.5),
+                    ),
+                    Expanded(child: _mushafPage(leftPageNum)),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final repo = QuranRepository.instance;
     final currentPageNumber = _currentPageIndex + 1;
     final shouldAnimate = AppMotion.shouldAnimate(context);
 
@@ -654,120 +843,7 @@ class _QuranScreenState extends State<QuranScreen> {
         ),
         body: Stack(
           children: [
-            Positioned.fill(
-              child: SafeArea(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: _toggleTopBar,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final isWideSpread = constraints.maxWidth >= 900;
-                      return PageView.builder(
-                        controller: _pageController,
-                        itemCount: 604,
-                        onPageChanged: _onPageChanged,
-                        itemBuilder: (context, index) {
-                          final pageNumber = index + 1;
-                          if (!isWideSpread) {
-                            final page = repo.getPage(pageNumber);
-                            // طبقة لكل صفحة، فيحرّك السحب الصفحات دون إعادة
-                            // رسمها.
-                            return RepaintBoundary(
-                              child: QuranPageView(
-                                page: page,
-                                pageNumber: pageNumber,
-                                selectedAyah:
-                                    _activeSelectedAyah ??
-                                    QuranAudio.instance.current,
-                                onAyahTap: _handleAyahTap,
-                                onAyahLongPress: _handleAyahLongPress,
-                                onAyahHighlight: _handleAyahHighlight,
-                                onAyahHighlightClear: _handleAyahHighlightClear,
-                              ),
-                            );
-                          }
-
-                          // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
-                          // فأكثر).
-                          if (pageNumber == 1) {
-                            return Center(
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 480,
-                                ),
-                                child: QuranPageView(
-                                  page: repo.getPage(1),
-                                  pageNumber: 1,
-                                  selectedAyah:
-                                      _activeSelectedAyah ??
-                                      QuranAudio.instance.current,
-                                  onAyahTap: _handleAyahTap,
-                                  onAyahLongPress: _handleAyahLongPress,
-                                  onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear:
-                                      _handleAyahHighlightClear,
-                                ),
-                              ),
-                            );
-                          }
-
-                          final int rightPageNum;
-                          final int leftPageNum;
-                          if (pageNumber.isEven) {
-                            leftPageNum = pageNumber;
-                            rightPageNum = (pageNumber + 1).clamp(1, 604);
-                          } else {
-                            rightPageNum = pageNumber;
-                            leftPageNum = (pageNumber - 1).clamp(1, 604);
-                          }
-
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: QuranPageView(
-                                  page: repo.getPage(rightPageNum),
-                                  pageNumber: rightPageNum,
-                                  selectedAyah:
-                                      _activeSelectedAyah ??
-                                      QuranAudio.instance.current,
-                                  onAyahTap: _handleAyahTap,
-                                  onAyahLongPress: _handleAyahLongPress,
-                                  onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear:
-                                      _handleAyahHighlightClear,
-                                ),
-                              ),
-                              Container(
-                                width: 1.0,
-                                color:
-                                    (isDark
-                                            ? AppColors.darkBorder
-                                            : AppColors.lightBorder)
-                                        .withValues(alpha: 0.5),
-                              ),
-                              Expanded(
-                                child: QuranPageView(
-                                  page: repo.getPage(leftPageNum),
-                                  pageNumber: leftPageNum,
-                                  selectedAyah:
-                                      _activeSelectedAyah ??
-                                      QuranAudio.instance.current,
-                                  onAyahTap: _handleAyahTap,
-                                  onAyahLongPress: _handleAyahLongPress,
-                                  onAyahHighlight: _handleAyahHighlight,
-                                  onAyahHighlightClear:
-                                      _handleAyahHighlightClear,
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            Positioned.fill(child: _pagerFor(isDark)),
 
             Positioned(
               top: 0,
@@ -826,15 +902,23 @@ class _QuranScreenState extends State<QuranScreen> {
               ),
             ),
 
+            // شرح المصحف عند أول فتح.
+            const Positioned(
+              left: 0,
+              top: 0,
+              child: GuideAutoShow(topic: GuideTopic.mushaf),
+            ),
+
             // التلاوة، فوق الشريط السفلي مباشرة حين يظهر.
             AnimatedPositioned(
               duration: shouldAnimate ? AppMotion.normal : Duration.zero,
               curve: AppMotion.emphasized,
               left: 12,
               right: 12,
-              bottom:
-                  MediaQuery.paddingOf(context).bottom +
-                  (_showTopBar ? _bottomBarHeight + 6 : 12),
+              // مرفوع قليلاً عن الحافة؛ لا يلاصق أسفل الشاشة ولا الشريط.
+              bottom: _showTopBar
+                  ? MediaQuery.paddingOf(context).bottom + _bottomBarHeight + 16
+                  : MediaQuery.viewPaddingOf(context).bottom + 32,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 560),
@@ -905,4 +989,83 @@ class _QuranScreenState extends State<QuranScreen> {
       ),
     );
   }
+}
+
+/// تقليب صفحة ينتهي بسرعة ودون ارتداد، فيتبع الإصبع مباشرة.
+class _MushafPagePhysics extends PageScrollPhysics {
+  const _MushafPagePhysics({super.parent});
+
+  @override
+  _MushafPagePhysics applyTo(ScrollPhysics? ancestor) =>
+      _MushafPagePhysics(parent: buildParent(ancestor));
+
+  @override
+  SpringDescription get spring => SpringDescription.withDampingRatio(
+    mass: 0.4,
+    stiffness: 180,
+    ratio: 1.05,
+  );
+}
+
+/// صفحة تُخلق أثناء السحب تُرجأ حتى يهدأ، فلا يقطع بناؤها حركة الصفحة الظاهرة.
+///
+/// تقع خارج الشاشة، فلا يرى القارئ انتظارها؛ وإن واصل التقليب بُنيت قبل أن
+/// تظهر.
+class _SettledPage extends StatefulWidget {
+  final PageController controller;
+  final int index;
+  final Widget child;
+
+  const _SettledPage({
+    required this.controller,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  State<_SettledPage> createState() => _SettledPageState();
+}
+
+class _SettledPageState extends State<_SettledPage> {
+  bool _ready = true;
+
+  ScrollPosition get _position => widget.controller.position;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.controller.hasClients) return;
+    if (!_position.isScrollingNotifier.value) return;
+    _ready = false;
+    widget.controller.addListener(_check);
+    _position.isScrollingNotifier.addListener(_check);
+  }
+
+  void _stopListening() {
+    widget.controller.removeListener(_check);
+    if (widget.controller.hasClients) {
+      _position.isScrollingNotifier.removeListener(_check);
+    }
+  }
+
+  void _check() {
+    final page = widget.controller.page;
+    final near = page != null && (page - widget.index).abs() < 1;
+    if (_position.isScrollingNotifier.value && !near) return;
+    _stopListening();
+    // قد يأتي الإعلام أثناء تخطيط الإطار (عند تدوير الشاشة مثلاً).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _ready = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    if (!_ready) _stopListening();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      _ready ? widget.child : const SizedBox.expand();
 }

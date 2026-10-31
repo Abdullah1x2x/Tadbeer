@@ -371,7 +371,11 @@ class _DuaCard extends StatelessWidget {
             const SizedBox(height: 8),
 
             // شارة التصنيف وعدد المقاطع.
-            Row(
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 4,
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -394,7 +398,6 @@ class _DuaCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Spacer(),
                 Text(
                   context.l10n.fullAuthenticText,
                   style: TextStyle(

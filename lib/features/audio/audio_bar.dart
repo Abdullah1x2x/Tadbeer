@@ -35,6 +35,8 @@ class AudioBar extends StatelessWidget {
           bool main = false,
         }) => IconButton(
           tooltip: tip,
+          // أزرار متقاربة تترك للآية مكاناً على الهواتف الضيقة.
+          visualDensity: main ? null : VisualDensity.compact,
           onPressed: () {
             HapticFeedback.selectionClick();
             onTap();
@@ -83,7 +85,24 @@ class AudioBar extends StatelessWidget {
                 ),
                 playButton,
                 control(AppIcons.skipForwardFill, l10n.nextAyah, audio.next),
-                const SizedBox(width: 6),
+                // متابعة التلاوة أو الوقوف عند آية واحدة.
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  tooltip: audio.continuous
+                      ? l10n.continuousRecitation
+                      : l10n.singleAyahRecitation,
+                  isSelected: !audio.continuous,
+                  onPressed: () {
+                    HapticFeedback.selectionClick();
+                    audio.setContinuous(!audio.continuous);
+                  },
+                  icon: Icon(
+                    audio.continuous ? AppIcons.repeat : AppIcons.repeatOnce,
+                    size: 20,
+                    color: audio.continuous ? null : gold,
+                  ),
+                ),
+                const SizedBox(width: 4),
                 Expanded(
                   child: Semantics(
                     liveRegion: true,
@@ -98,12 +117,16 @@ class AudioBar extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          audio.resting ? l10n.resting : audio.reciter.name,
+                          audio.resting
+                              ? l10n.resting
+                              : audio.finished
+                              ? l10n.ayahFinished
+                              : audio.reciter.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 12,
-                            color: audio.resting
+                            color: audio.resting || audio.finished
                                 ? gold
                                 : AppColors.textSecondary(context),
                           ),

@@ -14,6 +14,7 @@ import 'quran_duas_screen.dart';
 import '../data/sunnah_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/ornaments.dart';
+import '../../onboarding/tour/section_guide.dart';
 
 /// تبويب الأدعية: أدعية القرآن، وأذكار الصباح والمساء، وأدعية أهل البيت، وأدعية
 /// السنة، وجوامع الدعاء.
@@ -25,9 +26,7 @@ class DuasScreen extends StatelessWidget {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final totalQuranDuas = QuranDuasRepository.instance.getDuas().length;
-    final totalAdhkar =
-        AdhkarRepository.morningAdhkar.length +
-        AdhkarRepository.eveningAdhkar.length;
+    final totalAdhkar = AdhkarRepository.instance.total;
     final totalAhlulbaytDuas = AhlulbaytDuasRepository.defaultDuas.length;
     final totalSunnahDuas = SunnahDuasRepository.sunnahDuas.length;
     final totalJawamiDuas = SunnahDuasRepository.jawamiDuas.length;
@@ -55,6 +54,7 @@ class DuasScreen extends StatelessWidget {
             ),
           ),
           centerTitle: true,
+          actions: [GuideButton(topic: GuideTopic.duas)],
         ),
         body: PatternBackground(
           child: SingleChildScrollView(

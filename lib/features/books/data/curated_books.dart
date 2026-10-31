@@ -161,7 +161,8 @@ final List<BookSectionConfig> curatedBookSections = [
     description: 'سلسلة ملازم ودروس ومحاضرات السيد حسين بدر الدين الحوثي من هدي القرآن الكريم (٩١ ملزمة موثقة كاملة)',
     icon: AppIcons.bookOpenTextFill,
     color: const Color(0xFFC59B27),
-    countLabel: '٩١ ملزمة موثقة • PDF وفصول تفاعلية',
+    // يسبقه عدد الملازم الفعلي عند العرض.
+    countLabel: 'ملزمة موثقة • PDF وفصول تفاعلية',
     seriesFilterList: const [
       'الكل',
       'سلسلة معرفة الله',

@@ -63,9 +63,7 @@ class AppStrings {
   String get duas => _l.duas;
   String get quranDuas => _l.quranDuas;
   String get tasbeehAndIstighfar => _l.tasbeehAndIstighfar;
-  String get tasbeehSubtitle => _l.tasbeehSubtitle;
   String get booksAndBooklets => _l.booksAndBooklets;
-  String get booksSubtitle => _l.booksSubtitle;
   String get about => _l.about;
   String get more => _l.more;
 
@@ -145,7 +143,6 @@ class AppStrings {
       _l.sessionSummary(digits(a), digits(b));
 
   // آية اليوم
-  String get ayahOfTheDay => _l.ayahOfTheDay;
   String get reflectOnIt => _l.reflectOnIt;
 
   // الختمة المتتابعة
@@ -177,7 +174,6 @@ class AppStrings {
   String get themeAuto => _l.themeAuto;
   String get mushafStyleMadinahHint => _l.mushafStyleMadinahHint;
   String get mushafStyleTextHint => _l.mushafStyleTextHint;
-  String get pageSize => _l.pageSize;
   String get khatmaStartNow => _l.khatmaStartNow;
   String get askNameTitle => _l.askNameTitle;
   String get askNameHint => _l.askNameHint;
@@ -188,7 +184,6 @@ class AppStrings {
   String get reminderQuranBody => _l.reminderQuranBody;
   String get reminderAdhkarBody => _l.reminderAdhkarBody;
   String get myReflections => _l.myReflections;
-  String get myReflectionsSubtitle => _l.myReflectionsSubtitle;
   String get reflectionsAll => _l.reflectionsAll;
   String get reflectionsCommitments => _l.reflectionsCommitments;
   String get noReflectionsHint => _l.noReflectionsHint;
@@ -312,7 +307,6 @@ class AppStrings {
   String get onTrack => _l.onTrack;
   String behindBy(int n) => _l.behindBy(digits(n));
   String khatmaInDays(int n) => _l.khatmaInDays(n, digits(n));
-  String pagesOfMushaf(int n) => _l.pagesOfMushaf(digits(n));
   String dayOfPlan(int d, int total) => _l.dayOfPlan(digits(d), digits(total));
   String get todayPortion => _l.todayPortion;
   String pagesOfTarget(int a, int b) => _l.pagesOfTarget(digits(a), digits(b));
@@ -337,7 +331,6 @@ class AppStrings {
 
   // نافذة إجراءات الآية
   String get addNote => _l.addNote;
-  String get saveBookmark => _l.saveBookmark;
   String get removeBookmark => _l.removeBookmark;
   String get continueReflection => _l.continueReflection;
   String get markAyah => _l.markAyah;
@@ -362,7 +355,6 @@ class AppStrings {
   String get downloadJuzAmma => _l.downloadJuzAmma;
   String get downloadsHint => _l.downloadsHint;
   String get listen => _l.listen;
-  String get listenFromHere => _l.listenFromHere;
   String get audioSettings => _l.audioSettings;
   String get reciterLabel => _l.reciterLabel;
   String get lowerQuality => _l.lowerQuality;
@@ -523,8 +515,6 @@ class AppStrings {
 
   // بطاقات الشاشة الرئيسية
   String get resumeReading => _l.resumeReading;
-  String get additionalTools => _l.additionalTools;
-  String get quranAndSunnahDuas => _l.quranAndSunnahDuas;
   String get quranDuasTitle => _l.quranDuasTitle;
   String get quranDuasSubtitle => _l.quranDuasSubtitle;
   String duasCountBadge(dynamic count) => _l.duasCountBadge(digits(count));
@@ -537,11 +527,6 @@ class AppStrings {
   String get sunnahDuasSubtitle => _l.sunnahDuasSubtitle;
   String get jawamiDuasTitle => _l.jawamiDuasTitle;
   String get jawamiDuasSubtitle => _l.jawamiDuasSubtitle;
-  String get wordsOfQuran => _l.wordsOfQuran;
-  String get yourThoughtsAndReflections => _l.yourThoughtsAndReflections;
-  String get connectionsAndThemes => _l.connectionsAndThemes;
-  String get dailyPortion => _l.dailyPortion;
-  String get tadbeerLibrary => _l.tadbeerLibrary;
   String get offlineQuranAndReflection => _l.offlineQuranAndReflection;
 
   // صيغ المراجع القرآنية
@@ -580,7 +565,6 @@ class AppStrings {
   String get continueLabel => _l.continueLabel;
   String get doNotShowAgain => _l.doNotShowAgain;
   String get curatedPathways => _l.curatedPathways;
-  String get importFromQrCode => _l.importFromQrCode;
   String get searchAyahLinksHint => _l.searchAyahLinksHint;
   String get noAyahLinkSearchResults => _l.noAyahLinkSearchResults;
   String get tryAnotherAyahLinkSearch => _l.tryAnotherAyahLinkSearch;
@@ -592,10 +576,7 @@ class AppStrings {
   // الإعدادات وإدارة البيانات
   String get typographyAndReading => _l.typographyAndReading;
   String get quranFontFamily => _l.quranFontFamily;
-  String fontSizePoints(dynamic points) => _l.fontSizePoints(digits(points));
   String get resetToDefault => _l.resetToDefault;
-  String resetToDefaultWithVal(dynamic val) =>
-      _l.resetToDefaultWithVal(digits(val));
   String get applicationSection => _l.applicationSection;
   String get dataSection => _l.dataSection;
   String get dailyRemindersSubtitle => _l.dailyRemindersSubtitle;
@@ -652,7 +633,6 @@ class AppStrings {
   // الأدعية والأذكار
   String get viewAyah => _l.viewAyah;
   String get duaCopiedSuccess => _l.duaCopiedSuccess;
-  String get searchDuasHint => _l.searchDuasHint;
   String get noDuasFound => _l.noDuasFound;
   String get allDuasFilter => _l.allDuasFilter;
   String get morningAdhkar => _l.morningAdhkar;
@@ -707,9 +687,6 @@ class AppStrings {
   String get textCopied => _l.textCopied;
   String get fileNotFound => _l.fileNotFound;
   String fileShareError(dynamic error) => _l.fileShareError('$error');
-  String pdfReadError(dynamic error) => _l.pdfReadError('$error');
-  String fileContentReadError(dynamic error) =>
-      _l.fileContentReadError('$error');
   String get noTextContent => _l.noTextContent;
   String get textFile => _l.textFile;
 
@@ -780,6 +757,158 @@ class AppStrings {
   String get booksSectionEmptyDescription => _l.booksSectionEmptyDescription;
 
   // نصوص الشاشات
+  String get tourSkip => _l.tourSkip;
+  String get tourNext => _l.tourNext;
+  String get tourStart => _l.tourStart;
+  String get tourGotIt => _l.tourGotIt;
+  String get guideButton => _l.guideButton;
+  String get tour1Title => _l.tour1Title;
+  String get tour1Body => _l.tour1Body;
+  String get tour2Title => _l.tour2Title;
+  String get tour2Body => _l.tour2Body;
+  String get tour3Title => _l.tour3Title;
+  String get tour3Body => _l.tour3Body;
+  String get tour4Title => _l.tour4Title;
+  String get tour4Body => _l.tour4Body;
+  String get tour5Title => _l.tour5Title;
+  String get tour5Body => _l.tour5Body;
+  String get tourSampleAnswer => _l.tourSampleAnswer;
+  String get tourSampleAnswer2 => _l.tourSampleAnswer2;
+  String get tourSampleAnswer3 => _l.tourSampleAnswer3;
+  String get tourCreateLink => _l.tourCreateLink;
+  String get tourSampleLink => _l.tourSampleLink;
+  String get tourLinkNote1 => _l.tourLinkNote1;
+  String get tourLinkNote2 => _l.tourLinkNote2;
+  String get tourLinkNote3 => _l.tourLinkNote3;
+  String get tourSamplePathway => _l.tourSamplePathway;
+  String get tourSamplePathwayHint => _l.tourSamplePathwayHint;
+  String get tourDayOne => _l.tourDayOne;
+  String get tourSampleQuestion => _l.tourSampleQuestion;
+  String get tourSampleReciter => _l.tourSampleReciter;
+  String get tourKhatma => _l.tourKhatma;
+  String get tourStreak => _l.tourStreak;
+  String get guideQiblaTitle => _l.guideQiblaTitle;
+  String get guideQiblaBody => _l.guideQiblaBody;
+  String get walkAyahTitle => _l.walkAyahTitle;
+  String get walkAyahBody => _l.walkAyahBody;
+  String get walkQuranTitle => _l.walkQuranTitle;
+  String get walkQuranBody => _l.walkQuranBody;
+  String get walkSearchTitle => _l.walkSearchTitle;
+  String get walkSearchBody => _l.walkSearchBody;
+  String get walkTabsTitle => _l.walkTabsTitle;
+  String get walkTabsBody => _l.walkTabsBody;
+  String get walkMoreTitle => _l.walkMoreTitle;
+  String get walkMoreBody => _l.walkMoreBody;
+  String get walkTipTitle => _l.walkTipTitle;
+  String get walkTipBody => _l.walkTipBody;
+  String get walkReplay => _l.walkReplay;
+  String get walkReplayHint => _l.walkReplayHint;
+  String get fileSavedToDevice => _l.fileSavedToDevice;
+  String get sleepAdhkar => _l.sleepAdhkar;
+  String get wakingAdhkar => _l.wakingAdhkar;
+  String get afterPrayerAdhkar => _l.afterPrayerAdhkar;
+  String get mosqueAdhkar => _l.mosqueAdhkar;
+  String get linksReordered => _l.linksReordered;
+  String get pdfFileMissing => _l.pdfFileMissing;
+  String get attachedFileMissing => _l.attachedFileMissing;
+  String pdfReadFailed(String error) => _l.pdfReadFailed(error);
+  String fileReadFailed(String error) => _l.fileReadFailed(error);
+  String pdfShowFailed(String error) => _l.pdfShowFailed(error);
+  String pdfPageFailed(String page, String error) =>
+      _l.pdfPageFailed(page, error);
+  String booksCountLabel(String count) => _l.booksCountLabel(count);
+  String get mushafMenu => _l.mushafMenu;
+  String get pageMeaningsTooltip => _l.pageMeaningsTooltip;
+  String get previousPage => _l.previousPage;
+  String get nextPage => _l.nextPage;
+  String meaningsBadge(String count) => _l.meaningsBadge(count);
+  String get enterPageRange => _l.enterPageRange;
+  String get doneLabel => _l.doneLabel;
+  String wordMeaningsCount(String count) => _l.wordMeaningsCount(count);
+  String get hideBar => _l.hideBar;
+  String pageWordMeanings(String page) => _l.pageWordMeanings(page);
+  String wordsCount(String count) => _l.wordsCount(count);
+  String get closePanel => _l.closePanel;
+  String get noPageMeanings => _l.noPageMeanings;
+  String get stopAlarm => _l.stopAlarm;
+  String get testAlarmTitle => _l.testAlarmTitle;
+  String get testNoticeTitle => _l.testNoticeTitle;
+  String get testAlarmBody => _l.testAlarmBody;
+  String get testNoticeBody => _l.testNoticeBody;
+  String get reminderDefaultTitle => _l.reminderDefaultTitle;
+  String get scrollDown => _l.scrollDown;
+  String pageAbbrOfTotal(dynamic page, dynamic total) =>
+      _l.pageAbbrOfTotal(digits(page), digits(total));
+  String get tourTodayPortion => _l.tourTodayPortion;
+  String get tourPagesToday => _l.tourPagesToday;
+  String get tourSampleNote => _l.tourSampleNote;
+  String get tourRemembered => _l.tourRemembered;
+  String get tourForgot => _l.tourForgot;
+  String get tourNextReview => _l.tourNextReview;
+  String get tourMeaningLabel => _l.tourMeaningLabel;
+  String get tourBookSample => _l.tourBookSample;
+  String get dhikrSubhanAllah => _l.dhikrSubhanAllah;
+  String get tourDuaQuran => _l.tourDuaQuran;
+  String get tourDuaSunnah => _l.tourDuaSunnah;
+  String get tourDuaAdhkar => _l.tourDuaAdhkar;
+  String get tourReplay => _l.tourReplay;
+  String get tourReplayHint => _l.tourReplayHint;
+  String get guidesReset => _l.guidesReset;
+  String get guidesResetHint => _l.guidesResetHint;
+  String get guidesResetDone => _l.guidesResetDone;
+  String get guideReflections1Title => _l.guideReflections1Title;
+  String get guideReflections1Body => _l.guideReflections1Body;
+  String get guideReflections2Title => _l.guideReflections2Title;
+  String get guideReflections2Body => _l.guideReflections2Body;
+  String get guideReflections3Title => _l.guideReflections3Title;
+  String get guideReflections3Body => _l.guideReflections3Body;
+  String get guideLinks1Title => _l.guideLinks1Title;
+  String get guideLinks1Body => _l.guideLinks1Body;
+  String get guideLinks2Title => _l.guideLinks2Title;
+  String get guideLinks2Body => _l.guideLinks2Body;
+  String get guideLinks3Title => _l.guideLinks3Title;
+  String get guideLinks3Body => _l.guideLinks3Body;
+  String get guidePathways1Title => _l.guidePathways1Title;
+  String get guidePathways1Body => _l.guidePathways1Body;
+  String get guidePathways2Title => _l.guidePathways2Title;
+  String get guidePathways2Body => _l.guidePathways2Body;
+  String get guidePathways3Title => _l.guidePathways3Title;
+  String get guidePathways3Body => _l.guidePathways3Body;
+  String get guideMushafTitle => _l.guideMushafTitle;
+  String get guideMushafBody => _l.guideMushafBody;
+  String get guideMemorizationTitle => _l.guideMemorizationTitle;
+  String get guideMemorizationBody => _l.guideMemorizationBody;
+  String get guideWordMeaningsTitle => _l.guideWordMeaningsTitle;
+  String get guideWordMeaningsBody => _l.guideWordMeaningsBody;
+  String get guideNotesTitle => _l.guideNotesTitle;
+  String get guideNotesBody => _l.guideNotesBody;
+  String get guideSearchTitle => _l.guideSearchTitle;
+  String get guideSearchBody => _l.guideSearchBody;
+  String get guideBooksTitle => _l.guideBooksTitle;
+  String get guideBooksBody => _l.guideBooksBody;
+  String get guideDuasTitle => _l.guideDuasTitle;
+  String get guideDuasBody => _l.guideDuasBody;
+  String get guideTasbeehTitle => _l.guideTasbeehTitle;
+  String get guideTasbeehBody => _l.guideTasbeehBody;
+  String get guideJourneyTitle => _l.guideJourneyTitle;
+  String get guideJourneyBody => _l.guideJourneyBody;
+  String get guideRemindersTitle => _l.guideRemindersTitle;
+  String get guideRemindersBody => _l.guideRemindersBody;
+  String get guideBackupTitle => _l.guideBackupTitle;
+  String get guideBackupBody => _l.guideBackupBody;
+  String guideStep(int step, int total) =>
+      _l.guideStep(digits(step), digits(total));
+  String get myReflectionsCardHint => _l.myReflectionsCardHint;
+  String get notesCardHint => _l.notesCardHint;
+  String get memorizationCardHint => _l.memorizationCardHint;
+  String get searchCardHint => _l.searchCardHint;
+  String get wordMeaningsCardHint => _l.wordMeaningsCardHint;
+  String get ayahLinksCardHint => _l.ayahLinksCardHint;
+  String get guidedPathwaysCardHint => _l.guidedPathwaysCardHint;
+  String get booksAndBookletsCardHint => _l.booksAndBookletsCardHint;
+  String get continuousRecitation => _l.continuousRecitation;
+  String get singleAyahRecitation => _l.singleAyahRecitation;
+  String get ayahFinished => _l.ayahFinished;
   String get permissionsTitle => _l.permissionsTitle;
   String get permissionsBody => _l.permissionsBody;
   String get permissionsAllow => _l.permissionsAllow;
@@ -789,10 +918,6 @@ class AppStrings {
       _l.noteWordCharCount(digits(words), digits(chars));
   String searchInSection(String section) => _l.searchInSection(section);
   String verseAddedToLink(String title) => _l.verseAddedToLink(title);
-  String linkIncludesVerses(int count) => _l.linkIncludesVerses(digits(count));
-  String importedLinkTitle(String title) => _l.importedLinkTitle(title);
-  String importedVersesCount(int count) =>
-      _l.importedVersesCount(digits(count));
   String reflectionNotesCount(int count) =>
       _l.reflectionNotesCount(digits(count));
   String connectedVersesCount(int count) =>
@@ -836,15 +961,6 @@ class AppStrings {
   String get privacyOpenSourceBody => _l.privacyOpenSourceBody;
   String get createLinkWithVerseHint => _l.createLinkWithVerseHint;
   String get alreadyAdded => _l.alreadyAdded;
-  String get shareAyahLinkOffline => _l.shareAyahLinkOffline;
-  String get qrScanHint => _l.qrScanHint;
-  String get linkDataCopiedToClipboard => _l.linkDataCopiedToClipboard;
-  String get copyData => _l.copyData;
-  String get importAyahLink => _l.importAyahLink;
-  String get importLinkHint => _l.importLinkHint;
-  String get importLinkFieldHint => _l.importLinkFieldHint;
-  String get pasteFromClipboard => _l.pasteFromClipboard;
-  String get importNow => _l.importNow;
   String get editAyahLink => _l.editAyahLink;
   String get titleRequired => _l.titleRequired;
   String get create => _l.create;
@@ -865,7 +981,6 @@ class AppStrings {
   String get noteTitleOptional => _l.noteTitleOptional;
   String get noteCardAddedSuccessfully => _l.noteCardAddedSuccessfully;
   String get linkNotFound => _l.linkNotFound;
-  String get shareViaQrCode => _l.shareViaQrCode;
   String get addNoteShort => _l.addNoteShort;
   String get searchQuranicSupplications => _l.searchQuranicSupplications;
   String get clearedEmptyAnswersSuccessfully =>

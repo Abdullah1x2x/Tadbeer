@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ import '../../core/design_system/app_menu.dart';
 import '../../core/design_system/ornaments.dart';
 import 'portion_reminder.dart';
 import 'streak_reminder.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// «رحلتي مع القرآن»: خطة الختمة، وورد اليوم، والإحصاءات.
 class JourneyScreen extends StatelessWidget {
@@ -33,6 +35,7 @@ class JourneyScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(l10n.myJourney),
           actions: [
+            GuideButton(topic: GuideTopic.journey),
             IconButton(
               tooltip: l10n.monthlyReport,
               icon: const Icon(AppIcons.chartLineUp),
@@ -207,7 +210,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
             const SizedBox(height: 14),
             FilledButton.icon(
               onPressed: () async {
-                HapticFeedback.mediumImpact();
+                unawaited(HapticFeedback.mediumImpact());
                 final navigator = Navigator.of(context);
                 final messenger = ScaffoldMessenger.of(context);
                 final l10n = context.l10n;
@@ -268,34 +271,9 @@ class _KhatmaProgressCard extends StatelessWidget {
   }
 
   Future<void> _askMoveTo(BuildContext context) async {
-    final l10n = context.l10n;
-    final controller = TextEditingController(text: '${plan.currentPage}');
     final page = await showDialog<int>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.setKhatmaPosition),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: l10n.pageNumberLabel),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(
-              ctx,
-              int.tryParse(
-                ArabicSearchNormalizer.toEnglishDigits(controller.text.trim()),
-              ),
-            ),
-            child: Text(l10n.save),
-          ),
-        ],
-      ),
+      builder: (ctx) => _MoveKhatmaDialog(initialPage: plan.currentPage),
     );
     if (page != null && page >= 1 && page <= mushafPageCount) {
       await UserDataStore.instance.moveKhatmaTo(page);
@@ -412,6 +390,61 @@ class _KhatmaProgressCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// حوار تعيين موضع الختمة مع إدارة آمنة للمتحكم النصي.
+class _MoveKhatmaDialog extends StatefulWidget {
+  final int initialPage;
+
+  const _MoveKhatmaDialog({required this.initialPage});
+
+  @override
+  State<_MoveKhatmaDialog> createState() => _MoveKhatmaDialogState();
+}
+
+class _MoveKhatmaDialogState extends State<_MoveKhatmaDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: '${widget.initialPage}');
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.setKhatmaPosition),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(labelText: l10n.pageNumberLabel),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(
+            context,
+            int.tryParse(
+              ArabicSearchNormalizer.toEnglishDigits(_controller.text.trim()),
+            ),
+          ),
+          child: Text(l10n.save),
+        ),
+      ],
     );
   }
 }

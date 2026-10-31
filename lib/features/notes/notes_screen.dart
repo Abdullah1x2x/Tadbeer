@@ -12,6 +12,7 @@ import '../../data/quran/quran_repository.dart';
 import '../quran/screens/quran_screen.dart';
 import 'note_editor_screen.dart';
 import '../../core/design_system/app_icons.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// الخواطر كلها في قائمة واحدة، خواطر الآيات والحرة معاً، الأحدث أولاً.
 ///
@@ -61,6 +62,7 @@ class _NotesScreenState extends State<NotesScreen> {
             ),
           ),
           actions: [
+            GuideButton(topic: GuideTopic.notes),
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: FuturisticIconButton(
@@ -233,13 +235,13 @@ class _NotesScreenState extends State<NotesScreen> {
   /// يصدّر الخاطرة PDF ويفتح المشاركة.
   void _exportNotePdf(NoteItem note) async {
     try {
-      await NotePdfExporter.exportAndShareNote(note);
+      await NotePdfExporter.exportAndShareNote(context, note);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'تعذر تصدير الملاحظة إلى PDF: $e',
+              context.l10n.exportNoteFailed(e),
               style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
           ),

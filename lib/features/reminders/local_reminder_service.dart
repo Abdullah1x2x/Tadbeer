@@ -268,7 +268,7 @@ class LocalReminderService implements ReminderScheduler {
 
       var title = reminder.title.trim().isNotEmpty
           ? reminder.title.trim()
-          : 'ورد القرآن الكريم';
+          : _strings.reminderDefaultTitle;
       var body = _strings.toReader(_readerName, _strings.reminderQuranBody);
       if (reminder.id == portionReminderId) {
         // الصفحات المتبقية اليوم، أو لا شيء بعد قراءة الورد.
@@ -400,16 +400,16 @@ class LocalReminderService implements ReminderScheduler {
         icon: '@mipmap/ic_launcher',
         category: AndroidNotificationCategory.alarm,
         visibility: NotificationVisibility.public,
-        actions: const <AndroidNotificationAction>[
+        actions: <AndroidNotificationAction>[
           AndroidNotificationAction(
             'open_quran',
-            'فتح المصحف',
+            _strings.openMushaf,
             showsUserInterface: true,
             cancelNotification: true,
           ),
           AndroidNotificationAction(
             'dismiss_alarm',
-            'إيقاف المنبه',
+            _strings.stopAlarm,
             cancelNotification: true,
           ),
         ],
@@ -520,12 +520,9 @@ class LocalReminderService implements ReminderScheduler {
       id: isAlarm ? testAlarmId : testNotificationId,
       title:
           title ??
-          (isAlarm ? 'منبه تجريبي — تَدْبِير' : 'إشعار تجريبي — تَدْبِير'),
+          (isAlarm ? _strings.testAlarmTitle : _strings.testNoticeTitle),
       body:
-          body ??
-          (isAlarm
-              ? 'هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»'
-              : 'نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير'),
+          body ?? (isAlarm ? _strings.testAlarmBody : _strings.testNoticeBody),
       alertType: alertType,
       payload: 'quran_resume',
     );
@@ -543,20 +540,26 @@ class LocalReminderService implements ReminderScheduler {
     for (int i = 0; i <= 7; i++) {
       try {
         await _notificationsPlugin.cancel(id: baseId + i);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('cancelReminder: ${baseId + i}: $e');
+      }
     }
     if (reminder.id == portionReminderId) {
       for (int i = 0; i < portionReminderDays; i++) {
         try {
           await _notificationsPlugin.cancel(id: _portionBaseId + i);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('cancelReminder: portion $i: $e');
+        }
       }
     }
     if (reminder.id == streakReminderId) {
       for (int i = 0; i < 2; i++) {
         try {
           await _notificationsPlugin.cancel(id: _streakBaseId + i);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('cancelReminder: streak $i: $e');
+        }
       }
     }
   }
@@ -615,7 +618,9 @@ class LocalReminderService implements ReminderScheduler {
           return AndroidScheduleMode.inexactAllowWhileIdle;
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Could not check exact alarms: $e');
+    }
     return alertType == ReminderAlertType.alarm
         ? AndroidScheduleMode.alarmClock
         : AndroidScheduleMode.exactAllowWhileIdle;

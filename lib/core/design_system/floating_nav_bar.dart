@@ -12,7 +12,11 @@ class FloatingNavItem {
 
   final String label;
 
+  /// مفتاح زر العنصر، لمن يحتاج مكانه على الشاشة.
+  final Key? key;
+
   const FloatingNavItem({
+    this.key,
     required this.icon,
     required this.selectedIcon,
     required this.label,
@@ -126,6 +130,7 @@ class FloatingNavBar extends StatelessWidget {
                               curve: curve,
                               width: i == selectedIndex ? wide : narrow,
                               child: _NavButton(
+                                key: items[i].key,
                                 item: items[i],
                                 selected: i == selectedIndex,
                                 duration: duration,
@@ -158,6 +163,7 @@ class _NavButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const _NavButton({
+    super.key,
     required this.item,
     required this.selected,
     required this.duration,

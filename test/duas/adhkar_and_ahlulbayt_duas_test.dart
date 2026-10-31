@@ -57,7 +57,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('أذكار الصباح والمساء'), findsOneWidget);
+      expect(find.text('الأذكار'), findsOneWidget);
       expect(find.textContaining('أذكار الصباح'), findsWidgets);
       expect(find.textContaining('أذكار المساء'), findsWidgets);
 

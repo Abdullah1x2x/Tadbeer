@@ -9,6 +9,7 @@ import '../quran/screens/quran_screen.dart';
 import '../quran/widgets/word_details_sheet.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/app_select.dart';
+import '../onboarding/tour/section_guide.dart';
 
 /// معاني كلمات القرآن: استعراض الكلمات الغريبة والبحث فيها وتصفيتها بالسورة،
 /// والانتقال إلى موضع الكلمة في المصحف، والمصادر.
@@ -96,6 +97,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
             ),
           ),
           centerTitle: true,
+          actions: [GuideButton(topic: GuideTopic.wordMeanings)],
         ),
         body: Column(
           children: [
@@ -516,7 +518,7 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'تعتمد هذه الميزة تعريفات لغوية معجمية موجزة ومستقلة تماماً عن تفسير القرآن وسياق الآيات، مستمدة حصراً من أمهات المعاجم اللغوية المعتمدة دون تخمين.',
+                      'تعرض هذه الميزة معاني موجزة لكلمات القرآن الكريم.',
                       style: TextStyle(
                         fontSize: 13,
                         height: 1.5,
@@ -531,97 +533,15 @@ class WordMeaningsSourcesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
 
-            // المصدر الأول: المعجم الوسيط (الأساسي).
             _SourceCard(
-              title: 'المعجم الوسيط',
-              badge: 'المصدر الأساسي المعتمد',
-              author: 'مجمع اللغة العربية بالقاهرة',
+              title: 'الموسوعة القرآنية (Quranpedia.net)',
+              badge: 'نسخة البيانات 2026-10-10',
+              author: 'فريق الموسوعة القرآنية',
               details:
-                  'إصدار مجمع اللغة العربية بالقاهرة — جمهورية مصر العربية.\n'
-                  'المصدر المعجمي الأساسي المعتمد في التطبيق لاستخلاص التعريفات اللغوية المعجمية المجردة والموجزة للكلمات العربية.\n'
-                  'الرابط الرسمي: https://www.arabicacademy.gov.eg/ar/',
+                  'معاني الكلمات وربطها بالآيات من بيانات الموسوعة القرآنية.\n'
+                  'الرابط الرسمي: https://quranpedia.net',
               isPrimary: true,
               isDark: isDark,
-            ),
-            const SizedBox(height: 14),
-
-            // المصدر الثاني: معجم الدوحة التاريخي.
-            _SourceCard(
-              title: 'معجم الدوحة التاريخي للغة العربية',
-              badge: 'مرجع التحقق للألفاظ القديمة',
-              author: 'المركز العربي للأبحاث ودراسة السياسات (قطر)',
-              details:
-                  'مشروع معجم الدوحة التاريخي للغة العربية — الدوحة.\n'
-                  'المرجع العلمي المعتمد للتحقق من الألفاظ العربية القديمة وشواهدها التاريخية وسياقاتها المعجمية الأولى.\n'
-                  'الرابط الرسمي: https://www.dohadictionary.org/',
-              isPrimary: false,
-              isDark: isDark,
-            ),
-            const SizedBox(height: 14),
-
-            // المصدر الثالث: الموسوعة القرآنية والمعاجم التراثية.
-            _SourceCard(
-              title: 'الموسوعة القرآنية (Quranpedia.net) والمعاجم التراثية',
-              badge: 'المصدر الرقمي والتراثي (نسخة 2026-10-10)',
-              author: 'فريق الموسوعة القرآنية وأئمة اللغة والتفسير',
-              details: 'الهيكلة الرقمية والربط بالآيات مستمدة من حزمة بيانات الموسوعة القرآنية المفتوحة (https://quranpedia.net — الإصدار 2026-10-10)، مع التحقق من أمهات المعاجم التراثية في الملكية العامة: لسان العرب لابن منظور، مقاييس اللغة لابن فارس، التبيان لابن الهائم، وتذكرة الأريب لابن الجوزي.',
-              isPrimary: false,
-              isDark: isDark,
-            ),
-            const SizedBox(height: 14),
-
-            // شروط الاستخدام.
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                  width: 0.8,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        AppIcons.gavel,
-                        size: 20,
-                        color: isDark
-                            ? AppColors.darkPrimary
-                            : AppColors.lightPrimary,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'تحقيق الملكية الفكرية وتراخيص الاستخدام',
-                        style: TextStyle(
-                          fontFamily: 'IBMPlexSansArabic',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '• الموسوعة القرآنية (https://quranpedia.net — نسخة 2026-10-10): تتيح استخدام البيانات مجاناً داخل التطبيقات، وتشترط عند نشر قاعدة البيانات ذكر الموسوعة القرآنية مع الرابط ورقم الإصدار.\n'
-                    '• معجم الدوحة التاريخي (dohadictionary.org): تنص شروط الاستخدام صراحةً على أن جميع مواده المعجمية وقواعد بياناته محمية بقوانين الملكية الفكرية، ويُمنع إنشاء أعمال مشتقة أو استخدام بياناته برمجياً في خدمات رقمية وتطبيقات دون إذن خطي مسبق من إدارة المشروع.\n'
-                    '• المعجم الوسيط (arabicacademy.gov.eg): حقوقه محفوظة لمجمع اللغة العربية بالقاهرة، ولا يوفر واجهة API عامة، ويقتصر إدراج مفرداته في التطبيق على الاقتباس التوثيقي الموجز لأغراض غير تجارية مع نسبة كل تعريف إلى مصدره.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      height: 1.6,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    ),
-                  ),
-                ],
-              ),
             ),
             const SizedBox(height: 20),
           ],

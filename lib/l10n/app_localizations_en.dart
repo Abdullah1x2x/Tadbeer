@@ -55,13 +55,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tasbeehAndIstighfar => 'Istighfar & Tasbeeh';
 
   @override
-  String get tasbeehSubtitle => 'Digital Tasbeeh & Istighfar Counter';
-
-  @override
   String get booksAndBooklets => 'Books & Booklets';
-
-  @override
-  String get booksSubtitle => 'Tadbeer Library & Study Booklets';
 
   @override
   String get about => 'About Tadbeer';
@@ -150,9 +144,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sessionDone => 'Session done!';
-
-  @override
-  String get ayahOfTheDay => 'Verse of the day';
 
   @override
   String get reflectOnIt => 'Reflect';
@@ -305,9 +296,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addNote => 'Note';
-
-  @override
-  String get saveBookmark => 'Bookmark';
 
   @override
   String get removeBookmark => 'Remove Bookmark';
@@ -603,12 +591,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resumeReading => 'Resume Reading';
 
   @override
-  String get additionalTools => 'Additional Tools';
-
-  @override
-  String get quranAndSunnahDuas => 'Quran & Sunnah Duas';
-
-  @override
   String get quranDuasTitle => 'Quranic Duas';
 
   @override
@@ -642,21 +624,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get jawamiDuasSubtitle =>
       'Comprehensive prayers for goodness in this life and the hereafter';
-
-  @override
-  String get wordsOfQuran => 'Quran Vocabulary';
-
-  @override
-  String get yourThoughtsAndReflections => 'Thoughts & Reflections';
-
-  @override
-  String get connectionsAndThemes => 'Connections & Themes';
-
-  @override
-  String get dailyPortion => 'Daily Portion';
-
-  @override
-  String get tadbeerLibrary => 'Contemplative Library';
 
   @override
   String get offlineQuranAndReflection => 'Offline Quran & Contemplation';
@@ -712,9 +679,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get curatedPathways => 'Curated Pathways';
-
-  @override
-  String get importFromQrCode => 'Import Ayah Link via QR Code';
 
   @override
   String get searchAyahLinksHint => 'Search ayah links or surahs...';
@@ -877,10 +841,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get duaCopiedSuccess => 'Supplication text copied successfully';
-
-  @override
-  String get searchDuasHint =>
-      'Search Quranic supplications by word or Surah...';
 
   @override
   String get noDuasFound => 'No supplications match your search';
@@ -1225,11 +1185,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String pagesOfMushaf(String n) {
-    return '$n of 604 pages';
-  }
-
-  @override
   String dayOfPlan(String d, String total) {
     return 'Day $d of $total';
   }
@@ -1319,16 +1274,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String fontSizePoints(String points) {
-    return '$points pt';
-  }
-
-  @override
-  String resetToDefaultWithVal(String val) {
-    return 'Reset to default ($val)';
-  }
-
-  @override
   String reminderScheduledSuccess(String mode) {
     return 'Reminder scheduled successfully ($mode)';
   }
@@ -1399,16 +1344,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String pdfReadError(String error) {
-    return 'Could not read PDF file: $error';
-  }
-
-  @override
-  String fileContentReadError(String error) {
-    return 'Could not read file content: $error';
-  }
-
-  @override
   String removeAyahFromLinkConfirm(String ayah, String surah) {
     return 'Do you want to remove Ayah $ayah of Surah $surah from this link?';
   }
@@ -1474,11 +1409,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Mushaf font: King Fahd Glorious Quran Printing Complex';
 
   @override
-  String widgetPortionLeft(String left, String portion) {
-    return 'Today’s portion: $left of $portion pages left';
-  }
-
-  @override
   String get widgetPortionDone => 'Today’s portion is done';
 
   @override
@@ -1540,9 +1470,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mushafStyleTextHint => 'Flowing text in the font you choose.';
 
   @override
-  String get pageSize => 'Page size';
-
-  @override
   String get khatmaStartNow => 'Start now';
 
   @override
@@ -1576,9 +1503,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myReflections => 'My reflections';
 
   @override
-  String get myReflectionsSubtitle => 'What you wrote on ayahs';
-
-  @override
   String get reflectionsAll => 'All';
 
   @override
@@ -1590,7 +1514,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noCommitmentsYet =>
-      'What you write for “What will you do with it today?” shows here.';
+      'What you write for “What action does this ayah call you to?” shows here.';
 
   @override
   String get commitmentDid => 'I did it';
@@ -1769,9 +1693,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listen => 'Listen';
 
   @override
-  String get listenFromHere => 'Listen from here';
-
-  @override
   String get audioSettings => 'Recitation settings';
 
   @override
@@ -1869,7 +1790,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourcesAndCreditsDetails =>
-      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia (Quranpedia.net — release 2026-10-10) and classical & modern Arabic dictionaries (Lisan al-Arab, Maqayis al-Lughah, Al-Tibyan, Tadhkirat al-Arib, Mufradat al-Raghib, and Al-Mu\'jam al-Wasit).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 88 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Madinah Mushaf script: page fonts (QCF) by the King Fahd Glorious Quran Printing Complex, with line layout from Quran.com data.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.';
+      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia, Quranpedia.net (dataset version 2026-10-10).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 89 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.\n• Madinah Mushaf fonts: King Fahd Glorious Quran Printing Complex, through Quran Foundation, with the line layout data.\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).';
 
   @override
   String get unsavedChanges => 'Unsaved Changes';
@@ -1973,35 +1894,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alreadyAdded => 'Already added';
 
   @override
-  String get shareAyahLinkOffline => 'Share Ayah Link Offline';
-
-  @override
-  String get qrScanHint =>
-      'This code can be scanned from another Tadbeer device to import the link offline.';
-
-  @override
-  String get linkDataCopiedToClipboard => 'Link data copied to clipboard';
-
-  @override
-  String get copyData => 'Copy Data';
-
-  @override
-  String get importAyahLink => 'Import Ayah Link';
-
-  @override
-  String get importLinkHint =>
-      'Paste the share code or link data below to import it into your links:';
-
-  @override
-  String get importLinkFieldHint => 'Paste link or scanned text here...';
-
-  @override
-  String get pasteFromClipboard => 'Paste from clipboard';
-
-  @override
-  String get importNow => 'Import Now';
-
-  @override
   String get editAyahLink => 'Edit Ayah Link';
 
   @override
@@ -2062,9 +1954,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get linkNotFound => 'Link not found or has been deleted';
-
-  @override
-  String get shareViaQrCode => 'Share via QR Code';
 
   @override
   String get addNoteShort => 'Add Note';
@@ -2146,21 +2035,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String linkIncludesVerses(String count) {
-    return 'Includes $count linked verses';
-  }
-
-  @override
-  String importedLinkTitle(String title) {
-    return 'Title: $title';
-  }
-
-  @override
-  String importedVersesCount(String count) {
-    return 'Included verses: $count verses';
-  }
-
-  @override
   String reflectionNotesCount(String count) {
     return 'Reflection Notes ($count)';
   }
@@ -2207,4 +2081,515 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionsLater => 'Later';
+
+  @override
+  String get continuousRecitation => 'Continuous recitation (tap for one ayah)';
+
+  @override
+  String get singleAyahRecitation => 'One ayah (tap to continue)';
+
+  @override
+  String get ayahFinished => 'Ayah finished';
+
+  @override
+  String get myReflectionsCardHint => 'Reflection pauses you wrote';
+
+  @override
+  String get notesCardHint => 'Your thoughts on the ayahs';
+
+  @override
+  String get memorizationCardHint => 'Memorize, review on time';
+
+  @override
+  String get searchCardHint => 'The Quran and all you saved';
+
+  @override
+  String get wordMeaningsCardHint => 'Word meanings in Mushaf order';
+
+  @override
+  String get ayahLinksCardHint => 'Link ayahs by theme';
+
+  @override
+  String get guidedPathwaysCardHint => 'Day-by-day reflection journeys';
+
+  @override
+  String get booksAndBookletsCardHint => 'Booklets and books to read';
+
+  @override
+  String get tourSkip => 'Skip';
+
+  @override
+  String get tourNext => 'Next';
+
+  @override
+  String get tourStart => 'Begin your journey';
+
+  @override
+  String get tourGotIt => 'Got it';
+
+  @override
+  String get guideButton => 'About this section';
+
+  @override
+  String get tour1Title =>
+      'A blessed Book, sent down so they may reflect on its verses';
+
+  @override
+  String get tour1Body =>
+      'Long-press any ayah to reflect on it, memorize it, listen to it or link it to others.';
+
+  @override
+  String get tour2Title => 'From reading to reflection';
+
+  @override
+  String get tour2Body =>
+      'Four questions for each ayah open its meaning, and links gather ayahs around one theme.';
+
+  @override
+  String get tour3Title => 'Listen to great reciters';
+
+  @override
+  String get tour3Body =>
+      'Play on through the surah or stop at one ayah, and download recitations to listen offline.';
+
+  @override
+  String get tour4Title => 'Your daily portion goes with you';
+
+  @override
+  String get tour4Body =>
+      'A khatma plan, a daily streak, tasbeeh, and a widget that puts an ayah on your home screen.';
+
+  @override
+  String get tour5Title => 'Your companion on your Quran journey';
+
+  @override
+  String get tour5Body =>
+      'Everything you need for reading, reflection and remembrance in one place, and it works offline.';
+
+  @override
+  String get tourSampleAnswer => 'That Allah is with me in every state';
+
+  @override
+  String get tourSampleAnswer2 =>
+      'With hardship comes ease, so I won’t despair';
+
+  @override
+  String get tourSampleAnswer3 => 'Remembering Allah calms my heart';
+
+  @override
+  String get tourCreateLink => 'New link';
+
+  @override
+  String get tourSampleLink => 'Doors of provision';
+
+  @override
+  String get tourLinkNote1 => 'First door: mindfulness of God';
+
+  @override
+  String get tourLinkNote2 => 'Second door: seeking forgiveness';
+
+  @override
+  String get tourLinkNote3 => 'Third door: gratitude';
+
+  @override
+  String get tourSamplePathway => 'The path of patience';
+
+  @override
+  String get tourSamplePathwayHint =>
+      'Seven days, an ayah and a question each day';
+
+  @override
+  String get tourDayOne => 'Day one';
+
+  @override
+  String get tourSampleQuestion => 'When did you last lean on patience?';
+
+  @override
+  String get tourSampleReciter => 'Mahmoud Khalil Al-Husary';
+
+  @override
+  String get tourKhatma => 'Khatma';
+
+  @override
+  String get tourStreak => 'day streak';
+
+  @override
+  String get guideQiblaTitle => 'Qibla direction';
+
+  @override
+  String get guideQiblaBody =>
+      'Set your location once, then hold the phone flat and turn it until the arrow points to the Kaaba.';
+
+  @override
+  String get walkAyahTitle => 'An ayah to reflect on';
+
+  @override
+  String get walkAyahBody =>
+      'Fresh ayahs every day. Swipe between them and tap Reflect to write your pause.';
+
+  @override
+  String get walkQuranTitle => 'Your Mushaf and journey';
+
+  @override
+  String get walkQuranBody =>
+      'Continue from where you stopped, start a khatma here and watch your progress.';
+
+  @override
+  String get walkSearchTitle => 'Search everything';
+
+  @override
+  String get walkSearchBody =>
+      'Type a word to find ayahs, your notes and your reflections in one place.';
+
+  @override
+  String get walkTabsTitle => 'Move between sections';
+
+  @override
+  String get walkTabsBody =>
+      'Home, Mushaf, istighfar and duas are one tap away from anywhere.';
+
+  @override
+  String get walkMoreTitle => 'More';
+
+  @override
+  String get walkMoreBody =>
+      'Ayah links, reflection pathways, memorization, books and every other section live here.';
+
+  @override
+  String get walkTipTitle => 'One last tip';
+
+  @override
+  String get walkTipBody =>
+      'Not sure what a button does? Long-press it to see its description.';
+
+  @override
+  String get walkReplay => 'Home screen guide';
+
+  @override
+  String get walkReplayHint => 'See the main home screen features again';
+
+  @override
+  String get fileSavedToDevice => 'Saved to your device';
+
+  @override
+  String get sleepAdhkar => 'Before sleep';
+
+  @override
+  String get wakingAdhkar => 'On waking';
+
+  @override
+  String get afterPrayerAdhkar => 'After prayer';
+
+  @override
+  String get mosqueAdhkar => 'At the mosque';
+
+  @override
+  String get tourReplay => 'App tour';
+
+  @override
+  String get tourReplayHint => 'Watch the introduction again';
+
+  @override
+  String get guidesReset => 'Show section guides again';
+
+  @override
+  String get guidesResetHint =>
+      'Each section explains itself on your next visit';
+
+  @override
+  String get guidesResetDone => 'The guides will show again';
+
+  @override
+  String get guideReflections1Title => 'Start from the ayah';
+
+  @override
+  String get guideReflections1Body =>
+      'Long-press any ayah in the Mushaf, then choose “Reflection pause” in the middle of the menu.';
+
+  @override
+  String get guideReflections2Title => 'Four questions that open the meaning';
+
+  @override
+  String get guideReflections2Body =>
+      'Answer what comes to you, even a word: what stopped you, what the ayah tells you, what it stirred in you, and what you will do with it today.';
+
+  @override
+  String get guideReflections3Title => 'Your pauses live here';
+
+  @override
+  String get guideReflections3Body =>
+      'Every pause is kept in “My reflections”, and a lotus marks the ayah number in the Mushaf so you can return to it.';
+
+  @override
+  String get guideLinks1Title => 'A theme that gathers ayahs';
+
+  @override
+  String get guideLinks1Body =>
+      'Create a link named after a theme you want to reflect on, like the doors of provision, patience or mercy.';
+
+  @override
+  String get guideLinks2Title => 'Ayahs joined by one meaning';
+
+  @override
+  String get guideLinks2Body =>
+      'Add the verses of the theme, and write what you understood beside each one.';
+
+  @override
+  String get guideLinks3Title => 'See the whole picture';
+
+  @override
+  String get guideLinks3Body =>
+      'View the link as a network to see how the ayahs complete each other, or as a list to read in order.';
+
+  @override
+  String get guidePathways1Title => 'A reflection journey, day by day';
+
+  @override
+  String get guidePathways1Body =>
+      'Choose a pathway on a theme; each day brings one small step.';
+
+  @override
+  String get guidePathways2Title => 'Today’s ayah and its question';
+
+  @override
+  String get guidePathways2Body =>
+      'Read the ayah slowly, then answer today’s question with what comes to you.';
+
+  @override
+  String get guidePathways3Title => 'Step after step';
+
+  @override
+  String get guidePathways3Body =>
+      'Each day you finish lights up the next, and the app keeps your place so you can continue whenever you return.';
+
+  @override
+  String get guideMushafTitle => 'The Mushaf';
+
+  @override
+  String get guideMushafBody =>
+      'Swipe to turn pages and long-press an ayah for its menu. Your marks for memorization, notes and reflections appear above the ayah number.';
+
+  @override
+  String get guideMemorizationTitle => 'Memorization and review';
+
+  @override
+  String get guideMemorizationBody =>
+      'Add the ayahs you memorize and review what is due each day. What you master comes back less often; what you forget returns soon.';
+
+  @override
+  String get guideWordMeaningsTitle => 'Word meanings';
+
+  @override
+  String get guideWordMeaningsBody =>
+      'Meanings of unusual words in Mushaf order. Search by word or meaning, or pick a surah to see it alone.';
+
+  @override
+  String get guideNotesTitle => 'Notes';
+
+  @override
+  String get guideNotesBody =>
+      'Write a thought on an ayah or a general one, and export it as PDF or gather it into a reflection journal.';
+
+  @override
+  String get guideSearchTitle => 'Search';
+
+  @override
+  String get guideSearchBody =>
+      'Search the Quran and everything you saved across 11 sections at once.';
+
+  @override
+  String get guideBooksTitle => 'Books and booklets';
+
+  @override
+  String get guideBooksBody =>
+      'Read booklets and books inside the app, and pick up where you left off.';
+
+  @override
+  String get guideDuasTitle => 'Supplications';
+
+  @override
+  String get guideDuasBody =>
+      'Duas from the Quran, the Sunnah and the Ahlulbayt, with daily adhkar and counters. Copy a dua or open it in the Mushaf.';
+
+  @override
+  String get guideTasbeehTitle => 'Tasbeeh and istighfar';
+
+  @override
+  String get guideTasbeehBody =>
+      'Tap the circle to count and choose a target of 33 or 100. It can also count for you and move on to the next dhikr.';
+
+  @override
+  String get guideJourneyTitle => 'My journey and khatma';
+
+  @override
+  String get guideJourneyBody =>
+      'Set a khatma plan that follows your reading position, and watch your streak and a map of what you have read.';
+
+  @override
+  String get guideRemindersTitle => 'Reminders';
+
+  @override
+  String get guideRemindersBody =>
+      'Set a reminder for your portion or adhkar at a time that suits you; it arrives even when the app is closed.';
+
+  @override
+  String get guideBackupTitle => 'Backup';
+
+  @override
+  String get guideBackupBody =>
+      'Export a password-encrypted copy of your data and keep it off the phone, to restore it if you change devices.';
+
+  @override
+  String guideStep(String step, String total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String widgetPortionLeft(String left, String portion) {
+    return 'Today’s portion: $left of $portion pages left';
+  }
+
+  @override
+  String get linksReordered => 'Rearranged automatically';
+
+  @override
+  String get pdfFileMissing => 'The PDF file is not on this device.';
+
+  @override
+  String get attachedFileMissing => 'The attached file is not on this device.';
+
+  @override
+  String pdfReadFailed(String error) {
+    return 'Could not read the PDF file: $error';
+  }
+
+  @override
+  String fileReadFailed(String error) {
+    return 'Could not read the file: $error';
+  }
+
+  @override
+  String pdfShowFailed(String error) {
+    return 'Could not display the file: $error';
+  }
+
+  @override
+  String pdfPageFailed(String page, String error) {
+    return 'Could not load page $page: $error';
+  }
+
+  @override
+  String booksCountLabel(String count) {
+    return '$count books/booklets';
+  }
+
+  @override
+  String get mushafMenu => 'Menu';
+
+  @override
+  String get pageMeaningsTooltip => 'Word meanings on this page';
+
+  @override
+  String get previousPage => 'Previous page';
+
+  @override
+  String get nextPage => 'Next page';
+
+  @override
+  String meaningsBadge(String count) {
+    return 'Meanings ($count)';
+  }
+
+  @override
+  String get enterPageRange => 'Enter a page number from 1 to 604';
+
+  @override
+  String get doneLabel => 'Done';
+
+  @override
+  String wordMeaningsCount(String count) {
+    return 'Word meanings ($count)';
+  }
+
+  @override
+  String get hideBar => 'Hide the bar';
+
+  @override
+  String pageWordMeanings(String page) {
+    return 'Word meanings of page $page';
+  }
+
+  @override
+  String wordsCount(String count) {
+    return '$count words';
+  }
+
+  @override
+  String get closePanel => 'Close the panel';
+
+  @override
+  String get noPageMeanings => 'No words on this page need explaining';
+
+  @override
+  String get stopAlarm => 'Stop alarm';
+
+  @override
+  String get testAlarmTitle => 'Test alarm — Tadbeer';
+
+  @override
+  String get testNoticeTitle => 'Test notification — Tadbeer';
+
+  @override
+  String get testAlarmBody =>
+      'This alarm keeps ringing. Press Stop alarm or Open Mushaf.';
+
+  @override
+  String get testNoticeBody => 'Notifications are working in Tadbeer.';
+
+  @override
+  String get reminderDefaultTitle => 'Quran reading';
+
+  @override
+  String get scrollDown => 'Scroll down';
+
+  @override
+  String pageAbbrOfTotal(String page, String total) {
+    return 'p. $page of $total';
+  }
+
+  @override
+  String get tourTodayPortion => 'Today\'s portion';
+
+  @override
+  String get tourPagesToday => '4 of 5 pages';
+
+  @override
+  String get tourSampleNote => 'Mindfulness opens doors I cannot see';
+
+  @override
+  String get tourRemembered => 'Remembered';
+
+  @override
+  String get tourForgot => 'Forgot';
+
+  @override
+  String get tourNextReview => 'Review in 3 days';
+
+  @override
+  String get tourMeaningLabel => 'Meaning';
+
+  @override
+  String get tourBookSample => 'Guidance of the Quran';
+
+  @override
+  String get dhikrSubhanAllah => 'Subhan Allah';
+
+  @override
+  String get tourDuaQuran => 'Quran';
+
+  @override
+  String get tourDuaSunnah => 'Sunnah';
+
+  @override
+  String get tourDuaAdhkar => 'Adhkar';
 }
