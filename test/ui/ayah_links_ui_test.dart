@@ -470,9 +470,11 @@ void main() {
 
       await tester.tap(find.text('اختيار بالسورة ورقم الآية'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('زيادة'));
+      // Tap Ayah picker button
+      await tester.tap(find.widgetWithText(OutlinedButton, 'الآية'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(AppIcons.check));
+      // Select Ayah 2 of Al-Fatiha
+      await tester.tap(find.text('٢').first);
       await tester.pumpAndSettle();
       // Al-Fatiha 2 is now the chosen ayah.
       expect(find.text('تغيير'), findsOneWidget);

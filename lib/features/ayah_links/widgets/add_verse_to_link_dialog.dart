@@ -61,7 +61,6 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
   /// هل منتقي السورة والرقم مفتوح.
   bool _byNumber = false;
   int _surah = 1;
-  int _ayah = 1;
   bool _isAdding = false;
 
   @override
@@ -341,25 +340,24 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   Widget _numberPicker(BuildContext context, AppStrings l10n) {
     final surah = QuranRepository.instance.getSurah(_surah);
-    void pick(int ayah) {
-      final value = ayah.clamp(1, surah.ayahCount);
-      setState(() => _ayah = value);
-    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
           Expanded(
-            flex: 3,
+            flex: 1,
             child: OutlinedButton(
               onPressed: () async {
                 final number = await _pickSurah(context, l10n);
-                if (number != null) {
-                  setState(() {
-                    _surah = number;
-                    _ayah = 1;
-                  });
+                if (number != null && mounted) {
+                  setState(() => _surah = number);
+                  // فتح منتقي الآيات المرئي تلقائياً بعد اختيار السورة
+                  final pickedAyah =
+                      await _pickAyahFromSurah(this.context, l10n, number);
+                  if (pickedAyah != null && mounted) {
+                    _choose(pickedAyah);
+                  }
                 }
               },
               style: OutlinedButton.styleFrom(
@@ -382,27 +380,122 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
             ),
           ),
           const SizedBox(width: 8),
-          IconButton(
-            tooltip: l10n.decrease,
-            onPressed: _ayah > 1 ? () => pick(_ayah - 1) : null,
-            icon: const Icon(AppIcons.minusCircle),
-          ),
-          Text(
-            '${l10n.addVerseAyah} ${l10n.digits(_ayah)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          IconButton(
-            tooltip: l10n.increase,
-            onPressed: _ayah < surah.ayahCount ? () => pick(_ayah + 1) : null,
-            icon: const Icon(AppIcons.plusCircle),
-          ),
-          FilledButton.tonal(
-            onPressed: () =>
-                _choose(QuranRepository.instance.getAyah(_surah, _ayah)),
-            child: const Icon(AppIcons.check, size: 18),
+          OutlinedButton.icon(
+            onPressed: () async {
+              final pickedAyah = await _pickAyahFromSurah(context, l10n, _surah);
+              if (pickedAyah != null && mounted) {
+                _choose(pickedAyah);
+              }
+            },
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 14,
+              ),
+            ),
+            icon: const Icon(AppIcons.listNumbers, size: 18),
+            label: Text(l10n.addVerseAyah),
           ),
         ],
       ),
+    );
+  }
+
+  /// منتقي مرئي لآيات السورة يعرض رقم الآية مع نصها الكامل لاختيارها بنقرة واحدة.
+  Future<Ayah?> _pickAyahFromSurah(
+    BuildContext context,
+    AppStrings l10n,
+    int surahNumber,
+  ) {
+    final surah = QuranRepository.instance.getSurah(surahNumber);
+    final ayahs = List.generate(
+      surah.ayahCount,
+      (i) => QuranRepository.instance.getAyah(surahNumber, i + 1),
+    ).whereType<Ayah>().toList();
+
+    return showModalBottomSheet<Ayah>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheet) {
+        return SizedBox(
+          height: MediaQuery.sizeOf(context).height * 0.75,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${l10n.surahTitle(surah.name)} (${l10n.ayahCount(surah.ayahCount)})',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(AppIcons.x),
+                      tooltip: l10n.close,
+                      onPressed: () => Navigator.pop(sheet),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: ayahs.length,
+                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  itemBuilder: (_, i) {
+                    final ayah = ayahs[i];
+                    final added = _isAdded(ayah);
+                    return ListTile(
+                      leading: CircleAvatar(
+                        radius: 16,
+                        backgroundColor: added
+                            ? AppColors.statusWarning.withValues(alpha: 0.2)
+                            : Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                        child: Text(
+                          l10n.digits(ayah.ayahNumber),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: added
+                                ? AppColors.statusWarning
+                                : Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        ayah.text,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: UserDataStore.instance.quranFontFamily,
+                          fontSize: 15,
+                        ),
+                      ),
+                      subtitle: added
+                          ? Text(
+                              l10n.addVerseAlready,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.statusWarning,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : null,
+                      onTap: () => Navigator.pop(sheet, ayah),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

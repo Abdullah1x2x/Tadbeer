@@ -180,16 +180,6 @@ class AyahLinkOrderedView extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    ElevatedButton.icon(
-                      onPressed: onAddVerse,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.white,
-                      ),
-                      icon: const Icon(AppIcons.plus, size: 18),
-                      label: Text(context.l10n.addAyah),
-                    ),
                   ],
                 ),
               ),

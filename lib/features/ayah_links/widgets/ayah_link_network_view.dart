@@ -832,19 +832,6 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                           : AppColors.daySubtitle,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: widget.onAddVerse,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.olive,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    icon: const Icon(AppIcons.plus, size: 18),
-                    label: Text(context.l10n.addAyah),
-                  ),
                 ],
               ),
             ),
