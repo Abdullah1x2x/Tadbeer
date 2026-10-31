@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
@@ -29,19 +31,104 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _surahsScrollController = ScrollController();
+  final ScrollController _juzsScrollController = ScrollController();
   String _filter = '';
+  bool _initialJuzScrolled = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _scrollToCurrentSurah(animate: false);
+      }
+    });
+  }
+
+  void _onTabChanged() {
+    if (_tabController.index == 1 && !_initialJuzScrolled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _scrollToCurrentJuz(animate: false);
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     _searchController.dispose();
+    _surahsScrollController.dispose();
+    _juzsScrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToCurrentSurah({bool animate = false}) {
+    if (!_surahsScrollController.hasClients || _filter.isNotEmpty) return;
+    final repo = QuranRepository.instance;
+    final page = repo.getPage(widget.currentPage);
+    final surahNum = page.surahNumbers.isNotEmpty ? page.surahNumbers.first : 1;
+    final surahIndex = (surahNum - 1).clamp(0, repo.surahs.length - 1);
+
+    const itemHeight = 60.0;
+    const topPadding = 4.0;
+    final viewport = _surahsScrollController.position.viewportDimension;
+    final itemTop = topPadding + (surahIndex * itemHeight);
+    final target = math.max(
+      0.0,
+      itemTop - (viewport > itemHeight ? (viewport - itemHeight) / 2 : 0.0),
+    );
+    final clamped = target.clamp(
+      0.0,
+      _surahsScrollController.position.maxScrollExtent,
+    );
+
+    if (animate) {
+      _surahsScrollController.animateTo(
+        clamped,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+      );
+    } else {
+      _surahsScrollController.jumpTo(clamped);
+    }
+  }
+
+  void _scrollToCurrentJuz({bool animate = false}) {
+    if (!_juzsScrollController.hasClients) return;
+    final repo = QuranRepository.instance;
+    final page = repo.getPage(widget.currentPage);
+    final juzIndex = (page.juzNumber - 1).clamp(0, 29);
+
+    const itemHeight = 60.0;
+    const topPadding = 4.0;
+    final viewport = _juzsScrollController.position.viewportDimension;
+    final itemTop = topPadding + (juzIndex * itemHeight);
+    final target = math.max(
+      0.0,
+      itemTop - (viewport > itemHeight ? (viewport - itemHeight) / 2 : 0.0),
+    );
+    final clamped = target.clamp(
+      0.0,
+      _juzsScrollController.position.maxScrollExtent,
+    );
+
+    if (animate) {
+      _juzsScrollController.animateTo(
+        clamped,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+      );
+    } else {
+      _juzsScrollController.jumpTo(clamped);
+    }
+    _initialJuzScrolled = true;
   }
 
   void _navigateToHome(BuildContext context) {
@@ -134,7 +221,18 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                     padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
                     child: TextField(
                       controller: _searchController,
-                      onChanged: (val) => setState(() => _filter = val.trim()),
+                      onChanged: (val) {
+                        setState(() => _filter = val.trim());
+                        if (val.trim().isNotEmpty) {
+                          if (_surahsScrollController.hasClients) {
+                            _surahsScrollController.jumpTo(0.0);
+                          }
+                        } else {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (mounted) _scrollToCurrentSurah(animate: false);
+                          });
+                        }
+                      },
                       decoration: InputDecoration(
                         hintText: l10n.searchSurahsHint,
                         hintStyle: TextStyle(
@@ -155,6 +253,12 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                                 onPressed: () {
                                   _searchController.clear();
                                   setState(() => _filter = '');
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    if (mounted) {
+                                      _scrollToCurrentSurah(animate: false);
+                                    }
+                                  });
                                 },
                               )
                             : null,
@@ -262,7 +366,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     );
   }
 
-  /// السور، مع تصفية وانتقال مباشر.
+  /// السور، مع تصفية وانتقال مباشر وتمرير لموضع السورة الحالية.
   Widget _buildSurahsList(
     BuildContext context,
     QuranRepository repo,
@@ -275,51 +379,71 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       return normName.contains(query) || s.number.toString() == _filter;
     }).toList();
 
-    return ListView.separated(
+    return ListView.builder(
+      controller: _surahsScrollController,
+      itemExtent: 60.0,
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: filteredSurahs.length,
-      separatorBuilder: (_, _) => Divider(
-        height: 1,
-        color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightBorder,
-      ),
       itemBuilder: (context, index) {
         final surah = filteredSurahs[index];
         final isCurrent =
             widget.currentPage >= surah.pageStart &&
             widget.currentPage <= surah.pageEnd;
 
-        return _IndexTile(
-          number: surah.number,
-          title: surah.name,
-          titleFontSize: 16,
-          subtitle:
-              '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(_digits(context, surah.ayahCount))}',
-          page: surah.pageStart,
-          isCurrent: isCurrent,
-          onTap: () {
-            Navigator.pop(context);
-            widget.onPageSelected(surah.pageStart);
-          },
+        return Container(
+          height: 60.0,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: index == filteredSurahs.length - 1
+                ? null
+                : Border(
+                    bottom: BorderSide(
+                      color: isDark
+                          ? AppColors.darkSurfaceVariant
+                          : AppColors.lightBorder,
+                      width: 1,
+                    ),
+                  ),
+          ),
+          child: _IndexTile(
+            number: surah.number,
+            title: surah.name,
+            titleFontSize: 16,
+            subtitle:
+                '${surah.isMeccan ? context.l10n.meccan : context.l10n.medinan} · ${context.l10n.ayahsCount(_digits(context, surah.ayahCount))}',
+            page: surah.pageStart,
+            isCurrent: isCurrent,
+            onTap: () {
+              Navigator.pop(context);
+              widget.onPageSelected(surah.pageStart);
+            },
+          ),
         );
       },
     );
   }
 
-  /// الأجزاء الثلاثون، تنقل إلى بداية كل جزء.
+  /// الأجزاء الثلاثون، تنقل إلى بداية كل جزء مع تمرير لموضع الجزء الحالي.
   Widget _buildJuzsList(
     BuildContext context,
     QuranRepository repo,
     bool isDark,
   ) {
-    return ListView.separated(
+    if (!_initialJuzScrolled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _scrollToCurrentJuz(animate: false);
+        }
+      });
+    }
+
+    return ListView.builder(
+      controller: _juzsScrollController,
+      itemExtent: 60.0,
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: 30,
-      separatorBuilder: (_, _) => Divider(
-        height: 1,
-        color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightBorder,
-      ),
       itemBuilder: (context, index) {
         final juzNum = index + 1;
         final startPage = repo.pages.firstWhere(
@@ -331,20 +455,36 @@ class _QuranSideMenuState extends State<QuranSideMenu>
         final surah = repo.getSurah(firstAyah.surahNumber);
         final isCurrent = repo.getPage(widget.currentPage).juzNumber == juzNum;
 
-        return _IndexTile(
-          number: juzNum,
-          title: context.l10n.juzAbbr(_digits(context, juzNum)),
-          titleFontSize: 14,
-          subtitle: context.l10n.ayahReference(
-            surah.name,
-            _digits(context, firstAyah.ayahNumber),
+        return Container(
+          height: 60.0,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: index == 29
+                ? null
+                : Border(
+                    bottom: BorderSide(
+                      color: isDark
+                          ? AppColors.darkSurfaceVariant
+                          : AppColors.lightBorder,
+                      width: 1,
+                    ),
+                  ),
           ),
-          page: startPage.pageNumber,
-          isCurrent: isCurrent,
-          onTap: () {
-            Navigator.pop(context);
-            widget.onPageSelected(startPage.pageNumber);
-          },
+          child: _IndexTile(
+            number: juzNum,
+            title: context.l10n.juzAbbr(_digits(context, juzNum)),
+            titleFontSize: 14,
+            subtitle: context.l10n.ayahReference(
+              surah.name,
+              _digits(context, firstAyah.ayahNumber),
+            ),
+            page: startPage.pageNumber,
+            isCurrent: isCurrent,
+            onTap: () {
+              Navigator.pop(context);
+              widget.onPageSelected(startPage.pageNumber);
+            },
+          ),
         );
       },
     );
