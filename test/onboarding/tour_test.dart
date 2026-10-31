@@ -212,8 +212,8 @@ void main() {
     expect(SectionGuide.seen(GuideTopic.ayahLinks), isTrue);
     await tester.tap(find.text('التالي'));
     await advance(tester);
-    expect(find.text('الباب الأول: التقوى'), findsOneWidget);
-    expect(find.textContaining('مَخْرَجًا'), findsOneWidget);
+    expect(find.text('معية الله وتأييده لأهل الصبر'), findsOneWidget);
+    expect(find.textContaining('بِٱلصَّبْرِ'), findsOneWidget);
     await tester.tap(find.text('التالي'));
     await advance(tester);
     await tester.tap(find.text('فهمت'));

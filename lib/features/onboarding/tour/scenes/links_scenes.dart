@@ -299,6 +299,20 @@ class AddVersesScene extends StatelessWidget {
 
   const AddVersesScene({super.key, required this.t});
 
+  static String _patienceVerse1(AppStrings l10n) {
+    final text = _ayahWords(2, 153, 0, 11);
+    return text.isEmpty
+        ? 'يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ ٱسْتَعِينُوا۟ بِٱلصَّبْرِ وَٱلصَّلَوٰةِ ۚ إِنَّ ٱللَّهَ مَعَ ٱلصَّٰبِرِينَ'
+        : text;
+  }
+
+  static String _patienceVerse2(AppStrings l10n) {
+    final text = _ayahWords(39, 10, 18, 24);
+    return text.isEmpty
+        ? 'إِنَّمَا يُوَفَّى ٱلصَّٰبِرُونَ أَجْرَهُم بِغَيْرِ حِسَابٍ'
+        : text;
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = _Palette(context);
@@ -435,7 +449,7 @@ class AddVersesScene extends StatelessWidget {
                     Icon(AppIcons.graphFill, size: 11, color: c.gold),
                     const SizedBox(width: 4),
                     Text(
-                      l10n.tourSampleLink,
+                      l10n.tourSamplePatienceLink,
                       style: _ui(9.5, c.text, bold: true),
                     ),
                   ],
@@ -497,7 +511,7 @@ class AddVersesScene extends StatelessWidget {
           ),
         ),
 
-        // بطاقة الآية الأولى (الطلاق ٢-٣)
+        // بطاقة الآية الأولى (البقرة ١٥٣)
         Positioned(
           left: 18,
           right: 18,
@@ -506,15 +520,15 @@ class AddVersesScene extends StatelessWidget {
             opacity: card1In,
             child: buildVerseCard(
               index: 1,
-              refText: _ref(context, 65, 2),
-              verseText: LinkNetwork._verse(0, l10n),
-              noteText: l10n.tourLinkNote1,
+              refText: _ref(context, 2, 153),
+              verseText: _patienceVerse1(l10n),
+              noteText: l10n.tourPatienceNote1,
               noteOpacity: 1.0,
             ),
           ),
         ),
 
-        // بطاقة الآية الثانية (نوح ١٠-١١) - تظهر بالتدريج مع كتابة الفائدة
+        // بطاقة الآية الثانية (الزمر ١٠) - تظهر بالتدريج مع كتابة الفائدة
         if (card2In > 0)
           Positioned(
             left: 18,
@@ -524,9 +538,9 @@ class AddVersesScene extends StatelessWidget {
               opacity: card2In.clamp(0.0, 1.0),
               child: buildVerseCard(
                 index: 2,
-                refText: _ref(context, 71, 10),
-                verseText: LinkNetwork._verse(1, l10n),
-                noteText: l10n.tourLinkNote2,
+                refText: _ref(context, 39, 10),
+                verseText: _patienceVerse2(l10n),
+                noteText: l10n.tourPatienceNote2,
                 noteOpacity: note2In,
               ),
             ),

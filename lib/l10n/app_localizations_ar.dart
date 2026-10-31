@@ -2188,6 +2188,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tourLinkNote3 => 'الباب الثالث: الشكر';
 
   @override
+  String get tourSamplePatienceLink => 'بشائر الصبر';
+
+  @override
+  String get tourPatienceNote1 => 'معية الله وتأييده لأهل الصبر';
+
+  @override
+  String get tourPatienceNote2 => 'جزاء الصابرين عظيم بلا حصر';
+
+  @override
   String get tourSamplePathway => 'مسار الصبر';
 
   @override

@@ -3912,6 +3912,24 @@ abstract class AppLocalizations {
   /// **'الباب الثالث: الشكر'**
   String get tourLinkNote3;
 
+  /// No description provided for @tourSamplePatienceLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'بشائر الصبر'**
+  String get tourSamplePatienceLink;
+
+  /// No description provided for @tourPatienceNote1.
+  ///
+  /// In ar, this message translates to:
+  /// **'معية الله وتأييده لأهل الصبر'**
+  String get tourPatienceNote1;
+
+  /// No description provided for @tourPatienceNote2.
+  ///
+  /// In ar, this message translates to:
+  /// **'جزاء الصابرين عظيم بلا حصر'**
+  String get tourPatienceNote2;
+
   /// No description provided for @tourSamplePathway.
   ///
   /// In ar, this message translates to:

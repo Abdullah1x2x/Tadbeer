@@ -2192,6 +2192,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tourLinkNote3 => 'Third door: gratitude';
 
   @override
+  String get tourSamplePatienceLink => 'Glad tidings of patience';
+
+  @override
+  String get tourPatienceNote1 => 'God\'s company and support for the patient';
+
+  @override
+  String get tourPatienceNote2 => 'The reward of the patient is beyond measure';
+
+  @override
   String get tourSamplePathway => 'The path of patience';
 
   @override

@@ -780,6 +780,9 @@ class AppStrings {
   String get tourLinkNote1 => _l.tourLinkNote1;
   String get tourLinkNote2 => _l.tourLinkNote2;
   String get tourLinkNote3 => _l.tourLinkNote3;
+  String get tourSamplePatienceLink => _l.tourSamplePatienceLink;
+  String get tourPatienceNote1 => _l.tourPatienceNote1;
+  String get tourPatienceNote2 => _l.tourPatienceNote2;
   String get tourSamplePathway => _l.tourSamplePathway;
   String get tourSamplePathwayHint => _l.tourSamplePathwayHint;
   String get tourDayOne => _l.tourDayOne;
