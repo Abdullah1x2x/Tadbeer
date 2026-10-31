@@ -293,7 +293,7 @@ class CreateLinkScene extends StatelessWidget {
   }
 }
 
-/// تنضم ثلاث آيات عن الصبر إلى الرابط، ولكل منها ملاحظة، وتُرسم خيوطها.
+/// عرض الآيات مرتبة في قائمة مع تدوين الفائدة والتدبر لكل آية، وإضافة آية جديدة.
 class AddVersesScene extends StatelessWidget {
   final double t;
 
@@ -301,14 +301,280 @@ class AddVersesScene extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = _Palette(context);
+    final l10n = context.l10n;
+
+    // مراحل الحركة:
+    // 1. تظهر البطاقة الأولى مع فائدتها.
+    // 2. يضغط الإصبع على زر إضافة آية.
+    // 3. تنبثق البطاقة الثانية مع تدوين فائدتها.
+    final card1In = phase(t, 0.0, 0.2, Curves.easeOut);
+    final tapPress = math.sin(phase(t, 0.26, 0.36) * math.pi);
+    final card2In = phase(t, 0.36, 0.68, Curves.easeOutBack);
+    final note2In = phase(t, 0.58, 0.88, Curves.easeOut);
+
+    Widget buildVerseCard({
+      required int index,
+      required String refText,
+      required String verseText,
+      required String noteText,
+      required double noteOpacity,
+    }) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          color: c.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: c.gold.withValues(alpha: 0.55)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: c.dark ? 0.3 : 0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 18,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: c.primary.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    ArabicSearchNormalizer.toArabicDigits(index),
+                    style: _ui(9, c.primary, bold: true),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  refText,
+                  style: _ui(9.5, c.primary, bold: true),
+                ),
+                const Spacer(),
+                Icon(
+                  AppIcons.dotsThreeVertical,
+                  size: 13,
+                  color: c.muted.withValues(alpha: 0.6),
+                ),
+              ],
+            ),
+            const SizedBox(height: 3),
+            Text(
+              verseText,
+              textAlign: TextAlign.center,
+              style: _quran(10.5, c.text).copyWith(height: 1.55),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 5),
+            Opacity(
+              opacity: noteOpacity,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3.5,
+                ),
+                decoration: BoxDecoration(
+                  color: c.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: c.primary.withValues(alpha: 0.22),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(AppIcons.note, size: 11, color: c.primary),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        noteText,
+                        style: _ui(9, c.primary, bold: true),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return _Canvas(
       children: [
-        Positioned.fill(
-          child: LinkNetwork(
-            t: t,
-            notes: true,
-            centreLabel: context.l10n.tourSampleLink,
+        // شريط الرأس: عنوان الرابط + مبدّل طريقة العرض (مرتب)
+        Positioned(
+          left: 18,
+          right: 18,
+          top: 6,
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: c.primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: c.gold.withValues(alpha: 0.45)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(AppIcons.graphFill, size: 11, color: c.gold),
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.tourSampleLink,
+                      style: _ui(9.5, c.text, bold: true),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              // مبدل العرض: شبكة | مرتب
+              Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: c.surface,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: c.gold.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(AppIcons.graph, size: 10, color: c.muted),
+                          const SizedBox(width: 3),
+                          Text(l10n.networkView, style: _ui(8.5, c.muted)),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: c.primary,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            AppIcons.listNumbers,
+                            size: 10,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 3),
+                          Text(
+                            l10n.orderedView,
+                            style: _ui(8.5, Colors.white, bold: true),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
+        ),
+
+        // بطاقة الآية الأولى (الطلاق ٢-٣)
+        Positioned(
+          left: 18,
+          right: 18,
+          top: 34,
+          child: Opacity(
+            opacity: card1In,
+            child: buildVerseCard(
+              index: 1,
+              refText: _ref(context, 65, 2),
+              verseText: LinkNetwork._verse(0, l10n),
+              noteText: l10n.tourLinkNote1,
+              noteOpacity: 1.0,
+            ),
+          ),
+        ),
+
+        // بطاقة الآية الثانية (نوح ١٠-١١) - تظهر بالتدريج مع كتابة الفائدة
+        if (card2In > 0)
+          Positioned(
+            left: 18,
+            right: 18,
+            top: 114 + (12 * (1 - card2In)),
+            child: Opacity(
+              opacity: card2In.clamp(0.0, 1.0),
+              child: buildVerseCard(
+                index: 2,
+                refText: _ref(context, 71, 10),
+                verseText: LinkNetwork._verse(1, l10n),
+                noteText: l10n.tourLinkNote2,
+                noteOpacity: note2In,
+              ),
+            ),
+          ),
+
+        // زر إضافة آية بأسفل الشاشة
+        Positioned(
+          left: 18,
+          bottom: 4,
+          child: Transform.scale(
+            scale: 1 - 0.08 * tapPress,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                color: c.primary,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: c.primary.withValues(alpha: 0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(AppIcons.plus, size: 11, color: Colors.white),
+                  const SizedBox(width: 4),
+                  Text(
+                    l10n.addAyah,
+                    style: _ui(9, Colors.white, bold: true),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // إصبع الضغط على زر إضافة آية
+        _finger(
+          c,
+          const Offset(52, 204),
+          tapPress,
+          opacity: phase(t, 0.22, 0.26) * (1 - phase(t, 0.38, 0.44)),
         ),
       ],
     );
