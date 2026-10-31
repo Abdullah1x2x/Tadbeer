@@ -68,91 +68,118 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       child: SafeArea(
         child: Column(
           children: [
-            _buildDrawerHeader(context, isDark, l10n),
-
-            // التبويب: السور / الأجزاء.
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isDark
-                      ? AppColors.darkSurfaceVariant
-                      : AppColors.lightBorder,
+                border: Border(
+                  bottom: BorderSide(
+                    color: isDark
+                        ? AppColors.darkSurfaceVariant
+                        : AppColors.lightBorder,
+                    width: 1,
+                  ),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: TabBar(
-                controller: _tabController,
-                labelColor: Colors.white,
-                unselectedLabelColor: isDark
-                    ? AppColors.nightSubtitle
-                    : AppColors.daySubtitle,
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicator: BoxDecoration(
-                  color: AppColors.olive,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                dividerColor: Colors.transparent,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-                tabs: [
-                  Tab(text: l10n.surahs),
-                  Tab(text: l10n.juzs),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildDrawerHeader(context, isDark, l10n),
+
+                  // التبويب: السور / الأجزاء.
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(16, 2, 16, 6),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.darkBackground
+                          : AppColors.comsilkLight,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.darkSurfaceVariant
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: isDark
+                          ? AppColors.nightSubtitle
+                          : AppColors.daySubtitle,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicator: BoxDecoration(
+                        color: AppColors.olive,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      dividerColor: Colors.transparent,
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                      tabs: [
+                        Tab(text: l10n.surahs),
+                        Tab(text: l10n.juzs),
+                      ],
+                    ),
+                  ),
+
+                  // تصفية السور.
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (val) => setState(() => _filter = val.trim()),
+                      decoration: InputDecoration(
+                        hintText: l10n.searchSurahsHint,
+                        hintStyle: TextStyle(
+                          fontSize: 13,
+                          color: isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle,
+                        ),
+                        prefixIcon: Icon(
+                          AppIcons.magnifyingGlass,
+                          size: 18,
+                          color: AppColors.olive,
+                        ),
+                        suffixIcon: _filter.isNotEmpty
+                            ? IconButton(
+                                tooltip: context.l10n.clearText,
+                                icon: const Icon(AppIcons.x, size: 16),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() => _filter = '');
+                                },
+                              )
+                            : null,
+                        filled: true,
+                        fillColor: isDark
+                            ? AppColors.darkBackground
+                            : AppColors.comsilkLight,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: isDark
+                                ? AppColors.darkSurfaceVariant
+                                : AppColors.lightBorder,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-
-            // تصفية السور.
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (val) => setState(() => _filter = val.trim()),
-                decoration: InputDecoration(
-                  hintText: l10n.searchSurahsHint,
-                  hintStyle: TextStyle(
-                    fontSize: 13,
-                    color: isDark
-                        ? AppColors.nightSubtitle
-                        : AppColors.daySubtitle,
-                  ),
-                  prefixIcon: Icon(
-                    AppIcons.magnifyingGlass,
-                    size: 18,
-                    color: AppColors.olive,
-                  ),
-                  suffixIcon: _filter.isNotEmpty
-                      ? IconButton(
-                          tooltip: context.l10n.clearText,
-                          icon: const Icon(AppIcons.x, size: 16),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _filter = '');
-                          },
-                        )
-                      : null,
-                  filled: true,
-                  fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 12,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: isDark
-                          ? AppColors.darkSurfaceVariant
-                          : AppColors.lightBorder,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 4),
 
             Expanded(
               child: TabBarView(
@@ -177,16 +204,6 @@ class _QuranSideMenuState extends State<QuranSideMenu>
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-        border: Border(
-          bottom: BorderSide(
-            color: isDark
-                ? AppColors.darkSurfaceVariant
-                : AppColors.lightBorder,
-          ),
-        ),
-      ),
       child: Row(
         children: [
           Container(
@@ -259,6 +276,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     }).toList();
 
     return ListView.separated(
+      clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: filteredSurahs.length,
       separatorBuilder: (_, _) => Divider(
@@ -295,6 +313,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     bool isDark,
   ) {
     return ListView.separated(
+      clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: 30,
       separatorBuilder: (_, _) => Divider(

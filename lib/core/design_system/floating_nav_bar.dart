@@ -108,56 +108,76 @@ class FloatingNavBar extends StatelessWidget {
               final start = narrow * selectedIndex;
               final left = isRtl ? inner - start - wide : start;
 
+              void handleDrag(double localDx) {
+                final clampedX = (localDx - _inset).clamp(0.0, inner);
+                final fraction = isRtl
+                    ? (1.0 - (clampedX / inner))
+                    : (clampedX / inner);
+                final targetIndex =
+                    (fraction * items.length).floor().clamp(0, items.length - 1);
+                if (targetIndex != selectedIndex) {
+                  HapticFeedback.selectionClick();
+                  onSelected(targetIndex);
+                }
+              }
+
               // طبقة مستقلة: تُرسم الكبسولة المتحركة دون إعادة رسم ظل الشريط
               // الكبير كل إطار.
-              return RepaintBoundary(
-                child: Padding(
-                  padding: const EdgeInsets.all(_inset),
-                  child: Stack(
-                    children: [
-                      AnimatedPositioned(
-                        duration: duration,
-                        curve: curve,
-                        left: left,
-                        top: 0,
-                        bottom: 0,
-                        width: wide,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: AppColors.goldGradient,
-                            borderRadius: BorderRadius.circular(_radius),
-                            boxShadow: [
-                              BoxShadow(
-                                color: gold.withValues(alpha: 0.4),
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+              return GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragStart: (details) =>
+                    handleDrag(details.localPosition.dx),
+                onHorizontalDragUpdate: (details) =>
+                    handleDrag(details.localPosition.dx),
+                child: RepaintBoundary(
+                  child: Padding(
+                    padding: const EdgeInsets.all(_inset),
+                    child: Stack(
+                      children: [
+                        AnimatedPositioned(
+                          duration: duration,
+                          curve: curve,
+                          left: left,
+                          top: 0,
+                          bottom: 0,
+                          width: wide,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: AppColors.goldGradient,
+                              borderRadius: BorderRadius.circular(_radius),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: gold.withValues(alpha: 0.4),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Row(
-                        children: [
-                          for (var i = 0; i < items.length; i++)
-                            AnimatedContainer(
-                              duration: duration,
-                              curve: curve,
-                              width: i == selectedIndex ? wide : narrow,
-                              child: _NavButton(
-                                key: items[i].key,
-                                item: items[i],
-                                selected: i == selectedIndex,
+                        Row(
+                          children: [
+                            for (var i = 0; i < items.length; i++)
+                              AnimatedContainer(
                                 duration: duration,
-                                onTap: () {
-                                  if (i == selectedIndex) return;
-                                  HapticFeedback.selectionClick();
-                                  onSelected(i);
-                                },
+                                curve: curve,
+                                width: i == selectedIndex ? wide : narrow,
+                                child: _NavButton(
+                                  key: items[i].key,
+                                  item: items[i],
+                                  selected: i == selectedIndex,
+                                  duration: duration,
+                                  onTap: () {
+                                    if (i == selectedIndex) return;
+                                    HapticFeedback.selectionClick();
+                                    onSelected(i);
+                                  },
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
