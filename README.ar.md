@@ -10,7 +10,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-[تحميل التطبيق](https://github.com/Abdullah1x2x/Tadbeer/releases) · [الموقع](https://abdullah-alshami.github.io/Tadbeer/) · [دليل المشروع](docs/PROJECT_GUIDE.md) · [English](README.md)
+[تحميل التطبيق](https://github.com/Abdullah1x2x/Tadbeer/releases) · [الموقع](https://abdullah1x2x.github.io/Tadbeer/) · [دليل المشروع](docs/PROJECT_GUIDE.md) · [English](README.md)
 
 </div>
 
