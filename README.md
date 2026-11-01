@@ -70,7 +70,7 @@ flutter analyze && flutter test
 | File | For |
 | --- | --- |
 | [Project guide](docs/PROJECT_GUIDE.md) (Arabic) | Start here: every file, and how to change any detail |
-| [Development guide](DEVELOPMENT_GUIDE.md) | Systems summary and code standards |
+| [Development guide](DEVELOPMENT_GUIDE.ar.md) (Arabic) | Systems summary and code standards |
 | [Architecture guide](docs/ARCHITECTURE_AND_CODE_GUIDE.md) (Arabic) | A deeper look at the main systems |
 | [Content guide](docs/CONTENT_GUIDE.md) (Arabic) | Adding duas, books and pathways |
 | [Changelog](CHANGELOG.md) | What changed in each release |
@@ -86,4 +86,4 @@ The app code is under the [MIT License](LICENSE). Bundled content has its own so
 - Quran text: [Tanzil Project](https://tanzil.net).
 - Mushaf fonts: King Fahd Glorious Quran Printing Complex.
 - Word meanings: [Quranpedia](https://quranpedia.net).
-- Full details are in [ATTRIBUTION.md](ATTRIBUTION.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- Full details are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

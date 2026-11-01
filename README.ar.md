@@ -86,4 +86,4 @@ flutter analyze && flutter test
 - نص القرآن: [مشروع تنزيل](https://tanzil.net).
 - خطوط المصحف: مجمع الملك فهد لطباعة المصحف الشريف.
 - معاني الكلمات: [الموسوعة القرآنية](https://quranpedia.net).
-- التفاصيل الكاملة في [ATTRIBUTION.md](ATTRIBUTION.md) و[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- التفاصيل الكاملة في [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

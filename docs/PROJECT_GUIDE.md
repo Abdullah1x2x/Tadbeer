@@ -204,9 +204,9 @@ context.l10n.اسم_النص  (في الشاشات)
 | `fastlane/` | نصوص صفحة المتجر |
 | `.github/workflows/` | الفحص الآلي `ci.yml` والإصدار `release.yml` |
 | `README.md` و`README.ar.md` | صفحة المشروع |
-| `DEVELOPMENT_GUIDE.md` و`DEVELOPMENT_GUIDE.ar.md` | دليل التطوير المختصر |
+| `DEVELOPMENT_GUIDE.ar.md` | دليل التطوير المعتمد |
 | `CHANGELOG.md` | سجل التغييرات |
-| `ATTRIBUTION.md` و`THIRD_PARTY_NOTICES.md` | المصادر والتراخيص |
+| `THIRD_PARTY_NOTICES.md` | المصادر والتراخيص والتدقيق القانوني |
 | `PRIVACY_POLICY.md` | سياسة الخصوصية |
 | `LICENSE` | رخصة الكود |
 
