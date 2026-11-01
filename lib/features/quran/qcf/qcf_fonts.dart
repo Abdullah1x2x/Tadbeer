@@ -34,6 +34,14 @@ class QcfFonts {
   /// هل اكتمل تحميل خط [page].
   bool isPageLoaded(int page) => _ready.contains(page);
 
+  /// يحمّل خطوط الصفحات المجاورة استباقياً لضمان سلاسة التقليب
+  void preloadSurrounding(int page, {int window = 2}) {
+    for (var i = 1; i <= window; i++) {
+      if (page + i <= pageCount) ensurePage(page + i);
+      if (page - i >= 1) ensurePage(page - i);
+    }
+  }
+
   Future<bool> _load(int page) async {
     try {
       final loader = FontLoader(familyFor(page))

@@ -11,6 +11,7 @@ import '../../../data/quran/quran_repository.dart';
 import '../widgets/surah_header_banner.dart';
 import 'qcf_fonts.dart';
 import 'qcf_layout.dart';
+import 'qcf_widest_lines.g.dart';
 
 /// متن صفحة مصحف المدينة بخط مجمع الملك فهد.
 ///
@@ -117,7 +118,6 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     super.didUpdateWidget(old);
     if (old.pageNumber != widget.pageNumber) _prepare();
   }
-
   void _prepare() {
     final page = widget.pageNumber;
     _ready = Future.wait([
@@ -126,20 +126,19 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       // خط البسملة المرسومة أعلى أغلب السور.
       QcfFonts.instance.ensurePage(1),
     ]).then((r) => r.every((ok) => ok));
-    // الصفحات المجاورة تُحمّل في الخلفية ليبقى التقليب سلساً، بعد أن يهدأ السحب
-    // الذي جاء بهذه الصفحة: تسجيل الخط يحجز خيط الواجهة لحظة.
+    // الصفحات المجاورة تُحمّل في الخلفية ليبقى التقليب سلساً
     _neighbours?.cancel();
-    _neighbours = Timer(const Duration(milliseconds: 600), () {
-      for (final p in [page - 1, page + 1]) {
-        if (p >= 1 && p <= QcfFonts.pageCount) QcfFonts.instance.ensurePage(p);
-      }
+    _neighbours = Timer(const Duration(milliseconds: 100), () {
+      QcfFonts.instance.preloadSurrounding(page);
     });
   }
 
   String get _family => QcfFonts.familyFor(widget.pageNumber);
 
-  /// أعرض سطر في الصفحة بحجم [_probe]، يُقاس مرة لكل صفحة.
+  /// أعرض سطر في الصفحة بحجم [_probe]، يُجلب من القياسات المحسوبة مسبقاً.
   double _measure(List<QcfLine> lines) {
+    final precomputed = kQcfWidestLines[widget.pageNumber];
+    if (precomputed != null) return precomputed;
     final known = _widestLines[widget.pageNumber];
     if (known != null) return known;
     var widest = 1.0;

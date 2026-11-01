@@ -20,6 +20,7 @@ import '../widgets/word_meanings_panel.dart';
 import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
 import 'quran_page_view.dart';
+import '../qcf/qcf_fonts.dart';
 import '../widgets/quran_side_menu.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../../../core/design_system/app_icons.dart';
@@ -201,6 +202,8 @@ class _QuranScreenState extends State<QuranScreen> {
     startPage = startPage.clamp(1, 604);
     _currentPageIndex = startPage - 1;
     _pageController = PageController(initialPage: _currentPageIndex);
+    QcfFonts.instance.ensurePage(startPage);
+    QcfFonts.instance.preloadSurrounding(startPage);
 
     if (widget.controlsVisible != null) {
       // كتبويب: تبدأ الأدوات والشريط السفلي ظاهرة ليعرف القارئ كيف يخرج، ويتبع
@@ -318,6 +321,7 @@ class _QuranScreenState extends State<QuranScreen> {
   /// عند تقليب الصفحة: يحدّث رقمها ويحفظ الموضع.
   void _onPageChanged(int index) {
     if (index < 0 || index >= 604) return;
+    QcfFonts.instance.preloadSurrounding(index + 1);
     final from = _currentPageIndex;
     final programmatic = _ignoreNextPageChange;
     _ignoreNextPageChange = false;
@@ -355,11 +359,15 @@ class _QuranScreenState extends State<QuranScreen> {
   /// ينتقل إلى الصفحة [mushafPage] (١..٦٠٤).
   void _jumpToMushafPage(int mushafPage) {
     final target = mushafPage.clamp(1, 604);
+    QcfFonts.instance.ensurePage(target);
+    QcfFonts.instance.preloadSurrounding(target);
     _pageController.jumpToPage(target - 1);
   }
 
   /// ينتقل إلى صفحة الآية ويميّزها.
   void _jumpToAyah(Ayah ayah) {
+    QcfFonts.instance.ensurePage(ayah.page);
+    QcfFonts.instance.preloadSurrounding(ayah.page);
     _pageController.jumpToPage(ayah.page - 1);
     setState(() {
       _activeSelectedAyah = ayah;
