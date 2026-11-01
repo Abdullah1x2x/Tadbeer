@@ -10,7 +10,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-[Download](https://github.com/Abdullah1x2x/Tadbeer/releases) · [Website](https://tadbeerquran.netlify.app/) · [Project guide](docs/PROJECT_GUIDE.md) · [العربية](README.ar.md)
+[Download](https://github.com/Abdullah1x2x/Tadbeer/releases) · [Website](https://tadbeerquran.netlify.app/) · [Developer guide](DEVELOPMENT.md) · [العربية](README.ar.md)
 
 </div>
 
@@ -51,7 +51,7 @@ Your data stays on your device. No account, ads or analytics. The internet is us
 
 ## Getting started
 
-You need Flutter 3.47.6 and the Android SDK. Full setup steps are in the [project guide](docs/PROJECT_GUIDE.md#2-تجهيز-جهازك-من-الصفر) (Arabic).
+You need Flutter 3.47.6 and the Android SDK. Full setup steps are in the [developer guide](DEVELOPMENT.md) (Arabic).
 
 ```bash
 git clone https://github.com/Abdullah1x2x/Tadbeer.git

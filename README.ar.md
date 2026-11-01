@@ -10,7 +10,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-[تحميل التطبيق](https://github.com/Abdullah1x2x/Tadbeer/releases) · [الموقع](https://tadbeerquran.netlify.app/) · [دليل المشروع](docs/PROJECT_GUIDE.md) · [English](README.md)
+[تحميل التطبيق](https://github.com/Abdullah1x2x/Tadbeer/releases) · [الموقع](https://tadbeerquran.netlify.app/) · [دليل التطوير](DEVELOPMENT.md) · [English](README.md)
 
 </div>
 
@@ -51,7 +51,7 @@
 
 ## التشغيل
 
-تحتاج Flutter 3.47.6 وAndroid SDK. والخطوات الكاملة من الصفر في [دليل المشروع](docs/PROJECT_GUIDE.md#2-تجهيز-جهازك-من-الصفر).
+تحتاج Flutter 3.47.6 وAndroid SDK. والخطوات الكاملة للمطورين في [دليل التطوير](DEVELOPMENT.md).
 
 ```bash
 git clone https://github.com/Abdullah1x2x/Tadbeer.git
