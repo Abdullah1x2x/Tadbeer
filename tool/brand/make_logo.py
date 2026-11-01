@@ -26,6 +26,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BRAND = os.path.dirname(os.path.abspath(__file__))
 ICONS = os.path.join(ROOT, 'assets/icons')
 
 
@@ -162,7 +163,7 @@ def editable_svg(fg, size=1024):
 
 def main():
     original = Image.open(
-        os.path.join(ICONS, 'app_icon_foreground.original.png')).convert('RGBA')
+        os.path.join(BRAND, 'app_icon_foreground.original.png')).convert('RGBA')
     art = foreground(original)
     size = art.width
     # The shadow travels with the arch and book: launchers shrink the
@@ -179,7 +180,7 @@ def main():
     full.convert('RGB').save(os.path.join(ICONS, 'app_icon.png'))
     full.convert('RGB').resize((512, 512), Image.LANCZOS).save(
         os.path.join(ICONS, 'app_logo.png'))
-    with open(os.path.join(ICONS, 'logo_editable.svg'), 'w') as out:
+    with open(os.path.join(BRAND, 'logo_editable.svg'), 'w') as out:
         out.write(editable_svg(art))
 
 
