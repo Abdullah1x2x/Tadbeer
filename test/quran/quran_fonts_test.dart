@@ -7,6 +7,7 @@ import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/storage/user_database.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
+import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/data/models/user_settings_model.dart';
 
 void main() {
@@ -114,6 +115,60 @@ void main() {
 
           expect(find.byType(QuranPageView), findsOneWidget);
         }
+      },
+    );
+
+    testWidgets(
+      '5. QuranScreen updates font immediately when settings change without leaving screen',
+      (tester) async {
+        await tester.runAsync(() async {
+          await UserDataStore.instance.setMushafStyle(MushafStyle.text);
+          await UserDataStore.instance.setQuranFontFamily(
+            QuranFontFamilyOption.scheherazade,
+          );
+        });
+
+        await tester.pumpWidget(
+          AppLocalizationScope(
+            currentLanguage: AppLanguage.arabic,
+            strings: const AppStrings(AppLanguage.arabic),
+            onLanguageChanged: (_) {},
+            child: const MaterialApp(home: QuranScreen(initialPage: 3)),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Check initial font family on ayah
+        final textFinder = find.byType(RichText);
+        String? ayahFont;
+        for (final element in textFinder.evaluate()) {
+          final widget = element.widget as RichText;
+          if (widget.text.toPlainText().contains('إِنَّ ٱلَّذِينَ كَفَرُوا۟')) {
+            final span = widget.text as TextSpan;
+            ayahFont = (span.children?.first as TextSpan?)?.style?.fontFamily;
+          }
+        }
+        expect(ayahFont, 'ScheherazadeNew');
+
+        // Change font family while screen is open
+        await tester.runAsync(() async {
+          await UserDataStore.instance.setQuranFontFamily(
+            QuranFontFamilyOption.notoNaskh,
+          );
+        });
+        await tester.pumpAndSettle();
+
+        // Font must update immediately
+        String? updatedAyahFont;
+        for (final element in textFinder.evaluate()) {
+          final widget = element.widget as RichText;
+          if (widget.text.toPlainText().contains('إِنَّ ٱلَّذِينَ كَفَرُوا۟')) {
+            final span = widget.text as TextSpan;
+            updatedAyahFont =
+                (span.children?.first as TextSpan?)?.style?.fontFamily;
+          }
+        }
+        expect(updatedAyahFont, 'NotoNaskhArabic');
       },
     );
   });

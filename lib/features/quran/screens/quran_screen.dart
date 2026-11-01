@@ -89,6 +89,12 @@ class _QuranScreenState extends State<QuranScreen> {
   Widget? _pager;
   int? _pagerSelectedAyah;
   bool? _pagerIsDark;
+  String? _pagerSettingsSig;
+
+  String _settingsSignature() {
+    final s = UserDataStore.instance.settings;
+    return '${s.quranFontFamilyName}|${s.mushafStyle}|${s.flowingTextScale}|${s.mushafPaperTone}|${s.quranFontSize}';
+  }
 
   /// يُضبط قبل انتقال لم يقم به القارئ (كمزامنة التبويب)، فلا يُحسب ولا يُحفظ
   /// ثانية.
@@ -202,8 +208,9 @@ class _QuranScreenState extends State<QuranScreen> {
       _showTopBar = true;
       widget.controlsVisible!.value = true;
       _lastSavedPage = UserDataStore.instance.readingPosition.page;
-      UserDataStore.instance.addListener(_syncToSavedPosition);
     }
+    _pagerSettingsSig = _settingsSignature();
+    UserDataStore.instance.addListener(_onStoreChanged);
 
     _startAutoCount();
     QuranAudio.instance.addListener(_onAudio);
@@ -273,9 +280,7 @@ class _QuranScreenState extends State<QuranScreen> {
 
   @override
   void dispose() {
-    if (widget.controlsVisible != null) {
-      UserDataStore.instance.removeListener(_syncToSavedPosition);
-    }
+    UserDataStore.instance.removeListener(_onStoreChanged);
     QuranAudio.instance.removeListener(_onAudio);
     _suppressTimer?.cancel();
     _autoCountTimer?.cancel();
@@ -288,15 +293,25 @@ class _QuranScreenState extends State<QuranScreen> {
     super.dispose();
   }
 
-  /// ينقل مصحف التبويب إلى الموضع المحفوظ حين يحرّكه قارئ آخر.
-  void _syncToSavedPosition() {
-    final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
-    // المخزن يُعلم بكل تغيير؛ وحفظ القارئ أو الإعدادات لا يحرّك الصفحة.
-    if (page == _lastSavedPage) return;
-    _lastSavedPage = page;
-    if (page - 1 != _currentPageIndex && _pageController.hasClients) {
-      _ignoreNextPageChange = true;
-      _pageController.jumpToPage(page - 1);
+  /// يتتبع تغيّر موضع القراءة وإعدادات الخط والعرض.
+  void _onStoreChanged() {
+    if (!mounted) return;
+    if (widget.controlsVisible != null) {
+      final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
+      if (page != _lastSavedPage) {
+        _lastSavedPage = page;
+        if (page - 1 != _currentPageIndex && _pageController.hasClients) {
+          _ignoreNextPageChange = true;
+          _pageController.jumpToPage(page - 1);
+        }
+      }
+    }
+    final nextSig = _settingsSignature();
+    if (nextSig != _pagerSettingsSig) {
+      setState(() {
+        _pagerSettingsSig = nextSig;
+        _pager = null;
+      });
     }
   }
 
@@ -744,14 +759,17 @@ class _QuranScreenState extends State<QuranScreen> {
     );
   }
 
-  /// صفحات المصحف، ولا تُبنى من جديد إلا إن تغيّرت الآية المحددة أو السطوع.
+  /// صفحات المصحف، ولا تُبنى من جديد إلا إن تغيّرت الآية المحددة أو السطوع أو إعدادات الخط والعرض.
   Widget _pagerFor(bool isDark) {
     final selected = (_activeSelectedAyah ?? QuranAudio.instance.current)?.id;
+    final settingsSig = _settingsSignature();
     if (_pager == null ||
         selected != _pagerSelectedAyah ||
-        isDark != _pagerIsDark) {
+        isDark != _pagerIsDark ||
+        settingsSig != _pagerSettingsSig) {
       _pagerSelectedAyah = selected;
       _pagerIsDark = isDark;
+      _pagerSettingsSig = settingsSig;
       _pager = _buildPager(isDark);
     }
     return _pager!;
@@ -762,6 +780,7 @@ class _QuranScreenState extends State<QuranScreen> {
     controller: _pageSnapshots,
     mode: SnapshotMode.permissive,
     child: QuranPageView(
+      key: ValueKey('mushaf_page_${pageNumber}_$_pagerSettingsSig'),
       page: QuranRepository.instance.getPage(pageNumber),
       pageNumber: pageNumber,
       selectedAyah: _activeSelectedAyah ?? QuranAudio.instance.current,
@@ -794,6 +813,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 if (!isWideSpread) {
                   return RepaintBoundary(
                     child: _SettledPage(
+                      key: ValueKey('settled_${index}_$_pagerSettingsSig'),
                       controller: _pageController,
                       index: index,
                       child: _mushafPage(pageNumber),
@@ -1037,6 +1057,7 @@ class _SettledPage extends StatefulWidget {
   final Widget child;
 
   const _SettledPage({
+    super.key,
     required this.controller,
     required this.index,
     required this.child,
