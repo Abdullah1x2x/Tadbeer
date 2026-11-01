@@ -5,12 +5,14 @@ import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
+import '../../../data/models/user_settings_model.dart';
 import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/models/ayah_link_model.dart';
 import '../data/ayah_link_repository.dart';
 import 'ayah_link_edit_dialogs.dart';
 import '../../../data/quran/quran_repository.dart';
+import '../../quran/qcf/qcf_ayah_text.dart';
 import '../../quran/screens/quran_screen.dart';
 import '../../../core/design_system/app_icons.dart';
 
@@ -374,18 +376,40 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 color: isDark ? AppColors.darkBackground : AppColors.comsilk,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
-                '﴿ ${ayah.text} ﴾',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: UserDataStore.instance.quranFontFamily,
-                  fontSize: 18,
-                  height: 1.8,
-                  color: isDark
-                      ? AppColors.nightQuranText
-                      : AppColors.dayQuranText,
-                ),
-              ),
+              child: UserDataStore.instance.settings.mushafStyle ==
+                      MushafStyle.madinah
+                  ? QcfAyahText(
+                      ayah: ayah,
+                      fontSize: 18,
+                      color: isDark
+                          ? AppColors.nightQuranText
+                          : AppColors.dayQuranText,
+                      height: 1.8,
+                      fallback: Text(
+                        '﴿ ${ayah.text} ﴾',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: UserDataStore.instance.quranFontFamily,
+                          fontSize: 18,
+                          height: 1.8,
+                          color: isDark
+                              ? AppColors.nightQuranText
+                              : AppColors.dayQuranText,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      '﴿ ${ayah.text} ﴾',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: UserDataStore.instance.quranFontFamily,
+                        fontSize: 18,
+                        height: 1.8,
+                        color: isDark
+                            ? AppColors.nightQuranText
+                            : AppColors.dayQuranText,
+                      ),
+                    ),
             ),
           const SizedBox(height: 12),
 

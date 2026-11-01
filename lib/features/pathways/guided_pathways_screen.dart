@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../ayah_links/data/curated_pathways.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../data/models/tadbeer_model.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
 import '../tadbeer/tadbeer_questions.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../continue/last_activity.dart';
@@ -301,15 +303,31 @@ class _DayCard extends StatelessWidget {
             header,
             const SizedBox(height: 14),
             if (ayah != null)
-              Text(
-                '﴿${ayah.text}﴾',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: UserDataStore.instance.quranFontFamily,
-                  fontSize: 22,
-                  height: 2,
-                ),
-              ),
+              UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah
+                  ? QcfAyahText(
+                      ayah: ayah,
+                      fontSize: 22,
+                      height: 2,
+                      color: AppColors.textPrimary(context),
+                      fallback: Text(
+                        '﴿${ayah.text}﴾',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: UserDataStore.instance.quranFontFamily,
+                          fontSize: 22,
+                          height: 2,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      '﴿${ayah.text}﴾',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: UserDataStore.instance.quranFontFamily,
+                        fontSize: 22,
+                        height: 2,
+                      ),
+                    ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(12),

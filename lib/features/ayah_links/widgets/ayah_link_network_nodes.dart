@@ -239,18 +239,39 @@ class _VerseCanvasNode extends StatelessWidget {
             const SizedBox(height: 6),
 
             if (ayah != null)
-              Text(
-                '﴿ ${ayah.text} ﴾',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: UserDataStore.instance.quranFontFamily,
-                  fontSize: fontSize * 0.78,
-                  height: 1.6,
-                  color: isDark
-                      ? AppColors.nightQuranText
-                      : AppColors.dayQuranText,
-                ),
-              ),
+              UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah
+                  ? QcfAyahText(
+                      ayah: ayah,
+                      fontSize: fontSize * 0.78,
+                      height: 1.6,
+                      color: isDark
+                          ? AppColors.nightQuranText
+                          : AppColors.dayQuranText,
+                      fallback: Text(
+                        '﴿ ${ayah.text} ﴾',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: UserDataStore.instance.quranFontFamily,
+                          fontSize: fontSize * 0.78,
+                          height: 1.6,
+                          color: isDark
+                              ? AppColors.nightQuranText
+                              : AppColors.dayQuranText,
+                        ),
+                      ),
+                    )
+                  : Text(
+                      '﴿ ${ayah.text} ﴾',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: UserDataStore.instance.quranFontFamily,
+                        fontSize: fontSize * 0.78,
+                        height: 1.6,
+                        color: isDark
+                            ? AppColors.nightQuranText
+                            : AppColors.dayQuranText,
+                      ),
+                    ),
 
             // خاطرة الآية تحت نصها إن وُجدت.
             if (hasNote) ...[

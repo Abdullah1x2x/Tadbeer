@@ -7,10 +7,12 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import '../../core/motion/app_motion.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -265,28 +267,70 @@ class _AyahPanel extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: SingleChildScrollView(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: _formatAyahText(ayah.text)),
-                          TextSpan(
-                            text:
-                                ' ﴿${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}﴾',
-                            style: const TextStyle(color: gold),
+                    child: UserDataStore.instance.settings.mushafStyle ==
+                            MushafStyle.madinah
+                        ? QcfAyahText(
+                            ayah: ayah,
+                            fontSize: 30,
+                            color: const Color(0xFFF2EEE4),
+                            height: 2.1,
+                            shadows: const [
+                              Shadow(
+                                color: Color(0x66000000),
+                                blurRadius: 12,
+                              ),
+                            ],
+                            fallback: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(text: _formatAyahText(ayah.text)),
+                                  TextSpan(
+                                    text:
+                                        ' ﴿${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}﴾',
+                                    style: const TextStyle(color: gold),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: font,
+                                fontSize: 30,
+                                height: 2.1,
+                                color: const Color(0xFFF2EEE4),
+                                shadows: const [
+                                  Shadow(
+                                    color: Color(0x66000000),
+                                    blurRadius: 12,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(text: _formatAyahText(ayah.text)),
+                                TextSpan(
+                                  text:
+                                      ' ﴿${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}﴾',
+                                  style: const TextStyle(color: gold),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: font,
+                              fontSize: 30,
+                              height: 2.1,
+                              color: const Color(0xFFF2EEE4),
+                              shadows: const [
+                                Shadow(
+                                  color: Color(0x66000000),
+                                  blurRadius: 12,
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: font,
-                        fontSize: 30,
-                        height: 2.1,
-                        color: const Color(0xFFF2EEE4),
-                        shadows: const [
-                          Shadow(color: Color(0x66000000), blurRadius: 12),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
               ),

@@ -136,6 +136,11 @@ class QcfAyahText extends StatefulWidget {
   /// يظهر أثناء التحميل، أو إن تعذّر الرسم.
   final Widget fallback;
 
+  final TextAlign textAlign;
+  final List<Shadow>? shadows;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
   const QcfAyahText({
     super.key,
     required this.ayah,
@@ -143,6 +148,10 @@ class QcfAyahText extends StatefulWidget {
     required this.color,
     required this.fallback,
     this.height = 1.9,
+    this.textAlign = TextAlign.center,
+    this.shadows,
+    this.maxLines,
+    this.overflow,
   });
 
   @override
@@ -171,12 +180,15 @@ class _QcfAyahTextState extends State<QcfAyahText> {
   Widget _text(QcfGlyphs glyphs) => Text(
     semanticsLabel: widget.ayah.text,
     glyphs.text,
-    textAlign: TextAlign.center,
+    textAlign: widget.textAlign,
     textDirection: TextDirection.rtl,
+    maxLines: widget.maxLines,
+    overflow: widget.overflow,
     style: glyphs.style(
       fontSize: widget.fontSize,
       height: widget.height,
       color: widget.color,
+      shadows: widget.shadows,
     ),
   );
 

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../../data/models/user_settings_model.dart';
 import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
+import '../../quran/qcf/qcf_ayah_text.dart';
 import '../data/ayah_link_repository.dart';
 
 /// إضافة آية إلى رابط.
@@ -292,17 +294,35 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 ),
               ],
             ),
-            Text(
-              ayah.text,
-              textAlign: TextAlign.center,
-              maxLines: 6,
-              overflow: TextOverflow.fade,
-              style: TextStyle(
-                fontFamily: UserDataStore.instance.quranFontFamily,
-                fontSize: 17,
-                height: 1.9,
-              ),
-            ),
+            UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah
+                ? QcfAyahText(
+                    ayah: ayah,
+                    fontSize: 17,
+                    height: 1.9,
+                    color: AppColors.textPrimary(context),
+                    fallback: Text(
+                      ayah.text,
+                      textAlign: TextAlign.center,
+                      maxLines: 6,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        fontFamily: UserDataStore.instance.quranFontFamily,
+                        fontSize: 17,
+                        height: 1.9,
+                      ),
+                    ),
+                  )
+                : Text(
+                    ayah.text,
+                    textAlign: TextAlign.center,
+                    maxLines: 6,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                      fontFamily: UserDataStore.instance.quranFontFamily,
+                      fontSize: 17,
+                      height: 1.9,
+                    ),
+                  ),
             if (added) ...[
               const SizedBox(height: 6),
               Row(

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../data/models/tadbeer_model.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
 import 'tadbeer_questions.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -269,20 +271,46 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        '﴿ ${widget.ayah.text} ﴾',
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontFamily: 'AmiriQuran',
-                          fontSize: 15,
-                          height: 1.6,
-                          color: isDark
-                              ? AppColors.nightQuranText
-                              : AppColors.dayQuranText,
-                        ),
-                      ),
+                      UserDataStore.instance.settings.mushafStyle ==
+                              MushafStyle.madinah
+                          ? QcfAyahText(
+                              ayah: widget.ayah,
+                              fontSize: 15,
+                              height: 1.6,
+                              color: isDark
+                                  ? AppColors.nightQuranText
+                                  : AppColors.dayQuranText,
+                              fallback: Text(
+                                '﴿ ${widget.ayah.text} ﴾',
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily:
+                                      UserDataStore.instance.quranFontFamily,
+                                  fontSize: 15,
+                                  height: 1.6,
+                                  color: isDark
+                                      ? AppColors.nightQuranText
+                                      : AppColors.dayQuranText,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              '﴿ ${widget.ayah.text} ﴾',
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily:
+                                    UserDataStore.instance.quranFontFamily,
+                                fontSize: 15,
+                                height: 1.6,
+                                color: isDark
+                                    ? AppColors.nightQuranText
+                                    : AppColors.dayQuranText,
+                              ),
+                            ),
                     ],
                   ),
                 ),
