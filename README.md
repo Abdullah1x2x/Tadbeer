@@ -67,13 +67,10 @@ flutter analyze && flutter test
 
 ## Documentation
 
-| File | For |
-| --- | --- |
-| [Project guide](docs/PROJECT_GUIDE.md) (Arabic) | Start here: every file, and how to change any detail |
-| [Development guide](DEVELOPMENT_GUIDE.ar.md) (Arabic) | Systems summary and code standards |
-| [Architecture guide](docs/ARCHITECTURE_AND_CODE_GUIDE.md) (Arabic) | A deeper look at the main systems |
-| [Content guide](docs/CONTENT_GUIDE.md) (Arabic) | Adding duas, books and pathways |
-| [Changelog](CHANGELOG.md) | What changed in each release |
+- [Development Guide](DEVELOPMENT.md) (Arabic): Comprehensive architectural guide, environment setup, code standards, and content extension.
+- [Changelog](CHANGELOG.md): Release history and updates.
+- [Privacy Policy](PRIVACY_POLICY.md): Offline-first privacy policy.
+- [Third-Party Notices & Licenses](THIRD_PARTY_NOTICES.md): Full legal audit and attributions.
 
 ## Contributing
 
