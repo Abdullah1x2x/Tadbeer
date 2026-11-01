@@ -131,11 +131,6 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     _initialJuzScrolled = true;
   }
 
-  void _navigateToHome(BuildContext context) {
-    Navigator.of(context).pop(); // close drawer
-    Navigator.of(context).popUntil((route) => route.isFirst);
-  }
-
   void _navigateToSettings(BuildContext context) {
     Navigator.of(context).pop(); // close drawer
     Navigator.of(context)
@@ -147,37 +142,38 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final repo = QuranRepository.instance;
+    final topPadding = MediaQuery.paddingOf(context).top;
 
     return Drawer(
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.comsilkLight,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurface : AppColors.comsilk,
-                border: Border(
-                  bottom: BorderSide(
-                    color: isDark
-                        ? AppColors.darkSurfaceVariant
-                        : AppColors.lightBorder,
-                    width: 1,
-                  ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: topPadding),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkSurface : AppColors.comsilk,
+              border: Border(
+                bottom: BorderSide(
+                  color: isDark
+                      ? AppColors.darkSurfaceVariant
+                      : AppColors.lightBorder,
+                  width: 1,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildDrawerHeader(context, isDark, l10n),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildDrawerHeader(context, isDark, l10n),
 
                   // التبويب: السور / الأجزاء.
                   Container(
@@ -296,11 +292,10 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             ),
           ],
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  /// ترويسة القائمة: اسم التطبيق وزرّا الرئيسية والإعدادات.
+  /// ترويسة القائمة: اسم التطبيق وزر الإعدادات.
   Widget _buildDrawerHeader(
     BuildContext context,
     bool isDark,
@@ -350,12 +345,6 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             ),
           ),
           IconButton(
-            icon: const Icon(AppIcons.house),
-            tooltip: l10n.home,
-            color: AppColors.olive,
-            onPressed: () => _navigateToHome(context),
-          ),
-          IconButton(
             icon: const Icon(AppIcons.gear),
             tooltip: l10n.settings,
             color: AppColors.olive,
@@ -379,11 +368,13 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       return normName.contains(query) || s.number.toString() == _filter;
     }).toList();
 
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
+
     return ListView.builder(
       controller: _surahsScrollController,
       itemExtent: 60.0,
       clipBehavior: Clip.hardEdge,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.fromLTRB(8, 4, 8, math.max(8.0, bottomPadding)),
       itemCount: filteredSurahs.length,
       itemBuilder: (context, index) {
         final surah = filteredSurahs[index];
@@ -438,11 +429,13 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       });
     }
 
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
+
     return ListView.builder(
       controller: _juzsScrollController,
       itemExtent: 60.0,
       clipBehavior: Clip.hardEdge,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.fromLTRB(8, 4, 8, math.max(8.0, bottomPadding)),
       itemCount: 30,
       itemBuilder: (context, index) {
         final juzNum = index + 1;

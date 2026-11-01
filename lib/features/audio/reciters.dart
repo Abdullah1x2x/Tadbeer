@@ -27,8 +27,8 @@ class Reciter {
 
 /// القرّاء المعروضون، بترتيب ظهورهم.
 const reciters = <Reciter>[
-  Reciter(id: 'ar.husary', name: 'محمود خليل الحصري', bitrate: 128),
   Reciter(id: 'ar.minshawi', name: 'محمد صديق المنشاوي', bitrate: 128),
+  Reciter(id: 'ar.husary', name: 'محمود خليل الحصري', bitrate: 128),
   Reciter(
     id: 'ar.abdulbasitmurattal',
     name: 'عبد الباسط عبد الصمد',

@@ -54,13 +54,6 @@ class _FocusModeScreenState extends State<FocusModeScreen>
     duration: const Duration(seconds: 24),
   );
 
-  /// دورة تنفس من ٨ ثوانٍ (٤ شهيق و٤ زفير)؛ تعمل فقط حين تظهر.
-  late final AnimationController _breath = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 8),
-  );
-  bool _breathing = false;
-
   @override
   void initState() {
     super.initState();
@@ -89,25 +82,13 @@ class _FocusModeScreenState extends State<FocusModeScreen>
   void dispose() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     _ambient.dispose();
-    _breath.dispose();
     _pages.dispose();
     super.dispose();
-  }
-
-  void _toggleBreathing() {
-    HapticFeedback.selectionClick();
-    setState(() => _breathing = !_breathing);
-    if (_breathing) {
-      _breath.repeat();
-    } else {
-      _breath.stop();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const gold = Color(0xFFE8C878);
     // ألوان السماء من الثيم المختار.
     final deepest = Color.lerp(AppColors.darkBackground, Colors.black, 0.4)!;
     final sky = [
@@ -145,11 +126,7 @@ class _FocusModeScreenState extends State<FocusModeScreen>
               itemBuilder: (context, i) =>
                   _AyahPanel(ayah: _ayahs[i], active: i == _index),
             ),
-            if (_breathing)
-              IgnorePointer(
-                child: Center(child: _BreathingCircle(animation: _breath)),
-              ),
-            // الشريط العلوي: الإغلاق وتمرين التنفس.
+            // الشريط العلوي: الإغلاق.
             Align(
               alignment: Alignment.topCenter,
               child: SafeArea(
@@ -162,15 +139,6 @@ class _FocusModeScreenState extends State<FocusModeScreen>
                         onPressed: () => Navigator.pop(context),
                         icon: const Icon(AppIcons.x),
                         color: Colors.white70,
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        tooltip: l10n.breathe,
-                        onPressed: _toggleBreathing,
-                        icon: Icon(
-                          _breathing ? AppIcons.wind : AppIcons.flowerLotus,
-                        ),
-                        color: _breathing ? gold : Colors.white70,
                       ),
                     ],
                   ),
@@ -338,53 +306,6 @@ class _AyahPanel extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// دائرة تنفس تتسع ٤ ثوانٍ وتنقبض ٤ ثوانٍ.
-class _BreathingCircle extends StatelessWidget {
-  final Animation<double> animation;
-
-  const _BreathingCircle({required this.animation});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    const gold = Color(0xFFE8C878);
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, _) {
-        final t = animation.value;
-        final inhale = t < 0.5;
-        // انتقال ناعم: من ٠ إلى ١ ثم إلى ٠ عبر الدورة.
-        final phase = Curves.easeInOut.transform(inhale ? t * 2 : (1 - t) * 2);
-        final size = 140 + 120 * phase;
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    gold.withValues(alpha: 0.28),
-                    gold.withValues(alpha: 0.02),
-                  ],
-                ),
-                border: Border.all(color: gold.withValues(alpha: 0.45)),
-              ),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              inhale ? l10n.breatheIn : l10n.breatheOut,
-              style: const TextStyle(color: gold, fontSize: 16),
-            ),
-          ],
-        );
-      },
     );
   }
 }

@@ -54,11 +54,6 @@ void main() {
       isTrue,
     );
 
-    // Breathing circle toggles on.
-    await tester.tap(find.byTooltip('تنفّس بهدوء'));
-    await tester.pump(const Duration(seconds: 1));
-    expect(find.text('شهيق…'), findsOneWidget);
-
     // Unmount so the looping animations stop before the test ends.
     await tester.pumpWidget(const SizedBox());
   });

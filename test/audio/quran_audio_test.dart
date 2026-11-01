@@ -208,7 +208,8 @@ void main() {
     });
 
     test('plays downloaded ayahs from the device', () async {
-      await AudioDownloads.instance.downloadSurah(husary, 112);
+      final defaultReciter = reciters.first;
+      await AudioDownloads.instance.downloadSurah(defaultReciter, 112);
       final engine = _FakeEngine();
       final audio = QuranAudio.withEngine(engine);
       await audio.playFrom(repo.getAyah(112, 1)!);
@@ -425,7 +426,7 @@ void main() {
     await tester.runAsync(() => audio.playFrom(repo.getAyah(2, 255)!));
     await tester.pump();
     expect(find.text('سورة البقرة · الآية ٢٥٥'), findsOneWidget);
-    expect(find.text('محمود خليل الحصري'), findsOneWidget);
+    expect(find.text('محمد صديق المنشاوي'), findsOneWidget);
 
     await tester.tap(find.byTooltip('الآية التالية'));
     await tester.pump();
