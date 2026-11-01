@@ -368,13 +368,11 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       return normName.contains(query) || s.number.toString() == _filter;
     }).toList();
 
-    final bottomPadding = MediaQuery.paddingOf(context).bottom;
-
     return ListView.builder(
       controller: _surahsScrollController,
       itemExtent: 60.0,
       clipBehavior: Clip.hardEdge,
-      padding: EdgeInsets.fromLTRB(8, 4, 8, math.max(8.0, bottomPadding)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: filteredSurahs.length,
       itemBuilder: (context, index) {
         final surah = filteredSurahs[index];
@@ -386,7 +384,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
           height: 60.0,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: index == filteredSurahs.length - 1
+            border: index == filteredSurahs.length - 1 || isCurrent
                 ? null
                 : Border(
                     bottom: BorderSide(
@@ -429,13 +427,11 @@ class _QuranSideMenuState extends State<QuranSideMenu>
       });
     }
 
-    final bottomPadding = MediaQuery.paddingOf(context).bottom;
-
     return ListView.builder(
       controller: _juzsScrollController,
       itemExtent: 60.0,
       clipBehavior: Clip.hardEdge,
-      padding: EdgeInsets.fromLTRB(8, 4, 8, math.max(8.0, bottomPadding)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: 30,
       itemBuilder: (context, index) {
         final juzNum = index + 1;
@@ -452,7 +448,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
           height: 60.0,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: index == 29
+            border: index == 29 || isCurrent
                 ? null
                 : Border(
                     bottom: BorderSide(
@@ -518,8 +514,10 @@ class _IndexTile extends StatelessWidget {
     return ListTile(
       dense: true,
       selected: isCurrent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      selectedTileColor: AppColors.olive.withValues(alpha: 0.12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      selectedTileColor: isDark
+          ? AppColors.oliveDark.withValues(alpha: 0.25)
+          : AppColors.olive.withValues(alpha: 0.12),
       leading: Container(
         width: 32,
         height: 32,
@@ -551,8 +549,10 @@ class _IndexTile extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'IBMPlexSansArabic',
           fontSize: titleFontSize,
-          fontWeight: FontWeight.bold,
-          color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
+          fontWeight: isCurrent ? FontWeight.bold : FontWeight.w600,
+          color: isCurrent
+              ? AppColors.olive
+              : (isDark ? AppColors.nightQuranText : AppColors.dayQuranText),
         ),
       ),
       subtitle: Text(

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
@@ -27,13 +26,6 @@ class AyahGestureRecognizer extends LongPressGestureRecognizer {
   VoidCallback? onPointerUpEarly;
   VoidCallback? onTap;
 
-  /// مهلة تأخير إبراز الآية لتفادي وميض التظليل أثناء السحب أو النقر السريع.
-  final Duration highlightDelay;
-
-  Timer? _highlightTimer;
-  bool _highlightShown = false;
-  bool _longPressFired = false;
-
   /// [duration] مهلة الضغط المطوّل؛ الافتراضي 1100 مللي ثانية.
   AyahGestureRecognizer({
     this.onPointerDown,
@@ -41,11 +33,12 @@ class AyahGestureRecognizer extends LongPressGestureRecognizer {
     this.onTap,
     VoidCallback? onLongPress,
     super.duration = const Duration(milliseconds: 1100),
-    this.highlightDelay = const Duration(milliseconds: 180),
     super.debugOwner,
   }) {
     this.onLongPress = onLongPress;
   }
+
+  bool _longPressFired = false;
 
   @override
   void didExceedDeadline() {
@@ -53,59 +46,25 @@ class AyahGestureRecognizer extends LongPressGestureRecognizer {
     super.didExceedDeadline();
   }
 
-  void _cancelHighlightTimer() {
-    _highlightTimer?.cancel();
-    _highlightTimer = null;
-  }
-
   /// يميّز النقر السريع من الضغط المطوّل.
   @override
   void handlePrimaryPointer(PointerEvent event) {
     if (event is PointerDownEvent) {
       _longPressFired = false;
-      _highlightShown = false;
-      _cancelHighlightTimer();
-      _highlightTimer = Timer(highlightDelay, () {
-        if (!_longPressFired) {
-          _highlightShown = true;
-          onPointerDown?.call();
-        }
-      });
+      onPointerDown?.call();
     } else if (event is PointerUpEvent) {
-      _cancelHighlightTimer();
       if (!_longPressFired) {
-        if (_highlightShown) {
-          _highlightShown = false;
-          onPointerUpEarly?.call();
-        }
+        onPointerUpEarly?.call();
         resolve(GestureDisposition.accepted);
         onTap?.call();
         return;
       }
     } else if (event is PointerCancelEvent) {
-      _cancelHighlightTimer();
-      if (!_longPressFired && _highlightShown) {
-        _highlightShown = false;
+      if (!_longPressFired) {
         onPointerUpEarly?.call();
       }
     }
     super.handlePrimaryPointer(event);
-  }
-
-  @override
-  void rejectGesture(int pointer) {
-    _cancelHighlightTimer();
-    if (_highlightShown) {
-      _highlightShown = false;
-      onPointerUpEarly?.call();
-    }
-    super.rejectGesture(pointer);
-  }
-
-  @override
-  void dispose() {
-    _cancelHighlightTimer();
-    super.dispose();
   }
 }
 
