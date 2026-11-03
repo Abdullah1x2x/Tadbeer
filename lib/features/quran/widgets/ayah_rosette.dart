@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -130,7 +129,7 @@ class _RosetteState extends State<_Rosette>
   static const _heartSize = 82.0;
 
   /// نصف قطر القرص الذي تقوم عليه الإجراءات.
-  static const _medallion = _ring + 54;
+  static const _medallion = _ring + 62;
 
   /// المساحة التي تحتاجها الوردة حول مركزها.
   static const _reach = _medallion + 6;
@@ -199,7 +198,7 @@ class _RosetteState extends State<_Rosette>
 
   Ayah get _ayah => widget.ayah;
 
-  List<_Petal?> _petals(AppStrings l10n) {
+  List<_Petal> _petals(AppStrings l10n) {
     final store = UserDataStore.instance;
     final s = _ayah.surahNumber, a = _ayah.ayahNumber;
     final bookmarked = store.isBookmarked(s, a);
@@ -294,10 +293,7 @@ class _RosetteState extends State<_Rosette>
     if (!_dragging || !mounted) return;
     final start = widget.anchor ?? _centre;
     if (!_moved && (global - start).distance > 18) _moved = true;
-    var hit = _moved ? _hitTest(global) : null;
-    if (hit != null && hit >= 0 && _petals(context.l10n)[hit] == null) {
-      hit = null;
-    }
+    final hit = _moved ? _hitTest(global) : null;
     if (hit != _hovered) {
       if (hit != null) HapticFeedback.selectionClick();
       setState(() => _hovered = hit);
@@ -322,7 +318,7 @@ class _RosetteState extends State<_Rosette>
     HapticFeedback.lightImpact();
     final action = index == _heart
         ? _reflect
-        : _petals(context.l10n)[index]!.run;
+        : _petals(context.l10n)[index].run;
     // تختفي فوراً، فلا تغطي ما يفتحه الإجراء.
     _releaseBack();
     if (AyahRosette._open == this) AyahRosette._open = null;
@@ -368,7 +364,7 @@ class _RosetteState extends State<_Rosette>
     final heartLabel = switch (_hovered) {
       null ||
       _heart => hasReflection ? l10n.continueReflection : l10n.tadbeerPause,
-      final i => petals[i]!.label,
+      final i => petals[i].label,
     };
     final surah = QuranRepository.instance.getSurah(_ayah.surahNumber);
 
@@ -376,6 +372,41 @@ class _RosetteState extends State<_Rosette>
       final angle = i * 2 * math.pi / _places;
       return Offset(math.sin(angle), -math.cos(angle)) * _ring;
     }
+
+    // تُبنى مرة لكل تغيير، والحركة تحرّكها فقط دون إعادة بنائها في كل إطار.
+    final ayahCard = Center(
+      child: _IsolatedAyah(
+        ayah: _ayah,
+        reference: l10n.ayahReference(surah.name, _ayah.ayahNumber),
+        palette: MushafPalette.of(
+          isDark: isDark,
+          tone: UserDataStore.instance.settings.mushafPaperTone,
+        ),
+        maxHeight: cardMaxHeight,
+      ),
+    );
+    final medallion = RepaintBoundary(
+      child: CustomPaint(painter: _MedallionPainter(colours: night)),
+    );
+    final petalViews = [
+      for (var i = 0; i < _places; i++)
+        _PetalView(
+          petal: petals[i],
+          hovered: _hovered == i,
+          showLabel: !_dragging,
+          onTap: _dragging ? null : () => _run(i),
+        ),
+    ];
+    final heart = _Heart(
+      label: heartLabel,
+      icon: switch (_hovered) {
+        null || _heart => AppIcons.flowerLotusFill,
+        final i => petals[i].icon,
+      },
+      hovered: _hovered == _heart,
+      onTap: _dragging ? null : () => _run(_heart),
+      ink: p.lightPrimaryDark,
+    );
 
     return AnimatedBuilder(
       animation: bloom,
@@ -389,11 +420,8 @@ class _RosetteState extends State<_Rosette>
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: _dismiss,
-                child: BackdropFilter(
-                  filter: ui.ImageFilter.blur(sigmaX: 1.2 * t, sigmaY: 1.2 * t),
-                  child: ColoredBox(
-                    color: Colors.black.withValues(alpha: 0.16 * t),
-                  ),
+                child: ColoredBox(
+                  color: Colors.black.withValues(alpha: 0.16 * t),
                 ),
               ),
             ),
@@ -406,20 +434,7 @@ class _RosetteState extends State<_Rosette>
                 opacity: t,
                 child: Transform.translate(
                   offset: Offset(0, 12 * (1 - t)),
-                  child: Center(
-                    child: _IsolatedAyah(
-                      ayah: _ayah,
-                      reference: l10n.ayahReference(
-                        surah.name,
-                        _ayah.ayahNumber,
-                      ),
-                      palette: MushafPalette.of(
-                        isDark: isDark,
-                        tone: UserDataStore.instance.settings.mushafPaperTone,
-                      ),
-                      maxHeight: cardMaxHeight,
-                    ),
-                  ),
+                  child: ayahCard,
                 ),
               ),
             ),
@@ -435,48 +450,28 @@ class _RosetteState extends State<_Rosette>
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      // القرص، ونجمته تدور إلى مكانها.
+                      // القرص ثابت الرسم، وشمسته وحدها تدور إلى مكانها.
                       Positioned.fill(
                         child: IgnorePointer(
-                          child: CustomPaint(
-                            painter: _MedallionPainter(
-                              colours: night,
-                              turn: (1 - t) * -math.pi / 8,
-                            ),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              medallion,
+                              CustomPaint(
+                                painter: _SunPainter(
+                                  turn: (1 - t) * -math.pi / 8,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       for (var i = 0; i < _places; i++)
                         _at(
                           Offset(_reach, _reach) + placeOf(i) * t,
-                          switch (petals[i]) {
-                            final petal? => _PetalView(
-                              petal: petal,
-                              hovered: _hovered == i,
-                              showLabel: !_dragging,
-                              onTap: _dragging ? null : () => _run(i),
-                            ),
-                            null => const IgnorePointer(
-                              child: CustomPaint(
-                                size: Size.square(14),
-                                painter: _SparkPainter(),
-                              ),
-                            ),
-                          },
+                          petalViews[i],
                         ),
-                      _at(
-                        Offset(_reach, _reach),
-                        _Heart(
-                          label: heartLabel,
-                          icon: switch (_hovered) {
-                            null || _heart => AppIcons.flowerLotusFill,
-                            final i => petals[i]!.icon,
-                          },
-                          hovered: _hovered == _heart,
-                          onTap: _dragging ? null : () => _run(_heart),
-                          ink: p.lightPrimaryDark,
-                        ),
-                      ),
+                      _at(Offset(_reach, _reach), heart),
                     ],
                   ),
                 ),
@@ -768,10 +763,7 @@ class _IsolatedAyah extends StatelessWidget {
 class _MedallionPainter extends CustomPainter {
   final List<Color> colours;
 
-  /// كم بقي للنجمة لتدور إلى مكانها.
-  final double turn;
-
-  const _MedallionPainter({required this.colours, required this.turn});
+  const _MedallionPainter({required this.colours});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -848,7 +840,34 @@ class _MedallionPainter extends CustomPainter {
       );
     }
 
-    // الشمسة: شمس بست عشرة شعلة حول القلب، تدور إلى مكانها عند فتح القرص.
+    final bead = Paint()..color = _gold.withValues(alpha: 0.7);
+    for (var i = 0; i < _RosetteState._places; i++) {
+      final a = (i + 0.5) * 2 * math.pi / _RosetteState._places;
+      canvas.drawCircle(
+        c + Offset(math.sin(a), -math.cos(a)) * ring,
+        1.6,
+        bead,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_MedallionPainter old) =>
+      old.colours.first != colours.first || old.colours.last != colours.last;
+}
+
+/// الشمسة: شمس بست عشرة شعلة حول القلب، تدور إلى مكانها عند فتح القرص؛ وحدها
+/// تُرسم من جديد أثناء الحركة.
+class _SunPainter extends CustomPainter {
+  /// كم بقي للنجمة لتدور إلى مكانها.
+  final double turn;
+
+  const _SunPainter({required this.turn});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    const ring = _RosetteState._ring;
     canvas.save();
     canvas.translate(c.dx, c.dy);
     canvas.rotate(turn);
@@ -868,37 +887,8 @@ class _MedallionPainter extends CustomPainter {
       sun..color = _gold.withValues(alpha: 0.3),
     );
     canvas.restore();
-
-    final bead = Paint()..color = _gold.withValues(alpha: 0.7);
-    for (var i = 0; i < _RosetteState._places; i++) {
-      final a = (i + 0.5) * 2 * math.pi / _RosetteState._places;
-      canvas.drawCircle(
-        c + Offset(math.sin(a), -math.cos(a)) * ring,
-        1.6,
-        bead,
-      );
-    }
   }
 
   @override
-  bool shouldRepaint(_MedallionPainter old) =>
-      old.turn != turn ||
-      old.colours.first != colours.first ||
-      old.colours.last != colours.last;
-}
-
-/// نجمة ذهبية صغيرة في المكان الفارغ.
-class _SparkPainter extends CustomPainter {
-  const _SparkPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawPath(
-      eightPointStar(size.center(Offset.zero), size.width / 2),
-      Paint()..color = _gold.withValues(alpha: 0.85),
-    );
-  }
-
-  @override
-  bool shouldRepaint(_SparkPainter old) => false;
+  bool shouldRepaint(_SunPainter old) => old.turn != turn;
 }
