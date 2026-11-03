@@ -20,7 +20,6 @@ An open-source Quran app that works offline, with no ads and no tracking.
   <img src="docs/assets/screenshots/04_home_screen.png" alt="Home screen" width="23%">
   <img src="docs/assets/screenshots/mushaf.jpg" alt="Madinah Mushaf" width="23%">
   <img src="docs/assets/screenshots/menu.jpg" alt="Radial ayah menu" width="23%">
-  <img src="docs/assets/screenshots/15_feature_ayah_network_tawbah.png" alt="Ayah link network" width="23%">
 </p>
 
 ## Why Tadbeer?

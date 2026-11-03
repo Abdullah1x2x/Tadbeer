@@ -20,7 +20,6 @@
   <img src="docs/assets/screenshots/04_home_screen.png" alt="الشاشة الرئيسية" width="23%">
   <img src="docs/assets/screenshots/mushaf.jpg" alt="مصحف المدينة" width="23%">
   <img src="docs/assets/screenshots/menu.jpg" alt="القائمة الدائرية للآية" width="23%">
-  <img src="docs/assets/screenshots/15_feature_ayah_network_tawbah.png" alt="شبكة روابط الآيات" width="23%">
 </p>
 
 <div dir="rtl">
