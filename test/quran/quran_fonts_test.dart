@@ -104,7 +104,7 @@ void main() {
           await tester.pumpWidget(
             AppLocalizationScope(
               currentLanguage: AppLanguage.arabic,
-              strings: const AppStrings(AppLanguage.arabic),
+              strings: AppStrings(AppLanguage.arabic),
               onLanguageChanged: (_) {},
               child: MaterialApp(
                 home: Scaffold(body: QuranPageView(page: page1)),
@@ -131,7 +131,7 @@ void main() {
         await tester.pumpWidget(
           AppLocalizationScope(
             currentLanguage: AppLanguage.arabic,
-            strings: const AppStrings(AppLanguage.arabic),
+            strings: AppStrings(AppLanguage.arabic),
             onLanguageChanged: (_) {},
             child: const MaterialApp(home: QuranScreen(initialPage: 3)),
           ),

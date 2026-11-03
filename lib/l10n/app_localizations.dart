@@ -524,24 +524,6 @@ abstract class AppLocalizations {
   /// **'وضع التأمل'**
   String get focusMode;
 
-  /// No description provided for @breathe.
-  ///
-  /// In ar, this message translates to:
-  /// **'تنفّس بهدوء'**
-  String get breathe;
-
-  /// No description provided for @breatheIn.
-  ///
-  /// In ar, this message translates to:
-  /// **'شهيق…'**
-  String get breatheIn;
-
-  /// No description provided for @breatheOut.
-  ///
-  /// In ar, this message translates to:
-  /// **'زفير…'**
-  String get breatheOut;
-
   /// No description provided for @swipeForNextAyah.
   ///
   /// In ar, this message translates to:
@@ -638,18 +620,6 @@ abstract class AppLocalizations {
   /// **'مسح'**
   String get clearText;
 
-  /// No description provided for @decrease.
-  ///
-  /// In ar, this message translates to:
-  /// **'إنقاص'**
-  String get decrease;
-
-  /// No description provided for @increase.
-  ///
-  /// In ar, this message translates to:
-  /// **'زيادة'**
-  String get increase;
-
   /// No description provided for @sajdah.
   ///
   /// In ar, this message translates to:
@@ -733,12 +703,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تم نسخ الآية إلى الحافظة'**
   String get copiedToClipboard;
-
-  /// No description provided for @newNote.
-  ///
-  /// In ar, this message translates to:
-  /// **'ملاحظة جديدة'**
-  String get newNote;
 
   /// No description provided for @newFreeNote.
   ///
@@ -1493,7 +1457,7 @@ abstract class AppLocalizations {
   /// No description provided for @resetWarningMessage.
   ///
   /// In ar, this message translates to:
-  /// **'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.'**
+  /// **'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات وعدادات التسبيح وتقدم الختمة والحفظ واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.'**
   String get resetWarningMessage;
 
   /// No description provided for @versionInfo.
@@ -3960,12 +3924,6 @@ abstract class AppLocalizations {
   /// **'محمود خليل الحصري'**
   String get tourSampleReciter;
 
-  /// No description provided for @tourKhatma.
-  ///
-  /// In ar, this message translates to:
-  /// **'الختمة'**
-  String get tourKhatma;
-
   /// No description provided for @tourStreak.
   ///
   /// In ar, this message translates to:
@@ -4625,6 +4583,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الأذكار'**
   String get tourDuaAdhkar;
+
+  /// No description provided for @startupFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر فتح التطبيق. أعد تشغيله، وإن تكرر هذا فأخبرنا بالخطأ أدناه.'**
+  String get startupFailed;
+
+  /// No description provided for @restoreWrongPassword.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور غير صحيحة، أو الملف تالف.'**
+  String get restoreWrongPassword;
+
+  /// No description provided for @restoreNewerVersion.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه النسخة من إصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.'**
+  String get restoreNewerVersion;
 }
 
 class _AppLocalizationsDelegate

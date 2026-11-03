@@ -37,14 +37,14 @@ class WeeklyGoals {
     final today = DateTime(now.year, now.month, now.day);
     // DateTime.weekday: الإثنين = 1 … السبت = 6، والأحد = 7.
     final sinceSaturday = (today.weekday - DateTime.saturday + 7) % 7;
-    return today.subtract(Duration(days: sinceSaturday));
+    return DateTime(today.year, today.month, today.day - sinceSaturday);
   }
 
   static int pagesThisWeek(UserDataStore store, DateTime now) {
     final start = weekStart(now);
     var total = 0;
     for (var i = 0; i < 7; i++) {
-      final day = start.add(Duration(days: i));
+      final day = DateTime(start.year, start.month, start.day + i);
       if (day.isAfter(now)) break;
       total += store.journey.pagesOn(day);
     }

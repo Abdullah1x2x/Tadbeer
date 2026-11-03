@@ -36,7 +36,7 @@ void main() {
         await tester.pumpWidget(
           AppLocalizationScope(
             currentLanguage: AppLanguage.arabic,
-            strings: const AppStrings(AppLanguage.arabic),
+            strings: AppStrings(AppLanguage.arabic),
             onLanguageChanged: (_) {},
             child: const MaterialApp(home: SettingsScreen()),
           ),
@@ -96,7 +96,7 @@ void main() {
         await tester.pumpWidget(
           AppLocalizationScope(
             currentLanguage: AppLanguage.arabic,
-            strings: const AppStrings(AppLanguage.arabic),
+            strings: AppStrings(AppLanguage.arabic),
             onLanguageChanged: (_) {},
             child: const MaterialApp(home: SettingsScreen()),
           ),
@@ -134,7 +134,7 @@ void main() {
         await tester.pumpWidget(
           AppLocalizationScope(
             currentLanguage: AppLanguage.english,
-            strings: const AppStrings(AppLanguage.english),
+            strings: AppStrings(AppLanguage.english),
             onLanguageChanged: (_) {},
             child: const MaterialApp(home: SettingsScreen()),
           ),

@@ -24,7 +24,7 @@ class AudioDownloads extends ChangeNotifier {
     () async => Directory(
       '${(await getApplicationSupportDirectory()).path}/recitations',
     ),
-    _httpFetch,
+    httpFetch,
   );
 
   /// تنزيلات التطبيق.
@@ -199,17 +199,22 @@ class AudioDownloads extends ChangeNotifier {
   }
 }
 
-/// ينزّل [url] إلى [to] عبر HTTPS.
-Future<void> _httpFetch(Uri url, File to) async {
+/// ينزّل [url] إلى [to] عبر HTTPS، ويفشل إن توقف الخادم مدة [stall].
+@visibleForTesting
+Future<void> httpFetch(
+  Uri url,
+  File to, {
+  Duration stall = const Duration(seconds: 30),
+}) async {
   final client = HttpClient()..connectionTimeout = const Duration(seconds: 20);
   try {
     final request = await client.getUrl(url);
-    final response = await request.close();
+    final response = await request.close().timeout(stall);
     if (response.statusCode != HttpStatus.ok) {
       throw HttpException('HTTP ${response.statusCode}', uri: url);
     }
-    await response.pipe(to.openWrite());
+    await response.timeout(stall).pipe(to.openWrite());
   } finally {
-    client.close();
+    client.close(force: true);
   }
 }

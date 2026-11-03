@@ -42,7 +42,7 @@ void main() {
   Widget buildTestScreen() {
     return AppLocalizationScope(
       currentLanguage: AppLanguage.arabic,
-      strings: const AppStrings(AppLanguage.arabic),
+      strings: AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
       child: const MaterialApp(home: QuranScreen(initialPage: 112)),
     );

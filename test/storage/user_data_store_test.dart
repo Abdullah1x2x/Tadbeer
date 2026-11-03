@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/storage/user_database.dart';
 import 'package:tadbeer/data/models/note_model.dart';
 import 'package:tadbeer/data/quran/quran_models.dart';
+import 'package:tadbeer/features/tasbeeh/tasbeeh_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -37,10 +39,72 @@ void main() {
       expect(store.readingPosition.surahNumber, equals(2));
       expect(store.readingPosition.ayahNumber, equals(142));
 
-      // Verify file persistence
-      expect(testFile.existsSync(), isTrue);
-      final content = testFile.readAsStringSync();
-      expect(content, contains('"page":25'));
+      final saved = await UserDatabase.instance.loadReadingPosition();
+      expect(saved?.page, equals(25));
+    });
+
+    test('an old JSON file fills an empty database once', () async {
+      await store.saveNote(
+        id: 'old-note',
+        type: NoteType.free,
+        title: 't',
+        content: 'c',
+      );
+      testFile.writeAsStringSync(jsonEncode(store.exportSnapshot()));
+
+      await store.init(testFile, '${tempDir.path}/fresh.db');
+
+      expect(store.notes.map((n) => n.id), contains('old-note'));
+      expect(testFile.existsSync(), isFalse);
+    });
+
+    test('an old JSON file never replaces a database in use', () async {
+      final dbPath = '${tempDir.path}/used.db';
+      await store.init(testFile, dbPath);
+      await store.saveFeatureState('only_data', {'value': 'new'});
+      testFile.writeAsStringSync(
+        jsonEncode({
+          'featureState': {
+            'only_data': {'value': 'stale'},
+          },
+        }),
+      );
+
+      await store.init(testFile, dbPath);
+
+      expect(store.featureState('only_data')['value'], 'new');
+      expect(testFile.existsSync(), isFalse);
+    });
+
+    test('a restore removes feature state the backup does not hold', () async {
+      final dbPath = '${tempDir.path}/restore.db';
+      await store.init(testFile, dbPath);
+      final backup = store.exportSnapshot();
+      await store.saveFeatureState('made_later', {'value': 1});
+
+      await store.replaceAllUserData(backup);
+      await store.init(testFile, dbPath);
+
+      expect(store.featureState('made_later'), isEmpty);
+    });
+
+    test('an older backup keeps the current tasbeeh counts', () async {
+      final oldBackup = store.exportSnapshot();
+      await store.saveFeatureState('tasbeeh', {'lifetimeTotalCount': 7});
+
+      await store.replaceAllUserData(oldBackup);
+
+      expect(store.featureState('tasbeeh')['lifetimeTotalCount'], 7);
+    });
+
+    test('tasbeeh counts reach the backup', () async {
+      final repo = TasbeehRepository.instance;
+      await repo.reload();
+      repo.increment();
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+
+      final state = store.exportSnapshot()['featureState'] as Map;
+      expect(state['tasbeeh']['lifetimeTotalCount'], repo.lifetimeTotalCount);
     });
 
     test('Notes CRUD and Ayah Linkage', () async {

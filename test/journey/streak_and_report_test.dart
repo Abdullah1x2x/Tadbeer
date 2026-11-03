@@ -101,7 +101,7 @@ void main() {
   });
 
   test('the khatma lengths read as Arabic counts days', () {
-    const l10n = AppStrings(AppLanguage.arabic);
+    final l10n = AppStrings(AppLanguage.arabic);
     expect(l10n.daysCount(7), '٧ أيام');
     expect(l10n.daysCount(15), '١٥ يومًا');
     expect(l10n.daysCount(90), '٩٠ يومًا');
@@ -133,7 +133,7 @@ void main() {
 
     Widget app(Widget home) => AppLocalizationScope(
       currentLanguage: AppLanguage.arabic,
-      strings: const AppStrings(AppLanguage.arabic),
+      strings: AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
       child: MaterialApp(theme: AppTheme.lightTheme, home: home),
     );

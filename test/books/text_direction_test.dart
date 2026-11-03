@@ -28,7 +28,7 @@ void main() {
     await tester.pumpWidget(
       AppLocalizationScope(
         currentLanguage: AppLanguage.english,
-        strings: const AppStrings(AppLanguage.english),
+        strings: AppStrings(AppLanguage.english),
         onLanguageChanged: (_) {},
         child: const MaterialApp(home: BookReaderScreen(book: book)),
       ),

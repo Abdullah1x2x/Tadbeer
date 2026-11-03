@@ -34,7 +34,7 @@ void main() {
     await tester.pumpWidget(
       AppLocalizationScope(
         currentLanguage: AppLanguage.arabic,
-        strings: const AppStrings(AppLanguage.arabic),
+        strings: AppStrings(AppLanguage.arabic),
         onLanguageChanged: (_) {},
         child: MaterialApp(
           home: QuranScreen(initialPage: 10, controlsVisible: controls),

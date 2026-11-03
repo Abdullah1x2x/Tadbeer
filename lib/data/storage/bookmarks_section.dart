@@ -20,7 +20,6 @@ mixin _BookmarksSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.insertBookmark(bookmark);
     }
-    await saveToDisk();
   }
 
   /// يضيف الفاصل أو يحذفه، ويعيد true إن صارت الآية محفوظة.
@@ -58,7 +57,6 @@ mixin _BookmarksSection on _StoreState {
       if (userDb.isOpen) {
         await userDb.deleteBookmark(id);
       }
-      await saveToDisk();
     }
   }
 }

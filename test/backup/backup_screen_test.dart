@@ -8,7 +8,7 @@ void main() {
   Widget buildTestWidget(Widget child) {
     return AppLocalizationScope(
       currentLanguage: AppLanguage.arabic,
-      strings: const AppStrings(AppLanguage.arabic),
+      strings: AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
       child: MaterialApp(
         home: Directionality(textDirection: TextDirection.rtl, child: child),
@@ -23,7 +23,7 @@ void main() {
         await tester.pumpWidget(buildTestWidget(const BackupScreen()));
         await tester.pumpAndSettle();
 
-        final l10n = const AppStrings(AppLanguage.arabic);
+        final l10n = AppStrings(AppLanguage.arabic);
 
         // Verify Screen Title
         expect(find.text(l10n.backup), findsOneWidget);
@@ -55,7 +55,7 @@ void main() {
       await tester.pumpWidget(buildTestWidget(const BackupScreen()));
       await tester.pumpAndSettle();
 
-      final l10n = const AppStrings(AppLanguage.arabic);
+      final l10n = AppStrings(AppLanguage.arabic);
 
       // All checkboxes are checked by default
       final notesCheckbox = find.widgetWithText(CheckboxListTile, l10n.notes);

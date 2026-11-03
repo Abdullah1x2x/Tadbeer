@@ -6,6 +6,7 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/books/screens/book_reader_screen.dart';
+import 'package:tadbeer/features/books/data/book_model.dart';
 import 'package:tadbeer/features/books/data/book_repository.dart';
 import 'package:tadbeer/features/continue/continue_card.dart';
 import 'package:tadbeer/features/continue/last_activity.dart';
@@ -16,12 +17,6 @@ void main() {
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_continue_pdf_');
     await UserDataStore.instance.init(File('${tempDir.path}/data.json'));
-    final books = Directory('${tempDir.path}/books')..createSync();
-    await BookRepository.instance.init(
-      disableDisk: true,
-      booksDirectory: books,
-    );
-    await BookRepository.instance.clearAll();
   });
 
   tearDown(() {
@@ -30,7 +25,7 @@ void main() {
 
   Widget host(Widget child) => AppLocalizationScope(
     currentLanguage: AppLanguage.arabic,
-    strings: const AppStrings(AppLanguage.arabic),
+    strings: AppStrings(AppLanguage.arabic),
     onLanguageChanged: (_) {},
     child: MaterialApp(
       theme: AppTheme.lightTheme,
@@ -41,16 +36,17 @@ void main() {
   testWidgets('continue opens a PDF book at the page it was left on', (
     tester,
   ) async {
-    final book = await tester.runAsync(() async {
-      final pdf = File('${tempDir.path}/lesson.pdf')
-        ..writeAsBytesSync([0x25, 0x50, 0x44, 0x46]);
-      return BookRepository.instance.addBook(
-        title: 'ملزمة',
-        sectionName: 'ملازم',
-        attachedFile: pdf,
-      );
-    });
-    expect(book!.isPdf, isTrue);
+    final pdf = File('${tempDir.path}/lesson.pdf')
+      ..writeAsBytesSync([0x25, 0x50, 0x44, 0x46]);
+    final book = BookModel(
+      id: 'pdf1',
+      title: 'ملزمة',
+      category: 'ملازم',
+      filePath: pdf.path,
+      fileType: 'pdf',
+    );
+    BookRepository.instance.replaceForTest(books: [book]);
+    expect(book.isPdf, isTrue);
 
     // Opening at page 13 (index 12) records that page.
     await tester.pumpWidget(

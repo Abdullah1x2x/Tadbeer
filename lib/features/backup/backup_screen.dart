@@ -11,6 +11,7 @@ import '../../core/theme/theme.dart';
 import 'backup_crypto_service.dart';
 import '../../core/design_system/app_icons.dart';
 import '../onboarding/tour/section_guide.dart';
+import '../tasbeeh/tasbeeh_model.dart';
 
 /// إنشاء النسخ الاحتياطية المشفرة واستعادتها.
 ///
@@ -61,11 +62,7 @@ class _BackupScreenState extends State<BackupScreen> {
     if (!result.success) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              result.errorMessage ?? context.l10n.backupCreateFailed,
-            ),
-          ),
+          SnackBar(content: Text(context.l10n.backupCreateFailed)),
         );
       }
       return null;
@@ -127,8 +124,9 @@ class _BackupScreenState extends State<BackupScreen> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.backupCreateFailed)),
+        );
       }
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -164,6 +162,8 @@ class _BackupScreenState extends State<BackupScreen> {
       password: enteredPassword,
     );
 
+    if (result.success) await TasbeehRepository.instance.reload();
+
     if (!mounted) return;
     setState(() => _isProcessing = false);
 
@@ -193,10 +193,11 @@ class _BackupScreenState extends State<BackupScreen> {
                 color: Colors.redAccent,
               ),
             ),
-            content: Text(
-              result.errorMessage ?? l10n.corruptBackupError,
-              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-            ),
+            content: Text(switch (result.error) {
+              BackupError.wrongPassword => l10n.restoreWrongPassword,
+              BackupError.newerVersion => l10n.restoreNewerVersion,
+              _ => l10n.corruptBackupError,
+            }, style: const TextStyle(fontFamily: 'IBMPlexSansArabic')),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),

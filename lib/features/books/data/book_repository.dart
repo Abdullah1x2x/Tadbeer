@@ -1,35 +1,25 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
 import 'curated_books.dart';
-import '../../../core/design_system/app_icons.dart';
 
-/// أقسام المكتبة وكتبها، محفوظة على الجهاز.
+/// أقسام المكتبة وكتبها، من كتب التطبيق المرفقة.
 class BookRepository extends ChangeNotifier {
   static final BookRepository instance = BookRepository._internal();
   BookRepository._internal();
 
-  static const _uuid = Uuid();
   bool _initialized = false;
-  File? _storageFileOverride;
-  Directory? _booksDirectoryOverride;
 
   final List<BookSection> _sections = [];
   final List<BookModel> _books = [];
-
-  bool _disableDiskPersistence = false;
 
   List<BookSection> get sections => List.unmodifiable(_sections);
 
   List<BookModel> get books => List.unmodifiable(_books);
 
-  /// هل قُرئت البيانات من القرص.
+  /// هل قُرئت البيانات.
   bool get isInitialized => _initialized;
 
   /// أسماء الأقسام، يسبقها "الكل".
@@ -38,24 +28,9 @@ class BookRepository extends ChangeNotifier {
     return ['الكل', ...names];
   }
 
-  /// يقرأ الأقسام والكتب المحفوظة.
-  ///
-  /// [storageFile] و[booksDirectory] للاختبارات، و[disableDisk] يُبقي كل شيء في
-  /// الذاكرة.
-  Future<void> init({
-    File? storageFile,
-    Directory? booksDirectory,
-    bool disableDisk = false,
-  }) async {
-    if (disableDisk) _disableDiskPersistence = true;
-    if (storageFile != null) _storageFileOverride = storageFile;
-    if (booksDirectory != null) _booksDirectoryOverride = booksDirectory;
-    if (_initialized &&
-        storageFile == null &&
-        booksDirectory == null &&
-        !disableDisk) {
-      return;
-    }
+  /// يقرأ الأقسام والكتب.
+  Future<void> init({@visibleForTesting bool reload = false}) async {
+    if (_initialized && !reload) return;
 
     _sections.clear();
     _books.clear();
@@ -63,51 +38,8 @@ class BookRepository extends ChangeNotifier {
     // ١. الأقسام والكتب المعرّفة في curated_books.dart.
     _loadCuratedBooks();
 
-    if (_disableDiskPersistence) {
-      _initialized = true;
-      notifyListeners();
-      return;
-    }
-
     // ٢. كتالوج JSON في الأصول، إن وُجد.
     await _loadCatalogJson();
-
-    try {
-      final file = await _getStorageFile();
-      if (file != null && await file.exists()) {
-        final content = await file.readAsString();
-        if (content.trim().isNotEmpty) {
-          final jsonMap = jsonDecode(content) as Map<String, dynamic>;
-
-          if (jsonMap['sections'] is List) {
-            for (final item in jsonMap['sections'] as List<dynamic>) {
-              final section = BookSection.fromJson(
-                item as Map<String, dynamic>,
-              );
-              if (!_sections.any((s) => s.name == section.name)) {
-                _sections.add(section);
-              }
-            }
-          }
-
-          if (jsonMap['books'] is List) {
-            for (final item in jsonMap['books'] as List<dynamic>) {
-              final book = BookModel.fromJson(item as Map<String, dynamic>);
-              if (!_books.any(
-                (b) =>
-                    b.id == book.id ||
-                    (b.title == book.title && b.category == book.category),
-              )) {
-                _books.add(book);
-              }
-            }
-          }
-        }
-      }
-    } catch (e) {
-      // في الاختبارات قد يتعذّر القرص، فيُكمل بما في الذاكرة.
-      debugPrint('BookRepository init error: $e');
-    }
 
     _initialized = true;
     notifyListeners();
@@ -212,203 +144,19 @@ class BookRepository extends ChangeNotifier {
     return _books.where((b) => b.category == sectionName).toList();
   }
 
-  /// يضيف قسماً.
-  Future<BookSection> addSection({
-    required String name,
-    String description = '',
-    IconData? icon,
-  }) async {
-    final cleanName = name.trim();
-    if (cleanName.isEmpty) {
-      throw ArgumentError('اسم القسم لا يمكن أن يكون فارغاً');
-    }
-
-    // لا يُكرَّر قسم بنفس الاسم.
-    final existing = _sections.where((s) => s.name == cleanName).firstOrNull;
-    if (existing != null) {
-      return existing;
-    }
-
-    final newSection = BookSection(
-      id: _uuid.v4(),
-      name: cleanName,
-      description: description.trim(),
-      icon: icon ?? AppIcons.folderStar,
-      createdAt: DateTime.now(),
-    );
-
-    _sections.add(newSection);
-    await _saveToDisk();
+  /// للاختبارات: يضع [sections] و[books] مكان المكتبة.
+  @visibleForTesting
+  void replaceForTest({
+    List<BookSection> sections = const [],
+    List<BookModel> books = const [],
+  }) {
+    _sections
+      ..clear()
+      ..addAll(sections);
+    _books
+      ..clear()
+      ..addAll(books);
+    _initialized = true;
     notifyListeners();
-    return newSection;
-  }
-
-  /// يحذف القسم وكتبه.
-  Future<void> deleteSection(String sectionId) async {
-    final index = _sections.indexWhere((s) => s.id == sectionId);
-    if (index == -1) return;
-
-    final targetSection = _sections[index];
-    _sections.removeAt(index);
-
-    // يحذف كتب القسم وملفاتها من الذاكرة والقرص.
-    final booksToDelete = _books
-        .where((b) => b.category == targetSection.name)
-        .toList();
-    for (final book in booksToDelete) {
-      await _deleteAttachedFileSilently(book.filePath);
-      _books.removeWhere((b) => b.id == book.id);
-    }
-
-    await _saveToDisk();
-    notifyListeners();
-  }
-
-  /// يضيف كتاباً أو ملزمة، مع ملف مرفق من الهاتف اختيارياً (PDF أو نص).
-  Future<BookModel> addBook({
-    required String title,
-    required String sectionName,
-    String subtitle = '',
-    String author = '',
-    File? attachedFile,
-    List<BookChapter>? chapters,
-    int? estimatedMinutes,
-  }) async {
-    final cleanTitle = title.trim();
-    if (cleanTitle.isEmpty) {
-      throw ArgumentError('عنوان الكتاب لا يمكن أن يكون فارغاً');
-    }
-
-    // ينشئ القسم إن لم يوجد.
-    if (!_sections.any((s) => s.name == sectionName.trim())) {
-      await addSection(name: sectionName.trim());
-    }
-
-    String? savedFilePath;
-    String? originalFileName;
-    String? fileType;
-    int fileSizeBytes = 0;
-
-    if (attachedFile != null && await attachedFile.exists()) {
-      final storageDir = await _getBooksStorageDirectory();
-      originalFileName = p.basename(attachedFile.path);
-      final ext = p
-          .extension(attachedFile.path)
-          .toLowerCase()
-          .replaceAll('.', '');
-      final uniqueFileName = '${_uuid.v4()}_$originalFileName';
-      final destinationFile = File('${storageDir.path}/$uniqueFileName');
-
-      await attachedFile.copy(destinationFile.path);
-      savedFilePath = destinationFile.path;
-      fileSizeBytes = await destinationFile.length();
-
-      if (ext == 'pdf') {
-        fileType = 'pdf';
-      } else if (ext == 'txt' || ext == 'md') {
-        fileType = 'text';
-      } else {
-        fileType = ext;
-      }
-    }
-
-    final newBook = BookModel(
-      id: _uuid.v4(),
-      title: cleanTitle,
-      subtitle: subtitle.trim(),
-      author: author.trim(),
-      category: sectionName.trim(),
-      filePath: savedFilePath,
-      fileName: originalFileName,
-      fileType: fileType,
-      fileSizeBytes: fileSizeBytes,
-      chapters: chapters ?? const [],
-      estimatedMinutes: estimatedMinutes ?? 10,
-      createdAt: DateTime.now(),
-    );
-
-    _books.insert(0, newBook);
-    await _saveToDisk();
-    notifyListeners();
-    return newBook;
-  }
-
-  /// يحذف الكتاب وملفه المرفق.
-  Future<void> deleteBook(String bookId) async {
-    final index = _books.indexWhere((b) => b.id == bookId);
-    if (index == -1) return;
-
-    final book = _books[index];
-    _books.removeAt(index);
-
-    await _deleteAttachedFileSilently(book.filePath);
-    await _saveToDisk();
-    notifyListeners();
-  }
-
-  /// يمسح كل الكتب والأقسام.
-  Future<void> clearAll() async {
-    for (final book in _books) {
-      await _deleteAttachedFileSilently(book.filePath);
-    }
-    _books.clear();
-    _sections.clear();
-    await _saveToDisk();
-    notifyListeners();
-  }
-
-  Future<void> _deleteAttachedFileSilently(String? filePath) async {
-    if (_disableDiskPersistence || filePath == null || filePath.isEmpty) return;
-    try {
-      final file = File(filePath);
-      if (await file.exists()) {
-        await file.delete();
-      }
-    } catch (e) {
-      debugPrint('BookRepository: could not delete $filePath: $e');
-    }
-  }
-
-  Future<Directory> _getBooksStorageDirectory() async {
-    if (_booksDirectoryOverride != null) {
-      if (!await _booksDirectoryOverride!.exists()) {
-        await _booksDirectoryOverride!.create(recursive: true);
-      }
-      return _booksDirectoryOverride!;
-    }
-    final dir = await getApplicationDocumentsDirectory();
-    final booksDir = Directory('${dir.path}/tadbeer_books');
-    if (!await booksDir.exists()) {
-      await booksDir.create(recursive: true);
-    }
-    return booksDir;
-  }
-
-  Future<File?> _getStorageFile() async {
-    if (_storageFileOverride != null) {
-      return _storageFileOverride;
-    }
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      return File('${dir.path}/tadbeer_books_library.json');
-    } catch (_) {
-      return null;
-    }
-  }
-
-  Future<void> _saveToDisk() async {
-    if (_disableDiskPersistence) return;
-    try {
-      final file = await _getStorageFile();
-      if (file == null) return;
-
-      final data = {
-        'sections': _sections.map((s) => s.toJson()).toList(),
-        'books': _books.map((b) => b.toJson()).toList(),
-      };
-      await file.writeAsString(jsonEncode(data), flush: true);
-    } catch (_) {
-      // يُتجاهل الفشل في الاختبارات.
-    }
   }
 }

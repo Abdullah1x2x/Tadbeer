@@ -15,7 +15,6 @@ mixin _RemindersSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.insertOrUpdateReminder(reminder);
     }
-    await saveToDisk();
   }
 
   Future<void> removeReminder(String id) async {
@@ -25,6 +24,5 @@ mixin _RemindersSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.deleteReminder(id);
     }
-    await saveToDisk();
   }
 }

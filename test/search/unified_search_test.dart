@@ -72,7 +72,7 @@ void main() {
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
     await QuranRepository.instance.init();
-    await BookRepository.instance.init(disableDisk: true);
+    await BookRepository.instance.init(reload: true);
   });
 
   tearDownAll(() async {
@@ -88,7 +88,7 @@ void main() {
   Widget buildTestWidget(Widget child) {
     return AppLocalizationScope(
       currentLanguage: AppLanguage.arabic,
-      strings: const AppStrings(AppLanguage.arabic),
+      strings: AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
       child: MaterialApp(
         home: Directionality(textDirection: TextDirection.rtl, child: child),

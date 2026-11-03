@@ -10,7 +10,6 @@ mixin _ReadingPositionSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.saveReadingPosition(position);
     }
-    await saveToDisk();
   }
 
   /// يحفظ موضع القراءة من الصفحة والسورة والآية.

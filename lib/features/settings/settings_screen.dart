@@ -15,6 +15,7 @@ import '../../app/main_shell.dart';
 import '../onboarding/tour/home_walkthrough.dart';
 import '../onboarding/tour/section_guide.dart';
 import '../onboarding/tour/tour_screen.dart';
+import '../tasbeeh/tasbeeh_model.dart';
 
 part 'settings_widgets.dart';
 part 'settings_dialogs.dart';

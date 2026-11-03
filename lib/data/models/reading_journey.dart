@@ -61,8 +61,10 @@ class KhatmaPlan {
 
   /// رقم اليوم في الخطة (من ١)، محصوراً بين ١ وعدد الأيام.
   int dayNumber(DateTime now) {
-    final today = DateTime(now.year, now.month, now.day);
-    return (today.difference(startDate).inDays + 1).clamp(1, days);
+    // بـ UTC، فلا ينقص يوم عند بدء التوقيت الصيفي.
+    final today = DateTime.utc(now.year, now.month, now.day);
+    final start = DateTime.utc(startDate.year, startDate.month, startDate.day);
+    return (today.difference(start).inDays + 1).clamp(1, days);
   }
 
   /// الصفحات المفترض إنجازها قبل اليوم؛ ورد اليوم لا يُعدّ تأخراً حتى ينتهي

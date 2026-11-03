@@ -26,7 +26,6 @@ mixin _AyahLinksSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.insertOrUpdateAyahLink(link);
     }
-    await saveToDisk();
   }
 
   Future<void> deleteAyahLink(String id) async {
@@ -36,7 +35,6 @@ mixin _AyahLinksSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.deleteAyahLink(id);
     }
-    await saveToDisk();
   }
 
   /// يضيف آية إلى رابط.
@@ -56,7 +54,6 @@ mixin _AyahLinksSection on _StoreState {
         if (userDb.isOpen) {
           await userDb.insertOrUpdateAyahLink(updated);
         }
-        await saveToDisk();
       }
     }
   }
@@ -88,7 +85,6 @@ mixin _AyahLinksSection on _StoreState {
       if (userDb.isOpen) {
         await userDb.insertOrUpdateAyahLink(updated);
       }
-      await saveToDisk();
     }
   }
 
@@ -119,7 +115,6 @@ mixin _AyahLinksSection on _StoreState {
       if (userDb.isOpen) {
         await userDb.insertOrUpdateAyahLink(updated);
       }
-      await saveToDisk();
     }
   }
 
@@ -143,7 +138,6 @@ mixin _AyahLinksSection on _StoreState {
       if (userDb.isOpen) {
         await userDb.insertOrUpdateAyahLink(updated);
       }
-      await saveToDisk();
     }
   }
 
@@ -171,7 +165,6 @@ mixin _AyahLinksSection on _StoreState {
       if (userDb.isOpen) {
         await userDb.insertOrUpdateAyahLink(updated);
       }
-      await saveToDisk();
     }
   }
 }

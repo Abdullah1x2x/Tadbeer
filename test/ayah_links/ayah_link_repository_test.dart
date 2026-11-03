@@ -129,6 +129,8 @@ void main() {
     });
 
     test('7 & 8: Save and Restore Manual Verse Positions in Grid', () async {
+      final dbPath = '${tempDir.path}/user.db';
+      await UserDataStore.instance.init(dataFile, dbPath);
       final link = await repo.createLink(title: 'اختبار المواضع');
       await repo.addVerseToLink(
         link.id,
@@ -165,7 +167,7 @@ void main() {
 
       // Reload from disk to verify full persistence
       final freshStore = UserDataStore.instance;
-      await freshStore.init(dataFile);
+      await freshStore.init(dataFile, dbPath);
       final reloaded = freshStore.getAyahLink(link.id)!;
       expect(reloaded.isManualLayout, isTrue);
       expect(reloaded.positions['2:153']!.dx, equals(1200.5));

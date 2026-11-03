@@ -31,7 +31,7 @@ void main() {
   Widget host({required int page, ValueChanged<int>? onSelect}) {
     return AppLocalizationScope(
       currentLanguage: AppLanguage.arabic,
-      strings: const AppStrings(AppLanguage.arabic),
+      strings: AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
       child: MaterialApp(
         home: Scaffold(

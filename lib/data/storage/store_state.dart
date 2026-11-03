@@ -58,7 +58,6 @@ abstract class _StoreState extends ChangeNotifier {
     _featureState[key] = value;
     notifyListeners();
     await UserDatabase.instance.saveAppState(key, value);
-    await saveToDisk();
   }
 
   List<NoteItem> get notes => List.unmodifiable(_notes);
@@ -81,9 +80,6 @@ abstract class _StoreState extends ChangeNotifier {
   final Map<String, TadbeerItem> _tadbeerLookup = {};
 
   File? _dataFile;
-
-  /// يحفظ الحالة في ملف JSON احتياطي.
-  Future<void> saveToDisk();
 
   // تنفّذها أقسام أخرى، وتُعلن هنا ليستخدمها كل قسم دون أن يعتمد على غيره.
 

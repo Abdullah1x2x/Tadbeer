@@ -150,7 +150,7 @@ void main() {
     await tester.pumpWidget(
       AppLocalizationScope(
         currentLanguage: AppLanguage.arabic,
-        strings: const AppStrings(AppLanguage.arabic),
+        strings: AppStrings(AppLanguage.arabic),
         onLanguageChanged: (_) {},
         child: MaterialApp(
           home: NameScreen(next: (_) => const Scaffold(body: Text('next'))),
@@ -166,8 +166,8 @@ void main() {
   });
 
   test('reminders address the reader by name', () {
-    const ar = AppStrings(AppLanguage.arabic);
-    const en = AppStrings(AppLanguage.english);
+    final ar = AppStrings(AppLanguage.arabic);
+    final en = AppStrings(AppLanguage.english);
     expect(
       ar.toReader('أحمد', ar.reminderQuranBody),
       'أحمد، حان وقت تلاوة وتدبّر القرآن الكريم',

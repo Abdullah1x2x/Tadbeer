@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../data/storage/user_data_store.dart';
 import 'data/curated_dhikrs.dart';
 
 export 'data/curated_dhikrs.dart';
@@ -103,6 +105,9 @@ class TasbeehRepository extends ChangeNotifier {
   int _todayTotalCount = 0;
   String _lastDateIso = '';
   bool _autoAdvanceEnabled = true;
+  Timer? _saveTimer;
+
+  static const _stateKey = 'tasbeeh';
 
   /// الذكر الجاري.
   TasbeehDhikr get activeDhikr => _activeDhikr;
@@ -133,11 +138,8 @@ class TasbeehRepository extends ChangeNotifier {
     _lastDateIso = today;
 
     try {
-      final file = await _getStorageFile();
-      if (file != null && await file.exists()) {
-        final content = await file.readAsString();
-        final jsonMap = jsonDecode(content) as Map<String, dynamic>;
-
+      final jsonMap = await _readSavedState();
+      if (jsonMap.isNotEmpty) {
         _lifetimeTotalCount =
             (jsonMap['lifetimeTotalCount'] as num?)?.toInt() ?? 0;
         final savedDate = jsonMap['lastDateIso'] as String? ?? '';
@@ -272,24 +274,43 @@ class TasbeehRepository extends ChangeNotifier {
     return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
   }
 
-  Future<File?> _getStorageFile() async {
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      return File('${dir.path}/tadbeer_tasbeeh_state.json');
-    } catch (_) {
-      return null;
-    }
+  /// يعيد القراءة بعد استعادة نسخة احتياطية أو مسح البيانات.
+  Future<void> reload() async {
+    _saveTimer?.cancel();
+    _initialized = false;
+    _lifetimeTotalCount = 0;
+    _todayTotalCount = 0;
+    _currentCount = 0;
+    _autoAdvanceEnabled = true;
+    _activeDhikr = TasbeehDhikr.defaultDhikrs.first;
+    await init();
   }
 
+  /// الحالة المحفوظة، مع ترحيل ملف JSON القديم مرة واحدة.
+  Future<Map<String, dynamic>> _readSavedState() async {
+    final store = UserDataStore.instance;
+    final saved = store.featureState(_stateKey);
+    if (saved.isNotEmpty) return saved;
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/tadbeer_tasbeeh_state.json');
+    if (!await file.exists()) return saved;
+    final legacy =
+        jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+    await store.saveFeatureState(_stateKey, legacy);
+    await file.delete();
+    return legacy;
+  }
+
+  // shortcut: آخر 400 مللي ثانية من العدّ تضيع إن قُتل التطبيق فوراً، وهذا مقبول
+  // مقابل ألا تُكتب القاعدة عند كل نقرة.
   void _persistDebounced() {
-    _saveToDisk();
+    _saveTimer?.cancel();
+    _saveTimer = Timer(const Duration(milliseconds: 400), _saveState);
   }
 
-  Future<void> _saveToDisk() async {
-    try {
-      final file = await _getStorageFile();
-      if (file == null) return;
-      final payload = jsonEncode({
+  void _saveState() {
+    unawaited(
+      UserDataStore.instance.saveFeatureState(_stateKey, {
         'lifetimeTotalCount': _lifetimeTotalCount,
         'todayTotalCount': _todayTotalCount,
         'lastDateIso': _lastDateIso,
@@ -297,10 +318,7 @@ class TasbeehRepository extends ChangeNotifier {
         'currentCount': _currentCount,
         'targetCount': _targetCount,
         'autoAdvanceEnabled': _autoAdvanceEnabled,
-      });
-      await file.writeAsString(payload, flush: true);
-    } catch (_) {
-      // يُتجاهل الفشل في بيئات الاختبار.
-    }
+      }),
+    );
   }
 }

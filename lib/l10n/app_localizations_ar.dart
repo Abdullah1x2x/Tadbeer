@@ -227,15 +227,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get focusMode => 'وضع التأمل';
 
   @override
-  String get breathe => 'تنفّس بهدوء';
-
-  @override
-  String get breatheIn => 'شهيق…';
-
-  @override
-  String get breatheOut => 'زفير…';
-
-  @override
   String get swipeForNextAyah => 'اسحب للآية التالية';
 
   @override
@@ -286,12 +277,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clearText => 'مسح';
 
   @override
-  String get decrease => 'إنقاص';
-
-  @override
-  String get increase => 'زيادة';
-
-  @override
   String get sajdah => 'سجدة تلاوة';
 
   @override
@@ -332,9 +317,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get copiedToClipboard => 'تم نسخ الآية إلى الحافظة';
-
-  @override
-  String get newNote => 'ملاحظة جديدة';
 
   @override
   String get newFreeNote => 'ملاحظة حرة';
@@ -733,7 +715,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resetWarningMessage =>
-      'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.';
+      'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات وعدادات التسبيح وتقدم الختمة والحفظ واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.';
 
   @override
   String get versionInfo => 'الإصدار ١.٠.٠ · مجاني وبدون إعلانات أو إنترنت';
@@ -2212,9 +2194,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tourSampleReciter => 'محمود خليل الحصري';
 
   @override
-  String get tourKhatma => 'الختمة';
-
-  @override
   String get tourStreak => 'يوم متتالٍ';
 
   @override
@@ -2594,4 +2573,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tourDuaAdhkar => 'الأذكار';
+
+  @override
+  String get startupFailed =>
+      'تعذّر فتح التطبيق. أعد تشغيله، وإن تكرر هذا فأخبرنا بالخطأ أدناه.';
+
+  @override
+  String get restoreWrongPassword => 'كلمة المرور غير صحيحة، أو الملف تالف.';
+
+  @override
+  String get restoreNewerVersion =>
+      'هذه النسخة من إصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.';
 }

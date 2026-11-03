@@ -56,9 +56,6 @@ class LocalReminderService implements ReminderScheduler {
 
   bool get isInitialized => _isInitialized;
 
-  Timer? _fallbackTimer;
-  String? _lastTriggeredMinuteKey;
-
   void Function(String? payload)? onNotificationTapped;
 
   /// هل يعمل التطبيق داخل اختبارات Flutter؛ عندها لا تُستدعى الإضافة.
@@ -127,7 +124,6 @@ class LocalReminderService implements ReminderScheduler {
 
       await _createAndroidNotificationChannels();
       await _checkAppLaunchNotification();
-      _startFallbackTimerIfNeeded();
     } catch (e) {
       debugPrint('Notification plugin initialize error: $e');
     }
@@ -226,86 +222,6 @@ class LocalReminderService implements ReminderScheduler {
       }
     } catch (e) {
       debugPrint('Could not inspect notification app launch details: $e');
-    }
-  }
-
-  /// لينكس والويب لا يدعمان الجدولة في الخلفية، فيفحص مؤقت خفيف كل 20 ثانية
-  /// لتعمل التذكيرات ما دام التطبيق مفتوحاً.
-  void _startFallbackTimerIfNeeded() {
-    if (_isRunningInFlutterTest) return;
-    if (!kIsWeb && defaultTargetPlatform != TargetPlatform.linux) return;
-
-    _fallbackTimer?.cancel();
-    _fallbackTimer = Timer.periodic(
-      const Duration(seconds: 20),
-      (_) => _checkInAppFallbackReminders(),
-    );
-  }
-
-  /// يفحص التذكيرات المستحقة داخل التطبيق، للمنصات التي لا تدعم الجدولة في
-  /// الخلفية.
-  Future<void> _checkInAppFallbackReminders() async {
-    final now = DateTime.now();
-    final minuteKey =
-        '${now.year}-${now.month}-${now.day}-${now.hour}:${now.minute}';
-    if (_lastTriggeredMinuteKey == minuteKey) return;
-
-    final reminders = UserDataStore.instance.reminders;
-    for (final reminder in reminders) {
-      if (!reminder.isEnabled) continue;
-      if (reminder.hour != now.hour || reminder.minute != now.minute) continue;
-
-      bool shouldFire = false;
-      if (reminder.repeatMode == ReminderRepeatMode.daily ||
-          reminder.repeatMode == ReminderRepeatMode.once) {
-        shouldFire = true;
-      } else if (reminder.repeatMode == ReminderRepeatMode.weekdays) {
-        final days = reminder.selectedDays.isEmpty
-            ? const [1, 2, 3, 4, 5, 6, 7]
-            : reminder.selectedDays;
-        shouldFire = days.contains(now.weekday);
-      }
-
-      var title = reminder.title.trim().isNotEmpty
-          ? reminder.title.trim()
-          : _strings.reminderDefaultTitle;
-      var body = _strings.toReader(_readerName, _strings.reminderQuranBody);
-      if (reminder.id == portionReminderId) {
-        // الصفحات المتبقية اليوم، أو لا شيء بعد قراءة الورد.
-        final store = UserDataStore.instance;
-        final journey = store.journey;
-        final plan = journey.plan;
-        final left = plan == null || plan.isComplete
-            ? 0
-            : plan.pagesPerDay - journey.portionPagesOn(now);
-        shouldFire = shouldFire && left > 0;
-        title = _strings.toReader(_readerName, _strings.portionLeftTitle(left));
-        body = _strings.portionLeftBody;
-      } else if (reminder.id == streakReminderId) {
-        // فقط ما دام اليوم بلا نشاط وهناك سلسلة تُحفظ.
-        final journey = UserDataStore.instance.journey;
-        shouldFire = shouldFire && journey.streakAtRisk(now);
-        title = _strings.toReader(
-          _readerName,
-          _strings.streakAtRiskTitle(journey.streak(now)),
-        );
-        body = _strings.streakAtRiskBody;
-      }
-
-      if (shouldFire) {
-        _lastTriggeredMinuteKey = minuteKey;
-        await showImmediateNotification(
-          id: _baseNotificationId(reminder.id),
-          title: title,
-          body: body,
-          alertType: reminder.alertType,
-          payload: 'quran_resume',
-        );
-        if (reminder.repeatMode == ReminderRepeatMode.once) {
-          final disabled = reminder.copyWith(isEnabled: false);
-          await UserDataStore.instance.putReminder(disabled);
-        }
-      }
     }
   }
 
@@ -741,17 +657,7 @@ class LocalReminderService implements ReminderScheduler {
           // يحتفظ بالموعد الأصلي (عند المزامنة بعد إعادة التشغيل مثلاً).
           scheduledDate = tz.TZDateTime.from(existingTarget, tz.local);
         } else {
-          scheduledDate = tz.TZDateTime(
-            tz.local,
-            now.year,
-            now.month,
-            now.day,
-            reminder.hour,
-            reminder.minute,
-          );
-          if (!scheduledDate.isAfter(now)) {
-            scheduledDate = scheduledDate.add(const Duration(days: 1));
-          }
+          scheduledDate = nextDailyTime(now, reminder.hour, reminder.minute);
           // يحفظ الموعد بدقة، لتعرف المزامنات اللاحقة أنه رنّ.
           await UserDataStore.instance.putReminder(
             reminder.copyWith(scheduledFor: scheduledDate.toLocal()),
@@ -768,17 +674,11 @@ class LocalReminderService implements ReminderScheduler {
           payload: payload,
         );
       } else if (reminder.repeatMode == ReminderRepeatMode.daily) {
-        var scheduledDate = tz.TZDateTime(
-          tz.local,
-          now.year,
-          now.month,
-          now.day,
+        final scheduledDate = nextDailyTime(
+          now,
           reminder.hour,
           reminder.minute,
         );
-        if (!scheduledDate.isAfter(now)) {
-          scheduledDate = scheduledDate.add(const Duration(days: 1));
-        }
 
         await _zonedScheduleSafe(
           id: baseId,
@@ -796,7 +696,8 @@ class LocalReminderService implements ReminderScheduler {
             : reminder.selectedDays;
 
         for (final day in days) {
-          final scheduledDate = _nextInstanceOfDayAndTime(
+          final scheduledDate = nextWeekdayTime(
+            now,
             day,
             reminder.hour,
             reminder.minute,
@@ -893,22 +794,47 @@ class LocalReminderService implements ReminderScheduler {
       );
     }
   }
+}
 
-  /// الموعد القادم لـ[dayOfWeek] في [hour]:[minute].
-  tz.TZDateTime _nextInstanceOfDayAndTime(int dayOfWeek, int hour, int minute) {
-    final now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
+/// أول [hour]:[minute] بعد [now]، بتوقيت [now] نفسه ولو تغيّر التوقيت الصيفي.
+tz.TZDateTime nextDailyTime(tz.TZDateTime now, int hour, int minute) {
+  final today = tz.TZDateTime(
+    now.location,
+    now.year,
+    now.month,
+    now.day,
+    hour,
+    minute,
+  );
+  return today.isAfter(now)
+      ? today
+      : tz.TZDateTime(
+          now.location,
+          now.year,
+          now.month,
+          now.day + 1,
+          hour,
+          minute,
+        );
+}
+
+/// أول [hour]:[minute] في [dayOfWeek] بعد [now].
+tz.TZDateTime nextWeekdayTime(
+  tz.TZDateTime now,
+  int dayOfWeek,
+  int hour,
+  int minute,
+) {
+  var next = nextDailyTime(now, hour, minute);
+  while (next.weekday != dayOfWeek) {
+    next = tz.TZDateTime(
+      now.location,
+      next.year,
+      next.month,
+      next.day + 1,
       hour,
       minute,
     );
-
-    while (scheduledDate.weekday != dayOfWeek || !scheduledDate.isAfter(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    return scheduledDate;
   }
+  return next;
 }

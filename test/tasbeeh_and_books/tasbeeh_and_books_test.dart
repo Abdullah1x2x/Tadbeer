@@ -17,7 +17,7 @@ Widget buildTestWidget(Widget child) {
   return MaterialApp(
     home: AppLocalizationScope(
       currentLanguage: AppLanguage.arabic,
-      strings: const AppStrings(AppLanguage.arabic),
+      strings: AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
       child: Directionality(textDirection: TextDirection.rtl, child: child),
     ),
@@ -427,51 +427,18 @@ void main() {
 
   group('Books & Booklets Tests', () {
     setUp(() async {
-      await BookRepository.instance.init(disableDisk: true);
-      await BookRepository.instance.clearAll();
+      await BookRepository.instance.init(reload: true);
+      BookRepository.instance.replaceForTest();
     });
 
     test('BookModel defaultBooks is empty as requested', () {
       expect(BookModel.defaultBooks.isEmpty, isTrue);
     });
 
-    test('BookRepository manages sections and books', () async {
-      final repo = BookRepository.instance;
-      expect(repo.sections.isEmpty, isTrue);
-      expect(repo.books.isEmpty, isTrue);
-
-      final section = await repo.addSection(
-        name: 'ملازم التدبر',
-        description: 'ملازم دورات التدبر وتفسير الآيات',
-      );
-      expect(section.name, 'ملازم التدبر');
-      expect(repo.sections.length, 1);
-      expect(repo.categoryNames, contains('ملازم التدبر'));
-
-      final book = await repo.addBook(
-        title: 'ملزمة مدارسة سورة الفاتحة',
-        sectionName: 'ملازم التدبر',
-        chapters: const [
-          BookChapter(title: 'المبحث الأول', content: 'محتوى تفسير الاستعاذة'),
-          BookChapter(title: 'المبحث الثاني', content: 'محتوى تفسير البسملة'),
-        ],
-      );
-      expect(book.title, 'ملزمة مدارسة سورة الفاتحة');
-      expect(repo.books.length, 1);
-      expect(repo.getBooksBySection('ملازم التدبر').length, 1);
-      expect(repo.getBooksBySection('الكل').length, 1);
-
-      await repo.deleteBook(book.id);
-      expect(repo.books.isEmpty, isTrue);
-
-      await repo.deleteSection(section.id);
-      expect(repo.sections.isEmpty, isTrue);
-    });
-
     testWidgets('BooksScreen displays empty state when no books exist', (
       WidgetTester tester,
     ) async {
-      await BookRepository.instance.clearAll();
+      BookRepository.instance.replaceForTest();
       await tester.pumpWidget(buildTestWidget(const BooksScreen()));
       await tester.pumpAndSettle();
 
@@ -482,14 +449,19 @@ void main() {
     testWidgets('BooksScreen displays added sections and navigates to books', (
       WidgetTester tester,
     ) async {
-      final repo = BookRepository.instance;
-      await repo.clearAll();
-      await repo.addSection(name: 'ملازم التدبر');
-      await repo.addBook(
-        title: 'ملزمة مدارسة الكهف',
-        sectionName: 'ملازم التدبر',
-        chapters: const [
-          BookChapter(title: 'المقدمة', content: 'قصص سورة الكهف'),
+      BookRepository.instance.replaceForTest(
+        sections: const [
+          BookSection(id: 's1', name: 'ملازم التدبر', description: ''),
+        ],
+        books: const [
+          BookModel(
+            id: 'b1',
+            title: 'ملزمة مدارسة الكهف',
+            category: 'ملازم التدبر',
+            chapters: [
+              BookChapter(title: 'المقدمة', content: 'قصص سورة الكهف'),
+            ],
+          ),
         ],
       );
 
@@ -681,7 +653,7 @@ void main() {
     testWidgets(
       'BooksScreen renders sections, navigates into Sayyed Hussein, and filters',
       (WidgetTester tester) async {
-        await BookRepository.instance.init(disableDisk: true);
+        await tester.runAsync(() => BookRepository.instance.init(reload: true));
         await tester.pumpWidget(buildTestWidget(const BooksScreen()));
         await tester.pumpAndSettle();
 

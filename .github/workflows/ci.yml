@@ -31,3 +31,6 @@ jobs:
 
       - name: Test
         run: flutter test
+
+      - name: Test dates across a clock change
+        run: TZ=America/New_York flutter test test/journey/dst_dates_test.dart

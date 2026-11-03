@@ -345,6 +345,7 @@ void main() {
       );
 
       final ok = await db.replaceAllUserData(
+        appState: const {},
         readingPosition: ReadingPosition(
           page: 3,
           surahNumber: 2,

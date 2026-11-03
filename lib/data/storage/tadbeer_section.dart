@@ -45,7 +45,6 @@ mixin _TadbeerSection on _StoreState {
       if (userDb.isOpen && existing != null) {
         await userDb.deleteTadbeer(existing.id);
       }
-      await saveToDisk();
       return;
     }
 
@@ -83,7 +82,6 @@ mixin _TadbeerSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.insertOrUpdateTadbeer(item);
     }
-    await saveToDisk();
     // التدبر يحفظ سلسلة الأيام كما تحفظها القراءة.
     await markActiveDay(now: now);
   }
@@ -93,7 +91,7 @@ mixin _TadbeerSection on _StoreState {
   TadbeerItem? pendingCommitment({DateTime? now}) {
     final at = now ?? DateTime.now();
     final today = DateTime(at.year, at.month, at.day);
-    final weekAgo = today.subtract(const Duration(days: 7));
+    final weekAgo = DateTime(today.year, today.month, today.day - 7);
     TadbeerItem? latest;
     for (final t in _tadbeerItems) {
       final at = t.commitmentAt ?? t.updatedAt;
@@ -143,7 +141,6 @@ mixin _TadbeerSection on _StoreState {
     notifyListeners();
     final userDb = UserDatabase.instance;
     if (userDb.isOpen) await userDb.insertOrUpdateTadbeer(item);
-    await saveToDisk();
   }
 
   Future<void> deleteTadbeer(int surahNumber, int ayahNumber) async {
@@ -155,6 +152,5 @@ mixin _TadbeerSection on _StoreState {
     if (userDb.isOpen && existing != null) {
       await userDb.deleteTadbeer(existing.id);
     }
-    await saveToDisk();
   }
 }

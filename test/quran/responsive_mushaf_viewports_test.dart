@@ -11,7 +11,7 @@ import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 Widget buildFrame(Widget child, {Size size = const Size(390, 844)}) {
   return AppLocalizationScope(
     currentLanguage: AppLanguage.arabic,
-    strings: const AppStrings(AppLanguage.arabic),
+    strings: AppStrings(AppLanguage.arabic),
     onLanguageChanged: (_) {},
     child: MaterialApp(
       home: Scaffold(
@@ -134,7 +134,7 @@ void main() {
         await tester.pumpWidget(
           AppLocalizationScope(
             currentLanguage: AppLanguage.arabic,
-            strings: const AppStrings(AppLanguage.arabic),
+            strings: AppStrings(AppLanguage.arabic),
             onLanguageChanged: (_) {},
             child: const MaterialApp(home: QuranScreen(initialPage: 4)),
           ),

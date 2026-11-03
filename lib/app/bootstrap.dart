@@ -27,6 +27,8 @@ Future<void> bootstrap() async {
   // 1. التخزين المحلي، ويعيد جدولة التذكيرات عبر خدمتها كلما تغيّرت.
   UserDataStore.instance.reminderScheduler = LocalReminderService.instance;
   await UserDataStore.instance.init();
+  // يرحّل عدادات التسبيح الآن، لتدخل أي نسخة احتياطية قبل فتح شاشتها.
+  await TasbeehRepository.instance.init();
 
   // 2. بيانات القرآن.
   await QuranRepository.instance.init();

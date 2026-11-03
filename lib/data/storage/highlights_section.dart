@@ -25,7 +25,6 @@ mixin _HighlightsSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.insertOrUpdateHighlight(highlight);
     }
-    await saveToDisk();
   }
 
   /// يظلّل الآية بـ[colorIndex].
@@ -53,7 +52,6 @@ mixin _HighlightsSection on _StoreState {
       if (userDb.isOpen) {
         await userDb.deleteHighlight(existing.id);
       }
-      await saveToDisk();
     }
   }
 }

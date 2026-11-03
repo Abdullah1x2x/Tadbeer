@@ -46,7 +46,7 @@ void main() {
   Widget host(Widget child, {bool dark = false, bool lessMotion = false}) {
     return AppLocalizationScope(
       currentLanguage: AppLanguage.arabic,
-      strings: const AppStrings(AppLanguage.arabic),
+      strings: AppStrings(AppLanguage.arabic),
       onLanguageChanged: (_) {},
       child: MediaQuery(
         data: MediaQueryData(

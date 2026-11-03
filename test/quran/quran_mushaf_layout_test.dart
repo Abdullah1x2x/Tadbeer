@@ -13,7 +13,7 @@ import 'package:tadbeer/data/models/user_settings_model.dart';
 Widget buildTestQuranApp({int initialPage = 1}) {
   return AppLocalizationScope(
     currentLanguage: AppLanguage.arabic,
-    strings: const AppStrings(AppLanguage.arabic),
+    strings: AppStrings(AppLanguage.arabic),
     onLanguageChanged: (_) {},
     child: MaterialApp(home: QuranScreen(initialPage: initialPage)),
   );
@@ -156,7 +156,7 @@ void main() {
       await tester.pumpWidget(
         AppLocalizationScope(
           currentLanguage: AppLanguage.arabic,
-          strings: const AppStrings(AppLanguage.arabic),
+          strings: AppStrings(AppLanguage.arabic),
           onLanguageChanged: (_) {},
           child: MaterialApp(
             home: Scaffold(

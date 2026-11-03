@@ -77,6 +77,5 @@ mixin _JourneySection on _StoreState {
     _journey = journey;
     notifyListeners();
     await UserDatabase.instance.saveAppState(_journeyKey, journey.toJson());
-    await saveToDisk();
   }
 }

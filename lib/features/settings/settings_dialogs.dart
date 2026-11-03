@@ -40,6 +40,7 @@ extension _SettingsDialogs on SettingsScreen {
 
     if (confirmed == true && context.mounted) {
       await UserDataStore.instance.resetAllData();
+      await TasbeehRepository.instance.reload();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

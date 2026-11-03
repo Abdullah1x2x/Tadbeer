@@ -14,12 +14,6 @@ class BookChapter {
     required this.content,
   });
 
-  Map<String, dynamic> toJson() => {
-    'title': title,
-    'summary': summary,
-    'content': content,
-  };
-
   factory BookChapter.fromJson(Map<String, dynamic> json) => BookChapter(
     title: json['title'] as String? ?? '',
     summary: json['summary'] as String? ?? '',
@@ -48,32 +42,6 @@ class BookSection {
     this.seriesFilterList = const [],
     this.createdAt,
   });
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'description': description,
-    if (color != null) 'color': color!.toARGB32(),
-    if (countLabel != null) 'countLabel': countLabel,
-    if (seriesFilterList.isNotEmpty) 'seriesFilterList': seriesFilterList,
-    'createdAt': (createdAt ?? DateTime.now()).toIso8601String(),
-  };
-
-  factory BookSection.fromJson(Map<String, dynamic> json) => BookSection(
-    id: json['id'] as String? ?? '',
-    name: json['name'] as String? ?? '',
-    description: json['description'] as String? ?? '',
-    icon: AppIcons.folderStar,
-    color: json['color'] != null ? Color(json['color'] as int) : null,
-    countLabel: json['countLabel'] as String?,
-    seriesFilterList:
-        (json['seriesFilterList'] as List<dynamic>?)
-            ?.map((e) => e.toString())
-            .toList() ??
-        const [],
-    createdAt:
-        DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
-  );
 }
 
 /// كتاب أو ملزمة: فصول مكتوبة، أو ملف مرفق (PDF أو نص).
@@ -138,48 +106,6 @@ class BookModel {
     }
     return '${(fileSizeBytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'subtitle': subtitle,
-    'author': author,
-    'category': category,
-    'estimatedMinutes': estimatedMinutes,
-    'filePath': filePath,
-    'fileName': fileName,
-    'fileType': fileType,
-    'fileSizeBytes': fileSizeBytes,
-    'chapters': chapters.map((c) => c.toJson()).toList(),
-    if (badgeText != null) 'badgeText': badgeText,
-    if (badgeColor != null) 'badgeColor': badgeColor!.toARGB32(),
-    'createdAt': (createdAt ?? DateTime.now()).toIso8601String(),
-  };
-
-  factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
-    id: json['id'] as String? ?? '',
-    title: json['title'] as String? ?? '',
-    subtitle: json['subtitle'] as String? ?? '',
-    author: json['author'] as String? ?? '',
-    category: json['category'] as String? ?? '',
-    icon: AppIcons.bookOpenFill,
-    estimatedMinutes: json['estimatedMinutes'] as int? ?? 10,
-    filePath: json['filePath'] as String?,
-    fileName: json['fileName'] as String?,
-    fileType: json['fileType'] as String?,
-    fileSizeBytes: json['fileSizeBytes'] as int? ?? 0,
-    chapters:
-        (json['chapters'] as List<dynamic>?)
-            ?.map((c) => BookChapter.fromJson(c as Map<String, dynamic>))
-            .toList() ??
-        const [],
-    badgeText: json['badgeText'] as String?,
-    badgeColor: json['badgeColor'] != null
-        ? Color(json['badgeColor'] as int)
-        : null,
-    createdAt:
-        DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
-  );
 
   /// الكتب المدمجة الافتراضية؛ فارغة، فيبدأ القارئ مكتبته بنفسه.
   static const List<BookModel> defaultBooks = [];

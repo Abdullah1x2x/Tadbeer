@@ -9,19 +9,28 @@ import 'package:encrypt/encrypt.dart' as enc;
 
 import '../../data/storage/user_data_store.dart';
 
+/// سبب فشل الاستعادة، لتعرض الواجهة رسالته بلغة القارئ.
+enum BackupError { wrongPassword, newerVersion, invalidFile }
+
 /// نتيجة تصدير نسخة احتياطية أو استعادتها.
 class BackupResult {
   final bool success;
   final String? filePath;
+
+  /// تفاصيل الفشل بالإنجليزية للسجل، لا للعرض.
   final String? errorMessage;
+  final BackupError? error;
 
   const BackupResult.success(this.filePath)
     : success = true,
-      errorMessage = null;
+      errorMessage = null,
+      error = null;
 
-  const BackupResult.failure(this.errorMessage)
-    : success = false,
-      filePath = null;
+  const BackupResult.failure(
+    this.errorMessage, [
+    this.error = BackupError.invalidFile,
+  ]) : success = false,
+       filePath = null;
 }
 
 /// النسخ الاحتياطية المشفرة (.quranbackup)، على الجهاز فقط دون أي خادم.
@@ -47,7 +56,7 @@ class BackupCryptoService {
   static const int formatVersion = 2;
 
   /// تكرارات PBKDF2؛ تُحفظ في الملف ليمكن رفعها مستقبلاً.
-  static const int defaultKdfIterations = 100000;
+  static const int defaultKdfIterations = 600000;
 
   /// أقصى تكرارات تُقبل من رأس الملف، كي لا يعلّق ملف خبيث الاستعادة لدقائق.
   static const int _maxKdfIterations = 5000000;
@@ -156,7 +165,6 @@ class BackupCryptoService {
     bool reminders = true,
     bool ayahLinks = true,
     bool tadbeer = true,
-    bool? tadabbur,
     bool journey = true,
   }) async {
     try {
@@ -167,7 +175,7 @@ class BackupCryptoService {
         settings: settings,
         reminders: reminders,
         ayahLinks: ayahLinks,
-        tadbeer: tadabbur ?? tadbeer,
+        tadbeer: tadbeer,
         journey: journey,
       );
 
@@ -252,6 +260,7 @@ class BackupCryptoService {
       if (schemaVersion > UserDataStore.currentSchemaVersion) {
         return const BackupResult.failure(
           'Backup file was created with a newer version of Tadbeer',
+          BackupError.newerVersion,
         );
       }
 
@@ -259,6 +268,7 @@ class BackupCryptoService {
       if (fileVersion > formatVersion) {
         return const BackupResult.failure(
           'Backup file was created with a newer version of Tadbeer',
+          BackupError.newerVersion,
         );
       }
 
@@ -292,6 +302,7 @@ class BackupCryptoService {
           // كلمة مرور خاطئة أو ملف معدّل أو تالف: لا يُفك شيء.
           return const BackupResult.failure(
             'Incorrect password or corrupt file',
+            BackupError.wrongPassword,
           );
         }
         key = enc.Key(keys.encKey);
@@ -306,7 +317,10 @@ class BackupCryptoService {
       try {
         decryptedCompressed = encrypter.decryptBytes(cipher, iv: iv);
       } catch (e) {
-        return const BackupResult.failure('Incorrect password or corrupt file');
+        return const BackupResult.failure(
+          'Incorrect password or corrupt file',
+          BackupError.wrongPassword,
+        );
       }
 
       // ٤. فك الضغط.
@@ -316,6 +330,7 @@ class BackupCryptoService {
       } catch (e) {
         return const BackupResult.failure(
           'Incorrect password or corrupt backup data (decompression failed)',
+          BackupError.wrongPassword,
         );
       }
 

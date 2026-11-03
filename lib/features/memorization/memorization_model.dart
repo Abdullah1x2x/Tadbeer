@@ -22,11 +22,10 @@ class HifzCard {
   /// يرفعها صندوقاً عند التذكّر فتتباعد المراجعة، ويعيدها إلى الصندوق الأول عند
   /// النسيان فتُراجع غداً.
   HifzCard grade({required bool remembered, required DateTime now}) {
-    final today = DateTime(now.year, now.month, now.day);
     final newBox = remembered ? (box + 1).clamp(1, maxBox) : 1;
     return HifzCard(
       box: newBox,
-      due: today.add(Duration(days: intervals[newBox - 1])),
+      due: DateTime(now.year, now.month, now.day + intervals[newBox - 1]),
     );
   }
 

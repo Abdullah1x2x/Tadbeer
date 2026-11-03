@@ -14,7 +14,7 @@ import 'package:tadbeer/core/design_system/app_icons.dart';
 Widget buildTestWidget(Widget child) {
   return AppLocalizationScope(
     currentLanguage: AppLanguage.arabic,
-    strings: const AppStrings(AppLanguage.arabic),
+    strings: AppStrings(AppLanguage.arabic),
     onLanguageChanged: (_) {},
     child: MaterialApp(
       home: Directionality(textDirection: TextDirection.rtl, child: child),

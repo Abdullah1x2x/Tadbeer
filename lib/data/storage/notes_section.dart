@@ -25,7 +25,6 @@ mixin _NotesSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.insertOrUpdateNote(note);
     }
-    await saveToDisk();
   }
 
   /// ينشئ خاطرة، أو يعدّل الموجودة إن مُرّر معرّفها، ويحفظها.
@@ -79,6 +78,5 @@ mixin _NotesSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.deleteNote(id);
     }
-    await saveToDisk();
   }
 }

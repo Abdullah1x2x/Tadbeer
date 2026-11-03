@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/utils/utils.dart' as sqflite_utils;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../models/ayah_link_model.dart';
 import '../models/bookmark_model.dart';
@@ -122,12 +121,6 @@ class UserDatabase {
     sqflite_utils.lockWarningCallback = null;
     // ignore: deprecated_member_use
     sqflite_utils.lockWarningDuration = null;
-
-    if (!kIsWeb &&
-        (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
-      sqfliteFfiInit();
-      databaseFactory = databaseFactoryFfi;
-    }
 
     final String path;
     if (customPath != null) {
@@ -683,6 +676,7 @@ class UserDatabase {
   /// إما أن يُكتب كل شيء، أو تُلغى المعاملة عند أي فشل ويبقى المحتوى السابق
   /// سليماً. يعيد false عند الفشل.
   Future<bool> replaceAllUserData({
+    required Map<String, Map<String, dynamic>> appState,
     required ReadingPosition readingPosition,
     required List<NoteItem> notes,
     required List<BookmarkItem> bookmarks,
@@ -703,6 +697,7 @@ class UserDatabase {
           'reminders',
           'ayah_links',
           'tadbeer_items',
+          'app_state',
           'user_settings',
         ]) {
           await txn.delete(table);
@@ -710,6 +705,12 @@ class UserDatabase {
 
         final batch = txn.batch();
         const replace = ConflictAlgorithm.replace;
+        for (final e in appState.entries) {
+          batch.insert('app_state', {
+            'key': e.key,
+            'value': jsonEncode(e.value),
+          }, conflictAlgorithm: replace);
+        }
         batch.insert(
           'reading_position',
           _readingPositionRow(readingPosition),

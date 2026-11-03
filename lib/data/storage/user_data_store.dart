@@ -152,14 +152,24 @@ class UserDataStore extends _StoreState
         settingsNotifier.value = dbSettings;
       }
 
-      // ترحيل من ملف JSON القديم إن كانت قاعدة SQLite جديدة وفارغة.
-      if (_notes.isEmpty &&
-          _bookmarks.isEmpty &&
-          _highlights.isEmpty &&
-          _dataFile != null &&
-          await _dataFile!.exists()) {
-        await _loadFromFile();
-        await _persistAllToSQLite();
+      // ترحيل مرة واحدة من ملف JSON القديم، إن كانت القاعدة فارغة تماماً.
+      final legacyFile = _dataFile;
+      if (legacyFile != null && await legacyFile.exists()) {
+        final databaseEmpty =
+            savedPos == null &&
+            dbSettings == null &&
+            savedJourney == null &&
+            _featureState.isEmpty &&
+            _notes.isEmpty &&
+            _bookmarks.isEmpty &&
+            _highlights.isEmpty &&
+            _reminders.isEmpty &&
+            _ayahLinks.isEmpty &&
+            _tadbeerItems.isEmpty;
+        final done =
+            !databaseEmpty ||
+            (await _loadFromFile() && await _persistAllToSQLite());
+        if (done) await legacyFile.delete();
       }
     } else {
       await _loadFromFile();
@@ -169,20 +179,23 @@ class UserDataStore extends _StoreState
     notifyListeners();
   }
 
-  /// يقرأ البيانات من ملف JSON، عند الترحيل أو حين لا تتوفر SQLite.
-  Future<void> _loadFromFile() async {
+  /// يقرأ البيانات من ملف JSON، عند الترحيل أو حين لا تتوفر SQLite. يعيد false
+  /// إن تعذرت قراءته، فيبقى الملف لمحاولة لاحقة.
+  Future<bool> _loadFromFile() async {
     if (_dataFile == null || !await _dataFile!.exists()) {
-      return;
+      return false;
     }
 
     try {
       final content = await _dataFile!.readAsString();
-      if (content.trim().isEmpty) return;
+      if (content.trim().isEmpty) return true;
 
       final data = jsonDecode(content) as Map<String, dynamic>;
       _applyData(data);
+      return true;
     } catch (e) {
       debugPrint('Error reading Tadbeer user data file: $e');
+      return false;
     }
   }
 
@@ -279,9 +292,12 @@ class UserDataStore extends _StoreState
     if (newPosition != null) _readingPosition = newPosition;
     if (newJourney != null) _journey = newJourney;
     if (newFeatureState != null) {
+      // النسخ الأقدم لا تحمل عدادات التسبيح، فلا تمحوها.
+      final tasbeeh = _featureState['tasbeeh'];
       _featureState
         ..clear()
         ..addAll(newFeatureState);
+      if (tasbeeh != null) _featureState.putIfAbsent('tasbeeh', () => tasbeeh);
     }
 
     if (newNotes != null) {
@@ -340,11 +356,8 @@ class UserDataStore extends _StoreState
   Future<bool> _persistAllToSQLite() async {
     final userDb = UserDatabase.instance;
     if (!userDb.isOpen) return false;
-    await userDb.saveAppState(_journeyKey, _journey.toJson());
-    for (final e in _featureState.entries) {
-      await userDb.saveAppState(e.key, e.value);
-    }
     return userDb.replaceAllUserData(
+      appState: {..._featureState, _journeyKey: _journey.toJson()},
       readingPosition: _readingPosition,
       notes: _notes,
       bookmarks: _bookmarks,
@@ -354,48 +367,6 @@ class UserDataStore extends _StoreState
       tadbeerItems: _tadbeerItems,
       settings: _settings,
     );
-  }
-
-  int _lastWrite = 0;
-  int _lastSaved = 0;
-
-  /// يكتب الحالة في ملف JSON بكتابة ذرّية.
-  @override
-  Future<void> saveToDisk() async {
-    if (_dataFile == null) return;
-
-    try {
-      final data = {
-        'schemaVersion': currentSchemaVersion,
-        'exportedAt': DateTime.now().toIso8601String(),
-        'readingPosition': _readingPosition.toJson(),
-        'readingJourney': _journey.toJson(),
-        'featureState': _featureState,
-        'notes': _notes.map((n) => n.toJson()).toList(),
-        'bookmarks': _bookmarks.map((b) => b.toJson()).toList(),
-        'highlights': _highlights.map((h) => h.toJson()).toList(),
-        'reminders': _reminders.map((r) => r.toJson()).toList(),
-        'ayahLinks': _ayahLinks.map((l) => l.toJson()).toList(),
-        'tadbeer': _tadbeerItems.map((t) => t.toJson()).toList(),
-        'tadabbur': _tadbeerItems.map((t) => t.toJson()).toList(),
-        'settings': _settings.toJson(),
-      };
-
-      final jsonString = jsonEncode(data);
-
-      // لكل كتابة ملفها المؤقت، وآخر حالة تبقى ولو سبقتها كتابة أقدم.
-      final turn = ++_lastWrite;
-      final tempFile = File('${_dataFile!.path}.$turn.tmp');
-      await tempFile.writeAsString(jsonString, flush: true);
-      if (turn < _lastSaved) {
-        await tempFile.delete();
-        return;
-      }
-      _lastSaved = turn;
-      tempFile.renameSync(_dataFile!.path);
-    } catch (e) {
-      debugPrint('UserDataStore.saveToDisk: $e');
-    }
   }
 
   /// يمسح كل بيانات القارئ ويلغي التذكيرات المجدولة.
@@ -420,7 +391,6 @@ class UserDataStore extends _StoreState
     if (userDb.isOpen) {
       await userDb.clearAllUserData();
     }
-    await saveToDisk();
   }
 
   /// لقطة من بيانات القارئ للنسخ الاحتياطي، كاملة أو لأقسام مختارة.
@@ -432,10 +402,8 @@ class UserDataStore extends _StoreState
     bool reminders = true,
     bool ayahLinks = true,
     bool tadbeer = true,
-    bool? tadabbur,
     bool journey = true,
   }) {
-    final includeTadbeer = tadabbur ?? tadbeer;
     return {
       'app': 'Tadbeer',
       'schemaVersion': currentSchemaVersion,
@@ -455,10 +423,7 @@ class UserDataStore extends _StoreState
       if (settings) 'settings': _settings.toJson(),
       if (reminders) 'reminders': _reminders.map((r) => r.toJson()).toList(),
       if (ayahLinks) 'ayahLinks': _ayahLinks.map((l) => l.toJson()).toList(),
-      if (includeTadbeer) ...{
-        'tadbeer': _tadbeerItems.map((t) => t.toJson()).toList(),
-        'tadabbur': _tadbeerItems.map((t) => t.toJson()).toList(),
-      },
+      if (tadbeer) 'tadbeer': _tadbeerItems.map((t) => t.toJson()).toList(),
     };
   }
 
@@ -484,7 +449,6 @@ class UserDataStore extends _StoreState
     }
 
     notifyListeners();
-    await saveToDisk();
     await reminderScheduler?.cancelAll();
     await reminderScheduler?.syncAllReminders(_reminders);
   }

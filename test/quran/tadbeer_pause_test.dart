@@ -153,6 +153,8 @@ void main() {
     );
 
     test('Retrieving by stable ayah ID returns populated answers across app re-visits', () async {
+      final dbPath = '${tempDir.path}/user.db';
+      await UserDataStore.instance.init(dataFile, dbPath);
       await UserDataStore.instance.saveTadbeer(
         surahNumber: 18,
         ayahNumber: 10,
@@ -163,7 +165,7 @@ void main() {
       );
 
       // Re-read from disk by creating a new UserDataStore instance
-      await UserDataStore.instance.init(dataFile);
+      await UserDataStore.instance.init(dataFile, dbPath);
 
       final retrieved = UserDataStore.instance.getTadbeer(18, 10);
       expect(retrieved, isNotNull);

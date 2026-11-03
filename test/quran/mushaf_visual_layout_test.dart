@@ -14,7 +14,7 @@ import 'package:tadbeer/data/models/user_settings_model.dart';
 Widget buildTestFrame(Widget child) {
   return AppLocalizationScope(
     currentLanguage: AppLanguage.arabic,
-    strings: const AppStrings(AppLanguage.arabic),
+    strings: AppStrings(AppLanguage.arabic),
     onLanguageChanged: (_) {},
     child: MaterialApp(home: Scaffold(body: child)),
   );

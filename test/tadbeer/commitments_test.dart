@@ -100,7 +100,7 @@ void main() {
 
   Widget app(Widget child) => AppLocalizationScope(
     currentLanguage: AppLanguage.arabic,
-    strings: const AppStrings(AppLanguage.arabic),
+    strings: AppStrings(AppLanguage.arabic),
     onLanguageChanged: (_) {},
     child: MaterialApp(
       theme: AppTheme.lightTheme,
@@ -144,7 +144,7 @@ void main() {
     await tester.pumpWidget(
       AppLocalizationScope(
         currentLanguage: AppLanguage.arabic,
-        strings: const AppStrings(AppLanguage.arabic),
+        strings: AppStrings(AppLanguage.arabic),
         onLanguageChanged: (_) {},
         child: MaterialApp(
           theme: AppTheme.lightTheme,

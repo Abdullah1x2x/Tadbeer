@@ -227,15 +227,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get focusMode => 'Focus mode';
 
   @override
-  String get breathe => 'Breathe';
-
-  @override
-  String get breatheIn => 'Breathe in…';
-
-  @override
-  String get breatheOut => 'Breathe out…';
-
-  @override
   String get swipeForNextAyah => 'Swipe for the next verse';
 
   @override
@@ -286,12 +277,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearText => 'Clear';
 
   @override
-  String get decrease => 'Decrease';
-
-  @override
-  String get increase => 'Increase';
-
-  @override
   String get sajdah => 'Sajdah';
 
   @override
@@ -332,9 +317,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copiedToClipboard => 'Ayah copied to clipboard';
-
-  @override
-  String get newNote => 'New Note';
 
   @override
   String get newFreeNote => 'Free Note';
@@ -735,7 +717,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetWarningMessage =>
-      'Are you sure you want to delete all notes, bookmarks, and highlights, and restore default app settings? This cannot be undone unless you have a backup.';
+      'Are you sure you want to delete all notes, bookmarks, highlights, tasbeeh counts, and khatma and memorization progress, and restore default app settings? This cannot be undone unless you have a backup.';
 
   @override
   String get versionInfo => 'Version 1.0.0 · Free, ad-free & offline';
@@ -2217,9 +2199,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tourSampleReciter => 'Mahmoud Khalil Al-Husary';
 
   @override
-  String get tourKhatma => 'Khatma';
-
-  @override
   String get tourStreak => 'day streak';
 
   @override
@@ -2601,4 +2580,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tourDuaAdhkar => 'Adhkar';
+
+  @override
+  String get startupFailed =>
+      'The app could not open. Restart it, and if this repeats, send us the error below.';
+
+  @override
+  String get restoreWrongPassword =>
+      'The password is wrong, or the file is damaged.';
+
+  @override
+  String get restoreNewerVersion =>
+      'This backup is from a newer version of the app. Update the app and try again.';
 }

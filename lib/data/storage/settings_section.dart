@@ -11,7 +11,6 @@ mixin _SettingsSection on _StoreState {
     if (userDb.isOpen) {
       await userDb.saveSettings(newSettings);
     }
-    await saveToDisk();
   }
 
   /// حجم خط المصحف من الإصدارات السابقة؛ المصحف اليوم يحدد حجمه من الشاشة،
