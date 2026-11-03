@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
+import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../settings/settings_screen.dart';
 
@@ -31,104 +32,63 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
-  final ScrollController _surahsScrollController = ScrollController();
-  final ScrollController _juzsScrollController = ScrollController();
+
+  /// يُنشآن مع أول رصف للقائمة، مفتوحين على السورة والجزء الحاليين، فلا قفزة
+  /// بعد ظهورها.
+  ScrollController? _surahsScrollController;
+  ScrollController? _juzsScrollController;
   String _filter = '';
-  bool _initialJuzScrolled = false;
+
+  /// أسماء السور مطبّعة مرة، لا مع كل حرف في البحث.
+  late final List<String> _surahKeys = [
+    for (final s in QuranRepository.instance.surahs)
+      ArabicSearchNormalizer.normalize(s.name),
+  ];
+
+  /// صفحة بداية كل جزء، تُحسب مرة.
+  late final _juzStarts = [
+    for (var juz = 1; juz <= 30; juz++)
+      QuranRepository.instance.pages.firstWhere((p) => p.juzNumber == juz),
+  ];
+
+  static const _itemHeight = 60.0;
+  static const _listPadding = 4.0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(_onTabChanged);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _scrollToCurrentSurah(animate: false);
-      }
-    });
-  }
-
-  void _onTabChanged() {
-    if (_tabController.index == 1 && !_initialJuzScrolled) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _scrollToCurrentJuz(animate: false);
-        }
-      });
-    }
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     _searchController.dispose();
-    _surahsScrollController.dispose();
-    _juzsScrollController.dispose();
+    _surahsScrollController?.dispose();
+    _juzsScrollController?.dispose();
     super.dispose();
   }
 
-  void _scrollToCurrentSurah({bool animate = false}) {
-    if (!_surahsScrollController.hasClients || _filter.isNotEmpty) return;
-    final repo = QuranRepository.instance;
-    final page = repo.getPage(widget.currentPage);
-    final surahNum = page.surahNumbers.isNotEmpty ? page.surahNumbers.first : 1;
-    final surahIndex = (surahNum - 1).clamp(0, repo.surahs.length - 1);
-
-    const itemHeight = 60.0;
-    const topPadding = 4.0;
-    final viewport = _surahsScrollController.position.viewportDimension;
-    final itemTop = topPadding + (surahIndex * itemHeight);
-    final target = math.max(
-      0.0,
-      itemTop - (viewport > itemHeight ? (viewport - itemHeight) / 2 : 0.0),
-    );
-    final clamped = target.clamp(
-      0.0,
-      _surahsScrollController.position.maxScrollExtent,
-    );
-
-    if (animate) {
-      _surahsScrollController.animateTo(
-        clamped,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOutCubic,
-      );
-    } else {
-      _surahsScrollController.jumpTo(clamped);
-    }
+  /// موضع التمرير الذي يضع العنصر [index] من [count] في وسط قائمة ارتفاعها
+  /// [viewport].
+  static double _centred(int index, int count, double viewport) {
+    final end = count * _itemHeight + 2 * _listPadding - viewport;
+    final top = _listPadding + index * _itemHeight;
+    return (top - (viewport - _itemHeight) / 2).clamp(0.0, math.max(0.0, end));
   }
 
-  void _scrollToCurrentJuz({bool animate = false}) {
-    if (!_juzsScrollController.hasClients) return;
-    final repo = QuranRepository.instance;
-    final page = repo.getPage(widget.currentPage);
-    final juzIndex = (page.juzNumber - 1).clamp(0, 29);
+  int get _currentSurahIndex {
+    final page = QuranRepository.instance.getPage(widget.currentPage);
+    return (page.surahNumbers.isNotEmpty ? page.surahNumbers.first : 1) - 1;
+  }
 
-    const itemHeight = 60.0;
-    const topPadding = 4.0;
-    final viewport = _juzsScrollController.position.viewportDimension;
-    final itemTop = topPadding + (juzIndex * itemHeight);
-    final target = math.max(
-      0.0,
-      itemTop - (viewport > itemHeight ? (viewport - itemHeight) / 2 : 0.0),
+  /// يعود إلى السورة الحالية بعد مسح البحث.
+  void _showCurrentSurah() {
+    final controller = _surahsScrollController;
+    if (controller == null || !controller.hasClients) return;
+    controller.jumpTo(
+      _centred(_currentSurahIndex, 114, controller.position.viewportDimension),
     );
-    final clamped = target.clamp(
-      0.0,
-      _juzsScrollController.position.maxScrollExtent,
-    );
-
-    if (animate) {
-      _juzsScrollController.animateTo(
-        clamped,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOutCubic,
-      );
-    } else {
-      _juzsScrollController.jumpTo(clamped);
-    }
-    _initialJuzScrolled = true;
   }
 
   void _navigateToSettings(BuildContext context) {
@@ -143,6 +103,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final repo = QuranRepository.instance;
     final topPadding = MediaQuery.paddingOf(context).top;
+    final accent = _accent(isDark);
 
     return Drawer(
       backgroundColor: isDark
@@ -212,20 +173,25 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                     ),
                   ),
 
-                  // تصفية السور.
-                  Padding(
+                  // تصفية السور، في تبويبها وحده.
+                  ListenableBuilder(
+                    listenable: _tabController,
+                    builder: (context, field) => _tabController.index == 0
+                        ? field!
+                        : const SizedBox.shrink(),
+                    child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
                     child: TextField(
                       controller: _searchController,
                       onChanged: (val) {
                         setState(() => _filter = val.trim());
                         if (val.trim().isNotEmpty) {
-                          if (_surahsScrollController.hasClients) {
-                            _surahsScrollController.jumpTo(0.0);
+                          if (_surahsScrollController?.hasClients ?? false) {
+                            _surahsScrollController!.jumpTo(0.0);
                           }
                         } else {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (mounted) _scrollToCurrentSurah(animate: false);
+                            if (mounted) _showCurrentSurah();
                           });
                         }
                       },
@@ -240,7 +206,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                         prefixIcon: Icon(
                           AppIcons.magnifyingGlass,
                           size: 18,
-                          color: AppColors.olive,
+                          color: accent,
                         ),
                         suffixIcon: _filter.isNotEmpty
                             ? IconButton(
@@ -251,9 +217,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                                   setState(() => _filter = '');
                                   WidgetsBinding.instance
                                       .addPostFrameCallback((_) {
-                                    if (mounted) {
-                                      _scrollToCurrentSurah(animate: false);
-                                    }
+                                    if (mounted) _showCurrentSurah();
                                   });
                                 },
                               )
@@ -276,6 +240,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
                         ),
                       ),
                     ),
+                  ),
                   ),
                 ],
               ),
@@ -301,6 +266,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     bool isDark,
     AppStrings l10n,
   ) {
+    final accent = _accent(isDark);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -309,12 +275,12 @@ class _QuranSideMenuState extends State<QuranSideMenu>
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: AppColors.olive.withValues(alpha: 0.15),
+              color: accent.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(
               FlutterIslamicIcons.quran2,
-              color: AppColors.olive,
+              color: accent,
               size: 20,
             ),
           ),
@@ -347,7 +313,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
           IconButton(
             icon: const Icon(AppIcons.gear),
             tooltip: l10n.settings,
-            color: AppColors.olive,
+            color: accent,
             onPressed: () => _navigateToSettings(context),
           ),
         ],
@@ -361,16 +327,37 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     QuranRepository repo,
     bool isDark,
   ) {
-    final filteredSurahs = repo.surahs.where((s) {
-      if (_filter.isEmpty) return true;
-      final query = ArabicSearchNormalizer.normalize(_filter);
-      final normName = ArabicSearchNormalizer.normalize(s.name);
-      return normName.contains(query) || s.number.toString() == _filter;
-    }).toList();
+    final surahs = repo.surahs;
+    final query = ArabicSearchNormalizer.normalize(_filter);
+    final filteredSurahs = _filter.isEmpty
+        ? surahs
+        : [
+            for (final (i, s) in surahs.indexed)
+              if (_surahKeys[i].contains(query) || '${s.number}' == _filter) s,
+          ];
 
+    return LayoutBuilder(
+      builder: (context, box) {
+        _surahsScrollController ??= ScrollController(
+          initialScrollOffset: _centred(
+            _currentSurahIndex,
+            surahs.length,
+            box.maxHeight,
+          ),
+        );
+        return _surahsList(context, filteredSurahs, isDark);
+      },
+    );
+  }
+
+  Widget _surahsList(
+    BuildContext context,
+    List<Surah> filteredSurahs,
+    bool isDark,
+  ) {
     return ListView.builder(
       controller: _surahsScrollController,
-      itemExtent: 60.0,
+      itemExtent: _itemHeight,
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: filteredSurahs.length,
@@ -419,30 +406,36 @@ class _QuranSideMenuState extends State<QuranSideMenu>
     QuranRepository repo,
     bool isDark,
   ) {
-    if (!_initialJuzScrolled) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _scrollToCurrentJuz(animate: false);
-        }
-      });
-    }
+    final currentJuz = repo.getPage(widget.currentPage).juzNumber;
+    return LayoutBuilder(
+      builder: (context, box) {
+        _juzsScrollController ??= ScrollController(
+          initialScrollOffset: _centred(currentJuz - 1, 30, box.maxHeight),
+        );
+        return _juzsList(context, repo, isDark, currentJuz);
+      },
+    );
+  }
 
+  Widget _juzsList(
+    BuildContext context,
+    QuranRepository repo,
+    bool isDark,
+    int currentJuz,
+  ) {
     return ListView.builder(
       controller: _juzsScrollController,
-      itemExtent: 60.0,
+      itemExtent: _itemHeight,
       clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       itemCount: 30,
       itemBuilder: (context, index) {
         final juzNum = index + 1;
-        final startPage = repo.pages.firstWhere(
-          (p) => p.juzNumber == juzNum,
-          orElse: () => repo.pages.first,
-        );
+        final startPage = _juzStarts[index];
 
         final firstAyah = startPage.ayahs.first;
         final surah = repo.getSurah(firstAyah.surahNumber);
-        final isCurrent = repo.getPage(widget.currentPage).juzNumber == juzNum;
+        final isCurrent = currentJuz == juzNum;
 
         return Container(
           height: 60.0,
@@ -480,6 +473,10 @@ class _QuranSideMenuState extends State<QuranSideMenu>
   }
 }
 
+/// لون التمييز، فاتحاً في الوضع الداكن ليُقرأ على الخلفية الداكنة.
+Color _accent(bool isDark) =>
+    isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
+
 /// الرقم بأرقام الواجهة: عربية هندية في الواجهة العربية.
 Object _digits(BuildContext context, int n) =>
     context.currentLanguage == AppLanguage.arabic
@@ -511,6 +508,7 @@ class _IndexTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accent = _accent(isDark);
     return ListTile(
       dense: true,
       selected: isCurrent,
@@ -529,8 +527,8 @@ class _IndexTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isCurrent
-                ? AppColors.olive
-                : AppColors.olive.withValues(alpha: 0.3),
+                ? accent
+                : accent.withValues(alpha: 0.3),
           ),
         ),
         child: Text(
@@ -551,7 +549,7 @@ class _IndexTile extends StatelessWidget {
           fontSize: titleFontSize,
           fontWeight: isCurrent ? FontWeight.bold : FontWeight.w600,
           color: isCurrent
-              ? AppColors.olive
+              ? accent
               : (isDark ? AppColors.nightQuranText : AppColors.dayQuranText),
         ),
       ),
@@ -567,7 +565,7 @@ class _IndexTile extends StatelessWidget {
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,
-          color: AppColors.olive,
+          color: accent,
         ),
       ),
       onTap: onTap,

@@ -134,7 +134,7 @@ void main() {
       expect(find.text('ملاحظة'), findsOneWidget);
       expect(find.text('علامة'), findsOneWidget);
       expect(find.text('تمييز'), findsOneWidget);
-      expect(find.text('أضف للحفظ'), findsOneWidget);
+      expect(find.text('تم الحفظ'), findsOneWidget);
       expect(find.text('نسخ'), findsOneWidget);
       expect(find.text('مشاركة'), findsOneWidget);
 
@@ -147,7 +147,7 @@ void main() {
           'ملاحظة',
           'علامة',
           'تمييز',
-          'أضف للحفظ',
+          'تم الحفظ',
           'مشاركة',
           'نسخ',
         ])

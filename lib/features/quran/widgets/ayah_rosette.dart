@@ -236,7 +236,7 @@ class _RosetteState extends State<_Rosette>
       ),
       _Petal(
         icon: inHifz ? AppIcons.brainFill : AppIcons.brain,
-        label: inHifz ? l10n.memorizedDone : l10n.addToMemorization,
+        label: l10n.memorizedDone,
         active: inHifz,
         run: () => HifzStore.toggle(s, a),
       ),
