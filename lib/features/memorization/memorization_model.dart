@@ -55,8 +55,13 @@ class HifzStore {
   static Set<String> ids() =>
       UserDataStore.instance.featureState(_key).keys.toSet();
 
-  /// حالة حفظ الآية، أو null.
-  static HifzCard? card(int surah, int ayah) => all()[_id(surah, ayah)];
+  /// حالة حفظ الآية، أو null؛ تقرأ بطاقتها وحدها لا كل المحفوظ.
+  static HifzCard? card(int surah, int ayah) {
+    final raw = UserDataStore.instance.featureState(_key)[_id(surah, ayah)];
+    return raw == null
+        ? null
+        : HifzCard.fromJson(Map<String, dynamic>.from(raw as Map));
+  }
 
   /// يسجّل تقييم القارئ لتذكّر الآية.
   static Future<void> grade(
@@ -79,7 +84,8 @@ class HifzStore {
         .then((_) => UserDataStore.instance.markActiveDay(now: at));
   }
 
-  static bool contains(int surah, int ayah) => card(surah, ayah) != null;
+  static bool contains(int surah, int ayah) =>
+      UserDataStore.instance.featureState(_key).containsKey(_id(surah, ayah));
 
   /// يضيف الآية للحفظ (مستحقة اليوم)، أو يزيلها إن كانت مضافة.
   static Future<void> toggle(int surah, int ayah, {DateTime? now}) {
