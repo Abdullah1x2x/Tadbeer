@@ -6,7 +6,7 @@
 
 ---
 
-## 🇸🇦 النسخة العربية (Arabic Version)
+##  النسخة العربية (Arabic Version)
 
 ### 1. ميثاق الخصوصية بالتصميم (Privacy by Design)
 تطبيق «تَدْبِير» مبني على مبدأ أساسي راسخ: **الخصوصية حق أصيل لكل مؤمن ومتدبر لكتاب الله**. التطبيق يعمل بصورة مستقلة ومحلية على جهازك، ولا يتصل بأي خادم إلا لتنزيل التلاوة المسموعة حين تطلبها (انظر البند 3).
@@ -66,7 +66,7 @@
 
 ---
 
-## 🇬🇧 English Version (For Store Reviewers & International Users)
+##  English Version (For Store Reviewers & International Users)
 
 ### 1. Privacy by Design Tenet
 **Tadbeer** is an open-source, offline-first Quran contemplation and reading application built with Flutter. It is architected from the ground up to respect user sovereignty and absolute digital privacy.
