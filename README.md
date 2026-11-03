@@ -50,6 +50,20 @@
 
 والتطبيق يشرح نفسه: جولة عند أول تشغيل، وشرح متحرك لكل قسم، ودليل يعرّفك بالشاشة الرئيسية.
 
+## ثيمات التطبيق
+
+اختر مظهر التطبيق من أول تشغيل، وغيّره متى شئت من الإعدادات. خمسة ألوان تغيّر الشاشات كلها، مع وضع فاتح أو داكن أو تلقائي يتبع هاتفك.
+
+<table>
+  <tr>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/02_theme_navy_home.png" alt="كحلي" width="100%"><br><sub><b>كحلي</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/03_theme_emerald_home.png" alt="زمردي" width="100%"><br><sub><b>زمردي</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/04_theme_burgundy_home.png" alt="عنابي" width="100%"><br><sub><b>عنابي</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/05_theme_teal_home.png" alt="تركوازي" width="100%"><br><sub><b>تركوازي</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/01_theme_brown_home.png" alt="بني خشبي" width="100%"><br><sub><b>بني خشبي</b></sub></td>
+  </tr>
+</table>
+
 ## صور من التطبيق
 
 ### روابط الآيات
@@ -89,20 +103,6 @@
     <td align="center" width="33%"><img src="docs/assets/screenshots/10_feature_library_books.png" alt="الكتب والملازم" width="100%"><br><sub><b>الكتب والملازم</b></sub></td>
     <td align="center" width="33%"><img src="docs/assets/screenshots/09_feature_qibla_compass.png" alt="اتجاه القبلة" width="100%"><br><sub><b>اتجاه القبلة</b></sub></td>
     <td align="center" width="33%"><img src="docs/assets/screenshots/08_feature_more_grid.png" alt="كل الأقسام" width="100%"><br><sub><b>كل الأقسام</b></sub></td>
-  </tr>
-</table>
-
-## ثيمات التطبيق
-
-اختر مظهر التطبيق من أول تشغيل، وغيّره متى شئت من الإعدادات. خمسة ألوان تغيّر الشاشات كلها، مع وضع فاتح أو داكن أو تلقائي يتبع هاتفك.
-
-<table>
-  <tr>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/02_theme_navy_home.png" alt="كحلي" width="100%"><br><sub><b>كحلي</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/03_theme_emerald_home.png" alt="زمردي" width="100%"><br><sub><b>زمردي</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/04_theme_burgundy_home.png" alt="عنابي" width="100%"><br><sub><b>عنابي</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/05_theme_teal_home.png" alt="تركوازي" width="100%"><br><sub><b>تركوازي</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/01_theme_brown_home.png" alt="بني خشبي" width="100%"><br><sub><b>بني خشبي</b></sub></td>
   </tr>
 </table>
 

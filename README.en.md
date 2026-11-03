@@ -48,6 +48,20 @@ The app helps you understand the Quran and act on it, not only read it. It is bu
 
 The app explains itself with a first-launch tour, an animated guide for each section and a home screen walkthrough.
 
+## App themes
+
+Pick the look of the app on first launch, and change it any time in settings. Five colors restyle every screen, with light, dark or automatic mode that follows your phone.
+
+<table>
+  <tr>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/02_theme_navy_home.png" alt="Navy" width="100%"><br><sub><b>Navy</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/03_theme_emerald_home.png" alt="Emerald" width="100%"><br><sub><b>Emerald</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/04_theme_burgundy_home.png" alt="Burgundy" width="100%"><br><sub><b>Burgundy</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/05_theme_teal_home.png" alt="Teal" width="100%"><br><sub><b>Teal</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/01_theme_brown_home.png" alt="Wood brown" width="100%"><br><sub><b>Wood brown</b></sub></td>
+  </tr>
+</table>
+
 ## Screenshots
 
 ### Ayah links
@@ -87,20 +101,6 @@ The app explains itself with a first-launch tour, an animated guide for each sec
     <td align="center" width="33%"><img src="docs/assets/screenshots/08_feature_more_grid.png" alt="All sections" width="100%"><br><sub><b>All sections</b></sub></td>
     <td align="center" width="33%"><img src="docs/assets/screenshots/09_feature_qibla_compass.png" alt="Qibla direction" width="100%"><br><sub><b>Qibla direction</b></sub></td>
     <td align="center" width="33%"><img src="docs/assets/screenshots/10_feature_library_books.png" alt="Books and booklets" width="100%"><br><sub><b>Books and booklets</b></sub></td>
-  </tr>
-</table>
-
-## App themes
-
-Pick the look of the app on first launch, and change it any time in settings. Five colors restyle every screen, with light, dark or automatic mode that follows your phone.
-
-<table>
-  <tr>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/02_theme_navy_home.png" alt="Navy" width="100%"><br><sub><b>Navy</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/03_theme_emerald_home.png" alt="Emerald" width="100%"><br><sub><b>Emerald</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/04_theme_burgundy_home.png" alt="Burgundy" width="100%"><br><sub><b>Burgundy</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/05_theme_teal_home.png" alt="Teal" width="100%"><br><sub><b>Teal</b></sub></td>
-    <td align="center" width="20%"><img src="docs/assets/screenshots/01_theme_brown_home.png" alt="Wood brown" width="100%"><br><sub><b>Wood brown</b></sub></td>
   </tr>
 </table>
 
