@@ -173,9 +173,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reflectedToday => 'Reflected on today';
 
   @override
-  String get addToMemorization => 'Add to memorization';
-
-  @override
   String get memorizedDone => 'Memorized';
 
   @override
@@ -2592,4 +2589,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get restoreNewerVersion =>
       'This backup is from a newer version of the app. Update the app and try again.';
+
+  @override
+  String get snoozeAction => 'In 10 minutes';
+
+  @override
+  String get markReadAction => 'I read';
+
+  @override
+  String get portionDueTitle => 'Time for your daily portion';
+
+  @override
+  String get notificationsOffNotice =>
+      'Notifications are off, so reminders won’t reach you.';
+
+  @override
+  String get exactAlarmsOffNotice =>
+      'Exact alarms aren’t allowed, so reminders may arrive late.';
+
+  @override
+  String get enablePermission => 'Enable';
+
+  @override
+  String get batteryHintNotice =>
+      'Your phone may stop reminders to save battery. In the app settings, set battery to “Unrestricted”.';
+
+  @override
+  String get openSettings => 'Settings';
 }

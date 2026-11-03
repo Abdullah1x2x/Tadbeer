@@ -37,4 +37,10 @@ void main() {
     );
     expect(next, tz.TZDateTime(zone, 2027, 5, 3, 8));
   });
+
+  test('stableHash is FNV-1a, so notification ids survive Dart upgrades', () {
+    expect(stableHash(''), 0x811c9dc5);
+    expect(stableHash('a'), 0xe40c292c);
+    expect(stableHash('foobar'), 0xbf9cf968);
+  });
 }

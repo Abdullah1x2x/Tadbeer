@@ -173,9 +173,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reflectedToday => 'تدبّرتها اليوم، بارك الله فيك';
 
   @override
-  String get addToMemorization => 'أضف للحفظ';
-
-  @override
   String get memorizedDone => 'تم الحفظ';
 
   @override
@@ -2579,4 +2576,30 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get restoreNewerVersion =>
       'هذه النسخة من إصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.';
+
+  @override
+  String get snoozeAction => 'بعد 10 دقائق';
+
+  @override
+  String get markReadAction => 'قرأت';
+
+  @override
+  String get portionDueTitle => 'حان وقت وِردك اليومي';
+
+  @override
+  String get notificationsOffNotice => 'الإشعارات متوقفة، فلن تصلك التذكيرات.';
+
+  @override
+  String get exactAlarmsOffNotice =>
+      'المنبهات الدقيقة غير مسموحة، فقد تتأخر التذكيرات عن وقتها.';
+
+  @override
+  String get enablePermission => 'تفعيل';
+
+  @override
+  String get batteryHintNotice =>
+      'هاتفك قد يوقف التذكيرات لتوفير البطارية. من إعدادات التطبيق اجعل البطارية «بلا قيود».';
+
+  @override
+  String get openSettings => 'الإعدادات';
 }

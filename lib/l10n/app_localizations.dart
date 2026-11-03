@@ -416,12 +416,6 @@ abstract class AppLocalizations {
   /// **'تدبّرتها اليوم، بارك الله فيك'**
   String get reflectedToday;
 
-  /// No description provided for @addToMemorization.
-  ///
-  /// In ar, this message translates to:
-  /// **'أضف للحفظ'**
-  String get addToMemorization;
-
   /// No description provided for @memorizedDone.
   ///
   /// In ar, this message translates to:
@@ -4601,6 +4595,54 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'هذه النسخة من إصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.'**
   String get restoreNewerVersion;
+
+  /// No description provided for @snoozeAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'بعد 10 دقائق'**
+  String get snoozeAction;
+
+  /// No description provided for @markReadAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'قرأت'**
+  String get markReadAction;
+
+  /// No description provided for @portionDueTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حان وقت وِردك اليومي'**
+  String get portionDueTitle;
+
+  /// No description provided for @notificationsOffNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات متوقفة، فلن تصلك التذكيرات.'**
+  String get notificationsOffNotice;
+
+  /// No description provided for @exactAlarmsOffNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'المنبهات الدقيقة غير مسموحة، فقد تتأخر التذكيرات عن وقتها.'**
+  String get exactAlarmsOffNotice;
+
+  /// No description provided for @enablePermission.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفعيل'**
+  String get enablePermission;
+
+  /// No description provided for @batteryHintNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'هاتفك قد يوقف التذكيرات لتوفير البطارية. من إعدادات التطبيق اجعل البطارية «بلا قيود».'**
+  String get batteryHintNotice;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإعدادات'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate

@@ -53,7 +53,6 @@
   "portionReminderPrompt": "متى نذكّرك بوردك يومياً؟",
   "portionReminderSet": "سنذكّرك بوردك كل يوم",
   "reflectedToday": "تدبّرتها اليوم، بارك الله فيك",
-  "addToMemorization": "أضف للحفظ",
   "memorizedDone": "تم الحفظ",
   "journeyBackupSection": "الختمة والإحصاءات والحفظ والمسارات",
   "dailyJourney": "رحلة يومية",
@@ -1469,5 +1468,13 @@
   "tourDuaAdhkar": "الأذكار",
   "startupFailed": "تعذّر فتح التطبيق. أعد تشغيله، وإن تكرر هذا فأخبرنا بالخطأ أدناه.",
   "restoreWrongPassword": "كلمة المرور غير صحيحة، أو الملف تالف.",
-  "restoreNewerVersion": "هذه النسخة من إصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة."
+  "restoreNewerVersion": "هذه النسخة من إصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.",
+  "snoozeAction": "بعد 10 دقائق",
+  "markReadAction": "قرأت",
+  "portionDueTitle": "حان وقت وِردك اليومي",
+  "notificationsOffNotice": "الإشعارات متوقفة، فلن تصلك التذكيرات.",
+  "exactAlarmsOffNotice": "المنبهات الدقيقة غير مسموحة، فقد تتأخر التذكيرات عن وقتها.",
+  "enablePermission": "تفعيل",
+  "batteryHintNotice": "هاتفك قد يوقف التذكيرات لتوفير البطارية. من إعدادات التطبيق اجعل البطارية «بلا قيود».",
+  "openSettings": "الإعدادات"
 }

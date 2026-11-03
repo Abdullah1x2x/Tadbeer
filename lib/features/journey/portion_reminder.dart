@@ -62,6 +62,27 @@ List<PortionNotice> portionNotices(
   return notices;
 }
 
+/// موعد أول تذكير يومي عام بعد آخر [days] يوماً مجدولة، إن بقي ورد بعدها.
+///
+/// يمنع انقطاع التذكير إن لم يُفتح التطبيق طوال تلك الأيام.
+DateTime? portionFallbackAt(
+  ReadingJourney journey,
+  DateTime now, {
+  required int hour,
+  required int minute,
+  int days = portionReminderDays,
+}) {
+  final last = portionNotices(
+    journey,
+    now,
+    hour: hour,
+    minute: minute,
+    days: days + 1,
+  ).lastOrNull;
+  final at = DateTime(now.year, now.month, now.day + days, hour, minute);
+  return last?.at == at ? at : null;
+}
+
 /// يُبقي إشعارات الورد متوافقة مع رحلة القراءة.
 class PortionReminderSync {
   PortionReminderSync._();

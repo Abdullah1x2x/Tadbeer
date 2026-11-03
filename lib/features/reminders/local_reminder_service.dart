@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -8,6 +10,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../app/localization.dart';
+import '../daily/ayah_of_day_card.dart';
 import '../journey/portion_reminder.dart';
 import '../journey/streak_reminder.dart';
 import '../../data/models/reminder_model.dart';
@@ -35,6 +38,16 @@ class LocalReminderService implements ReminderScheduler {
   static const int testNotificationId = 999998;
   static const int testAlarmId = 999999;
 
+  /// إجراءا الإشعار: تأجيله، وتسجيل القراءة.
+  static const String snoozeActionId = 'snooze';
+  static const String markReadActionId = 'mark_read';
+
+  /// مدة التأجيل.
+  static const Duration snoozeDelay = Duration(minutes: 10);
+
+  /// قناة أندرويد لحالة الجهاز وفتح إعدادات التطبيق.
+  static const MethodChannel _device = MethodChannel('tadbeer/device');
+
   /// `Notification.FLAG_INSISTENT` في أندرويد (4): يعيد الصوت حتى يُغلق الإشعار
   /// أو يُنقر.
   static final Int32List _insistentAlarmFlags = Int32List.fromList(const [4]);
@@ -53,6 +66,8 @@ class LocalReminderService implements ReminderScheduler {
       FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
+
+  AppLifecycleListener? _lifecycle;
 
   bool get isInitialized => _isInitialized;
 
@@ -114,13 +129,25 @@ class LocalReminderService implements ReminderScheduler {
       await _notificationsPlugin.initialize(
         settings: initSettings,
         onDidReceiveNotificationResponse: (NotificationResponse response) {
-          if (response.actionId == 'dismiss_alarm') {
-            return;
+          switch (response.actionId) {
+            case 'dismiss_alarm':
+              return;
+            case snoozeActionId:
+              snooze(response.id);
+              return;
+            case markReadActionId:
+              _markRead();
+              return;
           }
           onNotificationTapped?.call(response.payload);
         },
+        onDidReceiveBackgroundNotificationResponse:
+            onBackgroundNotificationAction,
       );
       _isInitialized = true;
+      if (!_isRunningInFlutterTest) {
+        _lifecycle ??= AppLifecycleListener(onResume: _resyncIfZoneChanged);
+      }
 
       await _createAndroidNotificationChannels();
       await _checkAppLaunchNotification();
@@ -133,6 +160,24 @@ class LocalReminderService implements ReminderScheduler {
   Future<void> _initializeTimeZone() async {
     try {
       tz.initializeTimeZones();
+    } catch (e) {
+      debugPrint('Failed to initialize timezones: $e');
+      return;
+    }
+    await _applyDeviceTimeZone();
+  }
+
+  /// يعيد جدولة التذكيرات إن تغيّرت منطقة الجهاز منذ آخر مرة، كالسفر.
+  Future<void> _resyncIfZoneChanged() async {
+    final before = tz.local.name;
+    await _applyDeviceTimeZone();
+    if (tz.local.name == before) return;
+    await syncAllReminders(UserDataStore.instance.reminders);
+  }
+
+  /// يضبط منطقة الجهاز في قاعدة المناطق المحمّلة.
+  Future<void> _applyDeviceTimeZone() async {
+    try {
       try {
         final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
         tz.setLocalLocation(tz.getLocation(timeZoneInfo.identifier));
@@ -212,7 +257,10 @@ class LocalReminderService implements ReminderScheduler {
       if (launchDetails != null &&
           launchDetails.didNotificationLaunchApp &&
           launchDetails.notificationResponse?.payload != null) {
-        if (launchDetails.notificationResponse?.actionId == 'dismiss_alarm') {
+        final actionId = launchDetails.notificationResponse?.actionId;
+        if (actionId == 'dismiss_alarm') return;
+        if (actionId == markReadActionId) {
+          await _markRead();
           return;
         }
         final payload = launchDetails.notificationResponse!.payload;
@@ -225,8 +273,9 @@ class LocalReminderService implements ReminderScheduler {
     }
   }
 
-  /// يطلب إذن الإشعارات والمنبهات الدقيقة (أندرويد 13 و14، وiOS وmacOS والويب).
-  Future<bool> requestPermissions() async {
+  /// يطلب إذن الإشعارات (أندرويد 13، وiOS وmacOS والويب)، ومعه المنبهات الدقيقة
+  /// إن طُلب [exactAlarms]؛ فطلبها في أندرويد 14 يفتح الإعدادات مباشرة.
+  Future<bool> requestPermissions({bool exactAlarms = false}) async {
     if (_isRunningInFlutterTest) return true;
     try {
       final androidImplementation = _notificationsPlugin
@@ -237,15 +286,7 @@ class LocalReminderService implements ReminderScheduler {
       if (androidImplementation != null) {
         final granted = await androidImplementation
             .requestNotificationsPermission();
-        try {
-          final canExact = await androidImplementation
-              .canScheduleExactNotifications();
-          if (canExact == false) {
-            await androidImplementation.requestExactAlarmsPermission();
-          }
-        } catch (e) {
-          debugPrint('Exact alarm permission check note: $e');
-        }
+        if (exactAlarms) await requestExactAlarms();
         final enabled = await androidImplementation.areNotificationsEnabled();
         return enabled ?? granted ?? false;
       }
@@ -294,8 +335,77 @@ class LocalReminderService implements ReminderScheduler {
     return true;
   }
 
+  /// يفتح إعداد المنبهات الدقيقة في أندرويد إن لم تكن مسموحة.
+  Future<void> requestExactAlarms() async {
+    try {
+      final android = _android;
+      if (await android?.canScheduleExactNotifications() == false) {
+        await android!.requestExactAlarmsPermission();
+      }
+    } catch (e) {
+      debugPrint('Exact alarm permission check note: $e');
+    }
+  }
+
+  AndroidFlutterLocalNotificationsPlugin? get _android => _notificationsPlugin
+      .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >();
+
+  /// هل تصل الإشعارات، وهل تُضبط المنبهات بدقة؛ خارج أندرويد كلاهما نعم.
+  Future<({bool notifications, bool exactAlarms})> permissionStatus() async {
+    const allGood = (notifications: true, exactAlarms: true);
+    if (_isRunningInFlutterTest) return allGood;
+    final android = _android;
+    if (android == null) return allGood;
+    try {
+      return (
+        notifications: await android.areNotificationsEnabled() ?? true,
+        exactAlarms: await android.canScheduleExactNotifications() ?? true,
+      );
+    } catch (e) {
+      debugPrint('permissionStatus: $e');
+      return allGood;
+    }
+  }
+
+  /// صانع الهاتف في أندرويد (مثل `Xiaomi`)، أو null.
+  Future<String?> manufacturer() async {
+    if (_isRunningInFlutterTest || _android == null) return null;
+    try {
+      return await _device.invokeMethod<String>('manufacturer');
+    } catch (e) {
+      debugPrint('manufacturer: $e');
+      return null;
+    }
+  }
+
+  /// يفتح إعدادات إشعارات التطبيق، أو صفحة التطبيق في الإعدادات (للبطارية).
+  Future<void> openSystemSettings({bool notifications = false}) async {
+    try {
+      await _device.invokeMethod<void>(
+        notifications ? 'openNotificationSettings' : 'openAppSettings',
+      );
+    } catch (e) {
+      debugPrint('openSystemSettings: $e');
+    }
+  }
+
   /// إعدادات الإشعار أو المنبه لكل منصة بحسب نوع التنبيه.
-  NotificationDetails _buildNotificationDetails(ReminderAlertType alertType) {
+  ///
+  /// [withRead] يضيف زر «قرأت» لتذكيرات القرآن، و[bigText] يعرض النص كاملاً.
+  NotificationDetails _buildNotificationDetails(
+    ReminderAlertType alertType, {
+    bool withRead = false,
+    String? bigText,
+  }) {
+    final strings = _strings;
+    final style = bigText == null ? null : BigTextStyleInformation(bigText);
+    final snoozeAction = AndroidNotificationAction(
+      snoozeActionId,
+      strings.snoozeAction,
+      cancelNotification: false,
+    );
     if (alertType == ReminderAlertType.alarm) {
       final androidAlarmDetails = AndroidNotificationDetails(
         alarmChannelId,
@@ -316,16 +426,18 @@ class LocalReminderService implements ReminderScheduler {
         icon: '@mipmap/ic_launcher',
         category: AndroidNotificationCategory.alarm,
         visibility: NotificationVisibility.public,
+        styleInformation: style,
         actions: <AndroidNotificationAction>[
           AndroidNotificationAction(
             'open_quran',
-            _strings.openMushaf,
+            strings.openMushaf,
             showsUserInterface: true,
             cancelNotification: true,
           ),
+          snoozeAction,
           AndroidNotificationAction(
             'dismiss_alarm',
-            _strings.stopAlarm,
+            strings.stopAlarm,
             cancelNotification: true,
           ),
         ],
@@ -356,7 +468,7 @@ class LocalReminderService implements ReminderScheduler {
     }
 
     // الإشعار العادي.
-    const androidNotificationDetails = AndroidNotificationDetails(
+    final androidNotificationDetails = AndroidNotificationDetails(
       notificationChannelId,
       notificationChannelName,
       channelDescription: notificationChannelDescription,
@@ -368,6 +480,19 @@ class LocalReminderService implements ReminderScheduler {
       icon: '@mipmap/ic_launcher',
       category: AndroidNotificationCategory.reminder,
       visibility: NotificationVisibility.public,
+      styleInformation: style,
+      actions: <AndroidNotificationAction>[
+        // «قرأت» يفتح التطبيق ليسجّل القراءة في نفس عزلة المخزن، فلا تتعارض
+        // كتابتان على قاعدة البيانات.
+        if (withRead)
+          AndroidNotificationAction(
+            markReadActionId,
+            strings.markReadAction,
+            showsUserInterface: true,
+            cancelNotification: true,
+          ),
+        snoozeAction,
+      ],
     );
 
     const darwinNotificationDetails = DarwinNotificationDetails(
@@ -385,7 +510,7 @@ class LocalReminderService implements ReminderScheduler {
 
     const windowsNotificationDetails = WindowsNotificationDetails();
 
-    return const NotificationDetails(
+    return NotificationDetails(
       android: androidNotificationDetails,
       iOS: darwinNotificationDetails,
       macOS: darwinNotificationDetails,
@@ -446,7 +571,7 @@ class LocalReminderService implements ReminderScheduler {
 
   /// المعرّف الرقمي الأساسي لإشعارات التذكير الفرعية.
   int _baseNotificationId(String reminderId) {
-    return (reminderId.hashCode.abs() % 10000000) * 10;
+    return (stableHash(reminderId) % 10000000) * 10;
   }
 
   /// يلغي كل إشعارات التذكير المجدولة في النظام.
@@ -461,7 +586,8 @@ class LocalReminderService implements ReminderScheduler {
       }
     }
     if (reminder.id == portionReminderId) {
-      for (int i = 0; i < portionReminderDays; i++) {
+      // ويُلغى معها الاحتياطي اليومي بعدها.
+      for (int i = 0; i <= portionReminderDays; i++) {
         try {
           await _notificationsPlugin.cancel(id: _portionBaseId + i);
         } catch (e) {
@@ -494,6 +620,60 @@ class LocalReminderService implements ReminderScheduler {
   /// معرّفات إشعارات السلسلة، فوق إشعارات الورد.
   static const int _streakBaseId = 100000100;
 
+  /// معرّف التذكير المؤجَّل؛ تأجيل جديد يحل محل السابق.
+  static const int _snoozeId = 100000200;
+
+  /// مفتاح ترحيل أرقام الإشعارات من `String.hashCode` إلى [stableHash].
+  static const _idsKey = 'notification_ids';
+
+  /// يؤجّل الإشعار المعروض [id] مدة [snoozeDelay] بنصه ونوعه.
+  ///
+  /// يعمل أيضاً في عزلة الخلفية، فلا يعتمد إلا على الإشعار نفسه.
+  Future<void> snooze(int? id) async {
+    if (id == null) return;
+    try {
+      final shown = (await _notificationsPlugin.getActiveNotifications())
+          .where((n) => n.id == id)
+          .firstOrNull;
+      await _notificationsPlugin.cancel(id: id);
+      if (shown == null) return;
+      final alertType = shown.channelId == alarmChannelId
+          ? ReminderAlertType.alarm
+          : ReminderAlertType.notification;
+      final payload = shown.payload ?? 'quran_resume';
+      await _zonedScheduleSafe(
+        id: _snoozeId,
+        title: shown.title ?? '',
+        body: shown.body ?? '',
+        // لحظة مطلقة، فلا تحتاج قاعدة المناطق في عزلة الخلفية.
+        scheduledDate: tz.TZDateTime.now(tz.UTC).add(snoozeDelay),
+        details: _buildNotificationDetails(
+          alertType,
+          withRead: payload == 'quran_resume',
+          bigText: shown.body,
+        ),
+        preferredMode: await _resolveAndroidScheduleMode(alertType),
+        payload: payload,
+      );
+    } catch (e) {
+      debugPrint('snooze: $e');
+    }
+  }
+
+  /// «قرأت»: يتم ورد الختمة إن بقي منه شيء اليوم، وإلا يحسب اليوم في السلسلة.
+  Future<void> _markRead() async {
+    final store = UserDataStore.instance;
+    final journey = store.journey;
+    final plan = journey.plan;
+    if (plan != null &&
+        !plan.isComplete &&
+        journey.portionPagesOn(DateTime.now()) < plan.pagesPerDay) {
+      await store.completeTodayPortion();
+    } else {
+      await store.markActiveDay();
+    }
+  }
+
   /// يلغي كل إشعارات التطبيق المجدولة.
   @override
   Future<void> cancelAll() async {
@@ -509,6 +689,16 @@ class LocalReminderService implements ReminderScheduler {
   @override
   Future<void> syncAllReminders(List<ReminderItem> reminders) async {
     if (_isRunningInFlutterTest) return;
+    final store = UserDataStore.instance;
+    if (store.featureState(_idsKey)['v'] != 2) {
+      // أرقام الإصدار السابق لا تُعرف بعد تغيّر البصمة؛ فيُلغى كل ما جُدول.
+      try {
+        await _notificationsPlugin.cancelAllPendingNotifications();
+      } catch (e) {
+        debugPrint('cancelAllPendingNotifications: $e');
+      }
+      await store.saveFeatureState(_idsKey, {'v': 2});
+    }
     for (final reminder in reminders) {
       if (reminder.isEnabled) {
         await scheduleReminder(reminder, requestPermissionIfNeeded: false);
@@ -615,15 +805,22 @@ class LocalReminderService implements ReminderScheduler {
 
     await cancelReminder(reminder);
 
-    final details = _buildNotificationDetails(reminder.alertType);
     final scheduleMode = await _resolveAndroidScheduleMode(reminder.alertType);
 
     if (reminder.id == portionReminderId) {
-      await _schedulePortion(reminder, details, scheduleMode);
+      await _schedulePortion(
+        reminder,
+        _buildNotificationDetails(reminder.alertType, withRead: true),
+        scheduleMode,
+      );
       return;
     }
     if (reminder.id == streakReminderId) {
-      await _scheduleStreak(reminder, details, scheduleMode);
+      await _scheduleStreak(
+        reminder,
+        _buildNotificationDetails(reminder.alertType, withRead: true),
+        scheduleMode,
+      );
       return;
     }
 
@@ -633,11 +830,18 @@ class LocalReminderService implements ReminderScheduler {
     // تذكيرات الأذكار تفتح الأذكار بدل المصحف.
     final isAdhkar = reminder.id.startsWith('adhkar_');
     final strings = _strings;
-    final body = strings.toReader(
+    final greeting = strings.toReader(
       _readerName,
       isAdhkar ? strings.reminderAdhkarBody : strings.reminderQuranBody,
     );
+    // آية اليوم تتجدد كلما أعيدت الجدولة، أي مع كل فتح للتطبيق.
+    final body = isAdhkar ? greeting : '$greeting\n${_ayahOfDay()}'.trim();
     final payload = isAdhkar ? reminder.id : 'quran_resume';
+    final details = _buildNotificationDetails(
+      reminder.alertType,
+      withRead: !isAdhkar,
+      bigText: body,
+    );
 
     final baseId = _baseNotificationId(reminder.id);
 
@@ -747,6 +951,35 @@ class LocalReminderService implements ReminderScheduler {
         payload: 'quran_resume',
       );
     }
+    // بعد آخر الأيام المجدولة: تذكير يومي عام، حتى يُفتح التطبيق فيُجدول من جديد.
+    final fallback = portionFallbackAt(
+      store.journey,
+      DateTime.now(),
+      hour: reminder.hour,
+      minute: reminder.minute,
+    );
+    if (fallback != null) {
+      await _zonedScheduleSafe(
+        id: _portionBaseId + portionReminderDays,
+        title: strings.toReader(_readerName, strings.portionDueTitle),
+        body: strings.portionLeftBody,
+        scheduledDate: tz.TZDateTime.from(fallback, tz.local),
+        details: details,
+        preferredMode: scheduleMode,
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: 'quran_resume',
+      );
+    }
+  }
+
+  /// نص آية اليوم، أو فراغ إن لم تجهز بيانات القرآن.
+  String _ayahOfDay() {
+    try {
+      return '﴿${AyahOfTheDay.forDay(DateTime.now()).rawText.trim()}﴾';
+    } catch (e) {
+      debugPrint('ayahOfDay: $e');
+      return '';
+    }
   }
 
   /// السلسلة: إشعار الليلة إن لم يكن في اليوم نشاط بعد، أو إشعار الغد.
@@ -837,4 +1070,23 @@ tz.TZDateTime nextWeekdayTime(
     );
   }
   return next;
+}
+
+/// بصمة FNV-1a بـ32 بت لـ[s]، ثابتة بين إصدارات Dart بخلاف `String.hashCode`.
+int stableHash(String s) {
+  var hash = 0x811c9dc5;
+  for (final byte in utf8.encode(s)) {
+    hash = ((hash ^ byte) * 0x01000193) & 0xffffffff;
+  }
+  return hash;
+}
+
+/// إجراءات الإشعار التي لا تفتح التطبيق، في عزلة الخلفية.
+@pragma('vm:entry-point')
+Future<void> onBackgroundNotificationAction(
+  NotificationResponse response,
+) async {
+  if (response.actionId == LocalReminderService.snoozeActionId) {
+    await LocalReminderService.instance.snooze(response.id);
+  }
 }

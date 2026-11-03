@@ -53,7 +53,6 @@
   "portionReminderPrompt": "When should we remind you daily?",
   "portionReminderSet": "We’ll remind you every day",
   "reflectedToday": "Reflected on today",
-  "addToMemorization": "Add to memorization",
   "memorizedDone": "Memorized",
   "journeyBackupSection": "Khatma, stats, memorization and pathways",
   "dailyJourney": "Daily journey",
@@ -887,5 +886,13 @@
   "tourDuaAdhkar": "Adhkar",
   "startupFailed": "The app could not open. Restart it, and if this repeats, send us the error below.",
   "restoreWrongPassword": "The password is wrong, or the file is damaged.",
-  "restoreNewerVersion": "This backup is from a newer version of the app. Update the app and try again."
+  "restoreNewerVersion": "This backup is from a newer version of the app. Update the app and try again.",
+  "snoozeAction": "In 10 minutes",
+  "markReadAction": "I read",
+  "portionDueTitle": "Time for your daily portion",
+  "notificationsOffNotice": "Notifications are off, so reminders won’t reach you.",
+  "exactAlarmsOffNotice": "Exact alarms aren’t allowed, so reminders may arrive late.",
+  "enablePermission": "Enable",
+  "batteryHintNotice": "Your phone may stop reminders to save battery. In the app settings, set battery to “Unrestricted”.",
+  "openSettings": "Settings"
 }

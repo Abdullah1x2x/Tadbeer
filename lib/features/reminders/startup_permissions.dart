@@ -42,6 +42,8 @@ class StartupPermissions {
         ],
       ),
     );
-    if (allow == true) await LocalReminderService.instance.requestPermissions();
+    if (allow == true) {
+      await LocalReminderService.instance.requestPermissions(exactAlarms: true);
+    }
   }
 }

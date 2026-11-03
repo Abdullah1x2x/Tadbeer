@@ -48,4 +48,18 @@ void main() {
     final list = notices(journey(advanced: 580));
     expect(list.map((n) => n.pages), [21, 3]);
   });
+
+  test('a daily fallback follows when pages outlast the scheduled days', () {
+    expect(
+      portionFallbackAt(journey(), now, hour: 20, minute: 0),
+      DateTime(2026, 11, 9, 20),
+    );
+  });
+
+  test('no fallback when the khatma ends within the scheduled days', () {
+    expect(
+      portionFallbackAt(journey(advanced: 580), now, hour: 20, minute: 0),
+      isNull,
+    );
+  });
 }

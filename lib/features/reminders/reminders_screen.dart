@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,13 +25,6 @@ class RemindersScreen extends StatefulWidget {
 class _RemindersScreenState extends State<RemindersScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-
-  /// يطلب أذونات الإشعارات والمنبهات عند فتح الشاشة.
-  @override
-  void initState() {
-    super.initState();
-    LocalReminderService.instance.requestPermissions();
-  }
 
   @override
   void dispose() {
@@ -139,92 +134,259 @@ class _RemindersScreenState extends State<RemindersScreen> {
             ),
           ),
         ),
-        body: ListenableBuilder(
-          listenable: UserDataStore.instance,
-          builder: (context, _) {
-            final allReminders = UserDataStore.instance.reminders;
+        body: Column(
+          children: [
+            const _ReminderHealthNotice(),
+            Expanded(child: _buildList(l10n, isDark)),
+          ],
+        ),
+      ),
+    );
+  }
 
-            if (allReminders.isEmpty) {
-              return EmptyState(
-                icon: AppIcons.alarmFill,
-                title: l10n.noRemindersYet,
-                hint: l10n.remindersEmptyHint,
-              );
-            }
+  Widget _buildList(AppStrings l10n, bool isDark) {
+    return ListenableBuilder(
+      listenable: UserDataStore.instance,
+      builder: (context, _) {
+        final allReminders = UserDataStore.instance.reminders;
 
-            final normalizedQuery = ArabicSearchNormalizer.normalize(
-              _searchQuery,
-            );
-            final reminders = allReminders.where((r) {
-              if (normalizedQuery.isEmpty) return true;
-              return ArabicSearchNormalizer.normalize(r.title)
-                  .contains(normalizedQuery);
-            }).toList();
+        if (allReminders.isEmpty) {
+          return EmptyState(
+            icon: AppIcons.alarmFill,
+            title: l10n.noRemindersYet,
+            hint: l10n.remindersEmptyHint,
+          );
+        }
 
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: AppSearchField(
-                    controller: _searchController,
-                    hintText: l10n.searchRemindersHint,
-                    clearTooltip: l10n.clearText,
-                    onChanged: (val) =>
-                        setState(() => _searchQuery = val.trim()),
-                  ),
-                ),
+        final normalizedQuery = ArabicSearchNormalizer.normalize(
+          _searchQuery,
+        );
+        final reminders = allReminders.where((r) {
+          if (normalizedQuery.isEmpty) return true;
+          return ArabicSearchNormalizer.normalize(r.title)
+              .contains(normalizedQuery);
+        }).toList();
 
-                Expanded(
-                  child: reminders.isEmpty
-                      ? Center(
-                          child: Text(
-                            l10n.noSearchResults,
-                            style: TextStyle(
-                              fontFamily: 'IBMPlexSansArabic',
-                              fontSize: 15,
-                              color: isDark
-                                  ? AppColors.nightSubtitle
-                                  : AppColors.daySubtitle,
-                            ),
-                          ),
-                        )
-                      : ListView.separated(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: reminders.length,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(height: 12),
-                          itemBuilder: (context, index) {
-                            final reminder = reminders[index];
-                            return _ReminderCard(
-                              reminder: reminder,
-                              onEdit: () => _openReminderDialog(reminder),
-                              onToggle: (bool val) async {
-                                final updated = reminder.copyWith(
-                                  isEnabled: val,
-                                );
-                                await UserDataStore.instance.putReminder(
-                                  updated,
-                                );
-                                await LocalReminderService.instance
-                                    .scheduleReminder(updated);
-                              },
-                              onDelete: () async {
-                                await LocalReminderService.instance
-                                    .cancelReminder(reminder);
-                                await UserDataStore.instance.removeReminder(
-                                  reminder.id,
-                                );
-                              },
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              child: AppSearchField(
+                controller: _searchController,
+                hintText: l10n.searchRemindersHint,
+                clearTooltip: l10n.clearText,
+                onChanged: (val) =>
+                    setState(() => _searchQuery = val.trim()),
+              ),
+            ),
+
+            Expanded(
+              child: reminders.isEmpty
+                  ? Center(
+                      child: Text(
+                        l10n.noSearchResults,
+                        style: TextStyle(
+                          fontFamily: 'IBMPlexSansArabic',
+                          fontSize: 15,
+                          color: isDark
+                              ? AppColors.nightSubtitle
+                              : AppColors.daySubtitle,
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: reminders.length,
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final reminder = reminders[index];
+                        return _ReminderCard(
+                          reminder: reminder,
+                          onEdit: () => _openReminderDialog(reminder),
+                          onToggle: (bool val) async {
+                            final updated = reminder.copyWith(
+                              isEnabled: val,
+                            );
+                            await UserDataStore.instance.putReminder(
+                              updated,
+                            );
+                            await LocalReminderService.instance
+                                .scheduleReminder(updated);
+                          },
+                          onDelete: () async {
+                            await LocalReminderService.instance
+                                .cancelReminder(reminder);
+                            await UserDataStore.instance.removeReminder(
+                              reminder.id,
                             );
                           },
-                        ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// ينبّه إن كانت التذكيرات لن تصل في وقتها، وفيه زر يصلح ذلك.
+///
+/// يُفحص عند الفتح وعند العودة من الإعدادات؛ ولا يُطلب إذن إلا بنقر القارئ.
+class _ReminderHealthNotice extends StatefulWidget {
+  const _ReminderHealthNotice();
+
+  @override
+  State<_ReminderHealthNotice> createState() => _ReminderHealthNoticeState();
+}
+
+class _ReminderHealthNoticeState extends State<_ReminderHealthNotice> {
+  static const _batteryKey = 'battery_hint';
+
+  /// صنّاع يوقفون التطبيقات في الخلفية افتراضياً.
+  static const _strictMakers = {
+    'xiaomi',
+    'redmi',
+    'poco',
+    'huawei',
+    'honor',
+    'oppo',
+    'realme',
+    'oneplus',
+    'vivo',
+  };
+
+  late final AppLifecycleListener _lifecycle;
+  ({bool notifications, bool exactAlarms})? _status;
+  bool _strictMaker = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(onResume: _refresh);
+    _refresh();
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refresh() async {
+    final service = LocalReminderService.instance;
+    final status = await service.permissionStatus();
+    final maker = (await service.manufacturer())?.toLowerCase();
+    if (!mounted) return;
+    setState(() {
+      _status = status;
+      _strictMaker = maker != null && _strictMakers.contains(maker);
+    });
+  }
+
+  Future<void> _enableNotifications() async {
+    final service = LocalReminderService.instance;
+    await service.requestPermissions();
+    // بعد رفضين لا يعرض أندرويد الطلب، فتبقى الإعدادات.
+    if ((await service.permissionStatus()).notifications == false) {
+      await service.openSystemSettings(notifications: true);
+    }
+    await _refresh();
+  }
+
+  Future<void> _dismissBattery() async {
+    await UserDataStore.instance.saveFeatureState(_batteryKey, {
+      'dismissed': true,
+    });
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final status = _status;
+    if (status == null || !Platform.isAndroid) return const SizedBox.shrink();
+    final l10n = context.l10n;
+    final service = LocalReminderService.instance;
+    if (!status.notifications) {
+      return _Notice(
+        text: l10n.notificationsOffNotice,
+        action: l10n.enablePermission,
+        onAction: _enableNotifications,
+      );
+    }
+    if (!status.exactAlarms) {
+      return _Notice(
+        text: l10n.exactAlarmsOffNotice,
+        action: l10n.enablePermission,
+        onAction: () => service.requestExactAlarms().then((_) => _refresh()),
+      );
+    }
+    final dismissed =
+        UserDataStore.instance.featureState(_batteryKey)['dismissed'] == true;
+    if (_strictMaker && !dismissed) {
+      return _Notice(
+        text: l10n.batteryHintNotice,
+        action: l10n.openSettings,
+        onAction: service.openSystemSettings,
+        onClose: _dismissBattery,
+      );
+    }
+    return const SizedBox.shrink();
+  }
+}
+
+/// شريط تنبيه أعلى الشاشة بزر واحد، ويُغلق إن أعطي [onClose].
+class _Notice extends StatelessWidget {
+  final String text;
+  final String action;
+  final VoidCallback onAction;
+  final VoidCallback? onClose;
+
+  const _Notice({
+    required this.text,
+    required this.action,
+    required this.onAction,
+    this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Material(
+        color: scheme.errorContainer,
+        borderRadius: BorderRadius.circular(AppTokens.radiusLg),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 8, 4, 8),
+          child: Row(
+            children: [
+              Icon(AppIcons.bellRinging, color: scheme.onErrorContainer),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontFamily: 'IBMPlexSansArabic',
+                    color: scheme.onErrorContainer,
+                  ),
                 ),
-              ],
-            );
-          },
+              ),
+              TextButton(onPressed: onAction, child: Text(action)),
+              if (onClose != null)
+                IconButton(
+                  onPressed: onClose,
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  icon: const Icon(Icons.close),
+                  color: scheme.onErrorContainer,
+                ),
+            ],
+          ),
         ),
       ),
     );
