@@ -1,57 +1,120 @@
 <div align="center">
 
-<img src="docs/assets/icons/app_logo.png" alt="Tadbeer logo" width="120">
+<img src="docs/assets/icons/app_logo.png" alt="شعار تدبير" width="120">
 
-# Tadbeer (تَدْبِير)
+# تَدْبِير
 
-**From reading to reflection.** An open-source Quran app that works offline, with no ads and no tracking.
+**من القراءة إلى التدبّر.**
+
+تطبيق قرآني مفتوح المصدر يعمل دون إنترنت، بلا إعلانات ولا تتبع.
 
 [![CI](https://github.com/Abdullah1x2x/Tadbeer/actions/workflows/ci.yml/badge.svg)](https://github.com/Abdullah1x2x/Tadbeer/actions/workflows/ci.yml)
 [![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-[Download](https://github.com/Abdullah1x2x/Tadbeer/releases) · [Website](https://tadbeerquran.netlify.app/) · [Developer guide](DEVELOPMENT.md) · [العربية](README.ar.md)
+[تحميل التطبيق](https://github.com/Abdullah1x2x/Tadbeer/releases) · [الموقع](https://tadbeerquran.netlify.app/) · [دليل التطوير](DEVELOPMENT.md) · [English](README.en.md)
 
 </div>
 
 <p align="center">
-  <img src="docs/assets/screenshots/home.jpg" alt="Home screen" width="23%">
-  <img src="docs/assets/screenshots/mushaf.jpg" alt="Madinah Mushaf" width="23%">
-  <img src="docs/assets/screenshots/menu.jpg" alt="Ayah menu" width="23%">
-  <img src="docs/assets/screenshots/duas.jpg" alt="Duas" width="23%">
+  <img src="app_screenshots/04_home_screen.png" alt="الشاشة الرئيسية" width="23%">
+  <img src="docs/assets/screenshots/mushaf.jpg" alt="مصحف المدينة" width="23%">
+  <img src="docs/assets/screenshots/menu.jpg" alt="القائمة الدائرية للآية" width="23%">
+  <img src="app_screenshots/15_feature_ayah_network_tawbah.png" alt="شبكة روابط الآيات" width="23%">
 </p>
 
-## Why Tadbeer?
+<div dir="rtl">
 
-The app helps you understand the Quran and act on it, not only read it. It is built around three tools:
+## لماذا تدبير؟
 
-- **Reflection pause:** four questions at any ayah that open its meanings.
-- **Ayah links:** gather ayahs from different surahs into one theme and see them as a network.
-- **Reflection pathways:** 15 themes, with an ayah and a question each day for at least seven days.
+هدف التطبيق أن يساعدك على فهم القرآن والعمل به، لا على القراءة فقط. لذلك بُني حول ثلاث أدوات:
 
-## Features
+- **وقفة التدبر:** أربعة أسئلة عند كل آية تفتح لك معانيها.
+- **روابط الآيات:** اجمع آيات من سور متفرقة في موضوع واحد، وانظر إليها كشبكة.
+- **مسارات التدبر:** 15 موضوعاً، آية وسؤال كل يوم لسبعة أيام على الأقل.
 
-| Section | What it offers |
+## المميزات
+
+| القسم | ما يقدمه |
 | --- | --- |
-| **Mushaf** | 604 pages in the Madinah fonts or text fonts, smooth paging, a radial ayah menu and word meanings |
-| **Listening** | 7 reciters, a whole surah or one ayah, and downloads for offline listening |
-| **Journey** | Khatma plans, day streaks, goals, a Mushaf map and a monthly report |
-| **Memorization** | Spaced review of the ayahs you memorize |
-| **Duas** | Duas from the Quran, the Sunnah and the Ahlulbayt, with daily adhkar and counters |
-| **Dhikr** | An istighfar and tasbeeh counter with auto counting |
-| **Notes** | Notes on ayahs and a reflection journal, with export and save to device |
-| **Library** | Books and booklets you read inside the app |
-| **More** | Unified search, Qibla direction, reminders, a home-screen widget and encrypted backup |
+| **المصحف** | 604 صفحات بخطوط مصحف المدينة أو بخطوط نصية، وتقليب سلس، وقائمة دائرية للآية، ومعاني الكلمات |
+| **الاستماع** | 7 قرّاء، سورة أو آية واحدة، وتنزيل للاستماع دون إنترنت |
+| **رحلتي** | ختمة بخطة، وسلسلة أيام، وأهداف، وخريطة للمصحف، وتقرير شهري |
+| **الحفظ** | مراجعة متباعدة للآيات التي تحفظها |
+| **الأدعية** | أدعية القرآن والسنة وأهل البيت، وأذكار يومية بعدّاد |
+| **الذكر** | سبحة للاستغفار والتسبيح مع عد تلقائي |
+| **الملاحظات** | ملاحظات على الآيات ودفتر تدبر، مع التصدير والحفظ في الجهاز |
+| **المكتبة** | كتب وملازم تُقرأ داخل التطبيق |
+| **الثيمات** | خمسة ألوان للتطبيق، مع وضع فاتح أو داكن أو تلقائي |
+| **المزيد** | بحث موحد، واتجاه القبلة، وتذكيرات، وودجت للهاتف، ونسخ احتياطي مشفر |
 
-The app explains itself with a first-launch tour, an animated guide for each section and a home screen walkthrough.
+والتطبيق يشرح نفسه: جولة عند أول تشغيل، وشرح متحرك لكل قسم، ودليل يعرّفك بالشاشة الرئيسية.
 
-## Privacy
+## صور من التطبيق
 
-Your data stays on your device. No account, ads or analytics. The internet is used only for recitation, and approximate location only for the Qibla. See the [privacy policy](PRIVACY_POLICY.md).
+### روابط الآيات
 
-## Getting started
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="app_screenshots/16_feature_ayah_network_tawbah_detail.png" alt="تفاصيل الشبكة" width="100%"><br><sub><b>تفاصيل الشبكة</b></sub></td>
+    <td align="center" width="33%"><img src="app_screenshots/02_ayah_network_list.png" alt="عرض مرتب" width="100%"><br><sub><b>عرض مرتب</b></sub></td>
+    <td align="center" width="33%"><img src="app_screenshots/01_ayah_network_graph.png" alt="الشبكة كاملة" width="100%"><br><sub><b>الشبكة كاملة</b></sub></td>
+  </tr>
+</table>
 
-You need Flutter 3.47.6 and the Android SDK. Full setup steps are in the [developer guide](DEVELOPMENT.md) (Arabic).
+### رحلتك مع القرآن
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="app_screenshots/13_feature_quran_journey_khatmah.png" alt="خطة الختمة" width="100%"><br><sub><b>خطة الختمة</b></sub></td>
+    <td align="center" width="50%"><img src="app_screenshots/14_feature_quran_journey_stats.png" alt="الأهداف والإحصاءات" width="100%"><br><sub><b>الأهداف والإحصاءات</b></sub></td>
+  </tr>
+</table>
+
+### الأدعية والذكر
+
+<table>
+  <tr>
+    <td align="center" width="25%"><img src="app_screenshots/07_feature_duas_categories.png" alt="أقسام الأدعية" width="100%"><br><sub><b>أقسام الأدعية</b></sub></td>
+    <td align="center" width="25%"><img src="app_screenshots/11_feature_duas_prophetic_sunnah.png" alt="أدعية السنة النبوية" width="100%"><br><sub><b>أدعية السنة النبوية</b></sub></td>
+    <td align="center" width="25%"><img src="app_screenshots/12_feature_duas_ahlulbayt.png" alt="أدعية أهل البيت" width="100%"><br><sub><b>أدعية أهل البيت</b></sub></td>
+    <td align="center" width="25%"><img src="app_screenshots/06_feature_tasbeeh_counter.png" alt="السبحة" width="100%"><br><sub><b>السبحة</b></sub></td>
+  </tr>
+</table>
+
+### المزيد
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="app_screenshots/10_feature_library_books.png" alt="الكتب والملازم" width="100%"><br><sub><b>الكتب والملازم</b></sub></td>
+    <td align="center" width="33%"><img src="app_screenshots/09_feature_qibla_compass.png" alt="اتجاه القبلة" width="100%"><br><sub><b>اتجاه القبلة</b></sub></td>
+    <td align="center" width="33%"><img src="app_screenshots/08_feature_more_grid.png" alt="كل الأقسام" width="100%"><br><sub><b>كل الأقسام</b></sub></td>
+  </tr>
+</table>
+
+## ثيمات التطبيق
+
+اختر مظهر التطبيق من أول تشغيل، وغيّره متى شئت من الإعدادات. خمسة ألوان تغيّر الشاشات كلها، مع وضع فاتح أو داكن أو تلقائي يتبع هاتفك.
+
+<table>
+  <tr>
+    <td align="center" width="20%"><img src="app_screenshots/02_theme_navy_home.png" alt="كحلي" width="100%"><br><sub><b>كحلي</b></sub></td>
+    <td align="center" width="20%"><img src="app_screenshots/03_theme_emerald_home.png" alt="زمردي" width="100%"><br><sub><b>زمردي</b></sub></td>
+    <td align="center" width="20%"><img src="app_screenshots/04_theme_burgundy_home.png" alt="عنابي" width="100%"><br><sub><b>عنابي</b></sub></td>
+    <td align="center" width="20%"><img src="app_screenshots/05_theme_teal_home.png" alt="تركوازي" width="100%"><br><sub><b>تركوازي</b></sub></td>
+    <td align="center" width="20%"><img src="app_screenshots/01_theme_brown_home.png" alt="بني خشبي" width="100%"><br><sub><b>بني خشبي</b></sub></td>
+  </tr>
+</table>
+
+## الخصوصية
+
+كل بياناتك تبقى على جهازك. لا حساب ولا إعلانات ولا تحليلات. والإنترنت يُستخدم للتلاوة فقط، والموقع التقريبي للقبلة فقط. التفاصيل في [سياسة الخصوصية](PRIVACY_POLICY.md).
+
+## التشغيل
+
+تحتاج Flutter 3.47.6 وAndroid SDK. والخطوات الكاملة للمطورين في [دليل التطوير](DEVELOPMENT.md).
+
+<div dir="ltr">
 
 ```bash
 git clone https://github.com/Abdullah1x2x/Tadbeer.git
@@ -65,22 +128,26 @@ cd Tadbeer && flutter pub get && flutter run
 flutter analyze && flutter test
 ```
 
-## Documentation
+</div>
 
-- [Development Guide](DEVELOPMENT.md) (Arabic): Comprehensive architectural guide, environment setup, code standards, and content extension.
-- [Changelog](CHANGELOG.md): Release history and updates.
-- [Privacy Policy](PRIVACY_POLICY.md): Offline-first privacy policy.
-- [Third-Party Notices & Licenses](THIRD_PARTY_NOTICES.md): Full legal audit and attributions.
+## التوثيق
 
-## Contributing
+- [دليل التطوير والصيانة](DEVELOPMENT.md): معمارية التطبيق، وبيئة العمل، ومعايير الكود، وإضافة المحتوى.
+- [سجل التغييرات](CHANGELOG.md): ما تغيّر في كل إصدار.
+- [سياسة الخصوصية](PRIVACY_POLICY.md): الخصوصية وأمان البيانات دون اتصال.
+- [المصادر والتراخيص](THIRD_PARTY_NOTICES.md): الإسناد الكامل للخطوط والنصوص.
 
-Fixes and ideas are welcome through [issues](https://github.com/Abdullah1x2x/Tadbeer/issues) and pull requests. If you find an error in a religious text, please report it first.
+## المساهمة
 
-## License and sources
+نرحب بالتصحيحات والاقتراحات عبر [Issues](https://github.com/Abdullah1x2x/Tadbeer/issues) وطلبات الدمج. وإذا وجدت خطأً في نص ديني فأبلغنا به أولاً.
 
-The app code is under the [MIT License](LICENSE). Bundled content has its own sources and terms:
+## الرخصة والمصادر
 
-- Quran text: [Tanzil Project](https://tanzil.net).
-- Mushaf fonts: King Fahd Glorious Quran Printing Complex.
-- Word meanings: [Quranpedia](https://quranpedia.net).
-- Full details are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+كود التطبيق برخصة [MIT](LICENSE). أما المحتوى المضمّن فله مصادره وشروطه:
+
+- نص القرآن: [مشروع تنزيل](https://tanzil.net).
+- خطوط المصحف: مجمع الملك فهد لطباعة المصحف الشريف.
+- معاني الكلمات: [الموسوعة القرآنية](https://quranpedia.net).
+- التفاصيل الكاملة في [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+</div>
