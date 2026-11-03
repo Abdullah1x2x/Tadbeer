@@ -17,10 +17,10 @@ An open-source Quran app that works offline, with no ads and no tracking.
 </div>
 
 <p align="center">
-  <img src="app_screenshots/04_home_screen.png" alt="Home screen" width="23%">
+  <img src="docs/assets/screenshots/04_home_screen.png" alt="Home screen" width="23%">
   <img src="docs/assets/screenshots/mushaf.jpg" alt="Madinah Mushaf" width="23%">
   <img src="docs/assets/screenshots/menu.jpg" alt="Radial ayah menu" width="23%">
-  <img src="app_screenshots/15_feature_ayah_network_tawbah.png" alt="Ayah link network" width="23%">
+  <img src="docs/assets/screenshots/15_feature_ayah_network_tawbah.png" alt="Ayah link network" width="23%">
 </p>
 
 ## Why Tadbeer?
@@ -54,9 +54,9 @@ The app explains itself with a first-launch tour, an animated guide for each sec
 
 <table>
   <tr>
-    <td align="center" width="33%"><img src="app_screenshots/01_ayah_network_graph.png" alt="Full network" width="100%"><br><sub><b>Full network</b></sub></td>
-    <td align="center" width="33%"><img src="app_screenshots/02_ayah_network_list.png" alt="Ordered view" width="100%"><br><sub><b>Ordered view</b></sub></td>
-    <td align="center" width="33%"><img src="app_screenshots/16_feature_ayah_network_tawbah_detail.png" alt="Network details" width="100%"><br><sub><b>Network details</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/01_ayah_network_graph.png" alt="Full network" width="100%"><br><sub><b>Full network</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/02_ayah_network_list.png" alt="Ordered view" width="100%"><br><sub><b>Ordered view</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/16_feature_ayah_network_tawbah_detail.png" alt="Network details" width="100%"><br><sub><b>Network details</b></sub></td>
   </tr>
 </table>
 
@@ -64,8 +64,8 @@ The app explains itself with a first-launch tour, an animated guide for each sec
 
 <table>
   <tr>
-    <td align="center" width="50%"><img src="app_screenshots/13_feature_quran_journey_khatmah.png" alt="Khatma plan" width="100%"><br><sub><b>Khatma plan</b></sub></td>
-    <td align="center" width="50%"><img src="app_screenshots/14_feature_quran_journey_stats.png" alt="Goals and stats" width="100%"><br><sub><b>Goals and stats</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/13_feature_quran_journey_khatmah.png" alt="Khatma plan" width="100%"><br><sub><b>Khatma plan</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/14_feature_quran_journey_stats.png" alt="Goals and stats" width="100%"><br><sub><b>Goals and stats</b></sub></td>
   </tr>
 </table>
 
@@ -73,10 +73,10 @@ The app explains itself with a first-launch tour, an animated guide for each sec
 
 <table>
   <tr>
-    <td align="center" width="25%"><img src="app_screenshots/06_feature_tasbeeh_counter.png" alt="Dhikr counter" width="100%"><br><sub><b>Dhikr counter</b></sub></td>
-    <td align="center" width="25%"><img src="app_screenshots/12_feature_duas_ahlulbayt.png" alt="Ahlulbayt duas" width="100%"><br><sub><b>Ahlulbayt duas</b></sub></td>
-    <td align="center" width="25%"><img src="app_screenshots/11_feature_duas_prophetic_sunnah.png" alt="Sunnah duas" width="100%"><br><sub><b>Sunnah duas</b></sub></td>
-    <td align="center" width="25%"><img src="app_screenshots/07_feature_duas_categories.png" alt="Dua sections" width="100%"><br><sub><b>Dua sections</b></sub></td>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/06_feature_tasbeeh_counter.png" alt="Dhikr counter" width="100%"><br><sub><b>Dhikr counter</b></sub></td>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/12_feature_duas_ahlulbayt.png" alt="Ahlulbayt duas" width="100%"><br><sub><b>Ahlulbayt duas</b></sub></td>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/11_feature_duas_prophetic_sunnah.png" alt="Sunnah duas" width="100%"><br><sub><b>Sunnah duas</b></sub></td>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/07_feature_duas_categories.png" alt="Dua sections" width="100%"><br><sub><b>Dua sections</b></sub></td>
   </tr>
 </table>
 
@@ -84,9 +84,9 @@ The app explains itself with a first-launch tour, an animated guide for each sec
 
 <table>
   <tr>
-    <td align="center" width="33%"><img src="app_screenshots/08_feature_more_grid.png" alt="All sections" width="100%"><br><sub><b>All sections</b></sub></td>
-    <td align="center" width="33%"><img src="app_screenshots/09_feature_qibla_compass.png" alt="Qibla direction" width="100%"><br><sub><b>Qibla direction</b></sub></td>
-    <td align="center" width="33%"><img src="app_screenshots/10_feature_library_books.png" alt="Books and booklets" width="100%"><br><sub><b>Books and booklets</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/08_feature_more_grid.png" alt="All sections" width="100%"><br><sub><b>All sections</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/09_feature_qibla_compass.png" alt="Qibla direction" width="100%"><br><sub><b>Qibla direction</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/10_feature_library_books.png" alt="Books and booklets" width="100%"><br><sub><b>Books and booklets</b></sub></td>
   </tr>
 </table>
 
@@ -96,11 +96,11 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
 
 <table>
   <tr>
-    <td align="center" width="20%"><img src="app_screenshots/02_theme_navy_home.png" alt="Navy" width="100%"><br><sub><b>Navy</b></sub></td>
-    <td align="center" width="20%"><img src="app_screenshots/03_theme_emerald_home.png" alt="Emerald" width="100%"><br><sub><b>Emerald</b></sub></td>
-    <td align="center" width="20%"><img src="app_screenshots/04_theme_burgundy_home.png" alt="Burgundy" width="100%"><br><sub><b>Burgundy</b></sub></td>
-    <td align="center" width="20%"><img src="app_screenshots/05_theme_teal_home.png" alt="Teal" width="100%"><br><sub><b>Teal</b></sub></td>
-    <td align="center" width="20%"><img src="app_screenshots/01_theme_brown_home.png" alt="Wood brown" width="100%"><br><sub><b>Wood brown</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/02_theme_navy_home.png" alt="Navy" width="100%"><br><sub><b>Navy</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/03_theme_emerald_home.png" alt="Emerald" width="100%"><br><sub><b>Emerald</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/04_theme_burgundy_home.png" alt="Burgundy" width="100%"><br><sub><b>Burgundy</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/05_theme_teal_home.png" alt="Teal" width="100%"><br><sub><b>Teal</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/01_theme_brown_home.png" alt="Wood brown" width="100%"><br><sub><b>Wood brown</b></sub></td>
   </tr>
 </table>
 
