@@ -54,13 +54,13 @@ void main() {
       final list = jsonDecode(content) as List<dynamic>;
       expect(list.length, equals(6465));
 
-      // Assert that every entry is strictly a single Quranic word without compound spaces
+      // A meaning explains one word, or a two-word phrase such as يوم الدين.
       for (final item in list) {
         final w = (item as Map<String, dynamic>)['word'] as String;
         expect(
           w.trim().split(' ').length,
-          equals(1),
-          reason: 'Word "$w" must be a single word',
+          inInclusiveRange(1, 2),
+          reason: 'Word "$w" must be one or two words',
         );
       }
 
