@@ -7,12 +7,14 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 
 import '../data/quran/quran_repository.dart';
+import '../data/models/user_settings_model.dart';
 import '../data/storage/user_data_store.dart';
 import '../features/audio/recitation_handler.dart';
 import '../features/duas/data/adhkar_repository.dart';
 import '../features/duas/screens/morning_evening_adhkar_screen.dart';
 import '../features/journey/portion_reminder.dart';
 import '../features/journey/streak_reminder.dart';
+import '../features/quran/qcf/qcf_fonts.dart';
 import '../features/reminders/local_reminder_service.dart';
 import '../features/tasbeeh/tasbeeh_model.dart';
 import '../features/widgets/home_widget_sync.dart';
@@ -41,6 +43,15 @@ Future<void> bootstrap() async {
 
   _attachSyncs();
   await _startBackgroundRecitation();
+
+  // خطوط مصحف المدينة كلها بعد أول إطار، فلا يُحمّل خط أثناء التقليب.
+  // shortcut: تبقى نحو 90 MB في الذاكرة؛ تُحمّل نافذة حول الصفحة إن ضاقت.
+  final store = UserDataStore.instance;
+  if (store.settings.mushafStyle == MushafStyle.madinah) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => QcfFonts.instance.preloadAll(around: store.readingPosition.page),
+    );
+  }
 }
 
 /// يفتح الشاشة التي يشير إليها التذكير المنقور.

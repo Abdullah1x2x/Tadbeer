@@ -8,6 +8,7 @@ library;
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 class QcfFonts {
@@ -43,6 +44,26 @@ class QcfFonts {
       if (page - i >= 1) ensurePage(page - i);
     }
   }
+
+  /// يحمّل خطوط المصحف كلها، الأقرب إلى [around] أولاً، دفعة كل إطار.
+  ///
+  /// كل خط يعيد تخطيط نصوص التطبيق، والخطوط المحمّلة في إطار واحد تشترك في
+  /// إعادة واحدة؛ وبعد اكتمالها لا يُحمّل خط أثناء التقليب.
+  Future<void> preloadAll({int around = 1}) async {
+    final pages = preloadOrder(around);
+    for (var i = 0; i < pages.length; i += _batch) {
+      await Future.wait(pages.skip(i).take(_batch).map(ensurePage));
+      await SchedulerBinding.instance.endOfFrame;
+    }
+  }
+
+  static const _batch = 32;
+
+  /// صفحات المصحف كلها، من [around] متباعدةً عنها في الاتجاهين.
+  @visibleForTesting
+  static List<int> preloadOrder(int around) => {
+    for (var d = 0; d < pageCount; d++) ...[around + d, around - d],
+  }.where((p) => p >= 1 && p <= pageCount).toList();
 
   Future<bool> _load(int page) async {
     try {
