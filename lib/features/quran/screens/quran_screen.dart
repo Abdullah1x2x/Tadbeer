@@ -421,6 +421,12 @@ class _QuranScreenState extends State<QuranScreen> {
     }
   }
 
+  /// اسم أول سورة في الصفحة [page].
+  String _surahOfPage(int page) {
+    final repo = QuranRepository.instance;
+    return repo.getSurah(repo.getPage(page).surahNumbers.first).name;
+  }
+
   /// ينتقل إلى الصفحة [mushafPage] (١..٦٠٤).
   void _jumpToMushafPage(int mushafPage) {
     final target = mushafPage.clamp(1, 604);
@@ -767,12 +773,34 @@ class _QuranScreenState extends State<QuranScreen> {
                   Expanded(
                     child: SliderTheme(
                       data: SliderTheme.of(context).copyWith(
-                        trackHeight: 3.5,
+                        trackHeight: 4,
                         thumbShape: const RoundSliderThumbShape(
-                          enabledThumbRadius: 7,
+                          enabledThumbRadius: 9,
+                          elevation: 2,
+                          pressedElevation: 4,
                         ),
                         overlayShape: const RoundSliderOverlayShape(
-                          overlayRadius: 14,
+                          overlayRadius: 20,
+                        ),
+                        overlayColor:
+                            (isDark
+                                    ? AppColors.cyberEmerald
+                                    : AppColors.lightPrimary)
+                                .withValues(alpha: 0.14),
+                        // رقم الصفحة واسم السورة فوق الإصبع أثناء السحب.
+                        showValueIndicator: ShowValueIndicator.onDrag,
+                        valueIndicatorShape:
+                            const RectangularSliderValueIndicatorShape(),
+                        valueIndicatorColor: isDark
+                            ? AppColors.cyberEmerald
+                            : AppColors.lightPrimary,
+                        valueIndicatorTextStyle: TextStyle(
+                          fontFamily: 'IBMPlexSansArabic',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? AppColors.darkBackground
+                              : Colors.white,
                         ),
                         activeTrackColor: isDark
                             ? AppColors.cyberEmerald
@@ -795,8 +823,10 @@ class _QuranScreenState extends State<QuranScreen> {
                             value: page.toDouble().clamp(1.0, 604.0),
                             min: 1.0,
                             max: 604.0,
-                            divisions: 603,
-                            label: l10n.pageAbbr(page),
+                            // بلا divisions: ٦٠٣ علامة كانت تُرسم في كل إطار
+                            // من السحب، والرقم يُقرّب في onChanged.
+                            label:
+                                '${l10n.pageAbbr(page)} · ${_surahOfPage(page)}',
                             onChanged: (val) => _sliderPage.value = val.round(),
                             onChangeEnd: (val) {
                               _sliderPage.value = null;
