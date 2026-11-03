@@ -11,6 +11,8 @@ import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../app/main_shell.dart';
 import '../../core/motion/app_motion.dart';
+import '../../data/models/user_settings_model.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
 
 /// شاشة الترحيب: آية في التدبر، وخيار إخفاء الشاشة نهائياً.
 class TadbeerIntroScreen extends StatefulWidget {
@@ -138,6 +140,9 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
     }
 
     final verseText = currentAyah?.text ?? l10n.tadbeerVerse;
+    final verseColor = isDark
+        ? AppColors.nightQuranText
+        : AppColors.dayQuranText;
 
     final verseRef = (currentSurah != null && currentAyah != null)
         ? l10n.ayahReference(
@@ -192,6 +197,17 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                   ? 17.0
                   : (isCompact ? 19.0 : 21.0);
               final verseHeight = isVeryCompact ? 1.75 : 1.9;
+              final verseInTextFont = Text(
+                '﴿ $verseText ﴾',
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.rtl,
+                style: TextStyle(
+                  fontFamily: UserDataStore.instance.quranFontFamily,
+                  fontSize: verseFontSize,
+                  height: verseHeight,
+                  color: verseColor,
+                ),
+              );
               final verseRefSize = isVeryCompact ? 11.5 : 12.5;
               final spaceAfterVerse = isVeryCompact
                   ? 10.0
@@ -283,19 +299,22 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
                             ),
                             child: Column(
                               children: [
-                                Text(
-                                  '﴿ $verseText ﴾',
-                                  textAlign: TextAlign.center,
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                    fontFamily: 'ScheherazadeNew',
+                                // بخط المصحف الذي اختاره القارئ.
+                                if (currentAyah != null &&
+                                    UserDataStore
+                                            .instance
+                                            .settings
+                                            .mushafStyle ==
+                                        MushafStyle.madinah)
+                                  QcfAyahText(
+                                    ayah: currentAyah,
                                     fontSize: verseFontSize,
                                     height: verseHeight,
-                                    color: isDark
-                                        ? AppColors.nightQuranText
-                                        : AppColors.dayQuranText,
-                                  ),
-                                ),
+                                    color: verseColor,
+                                    fallback: verseInTextFont,
+                                  )
+                                else
+                                  verseInTextFont,
                                 SizedBox(height: isVeryCompact ? 6 : 10),
                                 Text(
                                   verseRef,

@@ -16,6 +16,7 @@ import 'package:tadbeer/features/search/search_screen.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_screen.dart';
 import 'package:tadbeer/core/design_system/app_icons.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
 
 /// Opacity of the floating bar's wrapper (0 while it is hidden for reading).
 double barOpacity(WidgetTester tester) => tester
@@ -59,6 +60,8 @@ void main() {
 
         // Should show TadbeerIntroScreen
         expect(find.byType(TadbeerIntroScreen), findsOneWidget);
+        // The verse uses the Madinah Mushaf font, the default style.
+        expect(find.byType(QcfAyahText), findsOneWidget);
         // Should show checkbox "لا تظهر لي هذه النافذة مرة أخرى" (default: false)
         final checkboxTextFinder = find.text('لا تظهر لي هذه النافذة مرة أخرى');
         expect(checkboxTextFinder, findsOneWidget);
