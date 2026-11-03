@@ -1,3 +1,4 @@
+import '../quran/qcf/madinah_font_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -275,9 +276,13 @@ class SettingsScreen extends StatelessWidget {
                           ),
                         ),
                         if (madinah) ...[
+                          const SizedBox(height: 10),
+                          const MadinahFontPicker(),
                           const SizedBox(height: 4),
                           Text(
-                            l10n.qcfAttribution,
+                            settings.madinahFont == MadinahFont.digitalKhatt
+                                ? l10n.digitalKhattAttribution
+                                : l10n.qcfAttribution,
                             style: TextStyle(
                               fontSize: 11.5,
                               color: AppColors.textSecondary(context),

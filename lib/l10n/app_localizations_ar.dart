@@ -2602,4 +2602,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get openSettings => 'الإعدادات';
+
+  @override
+  String get madinahFontKingFahd => 'مجمع الملك فهد';
+
+  @override
+  String get madinahFontDigitalKhatt => 'الخط الرقمي';
+
+  @override
+  String get digitalKhattAttribution =>
+      'خط Digital Khatt من مشروع DigitalKhatt وTarteel، بترخيص SIL OFL 1.1.';
 }

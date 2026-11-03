@@ -4643,6 +4643,24 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الإعدادات'**
   String get openSettings;
+
+  /// No description provided for @madinahFontKingFahd.
+  ///
+  /// In ar, this message translates to:
+  /// **'مجمع الملك فهد'**
+  String get madinahFontKingFahd;
+
+  /// No description provided for @madinahFontDigitalKhatt.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخط الرقمي'**
+  String get madinahFontDigitalKhatt;
+
+  /// No description provided for @digitalKhattAttribution.
+  ///
+  /// In ar, this message translates to:
+  /// **'خط Digital Khatt من مشروع DigitalKhatt وTarteel، بترخيص SIL OFL 1.1.'**
+  String get digitalKhattAttribution;
 }
 
 class _AppLocalizationsDelegate

@@ -146,6 +146,41 @@ These materials are not covered by the Tadbeer MIT License.''',
     );
 
     yield const LicenseEntryWithLineBreaks(
+      <String>['digital_khatt_font'],
+      '''Digital Khatt V2 ("DigitalKhatt New Madina", Version 0.1)
+Copyright (c) 2020-2024 Amine Anane, Copyright (c) 2024 Tarteel Inc.
+(https://github.com/DigitalKhatt, https://qul.tarteel.ai/resources/font/247)
+
+Licensed under the SIL Open Font License, Version 1.1 (https://scripts.sil.org/OFL).
+Bundled unaltered.''',
+    );
+
+    yield const LicenseEntryWithLineBreaks(
+      <String>['digital_khatt_mushaf_text'],
+      '''DigitalKhatt Madina Mushaf text and line layout
+(https://github.com/DigitalKhatt/digitalkhatt-js, quran_text_madina.ts)
+Copyright (c) 2020-present DigitalKhatt contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+    );
+
+    yield const LicenseEntryWithLineBreaks(
       <String>['quran_recitations'],
       '''Recitations are streamed or downloaded on request from Islamic Network
 (https://alquran.cloud). Copyright remains with the reciters or their estates.

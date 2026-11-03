@@ -11,6 +11,8 @@ import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
+import '../../../data/models/user_settings_model.dart';
+
 /// كلمة واحدة من المصحف: محرف في خط صفحتها.
 class QcfWord {
   final int surah;
@@ -48,12 +50,25 @@ class QcfLine {
 }
 
 /// يحمّل تخطيط أسطر الصفحات الـ٦٠٤.
+///
+/// [instance] لخطوط مجمع الملك فهد (رمز لكل كلمة في خط صفحتها)، و[digitalKhatt]
+/// لخط Digital Khatt (نص كل كلمة بخط واحد، بأسطر الطبعة الحديثة).
 class QcfLayout {
-  QcfLayout._();
+  QcfLayout._(this.assetPath);
 
-  static final QcfLayout instance = QcfLayout._();
+  static final QcfLayout instance = QcfLayout._(
+    'assets/quran/qcf_v1_layout.json.gz',
+  );
 
-  static const assetPath = 'assets/quran/qcf_v1_layout.json.gz';
+  static final QcfLayout digitalKhatt = QcfLayout._(
+    'assets/quran/dk_layout.json.gz',
+  );
+
+  /// تخطيط [font].
+  static QcfLayout of(MadinahFont font) =>
+      font == MadinahFont.digitalKhatt ? digitalKhatt : instance;
+
+  final String assetPath;
 
   List<List<QcfLine>>? _pages;
   Future<void>? _loading;
@@ -70,6 +85,22 @@ class QcfLayout {
     _pages = await Isolate.run(
       () => parse(jsonDecode(utf8.decode(gzip.decode(compressed))) as List),
     );
+  }
+
+  Map<(int, int), int>? _pageOf;
+
+  /// صفحة الآية [surah]:[ayah] في هذا التخطيط، أو null قبل [init].
+  ///
+  /// صفحات الطبعة الحديثة قد تقدّم آية أو تؤخرها عن صفحات بيانات التطبيق.
+  int? pageOf(int surah, int ayah) {
+    final pages = _pages;
+    if (pages == null) return null;
+    final index = _pageOf ??= {
+      for (var p = 0; p < pages.length; p++)
+        for (final line in pages[p])
+          for (final w in line.words) (w.surah, w.ayah): p + 1,
+    };
+    return index[(surah, ayah)];
   }
 
   /// أسطر [page] (1..604)؛ فارغة حتى ينتهي [init].

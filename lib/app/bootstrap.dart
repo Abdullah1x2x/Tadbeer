@@ -3,9 +3,12 @@
 /// الترتيب مهم: المخزن وبيانات القرآن أولاً، لأن كل ما بعدهما يقرأ منهما.
 library;
 
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 
+import '../data/models/user_settings_model.dart';
 import '../data/quran/quran_repository.dart';
 import '../data/storage/user_data_store.dart';
 import '../features/audio/recitation_handler.dart';
@@ -14,6 +17,7 @@ import '../features/duas/screens/morning_evening_adhkar_screen.dart';
 import '../features/journey/portion_reminder.dart';
 import '../features/journey/streak_reminder.dart';
 import '../features/quran/qcf/qcf_fonts.dart';
+import '../features/quran/qcf/qcf_layout.dart';
 import '../features/reminders/local_reminder_service.dart';
 import '../features/tasbeeh/tasbeeh_model.dart';
 import '../features/widgets/home_widget_sync.dart';
@@ -45,6 +49,11 @@ Future<void> bootstrap() async {
   _attachSyncs();
   await _startBackgroundRecitation();
 
+  // تخطيط مصحف المدينة يُفك في الخلفية، فيجهز قبل فتح المصحف.
+  final settings = UserDataStore.instance.settings;
+  if (settings.mushafStyle == MushafStyle.madinah) {
+    unawaited(QcfLayout.of(settings.madinahFont).init());
+  }
 }
 
 /// يفتح الشاشة التي يشير إليها التذكير المنقور.

@@ -32,6 +32,10 @@ mixin _SettingsSection on _StoreState {
     await updateSettings(_settings.copyWith(mushafStyle: style));
   }
 
+  Future<void> setMadinahFont(MadinahFont font) async {
+    await updateSettings(_settings.copyWith(madinahFont: font));
+  }
+
   Future<void> setQuranFontFamily(QuranFontFamilyOption fontFamily) async {
     await updateSettings(_settings.copyWith(quranFontFamily: fontFamily));
   }

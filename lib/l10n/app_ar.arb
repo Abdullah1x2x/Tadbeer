@@ -1476,5 +1476,8 @@
   "exactAlarmsOffNotice": "المنبهات الدقيقة غير مسموحة، فقد تتأخر التذكيرات عن وقتها.",
   "enablePermission": "تفعيل",
   "batteryHintNotice": "هاتفك قد يوقف التذكيرات لتوفير البطارية. من إعدادات التطبيق اجعل البطارية «بلا قيود».",
-  "openSettings": "الإعدادات"
+  "openSettings": "الإعدادات",
+  "madinahFontKingFahd": "مجمع الملك فهد",
+  "madinahFontDigitalKhatt": "الخط الرقمي",
+  "digitalKhattAttribution": "خط Digital Khatt من مشروع DigitalKhatt وTarteel، بترخيص SIL OFL 1.1."
 }

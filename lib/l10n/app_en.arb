@@ -894,5 +894,8 @@
   "exactAlarmsOffNotice": "Exact alarms aren’t allowed, so reminders may arrive late.",
   "enablePermission": "Enable",
   "batteryHintNotice": "Your phone may stop reminders to save battery. In the app settings, set battery to “Unrestricted”.",
-  "openSettings": "Settings"
+  "openSettings": "Settings",
+  "madinahFontKingFahd": "King Fahd Complex",
+  "madinahFontDigitalKhatt": "Digital Khatt",
+  "digitalKhattAttribution": "Digital Khatt font by DigitalKhatt and Tarteel, under the SIL OFL 1.1."
 }

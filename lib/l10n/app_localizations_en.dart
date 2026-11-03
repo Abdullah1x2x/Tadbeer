@@ -2616,4 +2616,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSettings => 'Settings';
+
+  @override
+  String get madinahFontKingFahd => 'King Fahd Complex';
+
+  @override
+  String get madinahFontDigitalKhatt => 'Digital Khatt';
+
+  @override
+  String get digitalKhattAttribution =>
+      'Digital Khatt font by DigitalKhatt and Tarteel, under the SIL OFL 1.1.';
 }

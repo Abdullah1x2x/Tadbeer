@@ -59,6 +59,7 @@ extension _QuranPageParts on _QuranPageViewState {
         Expanded(
           child: QcfPageBody(
             pageNumber: pageNumber,
+            font: UserDataStore.instance.settings.madinahFont,
             // الصفحة المطبوعة تتسع للشاشة وحدها؛ ولا يكبّرها إلا حجم صريح (في
             // الاختبارات).
             zoom: widget.fontSize == null

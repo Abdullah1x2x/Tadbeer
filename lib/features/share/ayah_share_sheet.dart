@@ -17,8 +17,6 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
-import '../quran/qcf/qcf_fonts.dart';
-import '../quran/qcf/qcf_layout.dart';
 import '../../data/models/user_settings_model.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -82,11 +80,9 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
   Future<Uint8List?> _capture() async {
     // خطوط مصحف المدينة تُحمّل مع صفحتها؛ ننتظرها كي لا تلتقط الصورة الخط
     // البديل.
-    final page = widget.ayah.page;
     if (UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah &&
-        !(QcfLayout.instance.isReady && QcfFonts.instance.isPageLoaded(page))) {
-      await QcfLayout.instance.init();
-      if (await QcfFonts.instance.ensurePage(page)) {
+        QcfGlyphs.of(widget.ayah) == null) {
+      if (await QcfGlyphs.prepare(widget.ayah)) {
         // إطار واحد لترسم الخطوط مكان البديل.
         WidgetsBinding.instance.scheduleFrame();
         await WidgetsBinding.instance.endOfFrame.timeout(

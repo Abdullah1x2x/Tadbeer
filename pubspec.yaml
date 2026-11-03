@@ -101,6 +101,7 @@ flutter:
     - assets/quran/quran_data.json
     - assets/quran/word_meanings.json
     - assets/quran/qcf_v1_layout.json.gz
+    - assets/quran/dk_layout.json.gz
     - assets/fonts/
     - assets/fonts/qcf/
     - assets/icons/app_logo.png
@@ -121,6 +122,10 @@ flutter:
     - family: Lateef
       fonts:
         - asset: assets/fonts/Lateef-Regular.ttf
+    # Madinah Mushaf in one file (SIL OFL-1.1), with dk_layout.json.gz.
+    - family: DigitalKhatt
+      fonts:
+        - asset: assets/fonts/DigitalKhattV2.otf
     - family: AmiriQuran
       fonts:
         - asset: assets/fonts/AmiriQuran-Regular.ttf

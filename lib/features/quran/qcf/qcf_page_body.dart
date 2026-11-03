@@ -6,20 +6,26 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../../../data/models/user_settings_model.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../widgets/surah_header_banner.dart';
+import 'kashida.dart';
 import 'qcf_fonts.dart';
 import 'qcf_layout.dart';
 import 'qcf_widest_lines.g.dart';
 
-/// متن صفحة مصحف المدينة بخط مجمع الملك فهد.
+/// متن صفحة مصحف المدينة، بخطوط مجمع الملك فهد أو بخط Digital Khatt.
 ///
 /// عند [zoom] = 1 تُرصف الصفحة سطراً بسطر كالمطبوع، بحجم تتسع به كاملة في أي
 /// شاشة. وتحت 1 تصغر، وفوقه تنساب نفس الرموز فقرات ملتفة تُمرّر، فلا يُقص سطر
 /// ولا يُحتاج تمرير أفقي.
 class QcfPageBody extends StatefulWidget {
   final int pageNumber;
+
+  /// خط الصفحات: [MadinahFont.kingFahd] خط لكل صفحة، و[MadinahFont.digitalKhatt]
+  /// خط واحد تُمدّ أسطره بالكشيدة.
+  final MadinahFont font;
   final double zoom;
   final Color textColor;
 
@@ -68,9 +74,20 @@ class QcfPageBody extends StatefulWidget {
   static double wordSpacingFor(int page, double fontSize) =>
       _space * fontSize - (_wideSpace[page] ?? _space) * fontSize;
 
+  /// البسملة بنص Digital Khatt، بترتيب علاماته كما في مصدره (الشدة قبل الفتحة).
+  static const digitalKhattBasmala =
+      '\u0628\u0650\u0633\u0652\u0645\u0650 '
+      '\u0671\u0644\u0644\u0651\u064E\u0647\u0650 '
+      '\u0671\u0644\u0631\u0651\u064E\u062D\u0652\u0645\u064E\u0670\u0646\u0650 '
+      '\u0671\u0644\u0631\u0651\u064E\u062D\u0650\u064A\u0645\u0650';
+
+  /// عائلة خط Digital Khatt في pubspec.
+  static const digitalKhattFamily = 'DigitalKhatt';
+
   const QcfPageBody({
     super.key,
     required this.pageNumber,
+    this.font = MadinahFont.kingFahd,
     required this.zoom,
     required this.textColor,
     required this.markerColor,
@@ -95,7 +112,27 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   /// صفحتا البداية.
   static const _typicalWidest = 1450.0;
 
+  /// أعرض سطر في صفحة Digital Khatt العادية بحجم [_probe] (الوسيط عبر المصحف):
+  /// كل الصفحات بحجم واحد يملأ به هذا السطر العرض.
+  static const _dkTypicalWidest = 1723.0;
+
+  /// كم يُضغط سطر Digital Khatt أفقياً قبل أن تصغر الصفحة كلها.
+  static const _dkSqueeze = 1.08;
+
+  /// نصيب الكشيدة من نقص السطر؛ والباقي تباعد بين الكلمات.
+  static const _kashidaShare = 0.7;
+
   late Future<bool> _ready;
+
+  bool get _dk => widget.font == MadinahFont.digitalKhatt;
+
+  QcfLayout get _layout => QcfLayout.of(widget.font);
+
+  /// مدّ كل سطر بحسب رقمه وحجم الخط وعرض الصفحة.
+  final Map<(int, double, double), _LineFit> _fits = {};
+
+  /// عرض حرف التطويل بكل حجم خط.
+  final Map<double, double> _tatweelWidths = {};
 
   @override
   void dispose() {
@@ -107,8 +144,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     if (mounted) setState(() {});
   }
 
-  /// أعرض سطر في كل صفحة بحجم [_probe]؛ لا يتغير، فيبقى عند الرجوع إليها.
-  static final Map<int, double> _widestLines = {};
+  /// أعرض سطر في كل صفحة بحجم [_probe]، بمفتاح الخط والصفحة؛ لا يتغير، فيبقى
+  /// عند الرجوع إليها.
+  static final Map<(MadinahFont, int), double> _widestLines = {};
 
   @override
   void initState() {
@@ -120,10 +158,19 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   @override
   void didUpdateWidget(QcfPageBody old) {
     super.didUpdateWidget(old);
-    if (old.pageNumber != widget.pageNumber) _prepare();
+    if (old.pageNumber != widget.pageNumber || old.font != widget.font) {
+      _fits.clear();
+      _prepare();
+    }
   }
+
   void _prepare() {
     final page = widget.pageNumber;
+    if (_dk) {
+      // خط واحد مضمّن، فلا ينتظر إلا التخطيط.
+      _ready = _layout.init().then((_) => true);
+      return;
+    }
     _ready = Future.wait([
       QcfLayout.instance.init().then((_) => true),
       QcfFonts.instance.ensurePage(page),
@@ -132,13 +179,15 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     ]).then((r) => r.every((ok) => ok));
   }
 
-  String get _family => QcfFonts.familyFor(widget.pageNumber);
+  String get _family => _dk
+      ? QcfPageBody.digitalKhattFamily
+      : QcfFonts.familyFor(widget.pageNumber);
 
   /// أعرض سطر في الصفحة بحجم [_probe]، يُجلب من القياسات المحسوبة مسبقاً.
   double _measure(List<QcfLine> lines) {
-    final precomputed = kQcfWidestLines[widget.pageNumber];
+    final precomputed = _dk ? null : kQcfWidestLines[widget.pageNumber];
     if (precomputed != null) return precomputed;
-    final known = _widestLines[widget.pageNumber];
+    final known = _widestLines[(widget.font, widget.pageNumber)];
     if (known != null) return known;
     var widest = 1.0;
     for (final line in lines) {
@@ -153,16 +202,17 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       widest = math.max(widest, painter.width);
       painter.dispose();
     }
-    return _widestLines[widget.pageNumber] = widest;
+    return _widestLines[(widget.font, widget.pageNumber)] = widest;
   }
 
   @override
   Widget build(BuildContext context) {
     final page = widget.pageNumber;
     final loaded =
-        QcfLayout.instance.isReady &&
-        QcfFonts.instance.isPageLoaded(page) &&
-        QcfFonts.instance.isPageLoaded(1);
+        _layout.isReady &&
+        (_dk ||
+            QcfFonts.instance.isPageLoaded(page) &&
+                QcfFonts.instance.isPageLoaded(1));
     if (loaded) return _page(context);
     return FutureBuilder<bool>(
       future: _ready,
@@ -179,16 +229,28 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   }
 
   Widget _page(BuildContext context) {
-    final lines = QcfLayout.instance.page(widget.pageNumber);
+    final lines = _layout.page(widget.pageNumber);
     if (lines.isEmpty) return widget.fallback;
     final widest = _measure(lines);
-    final openingScale = QcfPageBody._openingScale[widget.pageNumber];
+    final openingScale = _dk
+        ? null
+        : QcfPageBody._openingScale[widget.pageNumber];
     return LayoutBuilder(
       builder: (context, box) {
         final byWidth = _probe * box.maxWidth / widest;
         final byHeight = box.maxHeight / (lines.length * _lineHeight);
         var fit = math.min(byWidth, byHeight);
-        if (openingScale != null) {
+        if (_dk) {
+          // حجم واحد لكل الصفحات؛ والصفحة ذات السطر الأعرض تُضغط أسطرها قليلاً،
+          // ولا تصغر إلا إن زاد الضغط على [_dkSqueeze].
+          fit = math.min(
+            math.min(
+              _probe * box.maxWidth / _dkTypicalWidest,
+              byWidth * _dkSqueeze,
+            ),
+            byHeight,
+          );
+        } else if (openingScale != null) {
           // بحجم صفحة عادية من ١٥ سطراً على هذه الشاشة، مصحّحاً لصغر رموز صفحتي
           // البداية، مع إبقاء أسطرهما القصيرة كتلة في الوسط لا يتجاوز عرضها 92%
           // من الصفحة (85% كانت تصغّر الصفحة الأولى على الهواتف الشائعة).
@@ -202,7 +264,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
           );
         }
         if (widget.zoom <= 1.0) {
-          return _printed(lines, fit * widget.zoom, box.maxHeight);
+          return _printed(lines, fit * widget.zoom, box);
         }
         return _flowing(lines, fit * widget.zoom);
       },
@@ -210,7 +272,8 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   }
 
   /// الصفحة كالمطبوع: كل سطر وحده، في الوسط، بتباعد متساوٍ.
-  Widget _printed(List<QcfLine> lines, double size, double height) {
+  Widget _printed(List<QcfLine> lines, double size, BoxConstraints box) {
+    final height = box.maxHeight;
     // أسطر الصفحة العادية الـ١٥ تتوزع لتملأها؛ أما أسطر صفحتي البداية القليلة
     // فتحتفظ بارتفاعها وتتجمع في الوسط كالمطبوع.
     final opening = QcfPageBody._openingScale.containsKey(widget.pageNumber);
@@ -223,10 +286,14 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        for (final line in lines)
+        for (final (i, line) in lines.indexed)
           SizedBox(
             height: slot,
-            child: Center(child: _line(line, size)),
+            child: Center(
+              child: _dk && line.kind == QcfLineKind.words
+                  ? _justified(i, line, size, box.maxWidth)
+                  : _line(line, size),
+            ),
           ),
       ],
     );
@@ -275,6 +342,19 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         return SurahHeaderBanner(
           surah: QuranRepository.instance.getSurah(line.surah),
         );
+      case QcfLineKind.basmala when _dk:
+        return Text(
+          QcfPageBody.digitalKhattBasmala,
+          maxLines: 1,
+          softWrap: false,
+          textDirection: TextDirection.rtl,
+          style: TextStyle(
+            fontFamily: QcfPageBody.digitalKhattFamily,
+            fontSize: size,
+            height: _lineHeight,
+            color: widget.textColor,
+          ),
+        );
       case QcfLineKind.basmala:
         return Text(
           QcfPageBody.basmalaGlyphs,
@@ -306,13 +386,101 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     }
   }
 
+  /// سطر Digital Khatt رقم [index] يملأ [width]: كشيدة لأغلب نقصه وتباعد للباقي،
+  /// أو ضغط أفقي خفيف إن زاد. وآخر سطر في السورة يبقى في الوسط كالمطبوع.
+  Widget _justified(int index, QcfLine line, double size, double width) {
+    final fit = _fits[(index, size, width)] ??= _fitLine(
+      index,
+      line,
+      size,
+      width,
+    );
+    final text = Text.rich(
+      _spans(line.words, size, fit: fit),
+      maxLines: 1,
+      softWrap: false,
+      textDirection: TextDirection.rtl,
+    );
+    // يُرصف السطر بعرضه كاملاً ثم يُضغط، فلا يُقص طرفه؛ والقياس قد يخطئ بنقطة.
+    final unclipped = OverflowBox(maxWidth: double.infinity, child: text);
+    if (fit.squeeze >= 1) return unclipped;
+    return Transform.scale(scaleX: fit.squeeze, child: unclipped);
+  }
+
+  _LineFit _fitLine(int index, QcfLine line, double size, double width) {
+    // النص المرسوم لا ما يقرؤه قارئ الشاشة، فلكل آية تسمية منطوقة.
+    double measure(_LineFit fit) => _textWidth(
+      _spans(
+        line.words,
+        size,
+        fit: fit,
+      ).toPlainText(includeSemanticsLabels: false, includePlaceholders: false),
+      size,
+    );
+    final natural = measure(_LineFit.centred);
+    if (natural >= width) return _LineFit(const {}, 0, width / natural);
+    if (widget.pageNumber <= 2 || _endsSurah(index)) return _LineFit.centred;
+    final codes = [for (final w in line.words) w.code];
+    final gaps = codes.length - 1;
+    final tatweelWidth = _tatweelWidths[size] ??=
+        (_textWidth('ب${tatweel * 10}ب', size) - _textWidth('بب', size)) / 10;
+    var count = ((width - natural) * _kashidaShare / tatweelWidth).floor();
+    while (true) {
+      final stretched = stretchWords(codes, count);
+      final fit = _LineFit(
+        {
+          for (final (i, w) in line.words.indexed)
+            if (stretched[i] != w.code) w: stretched[i],
+        },
+        0,
+        1,
+      );
+      final used = measure(fit);
+      // الكشيدة تغيّر أشكال الحروف قليلاً، فقد تزيد على المحسوب.
+      if (used <= width || count == 0) {
+        final spacing = gaps > 0 ? math.max(0.0, (width - used) / gaps) : 0.0;
+        return _LineFit(fit.stretched, spacing, 1);
+      }
+      count = count * 3 ~/ 4;
+    }
+  }
+
+  /// هل سطر الكلمات [index] آخر سطر في سورته: يليه عنوان سورة، أو هو آخر
+  /// الصفحة والتالية تبدأ بعنوان، أو آخر المصحف.
+  bool _endsSurah(int index) {
+    final lines = _layout.page(widget.pageNumber);
+    if (index + 1 < lines.length) {
+      return lines[index + 1].kind == QcfLineKind.surahHeader;
+    }
+    final next = _layout.page(widget.pageNumber + 1);
+    return next.isEmpty || next.first.kind == QcfLineKind.surahHeader;
+  }
+
+  double _textWidth(String text, double size) {
+    final painter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontFamily: _family,
+          fontSize: size,
+          height: _lineHeight,
+        ),
+      ),
+      textDirection: TextDirection.rtl,
+      maxLines: 1,
+    )..layout();
+    final width = painter.width;
+    painter.dispose();
+    return width;
+  }
+
   /// نص كلمات [run] من [ayah]: الرموز لا تعني شيئاً لقارئ الشاشة.
   ///
   /// علامات الوقف المنفصلة لا تقابلها كلمة في تخطيط الصفحة. وإن اختلف العددان
   /// قُرئت الآية كاملة عند أول أجزائها.
   String? _spokenWords(Ayah ayah, List<QcfWord> run) {
     final layout = [
-      for (final line in QcfLayout.instance.page(widget.pageNumber))
+      for (final line in _layout.page(widget.pageNumber))
         for (final word in line.words)
           if (word.surah == ayah.surahNumber &&
               word.ayah == ayah.ayahNumber &&
@@ -331,8 +499,14 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   }
 
   /// مقطع لكل آية، فالنقر في أي موضع منها يختارها.
-  TextSpan _spans(List<QcfWord> words, double size) {
+  ///
+  /// [fit] يمدّ سطر Digital Khatt: كلماته بالكشيدة وتباعده، دون فراغ في آخره.
+  TextSpan _spans(List<QcfWord> words, double size, {_LineFit? fit}) {
     final runs = <InlineSpan>[];
+    String codeOf(QcfWord w) => fit?.stretched[w] ?? w.code;
+    // الفراغ بعد آخر كلمة يزيح السطر الممدود عن حافته.
+    String after(QcfWord w) =>
+        fit != null && identical(w, words.last) ? '' : ' ';
     var i = 0;
     while (i < words.length) {
       final first = words[i];
@@ -343,9 +517,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
           words[i].surah == first.surah &&
           words[i].ayah == first.ayah) {
         if (words[i].isEnd) {
-          end = words[i].code;
+          end = codeOf(words[i]);
         } else {
-          text.write('${words[i].code} ');
+          text.write('${codeOf(words[i])}${after(words[i])}');
         }
         i++;
       }
@@ -389,13 +563,15 @@ class _QcfPageBodyState extends State<QcfPageBody> {
             ),
           );
         }
-        runs.add(
-          TextSpan(
-            text: ' ',
-            recognizer: recognizer,
-            style: TextStyle(backgroundColor: background),
-          ),
-        );
+        if (after(words[i - 1]).isNotEmpty) {
+          runs.add(
+            TextSpan(
+              text: ' ',
+              recognizer: recognizer,
+              style: TextStyle(backgroundColor: background),
+            ),
+          );
+        }
       }
     }
     return TextSpan(
@@ -403,12 +579,30 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         fontFamily: _family,
         fontSize: size,
         height: _lineHeight,
-        wordSpacing: QcfPageBody.wordSpacingFor(widget.pageNumber, size),
+        wordSpacing:
+            fit?.spacing ??
+            (_dk ? 0 : QcfPageBody.wordSpacingFor(widget.pageNumber, size)),
         color: widget.textColor,
       ),
       children: runs,
     );
   }
+}
+
+/// كيف يُمدّ سطر Digital Khatt ليملأ عرض الصفحة.
+class _LineFit {
+  /// نص الكلمات التي دخلتها الكشيدة.
+  final Map<QcfWord, String> stretched;
+
+  /// التباعد المضاف بين الكلمات.
+  final double spacing;
+
+  /// الضغط الأفقي للسطر الأعرض من الصفحة؛ 1 بلا ضغط.
+  final double squeeze;
+
+  const _LineFit(this.stretched, this.spacing, this.squeeze);
+
+  static const centred = _LineFit({}, 0, 1);
 }
 
 /// أيقونات صغيرة فوق علامة رقم الآية.
