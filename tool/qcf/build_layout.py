@@ -18,6 +18,10 @@ FONT = 'https://static.qurancdn.com/fonts/quran/hafs/v1/ttf/p{p}.ttf'
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+# (page, line) whose last word belongs at the start of the next line.
+LATE_LINE_ENDS = [(177, 11), (443, 12)]
+
+
 def fetch(url, path):
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         with urllib.request.urlopen(url, timeout=60) as r, open(path, 'wb') as f:
@@ -33,6 +37,11 @@ def page_layout(data, p, report):
             if w['char_type_name'] == 'end':
                 entry.append(1)
             lines.setdefault(w['line_number'], []).append(entry)
+    # The API ends these lines one word late: the page fonts make that line
+    # too wide and the next one too short.
+    for page, n in LATE_LINE_ENDS:
+        if page == p:
+            lines[n + 1].insert(0, lines[n].pop())
     out, run = [], []  # run: empty lines waiting for the surah they open
     for n in range(1, (8 if p <= 2 else 15) + 1):
         words = lines.get(n)
