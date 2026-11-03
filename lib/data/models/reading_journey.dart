@@ -228,13 +228,14 @@ class ReadingJourney {
     return _copy(activeDays: {...activeDays, key});
   }
 
-  /// يقرأ ورد اليوم دفعة واحدة: يتقدم المؤشر بعدد صفحاته.
+  /// يقرأ ما بقي من ورد اليوم دفعة واحدة: يتقدم المؤشر بالصفحات الباقية منه.
   ReadingJourney completePortion(DateTime now) {
     final p = plan;
     if (p == null) return this;
     var journey = this;
     var page = p.currentPage;
-    for (var i = 0; i < p.pagesPerDay && journey.plan != null; i++) {
+    final left = p.pagesPerDay - portionPagesOn(now);
+    for (var i = 0; i < left && journey.plan != null; i++) {
       journey = journey.recordPage(page, now);
       page = nextMushafPage(page);
     }

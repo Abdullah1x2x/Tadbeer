@@ -106,6 +106,18 @@ void main() {
       expect(j.pagesOn(monday), 21);
     });
 
+    test('marking the portion done adds only the pages left of it', () {
+      var j = const ReadingJourney().startPlan(30, monday);
+      for (var p = 1; p <= 15; p++) {
+        j = j.recordPage(p, monday);
+      }
+      j = j.completePortion(monday);
+      expect(j.plan!.currentPage, 22);
+      expect(j.pagesOn(monday), 21);
+      // Done already: nothing more is added.
+      expect(j.completePortion(monday).pagesOn(monday), 21);
+    });
+
     test('reading every page completes the khatma', () {
       var j = const ReadingJourney().startPlan(7, monday);
       for (var p = 1; p <= mushafPageCount; p++) {
