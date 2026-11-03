@@ -7,6 +7,7 @@ library;
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
@@ -64,8 +65,11 @@ class QcfLayout {
 
   Future<void> _load() async {
     final data = await rootBundle.load(assetPath);
-    final json = utf8.decode(gzip.decode(data.buffer.asUint8List()));
-    _pages = parse(jsonDecode(json) as List);
+    final compressed = data.buffer.asUint8List();
+    // خيط منفصل: فك الملف كله يقطع حركة فتح المصحف.
+    _pages = await Isolate.run(
+      () => parse(jsonDecode(utf8.decode(gzip.decode(compressed))) as List),
+    );
   }
 
   /// أسطر [page] (1..604)؛ فارغة حتى ينتهي [init].

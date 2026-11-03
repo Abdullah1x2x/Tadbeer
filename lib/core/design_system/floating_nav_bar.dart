@@ -82,7 +82,7 @@ class FloatingNavBar extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(_radius),
-            child: BackdropFilter(
+            child: BackdropFilter.grouped(
               filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
               child: DecoratedBox(
                 decoration: BoxDecoration(

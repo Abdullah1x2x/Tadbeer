@@ -34,7 +34,9 @@ class QcfFonts {
   /// هل اكتمل تحميل خط [page].
   bool isPageLoaded(int page) => _ready.contains(page);
 
-  /// يحمّل خطوط الصفحات المجاورة استباقياً لضمان سلاسة التقليب
+  /// يحمّل خطوط الصفحات المجاورة استباقياً.
+  ///
+  /// تحميل أي خط يعيد تخطيط كل نصوص التطبيق، فلا يُستدعى أثناء حركة الصفحة.
   void preloadSurrounding(int page, {int window = 2}) {
     for (var i = 1; i <= window; i++) {
       if (page + i <= pageCount) ensurePage(page + i);

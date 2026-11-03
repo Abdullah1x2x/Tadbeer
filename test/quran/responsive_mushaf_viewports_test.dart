@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 
@@ -33,6 +34,7 @@ void main() {
     dataFile = File('${tempDir.path}/test_user_data.json');
     await UserDataStore.instance.init(dataFile);
     await QuranRepository.instance.init();
+    await QcfLayout.instance.init();
   });
 
   tearDownAll(() async {

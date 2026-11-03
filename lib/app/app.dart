@@ -140,7 +140,8 @@ class _TadbeerAppState extends State<TadbeerApp> {
             builder: (context, child) {
               return Directionality(
                 textDirection: _currentLanguage.direction,
-                child: child!,
+                // أشرطة المصحف الزجاجية تتشارك خلفية واحدة، فلا تُعاد لكل شريط.
+                child: BackdropGroup(child: child!),
               );
             },
             home: _initialThemeChosen

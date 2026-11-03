@@ -53,7 +53,25 @@ class QuranScreen extends StatefulWidget {
 class _QuranScreenState extends State<QuranScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late PageController _pageController;
+
+  /// الصفحة الحالية من ٠؛ وفي العرض المزدوج أولى الصفحتين عادةً.
   late int _currentPageIndex;
+
+  /// صفحتان متقابلتان في الشاشات العريضة، فعناصر [PageView] أزواج لا صفحات.
+  bool _wide = false;
+  static const _spreadMinWidth = 900.0;
+
+  /// عنصر [PageView] الذي يعرض [pageIndex].
+  int _itemFor(int pageIndex) => _wide ? pageIndex ~/ 2 : pageIndex;
+
+  /// صفحات العنصر [item]، مرقمة من ١.
+  List<int> _pagesOf(int item) =>
+      _wide ? [item * 2 + 1, item * 2 + 2] : [item + 1];
+
+  void _preloadNeighbours() => QcfFonts.instance.preloadSurrounding(
+    _currentPageIndex + 1,
+    window: _wide ? 3 : 2,
+  );
   Ayah? _activeSelectedAyah;
   bool _showTopBar = false;
   bool _showMeaningsPanel = false;
@@ -123,13 +141,14 @@ class _QuranScreenState extends State<QuranScreen> {
   /// لا يتحرك موضع القراءة (ومعه الختمة) إلا بقراءة فعلية: التقدم بعد قراءة
   /// الصفحة، أو البقاء عليها. النظرة ونتيجة البحث وقفزة الشريط لا تحرّك شيئاً.
   void _maybeCountPage(int fromIndex, int toIndex) {
-    if (toIndex != fromIndex + 1) return;
+    final fromItem = _itemFor(fromIndex);
+    if (_itemFor(toIndex) != fromItem + 1) return;
     if (DateTime.now().difference(_pageShownAt) < _readDwell) return;
-    _pagesToCount.add(fromIndex + 1);
+    _pagesToCount.addAll(_pagesOf(fromItem));
     _pageToPersist = toIndex + 1;
   }
 
-  /// الحفظ يكتب ملف القارئ كله، فينتظر حتى تستقر الصفحة ولا يقطع حركة التقليب.
+  /// الحفظ يُعلم كل مستمعي المخزن، فينتظر حتى تستقر الصفحة ولا يقطع حركة التقليب.
   void _saveAfterSettling() {
     _saveTimer?.cancel();
     if (_pagesToCount.isEmpty) return;
@@ -170,13 +189,16 @@ class _QuranScreenState extends State<QuranScreen> {
   void _startAutoCount() {
     _autoCountTimer?.cancel();
     final page = _currentPageIndex + 1;
-    final dwell = page == 604 ? _lastPageDwell : _autoCountDwell;
-    _autoCountTimer = Timer(dwell, () {
+    final pages = _pagesOf(_itemFor(_currentPageIndex));
+    final dwell = pages.last == 604 ? _lastPageDwell : _autoCountDwell;
+    _autoCountTimer = Timer(dwell, () async {
       // فقط حين يكون المصحف التبويب أو الصفحة الظاهرة.
       if (!mounted || !TickerMode.valuesOf(context).enabled) return;
-      if (_currentPageIndex + 1 == page) {
-        _recordPage(page).then((_) => _persistCurrentPagePosition(page));
+      if (_currentPageIndex + 1 != page) return;
+      for (final shown in pages) {
+        await _recordPage(shown);
       }
+      _persistCurrentPagePosition(pages.last);
     });
   }
 
@@ -203,7 +225,6 @@ class _QuranScreenState extends State<QuranScreen> {
     _currentPageIndex = startPage - 1;
     _pageController = PageController(initialPage: _currentPageIndex);
     QcfFonts.instance.ensurePage(startPage);
-    QcfFonts.instance.preloadSurrounding(startPage);
 
     if (widget.controlsVisible != null) {
       // كتبويب: تبدأ الأدوات والشريط السفلي ظاهرة ليعرف القارئ كيف يخرج، ويتبع
@@ -219,14 +240,42 @@ class _QuranScreenState extends State<QuranScreen> {
     QuranAudio.instance.addListener(_onAudio);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_pageController.hasClients) return;
+      _preloadNeighbours();
       _pagerPosition = _pageController.position;
       _pagerPosition!.isScrollingNotifier.addListener(_onPagerScrolling);
     });
   }
 
+  /// يعرف عرض الشاشة، فيحوّل العناصر بين صفحات مفردة ومزدوجة ويحفظ الموضع.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final wide = MediaQuery.sizeOf(context).width >= _spreadMinWidth;
+    if (wide == _wide) return;
+    _wide = wide;
+    _pager = null;
+    if (_pageController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _showCurrentItem());
+    } else {
+      _pageController.dispose();
+      _pageController = PageController(
+        initialPage: _itemFor(_currentPageIndex),
+      );
+    }
+  }
+
+  void _showCurrentItem() {
+    if (!mounted || !_pageController.hasClients) return;
+    final item = _itemFor(_currentPageIndex);
+    if (_pageController.page?.round() == item) return;
+    _ignoreNextPageChange = true;
+    _pageController.jumpToPage(item);
+  }
+
   void _onPagerScrolling() {
-    _pageSnapshots.allowSnapshotting =
-        _pagerPosition!.isScrollingNotifier.value;
+    final scrolling = _pagerPosition!.isScrollingNotifier.value;
+    _pageSnapshots.allowSnapshotting = scrolling;
+    if (!scrolling) _preloadNeighbours();
   }
 
   /// يتبع التلاوة: يقلب إلى صفحة الآية المتلوّة (دون حسابها مقروءة)، ويقول إن
@@ -250,14 +299,24 @@ class _QuranScreenState extends State<QuranScreen> {
     if (ayah != null && ayah.id != _audioAyahId) {
       _audioAyahId = ayah.id;
       if (visible &&
-          ayah.page - 1 != _currentPageIndex &&
+          _itemFor(ayah.page - 1) != _itemFor(_currentPageIndex) &&
           _pageController.hasClients) {
         _ignoreNextPageChange = true;
-        _pageController.animateToPage(
-          ayah.page - 1,
-          duration: AppMotion.normal,
-          curve: AppMotion.emphasized,
-        );
+        final item = _itemFor(ayah.page - 1);
+        final animate = AppMotion.shouldAnimate(context);
+        // في الإطار التالي، فلا تشارك الحركة إعادة بناء الصفحات للآية الجديدة.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || !_pageController.hasClients) return;
+          if (animate) {
+            _pageController.animateToPage(
+              item,
+              duration: AppMotion.normal,
+              curve: AppMotion.emphasized,
+            );
+          } else {
+            _pageController.jumpToPage(item);
+          }
+        });
       }
     }
     if (ayah == null) _audioAyahId = null;
@@ -303,9 +362,10 @@ class _QuranScreenState extends State<QuranScreen> {
       final page = UserDataStore.instance.readingPosition.page.clamp(1, 604);
       if (page != _lastSavedPage) {
         _lastSavedPage = page;
-        if (page - 1 != _currentPageIndex && _pageController.hasClients) {
+        if (_itemFor(page - 1) != _itemFor(_currentPageIndex) &&
+            _pageController.hasClients) {
           _ignoreNextPageChange = true;
-          _pageController.jumpToPage(page - 1);
+          _pageController.jumpToPage(_itemFor(page - 1));
         }
       }
     }
@@ -319,16 +379,21 @@ class _QuranScreenState extends State<QuranScreen> {
   }
 
   /// عند تقليب الصفحة: يحدّث رقمها ويحفظ الموضع.
-  void _onPageChanged(int index) {
-    if (index < 0 || index >= 604) return;
-    QcfFonts.instance.preloadSurrounding(index + 1);
+  void _onPageChanged(int item) {
+    if (item < 0 || item >= (_wide ? 302 : 604)) return;
     final from = _currentPageIndex;
+    // الصفحة الزوجية في العرض المزدوج تبقى موضع القراءة حين لا يتغير الزوج.
+    final index = item == _itemFor(from) ? from : _pagesOf(item).first - 1;
     final programmatic = _ignoreNextPageChange;
     _ignoreNextPageChange = false;
     setState(() {
       _currentPageIndex = index;
       _activeSelectedAyah = null;
     });
+    // القفزة لا حركة بعدها؛ والسحب يحمّل عند توقفه في _onPagerScrolling.
+    if (!_pageController.position.isScrollingNotifier.value) {
+      _preloadNeighbours();
+    }
     _startAutoCount();
     if (programmatic) {
       _pageShownAt = DateTime.now();
@@ -361,14 +426,14 @@ class _QuranScreenState extends State<QuranScreen> {
     final target = mushafPage.clamp(1, 604);
     QcfFonts.instance.ensurePage(target);
     QcfFonts.instance.preloadSurrounding(target);
-    _pageController.jumpToPage(target - 1);
+    _pageController.jumpToPage(_itemFor(target - 1));
   }
 
   /// ينتقل إلى صفحة الآية ويميّزها.
   void _jumpToAyah(Ayah ayah) {
     QcfFonts.instance.ensurePage(ayah.page);
     QcfFonts.instance.preloadSurrounding(ayah.page);
-    _pageController.jumpToPage(ayah.page - 1);
+    _pageController.jumpToPage(_itemFor(ayah.page - 1));
     setState(() {
       _activeSelectedAyah = ayah;
     });
@@ -462,7 +527,7 @@ class _QuranScreenState extends State<QuranScreen> {
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return ClipRect(
-      child: BackdropFilter(
+      child: BackdropFilter.grouped(
         filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
         child: Container(
           height: 56,
@@ -608,7 +673,7 @@ class _QuranScreenState extends State<QuranScreen> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(AppTokens.radiusXl),
-            child: BackdropFilter(
+            child: BackdropFilter.grouped(
               filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -806,69 +871,41 @@ class _QuranScreenState extends State<QuranScreen> {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: _toggleTopBar,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isWideSpread = constraints.maxWidth >= 900;
-            return PageView.builder(
+        child: PageView.builder(
+          controller: _pageController,
+          physics: const _MushafPagePhysics(),
+          // العنصران المجاوران جاهزان قبل أن يبدأ السحب.
+          allowImplicitScrolling: true,
+          itemCount: _wide ? 302 : 604,
+          onPageChanged: _onPageChanged,
+          itemBuilder: (context, index) => RepaintBoundary(
+            child: _SettledPage(
+              key: ValueKey('settled_${index}_$_pagerSettingsSig'),
               controller: _pageController,
-              physics: const _MushafPagePhysics(),
-              // الصفحتان المجاورتان جاهزتان قبل أن يبدأ السحب.
-              allowImplicitScrolling: true,
-              itemCount: 604,
-              onPageChanged: _onPageChanged,
-              itemBuilder: (context, index) {
-                final pageNumber = index + 1;
-                if (!isWideSpread) {
-                  return RepaintBoundary(
-                    child: _SettledPage(
-                      key: ValueKey('settled_${index}_$_pagerSettingsSig'),
-                      controller: _pageController,
-                      index: index,
-                      child: _mushafPage(pageNumber),
-                    ),
-                  );
-                }
-
-                // صفحتان متجاورتان في الشاشات العريضة (900 بكسل
-                // فأكثر).
-                if (pageNumber == 1) {
-                  return Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 480),
-                      child: _mushafPage(1),
-                    ),
-                  );
-                }
-
-                final int rightPageNum;
-                final int leftPageNum;
-                if (pageNumber.isEven) {
-                  leftPageNum = pageNumber;
-                  rightPageNum = (pageNumber + 1).clamp(1, 604);
-                } else {
-                  rightPageNum = pageNumber;
-                  leftPageNum = (pageNumber - 1).clamp(1, 604);
-                }
-
-                return Row(
-                  children: [
-                    Expanded(child: _mushafPage(rightPageNum)),
-                    Container(
-                      width: 1.0,
-                      color:
-                          (isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder)
-                              .withValues(alpha: 0.5),
-                    ),
-                    Expanded(child: _mushafPage(leftPageNum)),
-                  ],
-                );
-              },
-            );
-          },
+              index: index,
+              child: _wide
+                  ? _mushafSpread(index, isDark)
+                  : _mushafPage(index + 1),
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  /// صفحتان متقابلتان كالمصحف المطبوع: الفردية يميناً والزوجية يساراً.
+  Widget _mushafSpread(int spread, bool isDark) {
+    final [right, left] = _pagesOf(spread);
+    return Row(
+      children: [
+        Expanded(child: _mushafPage(right)),
+        Container(
+          width: 1.0,
+          color: (isDark ? AppColors.darkBorder : AppColors.lightBorder)
+              .withValues(alpha: 0.5),
+        ),
+        Expanded(child: _mushafPage(left)),
+      ],
     );
   }
 

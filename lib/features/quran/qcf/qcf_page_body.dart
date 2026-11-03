@@ -1,10 +1,10 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import '../../../core/utils/arabic_search_normalizer.dart';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
@@ -96,12 +96,15 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   static const _typicalWidest = 1450.0;
 
   late Future<bool> _ready;
-  Timer? _neighbours;
 
   @override
   void dispose() {
-    _neighbours?.cancel();
+    SemanticsBinding.instance.removeSemanticsEnabledListener(_onSemantics);
     super.dispose();
+  }
+
+  void _onSemantics() {
+    if (mounted) setState(() {});
   }
 
   /// أعرض سطر في كل صفحة بحجم [_probe]؛ لا يتغير، فيبقى عند الرجوع إليها.
@@ -110,6 +113,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   @override
   void initState() {
     super.initState();
+    SemanticsBinding.instance.addSemanticsEnabledListener(_onSemantics);
     _prepare();
   }
 
@@ -126,11 +130,6 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       // خط البسملة المرسومة أعلى أغلب السور.
       QcfFonts.instance.ensurePage(1),
     ]).then((r) => r.every((ok) => ok));
-    // الصفحات المجاورة تُحمّل في الخلفية ليبقى التقليب سلساً
-    _neighbours?.cancel();
-    _neighbours = Timer(const Duration(milliseconds: 100), () {
-      QcfFonts.instance.preloadSurrounding(page);
-    });
   }
 
   String get _family => QcfFonts.familyFor(widget.pageNumber);
@@ -357,7 +356,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         runs.add(
           TextSpan(
             text: text.toString(),
-            semanticsLabel: ayah == null
+            // مكلف، فلا يُحسب إلا إن كان هناك من يقرؤه.
+            semanticsLabel:
+                ayah == null || !SemanticsBinding.instance.semanticsEnabled
                 ? null
                 : _spokenWords(ayah, words.sublist(start, i)),
             recognizer: recognizer,
