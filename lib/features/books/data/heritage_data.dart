@@ -416,7 +416,6 @@ const quranSciencesSection = BookSectionConfig(
       title: 'أخلاق حَمَلَة القرآن وأهله',
       subtitle: 'الآداب الإيمانية والمسلكية الواجبة على أهل القرآن ومدارسته',
       author: 'الإمام أبي بكر محمد بن الحسين الآجري (ت 360 هـ)',
-      assetPath: 'assets/books/akhlaq_hamalat_quran.pdf',
       estimatedMinutes: 20,
       icon: AppIcons.bookOpen,
       chapters: [
@@ -453,7 +452,6 @@ const quranSciencesSection = BookSectionConfig(
       title: 'قواعد وأصول في تدبر القرآن الكريم',
       subtitle: 'المنهج العلمي والروحي لفهم كلام رب العالمين واستلهام هدايته',
       author: 'دراسة جامعة محققة من أصول التفسير والتدبر',
-      assetPath: 'assets/books/qawaid_tadabbur_quran.pdf',
       estimatedMinutes: 25,
       icon: AppIcons.lightbulbFill,
       chapters: [
@@ -491,7 +489,6 @@ const quranSciencesSection = BookSectionConfig(
       title: 'التبيان في آداب حَمَلَة القرآن',
       subtitle: 'المرجع الجامع في سنن تلاوة القرآن وآداب تعليمه وتوقيره',
       author: 'الإمام يحيى بن شرف النووي (ت 676 هـ)',
-      assetPath: 'assets/books/al_tibyan.pdf',
       estimatedMinutes: 25,
       icon: AppIcons.bookOpenFill,
       chapters: [

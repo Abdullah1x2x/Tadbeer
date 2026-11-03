@@ -60,19 +60,11 @@ void main() {
         // Verify Privacy Policy bottom sheet opened
         expect(find.text('ميثاق الخصوصية والأمان'), findsOneWidget);
         expect(
-          find.text(
-            'التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)',
-          ),
+          find.text('التزام بحماية بياناتك دون خوادم أو تتبع'),
           findsOneWidget,
         );
-        expect(
-          find.text('عمل محلي تام دون إنترنت (100% Offline-First)'),
-          findsOneWidget,
-        );
-        expect(
-          find.text('عدم جمع أي بيانات شخصية (Zero Data Collection)'),
-          findsOneWidget,
-        );
+        expect(find.text('يعمل دون إنترنت'), findsOneWidget);
+        expect(find.text('عدم جمع أي بيانات شخصية'), findsOneWidget);
 
         // Close the modal sheet
         final closeButton = find.byIcon(AppIcons.x);
@@ -82,9 +74,7 @@ void main() {
 
         // Verify sheet is closed
         expect(
-          find.text(
-            'التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)',
-          ),
+          find.text('التزام بحماية بياناتك دون خوادم أو تتبع'),
           findsNothing,
         );
       },

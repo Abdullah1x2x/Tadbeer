@@ -35,7 +35,7 @@ void main() {
   for (final s in surasElement) {
     surahList.add({
       'number': int.parse(s.getAttribute('index')!),
-      'name': s.getAttribute('name')!,
+      'name': _nameFixes[s.getAttribute('name')] ?? s.getAttribute('name')!,
       'transliteration': s.getAttribute('tname')!,
       'translation': s.getAttribute('ename')!,
       'type': s.getAttribute('type')!,
@@ -240,3 +240,13 @@ void main() {
     'Successfully wrote assets/quran/quran_data.json (${(outFile.lengthSync() / (1024 * 1024)).toStringAsFixed(2)} MB)',
   );
 }
+
+/// أسماء في بيانات تنزيل بلا همزة أو برسم المصحف، تُكتب بالإملاء المعتاد.
+const _nameFixes = {
+  'ابراهيم': 'إبراهيم',
+  'سبإ': 'سبأ',
+  'الانسان': 'الإنسان',
+  'النبإ': 'النبأ',
+  'الإنفطار': 'الانفطار',
+  'الإنشقاق': 'الانشقاق',
+};

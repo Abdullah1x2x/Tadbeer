@@ -1493,7 +1493,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicySubtitle.
   ///
   /// In ar, this message translates to:
-  /// **'التزام مطلق بحماية بياناتك بدون خوادم أو تتبع (100% أوفلاين)'**
+  /// **'التزام بحماية بياناتك دون خوادم أو تتبع'**
   String get privacyPolicySubtitle;
 
   /// No description provided for @alertType.
@@ -3177,7 +3177,7 @@ abstract class AppLocalizations {
   /// No description provided for @sourcesAndCreditsDetails.
   ///
   /// In ar, this message translates to:
-  /// **'• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (86 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 89 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.\n• خطوط مصحف المدينة: مجمع الملك فهد لطباعة المصحف الشريف، عبر Quran Foundation، ومنها بيانات تخطيط الأسطر.\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).'**
+  /// **'• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• معاني كلمات القرآن: الموسوعة القرآنية (Quranpedia.net — نسخة البيانات 2026-10-10).\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (91 ملزمة موثقة كاملة)، وأمهات كتب تراث وأدعية أهل البيت عليهم السلام (الصحيفة السجادية، رسالة الحقوق، نهج البلاغة، تحف العقول)، وكتب علوم وتدبر القرآن المفتوحة (الآجري، النووي).\n• الأدعية والأذكار والتسبيح: 89 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: التطبيق يعمل محلياً بالكامل (100% Offline) دون أي اتصال خارجي أو خوادم أو تتبع أو إعلانات، مع تشفير النسخ الاحتياطية بمعيار AES-256.\n• خطوط مصحف المدينة: مجمع الملك فهد لطباعة المصحف الشريف، عبر Quran Foundation، ومنها بيانات تخطيط الأسطر.\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).'**
   String get sourcesAndCreditsDetails;
 
   /// No description provided for @unsavedChanges.
@@ -3285,19 +3285,19 @@ abstract class AppLocalizations {
   /// No description provided for @privacyOfflineTitle.
   ///
   /// In ar, this message translates to:
-  /// **'عمل محلي تام دون إنترنت (100% Offline-First)'**
+  /// **'يعمل دون إنترنت'**
   String get privacyOfflineTitle;
 
   /// No description provided for @privacyOfflineBody.
   ///
   /// In ar, this message translates to:
-  /// **'لا يطلب التطبيق إذن الإنترنت (android.permission.INTERNET) في ملف التكوين، ويعمل ذاتياً بالكامل على جهازك دون الحاجة لأي خوادم سحابية.'**
+  /// **'كل ميزات التطبيق تعمل على جهازك دون اتصال ودون خوادم. ويُستخدم الإنترنت فقط لتشغيل التلاوة أو تنزيلها حين تطلبها، ولا يُرسل معها شيء من بياناتك.'**
   String get privacyOfflineBody;
 
   /// No description provided for @privacyNoDataTitle.
   ///
   /// In ar, this message translates to:
-  /// **'عدم جمع أي بيانات شخصية (Zero Data Collection)'**
+  /// **'عدم جمع أي بيانات شخصية'**
   String get privacyNoDataTitle;
 
   /// No description provided for @privacyNoDataBody.
@@ -3315,25 +3315,25 @@ abstract class AppLocalizations {
   /// No description provided for @privacyStorageBody.
   ///
   /// In ar, this message translates to:
-  /// **'تُحفظ كافة ملاحظاتك ووقفاتك التدبرية محلياً في قاعدة بيانات SQLite على جهازك، وتُشفّر النسخ الاحتياطية (.quranbackup) بكلمة مرورك بمعيار AES-256-CBC مع فحص SHA-256.'**
+  /// **'تُحفظ ملاحظاتك ووقفاتك التدبرية في قاعدة بيانات SQLite على جهازك فقط، ولا تُرفع إلى نسخ Google الاحتياطي. والنسخ الاحتياطية (.quranbackup) تُشفّر بكلمة مرورك بمعيار AES-256-CBC، وتُوقّع بـ HMAC-SHA256 فيُكشف أي تعديل عليها.'**
   String get privacyStorageBody;
 
   /// No description provided for @privacyPermissionsTitle.
   ///
   /// In ar, this message translates to:
-  /// **'استخدام حصري ومحدد للأذونات (Device Permissions)'**
+  /// **'استخدام محدد للأذونات'**
   String get privacyPermissionsTitle;
 
   /// No description provided for @privacyPermissionsBody.
   ///
   /// In ar, this message translates to:
-  /// **'تُستخدم أذونات الإشعارات المحلية حصراً لتشغيل منبهات وتذكيرات الورد اليومي التي يحددها المستخدم بنفسه، ولا تُرسل أي إشعارات ترويجية.'**
+  /// **'الإشعارات لتذكيرات الورد والأذكار التي تضبطها بنفسك، دون أي إشعارات ترويجية. والموقع التقريبي لاتجاه القبلة فقط، ويُحسب على جهازك. وحفظ الصور لحفظ بطاقات الآيات حين تطلب ذلك.'**
   String get privacyPermissionsBody;
 
   /// No description provided for @privacyNoAdsTitle.
   ///
   /// In ar, this message translates to:
-  /// **'خلو تام من الإعلانات والمتتبعات (Zero Ads & Trackers)'**
+  /// **'خلو تام من الإعلانات والمتتبعات'**
   String get privacyNoAdsTitle;
 
   /// No description provided for @privacyNoAdsBody.

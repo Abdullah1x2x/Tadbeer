@@ -736,7 +736,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicySubtitle =>
-      'Uncompromising privacy guarantee with zero servers or trackers (100% Offline)';
+      'Your data stays protected, with no servers or trackers';
 
   @override
   String get alertType => 'Alert Type:';
@@ -1772,7 +1772,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourcesAndCreditsDetails =>
-      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia, Quranpedia.net (dataset version 2026-10-10).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (86 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 89 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.\n• Madinah Mushaf fonts: King Fahd Glorious Quran Printing Complex, through Quran Foundation, with the line layout data.\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).';
+      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia, Quranpedia.net (dataset version 2026-10-10).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (91 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 89 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.\n• Madinah Mushaf fonts: King Fahd Glorious Quran Printing Complex, through Quran Foundation, with the line layout data.\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).';
 
   @override
   String get unsavedChanges => 'Unsaved Changes';
@@ -1830,11 +1830,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Dark Mode: Deep night-navy tones with gold accents, engineered to minimize eye fatigue during extended nighttime reading.';
 
   @override
-  String get privacyOfflineTitle => '100% Offline-First by Architecture';
+  String get privacyOfflineTitle => 'Works Offline';
 
   @override
   String get privacyOfflineBody =>
-      'The application does not request internet permission and operates completely independently on your local device without external servers.';
+      'Every feature runs on your device with no connection and no servers. The internet is used only to play or download recitations when you ask, and none of your data is sent with them.';
 
   @override
   String get privacyNoDataTitle => 'Zero Personal Data Collection';
@@ -1848,14 +1848,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyStorageBody =>
-      'All reflections and notes reside strictly in on-device SQLite storage. Exported backups are encrypted locally with AES-256-CBC and verified via SHA-256.';
+      'Your notes and reflections stay in SQLite storage on your device only, and are not uploaded to Google backups. Backups (.quranbackup) are encrypted with your password using AES-256-CBC and signed with HMAC-SHA256, so any change to them is detected.';
 
   @override
   String get privacyPermissionsTitle => 'Strictly Scoped Device Permissions';
 
   @override
   String get privacyPermissionsBody =>
-      'Notification permissions are used exclusively to trigger local alarms and reminders scheduled directly by the user.';
+      'Notifications are for the reading and adhkar reminders you set yourself, never for promotions. Approximate location is used only for the Qibla direction, computed on your device. Photo access saves ayah cards when you ask.';
 
   @override
   String get privacyNoAdsTitle => 'Zero Advertisements & Trackers';
