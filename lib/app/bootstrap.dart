@@ -7,7 +7,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 
 import '../data/quran/quran_repository.dart';
-import '../data/models/user_settings_model.dart';
 import '../data/storage/user_data_store.dart';
 import '../features/audio/recitation_handler.dart';
 import '../features/duas/data/adhkar_repository.dart';
@@ -24,6 +23,8 @@ import 'main_shell.dart';
 /// يجهّز كل ما يحتاجه أول إطار.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // خطوط صفحات المصحف تُحمّل أثناء التقليب دون إعادة تخطيط نصوص التطبيق.
+  QcfFonts.ignoreFontChanges();
   registerBundledAssetLicenses();
 
   // 1. التخزين المحلي، ويعيد جدولة التذكيرات عبر خدمتها كلما تغيّرت.
@@ -44,14 +45,6 @@ Future<void> bootstrap() async {
   _attachSyncs();
   await _startBackgroundRecitation();
 
-  // خطوط مصحف المدينة كلها بعد أول إطار، فلا يُحمّل خط أثناء التقليب.
-  // shortcut: تبقى نحو 90 MB في الذاكرة؛ تُحمّل نافذة حول الصفحة إن ضاقت.
-  final store = UserDataStore.instance;
-  if (store.settings.mushafStyle == MushafStyle.madinah) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => QcfFonts.instance.preloadAll(around: store.readingPosition.page),
-    );
-  }
 }
 
 /// يفتح الشاشة التي يشير إليها التذكير المنقور.

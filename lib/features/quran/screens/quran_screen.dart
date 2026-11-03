@@ -275,7 +275,6 @@ class _QuranScreenState extends State<QuranScreen> {
   void _onPagerScrolling() {
     final scrolling = _pagerPosition!.isScrollingNotifier.value;
     _pageSnapshots.allowSnapshotting = scrolling;
-    if (!scrolling) _preloadNeighbours();
   }
 
   /// يتبع التلاوة: يقلب إلى صفحة الآية المتلوّة (دون حسابها مقروءة)، ويقول إن
@@ -390,10 +389,9 @@ class _QuranScreenState extends State<QuranScreen> {
       _currentPageIndex = index;
       _activeSelectedAyah = null;
     });
-    // القفزة لا حركة بعدها؛ والسحب يحمّل عند توقفه في _onPagerScrolling.
-    if (!_pageController.position.isScrollingNotifier.value) {
-      _preloadNeighbours();
-    }
+    // تحميل الخط لا يعيد تخطيط شيء، فيُحمّل ما حول الصفحة ولو أثناء السحب،
+    // فلا تصل الأصابع السريعة صفحةً بلا خط.
+    _preloadNeighbours();
     _startAutoCount();
     if (programmatic) {
       _pageShownAt = DateTime.now();
