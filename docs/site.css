@@ -515,6 +515,18 @@ html[lang="en"] .hero-description {
   background: var(--surface);
 }
 
+/* Telegram download: the channel's own blue. */
+.btn-telegram {
+  background: #229ED9;
+  color: #FFFFFF !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-telegram:hover {
+  background: #1C8BC0;
+  box-shadow: var(--shadow-md);
+}
+
 /* Trust Pill Chips */
 .trust-chips {
   display: flex;
