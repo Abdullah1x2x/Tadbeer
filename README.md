@@ -145,7 +145,7 @@ flutter analyze && flutter test
 كود التطبيق برخصة [MIT](LICENSE). أما المحتوى المضمّن فله مصادره وشروطه:
 
 - نص القرآن: [مشروع تنزيل](https://tanzil.net).
-- خطوط المصحف: مجمع الملك فهد لطباعة المصحف الشريف.
+- خط المصحف: Digital Khatt (Amine Anane وTarteel)، بترخيص SIL OFL 1.1؛ ونص صفحاته من مشروع DigitalKhatt (MIT).
 - معاني الكلمات: [الموسوعة القرآنية](https://quranpedia.net).
 - التفاصيل الكاملة في [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 

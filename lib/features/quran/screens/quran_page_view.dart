@@ -199,7 +199,7 @@ class _QuranPageViewState extends State<QuranPageView> {
     final memorized = HifzStore.ids();
     final out = StringBuffer(
       '${s.quranFontSize}|${s.flowingTextScale}|${s.quranFontFamilyName}|${s.mushafPaperTone}|'
-      '${s.mushafStyle}|${s.madinahFont}',
+      '${s.mushafStyle}',
     );
     for (final a in page.ayahs) {
       final reflection = store.getTadbeer(a.surahNumber, a.ayahNumber);

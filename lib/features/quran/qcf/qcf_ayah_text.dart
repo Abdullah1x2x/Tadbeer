@@ -1,44 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/arabic_search_normalizer.dart';
-import '../../../data/models/user_settings_model.dart';
 import '../../../data/quran/quran_models.dart';
-import '../../../data/storage/user_data_store.dart';
-import 'qcf_fonts.dart';
 import 'qcf_layout.dart';
 import 'qcf_page_body.dart';
 
-/// آية بخط مصحف المدينة الذي اختاره القارئ، جاهزة للرسم.
+/// آية بخط مصحف المدينة (Digital Khatt) جاهزة للرسم.
 ///
-/// بخطوط مجمع الملك فهد كلماتها رموز في خط صفحتها تنتهي بعلامة رقم الآية؛ وبخط
-/// Digital Khatt نص بخط واحد. وكل صفحة في المدينة تنتهي بآية كاملة، فكلها من
-/// صفحة واحدة.
+/// كلماتها نص بخط واحد تنتهي بعلامة رقم الآية؛ وكل صفحة في المدينة تنتهي بآية
+/// كاملة، فكلها من صفحة واحدة.
 class QcfGlyphs {
-  /// رموز الكلمات، بينها مسافات.
+  /// نص الكلمات، بينها مسافات.
   final String text;
 
-  final int page;
+  const QcfGlyphs._(this.text);
 
-  final MadinahFont font;
-
-  const QcfGlyphs._(this.text, this.page, this.font);
-
-  static MadinahFont get _font => UserDataStore.instance.settings.madinahFont;
-
-  /// هل جهز تخطيط [font] وخط صفحة [ayah].
-  static bool _isReady(Ayah ayah, MadinahFont font) =>
-      QcfLayout.of(font).isReady &&
-      (font == MadinahFont.digitalKhatt ||
-          QcfFonts.instance.isPageLoaded(ayah.page));
-
-  /// كلمات [ayah] في تخطيط [font].
-  static List<QcfWord> _words(Ayah ayah, MadinahFont font) {
-    final layout = QcfLayout.of(font);
-    // صفحات الطبعة الحديثة قد تقدّم آية أو تؤخرها عن صفحة التطبيق.
-    final pages = font == MadinahFont.digitalKhatt
-        ? [ayah.page, ayah.page - 1, ayah.page + 1]
-        : [ayah.page];
-    for (final page in pages) {
+  /// كلمات [ayah] في التخطيط.
+  static List<QcfWord> _words(Ayah ayah) {
+    final layout = QcfLayout.instance;
+    // صفحات الطبعة الحديثة قد تقدّم آية أو تؤخرها عن صفحة بيانات التطبيق.
+    for (final page in [ayah.page, ayah.page - 1, ayah.page + 1]) {
       final words = [
         for (final line in layout.page(page))
           for (final word in line.words)
@@ -50,35 +31,27 @@ class QcfGlyphs {
     return const [];
   }
 
-  /// رموز [ayah]، أو null حتى يُحمّل التخطيط وخط صفحتها (انظر [prepare]).
+  /// نص [ayah]، أو null حتى يُحمّل التخطيط (انظر [prepare]).
   static QcfGlyphs? of(Ayah ayah) {
-    final font = _font;
-    if (!_isReady(ayah, font)) return null;
-    final words = _words(ayah, font);
+    if (!QcfLayout.instance.isReady) return null;
+    final words = _words(ayah);
     return words.isEmpty
         ? null
-        : QcfGlyphs._(
-            '${words.map((w) => w.code).join(' ')} ',
-            ayah.page,
-            font,
-          );
+        : QcfGlyphs._('${words.map((w) => w.code).join(' ')} ');
   }
 
   /// رموز المقطع [excerpt] من [ayah]، أو null إن لم تطابق كلماته كلمات الآية.
   ///
   /// النص المكتوب بالرسم الإملائي يطابق رسم المصحف (انظر [_skeleton]).
   static QcfGlyphs? ofExcerpt(Ayah ayah, String excerpt) {
-    final font = _font;
-    if (!_isReady(ayah, font)) return null;
+    if (!QcfLayout.instance.isReady) return null;
     final codes = excerptCodes(ayah, excerpt);
-    return codes == null
-        ? null
-        : QcfGlyphs._('${codes.join(' ')} ', ayah.page, font);
+    return codes == null ? null : QcfGlyphs._('${codes.join(' ')} ');
   }
 
   /// رموز كلمات [excerpt] في [ayah]، ومعها علامة الآية إن بلغ آخرها.
   static List<String>? excerptCodes(Ayah ayah, String excerpt) {
-    final all = _words(ayah, _font);
+    final all = _words(ayah);
     final ayahWords = _skeletonWords(ayah.text);
     final wanted = _skeletonWords(excerpt);
     if (wanted.isEmpty) return null;
@@ -121,51 +94,31 @@ class QcfGlyphs {
 
   /// يحمّل ما يحتاجه [of] للآية [ayah]؛ true متى أمكن رسمها.
   static Future<bool> prepare(Ayah ayah) async {
-    final font = _font;
-    await QcfLayout.of(font).init();
-    if (font == MadinahFont.kingFahd &&
-        !await QcfFonts.instance.ensurePage(ayah.page)) {
-      return false;
-    }
+    await QcfLayout.instance.init();
     return of(ayah) != null;
   }
 
-  /// نمط الرموز بحجم [fontSize] للصفحة العادية وتباعد أسطر [height]؛ وصفحتا
-  /// البداية تُكبّران لتطابقا.
+  /// نمط النص بحجم [fontSize] وتباعد أسطر [height].
   TextStyle style({
     required double fontSize,
     required double height,
     required Color color,
     List<Shadow>? shadows,
-  }) {
-    if (font == MadinahFont.digitalKhatt) {
-      return TextStyle(
-        fontFamily: QcfPageBody.digitalKhattFamily,
-        fontSize: fontSize,
-        height: height,
-        color: color,
-        shadows: shadows,
-      );
-    }
-    final scale = QcfPageBody.glyphScale(page);
-    return TextStyle(
-      fontFamily: QcfFonts.familyFor(page),
-      fontSize: fontSize * scale,
-      height: height / scale,
-      wordSpacing: QcfPageBody.wordSpacingFor(page, fontSize * scale),
-      color: color,
-      shadows: shadows,
-    );
-  }
+  }) => TextStyle(
+    fontFamily: QcfPageBody.digitalKhattFamily,
+    fontSize: fontSize,
+    height: height,
+    color: color,
+    shadows: shadows,
+  );
 }
 
 /// آية بخط مصحف المدينة، تلتف أسطرها بحسب المساحة.
 ///
-/// حتى يجهز التخطيط وخط صفحتها، أو إن تعذّر تحميلهما، يظهر [fallback].
+/// حتى يجهز التخطيط، أو إن لم توجد الآية فيه، يظهر [fallback].
 class QcfAyahText extends StatefulWidget {
   final Ayah ayah;
 
-  /// حجم خط الصفحة العادية؛ وصفحتا البداية تُكبّران لتطابقا.
   final double fontSize;
 
   final Color color;

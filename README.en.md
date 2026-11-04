@@ -139,6 +139,6 @@ Fixes and ideas are welcome through [issues](https://github.com/Abdullah1x2x/Tad
 The app code is under the [MIT License](LICENSE). Bundled content has its own sources and terms:
 
 - Quran text: [Tanzil Project](https://tanzil.net).
-- Mushaf fonts: King Fahd Glorious Quran Printing Complex.
+- Mushaf font: Digital Khatt (Amine Anane and Tarteel), SIL OFL 1.1; page text from the DigitalKhatt project (MIT).
 - Word meanings: [Quranpedia](https://quranpedia.net).
 - Full details are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -1384,10 +1384,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mushafStyleText => 'Flowing text';
 
   @override
-  String get qcfAttribution =>
-      'Mushaf font: King Fahd Glorious Quran Printing Complex';
-
-  @override
   String get widgetPortionDone => 'Today’s portion is done';
 
   @override
@@ -1769,7 +1765,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourcesAndCreditsDetails =>
-      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia, Quranpedia.net (dataset version 2026-10-10).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (91 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 89 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.\n• Madinah Mushaf fonts: King Fahd Glorious Quran Printing Complex, through Quran Foundation, with the line layout data.\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).';
+      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia, Quranpedia.net (dataset version 2026-10-10).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (91 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 89 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.\n• Madinah Mushaf font: Digital Khatt (Amine Anane and Tarteel) under SIL OFL 1.1, with its page text and line layout from the DigitalKhatt project (MIT).\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).';
 
   @override
   String get unsavedChanges => 'Unsaved Changes';
@@ -2616,12 +2612,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSettings => 'Settings';
-
-  @override
-  String get madinahFontKingFahd => 'King Fahd Complex';
-
-  @override
-  String get madinahFontDigitalKhatt => 'Digital Khatt';
 
   @override
   String get digitalKhattAttribution =>

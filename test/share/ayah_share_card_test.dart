@@ -8,8 +8,8 @@ import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
-import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_page_body.dart';
 import 'package:tadbeer/data/models/user_settings_model.dart';
 import 'package:tadbeer/features/share/ayah_share_sheet.dart';
 
@@ -21,7 +21,7 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await QcfLayout.instance.init();
-    await QcfFonts.instance.ensurePage(42);
+    await loadDigitalKhatt();
   });
 
   setUp(() async {
@@ -246,3 +246,8 @@ void main() {
     });
   });
 }
+
+/// The bundled Digital Khatt font; tests start with only a stand-in font.
+Future<void> loadDigitalKhatt() => (FontLoader(QcfPageBody.digitalKhattFamily)
+      ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf')))
+    .load();

@@ -56,10 +56,6 @@ extension _QuranScreenDialogs on _QuranScreenState {
                           UserDataStore.instance.setMushafStyle(v.first),
                     ),
                     const SizedBox(height: 16),
-                    if (settings.mushafStyle == MushafStyle.madinah) ...[
-                      const MadinahFontPicker(),
-                      const SizedBox(height: 16),
-                    ],
                     // اختيار الخط يخص النص المتدفق وحده.
                     if (settings.mushafStyle == MushafStyle.text) ...[
                       Text(

@@ -8,8 +8,8 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/storage/user_database.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
-import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_page_body.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 
 /// One press on a Mushaf page: held until the rosette opens, slid to a
@@ -20,9 +20,7 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await QcfLayout.instance.init();
-    for (final page in [1, 49, 50, 51]) {
-      await QcfFonts.instance.ensurePage(page);
-    }
+    await loadDigitalKhatt();
     final plex = FontLoader('IBMPlexSansArabic')
       ..addFont(rootBundle.load('assets/fonts/IBMPlexSansArabic-Regular.ttf'))
       ..addFont(rootBundle.load('assets/fonts/IBMPlexSansArabic-Bold.ttf'));
@@ -63,7 +61,7 @@ void main() {
     // The page's font sits on a span without text of its own, which
     // visitChildren skips, so walk the tree directly.
     bool drawnInPage50(InlineSpan span) =>
-        span.style?.fontFamily == QcfFonts.familyFor(50) ||
+        span.style?.fontFamily == QcfPageBody.digitalKhattFamily ||
         (span is TextSpan && (span.children ?? const []).any(drawnInPage50));
 
     final line = tester
@@ -104,3 +102,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 }
+
+/// The bundled Digital Khatt font; tests start with only a stand-in font.
+Future<void> loadDigitalKhatt() => (FontLoader(QcfPageBody.digitalKhattFamily)
+      ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf')))
+    .load();

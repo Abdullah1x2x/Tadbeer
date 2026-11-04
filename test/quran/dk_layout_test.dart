@@ -5,7 +5,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test('the Digital Khatt layout holds the whole Mushaf', () async {
-    final layout = QcfLayout.digitalKhatt;
+    final layout = QcfLayout.instance;
     await layout.init();
     expect(layout.page(1), hasLength(8));
     for (var p = 3; p <= 604; p++) {
@@ -29,7 +29,7 @@ void main() {
   });
 
   test('its pages follow the modern Madinah print', () async {
-    final layout = QcfLayout.digitalKhatt;
+    final layout = QcfLayout.instance;
     await layout.init();
     // Al-Jathiyah 25 ends on the sixth line of page 501, before «يوم».
     final sixth = layout.page(501)[5].words;

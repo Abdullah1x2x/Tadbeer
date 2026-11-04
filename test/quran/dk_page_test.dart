@@ -5,7 +5,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/theme/theme.dart';
-import 'package:tadbeer/data/models/user_settings_model.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
@@ -20,14 +19,13 @@ void main() {
     final dk = FontLoader(QcfPageBody.digitalKhattFamily)
       ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf'));
     await dk.load();
-    await QcfLayout.digitalKhatt.init();
+    await QcfLayout.instance.init();
   });
 
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('tadbeer_dk_page_');
     await UserDataStore.instance.init(File('${tempDir.path}/data.json'));
     await QuranRepository.instance.init();
-    await UserDataStore.instance.setMadinahFont(MadinahFont.digitalKhatt);
   });
 
   tearDown(() {

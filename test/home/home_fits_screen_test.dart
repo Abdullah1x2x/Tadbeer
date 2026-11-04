@@ -14,6 +14,7 @@ import 'package:tadbeer/features/home/home_screen.dart';
 import 'package:tadbeer/features/journey/journey_screen.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_page_body.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 
 /// The Home page fits the screen without scrolling, and its Mushaf card
@@ -31,9 +32,16 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Amiri-Bold.ttf'));
     final scheherazade = FontLoader('ScheherazadeNew')
       ..addFont(rootBundle.load('assets/fonts/ScheherazadeNew-Regular.ttf'));
-    await Future.wait([plex.load(), amiri.load(), scheherazade.load()]);
+    final mushaf = FontLoader(QcfPageBody.digitalKhattFamily)
+      ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf'));
+    await Future.wait([
+      plex.load(),
+      amiri.load(),
+      scheherazade.load(),
+      mushaf.load(),
+    ]);
     // With the Madinah Mushaf (the default) the card writes the day's
-    // ayahs in its glyphs; they load here, outside any test's clock.
+    // ayahs in its script; the layout loads here, outside any test's clock.
     await QuranRepository.instance.init();
     for (final ayah in AyahOfTheDay.forDayAll(DateTime.now())) {
       await QcfGlyphs.prepare(ayah);

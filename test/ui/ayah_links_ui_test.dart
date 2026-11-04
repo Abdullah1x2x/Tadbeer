@@ -7,6 +7,7 @@ import 'package:tadbeer/app/localization.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/core/utils/arabic_search_normalizer.dart';
 import 'package:tadbeer/data/models/ayah_link_model.dart';
+import 'package:tadbeer/data/models/user_settings_model.dart';
 import 'package:tadbeer/features/ayah_links/data/ayah_link_repository.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/ayah_links/screens/ayah_link_detail_screen.dart';
@@ -275,6 +276,8 @@ void main() {
       (WidgetTester tester) async {
         late AyahLinkItem link;
         await tester.runAsync(() async {
+          // The verse in the flowing text, found by its words.
+          await UserDataStore.instance.setMushafStyle(MushafStyle.text);
           final repo = AyahLinkRepository();
           link = await repo.createLink(
             title: 'آية الكرسي ورابط التوحيد',

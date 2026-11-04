@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
-import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_page_body.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
 import 'package:tadbeer/data/models/user_settings_model.dart';
 
@@ -18,7 +19,7 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await QcfLayout.instance.init();
-    await QcfFonts.instance.ensurePage(50);
+    await loadDigitalKhatt();
   });
 
   setUp(() async {
@@ -66,7 +67,7 @@ void main() {
 
   testWidgets('the ayah is shown in the Madinah script', (tester) async {
     await pumpSheet(tester, 3, 7);
-    expect(familiesInBox(tester), {QcfFonts.familyFor(50)});
+    expect(familiesInBox(tester), {QcfPageBody.digitalKhattFamily});
     expect(tester.takeException(), isNull);
   });
 
@@ -79,3 +80,8 @@ void main() {
     expect(find.textContaining('﴿'), findsOneWidget);
   });
 }
+
+/// The bundled Digital Khatt font; tests start with only a stand-in font.
+Future<void> loadDigitalKhatt() => (FontLoader(QcfPageBody.digitalKhattFamily)
+      ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf')))
+    .load();

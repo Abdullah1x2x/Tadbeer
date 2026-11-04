@@ -12,7 +12,7 @@ import 'package:tadbeer/features/daily/ayah_of_day_card.dart';
 import 'package:tadbeer/data/quran/quran_models.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_ayah_text.dart';
-import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_page_body.dart';
 import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 import 'package:tadbeer/features/widgets/widget_ayah_image.dart';
 import 'package:tadbeer/features/widgets/widget_links.dart';
@@ -27,7 +27,7 @@ void main() {
     final amiri = FontLoader('AmiriQuran')
       ..addFont(rootBundle.load('assets/fonts/AmiriQuran-Regular.ttf'));
     await amiri.load();
-    // Their Madinah glyphs load here, outside any test's clock.
+    // Their Madinah text and font load here, outside any test's clock.
     await QuranRepository.instance.init();
     longest = [...AyahOfTheDay.pool]
       ..sort((a, b) => b.text.length.compareTo(a.text.length));
@@ -35,6 +35,9 @@ void main() {
     for (final ayah in longest) {
       await QcfGlyphs.prepare(ayah);
     }
+    await (FontLoader(QcfPageBody.digitalKhattFamily)
+          ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf')))
+        .load();
   });
 
   setUp(() async {
@@ -71,7 +74,7 @@ void main() {
     }
   });
 
-  testWidgets('the Madinah image writes the ayah in its page\'s glyphs', (
+  testWidgets('the Madinah image writes the ayah in the Mushaf font', (
     tester,
   ) async {
     final ayah = longest.first;
@@ -86,7 +89,7 @@ void main() {
     // Text.rich wraps the span in the default style; the glyphs' own
     // style is on the span inside.
     final inner = (text as TextSpan).children!.single as TextSpan;
-    expect(inner.style!.fontFamily, QcfFonts.familyFor(ayah.page));
+    expect(inner.style!.fontFamily, QcfPageBody.digitalKhattFamily);
   });
 
   testWidgets('an ayah link opens it in the Mushaf', (tester) async {

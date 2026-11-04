@@ -1,8 +1,7 @@
-/// تخطيط صفحات مصحف المدينة (مجمع الملك فهد، الإصدار الأول).
+/// تخطيط صفحات مصحف المدينة (الطبعة الحديثة، بنص DigitalKhatt).
 ///
-/// كل صفحة في مصحف المدينة المطبوع ١٥ سطراً (٨ في الصفحتين الأوليين)، وكل كلمة
-/// رمز واحد في خط QCF للصفحة، فالسطر المرسوم من رموزه يطابق المطبوع تماماً.
-/// التخطيط والخطوط كلاهما مضمّنان في التطبيق.
+/// كل صفحة في مصحف المدينة المطبوع ١٥ سطراً (٨ في الصفحة الأولى)، وكل كلمة نص
+/// يُرسم بخط Digital Khatt الواحد. يُبنى بـ tool/dk/build_layout.py.
 library;
 
 import 'dart:convert';
@@ -11,14 +10,12 @@ import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
-import '../../../data/models/user_settings_model.dart';
-
-/// كلمة واحدة من المصحف: محرف في خط صفحتها.
+/// كلمة واحدة من المصحف بنص Digital Khatt.
 class QcfWord {
   final int surah;
   final int ayah;
 
-  /// الرمز (حرف أو حرفان) في خط الصفحة.
+  /// نص الكلمة كما يرسمه الخط.
   final String code;
 
   /// هل هي علامة رقم الآية في آخرها.
@@ -50,25 +47,12 @@ class QcfLine {
 }
 
 /// يحمّل تخطيط أسطر الصفحات الـ٦٠٤.
-///
-/// [instance] لخطوط مجمع الملك فهد (رمز لكل كلمة في خط صفحتها)، و[digitalKhatt]
-/// لخط Digital Khatt (نص كل كلمة بخط واحد، بأسطر الطبعة الحديثة).
 class QcfLayout {
-  QcfLayout._(this.assetPath);
+  QcfLayout._();
 
-  static final QcfLayout instance = QcfLayout._(
-    'assets/quran/qcf_v1_layout.json.gz',
-  );
+  static final QcfLayout instance = QcfLayout._();
 
-  static final QcfLayout digitalKhatt = QcfLayout._(
-    'assets/quran/dk_layout.json.gz',
-  );
-
-  /// تخطيط [font].
-  static QcfLayout of(MadinahFont font) =>
-      font == MadinahFont.digitalKhatt ? digitalKhatt : instance;
-
-  final String assetPath;
+  static const assetPath = 'assets/quran/dk_layout.json.gz';
 
   List<List<QcfLine>>? _pages;
   Future<void>? _loading;
@@ -111,7 +95,7 @@ class QcfLayout {
   }
 
   /// يقرأ الصيغة المختصرة: قائمة صفحات، كل منها قائمة أسطر. السطر `["h",
-  /// surah]` أو `["b", surah]` أو قائمة كلمات `[surah, ayah, glyph]` بعنصر رابع
+  /// surah]` أو `["b", surah]` أو قائمة كلمات `[surah, ayah, text]` بعنصر رابع
   /// `1` لعلامات آخر الآية.
   static List<List<QcfLine>> parse(List raw) => [
     for (final page in raw)

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/quran/quran_models.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
-import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_page_body.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
@@ -21,9 +21,7 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await QcfLayout.instance.init();
-    for (var page = 1; page <= 4; page++) {
-      await QcfFonts.instance.ensurePage(page);
-    }
+    await loadDigitalKhatt();
   });
 
   setUp(() async {
@@ -45,7 +43,7 @@ void main() {
   }) async {
     await tester.runAsync(() async {
       await QcfLayout.instance.init();
-      await QcfFonts.instance.ensurePage(page);
+      await loadDigitalKhatt();
     });
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
@@ -68,7 +66,7 @@ void main() {
   /// The span that sets [page]'s Mushaf font, if [span] contains it.
   TextSpan? mushafSpan(InlineSpan span, int page) {
     if (span is! TextSpan) return null;
-    if (span.style?.fontFamily == QcfFonts.familyFor(page)) return span;
+    if (span.style?.fontFamily == QcfPageBody.digitalKhattFamily) return span;
     for (final child in span.children ?? const <InlineSpan>[]) {
       final found = mushafSpan(child, page);
       if (found != null) return found;
@@ -88,48 +86,16 @@ void main() {
     page,
   )!.style!.fontSize!;
 
-  // Median word height per unit of font size, measured from the glyphs.
-  const wordHeight = {1: 0.889, 2: 0.834, 3: 1.036};
-
   testWidgets('the basmala is drawn in the Mushaf script', (tester) async {
     await pumpPage(tester, size: const Size(412, 915), page: 2);
     final basmala = find.byWidgetPredicate(
       (w) =>
           w is Text &&
-          w.data == '\uFB51\uFB52\uFB53\uFB54' &&
-          w.style?.fontFamily == QcfFonts.familyFor(1),
+          w.data == QcfPageBody.digitalKhattBasmala &&
+          w.style?.fontFamily == QcfPageBody.digitalKhattFamily,
     );
     expect(basmala, findsOneWidget);
-    expect(find.text('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ'), findsNothing);
     expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('the first page sets its words no further apart than others', (
-    tester,
-  ) async {
-    double gap(int page, double size) {
-      final g = String.fromCharCode(0xFB51);
-      double width(String text) {
-        final painter = TextPainter(
-          text: TextSpan(
-            text: text,
-            style: TextStyle(
-              fontFamily: QcfFonts.familyFor(page),
-              fontSize: size,
-              wordSpacing: QcfPageBody.wordSpacingFor(page, size),
-            ),
-          ),
-          textDirection: TextDirection.rtl,
-        )..layout();
-        return painter.width;
-      }
-
-      return width('$g $g') - width('$g$g');
-    }
-
-    for (final page in [1, 2, 3]) {
-      expect(gap(page, 100), closeTo(4, 1.2), reason: 'page $page');
-    }
   });
 
   for (final page in [1, 2]) {
@@ -144,32 +110,6 @@ void main() {
         expect(tops[i] - tops[i - 1], closeTo(size * 1.9, 1), reason: '$i');
       }
     });
-  }
-
-  for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
-    testWidgets(
-      'the opening pages read as large as the rest (${size.width.toInt()} wide)',
-      (tester) async {
-        await pumpPage(tester, size: size);
-        final ordinary = mushafFontSize(tester, 3) * wordHeight[3]!;
-        for (final page in [1, 2]) {
-          await pumpPage(tester, size: size, page: page);
-          final letters = mushafFontSize(tester, page) * wordHeight[page]!;
-          expect(
-            letters / ordinary,
-            // Page 3 is among the largest ordinary pages; 0.93 catches the
-            // opening pages shrunk by too tight a width limit.
-            inInclusiveRange(0.93, 1.1),
-            reason: 'page $page',
-          );
-          for (final line in mushafLines(tester, page: page)) {
-            expect(line.didExceedMaxLines, isFalse);
-            expect(line.size.width, lessThanOrEqualTo(size.width * 0.9));
-          }
-        }
-        expect(tester.takeException(), isNull);
-      },
-    );
   }
 
   for (final size in const [Size(360, 640), Size(412, 915), Size(800, 1280)]) {
@@ -229,3 +169,8 @@ void main() {
     expect(find.byType(QcfPageBody), findsNothing);
   });
 }
+
+/// The bundled Digital Khatt font; tests start with only a stand-in font.
+Future<void> loadDigitalKhatt() => (FontLoader(QcfPageBody.digitalKhattFamily)
+      ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf')))
+    .load();

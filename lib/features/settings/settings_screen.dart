@@ -1,4 +1,3 @@
-import '../quran/qcf/madinah_font_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -276,13 +275,9 @@ class SettingsScreen extends StatelessWidget {
                           ),
                         ),
                         if (madinah) ...[
-                          const SizedBox(height: 10),
-                          const MadinahFontPicker(),
                           const SizedBox(height: 4),
                           Text(
-                            settings.madinahFont == MadinahFont.digitalKhatt
-                                ? l10n.digitalKhattAttribution
-                                : l10n.qcfAttribution,
+                            l10n.digitalKhattAttribution,
                             style: TextStyle(
                               fontSize: 11.5,
                               color: AppColors.textSecondary(context),
@@ -821,8 +816,8 @@ class SettingsScreen extends StatelessWidget {
                                         'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
                                         'Quran Text: Tanzil.net (CC BY 3.0)\n'
                                         'Word Meanings Dataset: Quranpedia.net (Version 2026-10-10)\n'
-                                        'Fonts: SIL Open Font License 1.1; Madinah Mushaf fonts: King Fahd Complex\n'
-                                        'Mushaf layout: Quran Foundation\n'
+                                        'Fonts: SIL Open Font License 1.1, including the Digital Khatt Mushaf font\n'
+                                        'Mushaf text and layout: DigitalKhatt (MIT)\n'
                                         'Books: rights remain with their owners',
                                   );
                                 },

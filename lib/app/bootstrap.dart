@@ -16,7 +16,6 @@ import '../features/duas/data/adhkar_repository.dart';
 import '../features/duas/screens/morning_evening_adhkar_screen.dart';
 import '../features/journey/portion_reminder.dart';
 import '../features/journey/streak_reminder.dart';
-import '../features/quran/qcf/qcf_fonts.dart';
 import '../features/quran/qcf/qcf_layout.dart';
 import '../features/reminders/local_reminder_service.dart';
 import '../features/tasbeeh/tasbeeh_model.dart';
@@ -27,8 +26,6 @@ import 'main_shell.dart';
 /// يجهّز كل ما يحتاجه أول إطار.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // خطوط صفحات المصحف تُحمّل أثناء التقليب دون إعادة تخطيط نصوص التطبيق.
-  QcfFonts.ignoreFontChanges();
   registerBundledAssetLicenses();
 
   // 1. التخزين المحلي، ويعيد جدولة التذكيرات عبر خدمتها كلما تغيّرت.
@@ -50,9 +47,8 @@ Future<void> bootstrap() async {
   await _startBackgroundRecitation();
 
   // تخطيط مصحف المدينة يُفك في الخلفية، فيجهز قبل فتح المصحف.
-  final settings = UserDataStore.instance.settings;
-  if (settings.mushafStyle == MushafStyle.madinah) {
-    unawaited(QcfLayout.of(settings.madinahFont).init());
+  if (UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah) {
+    unawaited(QcfLayout.instance.init());
   }
 }
 

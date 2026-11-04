@@ -137,15 +137,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.''',
     );
 
     yield const LicenseEntryWithLineBreaks(
-      <String>['qcf_madinah_mushaf'],
-      '''Madinah Mushaf page fonts (QCF v1)
-Copyright (C) King Fahd Glorious Quran Printing Complex (https://qurancomplex.gov.sa).
-Fonts obtained through Quran Foundation (https://quran.foundation).
-Mushaf line layout data: Quran.com API v4, Quran Foundation.
-These materials are not covered by the Tadbeer MIT License.''',
-    );
-
-    yield const LicenseEntryWithLineBreaks(
       <String>['digital_khatt_font'],
       '''Digital Khatt V2 ("DigitalKhatt New Madina", Version 0.1)
 Copyright (c) 2020-2024 Amine Anane, Copyright (c) 2024 Tarteel Inc.

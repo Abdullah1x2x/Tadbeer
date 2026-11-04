@@ -135,20 +135,11 @@ enum QuranFontFamilyOption {
 
 /// طريقة عرض المصحف.
 enum MushafStyle {
-  /// صفحات مصحف المدينة بخط مجمع الملك فهد كما في المطبوع؛ العرض الأساسي.
+  /// صفحات مصحف المدينة بخط Digital Khatt كما في المطبوع؛ العرض الأساسي.
   madinah,
 
   /// نص عثماني متدفق بالخط المختار؛ لا يحتاج تحميلاً.
   text,
-}
-
-/// خط صفحات مصحف المدينة.
-enum MadinahFont {
-  /// خطوط مجمع الملك فهد (QCF): خط لكل صفحة، يُحمّل حين تقترب منها.
-  kingFahd,
-
-  /// خط Digital Khatt: ملف واحد لكل المصحف، بتخطيط الطبعة الحديثة.
-  digitalKhatt,
 }
 
 /// إعدادات القارئ المحفوظة على الجهاز: المظهر واللغة والخطوط والقراءة.
@@ -195,8 +186,6 @@ class UserSettings {
 
   final MushafStyle mushafStyle;
 
-  final MadinahFont madinahFont;
-
   /// هل اختار القارئ ثيماً؛ قبل ذلك يفتح التثبيت الجديد على منتقي الثيم.
   /// الإعدادات المحفوظة قبل وجود هذا الحقل تُعدّ اختياراً.
   final bool themeChosen;
@@ -219,7 +208,6 @@ class UserSettings {
     this.mushafPaperTone = MushafPaperTone.classic,
     this.colorTheme = AppColorTheme.navy,
     this.mushafStyle = MushafStyle.madinah,
-    this.madinahFont = MadinahFont.kingFahd,
     this.themeChosen = false,
     this.userName = '',
   });
@@ -236,7 +224,6 @@ class UserSettings {
     'mushafPaperTone': mushafPaperTone.name,
     'colorTheme': colorTheme.name,
     'mushafStyle': mushafStyle.name,
-    'madinahFont': madinahFont.name,
     'themeChosen': themeChosen,
     'userName': userName,
   };
@@ -307,10 +294,6 @@ class UserSettings {
         (e) => e.name == json['mushafStyle'],
         orElse: () => MushafStyle.madinah,
       ),
-      madinahFont: MadinahFont.values.firstWhere(
-        (e) => e.name == json['madinahFont'],
-        orElse: () => MadinahFont.kingFahd,
-      ),
       themeChosen: json['themeChosen'] as bool? ?? true,
       userName: json['userName'] as String? ?? '',
     );
@@ -328,7 +311,6 @@ class UserSettings {
     MushafPaperTone? mushafPaperTone,
     AppColorTheme? colorTheme,
     MushafStyle? mushafStyle,
-    MadinahFont? madinahFont,
     bool? themeChosen,
     String? userName,
   }) {
@@ -351,7 +333,6 @@ class UserSettings {
       mushafPaperTone: mushafPaperTone ?? this.mushafPaperTone,
       colorTheme: colorTheme ?? this.colorTheme,
       mushafStyle: mushafStyle ?? this.mushafStyle,
-      madinahFont: madinahFont ?? this.madinahFont,
       themeChosen: themeChosen ?? this.themeChosen,
       userName: userName?.trim() ?? this.userName,
     );

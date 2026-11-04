@@ -20,8 +20,6 @@ import '../widgets/word_meanings_panel.dart';
 import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
 import 'quran_page_view.dart';
-import '../qcf/madinah_font_picker.dart';
-import '../qcf/qcf_fonts.dart';
 import '../qcf/qcf_layout.dart';
 import '../widgets/quran_side_menu.dart';
 import '../../../data/models/user_settings_model.dart';
@@ -70,31 +68,14 @@ class _QuranScreenState extends State<QuranScreen> {
   List<int> _pagesOf(int item) =>
       _wide ? [item * 2 + 1, item * 2 + 2] : [item + 1];
 
-  /// هل تُرسم الصفحات بخطوط مجمع الملك فهد، خط لكل صفحة يُحمّل قبل وصولها.
-  bool get _pageFonts {
-    final s = UserDataStore.instance.settings;
-    return s.mushafStyle == MushafStyle.madinah &&
-        s.madinahFont == MadinahFont.kingFahd;
-  }
-
-  /// صفحة [ayah] في المصحف المعروض: الطبعة الحديثة (Digital Khatt) قد تقدّمها
-  /// أو تؤخرها صفحة عن بيانات التطبيق.
+  /// صفحة [ayah] في المصحف المعروض: مصحف المدينة بطبعته الحديثة قد يقدّمها أو
+  /// يؤخرها صفحة عن بيانات التطبيق.
   int _pageOf(Ayah ayah) {
-    final s = UserDataStore.instance.settings;
-    if (s.mushafStyle != MushafStyle.madinah ||
-        s.madinahFont != MadinahFont.digitalKhatt) {
+    if (UserDataStore.instance.settings.mushafStyle != MushafStyle.madinah) {
       return ayah.page;
     }
-    return QcfLayout.digitalKhatt.pageOf(ayah.surahNumber, ayah.ayahNumber) ??
+    return QcfLayout.instance.pageOf(ayah.surahNumber, ayah.ayahNumber) ??
         ayah.page;
-  }
-
-  void _preloadNeighbours() {
-    if (!_pageFonts) return;
-    QcfFonts.instance.preloadSurrounding(
-      _currentPageIndex + 1,
-      window: _wide ? 3 : 2,
-    );
   }
   Ayah? _activeSelectedAyah;
   bool _showTopBar = false;
@@ -136,7 +117,7 @@ class _QuranScreenState extends State<QuranScreen> {
 
   String _settingsSignature() {
     final s = UserDataStore.instance.settings;
-    return '${s.quranFontFamilyName}|${s.mushafStyle}|${s.madinahFont}|${s.flowingTextScale}|${s.mushafPaperTone}|${s.quranFontSize}';
+    return '${s.quranFontFamilyName}|${s.mushafStyle}|${s.flowingTextScale}|${s.mushafPaperTone}|${s.quranFontSize}';
   }
 
   /// يُضبط قبل انتقال لم يقم به القارئ (كمزامنة التبويب)، فلا يُحسب ولا يُحفظ
@@ -248,7 +229,6 @@ class _QuranScreenState extends State<QuranScreen> {
     startPage = startPage.clamp(1, 604);
     _currentPageIndex = startPage - 1;
     _pageController = PageController(initialPage: _currentPageIndex);
-    if (_pageFonts) QcfFonts.instance.ensurePage(startPage);
 
     if (widget.controlsVisible != null) {
       // كتبويب: تبدأ الأدوات والشريط السفلي ظاهرة ليعرف القارئ كيف يخرج، ويتبع
@@ -264,7 +244,6 @@ class _QuranScreenState extends State<QuranScreen> {
     QuranAudio.instance.addListener(_onAudio);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_pageController.hasClients) return;
-      _preloadNeighbours();
       _pagerPosition = _pageController.position;
       _pagerPosition!.isScrollingNotifier.addListener(_onPagerScrolling);
     });
@@ -413,9 +392,6 @@ class _QuranScreenState extends State<QuranScreen> {
       _currentPageIndex = index;
       _activeSelectedAyah = null;
     });
-    // تحميل الخط لا يعيد تخطيط شيء، فيُحمّل ما حول الصفحة ولو أثناء السحب،
-    // فلا تصل الأصابع السريعة صفحةً بلا خط.
-    _preloadNeighbours();
     _startAutoCount();
     if (programmatic) {
       _pageShownAt = DateTime.now();
@@ -452,21 +428,12 @@ class _QuranScreenState extends State<QuranScreen> {
   /// ينتقل إلى الصفحة [mushafPage] (١..٦٠٤).
   void _jumpToMushafPage(int mushafPage) {
     final target = mushafPage.clamp(1, 604);
-    if (_pageFonts) {
-      QcfFonts.instance.ensurePage(target);
-      QcfFonts.instance.preloadSurrounding(target);
-    }
     _pageController.jumpToPage(_itemFor(target - 1));
   }
 
   /// ينتقل إلى صفحة الآية ويميّزها.
   void _jumpToAyah(Ayah ayah) {
-    final page = _pageOf(ayah);
-    if (_pageFonts) {
-      QcfFonts.instance.ensurePage(page);
-      QcfFonts.instance.preloadSurrounding(page);
-    }
-    _pageController.jumpToPage(_itemFor(page - 1));
+    _pageController.jumpToPage(_itemFor(_pageOf(ayah) - 1));
     setState(() {
       _activeSelectedAyah = ayah;
     });

@@ -7,8 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
-import 'package:tadbeer/features/quran/qcf/qcf_fonts.dart';
 import 'package:tadbeer/features/quran/qcf/qcf_layout.dart';
+import 'package:tadbeer/features/quran/qcf/qcf_page_body.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/widgets/text_scale_control.dart';
 import 'package:tadbeer/data/models/user_settings_model.dart';
@@ -30,9 +30,7 @@ void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await QcfLayout.instance.init();
-    for (final page in [1, 2, 3, 50, 51]) {
-      await QcfFonts.instance.ensurePage(page);
-    }
+    await loadDigitalKhatt();
     final amiri = FontLoader('Amiri')
       ..addFont(rootBundle.load('assets/fonts/Amiri-Regular.ttf'))
       ..addFont(rootBundle.load('assets/fonts/Amiri-Bold.ttf'));
@@ -158,10 +156,10 @@ void main() {
 
   testWidgets('the Madinah pages ignore the enlargement', (tester) async {
     await pumpPage(tester, screens['large phone']!);
-    final before = drawnSize(tester, QcfFonts.familyFor(50));
+    final before = drawnSize(tester, QcfPageBody.digitalKhattFamily);
     await setScale(tester, 1.4);
     await pumpPage(tester, screens['large phone']!);
-    expect(drawnSize(tester, QcfFonts.familyFor(50)), before);
+    expect(drawnSize(tester, QcfPageBody.digitalKhattFamily), before);
   });
 
   testWidgets('the size control steps within its bounds', (tester) async {
@@ -233,3 +231,8 @@ void main() {
     }
   });
 }
+
+/// The bundled Digital Khatt font; tests start with only a stand-in font.
+Future<void> loadDigitalKhatt() => (FontLoader(QcfPageBody.digitalKhattFamily)
+      ..addFont(rootBundle.load('assets/fonts/DigitalKhattV2.otf')))
+    .load();
