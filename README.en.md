@@ -2,7 +2,7 @@
 
 <img src="docs/assets/icons/app_logo.png" alt="Tadbeer logo" width="120">
 
-# Tadbeer (تَدْبِير)
+# Tadbeer (تَدبِير)
 
 **From reading to reflection.**
 
@@ -18,8 +18,8 @@ An open-source Quran app that works offline, with no ads and no tracking.
 
 <p align="center">
   <img src="docs/assets/screenshots/04_home_screen.png" alt="Home screen" width="23%">
-  <img src="docs/assets/screenshots/mushaf.jpg" alt="Madinah Mushaf" width="23%">
-  <img src="docs/assets/screenshots/menu.jpg" alt="Radial ayah menu" width="23%">
+  <img src="docs/assets/screenshots/mushaf.png" alt="Madinah Mushaf" width="23%">
+  <img src="docs/assets/screenshots/mushaf_dark.png" alt="The Mushaf in dark mode" width="23%">
 </p>
 
 ## Why Tadbeer?
@@ -34,7 +34,7 @@ The app helps you understand the Quran and act on it, not only read it. It is bu
 
 | Section | What it offers |
 | --- | --- |
-| **Mushaf** | 604 pages in the Madinah fonts or text fonts, smooth paging, a radial ayah menu and word meanings |
+| **Mushaf** | 604 pages in the Madinah font (Digital Khatt) or text fonts, smooth paging, a radial ayah menu and word meanings |
 | **Listening** | 7 reciters, a whole surah or one ayah, and downloads for offline listening |
 | **Journey** | Khatma plans, day streaks, goals, a Mushaf map and a monthly report |
 | **Memorization** | Spaced review of the ayahs you memorize |
@@ -61,15 +61,35 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
   </tr>
 </table>
 
+<table>
+  <tr>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/theme_navy_dark.png" alt="Navy, dark" width="100%"><br><sub><b>Navy, dark</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/theme_emerald_dark.png" alt="Emerald, dark" width="100%"><br><sub><b>Emerald, dark</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/theme_burgundy_dark.png" alt="Burgundy, dark" width="100%"><br><sub><b>Burgundy, dark</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/theme_teal_dark.png" alt="Teal, dark" width="100%"><br><sub><b>Teal, dark</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/theme_brown_dark.png" alt="Wood brown, dark" width="100%"><br><sub><b>Wood brown, dark</b></sub></td>
+  </tr>
+</table>
+
 ## Screenshots
+
+### Reflection
+
+<table>
+  <tr>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/17_tadbeer_pause.png" alt="Reflection pause" width="100%"><br><sub><b>Reflection pause</b></sub></td>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/18_reflections.png" alt="My reflections" width="100%"><br><sub><b>My reflections</b></sub></td>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/19_pathways.png" alt="Reflection pathways" width="100%"><br><sub><b>Reflection pathways</b></sub></td>
+    <td align="center" width="25%"><img src="docs/assets/screenshots/20_pathway_days.png" alt="Pathway days" width="100%"><br><sub><b>Pathway days</b></sub></td>
+  </tr>
+</table>
 
 ### Ayah links
 
 <table>
   <tr>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/01_ayah_network_graph.png" alt="Full network" width="100%"><br><sub><b>Full network</b></sub></td>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/02_ayah_network_list.png" alt="Ordered view" width="100%"><br><sub><b>Ordered view</b></sub></td>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/16_feature_ayah_network_tawbah_detail.png" alt="Network details" width="100%"><br><sub><b>Network details</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/01_ayah_network_graph.png" alt="Network" width="100%"><br><sub><b>Network</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/02_ayah_network_list.png" alt="Ordered view" width="100%"><br><sub><b>Ordered view</b></sub></td>
   </tr>
 </table>
 
@@ -77,8 +97,9 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
 
 <table>
   <tr>
-    <td align="center" width="50%"><img src="docs/assets/screenshots/13_feature_quran_journey_khatmah.png" alt="Khatma plan" width="100%"><br><sub><b>Khatma plan</b></sub></td>
-    <td align="center" width="50%"><img src="docs/assets/screenshots/14_feature_quran_journey_stats.png" alt="Goals and stats" width="100%"><br><sub><b>Goals and stats</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/13_feature_quran_journey_khatmah.png" alt="Khatma plan" width="100%"><br><sub><b>Khatma plan</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/14_feature_quran_journey_stats.png" alt="Monthly report" width="100%"><br><sub><b>Monthly report</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/21_memorization.png" alt="Memorization and review" width="100%"><br><sub><b>Memorization and review</b></sub></td>
   </tr>
 </table>
 
@@ -86,10 +107,11 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
 
 <table>
   <tr>
-    <td align="center" width="25%"><img src="docs/assets/screenshots/06_feature_tasbeeh_counter.png" alt="Dhikr counter" width="100%"><br><sub><b>Dhikr counter</b></sub></td>
-    <td align="center" width="25%"><img src="docs/assets/screenshots/12_feature_duas_ahlulbayt.png" alt="Ahlulbayt duas" width="100%"><br><sub><b>Ahlulbayt duas</b></sub></td>
-    <td align="center" width="25%"><img src="docs/assets/screenshots/11_feature_duas_prophetic_sunnah.png" alt="Sunnah duas" width="100%"><br><sub><b>Sunnah duas</b></sub></td>
-    <td align="center" width="25%"><img src="docs/assets/screenshots/07_feature_duas_categories.png" alt="Dua sections" width="100%"><br><sub><b>Dua sections</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/07_feature_duas_categories.png" alt="Dua sections" width="100%"><br><sub><b>Dua sections</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/25_adhkar_morning.png" alt="Morning adhkar" width="100%"><br><sub><b>Morning adhkar</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/12_feature_duas_ahlulbayt.png" alt="Ahlulbayt duas" width="100%"><br><sub><b>Ahlulbayt duas</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/11_feature_duas_prophetic_sunnah.png" alt="Sunnah duas" width="100%"><br><sub><b>Sunnah duas</b></sub></td>
+    <td align="center" width="20%"><img src="docs/assets/screenshots/06_feature_tasbeeh_counter.png" alt="Dhikr counter" width="100%"><br><sub><b>Dhikr counter</b></sub></td>
   </tr>
 </table>
 
@@ -97,9 +119,17 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
 
 <table>
   <tr>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/08_feature_more_grid.png" alt="All sections" width="100%"><br><sub><b>All sections</b></sub></td>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/09_feature_qibla_compass.png" alt="Qibla direction" width="100%"><br><sub><b>Qibla direction</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/24_search.png" alt="Search" width="100%"><br><sub><b>Search</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/23_word_meanings.png" alt="Word meanings" width="100%"><br><sub><b>Word meanings</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/22_notes.png" alt="Notes" width="100%"><br><sub><b>Notes</b></sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
     <td align="center" width="33%"><img src="docs/assets/screenshots/10_feature_library_books.png" alt="Books and booklets" width="100%"><br><sub><b>Books and booklets</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/09_feature_qibla_compass.png" alt="Qibla direction" width="100%"><br><sub><b>Qibla direction</b></sub></td>
+    <td align="center" width="33%"><img src="docs/assets/screenshots/08_feature_more_grid.png" alt="All sections" width="100%"><br><sub><b>All sections</b></sub></td>
   </tr>
 </table>
 
