@@ -57,7 +57,7 @@ void main() {
           await tester.pumpAndSettle();
 
           expect(find.textContaining('سُورَةُ'), findsOneWidget);
-          expect(find.text('تَدْبِير'), findsOneWidget);
+          expect(find.text('تَدبِير'), findsOneWidget);
           expect(tester.takeException(), isNull);
         });
       }

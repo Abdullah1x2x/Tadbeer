@@ -1,11 +1,32 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gal/gal.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/localization.dart';
 import '../../core/design_system/app_icons.dart';
+
+/// نتيجة حفظ صورة في معرض الصور.
+enum PhotoSaveResult { saved, denied, failed }
+
+/// يحفظ صورة PNG [bytes] باسم [name] في معرض الصور، بعد طلب الإذن إن لزم.
+Future<PhotoSaveResult> saveImageToPhotos(Uint8List bytes, String name) async {
+  try {
+    if (!await Gal.hasAccess() && !await Gal.requestAccess()) {
+      return PhotoSaveResult.denied;
+    }
+    await Gal.putImageBytes(bytes, name: name);
+    return PhotoSaveResult.saved;
+  } on GalException catch (e) {
+    debugPrint('Saving an image to Photos failed: ${e.type}');
+    return e.type == GalExceptionType.accessDenied
+        ? PhotoSaveResult.denied
+        : PhotoSaveResult.failed;
+  }
+}
 
 /// يسأل القارئ ماذا يفعل بملف صدّره: يشاركه، أو يحفظه في جهازه.
 Future<void> shareOrSaveFile(

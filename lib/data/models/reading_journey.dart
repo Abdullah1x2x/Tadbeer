@@ -4,6 +4,8 @@
 /// وأيام النشاط (للسلسلة)، وخطة ختمة اختيارية.
 library;
 
+import 'dart:math' as math;
+
 /// عدد صفحات مصحف المدينة.
 const int mushafPageCount = 604;
 
@@ -34,8 +36,10 @@ class KhatmaPlan {
   /// الصفحات المنجزة.
   final int advanced;
 
-  /// صفحات قُرئت يوم البدء قبل بدء الختمة؛ لا تُحسب من ورد ذلك اليوم.
-  final int pagesBeforeStart;
+  /// آخر يوم تقدمت فيه الختمة أو رجعت (yyyy-MM-dd)، و[advanced] أول ذلك اليوم:
+  /// ورد اليوم هو ما تقدمته الختمة منذئذ، فيتفق مع حلقة التقدم وموضع القراءة.
+  final String? day;
+  final int advancedAtDayStart;
 
   KhatmaPlan({
     required DateTime startDate,
@@ -43,9 +47,11 @@ class KhatmaPlan {
     this.startPage = 1,
     int? currentPage,
     this.advanced = 0,
-    this.pagesBeforeStart = 0,
+    String? day,
+    this.advancedAtDayStart = 0,
   }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
-       currentPage = currentPage ?? startPage;
+       currentPage = currentPage ?? startPage,
+       day = day ?? dayKey(startDate);
 
   /// صفحات الختمة: من صفحة البدء إلى آخر المصحف.
   int get totalPages => mushafPageCount - startPage + 1;
@@ -72,33 +78,49 @@ class KhatmaPlan {
   int expectedPagesBefore(DateTime now) =>
       (pagesPerDay * (dayNumber(now) - 1)).clamp(0, totalPages);
 
-  /// يتقدم المؤشر إن كانت [page] هي صفحته الحالية.
-  KhatmaPlan read(int page) => page != currentPage
+  /// صفحات تقدمتها الختمة في [now].
+  int advancedOn(DateTime now) =>
+      day == dayKey(now) ? math.max(0, advanced - advancedAtDayStart) : 0;
+
+  /// يتقدم المؤشر في [now] إن كانت [page] هي صفحته الحالية.
+  KhatmaPlan read(int page, DateTime now) => page != currentPage
       ? this
       : _copy(
+          now,
           currentPage: nextMushafPage(page),
           advanced: page == mushafPageCount ? totalPages : advanced + 1,
         );
 
-  /// ينقل الختمة يدوياً إلى [page]، ويُحسب ما قبلها منجزاً؛ والرجوع قبل صفحة
-  /// البدء يجعلها البداية.
-  KhatmaPlan moveTo(int page) {
+  /// ينقل الختمة يدوياً في [now] إلى [page]، ويُحسب ما قبلها منجزاً؛ والرجوع
+  /// قبل صفحة البدء يجعلها البداية.
+  KhatmaPlan moveTo(int page, DateTime now) {
     final start = page < startPage ? page : startPage;
-    return _copy(currentPage: page, advanced: page - start, startPage: start);
+    return _copy(
+      now,
+      currentPage: page,
+      advanced: page - start,
+      startPage: start,
+    );
   }
 
-  KhatmaPlan _copy({
+  KhatmaPlan _copy(
+    DateTime now, {
     required int currentPage,
     required int advanced,
     int? startPage,
-  }) => KhatmaPlan(
-    startDate: startDate,
-    days: days,
-    startPage: startPage ?? this.startPage,
-    currentPage: currentPage,
-    advanced: advanced,
-    pagesBeforeStart: pagesBeforeStart,
-  );
+  }) {
+    final today = dayKey(now);
+    return KhatmaPlan(
+      startDate: startDate,
+      days: days,
+      startPage: startPage ?? this.startPage,
+      currentPage: currentPage,
+      advanced: advanced,
+      day: today,
+      // أول تغيير في يوم جديد يبدأ ورده من حيث كانت الختمة.
+      advancedAtDayStart: day == today ? advancedAtDayStart : this.advanced,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'startDate': dayKey(startDate),
@@ -106,7 +128,8 @@ class KhatmaPlan {
     'startPage': startPage,
     'currentPage': currentPage,
     'advanced': advanced,
-    if (pagesBeforeStart > 0) 'pagesBeforeStart': pagesBeforeStart,
+    'day': day,
+    'advancedAtDayStart': advancedAtDayStart,
   };
 
   factory KhatmaPlan.fromJson(Map<String, dynamic> json) {
@@ -119,7 +142,9 @@ class KhatmaPlan {
         startPage: (json['startPage'] as num?)?.toInt() ?? 1,
         currentPage: (json['currentPage'] as num).toInt(),
         advanced: (json['advanced'] as num?)?.toInt() ?? 0,
-        pagesBeforeStart: (json['pagesBeforeStart'] as num?)?.toInt() ?? 0,
+        // الحفظ الأقدم بلا يوم: يبدأ ورد اليوم من موضع الختمة الآن.
+        day: json['day'] as String? ?? '',
+        advancedAtDayStart: (json['advancedAtDayStart'] as num?)?.toInt() ?? 0,
       );
     }
     // صيغة قديمة: صفحات متفرقة وآخر صفحة مقروءة. نكمل بعد آخر صفحة، ونحفظ عدد
@@ -161,17 +186,8 @@ class ReadingJourney {
 
   int pagesOn(DateTime day) => dailyPages[dayKey(day)]?.length ?? 0;
 
-  /// صفحات ورد [day] للختمة الحالية؛ وفي يوم بدء الختمة لا تُحسب الصفحات
-  /// المقروءة قبلها.
-  int portionPagesOn(DateTime day) {
-    final read = pagesOn(day);
-    final p = plan;
-    if (p == null || !_sameDay(p.startDate, day)) return read;
-    return (read - p.pagesBeforeStart).clamp(0, read);
-  }
-
-  static bool _sameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
+  /// ورد [day]: ما تقدمته الختمة فيه، أو الصفحات المقروءة إن لم تكن ختمة.
+  int portionPagesOn(DateTime day) => plan?.advancedOn(day) ?? pagesOn(day);
 
   /// هل كان في [day] قراءة أو تدبر أو حفظ.
   bool isActiveOn(DateTime day) =>
@@ -213,7 +229,7 @@ class ReadingJourney {
   ReadingJourney recordPage(int page, DateTime now) {
     final key = dayKey(now);
     return _withPlan(
-      plan?.read(page),
+      plan?.read(page, now),
       dailyPages: {
         ...dailyPages,
         key: {...?dailyPages[key], page},
@@ -242,19 +258,14 @@ class ReadingJourney {
     return journey;
   }
 
-  ReadingJourney moveKhatmaTo(int page) => plan == null
+  ReadingJourney moveKhatmaTo(int page, DateTime now) => plan == null
       ? this
-      : _copy(plan: plan!.moveTo(page.clamp(1, mushafPageCount)));
+      : _copy(plan: plan!.moveTo(page.clamp(1, mushafPageCount), now));
 
   /// يبدأ خطة ختمة من [startPage]، أو يستبدل الحالية.
   ReadingJourney startPlan(int days, DateTime now, {int startPage = 1}) =>
       _copy(
-        plan: KhatmaPlan(
-          startDate: now,
-          days: days,
-          startPage: startPage,
-          pagesBeforeStart: pagesOn(now),
-        ),
+        plan: KhatmaPlan(startDate: now, days: days, startPage: startPage),
       );
 
   /// يلغي الخطة، ويبقى سجل القراءة.

@@ -43,31 +43,36 @@ void main() {
     expect(stats.activeDays, 3);
   });
 
-  testWidgets('the report card renders without overflow', (tester) async {
-    await tester.pumpWidget(
-      AppLocalizationScope(
-        currentLanguage: AppLanguage.arabic,
-        strings: AppStrings(AppLanguage.arabic),
-        onLanguageChanged: (_) {},
-        child: const MaterialApp(
-          home: Center(
-            child: MonthlyReportCard(
-              stats: MonthStats(
-                pages: 412,
-                activeDays: 28,
-                reflections: 37,
-                memorized: 120,
-                khatmas: 2,
+  for (final (name, height) in [('square', 360.0), ('story', 640.0)]) {
+    testWidgets('the $name report card renders without overflow', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        AppLocalizationScope(
+          currentLanguage: AppLanguage.arabic,
+          strings: AppStrings(AppLanguage.arabic),
+          onLanguageChanged: (_) {},
+          child: MaterialApp(
+            home: Center(
+              child: MonthlyReportCard(
+                stats: const MonthStats(
+                  pages: 412,
+                  activeDays: 28,
+                  reflections: 37,
+                  memorized: 120,
+                  khatmas: 2,
+                ),
+                monthTitle: 'أكتوبر ٢٠٢٦',
+                width: 360,
+                height: height,
               ),
-              monthTitle: 'أكتوبر ٢٠٢٦',
-              width: 360,
             ),
           ),
         ),
-      ),
-    );
-    await tester.pump();
-    expect(find.text('تقرير الشهر'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      );
+      await tester.pump();
+      expect(find.text('تقرير الشهر'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

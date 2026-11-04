@@ -31,7 +31,7 @@ mixin _JourneySection on _StoreState {
 
   /// ينقل الختمة يدوياً، ويجعلها موضع القراءة.
   Future<void> moveKhatmaTo(int page) async {
-    await _saveJourney(_journey.moveKhatmaTo(page));
+    await _saveJourney(_journey.moveKhatmaTo(page, DateTime.now()));
     await _moveReadingPositionTo(page);
   }
 
@@ -50,7 +50,7 @@ mixin _JourneySection on _StoreState {
     if (plan == null || plan.currentPage == page) return;
     // الصفحة التي قُرئت للتو: الختمة تقدّمت عنها، ولا ترجع إليها.
     if (plan.currentPage == page + 1) return;
-    await _saveJourney(_journey.moveKhatmaTo(page));
+    await _saveJourney(_journey.moveKhatmaTo(page, DateTime.now()));
   }
 
   /// يسجّل يوماً فيه تدبر أو حفظ في السلسلة.

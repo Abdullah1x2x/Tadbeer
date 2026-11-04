@@ -65,7 +65,7 @@ void main() {
       expect(j.plan!.totalPages, 100);
       expect(j.plan!.pagesPerDay, 10);
 
-      j = j.moveKhatmaTo(604);
+      j = j.moveKhatmaTo(604, monday);
       expect(j.plan!.progress, closeTo(99 / 100, 1e-9));
 
       j = j.recordPage(604, monday);
@@ -84,7 +84,7 @@ void main() {
     test('moving before the start makes that page the start', () {
       final j = const ReadingJourney()
           .startPlan(30, monday, startPage: 100)
-          .moveKhatmaTo(40);
+          .moveKhatmaTo(40, monday);
       expect(j.plan!.startPage, 40);
       expect(j.plan!.advanced, 0);
       expect(j.plan!.totalPages, 565);
@@ -93,7 +93,7 @@ void main() {
     test('moving the position by hand counts the pages before it', () {
       final j = const ReadingJourney()
           .startPlan(30, monday, startPage: 100)
-          .moveKhatmaTo(150);
+          .moveKhatmaTo(150, monday);
       expect(j.plan!.currentPage, 150);
       expect(j.plan!.advanced, 50);
     });

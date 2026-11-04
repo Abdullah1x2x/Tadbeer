@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:gal/gal.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -17,6 +17,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
+import 'export_actions.dart';
 import '../../data/models/user_settings_model.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -102,23 +103,14 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
 
   Future<void> _saveToPhotos() async {
     setState(() => _save = _SaveState.saving);
-    var result = _SaveState.failed;
-    try {
-      if (!await Gal.hasAccess() && !await Gal.requestAccess()) {
-        result = _SaveState.denied;
-      } else {
-        final bytes = await _capture();
-        if (bytes != null) {
-          await Gal.putImageBytes(bytes, name: _fileName);
-          result = _SaveState.saved;
-        }
-      }
-    } on GalException catch (e) {
-      debugPrint('Saving the ayah card failed: ${e.type}');
-      result = e.type == GalExceptionType.accessDenied
-          ? _SaveState.denied
-          : _SaveState.failed;
-    }
+    final bytes = await _capture();
+    final result = bytes == null
+        ? _SaveState.failed
+        : switch (await saveImageToPhotos(bytes, _fileName)) {
+            PhotoSaveResult.saved => _SaveState.saved,
+            PhotoSaveResult.denied => _SaveState.denied,
+            PhotoSaveResult.failed => _SaveState.failed,
+          };
     if (mounted) setState(() => _save = result);
   }
 
@@ -437,7 +429,7 @@ class AyahCard extends StatelessWidget {
                       const AppLogo(size: 22, elevated: false),
                       const SizedBox(width: 8),
                       Text(
-                        'تَدْبِير',
+                        'تَدبِير',
                         style: TextStyle(
                           fontFamily: AppTheme.appFontFamily,
                           fontSize: 14,

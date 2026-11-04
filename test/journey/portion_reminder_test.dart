@@ -5,13 +5,16 @@ import 'package:tadbeer/data/models/reading_journey.dart';
 void main() {
   final now = DateTime(2026, 10, 26, 10);
 
+  // [readToday] of the [advanced] pages were read today.
   ReadingJourney journey({int advanced = 0, int readToday = 0}) =>
       ReadingJourney(
         plan: KhatmaPlan(
           startDate: DateTime(2026, 10, 20),
           days: 30,
-          currentPage: advanced + 1,
-          advanced: advanced,
+          currentPage: advanced + readToday + 1,
+          advanced: advanced + readToday,
+          day: dayKey(now),
+          advancedAtDayStart: advanced,
         ),
         dailyPages: {
           if (readToday > 0)
