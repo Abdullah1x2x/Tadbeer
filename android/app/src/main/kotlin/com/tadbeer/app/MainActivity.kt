@@ -1,6 +1,7 @@
 package com.tadbeer.app
 
 import android.content.Intent
+import android.hardware.GeomagneticField
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -27,6 +28,16 @@ class MainActivity : AudioServiceActivity() {
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "manufacturer" -> result.success(Build.MANUFACTURER)
+                    // The compass reads magnetic north; the Qibla bearing is from
+                    // true north. The gap here, in degrees east.
+                    "declination" -> {
+                        val lat = call.argument<Double>("latitude") ?: 0.0
+                        val lon = call.argument<Double>("longitude") ?: 0.0
+                        val field = GeomagneticField(
+                            lat.toFloat(), lon.toFloat(), 0f, System.currentTimeMillis(),
+                        )
+                        result.success(field.declination.toDouble())
+                    }
                     "openNotificationSettings", "openAppSettings" -> {
                         val notifications = call.method == "openNotificationSettings" &&
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -64,12 +65,32 @@ class _QiblaScreenState extends State<QiblaScreen> {
 
   /// زاوية البوصلة دون التفاف، فلا تدور الطريق الأطول أبداً.
   double _dial = 0;
+
+  /// الانحراف المغناطيسي عند القارئ بالدرجات شرقاً: بوصلة أندرويد تقيس من الشمال
+  /// المغناطيسي، والقبلة محسوبة من الشمال الحقيقي (وiOS يعطيه مباشرة).
+  double _declination = 0;
+
+  static const _device = MethodChannel('tadbeer/device');
+
+  Future<void> _loadDeclination(QiblaLocated at) async {
+    if (widget.hasHeadings || !Platform.isAndroid) return;
+    try {
+      final value = await _device.invokeMethod<double>('declination', {
+        'latitude': at.latitude,
+        'longitude': at.longitude,
+      });
+      if (value != null && mounted) setState(() => _declination = value);
+    } on PlatformException catch (e) {
+      debugPrint('Magnetic declination unavailable: $e');
+    }
+  }
   bool _facing = false;
 
   @override
   void initState() {
     super.initState();
     _location = widget.locator.saved();
+    if (_location case final saved?) _loadDeclination(saved);
     _listenToCompass();
     _locate();
     SectionGuide.showOnce(context, GuideTopic.qibla);
@@ -93,8 +114,9 @@ class _QiblaScreenState extends State<QiblaScreen> {
     _compass = stream.listen(_onHeading, onError: (_) {});
   }
 
-  void _onHeading(double heading) {
+  void _onHeading(double magnetic) {
     if (!mounted) return;
+    final heading = (magnetic + _declination) % 360;
     setState(() {
       _hasCompass = true;
       // تقترب من الاتجاه الجديد بأقصر دوران، وهذا يهدّئ ارتعاش المستشعر أيضاً.
@@ -122,6 +144,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
       if (fix is QiblaLocated) {
         _location = fix;
         _problem = null;
+        _loadDeclination(fix);
       } else {
         _problem = fix;
       }
