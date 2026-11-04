@@ -60,7 +60,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       _currentChapterIndex = 0;
     }
     _currentPdfPage = widget.initialPdfPage < 0 ? 0 : widget.initialPdfPage;
-    _recordActivity();
+    // الحفظ يُعلم المخزن، فلا يكون أثناء بناء الشاشة.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _recordActivity());
 
     if (widget.book.hasAttachedFile && widget.book.isText) {
       _loadFileText();
@@ -208,10 +209,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     if (widget.book.chapters.isNotEmpty) {
       final chapter = widget.book.chapters[_currentChapterIndex];
       textToCopy =
-          '${widget.book.title}\n${chapter.title}\n\n${chapter.content}\n\n— تطبيق تَدْبِير';
+          '${widget.book.title}\n${chapter.title}\n\n${chapter.content}\n\n— تطبيق تَدبِير';
     } else if (_loadedFileContent != null) {
       textToCopy =
-          '${widget.book.title}\n\n$_loadedFileContent\n\n— تطبيق تَدْبِير';
+          '${widget.book.title}\n\n$_loadedFileContent\n\n— تطبيق تَدبِير';
     }
 
     if (textToCopy.isEmpty) return;

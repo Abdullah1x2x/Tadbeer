@@ -14,8 +14,12 @@ import '../../../core/design_system/ornaments.dart';
 import '../../../core/theme/theme.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/models/tadbeer_model.dart';
+import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../../data/storage/user_data_store.dart';
+import '../../quran/qcf/qcf_ayah_text.dart';
+import '../../quran/qcf/qcf_layout.dart';
+import '../../quran/qcf/qcf_page_body.dart';
 import 'scene_story.dart';
 
 part 'scenes/mushaf_scenes.dart';
@@ -77,10 +81,22 @@ class _Palette {
 /// نص الآية من ملف المصحف، أو نص احتياطي إن لم يُحمَّل بعد.
 String _ayahText(int surah, int ayah, String fallback) {
   try {
-    return QuranRepository.instance.getAyah(surah, ayah)?.text ?? fallback;
+    final a = QuranRepository.instance.getAyah(surah, ayah);
+    return a == null ? fallback : _inMushaf(a, a.text);
   } on Object {
     return fallback;
   }
+}
+
+/// هل تُكتب آيات الجولة بخط المصحف: متى جهز تخطيطه، وإلا فبالخط المتدفق.
+bool get _mushafScript => QcfLayout.instance.isReady;
+
+/// [excerpt] من [ayah] بنص مصحف المدينة دون رقم الآية، أو كما هو إن لم يطابق.
+String _inMushaf(Ayah ayah, String excerpt) {
+  if (!_mushafScript) return excerpt;
+  final codes = QcfGlyphs.excerptCodes(ayah, excerpt);
+  if (codes == null || codes.isEmpty) return excerpt;
+  return codes.where((c) => !c.startsWith('\u06DD')).join(' ');
 }
 
 /// «السورة رقم» مختصراً.
@@ -95,9 +111,16 @@ String _ref(BuildContext context, int surah, int ayah) {
 
 /// كلمات من [start] إلى ما قبل [end] من الآية، فيبقى رسمها كما في المصحف.
 String _ayahWords(int surah, int ayah, int start, int end) {
-  final words = _ayahText(surah, ayah, '').split(' ');
-  return end > words.length ? '' : words.sublist(start, end).join(' ');
+  final a = QuranRepository.instance.getAyah(surah, ayah);
+  final words = a?.text.split(' ') ?? const <String>[];
+  if (a == null || end > words.length) return '';
+  return _inMushaf(a, words.sublist(start, end).join(' '));
 }
+
+/// خط آيات الجولة: خط المصحف، أو الخط المتدفق حتى يجهز تخطيطه.
+String get tourQuranFamily => _mushafScript
+    ? QcfPageBody.digitalKhattFamily
+    : UserDataStore.instance.quranFontFamily;
 
 /// الآية التي تفتتح الجولة: غاية التطبيق بلفظ القرآن.
 String tourOpeningAyah(String fallback) {
@@ -106,7 +129,7 @@ String tourOpeningAyah(String fallback) {
 }
 
 TextStyle _quran(double size, Color color) => TextStyle(
-  fontFamily: UserDataStore.instance.quranFontFamily,
+  fontFamily: tourQuranFamily,
   fontSize: size,
   height: 1.7,
   color: color,

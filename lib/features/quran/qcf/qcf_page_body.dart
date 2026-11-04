@@ -22,6 +22,9 @@ class QcfPageBody extends StatefulWidget {
   final double zoom;
   final Color textColor;
 
+  /// لون رقم الآية وإطاره، من لون الثيم.
+  final Color numberColor;
+
   /// لون علامة رقم الآية على الآيات التي عليها فاصل أو خاطرة أو تدبر.
   final Color markerColor;
 
@@ -52,6 +55,7 @@ class QcfPageBody extends StatefulWidget {
     required this.pageNumber,
     required this.zoom,
     required this.textColor,
+    required this.numberColor,
     required this.markerColor,
     required this.backgroundFor,
     required this.markersFor,
@@ -419,7 +423,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
             recognizer: recognizer,
             style: TextStyle(
               backgroundColor: background,
-              color: markers.isEmpty ? null : widget.markerColor,
+              color: markers.isEmpty ? widget.numberColor : widget.markerColor,
             ),
           ),
         );

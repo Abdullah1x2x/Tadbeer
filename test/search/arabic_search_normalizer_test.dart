@@ -6,6 +6,27 @@ import 'package:tadbeer/core/utils/arabic_search_normalizer.dart';
 
 void main() {
   group('ArabicSearchNormalizer Unit Tests', () {
+    test('Hamza written off its seat matches the common spelling', () {
+      for (final (mushaf, typed) in [
+        ('يَسْتَهْزِءُونَ', 'يستهزئون'),
+        ('رَءُوفٌ', 'رؤوف'),
+        ('مَسْـُٔولًا', 'مسؤولا'),
+        ('إِسْرَٰٓءِيلَ', 'إسرائيل'),
+        ('ٱلسَّيِّـَٔاتِ', 'السيئات'),
+      ]) {
+        expect(
+          ArabicSearchNormalizer.withoutHamza(mushaf),
+          ArabicSearchNormalizer.withoutHamza(typed),
+          reason: typed,
+        );
+      }
+      // And the usual form still finds «أولئك» as the Mushaf writes it.
+      expect(
+        ArabicSearchNormalizer.normalize('أُو۟لَٰٓئِكَ'),
+        ArabicSearchNormalizer.normalize('أولئك'),
+      );
+    });
+
     test('Diacritics and Tashkeel Removal', () {
       const textWithTashkeel = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
       final normalized = ArabicSearchNormalizer.normalize(textWithTashkeel);

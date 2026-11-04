@@ -65,6 +65,7 @@ extension _QuranPageParts on _QuranPageViewState {
                 ? 1
                 : fontSize / UserSettings.defaultQuranFontSize,
             textColor: palette.text,
+            numberColor: palette.frame,
             markerColor: isDark
                 ? AppColors.darkAccentGold
                 : AppColors.lightAccentGold,

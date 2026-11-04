@@ -7,7 +7,11 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/adhkar_reminders.dart';
 import '../data/adhkar_repository.dart';
 import '../../continue/last_activity.dart';
+import '../../../data/models/user_settings_model.dart';
+import '../../../data/quran/quran_repository.dart';
 import '../../../data/storage/user_data_store.dart';
+import '../../quran/qcf/qcf_ayah_text.dart';
+import '../../quran/qcf/qcf_layout.dart';
 import '../../../core/design_system/app_icons.dart';
 
 /// أذكار الصباح والمساء، مع عدّاد لكل ذكر.
@@ -34,7 +38,8 @@ class _MorningEveningAdhkarScreenState
   void initState() {
     super.initState();
     _currentCategory = widget.initialCategory;
-    _recordActivity();
+    // الحفظ يُعلم المخزن، فلا يكون أثناء بناء الشاشة.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _recordActivity());
   }
 
   /// أذكار الصباح والمساء وحدها يُستأنف منها، فهي ورد يومي له وقته.
@@ -523,18 +528,11 @@ class _AdhkarCard extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          Text(
-            item.text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Amiri',
-              fontSize: 18.5,
-              fontWeight: FontWeight.w600,
-              height: 1.65,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
+          _AdhkarText(
+            item: item,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
 
           if (item.virtue.isNotEmpty) ...[
@@ -575,6 +573,69 @@ class _AdhkarCard extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// نص الذكر؛ والقرآني منه برسم المصحف حين يكون مصحف المدينة هو المختار.
+class _AdhkarText extends StatelessWidget {
+  final AdhkarItem item;
+  final Color color;
+
+  const _AdhkarText({required this.item, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final plain = Text(
+      item.text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: 'Amiri',
+        fontSize: 18.5,
+        fontWeight: FontWeight.w600,
+        height: 1.65,
+        color: color,
+      ),
+    );
+    if (item.quran.isEmpty ||
+        !QuranRepository.instance.isLoaded ||
+        UserDataStore.instance.settings.mushafStyle != MushafStyle.madinah) {
+      return plain;
+    }
+    return FutureBuilder<void>(
+      future: QcfLayout.instance.init(),
+      builder: (context, _) {
+        final repo = QuranRepository.instance;
+        // سورة لكل فقرة، كما في نص الذكر.
+        final parts = [
+          for (final (surah, from, to) in item.quran)
+            [
+              for (var a = from; a <= to; a++)
+                switch (repo.getAyah(surah, a)) {
+                  final ayah? => QcfGlyphs.of(ayah),
+                  null => null,
+                },
+            ],
+        ];
+        if (parts.any((p) => p.contains(null))) return plain;
+        return Column(
+          children: [
+            for (final (i, part) in parts.indexed) ...[
+              if (i > 0) const SizedBox(height: 10),
+              Text(
+                part.map((g) => g!.text).join(),
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.rtl,
+                style: part.first!.style(
+                  fontSize: 21,
+                  height: 1.9,
+                  color: color,
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }

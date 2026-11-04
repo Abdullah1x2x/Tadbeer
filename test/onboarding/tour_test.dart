@@ -101,7 +101,7 @@ void main() {
     });
   }
 
-  testWidgets('the tour walks five pages and remembers it was seen', (
+  testWidgets('the tour walks six pages and remembers it was seen', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -109,7 +109,9 @@ void main() {
     );
     await advance(tester);
     expect(find.textContaining('أَنزَلْنَٰهُ'), findsOneWidget);
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 5; i++) {
+      // The memorization page sits before the last one.
+      if (i == 4) expect(find.text('الحفظ والمراجعة'), findsOneWidget);
       await tester.tap(find.text('التالي'));
       await advance(tester);
     }

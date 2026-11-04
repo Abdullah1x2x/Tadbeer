@@ -60,6 +60,11 @@ class _TourScreenState extends State<TourScreen>
     ),
     _TourPage((t) => ListenScene(t: t), l10n.tour3Title, l10n.tour3Body),
     _TourPage((t) => JourneyScene(t: t), l10n.tour4Title, l10n.tour4Body),
+    _TourPage(
+      (t) => MemorizeScene(t: t),
+      l10n.guideMemorizationTitle,
+      l10n.guideMemorizationBody,
+    ),
     _TourPage((t) => CompanionScene(t: t), l10n.tour5Title, l10n.tour5Body),
   ];
 
@@ -319,9 +324,7 @@ class _TourPageView extends StatelessWidget {
               page.title,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: page.ayahTitle
-                    ? UserDataStore.instance.quranFontFamily
-                    : 'Amiri',
+                fontFamily: page.ayahTitle ? tourQuranFamily : 'Amiri',
                 fontSize: page.ayahTitle ? 24 : 26,
                 height: page.ayahTitle ? 1.7 : null,
                 fontWeight: page.ayahTitle ? null : FontWeight.bold,

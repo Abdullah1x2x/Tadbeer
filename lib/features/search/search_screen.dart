@@ -7,7 +7,10 @@ import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/motion/app_motion.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../data/quran/quran_repository.dart';
+import '../../data/storage/user_data_store.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
 import 'search_provider.dart';
 import '../../core/design_system/app_icons.dart';
 import '../onboarding/tour/section_guide.dart';
@@ -542,6 +545,37 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   /// بطاقة نتيجة بحث.
+  /// نص النتيجة؛ والآية بخط المصحف الذي اختاره القارئ.
+  Widget _snippet(SearchResultItem item, bool isQuranAyah, bool isDark) {
+    final color = isDark
+        ? (isQuranAyah ? AppColors.nightQuranText : AppColors.darkTextSecondary)
+        : (isQuranAyah ? AppColors.dayQuranText : AppColors.lightTextSecondary);
+    final settings = UserDataStore.instance.settings;
+    final text = Text(
+      item.snippet,
+      maxLines: isQuranAyah ? null : 4,
+      overflow: isQuranAyah ? null : TextOverflow.ellipsis,
+      textDirection: isQuranAyah ? TextDirection.rtl : null,
+      style: TextStyle(
+        fontFamily: isQuranAyah ? settings.quranFontFamilyName : 'Amiri',
+        fontSize: isQuranAyah ? 16 : 13,
+        height: isQuranAyah ? 1.8 : 1.4,
+        color: color,
+      ),
+    );
+    // نتيجة البحث في القرآن آية كاملة، فتُكتب برسم المصحف.
+    final ayah = item.providerId == 'quran' && item.ayahNumber != null
+        ? QuranRepository.instance.getAyah(
+            item.surahNumber!,
+            item.ayahNumber!,
+          )
+        : null;
+    if (ayah == null || settings.mushafStyle != MushafStyle.madinah) {
+      return text;
+    }
+    return QcfAyahText(ayah: ayah, fontSize: 19, color: color, fallback: text);
+  }
+
   Widget _buildResultCard(
     BuildContext context,
     SearchResultItem item,
@@ -597,24 +631,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             if (item.snippet.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text(
-                item.snippet,
-                maxLines: isQuranAyah ? null : 4,
-                overflow: isQuranAyah ? null : TextOverflow.ellipsis,
-                textDirection: isQuranAyah ? TextDirection.rtl : null,
-                style: TextStyle(
-                  fontFamily: isQuranAyah ? 'AmiriQuran' : 'Amiri',
-                  fontSize: isQuranAyah ? 16 : 13,
-                  height: isQuranAyah ? 1.8 : 1.4,
-                  color: isDark
-                      ? (isQuranAyah
-                            ? AppColors.nightQuranText
-                            : AppColors.darkTextSecondary)
-                      : (isQuranAyah
-                            ? AppColors.dayQuranText
-                            : AppColors.lightTextSecondary),
-                ),
-              ),
+              _snippet(item, isQuranAyah, isDark),
             ],
           ],
         ),

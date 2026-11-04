@@ -27,6 +27,9 @@ class QuranRepository {
   final List<Ayah> _allAyahs = [];
   final Map<String, Ayah> _ayahsByKey = {};
   final List<String> _normalizedAyahTexts = [];
+
+  /// نصوص الآيات دون همزة، لتطابق الهمزة المكتوبة على غير رسم المصحف.
+  final List<String> _hamzaFreeAyahTexts = [];
   final List<QuranWordMeaning> _wordMeanings = [];
   final Map<int, List<QuranWordMeaning>> _wordMeaningsByPage = {};
   final Map<int, List<QuranWordMeaning>> _wordMeaningsBySurah = {};
@@ -64,6 +67,7 @@ class QuranRepository {
     _allAyahs.clear();
     _ayahsByKey.clear();
     _normalizedAyahTexts.clear();
+    _hamzaFreeAyahTexts.clear();
 
     for (final p in rawPages) {
       final page = QuranPage.fromJson(p);
@@ -72,6 +76,7 @@ class QuranRepository {
         _allAyahs.add(ayah);
         _ayahsByKey[ayah.key] = ayah;
         _normalizedAyahTexts.add(ArabicSearchNormalizer.normalize(ayah.text));
+        _hamzaFreeAyahTexts.add(ArabicSearchNormalizer.withoutHamza(ayah.text));
       }
     }
 
@@ -167,6 +172,12 @@ class QuranRepository {
   /// يتعرّف على المراجع المباشرة ("البقرة 255"، "2:255"، "آية الكرسي")، ويدعم
   /// البحث بالجذر ("جذر:صبر"). المطابقة المتصلة أولاً، ثم الآيات التي فيها كل
   /// كلمات البحث ولو متفرقة. ولا يشترط "ال" التعريف.
+  /// [text] في أول كلمة، ولو سبقته أداة (و ف ب ل ك ال): دون الهمزة تقصر الكلمات
+  /// فتظهر داخل غيرها («روف» في «معروف»).
+  static RegExp _atWordStart(String text) => RegExp(
+    '(?:^| )(?:[وفبلك]|ال|وال|فال|بال|كال|لل)?${RegExp.escape(text)}',
+  );
+
   List<Ayah> searchAyahs(String query, {int limit = 50}) {
     if (!_isLoaded || query.trim().isEmpty) return const [];
 
@@ -192,9 +203,13 @@ class QuranRepository {
       addedIds.add(directAyah.id);
     }
 
+    final hamzaFreeQuery = ArabicSearchNormalizer.withoutHamza(query);
+    final hamzaFree = _atWordStart(hamzaFreeQuery);
+
     // أولاً: العبارة كاملة متصلة.
     for (int i = 0; i < _allAyahs.length; i++) {
-      if (_normalizedAyahTexts[i].contains(normalizedQuery)) {
+      if (_normalizedAyahTexts[i].contains(normalizedQuery) ||
+          hamzaFree.hasMatch(_hamzaFreeAyahTexts[i])) {
         if (addedIds.add(_allAyahs[i].id)) {
           results.add(_allAyahs[i]);
           if (results.length >= limit) return results;
@@ -207,13 +222,20 @@ class QuranRepository {
         .split(' ')
         .where((w) => w.isNotEmpty)
         .toList();
+    final hamzaFreeTokens = [
+      for (final t in hamzaFreeQuery.split(' ')) _atWordStart(t),
+    ];
     if (tokens.length > 1) {
       for (int i = 0; i < _allAyahs.length; i++) {
         final ayahNorm = _normalizedAyahTexts[i];
 
         bool allTokensMatch = true;
-        for (final token in tokens) {
+        for (final (t, token) in tokens.indexed) {
           if (ayahNorm.contains(token)) continue;
+          if (t < hamzaFreeTokens.length &&
+              hamzaFreeTokens[t].hasMatch(_hamzaFreeAyahTexts[i])) {
+            continue;
+          }
 
           // كلمة من ٤ أحرف فأكثر تبدأ بـ "ال" تُفحص أيضاً بدونها.
           if (token.startsWith('ال') && token.length >= 4) {

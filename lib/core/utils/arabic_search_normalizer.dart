@@ -64,6 +64,9 @@ class ArabicSearchNormalizer {
     result = result.replaceAll('هاكذا', 'هكذا');
     result = result.replaceAll('ذالك', 'ذلك');
 
+    // أولئك تُرسم في المصحف بألف بعد اللام (أُو۟لَٰٓئِكَ).
+    result = result.replaceAll('اولايك', 'اوليك');
+
     // لاكن ← لكن.
     result = result.replaceAll('لاكن', 'لكن');
 
@@ -102,6 +105,12 @@ class ArabicSearchNormalizer {
 
     return result;
   }
+
+  /// [normalize] دون الهمزة (ء ئ ؤ والهمزة فوق الحرف): رسم المصحف يكتبها غالباً
+  /// على غير كرسيها في الإملاء (يستهزءون، رءوف، مسـٔولا، إسرٰٓءيل)، فتُطابق بها
+  /// الكتابة الشائعة (يستهزئون، رؤوف، مسؤولا، إسرائيل).
+  static String withoutHamza(String text) =>
+      normalize(text.replaceAll(RegExp('[\u0621\u0624\u0626\u0654]'), ''));
 
   /// يحوّل الأرقام اللاتينية في [input] إلى أرقام عربية هندية ("5–7" ← "٥–٧").
   static String convertDigits(String input) {
