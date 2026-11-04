@@ -1238,6 +1238,18 @@ abstract class AppLocalizations {
   /// **'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية'**
   String get jawamiDuasSubtitle;
 
+  /// No description provided for @selectedDuasTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدعية مختارة'**
+  String get selectedDuasTitle;
+
+  /// No description provided for @selectedDuasSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'في الأخلاق والهداية والثبات والتقوى وحسن الخاتمة'**
+  String get selectedDuasSubtitle;
+
   /// No description provided for @offlineQuranAndReflection.
   ///
   /// In ar, this message translates to:
@@ -2177,8 +2189,14 @@ abstract class AppLocalizations {
   /// No description provided for @reachedPage.
   ///
   /// In ar, this message translates to:
-  /// **'وصلت إلى صفحة {page}'**
+  /// **'أتممت حتى صفحة {page}'**
   String reachedPage(String page);
+
+  /// No description provided for @startsAtPage.
+  ///
+  /// In ar, this message translates to:
+  /// **'تبدأ من صفحة {page}'**
+  String startsAtPage(String page);
 
   /// No description provided for @portionReminderTitle.
   ///
@@ -4601,12 +4619,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'قرأت'**
   String get markReadAction;
-
-  /// No description provided for @portionDueTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'حان وقت وِردك اليومي'**
-  String get portionDueTitle;
 
   /// No description provided for @notificationsOffNotice.
   ///

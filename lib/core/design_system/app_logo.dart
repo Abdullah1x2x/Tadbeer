@@ -20,14 +20,6 @@ class AppLogo extends StatelessWidget {
   static const _shadow = Color(0xFF6E4E28);
   static const _gold = Color(0xFFECCB7A);
 
-  /// مصفوفة تفتيح ناعمة لإنارة تفاصيل الشعار.
-  static const _brightenMatrix = <double>[
-    1.08, 0, 0, 0, 12,
-    0, 1.08, 0, 0, 12,
-    0, 0, 1.08, 0, 12,
-    0, 0, 0, 1, 0,
-  ];
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -67,15 +59,13 @@ class AppLogo extends StatelessWidget {
         position: DecorationPosition.foreground,
         child: ClipPath(
           clipper: ShapeBorderClipper(shape: shape),
-          child: ColorFiltered(
-            colorFilter: const ColorFilter.matrix(_brightenMatrix),
-            child: Image.asset(
-              _asset,
-              width: size,
-              height: size,
-              fit: BoxFit.cover,
-              excludeFromSemantics: true,
-            ),
+          // بألوانه كما هي، كأيقونة التطبيق خارجه.
+          child: Image.asset(
+            _asset,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            excludeFromSemantics: true,
           ),
         ),
       ),

@@ -96,6 +96,7 @@ extension type AppStrings._(AppLocalizations _l) implements AppLocalizations {
   // الختمة المتتابعة
   String fromMyPosition(int page) => _l.fromMyPosition(digits(page));
   String reachedPage(int page) => _l.reachedPage(digits(page));
+  String startsAtPage(int page) => _l.startsAtPage(digits(page));
 
   String portionReminderTitle(int pages) =>
       _l.portionReminderTitle(digits(pages));

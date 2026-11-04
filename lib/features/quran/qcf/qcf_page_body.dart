@@ -11,6 +11,8 @@ import '../../../data/quran/quran_repository.dart';
 import '../widgets/surah_header_banner.dart';
 import 'kashida.dart';
 import 'qcf_layout.dart';
+import '../../../data/models/user_settings_model.dart';
+import '../../../data/storage/user_data_store.dart';
 
 /// متن صفحة مصحف المدينة بخط Digital Khatt، خط واحد تُمدّ أسطره بالكشيدة.
 ///
@@ -49,6 +51,36 @@ class QcfPageBody extends StatefulWidget {
 
   /// عائلة خط Digital Khatt في pubspec.
   static const digitalKhattFamily = 'DigitalKhatt';
+
+  /// خط المصحف المعروض، لنصوص تُكتب به كالأذكار والأدعية: Digital Khatt مع
+  /// مصحف المدينة، وإلا الخط الذي اختاره القارئ للنص المتدفق.
+  static String get scriptFamily {
+    final store = UserDataStore.instance;
+    return store.settings.mushafStyle == MushafStyle.madinah
+        ? digitalKhattFamily
+        : store.quranFontFamily;
+  }
+
+  /// نمط نص بخط المصحف المعروض ([scriptFamily]). مسافة Digital Khatt ضيقة
+  /// تُوسَّع بالتطويل في الصفحة، فتُوسَّع هنا بنفسها، وما ليس فيه من علامات
+  /// الترقيم (، .) يُرسم بخط أميري.
+  static TextStyle scriptStyle({
+    required double fontSize,
+    double? height,
+    Color? color,
+    FontWeight? fontWeight,
+  }) {
+    final family = scriptFamily;
+    return TextStyle(
+      fontFamily: family,
+      fontFamilyFallback: const ['Amiri'],
+      fontSize: fontSize,
+      height: height,
+      color: color,
+      fontWeight: fontWeight,
+      wordSpacing: family == digitalKhattFamily ? fontSize * 0.3 : null,
+    );
+  }
 
   const QcfPageBody({
     super.key,

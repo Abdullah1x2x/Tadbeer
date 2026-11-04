@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/theme.dart';
@@ -5,11 +7,14 @@ import '../../../core/design_system/ornaments.dart';
 import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
+import '../../../data/quran/quran_repository.dart';
+import '../qcf/qcf_page_body.dart';
 
 /// ترويسة السورة على طراز مصحف المدينة.
 ///
-/// شريط مدبّب الطرفين بخط مزدوج بلون إطار الثيم يملأ سطره؛ اسم السورة في خرطوشة
-/// وسطه، ورقمها في وردة ثمانية على جانب، ونوعها وعدد آياتها على الآخر. كل شيء
+/// شريط مدبّب الطرفين بخط مزدوج بلون إطار الثيم يملأ سطره؛ اسم السورة بخط
+/// المصحف في خرطوشة وسطه بين غصنين، ورقمها في وردة ثمانية على جانب، ونوعها
+/// وعدد آياتها وجزؤها على الآخر. كل شيء
 /// يُقاس من ارتفاع الشريط، فيبدو نفسه في أي شاشة وأي تكبير.
 class SurahHeaderBanner extends StatelessWidget {
   final Surah surah;
@@ -36,6 +41,7 @@ class SurahHeaderBanner extends StatelessWidget {
     final meta = isDark
         ? AppColors.darkTextSecondary
         : AppColors.lightTextSecondary;
+    final juz = QuranRepository.instance.getAyah(surah.number, 1)?.juz;
 
     // الحجم من العرض المعطى (AspectRatio لا يحتاج شيئاً من ابنه، فيعمل داخل
     // IntrinsicHeight أيضاً)، دون تجاوز _maxHeight؛ ثم يتحجّم المحتوى من
@@ -77,18 +83,25 @@ class SurahHeaderBanner extends StatelessWidget {
                       ),
                       Expanded(
                         child: Center(
-                          child: FractionallySizedBox(
-                            widthFactor: 0.62,
+                          // داخل الخرطوشة بحشوة، وبمقاييس الخط الطبيعية التي
+                          // تتسع للتشكيل، فلا يخرج شيء من حدودها.
+                          child: SizedBox(
+                            width:
+                                _SurahBandPainter.cartoucheWidth(
+                                  box.maxWidth,
+                                  height,
+                                  panel,
+                                ) -
+                                height * 0.6,
+                            height: height * 0.62,
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
+                                // بخط المصحف المعروض، فيتناسق مع نص الصفحة.
                                 'سُورَةُ ${surah.name}',
-                                style: TextStyle(
-                                  fontFamily: 'Amiri',
-                                  fontSize: height * 0.42,
-                                  fontWeight: FontWeight.bold,
+                                style: QcfPageBody.scriptStyle(
+                                  fontSize: height * 0.34,
                                   color: palette.text,
-                                  height: 1.2,
                                 ),
                               ),
                             ),
@@ -114,7 +127,7 @@ class SurahHeaderBanner extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '${ArabicSearchNormalizer.toArabicDigits(surah.ayahCount)} آيات',
+                                  ayahCountLabel(surah.ayahCount),
                                   style: TextStyle(
                                     fontFamily: 'Amiri',
                                     fontSize: height * 0.18,
@@ -122,6 +135,16 @@ class SurahHeaderBanner extends StatelessWidget {
                                     height: 1.1,
                                   ),
                                 ),
+                                if (juz != null)
+                                  Text(
+                                    'الجزء ${ArabicSearchNormalizer.toArabicDigits(juz)}',
+                                    style: TextStyle(
+                                      fontFamily: 'Amiri',
+                                      fontSize: height * 0.18,
+                                      color: gold,
+                                      height: 1.1,
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
@@ -139,6 +162,14 @@ class SurahHeaderBanner extends StatelessWidget {
   }
 }
 
+/// عدد الآيات بتمييزه: آية، آيتان، ٣ آيات، ١١ آية.
+String ayahCountLabel(int n) {
+  if (n == 1) return 'آية';
+  if (n == 2) return 'آيتان';
+  final digits = ArabicSearchNormalizer.toArabicDigits(n);
+  return n % 100 >= 3 && n % 100 <= 10 ? '$digits آيات' : '$digits آية';
+}
+
 /// يرسم الشريط والخرطوشة ووردة الرقم والنجوم بينها.
 class _SurahBandPainter extends CustomPainter {
   final Color gold;
@@ -152,6 +183,10 @@ class _SurahBandPainter extends CustomPainter {
     required this.page,
     required this.panel,
   });
+
+  /// عرض الخرطوشة في شريط بعرض [w] وارتفاع [h]؛ يقرؤه النص ليبقى داخلها.
+  static double cartoucheWidth(double w, double h, double panel) =>
+      (w - 2 * panel) * 0.62;
 
   /// الشريط: قضيب مدبّب الطرفين، مُزاح للداخل بـ[inset].
   Path _bandPath(Size size, double inset) {
@@ -197,11 +232,11 @@ class _SurahBandPainter extends CustomPainter {
         ..color = gold.withValues(alpha: 0.7),
     );
 
-    // الخرطوشة على لون الورق، مع تيجان أعلاها وأسفلها.
-    final cw = (w - 2 * panel) * 0.72;
+    // الخرطوشة على لون الورق، مع نجمة عند كل طرف.
+    final cw = cartoucheWidth(w, h, panel);
     final cartouche = RRect.fromRectAndRadius(
-      Rect.fromCenter(center: Offset(w / 2, h / 2), width: cw, height: h * 0.7),
-      Radius.circular(h * 0.35),
+      Rect.fromCenter(center: Offset(w / 2, h / 2), width: cw, height: h * 0.8),
+      Radius.circular(h * 0.4),
     );
     canvas.drawRRect(cartouche, Paint()..color = page);
     canvas.drawRRect(
@@ -217,8 +252,8 @@ class _SurahBandPainter extends CustomPainter {
         ..color = gold.withValues(alpha: 0.6),
     );
     final crest = Paint()..color = gold;
-    for (final y in [h * 0.15, h * 0.85]) {
-      canvas.drawPath(eightPointStar(Offset(w / 2, y), h * 0.07), crest);
+    for (final x in [cartouche.left, cartouche.right]) {
+      canvas.drawPath(eightPointStar(Offset(x, h / 2), h * 0.08), crest);
     }
 
     // وردة الرقم في الجانب الأيمن (بداية القراءة بالعربية).
@@ -238,18 +273,67 @@ class _SurahBandPainter extends CustomPainter {
         ..color = gold.withValues(alpha: 0.6),
     );
 
-    // نجوم صغيرة بين الجانبين والخرطوشة.
-    final star = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.8
-      ..color = gold.withValues(alpha: 0.55);
-    final step = h * 0.42;
-    final left = cartouche.left;
-    for (var x = left - step * 0.8; x > panel + step * 0.3; x -= step) {
-      canvas.drawPath(eightPointStar(Offset(x, h / 2), h * 0.1), star);
-      canvas.drawPath(eightPointStar(Offset(w - x, h / 2), h * 0.1), star);
+    // غصن نباتي بين كل جانب والخرطوشة، والأيمن صورة الأيسر في المرآة.
+    final from = panel + h * 0.08, to = cartouche.left - h * 0.12;
+    if (to - from > h * 0.3) {
+      _vine(canvas, from, to, h);
+      canvas
+        ..save()
+        ..translate(w, 0)
+        ..scale(-1, 1);
+      _vine(canvas, from, to, h);
+      canvas.restore();
     }
   }
+
+  /// غصن يتموّج من [from] إلى [to] على منتصف الشريط، بورقة عند كل قمة وبرعم
+  /// في طرفه.
+  void _vine(Canvas canvas, double from, double to, double h) {
+    final cy = h / 2, amp = h * 0.13;
+    final waves = math.max(2, ((to - from) / (h * 0.5)).round());
+    final step = (to - from) / waves;
+    final stem = Path()..moveTo(from, cy);
+    final leaf = Paint()..color = gold.withValues(alpha: 0.5);
+    void leafAt(double x, double y, double angle, double size) {
+      canvas
+        ..save()
+        ..translate(x, y)
+        ..rotate(angle);
+      canvas.drawPath(_leaf(size), leaf);
+      canvas.restore();
+    }
+
+    for (var i = 0; i < waves; i++) {
+      final x0 = from + step * i, dir = i.isEven ? -1.0 : 1.0;
+      stem.cubicTo(
+        x0 + step * 0.3,
+        cy + amp * dir,
+        x0 + step * 0.7,
+        cy + amp * dir,
+        x0 + step,
+        cy,
+      );
+      // ورقة كبيرة من قمة الموجة إلى الخارج، وصغيرة تقابلها.
+      leafAt(x0 + step / 2, cy + amp * 0.75 * dir, dir * -2.2, h * 0.24);
+      leafAt(x0 + step * 0.8, cy + amp * 0.35 * dir, dir * 0.9, h * 0.15);
+    }
+    canvas.drawPath(
+      stem,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.9
+        ..strokeCap = StrokeCap.round
+        ..color = gold.withValues(alpha: 0.6),
+    );
+    canvas.drawCircle(Offset(from, cy), h * 0.04, leaf);
+  }
+
+  /// ورقة لوزية من الأصل باتجاه x الموجب بطول [size].
+  static Path _leaf(double size) => Path()
+    ..moveTo(0, 0)
+    ..quadraticBezierTo(size * 0.5, -size * 0.38, size, 0)
+    ..quadraticBezierTo(size * 0.5, size * 0.38, 0, 0)
+    ..close();
 
   @override
   bool shouldRepaint(_SurahBandPainter old) =>

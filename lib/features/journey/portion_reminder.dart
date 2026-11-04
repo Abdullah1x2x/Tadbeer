@@ -14,8 +14,11 @@ import '../../data/models/reading_journey.dart';
 /// معرّف ثابت، فتُحدّث الختمة الجديدة نفس التذكير بدل إضافة آخر.
 const portionReminderId = 'khatma_daily_portion';
 
-/// كم يوماً من إشعارات الورد يُجدول مسبقاً.
-const portionReminderDays = 14;
+/// كم يوماً من إشعارات الورد يُجدول مسبقاً؛ ولا تذكير بعدها حتى يُفتح التطبيق.
+///
+/// لا تذكير يومي عام بعدها: أندرويد يبدأ التكرار اليومي من أقرب موعد قادم لا
+/// من تاريخه، فيصل مع إشعار اليوم مكرراً.
+const portionReminderDays = 30;
 
 /// إشعار ورد يوم واحد.
 class PortionNotice {
@@ -60,27 +63,6 @@ List<PortionNotice> portionNotices(
     if (pages > 0 && at.isAfter(now)) notices.add(PortionNotice(at, pages));
   }
   return notices;
-}
-
-/// موعد أول تذكير يومي عام بعد آخر [days] يوماً مجدولة، إن بقي ورد بعدها.
-///
-/// يمنع انقطاع التذكير إن لم يُفتح التطبيق طوال تلك الأيام.
-DateTime? portionFallbackAt(
-  ReadingJourney journey,
-  DateTime now, {
-  required int hour,
-  required int minute,
-  int days = portionReminderDays,
-}) {
-  final last = portionNotices(
-    journey,
-    now,
-    hour: hour,
-    minute: minute,
-    days: days + 1,
-  ).lastOrNull;
-  final at = DateTime(now.year, now.month, now.day + days, hour, minute);
-  return last?.at == at ? at : null;
 }
 
 /// يُبقي إشعارات الورد متوافقة مع رحلة القراءة.

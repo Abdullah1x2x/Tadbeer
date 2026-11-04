@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- The widget as the picker shows it: the same glass, a sample ayah in the
-     Quranic font, and the khatma section filled with sample values. -->
+     Mushaf script, and the khatma section filled with sample values. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/background"
     android:layout_width="match_parent"
@@ -74,18 +74,15 @@
         android:layout_marginTop="4dp"
         android:layout_weight="1">
 
-        <TextView
+        <!-- An image: launchers draw previews with the system font, not the
+             app's. Made by tool/widget/preview_ayah_test.dart. -->
+        <ImageView
             android:id="@+id/widget_ayah"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/amiri_quran"
-            android:gravity="center"
-            android:lineSpacingMultiplier="1.2"
-            android:shadowColor="#66000000"
-            android:shadowRadius="6"
-            android:text="@string/widget_sample_ayah"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp" />
+            android:contentDescription="@string/widget_sample_ayah"
+            android:scaleType="fitCenter"
+            android:src="@drawable/widget_preview_ayah" />
     </FrameLayout>
 
     <TextView

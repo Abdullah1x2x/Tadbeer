@@ -190,6 +190,8 @@
   "sunnahDuasSubtitle": "أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب",
   "jawamiDuasTitle": "جوامع الدعاء والرجاء",
   "jawamiDuasSubtitle": "أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية",
+  "selectedDuasTitle": "أدعية مختارة",
+  "selectedDuasSubtitle": "في الأخلاق والهداية والثبات والتقوى وحسن الخاتمة",
   "offlineQuranAndReflection": "مصحف وتدبّر بدون إنترنت",
   "meccan": "مكية",
   "medinan": "مدنية",
@@ -432,8 +434,16 @@
       }
     }
   },
-  "reachedPage": "وصلت إلى صفحة {page}",
+  "reachedPage": "أتممت حتى صفحة {page}",
   "@reachedPage": {
+    "placeholders": {
+      "page": {
+        "type": "String"
+      }
+    }
+  },
+  "startsAtPage": "تبدأ من صفحة {page}",
+  "@startsAtPage": {
     "placeholders": {
       "page": {
         "type": "String"
@@ -1470,7 +1480,6 @@
   "restoreNewerVersion": "هذه النسخة من إصدار أحدث من التطبيق. حدّث التطبيق ثم أعد المحاولة.",
   "snoozeAction": "بعد 10 دقائق",
   "markReadAction": "قرأت",
-  "portionDueTitle": "حان وقت وِردك اليومي",
   "notificationsOffNotice": "الإشعارات متوقفة، فلن تصلك التذكيرات.",
   "exactAlarmsOffNotice": "المنبهات الدقيقة غير مسموحة، فقد تتأخر التذكيرات عن وقتها.",
   "enablePermission": "تفعيل",

@@ -5,6 +5,7 @@ import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
 import '../data/ahlulbayt_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../quran/qcf/qcf_page_body.dart';
 
 /// قراءة دعاء مأثور، مع ضبط حجم الخط ونسخ النص.
 class AhlulbaytDuaReaderScreen extends StatefulWidget {
@@ -205,11 +206,9 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                 child: SelectableText(
                   widget.dua.content,
                   textAlign: TextAlign.justify,
-                  style: TextStyle(
-                    fontFamily: 'Amiri',
+                  style: QcfPageBody.scriptStyle(
                     fontSize: _fontSize,
-                    fontWeight: FontWeight.w600,
-                    height: 1.85,
+                    height: 1.9,
                     color: isDark
                         ? AppColors.darkTextPrimary
                         : AppColors.lightTextPrimary,

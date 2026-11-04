@@ -23,7 +23,7 @@ class SunnahDuasRepository {
 
   static final SunnahDuasRepository instance = SunnahDuasRepository._();
 
-  // لإضافة دعاء: أضفه إلى [sunnahDuas] أو [jawamiDuas]، فيظهر في الشاشات
+  // لإضافة دعاء: أضفه إلى [sunnahDuas] أو [jawamiDuas] أو [selectedDuas]، فيظهر في الشاشات
   // والعدادات.
 
   static const List<GeneralDuaItem> sunnahDuas = [
@@ -412,6 +412,162 @@ class SunnahDuasRepository {
       text: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ حُبَّكَ، وَحُبَّ مَنْ يُحِبُّكَ، وَالْعَمَلَ الَّذِي يُبَلِّغُنِي حُبَّكَ.',
       occasion: 'لتعلّق القلب بالله',
       source: 'رواه الترمذي',
+      isSunnah: false,
+    ),
+  ];
+
+  /// أدعية عامة مختارة بلفظ أصحابها، لا تُنسب إلى السنة؛ مرتبة بموضوعها.
+  static const List<GeneralDuaItem> selectedDuas = [
+    GeneralDuaItem(
+      id: 'selected_akhlaq_kazm',
+      title: 'كظم الغيظ والعفو',
+      text: 'اللَّهُمَّ اجْعَلْنَا مِنَ الْكَاظِمِينَ الْغَيْظَ، وَالْعَافِينَ عَنِ النَّاسِ.',
+      occasion: 'الأخلاق والصفات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_akhlaq_khayr',
+      title: 'حب الخير وكره الحرام',
+      text: 'اللَّهُمَّ اجْعَلْنِي مِمَّنْ يُحِبُّ الْخَيْرَ وَيَعْمَلُهُ، وَيَكْرَهُ الْحَرَامَ وَيَجْتَنِبُهُ.',
+      occasion: 'الأخلاق والصفات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_akhlaq_thiqa',
+      title: 'الثقة بالله ومراقبته',
+      text: 'اللَّهُمَّ اجْعَلْنِي مِمَّنْ يَثِقُ بِكَ وَيَتَوَكَّلُ عَلَيْكَ، وَمِمَّنْ يَخَافُكَ وَيُرَاقِبُكَ فِي أَقْوَالِهِ وَأَفْعَالِهِ.',
+      occasion: 'الأخلاق والصفات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_akhlaq_dhikr',
+      title: 'الذكر والشكر في كل حال',
+      text: 'اللَّهُمَّ اجْعَلْنِي مِمَّنْ يَذْكُرُكَ وَيَشْكُرُكَ فِي فَرَحِهِ وَشِدَّتِهِ.',
+      occasion: 'الأخلاق والصفات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_wilaya_awliya',
+      title: 'من أولياء الله',
+      text: 'اللَّهُمَّ اجْعَلْنَا مِنْ أَوْلِيَائِكَ الَّذِينَ لَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ.',
+      occasion: 'الولاية والإخلاص والتقوى',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_wilaya_ikhlas',
+      title: 'الإخلاص',
+      text: 'اللَّهُمَّ اجْعَلْنَا مِنْ عِبَادِكَ الْمُخْلَصِينَ.',
+      occasion: 'الولاية والإخلاص والتقوى',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_wilaya_taqwa',
+      title: 'التقوى والإحسان',
+      text: 'اللَّهُمَّ اجْعَلْنَا مِنَ الْمُتَّقِينَ وَالْمُحْسِنِينَ.',
+      occasion: 'الولاية والإخلاص والتقوى',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_wilaya_ahl_taqwa',
+      title: 'أهل التقوى والجنة',
+      text: 'اللَّهُمَّ وَفِّقْنَا لِأَنْ نَكُونَ مِمَّنِ اتَّقَاكَ، وَمِمَّنْ قَدَرَكَ حَقَّ قَدْرِكَ، وَمِمَّنْ تَقِيهِمُ السَّيِّئَاتِ، وَمِمَّنْ تَعْصِمُهُمْ مِنَ الْخَطَايَا، وَمِمَّنْ تُدْخِلُهُمُ الْجَنَّةَ وَتُعْتِقُهُمْ مِنَ النَّارِ، يَا أَرْحَمَ الرَّاحِمِينَ.',
+      occasion: 'الولاية والإخلاص والتقوى',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_afw_maghfira',
+      title: 'العفو والمغفرة والرحمة',
+      text: 'اللَّهُمَّ اعْفُ عَنَّا، وَاغْفِرْ لَنَا، وَارْحَمْنَا.',
+      occasion: 'العفو والمغفرة والنجاة من النار',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_afw_itq',
+      title: 'العتق من النار',
+      text: 'اللَّهُمَّ أَعْتِقْ رِقَابَنَا مِنَ النَّارِ.',
+      occasion: 'العفو والمغفرة والنجاة من النار',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_afw_kitab',
+      title: 'أخذ الكتاب باليمين',
+      text: 'اللَّهُمَّ إِنِّي أَدْعُوكَ وَأَرْجُوكَ أَنْ تُعْطِيَنِي كِتَابِي بِيَمِينِي، وَأَنْ تُحَرِّمَ النَّارَ عَلَى جَسَدِي، يَا أَرْحَمَ الرَّاحِمِينَ.',
+      occasion: 'العفو والمغفرة والنجاة من النار',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_huda_tawfiq',
+      title: 'الهداية والتوفيق',
+      text: 'اللَّهُمَّ اهْدِنَا، وَوَفِّقْنَا.',
+      occasion: 'الهداية والتوبة والثبات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_huda_rida',
+      title: 'الهداية والرضا',
+      text: 'نَسْأَلُكَ يَا اللَّهُ أَنْ تَهْدِيَنَا وَتُوَفِّقَنَا وَتَرْضَى عَنَّا.',
+      occasion: 'الهداية والتوبة والثبات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_huda_thabat',
+      title: 'الثبات على الدين',
+      text: 'اللَّهُمَّ ثَبِّتْ قَلْبِي عَلَى دِينِكَ، يَا أَرْحَمَ الرَّاحِمِينَ.',
+      occasion: 'الهداية والتوبة والثبات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_huda_tawba',
+      title: 'التوبة والثبات وإصلاح العيوب',
+      text: 'اللَّهُمَّ إِنَّا نَسْأَلُكَ أَنْ تُوَفِّقَنَا لِلتَّوْبَةِ، وَأَنْ تُثَبِّتَنَا عَلَى صِرَاطِكَ الْمُسْتَقِيمِ، وَأَنْ تُثَبِّتَنَا عَلَى قَوْلِ الْحَقِّ، وَأَنْ تَجْعَلَنَا ذَوِي حَظٍّ عَظِيمٍ، وَأَنْ تُعِينَنَا عَلَى أَنْفُسِنَا فِي أَنْ نُصْلِحَ عُيُوبَنَا، وَأَنْ تَقِيَنَا السَّيِّئَاتِ، وَأَنْ تَقِيَنَا الْمَعَاصِيَ، يَا أَرْحَمَ الرَّاحِمِينَ.',
+      occasion: 'الهداية والتوبة والثبات',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_taa_awn',
+      title: 'العون على الطاعة',
+      text: 'اللَّهُمَّ أَعِنَّا عَلَى طَاعَتِكَ، وَارْزُقْنَا خَيْرَ الدُّنْيَا وَالْآخِرَةِ، يَا أَرْحَمَ الرَّاحِمِينَ.',
+      occasion: 'الطاعة والجنة',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_taa_janna',
+      title: 'الطاعة والرضا والجنة',
+      text: 'اللَّهُمَّ وَفِّقْنَا لِطَاعَتِكَ وَرِضَاكَ، وَارْزُقْنَا الْجَنَّةَ، وَقِنَا النَّارَ.',
+      occasion: 'الطاعة والجنة',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_quran_hifz',
+      title: 'حفظ القرآن وتلاوته',
+      text: 'اللَّهُمَّ ارْزُقْنَا حِفْظَ الْقُرْآنِ وَتِلَاوَتَهُ عَلَى النَّحْوِ الَّذِي يُرْضِيكَ.',
+      occasion: 'القرآن',
+      source: 'دعاء عام',
+      isSunnah: false,
+    ),
+    GeneralDuaItem(
+      id: 'selected_khatima',
+      title: 'حسن الخاتمة',
+      text: 'اللَّهُمَّ إِنَّا نَسْأَلُكَ أَلَّا نَمُوتَ إِلَّا وَأَنْتَ رَاضٍ عَنَّا.',
+      occasion: 'حسن الخاتمة',
+      source: 'دعاء عام',
       isSunnah: false,
     ),
   ];

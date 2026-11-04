@@ -42,6 +42,9 @@ class LocalReminderService implements ReminderScheduler {
   static const String snoozeActionId = 'snooze';
   static const String markReadActionId = 'mark_read';
 
+  /// لون أيقونة الإشعار: برونز قوس الشعار.
+  static const Color _iconColor = Color(0xFFA67D42);
+
   /// مدة التأجيل.
   static const Duration snoozeDelay = Duration(minutes: 10);
 
@@ -95,7 +98,7 @@ class LocalReminderService implements ReminderScheduler {
     await _initializeTimeZone();
 
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_stat_tadbeer',
     );
     const darwinSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -423,7 +426,8 @@ class LocalReminderService implements ReminderScheduler {
         additionalFlags: _insistentAlarmFlags,
         autoCancel: true,
         ongoing: false,
-        icon: '@mipmap/ic_launcher',
+        icon: '@drawable/ic_stat_tadbeer',
+        color: _iconColor,
         category: AndroidNotificationCategory.alarm,
         visibility: NotificationVisibility.public,
         styleInformation: style,
@@ -477,7 +481,8 @@ class LocalReminderService implements ReminderScheduler {
       playSound: true,
       enableVibration: true,
       audioAttributesUsage: AudioAttributesUsage.notification,
-      icon: '@mipmap/ic_launcher',
+      icon: '@drawable/ic_stat_tadbeer',
+      color: _iconColor,
       category: AndroidNotificationCategory.reminder,
       visibility: NotificationVisibility.public,
       styleInformation: style,
@@ -586,7 +591,7 @@ class LocalReminderService implements ReminderScheduler {
       }
     }
     if (reminder.id == portionReminderId) {
-      // ويُلغى معها الاحتياطي اليومي بعدها.
+      // ومعها الاحتياطي اليومي القديم الذي كان بعد الأيام الأربعة عشر.
       for (int i = 0; i <= portionReminderDays; i++) {
         try {
           await _notificationsPlugin.cancel(id: _portionBaseId + i);
@@ -929,10 +934,9 @@ class LocalReminderService implements ReminderScheduler {
     NotificationDetails details,
     AndroidScheduleMode scheduleMode,
   ) async {
-    final store = UserDataStore.instance;
     final strings = _strings;
     final notices = portionNotices(
-      store.journey,
+      UserDataStore.instance.journey,
       DateTime.now(),
       hour: reminder.hour,
       minute: reminder.minute,
@@ -948,25 +952,6 @@ class LocalReminderService implements ReminderScheduler {
         scheduledDate: tz.TZDateTime.from(notices[i].at, tz.local),
         details: details,
         preferredMode: scheduleMode,
-        payload: 'quran_resume',
-      );
-    }
-    // بعد آخر الأيام المجدولة: تذكير يومي عام، حتى يُفتح التطبيق فيُجدول من جديد.
-    final fallback = portionFallbackAt(
-      store.journey,
-      DateTime.now(),
-      hour: reminder.hour,
-      minute: reminder.minute,
-    );
-    if (fallback != null) {
-      await _zonedScheduleSafe(
-        id: _portionBaseId + portionReminderDays,
-        title: strings.toReader(_readerName, strings.portionDueTitle),
-        body: strings.portionLeftBody,
-        scheduledDate: tz.TZDateTime.from(fallback, tz.local),
-        details: details,
-        preferredMode: scheduleMode,
-        matchDateTimeComponents: DateTimeComponents.time,
         payload: 'quran_resume',
       );
     }

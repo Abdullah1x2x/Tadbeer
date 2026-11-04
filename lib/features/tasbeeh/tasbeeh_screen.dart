@@ -7,8 +7,9 @@ import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import 'tasbeeh_model.dart';
 import '../../core/design_system/app_icons.dart';
-import '../../core/design_system/ornaments.dart';
+import '../../core/design_system/design_system.dart';
 import '../onboarding/tour/section_guide.dart';
+import '../quran/qcf/qcf_page_body.dart';
 
 part 'tasbeeh_widgets.dart';
 part 'tasbeeh_screen_sections.dart';
@@ -311,165 +312,164 @@ class _TasbeehScreenState extends State<TasbeehScreen>
                 // ارتفاع ثابت لمربع الذكر، فلا يقفز.
                 final cardHeight = isCompact ? 180.0 : 205.0;
 
-                return SingleChildScrollView(
+                return Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: isCompact ? 14 : 18,
                     vertical: isCompact ? 8 : 12,
                   ),
-                  physics: const BouncingScrollPhysics(),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 540),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // ١. التبديل بين الاستغفار والتسبيح.
-                          _buildSectionSwitcher(isDark, primaryColor),
-                          const SizedBox(height: 12),
+                  // ثابتة بلا تمرير، وتصغر كلها على الهواتف الصغيرة.
+                  child: FitScreen(
+                    maxWidth: 540,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // ١. التبديل بين الاستغفار والتسبيح.
+                        _buildSectionSwitcher(isDark, primaryColor),
+                        const SizedBox(height: 12),
 
-                          // ٢. مربع الذكر الثابت.
-                          _buildFixedDhikrCard(
-                            dhikr,
-                            isDark,
-                            primaryColor,
-                            cardHeight,
-                          ),
-                          SizedBox(height: isCompact ? 14 : 18),
+                        // ٢. مربع الذكر الثابت.
+                        _buildFixedDhikrCard(
+                          dhikr,
+                          isDark,
+                          primaryColor,
+                          cardHeight,
+                        ),
+                        SizedBox(height: isCompact ? 14 : 18),
 
-                          // ٣. دائرة العدّ.
-                          Center(
-                            child: ScaleTransition(
-                              scale: _scaleAnimation,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: _handleTap,
-                                onLongPress: _toggleAutoCount,
-                                child: Container(
-                                  width: circleSize,
-                                  height: circleSize,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: isDark
-                                        ? AppColors.darkSurface
-                                        : AppColors.comsilk,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            (isDark
-                                                    ? AppColors.darkAccentGold
-                                                    : AppColors.olive)
-                                                .withValues(alpha: 0.12),
-                                        blurRadius: 26,
-                                        spreadRadius: 2,
-                                        offset: const Offset(0, 8),
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      color: isDark
-                                          ? AppColors.darkBorder
-                                          : AppColors.lightBorder,
-                                      width: 1.5,
+                        // ٣. دائرة العدّ.
+                        Center(
+                          child: ScaleTransition(
+                            scale: _scaleAnimation,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: _handleTap,
+                              onLongPress: _toggleAutoCount,
+                              child: Container(
+                                width: circleSize,
+                                height: circleSize,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isDark
+                                      ? AppColors.darkSurface
+                                      : AppColors.comsilk,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          (isDark
+                                                  ? AppColors.darkAccentGold
+                                                  : AppColors.olive)
+                                              .withValues(alpha: 0.12),
+                                      blurRadius: 26,
+                                      spreadRadius: 2,
+                                      offset: const Offset(0, 8),
                                     ),
+                                  ],
+                                  border: Border.all(
+                                    color: isDark
+                                        ? AppColors.darkBorder
+                                        : AppColors.lightBorder,
+                                    width: 1.5,
                                   ),
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      // حلقة التقدم.
-                                      SizedBox(
-                                        width: circleSize - 16,
-                                        height: circleSize - 16,
-                                        child: CircularProgressIndicator(
-                                          value: progress,
-                                          strokeWidth: 6,
-                                          backgroundColor: isDark
-                                              ? AppColors.darkBorder.withValues(
-                                                  alpha: 0.3,
-                                                )
-                                              : AppColors.lightBorder
-                                                    .withValues(alpha: 0.5),
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                isDark
-                                                    ? AppColors.darkAccentGold
-                                                    : primaryColor,
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    // حلقة التقدم.
+                                    SizedBox(
+                                      width: circleSize - 16,
+                                      height: circleSize - 16,
+                                      child: CircularProgressIndicator(
+                                        value: progress,
+                                        strokeWidth: 6,
+                                        backgroundColor: isDark
+                                            ? AppColors.darkBorder.withValues(
+                                                alpha: 0.3,
+                                              )
+                                            : AppColors.lightBorder.withValues(
+                                                alpha: 0.5,
                                               ),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              isDark
+                                                  ? AppColors.darkAccentGold
+                                                  : primaryColor,
+                                            ),
+                                      ),
+                                    ),
+                                    // الرقم والهدف وتلميح النقر.
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          context.l10n.digits(
+                                            _repo.currentCount,
+                                          ),
+                                          style: TextStyle(
+                                            fontFamily: 'Amiri',
+                                            fontSize: isCompact ? 46 : 56,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDark
+                                                ? AppColors.darkTextPrimary
+                                                : AppColors.lightPrimary,
+                                            height: 1.0,
+                                          ),
                                         ),
-                                      ),
-                                      // الرقم والهدف وتلميح النقر.
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            context.l10n.digits(
-                                              _repo.currentCount,
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          _repo.targetCount > 0
+                                              ? l10n.targetCount(
+                                                  _repo.targetCount,
+                                                )
+                                              : l10n.freeCount,
+                                          style: TextStyle(
+                                            fontSize: isCompact ? 13 : 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: isDark
+                                                ? AppColors.darkTextSecondary
+                                                : AppColors.lightTextSecondary,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 3,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: primaryColor.withValues(
+                                              alpha: 0.1,
                                             ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            l10n.tapAnywhereToCount,
                                             style: TextStyle(
-                                              fontFamily: 'Amiri',
-                                              fontSize: isCompact ? 46 : 56,
-                                              fontWeight: FontWeight.bold,
-                                              color: isDark
-                                                  ? AppColors.darkTextPrimary
-                                                  : AppColors.lightPrimary,
-                                              height: 1.0,
+                                              fontSize: 12,
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            _repo.targetCount > 0
-                                                ? l10n.targetCount(
-                                                    _repo.targetCount,
-                                                  )
-                                                : l10n.freeCount,
-                                            style: TextStyle(
-                                              fontSize: isCompact ? 13 : 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: isDark
-                                                  ? AppColors.darkTextSecondary
-                                                  : AppColors
-                                                        .lightTextSecondary,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 6),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 3,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: primaryColor.withValues(
-                                                alpha: 0.1,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Text(
-                                              l10n.tapAnywhereToCount,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: primaryColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(height: isCompact ? 10 : 14),
+                        ),
+                        SizedBox(height: isCompact ? 10 : 14),
 
-                          // ٤. العدّ التلقائي والتحكم بإيقاعه.
-                          _buildAutoCountBar(isDark, primaryColor),
-                          SizedBox(height: isCompact ? 10 : 14),
+                        // ٤. العدّ التلقائي والتحكم بإيقاعه.
+                        _buildAutoCountBar(isDark, primaryColor),
+                        SizedBox(height: isCompact ? 10 : 14),
 
-                          // ٥. إحصاءات اليوم والإجمالي.
-                          _buildStatsRow(isDark, primaryColor),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
+                        // ٥. إحصاءات اليوم والإجمالي.
+                        _buildStatsRow(isDark, primaryColor),
+                        const SizedBox(height: 16),
+                      ],
                     ),
                   ),
                 );

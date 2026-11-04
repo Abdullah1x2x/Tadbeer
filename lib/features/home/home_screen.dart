@@ -58,105 +58,92 @@ class HomeScreen extends StatelessWidget {
                 final gap = isVeryCompact ? 8.0 : (isCompact ? 10.0 : 12.0);
 
                 // الصفحة بقدر الشاشة ولا تُمرّر: بطاقة الآية تأخذ ما تتركه
-                // البطاقات الأخرى. ولا تتجاوز الشاشة وتُمرّر إلا إن قلّ ذلك عن
-                // أطول آية اليوم (شاشة قصيرة بكل البطاقات، أو نص كبير جداً).
-                return ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context)
-                      .copyWith(overscroll: false),
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: paddingH,
-                      vertical: paddingV,
-                    ),
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: 580,
-                          minHeight: h - paddingV * 2,
-                        ),
-                        child: IntrinsicHeight(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              _buildTopBar(
-                                context,
-                                l10n,
-                                isDark,
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: gap * 0.6),
-                              KeyedSubtree(
-                                key: HomeWalkthrough.searchBar,
-                                child: _buildGlobalSearchBar(
-                                  context,
-                                  l10n,
-                                  isDark,
-                                  isCompact: isCompact,
-                                  isVeryCompact: isVeryCompact,
-                                ),
-                              ),
-                              SizedBox(height: gap),
-
-                              // آية اليوم مع سؤال تدبر، بما بقي من الارتفاع.
-                              Expanded(
-                                child: _HeightFloor(
-                                  heightFor: (width) =>
-                                      AyahOfTheDayCard.minHeight(
-                                        context,
-                                        width,
-                                      ),
-                                  child: KeyedSubtree(
-                                    key: HomeWalkthrough.ayahCard,
-                                    child: const AyahOfTheDayCard(),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: gap),
-
-                              // سؤال عمّا التزم به القارئ في وقفة سابقة.
-                              CommitmentCard(gap: gap),
-
-                              // المصحف ورحلة القراءة.
-                              _QuranHeroCard(
-                                key: HomeWalkthrough.quranCard,
-                                onTap: () {
-                                  if (MainShell.selectTab(
-                                    context,
-                                    ShellTab.quran,
-                                  )) {
-                                    return;
-                                  }
-                                  final pos =
-                                      UserDataStore.instance.readingPosition;
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          QuranScreen(initialPage: pos.page),
-                                    ),
-                                  );
-                                },
-                                isCompact: isCompact,
-                                isVeryCompact: isVeryCompact,
-                              ),
-                              SizedBox(height: gap),
-
-                              // آخر ما توقف عنده القارئ، ويختفي إن لم يوجد.
-                              ContinueCard(limit: 1, gap: gap),
-
-                              // وقفاتي والملاحظات والكتب.
-                              _buildShortcuts(
-                                context,
-                                l10n,
-                                isDark,
-                                gap: gap,
-                                slim: isVeryCompact,
-                              ),
-                            ],
+                // البطاقات الأخرى. وإن قلّ ذلك عن أطول آية اليوم (شاشة قصيرة
+                // بكل البطاقات، أو نص كبير جداً) صغرت الصفحة كلها لتسعها.
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: paddingH,
+                    vertical: paddingV,
+                  ),
+                  child: FitScreen(
+                    maxWidth: 580,
+                    child: IntrinsicHeight(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildTopBar(
+                            context,
+                            l10n,
+                            isDark,
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
                           ),
-                        ),
+                          SizedBox(height: gap * 0.6),
+                          KeyedSubtree(
+                            key: HomeWalkthrough.searchBar,
+                            child: _buildGlobalSearchBar(
+                              context,
+                              l10n,
+                              isDark,
+                              isCompact: isCompact,
+                              isVeryCompact: isVeryCompact,
+                            ),
+                          ),
+                          SizedBox(height: gap),
+
+                          // آية اليوم مع سؤال تدبر، بما بقي من الارتفاع.
+                          Expanded(
+                            child: _HeightFloor(
+                              heightFor: (width) =>
+                                  AyahOfTheDayCard.minHeight(context, width),
+                              child: KeyedSubtree(
+                                key: HomeWalkthrough.ayahCard,
+                                child: const AyahOfTheDayCard(),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: gap),
+
+                          // سؤال عمّا التزم به القارئ في وقفة سابقة.
+                          CommitmentCard(gap: gap),
+
+                          // المصحف ورحلة القراءة.
+                          _QuranHeroCard(
+                            key: HomeWalkthrough.quranCard,
+                            onTap: () {
+                              if (MainShell.selectTab(
+                                context,
+                                ShellTab.quran,
+                              )) {
+                                return;
+                              }
+                              final pos =
+                                  UserDataStore.instance.readingPosition;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      QuranScreen(initialPage: pos.page),
+                                ),
+                              );
+                            },
+                            isCompact: isCompact,
+                            isVeryCompact: isVeryCompact,
+                          ),
+                          SizedBox(height: gap),
+
+                          // آخر ما توقف عنده القارئ، ويختفي إن لم يوجد.
+                          ContinueCard(limit: 1, gap: gap),
+
+                          // وقفاتي والملاحظات والكتب.
+                          _buildShortcuts(
+                            context,
+                            l10n,
+                            isDark,
+                            gap: gap,
+                            slim: isVeryCompact,
+                          ),
+                        ],
                       ),
                     ),
                   ),

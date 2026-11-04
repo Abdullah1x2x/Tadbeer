@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import '../../core/design_system/app_icons.dart';
-import '../../core/design_system/ornaments.dart';
+import '../../core/design_system/design_system.dart';
 import '../../data/storage/user_data_store.dart';
 
 /// اختيار مظهر التطبيق عند أول فتح: فاتح أو داكن أو تلقائي، وأحد الثيمات
@@ -42,11 +42,14 @@ class ThemePickerScreen extends StatelessWidget {
           child: Scaffold(
             body: PatternBackground(
               child: SafeArea(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 520),
-                    child: ListView(
-                      padding: const EdgeInsets.fromLTRB(20, 32, 20, 24),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                  // ثابتة بلا تمرير، وتصغر كلها على الهواتف الصغيرة.
+                  child: FitScreen(
+                    maxWidth: 480,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
                           l10n.themePickerTitle,

@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/app/localization.dart';
+import 'package:tadbeer/core/design_system/fit_screen.dart';
 import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/features/continue/last_activity.dart';
@@ -122,11 +123,15 @@ void main() {
     }
   }
 
-  /// How far the Home page can scroll; 0 when it fits the screen.
-  double extent(WidgetTester tester) => tester
-      .state<ScrollableState>(find.byType(Scrollable).first)
-      .position
-      .maxScrollExtent;
+  /// How far the Home page runs past the screen, and so is scaled down to
+  /// fit; 0 when it fits as it is. The page itself never scrolls.
+  double extent(WidgetTester tester) {
+    final fit = find.byType(FitScreen);
+    final page = find
+        .descendant(of: fit, matching: find.byType(ConstrainedBox))
+        .first;
+    return tester.getSize(page).height - tester.getSize(fit).height;
+  }
 
   // Heights are the space Home gets above the app's floating bar.
   const screens = {
@@ -148,9 +153,9 @@ void main() {
         expect(tester.takeException(), isNull);
 
         // With a commitment and an activity both showing, a shorter phone
-        // scrolls a little rather than cut the day's longest ayah.
+        // shrinks a little rather than cut the day's longest ayah.
         if (!busy || entry.value.height >= 830) {
-          expect(extent(tester), 0, reason: 'the page does not scroll');
+          expect(extent(tester), 0, reason: 'the page is not scaled down');
         }
 
         // Every part is on screen, the last one included.
@@ -182,7 +187,7 @@ void main() {
     }
   }
 
-  testWidgets('a very short screen scrolls rather than crush the cards', (
+  testWidgets('a very short screen shrinks rather than crush the cards', (
     tester,
   ) async {
     await tester.runAsync(() => openStore(busy: true));

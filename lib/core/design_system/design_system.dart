@@ -11,4 +11,5 @@ export 'floating_nav_bar.dart';
 export 'futuristic_badge.dart';
 export 'futuristic_button.dart';
 export 'futuristic_card.dart';
+export 'fit_screen.dart';
 export 'ornaments.dart';

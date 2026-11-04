@@ -177,10 +177,11 @@ lib/
 - **`QuranAudio`:** `playFrom(ayah)` يتلو إلى آخر السورة وما بعدها، و`playAyah(ayah)` يتلو آية واحدة ثم يتوقف. لكل طلب رقم، فيُلغي الطلبُ الأحدث ما قبله وهو ما زال يُحمَّل.
 - **منع التعليق:** ينتهي انتظار أول ملف بعد `QuranAudio.loadTimeout` (20 ثانية)، ويُوقَف المحرك عند الخطأ، ويعيد `toggle()` الآية حين يكون المحرك متوقفاً، ولا ينتظر التالي والسابق وقفة التدبر.
 - **التشغيل في الخلفية:** يعرض `RecitationHandler` (audio_service) المشغّل في الإشعار، وزر الإيقاف فيه يغلق التلاوة عبر `onStop`.
+- **أيقونة الإشعارات:** `@drawable/ic_stat_tadbeer` بيضاء، لأن أندرويد يرسم الأيقونة الصغيرة من شفافيتها وحدها. يولّدها من طبقة الشعار `python3 tool/brand/notification_icon.py`.
 
 ### 4.10. آية للتدبر وودجت الشاشة الرئيسية (`lib/features/daily/` و`lib/features/widgets/`)
 - **المصدر:** تضم `AyahOfTheDay.pool` كل آية لا تزيد على `maxLetters` (170) حرفاً: 6,128 آية من 6,236، من السور الـ 114 كلها. ويبدأ كل يوم بآية منتقاة من الأدعية القرآنية أو المسارات.
-- **الودجت:** يرسم `HomeWidgetSync` كل آية صورةً (`WidgetAyahImage`، بعرض التفاف 300 لخط أكبر). وتعرض قائمة الودجت `tadbeer_widget_preview.xml` بالآية بخط `res/font/amiri_quran.ttf` وقيم نموذجية للختمة.
+- **الودجت:** يرسم `HomeWidgetSync` كل آية صورةً (`WidgetAyahImage`، بعرض التفاف 300 لخط أكبر). وتعرض قائمة الودجت `tadbeer_widget_preview.xml` بقيم نموذجية للختمة، وآيتها صورة `widget_preview_ayah.png` بخط المصحف، لأن المشغّل يرسم المعاينة بخط النظام ويتجاهل خطوط التطبيق. يعيد رسمها `flutter test tool/widget/preview_ayah_test.dart`.
 
 ### 4.11. أذونات أول تشغيل (`lib/features/reminders/startup_permissions.dart`)
 - بعد شاشات البداية يستدعي `MainShell` الدالة `StartupPermissions.askOnce`: شرح داخل التطبيق، ثم طلب إذن الإشعارات والمنبهات الدقيقة، مرة واحدة لكل تثبيت. ويبقى إذن الموقع في شاشة القبلة.
@@ -325,7 +326,7 @@ CustomWordMeaningConfig(
    ),
    ```
 2. **أدعية السنة النبوية وجوامع الدعاء (`lib/features/duas/data/sunnah_duas_repository.dart`):**  
-   أضف عنصراً إلى `sunnahDuas` (أدعية نبوية) أو `jawamiDuas` (جوامع الدعاء):
+   أضف عنصراً إلى `sunnahDuas` (أدعية نبوية) أو `jawamiDuas` (جوامع الدعاء) أو `selectedDuas` (أدعية عامة مختارة، مصدرها «دعاء عام» و`isSunnah: false`):
    ```dart
    GeneralDuaItem(
      id: 'sunnah_custom',

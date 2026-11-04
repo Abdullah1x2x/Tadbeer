@@ -15,6 +15,7 @@ import '../data/sunnah_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/ornaments.dart';
 import '../../onboarding/tour/section_guide.dart';
+import '../../quran/qcf/qcf_page_body.dart';
 
 /// تبويب الأدعية: أدعية القرآن، وأذكار الصباح والمساء، وأدعية أهل البيت، وأدعية
 /// السنة، وجوامع الدعاء.
@@ -30,6 +31,7 @@ class DuasScreen extends StatelessWidget {
     final totalAhlulbaytDuas = AhlulbaytDuasRepository.defaultDuas.length;
     final totalSunnahDuas = SunnahDuasRepository.sunnahDuas.length;
     final totalJawamiDuas = SunnahDuasRepository.jawamiDuas.length;
+    final totalSelectedDuas = SunnahDuasRepository.selectedDuas.length;
 
     final isArabic = context.currentLanguage == AppLanguage.arabic;
 
@@ -94,10 +96,9 @@ class DuasScreen extends StatelessWidget {
                         '﴿ وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ ﴾',
                         textDirection: TextDirection.rtl,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'AmiriQuran',
-                          fontSize: 18,
-                          height: 1.8,
+                        style: QcfPageBody.scriptStyle(
+                          fontSize: 19,
+                          height: 1.9,
                           color: isDark
                               ? AppColors.darkAccentGold
                               : AppColors.lightPrimary,
@@ -234,6 +235,33 @@ class DuasScreen extends StatelessWidget {
                         builder: (_) => GeneralDuasListScreen(
                           title: l10n.jawamiDuasTitle,
                           items: SunnahDuasRepository.jawamiDuas,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // ٦. أدعية مختارة.
+                _DuaCategoryCard(
+                  icon: AppIcons.flowerLotus,
+                  title: l10n.selectedDuasTitle,
+                  subtitle: l10n.selectedDuasSubtitle,
+                  countBadge: l10n.duasCountBadge(
+                    isArabic
+                        ? ArabicSearchNormalizer.toArabicDigits(
+                            totalSelectedDuas,
+                          )
+                        : totalSelectedDuas,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GeneralDuasListScreen(
+                          title: l10n.selectedDuasTitle,
+                          items: SunnahDuasRepository.selectedDuas,
                         ),
                       ),
                     );

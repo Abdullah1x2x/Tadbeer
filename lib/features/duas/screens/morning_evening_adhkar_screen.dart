@@ -13,6 +13,7 @@ import '../../../data/storage/user_data_store.dart';
 import '../../quran/qcf/qcf_ayah_text.dart';
 import '../../quran/qcf/qcf_layout.dart';
 import '../../../core/design_system/app_icons.dart';
+import '../../quran/qcf/qcf_page_body.dart';
 
 /// أذكار الصباح والمساء، مع عدّاد لكل ذكر.
 class MorningEveningAdhkarScreen extends StatefulWidget {
@@ -589,13 +590,7 @@ class _AdhkarText extends StatelessWidget {
     final plain = Text(
       item.text,
       textAlign: TextAlign.center,
-      style: TextStyle(
-        fontFamily: 'Amiri',
-        fontSize: 18.5,
-        fontWeight: FontWeight.w600,
-        height: 1.65,
-        color: color,
-      ),
+      style: QcfPageBody.scriptStyle(fontSize: 20, height: 1.9, color: color),
     );
     if (item.quran.isEmpty ||
         !QuranRepository.instance.isLoaded ||

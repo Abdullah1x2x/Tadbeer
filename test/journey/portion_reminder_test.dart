@@ -33,7 +33,16 @@ void main() {
     final list = notices(journey(readToday: 5));
     expect(list.first, PortionNotice(DateTime(2026, 10, 26, 20), 16));
     expect(list[1], PortionNotice(DateTime(2026, 10, 27, 20), 21));
-    expect(list, hasLength(portionReminderDays));
+    // The 599 pages left run out on the 29th day, within the scheduled days.
+    expect(list, hasLength(29));
+    expect(list.fold(0, (sum, n) => sum + n.pages), 599);
+  });
+
+  test('schedules no further than the set number of days', () {
+    final long = ReadingJourney(
+      plan: KhatmaPlan(startDate: DateTime(2026, 10, 20), days: 120),
+    );
+    expect(notices(long), hasLength(portionReminderDays));
   });
 
   test('skips today once the portion is read', () {
@@ -50,19 +59,5 @@ void main() {
   test('stops when the khatma runs out of pages', () {
     final list = notices(journey(advanced: 580));
     expect(list.map((n) => n.pages), [21, 3]);
-  });
-
-  test('a daily fallback follows when pages outlast the scheduled days', () {
-    expect(
-      portionFallbackAt(journey(), now, hour: 20, minute: 0),
-      DateTime(2026, 11, 9, 20),
-    );
-  });
-
-  test('no fallback when the khatma ends within the scheduled days', () {
-    expect(
-      portionFallbackAt(journey(advanced: 580), now, hour: 20, minute: 0),
-      isNull,
-    );
   });
 }

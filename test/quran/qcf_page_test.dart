@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tadbeer/features/quran/widgets/surah_header_banner.dart';
 import 'package:tadbeer/core/theme/theme.dart';
 import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/quran/quran_models.dart';
@@ -74,11 +75,21 @@ void main() {
     return null;
   }
 
-  /// Paragraphs drawn with the page's Mushaf font.
-  Iterable<RenderParagraph> mushafLines(WidgetTester tester, {int page = 3}) =>
-      tester
-          .renderObjectList<RenderParagraph>(find.byType(RichText))
-          .where((p) => mushafSpan(p.text, page) != null);
+  /// Paragraphs drawn with the page's Mushaf font, leaving out the surah
+  /// header, whose name is written in that font too.
+  Iterable<RenderParagraph> mushafLines(WidgetTester tester, {int page = 3}) {
+    final header = tester
+        .renderObjectList<RenderParagraph>(
+          find.descendant(
+            of: find.byType(SurahHeaderBanner),
+            matching: find.byType(RichText),
+          ),
+        )
+        .toSet();
+    return tester
+        .renderObjectList<RenderParagraph>(find.byType(RichText))
+        .where((p) => !header.contains(p) && mushafSpan(p.text, page) != null);
+  }
 
   /// Font size of [page]'s lines as laid out.
   double mushafFontSize(WidgetTester tester, int page) => mushafSpan(

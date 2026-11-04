@@ -98,7 +98,7 @@ Future<void> _startBackgroundRecitation() async {
         androidNotificationChannelId: 'com.tadbeer.app.recitation',
         androidNotificationChannelName: 'التلاوة',
         androidNotificationOngoing: true,
-        androidNotificationIcon: 'mipmap/ic_launcher',
+        androidNotificationIcon: 'drawable/ic_stat_tadbeer',
       ),
     );
   } on Object catch (e) {

@@ -88,7 +88,11 @@ class _WalkthroughState extends State<_Walkthrough> {
     for (final key in keys) {
       final box = key.currentContext?.findRenderObject();
       if (box is! RenderBox || !box.hasSize) continue;
-      final found = box.localToGlobal(Offset.zero) & box.size;
+      // بالتحويل لا بالحجم وحده، فالصفحة الرئيسية قد تُصغَّر لتسع الشاشة.
+      final found = MatrixUtils.transformRect(
+        box.getTransformTo(null),
+        Offset.zero & box.size,
+      );
       rect = rect?.expandToInclude(found) ?? found;
     }
     return rect?.inflate(6);

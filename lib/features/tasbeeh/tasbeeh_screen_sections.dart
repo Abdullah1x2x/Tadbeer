@@ -247,9 +247,8 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                                         item.arabicText,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontFamily: 'IBMPlexSansArabic',
-                                          fontSize: 16,
+                                        style: QcfPageBody.scriptStyle(
+                                          fontSize: 17,
                                           fontWeight: isSelected
                                               ? FontWeight.bold
                                               : FontWeight.normal,
@@ -674,11 +673,9 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                                   dhikr.arabicText,
                                   textAlign: TextAlign.center,
                                   textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                    fontFamily: 'Amiri',
+                                  style: QcfPageBody.scriptStyle(
                                     fontSize: textFontSize,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1.45,
+                                    height: 1.75,
                                     color: isDark
                                         ? AppColors.darkTextPrimary
                                         : AppColors.lightPrimaryDark,

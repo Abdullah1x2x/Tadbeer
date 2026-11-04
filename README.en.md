@@ -38,7 +38,7 @@ The app helps you understand the Quran and act on it, not only read it. It is bu
 | **Listening** | 7 reciters, a whole surah or one ayah, and downloads for offline listening |
 | **Journey** | Khatma plans, day streaks, goals, a Mushaf map and a monthly report |
 | **Memorization** | Spaced review of the ayahs you memorize |
-| **Duas** | Duas from the Quran, the Sunnah and the Ahlulbayt, with daily adhkar and counters |
+| **Duas** | Duas from the Quran, the Sunnah and the Ahlulbayt, selected duas, and daily adhkar with counters |
 | **Dhikr** | An istighfar and tasbeeh counter with auto counting |
 | **Notes** | Notes on ayahs and a reflection journal, with export and save to device |
 | **Library** | Books and booklets you read inside the app |

@@ -606,6 +606,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Comprehensive prayers for goodness in this life and the hereafter';
 
   @override
+  String get selectedDuasTitle => 'Selected Duas';
+
+  @override
+  String get selectedDuasSubtitle =>
+      'On character, guidance, steadfastness, piety and a good end';
+
+  @override
   String get offlineQuranAndReflection => 'Offline Quran & Contemplation';
 
   @override
@@ -1114,7 +1121,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String reachedPage(String page) {
-    return 'Reached page $page';
+    return 'Read through page $page';
+  }
+
+  @override
+  String startsAtPage(String page) {
+    return 'Starts at page $page';
   }
 
   @override
@@ -2591,9 +2603,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markReadAction => 'I read';
-
-  @override
-  String get portionDueTitle => 'Time for your daily portion';
 
   @override
   String get notificationsOffNotice =>

@@ -604,6 +604,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'أدعية جامعة لخيري الدنيا والآخرة والهدى والعافية';
 
   @override
+  String get selectedDuasTitle => 'أدعية مختارة';
+
+  @override
+  String get selectedDuasSubtitle =>
+      'في الأخلاق والهداية والثبات والتقوى وحسن الخاتمة';
+
+  @override
   String get offlineQuranAndReflection => 'مصحف وتدبّر بدون إنترنت';
 
   @override
@@ -1108,7 +1115,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String reachedPage(String page) {
-    return 'وصلت إلى صفحة $page';
+    return 'أتممت حتى صفحة $page';
+  }
+
+  @override
+  String startsAtPage(String page) {
+    return 'تبدأ من صفحة $page';
   }
 
   @override
@@ -2578,9 +2590,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get markReadAction => 'قرأت';
-
-  @override
-  String get portionDueTitle => 'حان وقت وِردك اليومي';
 
   @override
   String get notificationsOffNotice => 'الإشعارات متوقفة، فلن تصلك التذكيرات.';

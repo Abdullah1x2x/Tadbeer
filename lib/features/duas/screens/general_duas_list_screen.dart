@@ -7,6 +7,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/sunnah_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_search_field.dart';
+import '../../quran/qcf/qcf_page_body.dart';
 
 /// أدعية السنة النبوية أو جوامع الدعاء، مع بحث.
 class GeneralDuasListScreen extends StatefulWidget {
@@ -226,11 +227,9 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                           Text(
                             item.text,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Amiri',
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600,
-                              height: 1.6,
+                            style: QcfPageBody.scriptStyle(
+                              fontSize: 19,
+                              height: 1.9,
                               color: isDark
                                   ? AppColors.darkTextPrimary
                                   : AppColors.lightTextPrimary,

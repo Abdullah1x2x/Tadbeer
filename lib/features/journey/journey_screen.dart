@@ -354,9 +354,12 @@ class _KhatmaProgressCard extends StatelessWidget {
                             color: AppColors.textPrimary(context),
                           ),
                         ),
-                        // نفس صفحة زر "أكمل" تحتها.
+                        // آخر صفحة أتمها، فتتفق مع عدد ورد اليوم؛ وزر "أكمل"
+                        // تحتها على الصفحة التالية لها.
                         Text(
-                          l10n.reachedPage(plan.currentPage),
+                          plan.advanced == 0
+                              ? l10n.startsAtPage(plan.currentPage)
+                              : l10n.reachedPage(plan.currentPage - 1),
                           style: TextStyle(
                             color: AppColors.textSecondary(context),
                           ),
