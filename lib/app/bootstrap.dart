@@ -95,7 +95,7 @@ Future<void> _startBackgroundRecitation() async {
     RecitationHandler.instance = await AudioService.init(
       builder: RecitationHandler.new,
       config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.tadbeer.app.recitation',
+        androidNotificationChannelId: 'org.tadbeer.quran.recitation',
         androidNotificationChannelName: 'التلاوة',
         androidNotificationOngoing: true,
         androidNotificationIcon: 'drawable/ic_stat_tadbeer',

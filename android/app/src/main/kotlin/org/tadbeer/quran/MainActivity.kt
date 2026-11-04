@@ -1,4 +1,4 @@
-package com.tadbeer.app
+package org.tadbeer.quran
 
 import android.content.Intent
 import android.hardware.GeomagneticField

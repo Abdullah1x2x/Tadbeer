@@ -26,7 +26,7 @@ class HomeWidgetSync {
 
   static const androidName = 'TadbeerWidgetProvider';
   static const iOSName = 'TadbeerWidget';
-  static const appGroupId = 'group.com.tadbeer.app';
+  static const appGroupId = 'group.org.tadbeer.quran';
 
   /// الأرباع المخزنة مسبقاً: يومان. بعدها يدور الودجت على الآيات المخزنة حتى
   /// يُفتح التطبيق.

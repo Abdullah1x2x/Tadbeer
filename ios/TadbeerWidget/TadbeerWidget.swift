@@ -7,7 +7,7 @@ import WidgetKit
 // the next two days in the shared app group, so the widget keeps changing
 // without the app running.
 
-private let appGroup = "group.com.tadbeer.app"
+private let appGroup = "group.org.tadbeer.quran"
 private let gold = Color(red: 0.89, green: 0.76, blue: 0.48)
 private let navyTop = Color(red: 0.08, green: 0.15, blue: 0.25)
 

@@ -1,4 +1,4 @@
-package com.tadbeer.app
+package org.tadbeer.quran
 
 import android.appwidget.AppWidgetManager
 import android.content.Context

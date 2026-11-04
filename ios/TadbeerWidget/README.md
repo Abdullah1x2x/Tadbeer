@@ -2,7 +2,7 @@
 
 The widget's code is in `TadbeerWidget.swift`. The Dart side
 (`lib/features/widgets/home_widget_sync.dart`) already writes its data to the
-app group `group.com.tadbeer.app`. Adding the widget target needs Xcode on a
+app group `group.org.tadbeer.quran`. Adding the widget target needs Xcode on a
 Mac (it has not been built or tested yet):
 
 1. Open `ios/Runner.xcworkspace` in Xcode.
@@ -14,7 +14,7 @@ Mac (it has not been built or tested yet):
    `TadbeerWidget` target instead.
 4. For **both** the `Runner` and `TadbeerWidget` targets: *Signing &
    Capabilities → + Capability → App Groups*, and add
-   `group.com.tadbeer.app`.
+   `group.org.tadbeer.quran`.
 5. In the `Runner` target, under *Build Phases*, make sure
    *Embed Foundation Extensions* contains `TadbeerWidget.appex`, and move it
    above *Run Script* if Xcode reports a build cycle.
