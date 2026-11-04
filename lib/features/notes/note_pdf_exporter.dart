@@ -86,7 +86,7 @@ class NotePdfExporter {
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
                       pw.Text(
-                        'تَدْبِير · Tadbeer',
+                        'تَدبِير · Tadbeer',
                         style: pw.TextStyle(
                           font: ttfBold,
                           fontSize: 18,
@@ -239,7 +239,7 @@ class NotePdfExporter {
                     ),
                   ),
                   child: pw.Text(
-                    'تطبيق تَدْبِير · لا إعلانات · لا تتبع · محلي بالكامل',
+                    'تطبيق تَدبِير · لا إعلانات · لا تتبع · محلي بالكامل',
                     style: pw.TextStyle(
                       font: ttfRegular,
                       fontSize: 10,
@@ -273,7 +273,7 @@ class NotePdfExporter {
       context,
       file: file,
       fileName: file.uri.pathSegments.last,
-      subject: note.title ?? 'ملاحظة وتدبر من تَدْبِير',
+      subject: note.title ?? 'ملاحظة وتدبر من تَدبِير',
     );
   }
 }

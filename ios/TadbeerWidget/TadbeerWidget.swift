@@ -249,7 +249,7 @@ struct TadbeerWidget: Widget {
         StaticConfiguration(kind: "TadbeerWidget", provider: TadbeerProvider()) { entry in
             TadbeerWidgetView(entry: entry)
         }
-        .configurationDisplayName("تَدْبِير")
+        .configurationDisplayName("تَدبِير")
         .description("آية اليوم وتقدّم ختمتك")
         .supportedFamilies([.systemMedium, .systemLarge])
     }

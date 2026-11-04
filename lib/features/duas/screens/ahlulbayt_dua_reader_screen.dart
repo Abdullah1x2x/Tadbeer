@@ -36,7 +36,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
     Clipboard.setData(
       ClipboardData(
         text:
-            '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.content}\n\n— تطبيق تَدْبِير',
+            '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.content}\n\n— تطبيق تَدبِير',
       ),
     );
     HapticFeedback.selectionClick();

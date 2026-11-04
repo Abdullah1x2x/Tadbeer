@@ -127,7 +127,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
           child: MaterialApp(
             navigatorKey: appNavigatorKey,
             scaffoldMessengerKey: appScaffoldMessengerKey,
-            title: 'تَدْبِير · Tadbeer',
+            title: 'تَدبِير · Tadbeer',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,

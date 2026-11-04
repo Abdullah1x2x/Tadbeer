@@ -150,7 +150,7 @@ class AyahOfTheDayCard extends StatefulWidget {
 }
 
 class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
-  static const _interval = Duration(seconds: 8);
+  static const _interval = Duration(seconds: 15);
 
   late DateTime _day;
   late List<Ayah> _ayahs;

@@ -221,10 +221,11 @@ class _NavButton extends StatelessWidget {
       excludeSemantics: true,
       child: Tooltip(
         message: item.label,
-        child: InkResponse(
+        // دون حبر: الشريط يطفو فوق الصفحة، فيُرسم أثر الضغطة على ما خلفه؛ والكبسولة
+        // المتحركة والاهتزاز يكفيان دليلاً على الضغط.
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: onTap,
-          radius: 32,
-          highlightShape: BoxShape.circle,
           child: Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,

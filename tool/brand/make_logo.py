@@ -34,13 +34,13 @@ def rgb(hexa):
     return np.array([int(hexa[i:i + 2], 16) for i in (0, 2, 4)], dtype=float)
 
 
-SAND_LIGHT, SAND_DARK = rgb('F4EADA'), rgb('DFC9A2')  # background, top-left to bottom-right
+SAND_LIGHT, SAND_DARK = rgb('FBF4E6'), rgb('E6CFA4')  # background, top-left to bottom-right
 GLOW = 20.0                                          # added behind the book
-BRONZE_DARK, BRONZE_LIGHT = rgb('745228'), rgb('AC8143')  # arch and stand
-BOOK_DARK, BOOK_LIGHT = rgb('947D56'), rgb('DECBA3')      # the Mushaf's pages
-PATTERN_ALPHA = 22     # the star lattice, out of 255
+BRONZE_DARK, BRONZE_LIGHT = rgb('5A3B12'), rgb('C0903F')  # arch and stand
+BOOK_DARK, BOOK_LIGHT = rgb('7A5E33'), rgb('F4E6C4')      # the Mushaf's pages
+PATTERN_ALPHA = 30     # the star lattice, out of 255
 PATTERN_STEP = 1 / 8   # stars per side, as a fraction of the size
-SHEEN = 85.0           # brightest added to the arch along its sheen
+SHEEN = 110.0          # brightest added to the arch along its sheen
 SHADOW_ALPHA = 70      # the shadow under the stand
 
 

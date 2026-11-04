@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In ar, this message translates to:
-  /// **'تَدْبِير'**
+  /// **'تَدبِير'**
   String get appName;
 
   /// No description provided for @appTagline.
@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @about.
   ///
   /// In ar, this message translates to:
-  /// **'عن تَدْبِير'**
+  /// **'عن تَدبِير'**
   String get about;
 
   /// No description provided for @more.
@@ -305,7 +305,7 @@ abstract class AppLocalizations {
   /// No description provided for @pathwayUnlockHint.
   ///
   /// In ar, this message translates to:
-  /// **'أتمّ يوم اليوم ليُفتح الذي بعده'**
+  /// **'أتمّ وِرد اليوم ليُفتح الذي بعده'**
   String get pathwayUnlockHint;
 
   /// No description provided for @pathwayComplete.
@@ -2631,7 +2631,7 @@ abstract class AppLocalizations {
   /// No description provided for @askNameHint.
   ///
   /// In ar, this message translates to:
-  /// **'نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.'**
+  /// **'نناديك به في التذكيرات والإشعارات.'**
   String get askNameHint;
 
   /// No description provided for @askNameField.
@@ -3333,7 +3333,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyOpenSourceBody.
   ///
   /// In ar, this message translates to:
-  /// **'تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.'**
+  /// **'تطبيق «تَدبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.'**
   String get privacyOpenSourceBody;
 
   /// No description provided for @createLinkWithVerseHint.
@@ -4461,13 +4461,13 @@ abstract class AppLocalizations {
   /// No description provided for @testAlarmTitle.
   ///
   /// In ar, this message translates to:
-  /// **'منبه تجريبي — تَدْبِير'**
+  /// **'منبه تجريبي — تَدبِير'**
   String get testAlarmTitle;
 
   /// No description provided for @testNoticeTitle.
   ///
   /// In ar, this message translates to:
-  /// **'إشعار تجريبي — تَدْبِير'**
+  /// **'إشعار تجريبي — تَدبِير'**
   String get testNoticeTitle;
 
   /// No description provided for @testAlarmBody.
@@ -4479,7 +4479,7 @@ abstract class AppLocalizations {
   /// No description provided for @testNoticeBody.
   ///
   /// In ar, this message translates to:
-  /// **'نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير'**
+  /// **'نظام الإشعارات يعمل بنجاح في تطبيق تَدبِير'**
   String get testNoticeBody;
 
   /// No description provided for @reminderDefaultTitle.

@@ -168,7 +168,7 @@ extension _BookReaderViews on _BookReaderScreenState {
           context,
           file: fileToShare,
           fileName: targetFileName,
-          text: '${widget.book.title} — تطبيق تَدْبِير',
+          text: '${widget.book.title} — تطبيق تَدبِير',
         );
       } else {
         if (mounted) {

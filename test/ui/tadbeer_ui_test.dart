@@ -141,7 +141,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Check App Title
-      expect(find.text('تَدْبِير'), findsOneWidget);
+      expect(find.text('تَدبِير'), findsOneWidget);
 
       // Check Main Sections (only the selected tab shows its name in the bar)
       expect(find.text('المصحف'), findsOneWidget);

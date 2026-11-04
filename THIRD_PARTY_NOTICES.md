@@ -1,6 +1,6 @@
 # Third-Party Notices & Licenses
 
-> **Project:** Tadbeer (`تَدْبِير`) — An Open-Source, Offline-First Quran Contemplation Application  
+> **Project:** Tadbeer (`تَدبِير`) — An Open-Source, Offline-First Quran Contemplation Application  
 > **Primary License:** [MIT License](LICENSE)  
 > **Audit Date:** October 2026
 
@@ -244,7 +244,7 @@ limitations under the License.
 
 ## 7. Store Compliance & Readiness Statement
 
-This document certifies that **Tadbeer (`تَدْبِير`)**:
+This document certifies that **Tadbeer (`تَدبِير`)**:
 1. **Contains zero licensing conflicts**, and all direct and platform dependencies are legally compatible with the primary [MIT License](LICENSE).
 2. **Complies fully with store distribution criteria**:
    - **Google Play:** Meets all policies regarding privacy disclosure, minimal permissions, and IP compliance.

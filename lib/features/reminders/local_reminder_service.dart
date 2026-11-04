@@ -112,7 +112,7 @@ class LocalReminderService implements ReminderScheduler {
       defaultIcon: AssetsLinuxIcon('assets/icons/app_icon.png'),
     );
     const windowsSettings = WindowsInitializationSettings(
-      appName: 'تَدْبِير',
+      appName: 'تَدبِير',
       appUserModelId: 'Com.Tadbeer.QuranApp',
       guid: 'a8c4e120-5b91-4d73-91e4-63c27f8419a2',
     );

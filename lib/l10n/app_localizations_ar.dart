@@ -10,7 +10,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'تَدْبِير';
+  String get appName => 'تَدبِير';
 
   @override
   String get appTagline => 'قراءة وتدبّر القرآن الكريم';
@@ -58,7 +58,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get booksAndBooklets => 'كتب وملازم';
 
   @override
-  String get about => 'عن تَدْبِير';
+  String get about => 'عن تَدبِير';
 
   @override
   String get more => 'المزيد';
@@ -115,7 +115,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completeDay => 'أتممت اليوم';
 
   @override
-  String get pathwayUnlockHint => 'أتمّ يوم اليوم ليُفتح الذي بعده';
+  String get pathwayUnlockHint => 'أتمّ وِرد اليوم ليُفتح الذي بعده';
 
   @override
   String get pathwayComplete => 'أتممت المسار، بارك الله فيك';
@@ -1451,8 +1451,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get askNameTitle => 'ما اسمك؟';
 
   @override
-  String get askNameHint =>
-      'نناديك به في التذكيرات والإشعارات، ويبقى على جهازك فقط.';
+  String get askNameHint => 'نناديك به في التذكيرات والإشعارات.';
 
   @override
   String get askNameField => 'اسمك';
@@ -1856,7 +1855,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get privacyOpenSourceBody =>
-      'تطبيق «تَدْبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.';
+      'تطبيق «تَدبِير» مشروع مفتوح المصدر بالكامل تحت رخصة MIT، ورمزه المصدري متاح للمراجعة والتدقيق العام على GitHub.';
 
   @override
   String get createLinkWithVerseHint =>
@@ -2504,17 +2503,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stopAlarm => 'إيقاف المنبه';
 
   @override
-  String get testAlarmTitle => 'منبه تجريبي — تَدْبِير';
+  String get testAlarmTitle => 'منبه تجريبي — تَدبِير';
 
   @override
-  String get testNoticeTitle => 'إشعار تجريبي — تَدْبِير';
+  String get testNoticeTitle => 'إشعار تجريبي — تَدبِير';
 
   @override
   String get testAlarmBody =>
       'هذا تنبيه كالمنبه برنين مستمر — اضغط «إيقاف المنبه» أو «فتح المصحف»';
 
   @override
-  String get testNoticeBody => 'نظام الإشعارات يعمل بنجاح في تطبيق تَدْبِير';
+  String get testNoticeBody => 'نظام الإشعارات يعمل بنجاح في تطبيق تَدبِير';
 
   @override
   String get reminderDefaultTitle => 'ورد القرآن الكريم';

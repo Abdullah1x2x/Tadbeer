@@ -21,4 +21,4 @@ Mac (it has not been built or tested yet):
 6. Make the app open `tadbeer://` links from the widget: in the `Runner`
    target, *Info → URL Types → +*, with URL Schemes `tadbeer`.
 7. Build and run on a device, then long-press the home screen → **+** →
-   **تَدْبِير**.
+   **تَدبِير**.

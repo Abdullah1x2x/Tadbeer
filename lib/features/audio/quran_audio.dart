@@ -85,7 +85,7 @@ class JustAudioEngine implements AudioEngine {
           id: '$i:${t.uri}',
           title: t.title,
           artist: t.artist,
-          album: 'تَدْبِير',
+          album: 'تَدبِير',
         ),
     ]);
     return _player.setAudioSources([

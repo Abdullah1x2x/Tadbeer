@@ -79,7 +79,7 @@ void main() {
     await pumpCard(tester);
     final today = AyahOfTheDay.forDayAll(DateTime.now());
     expect(shownText(tester), today[0].text);
-    await tester.pump(const Duration(seconds: 8));
+    await tester.pump(const Duration(seconds: 15));
     await tester.pumpAndSettle();
     expect(shownText(tester), today[1].text);
   });
@@ -89,7 +89,7 @@ void main() {
     final heights = <double>{};
     for (var i = 0; i < AyahOfTheDay.perDay; i++) {
       heights.add(tester.getSize(find.byType(AyahOfTheDayCard)).height);
-      await tester.pump(const Duration(seconds: 8));
+      await tester.pump(const Duration(seconds: 15));
       await tester.pumpAndSettle();
     }
     expect(heights, hasLength(1));

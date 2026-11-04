@@ -28,19 +28,16 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     super.dispose();
   }
 
-  List<String> get _categories {
-    final allCats = AhlulbaytDuasRepository.defaultDuas
-        .map((d) => d.category.split(' ')[0])
-        .toSet()
-        .toList();
-    return ['الكل', ...allCats];
-  }
+  List<String> get _categories => ['الكل', ...ahlulbaytDuaGroups.keys];
 
   List<AhlulbaytDua> get _filteredDuas {
     var list = AhlulbaytDuasRepository.defaultDuas;
 
     if (_selectedCategory != 'الكل') {
-      list = list.where((d) => d.category.contains(_selectedCategory)).toList();
+      final keys = ahlulbaytDuaGroups[_selectedCategory]!;
+      list = list
+          .where((d) => keys.any((k) => d.category.contains(k)))
+          .toList();
     }
 
     if (_searchQuery.trim().isEmpty) {
@@ -65,7 +62,7 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     Clipboard.setData(
       ClipboardData(
         text:
-            '${dua.title}\n(${dua.attributedTo})\n\n${dua.content}\n\n— تطبيق تَدْبِير',
+            '${dua.title}\n(${dua.attributedTo})\n\n${dua.content}\n\n— تطبيق تَدبِير',
       ),
     );
     HapticFeedback.selectionClick();

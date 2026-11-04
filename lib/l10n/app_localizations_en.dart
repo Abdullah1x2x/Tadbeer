@@ -115,7 +115,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get completeDay => 'Day done';
 
   @override
-  String get pathwayUnlockHint => 'Finish today to unlock the next day';
+  String get pathwayUnlockHint =>
+      'Finish today\'s portion to unlock the next day';
 
   @override
   String get pathwayComplete => 'Pathway complete!';
@@ -1451,8 +1452,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get askNameTitle => 'What’s your name?';
 
   @override
-  String get askNameHint =>
-      'We use it in your reminders and notifications. It stays on your device.';
+  String get askNameHint => 'We use it in your reminders and notifications.';
 
   @override
   String get askNameField => 'Your name';

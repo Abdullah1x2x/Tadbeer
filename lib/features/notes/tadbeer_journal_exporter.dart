@@ -213,7 +213,7 @@ class TadbeerJournalExporter {
 
     buffer.writeln();
     buffer.writeln(
-      '_تم التصدير محليًا عبر تطبيق تَدْبِير (Tadbeer) — بدون أي اتصال خارجي_',
+      '_تم التصدير محليًا عبر تطبيق تَدبِير (Tadbeer) — بدون أي اتصال خارجي_',
     );
     return buffer.toString();
   }
@@ -251,7 +251,7 @@ class TadbeerJournalExporter {
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
                 pw.Text(
-                  'تَدْبِير · دفتر التدبر والخواطر القرآنية',
+                  'تَدبِير · دفتر التدبر والخواطر القرآنية',
                   style: pw.TextStyle(
                     font: ttfBold,
                     fontSize: 14,
@@ -282,7 +282,7 @@ class TadbeerJournalExporter {
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
                 pw.Text(
-                  'تطبيق تَدْبِير — تدبر آيات القرآن الكريم',
+                  'تطبيق تَدبِير — تدبر آيات القرآن الكريم',
                   style: pw.TextStyle(
                     font: ttfRegular,
                     fontSize: 9,

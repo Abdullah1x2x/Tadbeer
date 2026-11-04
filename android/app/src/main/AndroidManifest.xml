@@ -18,7 +18,7 @@
         android:maxSdkVersion="29" />
 
     <application
-        android:label="تَدْبِير"
+        android:label="تَدبِير"
         android:allowBackup="false"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
