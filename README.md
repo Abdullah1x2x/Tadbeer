@@ -17,6 +17,10 @@
 </div>
 
 <p align="center">
+  <img src="docs/assets/cover.png" alt="تدبير: من القراءة إلى التدبّر" width="100%">
+</p>
+
+<p align="center">
   <img src="docs/assets/screenshots/04_home_screen.png" alt="الشاشة الرئيسية" width="23%">
   <img src="docs/assets/screenshots/mushaf.png" alt="مصحف المدينة" width="23%">
   <img src="docs/assets/screenshots/mushaf_dark.png" alt="المصحف في الوضع الداكن" width="23%">

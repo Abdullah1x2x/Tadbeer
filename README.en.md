@@ -17,6 +17,10 @@ An open-source Quran app that works offline, with no ads and no tracking.
 </div>
 
 <p align="center">
+  <img src="docs/assets/cover.png" alt="Tadbeer: from reading to reflection" width="100%">
+</p>
+
+<p align="center">
   <img src="docs/assets/screenshots/04_home_screen.png" alt="Home screen" width="23%">
   <img src="docs/assets/screenshots/mushaf.png" alt="Madinah Mushaf" width="23%">
   <img src="docs/assets/screenshots/mushaf_dark.png" alt="The Mushaf in dark mode" width="23%">
