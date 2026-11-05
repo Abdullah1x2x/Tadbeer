@@ -8,7 +8,7 @@ import '../widgets/quran_dua_card.dart';
 import '../data/quran_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 
-/// أدعية القرآن الـ89، مع بحث فوري وتصفية بالمحور.
+/// أدعية القرآن الـ91، مع بحث فوري وتصفية بالمحور.
 class QuranDuasScreen extends StatefulWidget {
   const QuranDuasScreen({super.key});
 

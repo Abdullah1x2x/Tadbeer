@@ -35,7 +35,7 @@ class _DuaCatalogEntry {
   });
 }
 
-/// أدعية القرآن: 89 دعاءً مباشراً بترتيب المصحف، في 12 محوراً.
+/// أدعية القرآن: 91 دعاءً مباشراً بترتيب المصحف، في 12 محوراً، مع فلتر القنوت.
 ///
 /// النصوص بكامل رسمها وتشكيلها، والعنوان والوصف منفصلان عن النص القرآني.
 class QuranDuasRepository {
@@ -47,6 +47,7 @@ class QuranDuasRepository {
   /// محاور التصفية.
   static const List<String> categories = [
     'الكل',
+    qunutCategory,
     'الهداية والثبات',
     'المغفرة والتوبة',
     'الرحمة',
@@ -60,6 +61,73 @@ class QuranDuasRepository {
     'الشكر والعمل الصالح',
     'أذكار وإقرارات إيمانية',
   ];
+
+  /// تصفية عابرة للمحاور: الدعاء يبقى في محوره، ويظهر هنا أيضاً.
+  static const String qunutCategory = 'أدعية القنوت';
+
+  /// آيات أدعية القنوت (السورة، من آية، إلى آية)؛ يدخل الفلترَ كل دعاء يشمل
+  /// نطاقُه إحداها.
+  static const List<(int, int, int)> qunutAyat = [
+    (1, 6, 7),
+    (2, 127, 127),
+    (2, 201, 201),
+    (2, 250, 250),
+    (2, 286, 286),
+    (3, 8, 8),
+    (3, 16, 16),
+    (3, 38, 38),
+    (3, 53, 53),
+    (3, 147, 147),
+    (3, 173, 173),
+    (3, 191, 191),
+    (3, 193, 194),
+    (4, 75, 75),
+    (5, 114, 114),
+    (7, 23, 23),
+    (7, 89, 89),
+    (7, 126, 126),
+    (7, 150, 151),
+    (7, 155, 155),
+    (10, 85, 86),
+    (12, 101, 101),
+    (14, 40, 41),
+    (17, 24, 24),
+    (17, 80, 80),
+    (18, 10, 10),
+    (20, 25, 26),
+    (20, 114, 114),
+    (21, 87, 87),
+    (21, 89, 89),
+    (23, 29, 29),
+    (23, 97, 98),
+    (23, 109, 109),
+    (23, 118, 118),
+    (25, 65, 66),
+    (25, 74, 74),
+    (26, 84, 85),
+    (26, 87, 89),
+    (28, 16, 16),
+    (28, 21, 21),
+    (28, 24, 24),
+    (29, 30, 30),
+    (37, 100, 100),
+    (40, 7, 9),
+    (44, 12, 12),
+    (46, 15, 15),
+    (59, 10, 10),
+    (60, 4, 5),
+    (66, 8, 8),
+    (66, 11, 11),
+    (71, 28, 28),
+  ];
+
+  /// هل [dua] من أدعية القنوت.
+  static bool isQunut(QuranDua dua) => qunutAyat.any(
+    (q) =>
+        q.$1 == dua.surahNumber &&
+        q.$2 <= dua.ayahEndNumber &&
+        dua.ayahNumber <= q.$3,
+  );
 
   /// كل الأدعية بترتيب المصحف.
   List<QuranDua> getDuas({QuranRepository? quranRepository}) {
@@ -123,8 +191,10 @@ class QuranDuasRepository {
     );
 
     return all.where((dua) {
-      // ١. المحور.
-      if (!isAllCategory && dua.category != categoryFilter) {
+      // ١. المحور، أو فلتر القنوت.
+      if (categoryFilter == qunutCategory) {
+        if (!isQunut(dua)) return false;
+      } else if (!isAllCategory && dua.category != categoryFilter) {
         return false;
       }
 
@@ -177,7 +247,7 @@ class QuranDuasRepository {
   // لإضافة دعاء: أضف [_DuaCatalogEntry] إلى [_catalog] بالسورة والآية أو
   // نطاقها، والنص، والمحور؛ فيُربط بالمصحف والبحث والشاشة.
 
-  /// فهرس الأدعية الـ89 الموثقة، بترتيب المصحف.
+  /// فهرس الأدعية الـ91 الموثقة، بترتيب المصحف.
   static const List<_DuaCatalogEntry> _catalog = [
     _DuaCatalogEntry(
       id: 1,
@@ -435,6 +505,20 @@ class QuranDuasRepository {
       id: 18,
       surahNumber: 3,
       surahName: 'آل عمران',
+      ayahNumber: 173,
+      ayahEndNumber: 173,
+      ayahDisplay: '173',
+      title: 'الاكتفاء بالله',
+      duaText: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+      defaultPage: 72,
+      category: 'التوكل والتفويض',
+      isDirectDua: true,
+      orderInSurah: 9,
+    ),
+    _DuaCatalogEntry(
+      id: 19,
+      surahNumber: 3,
+      surahName: 'آل عمران',
       ayahNumber: 191,
       ayahEndNumber: 194,
       ayahDisplay: '191–194',
@@ -443,7 +527,7 @@ class QuranDuasRepository {
       defaultPage: 75,
       category: 'الآخرة والجنة والنجاة من النار',
       isDirectDua: true,
-      orderInSurah: 9,
+      orderInSurah: 10,
       verses: [
         QuranDuaVerse(
           ayahNumber: 191,
@@ -464,7 +548,7 @@ class QuranDuasRepository {
       ],
     ),
     _DuaCatalogEntry(
-      id: 19,
+      id: 20,
       surahNumber: 4,
       surahName: 'النساء',
       ayahNumber: 75,
@@ -478,7 +562,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 20,
+      id: 21,
       surahNumber: 5,
       surahName: 'المائدة',
       ayahNumber: 83,
@@ -492,7 +576,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 21,
+      id: 22,
       surahNumber: 5,
       surahName: 'المائدة',
       ayahNumber: 114,
@@ -506,7 +590,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 22,
+      id: 23,
       surahNumber: 5,
       surahName: 'المائدة',
       ayahNumber: 118,
@@ -520,7 +604,7 @@ class QuranDuasRepository {
       orderInSurah: 3,
     ),
     _DuaCatalogEntry(
-      id: 23,
+      id: 24,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 23,
@@ -534,7 +618,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 24,
+      id: 25,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 47,
@@ -548,7 +632,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 25,
+      id: 26,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 89,
@@ -562,7 +646,7 @@ class QuranDuasRepository {
       orderInSurah: 3,
     ),
     _DuaCatalogEntry(
-      id: 26,
+      id: 27,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 126,
@@ -576,7 +660,7 @@ class QuranDuasRepository {
       orderInSurah: 4,
     ),
     _DuaCatalogEntry(
-      id: 27,
+      id: 28,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 143,
@@ -591,7 +675,21 @@ class QuranDuasRepository {
       orderInSurah: 5,
     ),
     _DuaCatalogEntry(
-      id: 28,
+      id: 29,
+      surahNumber: 7,
+      surahName: 'الأعراف',
+      ayahNumber: 150,
+      ayahEndNumber: 150,
+      ayahDisplay: '150',
+      title: 'الدعاء بالسلامة من شماتة الأعداء',
+      duaText: 'فَلَا تُشْمِتْ بِيَ الْأَعْدَاءَ وَلَا تَجْعَلْنِي مَعَ الْقَوْمِ الظَّالِمِينَ',
+      defaultPage: 169,
+      category: 'الاستعاذة والحماية',
+      isDirectDua: true,
+      orderInSurah: 6,
+    ),
+    _DuaCatalogEntry(
+      id: 30,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 151,
@@ -602,10 +700,10 @@ class QuranDuasRepository {
       defaultPage: 169,
       category: 'الرحمة',
       isDirectDua: true,
-      orderInSurah: 6,
+      orderInSurah: 7,
     ),
     _DuaCatalogEntry(
-      id: 29,
+      id: 31,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 155,
@@ -616,10 +714,10 @@ class QuranDuasRepository {
       defaultPage: 169,
       category: 'المغفرة والتوبة',
       isDirectDua: true,
-      orderInSurah: 7,
+      orderInSurah: 8,
     ),
     _DuaCatalogEntry(
-      id: 30,
+      id: 32,
       surahNumber: 7,
       surahName: 'الأعراف',
       ayahNumber: 156,
@@ -630,10 +728,10 @@ class QuranDuasRepository {
       defaultPage: 170,
       category: 'الآخرة والجنة والنجاة من النار',
       isDirectDua: true,
-      orderInSurah: 8,
+      orderInSurah: 9,
     ),
     _DuaCatalogEntry(
-      id: 31,
+      id: 33,
       surahNumber: 8,
       surahName: 'الأنفال',
       ayahNumber: 9,
@@ -647,7 +745,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 32,
+      id: 34,
       surahNumber: 10,
       surahName: 'يونس',
       ayahNumber: 85,
@@ -671,7 +769,7 @@ class QuranDuasRepository {
       ],
     ),
     _DuaCatalogEntry(
-      id: 33,
+      id: 35,
       surahNumber: 10,
       surahName: 'يونس',
       ayahNumber: 88,
@@ -685,7 +783,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 34,
+      id: 36,
       surahNumber: 11,
       surahName: 'هود',
       ayahNumber: 47,
@@ -699,7 +797,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 35,
+      id: 37,
       surahNumber: 12,
       surahName: 'يوسف',
       ayahNumber: 33,
@@ -713,7 +811,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 36,
+      id: 38,
       surahNumber: 12,
       surahName: 'يوسف',
       ayahNumber: 101,
@@ -727,7 +825,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 37,
+      id: 39,
       surahNumber: 14,
       surahName: 'إبراهيم',
       ayahNumber: 35,
@@ -741,7 +839,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 38,
+      id: 40,
       surahNumber: 14,
       surahName: 'إبراهيم',
       ayahNumber: 36,
@@ -755,7 +853,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 39,
+      id: 41,
       surahNumber: 14,
       surahName: 'إبراهيم',
       ayahNumber: 37,
@@ -769,7 +867,7 @@ class QuranDuasRepository {
       orderInSurah: 3,
     ),
     _DuaCatalogEntry(
-      id: 40,
+      id: 42,
       surahNumber: 14,
       surahName: 'إبراهيم',
       ayahNumber: 38,
@@ -783,7 +881,7 @@ class QuranDuasRepository {
       orderInSurah: 4,
     ),
     _DuaCatalogEntry(
-      id: 41,
+      id: 43,
       surahNumber: 14,
       surahName: 'إبراهيم',
       ayahNumber: 40,
@@ -797,7 +895,7 @@ class QuranDuasRepository {
       orderInSurah: 5,
     ),
     _DuaCatalogEntry(
-      id: 42,
+      id: 44,
       surahNumber: 14,
       surahName: 'إبراهيم',
       ayahNumber: 41,
@@ -811,7 +909,7 @@ class QuranDuasRepository {
       orderInSurah: 6,
     ),
     _DuaCatalogEntry(
-      id: 43,
+      id: 45,
       surahNumber: 17,
       surahName: 'الإسراء',
       ayahNumber: 24,
@@ -825,7 +923,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 44,
+      id: 46,
       surahNumber: 17,
       surahName: 'الإسراء',
       ayahNumber: 80,
@@ -839,7 +937,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 45,
+      id: 47,
       surahNumber: 18,
       surahName: 'الكهف',
       ayahNumber: 10,
@@ -853,7 +951,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 46,
+      id: 48,
       surahNumber: 18,
       surahName: 'الكهف',
       ayahNumber: 24,
@@ -867,7 +965,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 47,
+      id: 49,
       surahNumber: 19,
       surahName: 'مريم',
       ayahNumber: 4,
@@ -891,7 +989,7 @@ class QuranDuasRepository {
       ],
     ),
     _DuaCatalogEntry(
-      id: 48,
+      id: 50,
       surahNumber: 19,
       surahName: 'مريم',
       ayahNumber: 10,
@@ -905,7 +1003,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 49,
+      id: 51,
       surahNumber: 20,
       surahName: 'طه',
       ayahNumber: 25,
@@ -925,7 +1023,7 @@ class QuranDuasRepository {
       ],
     ),
     _DuaCatalogEntry(
-      id: 50,
+      id: 52,
       surahNumber: 20,
       surahName: 'طه',
       ayahNumber: 114,
@@ -939,7 +1037,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 51,
+      id: 53,
       surahNumber: 21,
       surahName: 'الأنبياء',
       ayahNumber: 83,
@@ -953,7 +1051,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 52,
+      id: 54,
       surahNumber: 21,
       surahName: 'الأنبياء',
       ayahNumber: 87,
@@ -967,7 +1065,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 53,
+      id: 55,
       surahNumber: 21,
       surahName: 'الأنبياء',
       ayahNumber: 89,
@@ -981,7 +1079,7 @@ class QuranDuasRepository {
       orderInSurah: 3,
     ),
     _DuaCatalogEntry(
-      id: 54,
+      id: 56,
       surahNumber: 21,
       surahName: 'الأنبياء',
       ayahNumber: 112,
@@ -995,7 +1093,7 @@ class QuranDuasRepository {
       orderInSurah: 4,
     ),
     _DuaCatalogEntry(
-      id: 55,
+      id: 57,
       surahNumber: 23,
       surahName: 'المؤمنون',
       ayahNumber: 26,
@@ -1009,7 +1107,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 56,
+      id: 58,
       surahNumber: 23,
       surahName: 'المؤمنون',
       ayahNumber: 29,
@@ -1023,7 +1121,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 57,
+      id: 59,
       surahNumber: 23,
       surahName: 'المؤمنون',
       ayahNumber: 97,
@@ -1047,7 +1145,7 @@ class QuranDuasRepository {
       ],
     ),
     _DuaCatalogEntry(
-      id: 58,
+      id: 60,
       surahNumber: 23,
       surahName: 'المؤمنون',
       ayahNumber: 109,
@@ -1061,7 +1159,7 @@ class QuranDuasRepository {
       orderInSurah: 4,
     ),
     _DuaCatalogEntry(
-      id: 59,
+      id: 61,
       surahNumber: 23,
       surahName: 'المؤمنون',
       ayahNumber: 118,
@@ -1075,7 +1173,7 @@ class QuranDuasRepository {
       orderInSurah: 5,
     ),
     _DuaCatalogEntry(
-      id: 60,
+      id: 62,
       surahNumber: 25,
       surahName: 'الفرقان',
       ayahNumber: 65,
@@ -1099,7 +1197,7 @@ class QuranDuasRepository {
       ],
     ),
     _DuaCatalogEntry(
-      id: 61,
+      id: 63,
       surahNumber: 25,
       surahName: 'الفرقان',
       ayahNumber: 74,
@@ -1113,7 +1211,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 62,
+      id: 64,
       surahNumber: 26,
       surahName: 'الشعراء',
       ayahNumber: 83,
@@ -1127,7 +1225,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 63,
+      id: 65,
       surahNumber: 26,
       surahName: 'الشعراء',
       ayahNumber: 84,
@@ -1141,7 +1239,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 64,
+      id: 66,
       surahNumber: 26,
       surahName: 'الشعراء',
       ayahNumber: 85,
@@ -1155,21 +1253,35 @@ class QuranDuasRepository {
       orderInSurah: 3,
     ),
     _DuaCatalogEntry(
-      id: 65,
+      id: 67,
       surahNumber: 26,
       surahName: 'الشعراء',
       ayahNumber: 87,
-      ayahEndNumber: 87,
-      ayahDisplay: '87',
+      ayahEndNumber: 89,
+      ayahDisplay: '87–89',
       title: 'الدعاء بالنجاة من الخزي يوم القيامة',
-      duaText: 'وَلَا تُخْزِنِي يَوْمَ يُبْعَثُونَ',
+      duaText: 'وَلَا تُخْزِنِي يَوْمَ يُبْعَثُونَ  يَوْمَ لَا يَنْفَعُ مَالٌ وَلَا بَنُونَ  إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ',
       defaultPage: 371,
       category: 'الآخرة والجنة والنجاة من النار',
       isDirectDua: true,
       orderInSurah: 4,
+      verses: [
+        QuranDuaVerse(
+          ayahNumber: 87,
+          text: 'وَلَا تُخْزِنِي يَوْمَ يُبْعَثُونَ',
+        ),
+        QuranDuaVerse(
+          ayahNumber: 88,
+          text: 'يَوْمَ لَا يَنْفَعُ مَالٌ وَلَا بَنُونَ',
+        ),
+        QuranDuaVerse(
+          ayahNumber: 89,
+          text: 'إِلَّا مَنْ أَتَى اللَّهَ بِقَلْبٍ سَلِيمٍ',
+        ),
+      ],
     ),
     _DuaCatalogEntry(
-      id: 66,
+      id: 68,
       surahNumber: 27,
       surahName: 'النمل',
       ayahNumber: 19,
@@ -1183,7 +1295,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 67,
+      id: 69,
       surahNumber: 28,
       surahName: 'القصص',
       ayahNumber: 16,
@@ -1197,7 +1309,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 68,
+      id: 70,
       surahNumber: 28,
       surahName: 'القصص',
       ayahNumber: 21,
@@ -1211,7 +1323,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 69,
+      id: 71,
       surahNumber: 28,
       surahName: 'القصص',
       ayahNumber: 24,
@@ -1225,7 +1337,7 @@ class QuranDuasRepository {
       orderInSurah: 3,
     ),
     _DuaCatalogEntry(
-      id: 70,
+      id: 72,
       surahNumber: 29,
       surahName: 'العنكبوت',
       ayahNumber: 30,
@@ -1239,7 +1351,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 71,
+      id: 73,
       surahNumber: 37,
       surahName: 'الصافات',
       ayahNumber: 100,
@@ -1253,7 +1365,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 72,
+      id: 74,
       surahNumber: 38,
       surahName: 'ص',
       ayahNumber: 35,
@@ -1267,7 +1379,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 73,
+      id: 75,
       surahNumber: 39,
       surahName: 'الزمر',
       ayahNumber: 46,
@@ -1281,7 +1393,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 74,
+      id: 76,
       surahNumber: 40,
       surahName: 'غافر',
       ayahNumber: 7,
@@ -1295,7 +1407,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 75,
+      id: 77,
       surahNumber: 40,
       surahName: 'غافر',
       ayahNumber: 8,
@@ -1309,7 +1421,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 76,
+      id: 78,
       surahNumber: 40,
       surahName: 'غافر',
       ayahNumber: 9,
@@ -1323,7 +1435,7 @@ class QuranDuasRepository {
       orderInSurah: 3,
     ),
     _DuaCatalogEntry(
-      id: 77,
+      id: 79,
       surahNumber: 40,
       surahName: 'غافر',
       ayahNumber: 27,
@@ -1337,7 +1449,7 @@ class QuranDuasRepository {
       orderInSurah: 4,
     ),
     _DuaCatalogEntry(
-      id: 78,
+      id: 80,
       surahNumber: 44,
       surahName: 'الدخان',
       ayahNumber: 12,
@@ -1351,7 +1463,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 79,
+      id: 81,
       surahNumber: 46,
       surahName: 'الأحقاف',
       ayahNumber: 15,
@@ -1365,7 +1477,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 80,
+      id: 82,
       surahNumber: 59,
       surahName: 'الحشر',
       ayahNumber: 10,
@@ -1379,7 +1491,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 81,
+      id: 83,
       surahNumber: 60,
       surahName: 'الممتحنة',
       ayahNumber: 4,
@@ -1393,7 +1505,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 82,
+      id: 84,
       surahNumber: 60,
       surahName: 'الممتحنة',
       ayahNumber: 5,
@@ -1407,7 +1519,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 83,
+      id: 85,
       surahNumber: 66,
       surahName: 'التحريم',
       ayahNumber: 8,
@@ -1421,7 +1533,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 84,
+      id: 86,
       surahNumber: 66,
       surahName: 'التحريم',
       ayahNumber: 11,
@@ -1435,7 +1547,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 85,
+      id: 87,
       surahNumber: 68,
       surahName: 'القلم',
       ayahNumber: 29,
@@ -1449,7 +1561,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 86,
+      id: 88,
       surahNumber: 68,
       surahName: 'القلم',
       ayahNumber: 32,
@@ -1463,7 +1575,7 @@ class QuranDuasRepository {
       orderInSurah: 2,
     ),
     _DuaCatalogEntry(
-      id: 87,
+      id: 89,
       surahNumber: 71,
       surahName: 'نوح',
       ayahNumber: 28,
@@ -1477,7 +1589,7 @@ class QuranDuasRepository {
       orderInSurah: 1,
     ),
     _DuaCatalogEntry(
-      id: 88,
+      id: 90,
       surahNumber: 113,
       surahName: 'الفلق',
       ayahNumber: 1,
@@ -1501,7 +1613,7 @@ class QuranDuasRepository {
       ],
     ),
     _DuaCatalogEntry(
-      id: 89,
+      id: 91,
       surahNumber: 114,
       surahName: 'الناس',
       ayahNumber: 1,

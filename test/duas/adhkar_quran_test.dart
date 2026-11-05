@@ -9,9 +9,10 @@ void main() {
     await QuranRepository.instance.init();
     final repo = QuranRepository.instance;
     // Letters only: the dhikr is written in common spelling, the Mushaf not.
-    String letters(String s) => ArabicSearchNormalizer.withoutHamza(
-      s,
-    ).replaceAll(RegExp('[^ء-ي]'), '').replaceAll('ا', '');
+    String letters(String s) =>
+        ArabicSearchNormalizer.withoutHamza(s)
+            .replaceAll(RegExp('[^ء-ي]'), '')
+            .replaceAll('ا', '');
     final items = [
       for (final c in AdhkarCategory.values)
         ...AdhkarRepository.instance.getAdhkar(c),

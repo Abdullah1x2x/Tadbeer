@@ -32,9 +32,9 @@
 - **قاعدة البيانات المحلية:** تُحفظ خواطرك، وملاحظاتك التدبرية، وفواصلك، وتظليلاتك محلياً حصراً في قاعدة بيانات SQLite داخل المساحة الخاصة بالتطبيق على جهازك، وهي مساحة لا تصل إليها التطبيقات الأخرى.
 - **النسخ الاحتياطي المشفر (`.quranbackup`):** عند رغبتك في تصدير نسخة احتياطية من تدبراتك، يقوم التطبيق بتشفيرها محلياً بأعلى المعايير القياسية:
   - تشفير متماثل: **AES-256-CBC**.
-  - اشتقاق المفاتيح بكلمة مرور سرية يحددها المستخدم وحده.
+  - اشتقاق المفاتيح من كلمة مرور سرية يحددها المستخدم وحده عبر **PBKDF2-HMAC-SHA256**.
   - ضغط البيانات عبر **Gzip**.
-  - فحص سلامة الملف ومطابقته ببصمة **SHA-256 Checksum** لمنع التلاعب.
+  - توقيع الملف بـ **HMAC-SHA256** والتحقق منه قبل فك التشفير، فيُرفض أي ملف تالف أو معدّل.
 
 ---
 
@@ -90,7 +90,7 @@
 
 ### 4. Local Data Persistence & AES-256 Backups
 - **Device-Only SQLite:** User-generated content (notes, reflection journal entries, bookmarks, ayah highlights, and habit trackers) resides strictly in on-device SQLite storage (`tadbeer_user_data.db`) inside the app's private storage, which other apps cannot access.
-- **Military-Grade AES-256 Backups:** Exported user backup snapshots (`.quranbackup`) are encrypted locally with **AES-256-CBC** using a user-provided password, compressed via Gzip, and verified with a **SHA-256** checksum. The developers have no backdoors or recovery mechanisms for user passwords.
+- **Military-Grade AES-256 Backups:** Exported user backup snapshots (`.quranbackup`) are encrypted locally with **AES-256-CBC** with keys derived from a user-provided password via PBKDF2-HMAC-SHA256, compressed via Gzip, and authenticated with **HMAC-SHA256** before decryption, so a damaged or altered file is rejected. The developers have no backdoors or recovery mechanisms for user passwords.
 
 ---
 

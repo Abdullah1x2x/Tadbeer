@@ -1,8 +1,25 @@
-Tadbeer (تَدْبِير) is a free, open-source, offline-first Quranic reading and reflection (Tadabbur) app with no ads and no analytics. The internet is used only to stream or download audio recitation.
+Tadbeer: from reading to reflection. A free, open-source Quran app that works offline, with no account, no ads and no tracking. The internet is used only to stream or download recitation.
 
-Key Features:
-• Full 604-page Uthmani Mushaf with 5 selectable open-source Quranic fonts (Scheherazade New, Amiri Quran, Uthmanic Hafs, Al-Mushaf, Neirizi).
-• Comprehensive offline Quranic Word Meanings lexicon integrated directly into the Mushaf and searchable standalone.
-• Reflection (Tadabbur) notes and bookmarks linked to verses, with local JSON backup and restore.
-• Customizable local reminders and alarms for daily Quran reading.
-• Complete privacy: your data stays on your device, with zero tracking or telemetry.
+Reflection tools:
+• Reflection pause: four questions at any ayah that open its meanings, saved in a reflection journal.
+• Ayah links: gather ayahs from different surahs into one theme and see them as a network or a list.
+• Reflection pathways: 15 themes, with an ayah and a question each day for at least seven days.
+
+Mushaf and listening:
+• The 604-page Madinah Mushaf in the Digital Khatt font, or flowing text in five Quran fonts.
+• A radial menu for each ayah: reflect, note, bookmark, highlight, share and listen.
+• Word meanings for every page of the Mushaf.
+• Recitation by 7 reciters, with background playback and downloads for offline listening.
+
+Your journey with the Quran:
+• Khatma plans, day streaks, weekly goals, a Mushaf map and a monthly report.
+• Memorization with spaced review.
+
+Duas and dhikr:
+• 91 duas from the Quran with a qunut filter, plus duas from the Sunnah and the Ahlulbayt, including al-Sahifa al-Sajjadiyya.
+• Morning, evening, sleep, waking, after-prayer and mosque adhkar, with a counter for each.
+• An istighfar and tasbeeh counter with 49 formulas and auto counting.
+
+Also: a library of booklets you read inside the app, unified search, Qibla direction, reminders, a home-screen widget, encrypted backup, and five themes with light and dark mode, in Arabic and English.
+
+Your data stays on your device. Approximate location is used only for the Qibla and never leaves your device.

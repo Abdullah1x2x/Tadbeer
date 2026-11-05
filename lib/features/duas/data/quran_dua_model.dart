@@ -20,7 +20,7 @@ class QuranDuaVerse {
 /// متعدد الآيات بأرقامها.
 @immutable
 class QuranDua {
-  /// رقم تسلسلي (1..89).
+  /// رقم تسلسلي (1..91).
   final int id;
 
   /// رقم السورة (1..114).

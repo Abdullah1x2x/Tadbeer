@@ -26,15 +26,15 @@ void main() {
   });
 
   group('Quranic Duas Data Integrity Tests (أدعية من القرآن)', () {
-    test('Verified Duas Count and Complete Inventory (89 Entries)', () {
+    test('Verified Duas Count and Complete Inventory (91 Entries)', () {
       final repo = QuranDuasRepository.instance;
       repo.resetCache();
       final duas = repo.getDuas();
 
       expect(
         duas.length,
-        equals(89),
-        reason: 'Catalog must contain exactly 89 verified direct Quranic supplications',
+        equals(91),
+        reason: 'Catalog must contain exactly 91 verified direct Quranic supplications',
       );
     });
 
@@ -42,7 +42,7 @@ void main() {
       final repo = QuranDuasRepository.instance;
       final duas = repo.getDuas();
 
-      // IDs must be sequential 1 to 89
+      // IDs must be sequential 1 to 91
       for (int i = 0; i < duas.length; i++) {
         expect(duas[i].id, equals(i + 1));
       }
@@ -73,8 +73,8 @@ void main() {
 
       expect(
         QuranDuasRepository.categories.length,
-        equals(13),
-      ); // 'الكل' + 12 categories
+        equals(14),
+      ); // 'الكل' + the qunut filter + 12 categories
       expect(
         QuranDuasRepository.categories.contains(
           'آيات سياقية ليست دعاءً مباشرًا',
@@ -84,7 +84,9 @@ void main() {
 
       final foundCategories = duas.map((d) => d.category).toSet();
       for (final cat in QuranDuasRepository.categories) {
-        if (cat == 'الكل') continue;
+        if (cat == 'الكل' || cat == QuranDuasRepository.qunutCategory) {
+          continue;
+        }
         expect(
           foundCategories.contains(cat),
           isTrue,
@@ -97,7 +99,7 @@ void main() {
       final repo = QuranDuasRepository.instance;
       final duas = repo.getDuas();
 
-      // All 89 entries must be direct supplications without alerts
+      // All 91 entries must be direct supplications without alerts
       for (final dua in duas) {
         expect(
           dua.isDirectDua,
@@ -148,10 +150,20 @@ void main() {
         duas.any((d) => d.surahNumber == 20 && d.ayahNumber == 45),
         isFalse,
       );
-      // 8. Ash-Shu'ara (26:88–89)
+      // 8. Ash-Shu'ara 88–89 continue the dua of 87 in one entry, not their own.
       expect(
         duas.any((d) => d.surahNumber == 26 && d.ayahNumber == 88),
         isFalse,
+      );
+      expect(
+        duas.any(
+          (d) =>
+              d.surahNumber == 26 &&
+              d.ayahNumber == 87 &&
+              d.ayahEndNumber == 89 &&
+              d.verses.length == 3,
+        ),
+        isTrue,
       );
       // 9. Luqman (31:17)
       expect(duas.any((d) => d.surahNumber == 31), isFalse);
@@ -251,8 +263,8 @@ void main() {
       expect(combined.isNotEmpty, isTrue);
 
       // 8. Empty Search returns all 89
-      expect(repo.search('').length, equals(89));
-      expect(repo.search('   ').length, equals(89));
+      expect(repo.search('').length, equals(91));
+      expect(repo.search('   ').length, equals(91));
 
       // 9. Non-existent query returns empty
       expect(repo.search('كلمة غير موجودة بتاتا').isEmpty, isTrue);
@@ -264,11 +276,11 @@ void main() {
 
       final multiAyahDuas = duas.where((d) => d.isMultiAyah).toList();
 
-      // Exactly 9 multi-ayah entries
+      // Exactly 10 multi-ayah entries
       expect(
         multiAyahDuas.length,
-        equals(9),
-        reason: 'Exactly 9 entries in the catalog span multiple verses',
+        equals(10),
+        reason: 'Exactly 10 entries in the catalog span multiple verses',
       );
 
       // Verify each multi-ayah entry
@@ -323,7 +335,7 @@ void main() {
       final duas = repo.getDuas();
 
       final singleAyahDuas = duas.where((d) => !d.isMultiAyah).toList();
-      expect(singleAyahDuas.length, equals(80));
+      expect(singleAyahDuas.length, equals(81));
 
       for (final dua in singleAyahDuas) {
         expect(dua.verses.length, equals(1));
@@ -382,5 +394,42 @@ void main() {
         isTrue,
       );
     });
+
+    test(
+      'Qunut filter covers every qunut ayah and keeps duas in their axis',
+      () {
+        final repo = QuranDuasRepository.instance;
+        repo.resetCache();
+        final qunut = repo.search(
+          '',
+          categoryFilter: QuranDuasRepository.qunutCategory,
+        );
+        expect(qunut.length, equals(56));
+        for (final (surah, from, to) in QuranDuasRepository.qunutAyat) {
+          for (var ayah = from; ayah <= to; ayah++) {
+            expect(
+              qunut.any(
+                (d) =>
+                    d.surahNumber == surah &&
+                    d.ayahNumber <= ayah &&
+                    ayah <= d.ayahEndNumber,
+              ),
+              isTrue,
+              reason: 'qunut ayah $surah:$ayah has no dua',
+            );
+          }
+        }
+        // A qunut dua still shows under its own axis.
+        final hasbuna = qunut.singleWhere(
+          (d) => d.surahNumber == 3 && d.ayahNumber == 173,
+        );
+        expect(
+          repo
+              .search('', categoryFilter: hasbuna.category)
+              .any((d) => d.id == hasbuna.id),
+          isTrue,
+        );
+      },
+    );
   });
 }

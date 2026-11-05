@@ -103,17 +103,14 @@ void main() {
           'مشروع تنزيل (Tanzil Project',
         );
 
-        // Verify Sources card text includes Tanzil, Quranpedia, Books/Malazem, Ahlulbayt, and Tasbeeh
+        // Verify Sources card text includes Tanzil, Quranpedia, Malazem, Tasbeeh and the full list
         expect(sourcesFinder, findsOneWidget);
         expect(
           find.textContaining('الموسوعة القرآنية (Quranpedia.net'),
           findsOneWidget,
         );
         expect(find.textContaining('ملازم هدي القرآن الكريم'), findsOneWidget);
-        expect(
-          find.textContaining('الصحيفة السجادية، رسالة الحقوق، نهج البلاغة'),
-          findsOneWidget,
-        );
+        expect(find.textContaining('THIRD_PARTY_NOTICES.md'), findsOneWidget);
         expect(find.textContaining('باقة الاستغفار والتسبيح'), findsOneWidget);
       },
     );
@@ -153,7 +150,7 @@ void main() {
         );
         expect(
           find.textContaining(
-            'Supplications, Adhkar & Tasbeeh: 89 Quranic duas',
+            'Supplications, Adhkar & Tasbeeh: 91 Quranic duas',
           ),
           findsOneWidget,
         );
