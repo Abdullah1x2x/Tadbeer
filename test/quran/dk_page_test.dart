@@ -43,38 +43,47 @@ void main() {
       .where((p) => inDigitalKhatt(p.text))
       .where((p) => !p.text.toPlainText().contains('بِسْمِ ٱللَّهِ'));
 
-  for (final page in [3, 501, 502, 604]) {
-    testWidgets('page $page fills the width without overflowing', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(412, 915);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.lightTheme,
-          home: Scaffold(body: QuranPageView(pageNumber: page)),
-        ),
-      );
-      await tester.pump();
-      expect(tester.takeException(), isNull);
-      final body = tester.getSize(find.byType(QcfPageBody));
-      final drawn = lines(tester).toList();
-      expect(drawn, isNotEmpty);
-      // The text's own width, after any squeeze, as it shows on screen.
-      double shown(RenderParagraph p) =>
-          p.getMaxIntrinsicWidth(double.infinity) *
-          p.getTransformTo(null).storage[0];
-      for (final p in drawn) {
-        // A word line never spills over the page, so nothing is cut off.
-        expect(shown(p), lessThanOrEqualTo(body.width + 1));
-      }
-      // Most lines are stretched to the full width, as in print; the last
-      // page's three short surahs end mostly in centred lines.
-      if (page != 604) {
-        final full = drawn.where((p) => shown(p) >= body.width * 0.97);
-        expect(full.length, greaterThanOrEqualTo(drawn.length ~/ 2));
-      }
-    });
+  // A typical phone, and a narrow one (Galaxy S9, 360 wide) with the system
+  // font enlarged: the page is sized by its width, so the font setting must not
+  // push the lines past the edges.
+  for (final (screen, textScale) in [
+    (const Size(412, 915), 1.0),
+    (const Size(360, 740), 1.3),
+  ]) {
+    for (final page in [3, 501, 502, 604]) {
+      testWidgets('page $page fills ${screen.width.toInt()}px at text scale '
+          '$textScale without overflowing', (tester) async {
+        tester.view.physicalSize = screen;
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = textScale;
+        addTearDown(tester.view.reset);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: Scaffold(body: QuranPageView(pageNumber: page)),
+          ),
+        );
+        await tester.pump();
+        expect(tester.takeException(), isNull);
+        final body = tester.getSize(find.byType(QcfPageBody));
+        final drawn = lines(tester).toList();
+        expect(drawn, isNotEmpty);
+        // The text's own width, after any squeeze, as it shows on screen.
+        double shown(RenderParagraph p) =>
+            p.getMaxIntrinsicWidth(double.infinity) *
+            p.getTransformTo(null).storage[0];
+        for (final p in drawn) {
+          // A word line never spills over the page, so nothing is cut off.
+          expect(shown(p), lessThanOrEqualTo(body.width + 1));
+        }
+        // Most lines are stretched to the full width, as in print; the last
+        // page's three short surahs end mostly in centred lines.
+        if (page != 604) {
+          final full = drawn.where((p) => shown(p) >= body.width * 0.97);
+          expect(full.length, greaterThanOrEqualTo(drawn.length ~/ 2));
+        }
+      });
+    }
   }
 }

@@ -281,6 +281,7 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       maxLines: 1,
       softWrap: false,
       textDirection: TextDirection.rtl,
+      textScaler: TextScaler.noScaling,
       style: TextStyle(
         fontFamily: _family,
         fontSize: size,
@@ -304,6 +305,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       maxLines: 1,
       softWrap: false,
       textDirection: TextDirection.rtl,
+      // [size] already fits the page width, as measured at scale 1; the system
+      // font setting would widen the line past both edges (zoom enlarges it).
+      textScaler: TextScaler.noScaling,
     );
     // يُرصف السطر بعرضه كاملاً ثم يُضغط، فلا يُقص طرفه؛ والقياس قد يخطئ بنقطة.
     final unclipped = OverflowBox(maxWidth: double.infinity, child: text);
