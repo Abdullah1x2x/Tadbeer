@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
@@ -376,7 +377,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 color: isDark ? AppColors.darkBackground : AppColors.comsilk,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: UserDataStore.instance.settings.mushafStyle ==
+              child:
+                  UserDataStore.instance.settings.mushafStyle ==
                       MushafStyle.madinah
                   ? QcfAyahText(
                       ayah: ayah,
@@ -738,7 +740,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           constrained: false,
           minScale: 0.25,
           maxScale: 2.5,
-          boundaryMargin: const EdgeInsets.all(500),
+          // لوحة غير محدودة: التحريك والسحب بلا حدود.
+          boundaryMargin: const EdgeInsets.all(double.infinity),
           onInteractionEnd: (details) {
             // يحفظ الإزاحة والتكبير.
             final translation = _transformController.value.getTranslation();
@@ -750,71 +753,67 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               zoomScale: scale,
             );
           },
-          child: SizedBox(
-            width: _canvasSize,
-            height: _canvasSize,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                CustomPaint(
-                  size: const Size(_canvasSize, _canvasSize),
-                  painter: _NetworkConnectionsPainter(
-                    center: const Offset(_centerCoord, _centerCoord),
-                    positions: _positions,
-                    isDark: isDark,
-                  ),
+          child: _UnboundedStack(
+            clipBehavior: Clip.none,
+            children: [
+              CustomPaint(
+                size: const Size(_canvasSize, _canvasSize),
+                painter: _NetworkConnectionsPainter(
+                  center: const Offset(_centerCoord, _centerCoord),
+                  positions: _positions,
+                  isDark: isDark,
                 ),
+              ),
 
-                Positioned(
-                  left: _centerCoord - 100,
-                  top: _centerCoord - 50,
-                  child: _CenterThemeNode(
-                    title: widget.link.title,
-                    description: widget.link.description,
-                    versesCount: verses.length,
-                    isDark: isDark,
-                  ),
+              Positioned(
+                left: _centerCoord - 100,
+                top: _centerCoord - 50,
+                child: _CenterThemeNode(
+                  title: widget.link.title,
+                  description: widget.link.description,
+                  versesCount: verses.length,
+                  isDark: isDark,
                 ),
+              ),
 
-                for (final verse in verses)
-                  if (_positions.containsKey(verse.ayahKey))
-                    Positioned(
-                      left: _positions[verse.ayahKey]!.dx - (nodeWidth / 2),
-                      top: _positions[verse.ayahKey]!.dy - 60,
-                      child: _VerseCanvasNode(
-                        verse: verse,
-                        isDark: isDark,
-                        onTap: () => _focusAyahNode(verse),
-                        onPanUpdate: (delta) {
-                          setState(() {
-                            final current = _positions[verse.ayahKey]!;
-                            _positions[verse.ayahKey] = current + delta;
-                          });
-                        },
-                        onPanEnd: () => _persistManualPositions(),
-                      ),
+              for (final verse in verses)
+                if (_positions.containsKey(verse.ayahKey))
+                  Positioned(
+                    left: _positions[verse.ayahKey]!.dx - (nodeWidth / 2),
+                    top: _positions[verse.ayahKey]!.dy - 60,
+                    child: _VerseCanvasNode(
+                      verse: verse,
+                      isDark: isDark,
+                      onTap: () => _focusAyahNode(verse),
+                      onPanUpdate: (delta) {
+                        setState(() {
+                          final current = _positions[verse.ayahKey]!;
+                          _positions[verse.ayahKey] = current + delta;
+                        });
+                      },
+                      onPanEnd: () => _persistManualPositions(),
                     ),
+                  ),
 
-                for (final note in widget.link.notes)
-                  if (_positions.containsKey(note.noteKey))
-                    Positioned(
-                      left: _positions[note.noteKey]!.dx - (nodeWidth / 2),
-                      top: _positions[note.noteKey]!.dy - 50,
-                      child: _NoteCanvasNode(
-                        note: note,
-                        isDark: isDark,
-                        onTap: () => _focusNoteNode(note),
-                        onPanUpdate: (delta) {
-                          setState(() {
-                            final current = _positions[note.noteKey]!;
-                            _positions[note.noteKey] = current + delta;
-                          });
-                        },
-                        onPanEnd: () => _persistManualPositions(),
-                      ),
+              for (final note in widget.link.notes)
+                if (_positions.containsKey(note.noteKey))
+                  Positioned(
+                    left: _positions[note.noteKey]!.dx - (nodeWidth / 2),
+                    top: _positions[note.noteKey]!.dy - 50,
+                    child: _NoteCanvasNode(
+                      note: note,
+                      isDark: isDark,
+                      onTap: () => _focusNoteNode(note),
+                      onPanUpdate: (delta) {
+                        setState(() {
+                          final current = _positions[note.noteKey]!;
+                          _positions[note.noteKey] = current + delta;
+                        });
+                      },
+                      onPanEnd: () => _persistManualPositions(),
                     ),
-              ],
-            ),
+                  ),
+            ],
           ),
         ),
 
@@ -873,5 +872,36 @@ extension on Matrix4 {
 
   void scale2D(double s) {
     scaleByDouble(s, s, 1.0, 1.0);
+  }
+}
+
+/// [Stack] يستقبل اللمس خارج حدوده، فتبقى العقد المسحوبة خارج اللوحة قابلة للسحب.
+class _UnboundedStack extends Stack {
+  const _UnboundedStack({super.clipBehavior, super.children});
+
+  @override
+  RenderStack createRenderObject(BuildContext context) => _RenderUnboundedStack(
+    alignment: alignment,
+    textDirection: textDirection ?? Directionality.maybeOf(context),
+    fit: fit,
+    clipBehavior: clipBehavior,
+  );
+}
+
+class _RenderUnboundedStack extends RenderStack {
+  _RenderUnboundedStack({
+    super.alignment,
+    super.textDirection,
+    super.fit,
+    super.clipBehavior,
+  });
+
+  @override
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
+    if (hitTestChildren(result, position: position)) {
+      result.add(BoxHitTestEntry(this, position));
+      return true;
+    }
+    return false;
   }
 }
