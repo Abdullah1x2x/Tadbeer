@@ -15,6 +15,9 @@ void main() async {
     return;
   }
   runApp(const TadbeerApp());
-  // أزرار ودجت الشاشة الرئيسية تفتح الشاشة المقابلة.
-  WidgetsBinding.instance.addPostFrameCallback((_) => WidgetLinks.attach());
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    lockPhonesToPortrait();
+    // أزرار ودجت الشاشة الرئيسية تفتح الشاشة المقابلة.
+    WidgetLinks.attach();
+  });
 }

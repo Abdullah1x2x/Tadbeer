@@ -7,6 +7,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../data/models/user_settings_model.dart';
 import '../data/quran/quran_repository.dart';
@@ -49,6 +50,24 @@ Future<void> bootstrap() async {
   // تخطيط مصحف المدينة يُفك في الخلفية، فيجهز قبل فتح المصحف.
   if (UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah) {
     unawaited(QcfLayout.instance.init());
+  }
+}
+
+/// الهاتف عمودي دائماً؛ والجهاز اللوحي (أقصر بعديه 600 فأكثر) يبقى يدور،
+/// فيعرض المصحف صفحتين متقابلتين بالعرض.
+///
+/// يُستدعى بعد أول إطار: مقاس الشاشة قد يكون صفراً قبله. ويُقاس من الشاشة لا
+/// من النافذة، فلا يغيّره تقسيم الشاشة.
+void lockPhonesToPortrait() {
+  final view = WidgetsBinding.instance.platformDispatcher.views.first;
+  final display = view.display;
+  final shortest = display.size.isEmpty
+      ? view.physicalSize.shortestSide / view.devicePixelRatio
+      : display.size.shortestSide / display.devicePixelRatio;
+  if (shortest > 0 && shortest < 600) {
+    unawaited(
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]),
+    );
   }
 }
 
