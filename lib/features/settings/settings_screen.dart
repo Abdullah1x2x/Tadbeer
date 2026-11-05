@@ -13,7 +13,6 @@ import '../quran/widgets/text_scale_control.dart';
 import '../quran/qcf/madinah_preview.dart';
 import '../../app/main_shell.dart';
 import '../onboarding/tour/home_walkthrough.dart';
-import '../onboarding/tour/section_guide.dart';
 import '../onboarding/tour/tour_screen.dart';
 import '../tasbeeh/tasbeeh_model.dart';
 
@@ -598,38 +597,6 @@ class SettingsScreen extends StatelessWidget {
                           if (navigator.mounted) {
                             await HomeWalkthrough.show(navigator.context);
                           }
-                        },
-                      ),
-                      const Divider(height: 1),
-                      ListTile(
-                        leading: Icon(
-                          AppIcons.info,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        title: Text(
-                          l10n.guidesReset,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          l10n.guidesResetHint,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark
-                                ? AppColors.nightSubtitle
-                                : AppColors.daySubtitle,
-                          ),
-                        ),
-                        trailing: Icon(AppIcons.caretRight, size: 20),
-                        onTap: () async {
-                          final messenger = ScaffoldMessenger.of(context);
-                          final done = l10n.guidesResetDone;
-                          await SectionGuide.resetAll();
-                          messenger.showSnackBar(
-                            SnackBar(
-                              content: Text(done, textAlign: TextAlign.center),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
                         },
                       ),
                     ],

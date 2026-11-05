@@ -1777,7 +1777,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourcesAndCreditsDetails =>
-      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia, Quranpedia.net (dataset version 2026-10-10).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (91 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 89 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Operates 100% offline with zero external connections, servers, tracking, or ads, featuring local AES-256 backup encryption.\n• Madinah Mushaf font: Digital Khatt (Amine Anane and Tarteel) under SIL OFL 1.1, with its page text and line layout from the DigitalKhatt project (MIT).\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).';
+      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Quran Vocabulary Lexicon: Quranic Encyclopedia, Quranpedia.net (dataset version 2026-10-10).\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (91 documented pamphlets), classical Ahlulbayt heritage & supplications (Al-Sahifah al-Sajjadiyah, Risalat al-Huquq, Nahj al-Balagha, Tuhaf al-Uqul), and Quranic sciences treatises (Al-Ajurri, Al-Nawawi).\n• Supplications, Adhkar & Tasbeeh: 89 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Your data stays on your device, with no account, servers, tracking, or ads. The internet is used only for recitation audio and approximate location only for the Qibla; backups are encrypted with AES-256.\n• Madinah Mushaf font: Digital Khatt (Amine Anane and Tarteel) under SIL OFL 1.1, with its page text and line layout from the DigitalKhatt project (MIT).\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).\n• Full list of sources and licenses: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md';
 
   @override
   String get unsavedChanges => 'Unsaved Changes';
@@ -2281,16 +2281,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tourReplayHint => 'Watch the introduction again';
-
-  @override
-  String get guidesReset => 'Show section guides again';
-
-  @override
-  String get guidesResetHint =>
-      'Each section explains itself on your next visit';
-
-  @override
-  String get guidesResetDone => 'The guides will show again';
 
   @override
   String get guideReflections1Title => 'Start from the ayah';
