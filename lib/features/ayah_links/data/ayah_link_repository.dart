@@ -162,10 +162,38 @@ class AyahLinkRepository {
         link.copyWith(
           notes: updatedNotes,
           positions: updatedPositions,
+          relationships: link.relationships
+              .where(
+                (r) =>
+                    r.fromAyahKey != 'note_$noteId' &&
+                    r.toAyahKey != 'note_$noteId',
+              )
+              .toList(),
           updatedAt: DateTime.now(),
         ),
       );
     }
+  }
+
+  /// يمد خيطاً بين بطاقتين (آية أو خاطرة)، أو يقطعه إن كان موجوداً.
+  Future<void> toggleThread(String linkId, String fromKey, String toKey) async {
+    final link = getLink(linkId);
+    if (link == null || fromKey == toKey) return;
+    bool joins(AyahLinkRelationship r) =>
+        (r.fromAyahKey == fromKey && r.toAyahKey == toKey) ||
+        (r.fromAyahKey == toKey && r.toAyahKey == fromKey);
+    final exists = link.relationships.any(joins);
+    await updateLink(
+      link.copyWith(
+        relationships: exists
+            ? link.relationships.where((r) => !joins(r)).toList()
+            : [
+                ...link.relationships,
+                AyahLinkRelationship(fromAyahKey: fromKey, toAyahKey: toKey),
+              ],
+        updatedAt: DateTime.now(),
+      ),
+    );
   }
 
   /// يحفظ مواضع العقد على الشبكة، وهل رتّبها القارئ بيده.

@@ -77,6 +77,9 @@ mixin _AyahLinksSection on _StoreState {
       final updated = existing.copyWith(
         verses: updatedVerses,
         positions: updatedPositions,
+        relationships: existing.relationships
+            .where((r) => r.fromAyahKey != key && r.toAyahKey != key)
+            .toList(),
         updatedAt: DateTime.now(),
       );
       _ayahLinks[idx] = updated;

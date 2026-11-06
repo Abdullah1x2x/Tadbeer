@@ -398,5 +398,27 @@ void main() {
       updated = repo.getLink(link.id)!;
       expect(updated.nodeColors, {'note_x': 2});
     });
+
+    test(
+      '18: Threads toggle between any two cards and die with them',
+      () async {
+        final link = await repo.createLink(title: 'خيوط');
+        final note = await repo.addNoteToLink(link.id, content: 'خاطرة');
+
+        await repo.toggleThread(link.id, '2:153', note.noteKey);
+        var threads = repo.getLink(link.id)!.relationships;
+        expect(threads.length, 1);
+
+        // نفس الزوج بالعكس يقطع الخيط.
+        await repo.toggleThread(link.id, note.noteKey, '2:153');
+        expect(repo.getLink(link.id)!.relationships, isEmpty);
+
+        await repo.toggleThread(link.id, '2:153', note.noteKey);
+        await repo.toggleThread(link.id, '2:153', '2:154');
+        await repo.deleteNoteFromLink(link.id, note.id);
+        threads = repo.getLink(link.id)!.relationships;
+        expect(threads.single.toAyahKey, '2:154');
+      },
+    );
   });
 }

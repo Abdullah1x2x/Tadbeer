@@ -4,11 +4,15 @@ part of 'ayah_link_network_view.dart';
 class _NetworkConnectionsPainter extends CustomPainter {
   final Offset center;
   final Map<String, Offset> positions;
+
+  /// خيوط القارئ بين البطاقات.
+  final List<AyahLinkRelationship> threads;
   final bool isDark;
 
   const _NetworkConnectionsPainter({
     required this.center,
     required this.positions,
+    required this.threads,
     required this.isDark,
   });
 
@@ -39,11 +43,27 @@ class _NetworkConnectionsPainter extends CustomPainter {
 
       canvas.drawCircle(pos, 3.5, dotPaint);
     }
+
+    final threadPaint = Paint()
+      ..color = isDark ? AppColors.darkAccentGold : AppColors.lightAccentGold
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.6;
+    for (final t in threads) {
+      final a = positions[t.fromAyahKey];
+      final b = positions[t.toAyahKey];
+      if (a == null || b == null) continue;
+      canvas.drawLine(a, b, threadPaint);
+      canvas.drawCircle(a, 4.5, threadPaint..style = PaintingStyle.fill);
+      canvas.drawCircle(b, 4.5, threadPaint);
+      threadPaint.style = PaintingStyle.stroke;
+    }
   }
 
   @override
   bool shouldRepaint(covariant _NetworkConnectionsPainter oldDelegate) {
-    return oldDelegate.positions != positions || oldDelegate.isDark != isDark;
+    // المواضع خريطة واحدة تتعدل أثناء السحب، فلا تكفي مقارنة المرجع.
+    return true;
   }
 }
 

@@ -4661,6 +4661,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'تمييز {n}'**
   String cardColorHighlight(String n);
+
+  /// No description provided for @threadModeOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'مدّ خيط بين بطاقتين'**
+  String get threadModeOn;
+
+  /// No description provided for @threadModeOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنهاء مدّ الخيوط'**
+  String get threadModeOff;
+
+  /// No description provided for @threadPickFirst.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر البطاقة الأولى'**
+  String get threadPickFirst;
+
+  /// No description provided for @threadPickSecond.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر البطاقة الثانية، أو زوجاً موصولاً لقطع خيطه'**
+  String get threadPickSecond;
 }
 
 class _AppLocalizationsDelegate

@@ -1491,5 +1491,9 @@
     "placeholders": {
       "n": {"type": "String"}
     }
-  }
+  },
+  "threadModeOn": "مدّ خيط بين بطاقتين",
+  "threadModeOff": "إنهاء مدّ الخيوط",
+  "threadPickFirst": "اختر البطاقة الأولى",
+  "threadPickSecond": "اختر البطاقة الثانية، أو زوجاً موصولاً لقطع خيطه"
 }

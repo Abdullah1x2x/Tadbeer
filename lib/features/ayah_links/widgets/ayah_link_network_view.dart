@@ -53,6 +53,10 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
   final AyahLinkRepository _repo = AyahLinkRepository();
 
+  // وضع مد الخيوط: النقر على بطاقتين يصلهما، وعلى زوج موصول يقطعه.
+  bool _threading = false;
+  String? _threadFrom;
+
   @override
   void initState() {
     super.initState();
@@ -757,6 +761,83 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     );
   }
 
+  /// النقر على بطاقة: في وضع الخيوط يختارها طرفاً، وإلا يعرض تفاصيلها.
+  void _onCardTap(String key, VoidCallback focus) {
+    if (!_threading) return focus();
+    final from = _threadFrom;
+    if (from == null || from == key) {
+      setState(() => _threadFrom = from == key ? null : key);
+      return;
+    }
+    setState(() => _threadFrom = null);
+    _repo.toggleThread(widget.link.id, from, key);
+  }
+
+  void _toggleThreading() => setState(() {
+    _threading = !_threading;
+    _threadFrom = null;
+  });
+
+  /// إطار يبرز البطاقة المختارة طرفاً أول للخيط.
+  Widget _threadOutline(String key, Widget child) {
+    if (_threadFrom != key) return child;
+    return DecoratedBox(
+      position: DecorationPosition.foreground,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary,
+          width: 3,
+        ),
+      ),
+      child: child,
+    );
+  }
+
+  /// زر الخيوط في أعلى اللوحة، وتلميح الخطوة التالية حين يكون مفعلاً.
+  Widget _threadControls(bool isDark) {
+    final l10n = context.l10n;
+    return PositionedDirectional(
+      top: 12,
+      start: 12,
+      end: 12,
+      child: Row(
+        children: [
+          IconButton.filledTonal(
+            isSelected: _threading,
+            tooltip: _threading ? l10n.threadModeOff : l10n.threadModeOn,
+            onPressed: _toggleThreading,
+            icon: const Icon(AppIcons.link),
+          ),
+          if (_threading) ...[
+            const SizedBox(width: 8),
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.comsilkLight,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.border(context)),
+                ),
+                child: Text(
+                  _threadFrom == null
+                      ? l10n.threadPickFirst
+                      : l10n.threadPickSecond,
+                  style: const TextStyle(fontSize: 13),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   /// لون البطاقة المحفوظ في الرابط، أو null للافتراضي.
   int? _colorOf(String key) => widget.link.nodeColors[key];
 
@@ -905,6 +986,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 painter: _NetworkConnectionsPainter(
                   center: const Offset(_centerCoord, _centerCoord),
                   positions: _positions,
+                  threads: widget.link.relationships,
                   isDark: isDark,
                 ),
               ),
@@ -925,18 +1007,24 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   Positioned(
                     left: _positions[verse.ayahKey]!.dx - (nodeWidth / 2),
                     top: _positions[verse.ayahKey]!.dy - 60,
-                    child: _VerseCanvasNode(
-                      verse: verse,
-                      isDark: _cardIsDark(verse.ayahKey, isDark),
-                      tint: _cardTint(verse.ayahKey),
-                      onTap: () => _focusAyahNode(verse),
-                      onPanUpdate: (delta) {
-                        setState(() {
-                          final current = _positions[verse.ayahKey]!;
-                          _positions[verse.ayahKey] = current + delta;
-                        });
-                      },
-                      onPanEnd: () => _persistManualPositions(),
+                    child: _threadOutline(
+                      verse.ayahKey,
+                      _VerseCanvasNode(
+                        verse: verse,
+                        isDark: _cardIsDark(verse.ayahKey, isDark),
+                        tint: _cardTint(verse.ayahKey),
+                        onTap: () => _onCardTap(
+                          verse.ayahKey,
+                          () => _focusAyahNode(verse),
+                        ),
+                        onPanUpdate: (delta) {
+                          setState(() {
+                            final current = _positions[verse.ayahKey]!;
+                            _positions[verse.ayahKey] = current + delta;
+                          });
+                        },
+                        onPanEnd: () => _persistManualPositions(),
+                      ),
                     ),
                   ),
 
@@ -945,23 +1033,32 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   Positioned(
                     left: _positions[note.noteKey]!.dx - (nodeWidth / 2),
                     top: _positions[note.noteKey]!.dy - 50,
-                    child: _NoteCanvasNode(
-                      note: note,
-                      isDark: _cardIsDark(note.noteKey, isDark),
-                      tint: _cardTint(note.noteKey),
-                      onTap: () => _focusNoteNode(note),
-                      onPanUpdate: (delta) {
-                        setState(() {
-                          final current = _positions[note.noteKey]!;
-                          _positions[note.noteKey] = current + delta;
-                        });
-                      },
-                      onPanEnd: () => _persistManualPositions(),
+                    child: _threadOutline(
+                      note.noteKey,
+                      _NoteCanvasNode(
+                        note: note,
+                        isDark: _cardIsDark(note.noteKey, isDark),
+                        tint: _cardTint(note.noteKey),
+                        onTap: () => _onCardTap(
+                          note.noteKey,
+                          () => _focusNoteNode(note),
+                        ),
+                        onPanUpdate: (delta) {
+                          setState(() {
+                            final current = _positions[note.noteKey]!;
+                            _positions[note.noteKey] = current + delta;
+                          });
+                        },
+                        onPanEnd: () => _persistManualPositions(),
+                      ),
                     ),
                   ),
             ],
           ),
         ),
+
+        if (verses.length + widget.link.notes.length >= 2)
+          _threadControls(isDark),
 
         // حالة فارغة حين لا آيات ولا خواطر.
         if (verses.isEmpty && widget.link.notes.isEmpty)

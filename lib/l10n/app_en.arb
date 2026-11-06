@@ -902,5 +902,9 @@
     "placeholders": {
       "n": {"type": "String"}
     }
-  }
+  },
+  "threadModeOn": "Draw a thread between two cards",
+  "threadModeOff": "Stop drawing threads",
+  "threadPickFirst": "Pick the first card",
+  "threadPickSecond": "Pick the second card, or a joined pair to cut its thread"
 }

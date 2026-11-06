@@ -2616,4 +2616,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String cardColorHighlight(String n) {
     return 'تمييز $n';
   }
+
+  @override
+  String get threadModeOn => 'مدّ خيط بين بطاقتين';
+
+  @override
+  String get threadModeOff => 'إنهاء مدّ الخيوط';
+
+  @override
+  String get threadPickFirst => 'اختر البطاقة الأولى';
+
+  @override
+  String get threadPickSecond =>
+      'اختر البطاقة الثانية، أو زوجاً موصولاً لقطع خيطه';
 }

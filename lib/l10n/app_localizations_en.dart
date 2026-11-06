@@ -2629,4 +2629,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String cardColorHighlight(String n) {
     return 'Highlight $n';
   }
+
+  @override
+  String get threadModeOn => 'Draw a thread between two cards';
+
+  @override
+  String get threadModeOff => 'Stop drawing threads';
+
+  @override
+  String get threadPickFirst => 'Pick the first card';
+
+  @override
+  String get threadPickSecond =>
+      'Pick the second card, or a joined pair to cut its thread';
 }
