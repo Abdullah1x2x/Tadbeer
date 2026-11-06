@@ -2629,4 +2629,16 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get threadPickSecond =>
       'اختر البطاقة الثانية، أو زوجاً موصولاً لقطع خيطه';
+
+  @override
+  String get hideHubLines => 'إخفاء الخطوط التلقائية';
+
+  @override
+  String get showHubLines => 'إظهار الخطوط التلقائية';
+
+  @override
+  String get hideThreads => 'إخفاء الخيوط اليدوية';
+
+  @override
+  String get showThreads => 'إظهار الخيوط اليدوية';
 }

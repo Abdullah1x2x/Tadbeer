@@ -7,12 +7,16 @@ class _NetworkConnectionsPainter extends CustomPainter {
 
   /// خيوط القارئ بين البطاقات.
   final List<AyahLinkRelationship> threads;
+
+  /// رسم الخطوط من المحور إلى البطاقات.
+  final bool showHubLines;
   final bool isDark;
 
   const _NetworkConnectionsPainter({
     required this.center,
     required this.positions,
     required this.threads,
+    required this.showHubLines,
     required this.isDark,
   });
 
@@ -31,7 +35,7 @@ class _NetworkConnectionsPainter extends CustomPainter {
       )
       ..style = PaintingStyle.fill;
 
-    for (final pos in positions.values) {
+    for (final pos in showHubLines ? positions.values : const <Offset>[]) {
       final path = Path();
       path.moveTo(center.dx, center.dy);
 

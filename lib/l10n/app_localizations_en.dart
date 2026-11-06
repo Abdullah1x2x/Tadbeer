@@ -2642,4 +2642,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get threadPickSecond =>
       'Pick the second card, or a joined pair to cut its thread';
+
+  @override
+  String get hideHubLines => 'Hide automatic lines';
+
+  @override
+  String get showHubLines => 'Show automatic lines';
+
+  @override
+  String get hideThreads => 'Hide manual threads';
+
+  @override
+  String get showThreads => 'Show manual threads';
 }

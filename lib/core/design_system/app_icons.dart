@@ -250,6 +250,11 @@ abstract final class AppIcons {
     fontFamily: _regular,
     fontPackage: _package,
   );
+  static const IconData eyeSlash = IconData(
+    0xe224,
+    fontFamily: _regular,
+    fontPackage: _package,
+  );
   static const IconData filePdf = IconData(
     0xe702,
     fontFamily: _regular,

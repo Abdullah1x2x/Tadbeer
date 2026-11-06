@@ -157,6 +157,14 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                   onSelected: (val) {
                     if (val == 'autolayout') {
                       _networkKey.currentState?.autoLayout();
+                    } else if (val == 'hubLines') {
+                      _repo.updateLink(
+                        link.copyWith(hideHubLines: !link.hideHubLines),
+                      );
+                    } else if (val == 'threads') {
+                      _repo.updateLink(
+                        link.copyWith(hideThreads: !link.hideThreads),
+                      );
                     } else if (val == 'edit') {
                       _editLink(link);
                     } else if (val == 'delete') {
@@ -170,6 +178,27 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
                         icon: AppIcons.squaresFour,
                         label: l10n.autoLayout,
                       ),
+                    if (_activeViewMode == 'network') ...[
+                      appMenuItem(
+                        value: 'hubLines',
+                        icon: link.hideHubLines
+                            ? AppIcons.eye
+                            : AppIcons.eyeSlash,
+                        label: link.hideHubLines
+                            ? l10n.showHubLines
+                            : l10n.hideHubLines,
+                      ),
+                      if (link.relationships.isNotEmpty)
+                        appMenuItem(
+                          value: 'threads',
+                          icon: link.hideThreads
+                              ? AppIcons.eye
+                              : AppIcons.eyeSlash,
+                          label: link.hideThreads
+                              ? l10n.showThreads
+                              : l10n.hideThreads,
+                        ),
+                    ],
                     appMenuItem(
                       value: 'edit',
                       icon: AppIcons.pencilSimple,

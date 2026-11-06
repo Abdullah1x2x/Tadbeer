@@ -394,6 +394,13 @@ void main() {
       final restored = AyahLinkItem.fromJson(updated.toJson());
       expect(restored.nodeColors, updated.nodeColors);
 
+      final hidden = AyahLinkItem.fromJson(
+        updated.copyWith(hideHubLines: true, hideThreads: true).toJson(),
+      );
+      expect(hidden.hideHubLines, isTrue);
+      expect(hidden.hideThreads, isTrue);
+      expect(restored.hideHubLines, isFalse);
+
       await repo.updateNodeColor(link.id, '2:153', null);
       updated = repo.getLink(link.id)!;
       expect(updated.nodeColors, {'note_x': 2});

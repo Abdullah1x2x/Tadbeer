@@ -218,6 +218,12 @@ class AyahLinkItem {
   /// [AppColors.highlightColors]. غياب المفتاح يعني اللون الافتراضي.
   final Map<String, int> nodeColors;
 
+  /// إخفاء الخطوط التلقائية من المحور إلى البطاقات.
+  final bool hideHubLines;
+
+  /// إخفاء خيوط القارئ بين البطاقات.
+  final bool hideThreads;
+
   /// قيمة [nodeColors] للبطاقة الداكنة.
   static const int darkCardColor = -1;
 
@@ -249,6 +255,8 @@ class AyahLinkItem {
     this.positions = const {},
     this.relationships = const [],
     this.nodeColors = const {},
+    this.hideHubLines = false,
+    this.hideThreads = false,
     this.isManualLayout = false,
     this.lastViewMode = 'network',
     this.panX,
@@ -274,6 +282,8 @@ class AyahLinkItem {
     if (relationships.isNotEmpty)
       'relationships': relationships.map((r) => r.toJson()).toList(),
     if (nodeColors.isNotEmpty) 'nodeColors': nodeColors,
+    if (hideHubLines) 'hideHubLines': true,
+    if (hideThreads) 'hideThreads': true,
     'isManualLayout': isManualLayout,
     'lastViewMode': lastViewMode,
     if (panX != null) 'panX': panX,
@@ -331,6 +341,8 @@ class AyahLinkItem {
       nodeColors: (json['nodeColors'] as Map<String, dynamic>? ?? const {}).map(
         (k, v) => MapEntry(k, (v as num).toInt()),
       ),
+      hideHubLines: json['hideHubLines'] as bool? ?? false,
+      hideThreads: json['hideThreads'] as bool? ?? false,
       isManualLayout: json['isManualLayout'] as bool? ?? false,
       lastViewMode: json['lastViewMode'] as String? ?? 'network',
       panX: (json['panX'] as num?)?.toDouble(),
@@ -349,6 +361,8 @@ class AyahLinkItem {
     Map<String, LinkNodePosition>? positions,
     List<AyahLinkRelationship>? relationships,
     Map<String, int>? nodeColors,
+    bool? hideHubLines,
+    bool? hideThreads,
     bool? isManualLayout,
     String? lastViewMode,
     double? panX,
@@ -365,6 +379,8 @@ class AyahLinkItem {
       positions: positions ?? this.positions,
       relationships: relationships ?? this.relationships,
       nodeColors: nodeColors ?? this.nodeColors,
+      hideHubLines: hideHubLines ?? this.hideHubLines,
+      hideThreads: hideThreads ?? this.hideThreads,
       isManualLayout: isManualLayout ?? this.isManualLayout,
       lastViewMode: lastViewMode ?? this.lastViewMode,
       panX: panX ?? this.panX,

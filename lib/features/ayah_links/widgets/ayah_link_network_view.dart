@@ -986,7 +986,10 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 painter: _NetworkConnectionsPainter(
                   center: const Offset(_centerCoord, _centerCoord),
                   positions: _positions,
-                  threads: widget.link.relationships,
+                  threads: widget.link.hideThreads
+                      ? const []
+                      : widget.link.relationships,
+                  showHubLines: !widget.link.hideHubLines,
                   isDark: isDark,
                 ),
               ),

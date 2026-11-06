@@ -906,5 +906,9 @@
   "threadModeOn": "Draw a thread between two cards",
   "threadModeOff": "Stop drawing threads",
   "threadPickFirst": "Pick the first card",
-  "threadPickSecond": "Pick the second card, or a joined pair to cut its thread"
+  "threadPickSecond": "Pick the second card, or a joined pair to cut its thread",
+  "hideHubLines": "Hide automatic lines",
+  "showHubLines": "Show automatic lines",
+  "hideThreads": "Hide manual threads",
+  "showThreads": "Show manual threads"
 }

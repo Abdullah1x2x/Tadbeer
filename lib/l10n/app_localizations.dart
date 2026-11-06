@@ -4685,6 +4685,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'اختر البطاقة الثانية، أو زوجاً موصولاً لقطع خيطه'**
   String get threadPickSecond;
+
+  /// No description provided for @hideHubLines.
+  ///
+  /// In ar, this message translates to:
+  /// **'إخفاء الخطوط التلقائية'**
+  String get hideHubLines;
+
+  /// No description provided for @showHubLines.
+  ///
+  /// In ar, this message translates to:
+  /// **'إظهار الخطوط التلقائية'**
+  String get showHubLines;
+
+  /// No description provided for @hideThreads.
+  ///
+  /// In ar, this message translates to:
+  /// **'إخفاء الخيوط اليدوية'**
+  String get hideThreads;
+
+  /// No description provided for @showThreads.
+  ///
+  /// In ar, this message translates to:
+  /// **'إظهار الخيوط اليدوية'**
+  String get showThreads;
 }
 
 class _AppLocalizationsDelegate
