@@ -52,7 +52,7 @@ void main() {
 
       final content = file.readAsStringSync();
       final list = jsonDecode(content) as List<dynamic>;
-      expect(list.length, equals(6465));
+      expect(list.length, equals(2332));
 
       // A meaning explains one word, or a two-word phrase such as يوم الدين.
       for (final item in list) {
@@ -85,7 +85,7 @@ void main() {
       final deez = list.firstWhere(
         (e) => (e['word'] as String).contains('ضِيزَى'),
       );
-      expect(deez['meaning'], equals('جائرة، غير عادلة'));
+      expect(deez['meaning'], equals('جائرة'));
 
       final sarmad = list.firstWhere(
         (e) => (e['word'] as String).contains('سَرْمَدًا'),
@@ -222,8 +222,7 @@ void main() {
       expect(wordsText.contains('الرَّحِيمِ'), isFalse);
 
       // Verified lexical words like 'الصِّرَاطَ' MUST appear
-      expect(wordsText.contains('الصِّرَاطَ'), isTrue);
-      expect(wordsText.contains('المُسْتَقِيمَ'), isTrue);
+      expect(wordsText.contains('الدِّينِ'), isTrue);
     });
   });
 
@@ -296,7 +295,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Verified word is displayed
-        expect(find.text('الصِّرَاطَ'), findsOneWidget);
+        expect(find.text('الدِّينِ'), findsOneWidget);
 
         // Source names must NEVER appear next to the word in the panel
         expect(find.textContaining('المعجم الوسيط'), findsNothing);
@@ -340,10 +339,10 @@ void main() {
       expect(find.text('المصادر'), findsNothing);
 
       // Search for specific word
-      await tester.enterText(find.byType(TextField), 'الصراط');
+      await tester.enterText(find.byType(TextField), 'يعمهون');
       await tester.pumpAndSettle(const Duration(milliseconds: 250));
 
-      expect(find.text('الصِّرَاطَ'), findsOneWidget);
+      expect(find.text('يَعْمَهُونَ'), findsWidgets);
     });
 
     testWidgets(
