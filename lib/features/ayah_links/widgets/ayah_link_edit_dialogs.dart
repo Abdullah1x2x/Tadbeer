@@ -157,8 +157,9 @@ class _EditVerseNoteDialogState extends State<_EditVerseNoteDialog> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return AlertDialog(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.comsilkLight,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.comsilkLight,
       title: Text(context.l10n.ayahReflectionNoteTitle),
       content: TextField(
         controller: _controller,
@@ -226,8 +227,9 @@ class _EditNoteCardDialogState extends State<_EditNoteCardDialog> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return AlertDialog(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.comsilkLight,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.comsilkLight,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Row(
         children: [
@@ -288,13 +290,10 @@ class _EditNoteCardDialogState extends State<_EditNoteCardDialog> {
           onPressed: () {
             if (_contentController.text.trim().isNotEmpty) {
               final title = _titleController.text.trim();
-              Navigator.pop(
-                context,
-                (
-                  title: title.isEmpty ? null : title,
-                  content: _contentController.text.trim(),
-                ),
-              );
+              Navigator.pop(context, (
+                title: title.isEmpty ? null : title,
+                content: _contentController.text.trim(),
+              ));
             }
           },
           style: ElevatedButton.styleFrom(
@@ -307,4 +306,3 @@ class _EditNoteCardDialogState extends State<_EditNoteCardDialog> {
     );
   }
 }
-

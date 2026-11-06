@@ -177,6 +177,15 @@ class AyahLinkRepository {
     await _store.updateLinkPositions(linkId, positions, isManual);
   }
 
+  /// يحفظ لون بطاقة، و[color] الفارغ يعيدها للون الافتراضي.
+  Future<void> updateNodeColor(
+    String linkId,
+    String nodeKey,
+    int? color,
+  ) async {
+    await _store.updateLinkNodeColor(linkId, nodeKey, color);
+  }
+
   /// يحفظ حالة العرض: الطريقة والإزاحة والتكبير.
   Future<void> updateViewState(
     String linkId, {

@@ -2602,4 +2602,18 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get digitalKhattAttribution =>
       'خط Digital Khatt من مشروع DigitalKhatt وTarteel، بترخيص SIL OFL 1.1.';
+
+  @override
+  String get cardColor => 'لون البطاقة';
+
+  @override
+  String get cardColorDefault => 'افتراضي';
+
+  @override
+  String get cardColorDark => 'داكن';
+
+  @override
+  String cardColorHighlight(String n) {
+    return 'تمييز $n';
+  }
 }

@@ -379,5 +379,24 @@ void main() {
         expect(updated.positions.containsKey(note.noteKey), isFalse);
       },
     );
+
+    test('17: Card colors are saved, cleared and survive JSON', () async {
+      final link = await repo.createLink(title: 'ألوان البطاقات');
+
+      await repo.updateNodeColor(link.id, '2:153', AyahLinkItem.darkCardColor);
+      await repo.updateNodeColor(link.id, 'note_x', 2);
+      var updated = repo.getLink(link.id)!;
+      expect(updated.nodeColors, {
+        '2:153': AyahLinkItem.darkCardColor,
+        'note_x': 2,
+      });
+
+      final restored = AyahLinkItem.fromJson(updated.toJson());
+      expect(restored.nodeColors, updated.nodeColors);
+
+      await repo.updateNodeColor(link.id, '2:153', null);
+      updated = repo.getLink(link.id)!;
+      expect(updated.nodeColors, {'note_x': 2});
+    });
   });
 }

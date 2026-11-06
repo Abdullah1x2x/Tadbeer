@@ -339,7 +339,8 @@ class AyahLinkOrderedView extends StatelessWidget {
                             ),
                           );
                         },
-                        child: UserDataStore.instance.settings.mushafStyle ==
+                        child:
+                            UserDataStore.instance.settings.mushafStyle ==
                                 MushafStyle.madinah
                             ? QcfAyahText(
                                 ayah: ayah,

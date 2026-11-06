@@ -4637,6 +4637,30 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'خط Digital Khatt من مشروع DigitalKhatt وTarteel، بترخيص SIL OFL 1.1.'**
   String get digitalKhattAttribution;
+
+  /// No description provided for @cardColor.
+  ///
+  /// In ar, this message translates to:
+  /// **'لون البطاقة'**
+  String get cardColor;
+
+  /// No description provided for @cardColorDefault.
+  ///
+  /// In ar, this message translates to:
+  /// **'افتراضي'**
+  String get cardColorDefault;
+
+  /// No description provided for @cardColorDark.
+  ///
+  /// In ar, this message translates to:
+  /// **'داكن'**
+  String get cardColorDark;
+
+  /// No description provided for @cardColorHighlight.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمييز {n}'**
+  String cardColorHighlight(String n);
 }
 
 class _AppLocalizationsDelegate

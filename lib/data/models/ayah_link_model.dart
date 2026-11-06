@@ -214,6 +214,13 @@ class AyahLinkItem {
 
   final List<AyahLinkRelationship> relationships;
 
+  /// لون كل بطاقة بمفتاح الآية أو البطاقة: [darkCardColor] للداكن، أو رقم في
+  /// [AppColors.highlightColors]. غياب المفتاح يعني اللون الافتراضي.
+  final Map<String, int> nodeColors;
+
+  /// قيمة [nodeColors] للبطاقة الداكنة.
+  static const int darkCardColor = -1;
+
   /// هل رتّب القارئ العقد بيده، أم تُرتّب تلقائياً.
   final bool isManualLayout;
 
@@ -241,6 +248,7 @@ class AyahLinkItem {
     this.notes = const [],
     this.positions = const {},
     this.relationships = const [],
+    this.nodeColors = const {},
     this.isManualLayout = false,
     this.lastViewMode = 'network',
     this.panX,
@@ -265,6 +273,7 @@ class AyahLinkItem {
     'positions': positions.map((k, v) => MapEntry(k, v.toJson())),
     if (relationships.isNotEmpty)
       'relationships': relationships.map((r) => r.toJson()).toList(),
+    if (nodeColors.isNotEmpty) 'nodeColors': nodeColors,
     'isManualLayout': isManualLayout,
     'lastViewMode': lastViewMode,
     if (panX != null) 'panX': panX,
@@ -319,6 +328,9 @@ class AyahLinkItem {
       notes: notesList,
       positions: positionsMap,
       relationships: relationshipsList,
+      nodeColors: (json['nodeColors'] as Map<String, dynamic>? ?? const {}).map(
+        (k, v) => MapEntry(k, (v as num).toInt()),
+      ),
       isManualLayout: json['isManualLayout'] as bool? ?? false,
       lastViewMode: json['lastViewMode'] as String? ?? 'network',
       panX: (json['panX'] as num?)?.toDouble(),
@@ -336,6 +348,7 @@ class AyahLinkItem {
     List<AyahLinkNote>? notes,
     Map<String, LinkNodePosition>? positions,
     List<AyahLinkRelationship>? relationships,
+    Map<String, int>? nodeColors,
     bool? isManualLayout,
     String? lastViewMode,
     double? panX,
@@ -351,6 +364,7 @@ class AyahLinkItem {
       notes: notes ?? this.notes,
       positions: positions ?? this.positions,
       relationships: relationships ?? this.relationships,
+      nodeColors: nodeColors ?? this.nodeColors,
       isManualLayout: isManualLayout ?? this.isManualLayout,
       lastViewMode: lastViewMode ?? this.lastViewMode,
       panX: panX ?? this.panX,

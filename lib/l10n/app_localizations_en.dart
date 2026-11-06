@@ -2615,4 +2615,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get digitalKhattAttribution =>
       'Digital Khatt font by DigitalKhatt and Tarteel, under the SIL OFL 1.1.';
+
+  @override
+  String get cardColor => 'Card color';
+
+  @override
+  String get cardColorDefault => 'Default';
+
+  @override
+  String get cardColorDark => 'Dark';
+
+  @override
+  String cardColorHighlight(String n) {
+    return 'Highlight $n';
+  }
 }

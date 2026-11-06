@@ -174,9 +174,8 @@ class QuranRepository {
   /// كلمات البحث ولو متفرقة. ولا يشترط "ال" التعريف.
   /// [text] في أول كلمة، ولو سبقته أداة (و ف ب ل ك ال): دون الهمزة تقصر الكلمات
   /// فتظهر داخل غيرها («روف» في «معروف»).
-  static RegExp _atWordStart(String text) => RegExp(
-    '(?:^| )(?:[وفبلك]|ال|وال|فال|بال|كال|لل)?${RegExp.escape(text)}',
-  );
+  static RegExp _atWordStart(String text) =>
+      RegExp('(?:^| )(?:[وفبلك]|ال|وال|فال|بال|كال|لل)?${RegExp.escape(text)}');
 
   List<Ayah> searchAyahs(String query, {int limit = 50}) {
     if (!_isLoaded || query.trim().isEmpty) return const [];

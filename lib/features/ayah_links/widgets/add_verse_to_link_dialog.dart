@@ -373,8 +373,11 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 if (number != null && mounted) {
                   setState(() => _surah = number);
                   // فتح منتقي الآيات المرئي تلقائياً بعد اختيار السورة
-                  final pickedAyah =
-                      await _pickAyahFromSurah(this.context, l10n, number);
+                  final pickedAyah = await _pickAyahFromSurah(
+                    this.context,
+                    l10n,
+                    number,
+                  );
                   if (pickedAyah != null && mounted) {
                     _choose(pickedAyah);
                   }
@@ -402,16 +405,17 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
           const SizedBox(width: 8),
           OutlinedButton.icon(
             onPressed: () async {
-              final pickedAyah = await _pickAyahFromSurah(context, l10n, _surah);
+              final pickedAyah = await _pickAyahFromSurah(
+                context,
+                l10n,
+                _surah,
+              );
               if (pickedAyah != null && mounted) {
                 _choose(pickedAyah);
               }
             },
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 14,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             ),
             icon: const Icon(AppIcons.listNumbers, size: 18),
             label: Text(l10n.addVerseAyah),
@@ -476,7 +480,8 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                         radius: 16,
                         backgroundColor: added
                             ? AppColors.statusWarning.withValues(alpha: 0.2)
-                            : Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                            : Theme.of(context).colorScheme.primary
+                                  .withValues(alpha: 0.1),
                         child: Text(
                           l10n.digits(ayah.ayahNumber),
                           style: TextStyle(

@@ -141,6 +141,34 @@ mixin _AyahLinksSection on _StoreState {
     }
   }
 
+  /// يحفظ لون بطاقة في الشبكة، و[color] الفارغ يعيدها للون الافتراضي.
+  Future<void> updateLinkNodeColor(
+    String linkId,
+    String nodeKey,
+    int? color,
+  ) async {
+    final idx = _ayahLinks.indexWhere((l) => l.id == linkId);
+    if (idx != -1) {
+      final existing = _ayahLinks[idx];
+      final colors = Map<String, int>.of(existing.nodeColors);
+      if (color == null) {
+        colors.remove(nodeKey);
+      } else {
+        colors[nodeKey] = color;
+      }
+      final updated = existing.copyWith(
+        nodeColors: colors,
+        updatedAt: DateTime.now(),
+      );
+      _ayahLinks[idx] = updated;
+      notifyListeners();
+      final userDb = UserDatabase.instance;
+      if (userDb.isOpen) {
+        await userDb.insertOrUpdateAyahLink(updated);
+      }
+    }
+  }
+
   /// يحفظ منظور الشبكة: طريقة العرض والتكبير والإزاحة.
   Future<void> updateLinkViewState(
     String linkId, {

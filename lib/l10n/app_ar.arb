@@ -1482,5 +1482,14 @@
   "enablePermission": "تفعيل",
   "batteryHintNotice": "هاتفك قد يوقف التذكيرات لتوفير البطارية. من إعدادات التطبيق اجعل البطارية «بلا قيود».",
   "openSettings": "الإعدادات",
-  "digitalKhattAttribution": "خط Digital Khatt من مشروع DigitalKhatt وTarteel، بترخيص SIL OFL 1.1."
+  "digitalKhattAttribution": "خط Digital Khatt من مشروع DigitalKhatt وTarteel، بترخيص SIL OFL 1.1.",
+  "cardColor": "لون البطاقة",
+  "cardColorDefault": "افتراضي",
+  "cardColorDark": "داكن",
+  "cardColorHighlight": "تمييز {n}",
+  "@cardColorHighlight": {
+    "placeholders": {
+      "n": {"type": "String"}
+    }
+  }
 }

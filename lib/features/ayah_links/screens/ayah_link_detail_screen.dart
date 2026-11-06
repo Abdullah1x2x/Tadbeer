@@ -392,8 +392,9 @@ class _AddNoteToLinkDialogState extends State<_AddNoteToLinkDialog> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AlertDialog(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.comsilkLight,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.comsilkLight,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Row(
         children: [
@@ -436,8 +437,7 @@ class _AddNoteToLinkDialogState extends State<_AddNoteToLinkDialog> {
               decoration: InputDecoration(
                 hintText: l10n.noteTitleOptional,
                 filled: true,
-                fillColor:
-                    isDark ? AppColors.darkSurface : AppColors.comsilk,
+                fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
@@ -465,8 +465,7 @@ class _AddNoteToLinkDialogState extends State<_AddNoteToLinkDialog> {
               decoration: InputDecoration(
                 hintText: l10n.noteContent,
                 filled: true,
-                fillColor:
-                    isDark ? AppColors.darkSurface : AppColors.comsilk,
+                fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
@@ -497,10 +496,10 @@ class _AddNoteToLinkDialogState extends State<_AddNoteToLinkDialog> {
             final content = _contentController.text.trim();
             if (content.isNotEmpty) {
               final title = _titleController.text.trim();
-              Navigator.pop(
-                context,
-                (title: title.isEmpty ? null : title, content: content),
-              );
+              Navigator.pop(context, (
+                title: title.isEmpty ? null : title,
+                content: content,
+              ));
             }
           },
           style: ElevatedButton.styleFrom(
@@ -513,4 +512,3 @@ class _AddNoteToLinkDialogState extends State<_AddNoteToLinkDialog> {
     );
   }
 }
-

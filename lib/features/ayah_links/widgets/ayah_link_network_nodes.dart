@@ -163,6 +163,9 @@ class _CenterThemeNode extends StatelessWidget {
 class _VerseCanvasNode extends StatelessWidget {
   final AyahLinkVerse verse;
   final bool isDark;
+
+  /// تمييز البطاقة من [AppColors.highlightColors]، أو null للون الافتراضي.
+  final Color? tint;
   final VoidCallback onTap;
   final ValueChanged<Offset> onPanUpdate;
   final VoidCallback onPanEnd;
@@ -170,6 +173,7 @@ class _VerseCanvasNode extends StatelessWidget {
   const _VerseCanvasNode({
     required this.verse,
     required this.isDark,
+    this.tint,
     required this.onTap,
     required this.onPanUpdate,
     required this.onPanEnd,
@@ -195,15 +199,17 @@ class _VerseCanvasNode extends StatelessWidget {
         width: nodeWidth,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
+          color: _cardSurface(isDark, tint),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: hasNote
+            color: tint != null
+                ? tint!.withValues(alpha: 1)
+                : hasNote
                 ? AppColors.olive
                 : (isDark
                       ? AppColors.darkSurfaceVariant
                       : AppColors.lightBorder),
-            width: hasNote ? 1.5 : 1.2,
+            width: hasNote || tint != null ? 1.5 : 1.2,
           ),
           boxShadow: [
             BoxShadow(
@@ -319,6 +325,9 @@ class _VerseCanvasNode extends StatelessWidget {
 class _NoteCanvasNode extends StatelessWidget {
   final AyahLinkNote note;
   final bool isDark;
+
+  /// تمييز البطاقة من [AppColors.highlightColors]، أو null للون الافتراضي.
+  final Color? tint;
   final VoidCallback onTap;
   final ValueChanged<Offset> onPanUpdate;
   final VoidCallback onPanEnd;
@@ -326,6 +335,7 @@ class _NoteCanvasNode extends StatelessWidget {
   const _NoteCanvasNode({
     required this.note,
     required this.isDark,
+    this.tint,
     required this.onTap,
     required this.onPanUpdate,
     required this.onPanEnd,
@@ -345,10 +355,12 @@ class _NoteCanvasNode extends StatelessWidget {
         width: nodeWidth,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
+          color: _cardSurface(isDark, tint),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: Theme.of(context).colorScheme.primary,
+            color:
+                tint?.withValues(alpha: 1) ??
+                Theme.of(context).colorScheme.primary,
             width: 1.5,
           ),
           boxShadow: [
@@ -404,4 +416,10 @@ class _NoteCanvasNode extends StatelessWidget {
       ),
     );
   }
+}
+
+/// خلفية البطاقة: سطح الوضع، ممزوجاً بلون التمييز إن وُجد.
+Color _cardSurface(bool isDark, Color? tint) {
+  final base = isDark ? AppColors.darkSurface : AppColors.comsilkLight;
+  return tint == null ? base : Color.alphaBlend(tint, base);
 }

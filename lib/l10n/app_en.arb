@@ -893,5 +893,14 @@
   "enablePermission": "Enable",
   "batteryHintNotice": "Your phone may stop reminders to save battery. In the app settings, set battery to “Unrestricted”.",
   "openSettings": "Settings",
-  "digitalKhattAttribution": "Digital Khatt font by DigitalKhatt and Tarteel, under the SIL OFL 1.1."
+  "digitalKhattAttribution": "Digital Khatt font by DigitalKhatt and Tarteel, under the SIL OFL 1.1.",
+  "cardColor": "Card color",
+  "cardColorDefault": "Default",
+  "cardColorDark": "Dark",
+  "cardColorHighlight": "Highlight {n}",
+  "@cardColorHighlight": {
+    "placeholders": {
+      "n": {"type": "String"}
+    }
+  }
 }

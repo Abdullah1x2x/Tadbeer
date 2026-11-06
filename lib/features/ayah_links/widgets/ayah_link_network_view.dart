@@ -73,6 +73,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
   @override
   void didUpdateWidget(covariant AyahLinkNetworkView oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final added =
+        widget.link.verses.length > oldWidget.link.verses.length ||
+        widget.link.notes.length > oldWidget.link.notes.length;
+    if (added && _positions.isNotEmpty) {
+      _placeNewAtViewportCenter();
+      return;
+    }
     if (oldWidget.link.verses.length != widget.link.verses.length ||
         oldWidget.link.notes.length != widget.link.notes.length ||
         oldWidget.link.isManualLayout != widget.link.isManualLayout ||
@@ -186,6 +193,34 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         ringIndex++;
       }
     }
+  }
+
+  /// يضع الآية أو الخاطرة الجديدة في وسط ما يراه المستخدم الآن، ويثبّت الباقي.
+  void _placeNewAtViewportCenter() {
+    final box = context.findRenderObject() as RenderBox?;
+    final size = box != null && box.hasSize
+        ? box.size
+        : MediaQuery.sizeOf(context);
+    final center = _transformController.toScene(
+      Offset(size.width / 2, size.height / 2),
+    );
+    final keys = [
+      ...widget.link.verses.map((v) => v.ayahKey),
+      ...widget.link.notes.map((n) => n.noteKey),
+    ];
+    _positions.removeWhere((k, _) => !keys.contains(k));
+    var i = 0;
+    for (final key in keys) {
+      if (!_positions.containsKey(key)) {
+        // إزاحة بسيطة حتى لا تتطابق عدة عناصر مضافة معاً.
+        _positions[key] = center + Offset(i * 40.0, i * 40.0);
+        i++;
+      }
+    }
+    // الحفظ يُبلغ المستمعين، فيؤجَّل لما بعد البناء.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _persistManualPositions();
+    });
   }
 
   /// يعطي موضعاً افتراضياً لكل آية أو خاطرة جديدة بلا موضع محفوظ.
@@ -344,6 +379,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     _showInspectorSheet(
+      nodeKey: verse.ayahKey,
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -556,6 +592,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     final hasTitle = note.title != null && note.title!.trim().isNotEmpty;
 
     _showInspectorSheet(
+      nodeKey: note.noteKey,
       header: Row(
         children: [
           Container(
@@ -661,6 +698,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
   ///
   /// [actions] تأخذ سياق اللوحة لتغلقها.
   void _showInspectorSheet({
+    required String nodeKey,
     required Widget header,
     required Widget body,
     required Widget Function(BuildContext sheetContext) actions,
@@ -707,6 +745,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                   const SizedBox(height: 12),
                   Flexible(child: SingleChildScrollView(child: body)),
                   const SizedBox(height: 12),
+                  _cardColorPicker(nodeKey, bottomSheetCtx),
+                  const SizedBox(height: 12),
                   actions(bottomSheetCtx),
                 ],
               ),
@@ -714,6 +754,110 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           ),
         ),
       ),
+    );
+  }
+
+  /// لون البطاقة المحفوظ في الرابط، أو null للافتراضي.
+  int? _colorOf(String key) => widget.link.nodeColors[key];
+
+  /// هل تُرسم البطاقة داكنة: في الوضع الداكن، أو إن اختارها القارئ داكنة.
+  bool _cardIsDark(String key, bool isDark) =>
+      isDark || _colorOf(key) == AyahLinkItem.darkCardColor;
+
+  /// لون تمييز البطاقة إن اختير.
+  Color? _cardTint(String key) {
+    final c = _colorOf(key);
+    if (c == null || c < 0 || c >= AppColors.highlightColors.length) {
+      return null;
+    }
+    return AppColors.highlightColors[c];
+  }
+
+  /// صف ألوان البطاقة: افتراضي، داكن، وألوان التمييز. الاختيار يحفظ ويغلق اللوحة.
+  Widget _cardColorPicker(String nodeKey, BuildContext sheetContext) {
+    final current = _colorOf(nodeKey);
+    final l10n = context.l10n;
+    final primary = Theme.of(context).colorScheme.primary;
+
+    Widget swatch({
+      required int? value,
+      required Color color,
+      required String label,
+      IconData? icon,
+    }) {
+      final selected = current == value;
+      return Semantics(
+        button: true,
+        selected: selected,
+        label: label,
+        child: InkWell(
+          onTap: () {
+            Navigator.pop(sheetContext);
+            _repo.updateNodeColor(widget.link.id, nodeKey, value);
+          },
+          customBorder: const CircleBorder(),
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: selected ? primary : AppColors.border(context),
+                width: selected ? 3 : 1,
+              ),
+            ),
+            child: ExcludeSemantics(
+              child: Icon(
+                selected ? AppIcons.check : icon,
+                size: 18,
+                color: selected ? primary : AppColors.textSecondary(context),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.cardColor,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textSecondary(context),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            swatch(
+              value: null,
+              color: AppColors.surface(context),
+              label: l10n.cardColorDefault,
+              icon: AppIcons.prohibit,
+            ),
+            swatch(
+              value: AyahLinkItem.darkCardColor,
+              color: AppColors.darkSurface,
+              label: l10n.cardColorDark,
+            ),
+            for (var i = 0; i < AppColors.highlightColors.length; i++)
+              swatch(
+                value: i,
+                color: Color.alphaBlend(
+                  AppColors.highlightColors[i],
+                  AppColors.surface(context),
+                ),
+                label: l10n.cardColorHighlight(l10n.digits(i + 1)),
+              ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -738,8 +882,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         InteractiveViewer(
           transformationController: _transformController,
           constrained: false,
-          minScale: 0.25,
-          maxScale: 2.5,
+          minScale: 0.05,
+          maxScale: 10,
           // لوحة غير محدودة: التحريك والسحب بلا حدود.
           boundaryMargin: const EdgeInsets.all(double.infinity),
           onInteractionEnd: (details) {
@@ -783,7 +927,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     top: _positions[verse.ayahKey]!.dy - 60,
                     child: _VerseCanvasNode(
                       verse: verse,
-                      isDark: isDark,
+                      isDark: _cardIsDark(verse.ayahKey, isDark),
+                      tint: _cardTint(verse.ayahKey),
                       onTap: () => _focusAyahNode(verse),
                       onPanUpdate: (delta) {
                         setState(() {
@@ -802,7 +947,8 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                     top: _positions[note.noteKey]!.dy - 50,
                     child: _NoteCanvasNode(
                       note: note,
-                      isDark: isDark,
+                      isDark: _cardIsDark(note.noteKey, isDark),
+                      tint: _cardTint(note.noteKey),
                       onTap: () => _focusNoteNode(note),
                       onPanUpdate: (delta) {
                         setState(() {
