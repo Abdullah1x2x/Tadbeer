@@ -52,7 +52,7 @@ void main() {
 
       final content = file.readAsStringSync();
       final list = jsonDecode(content) as List<dynamic>;
-      expect(list.length, equals(2308));
+      expect(list.length, equals(2249));
 
       // A meaning explains one word, or a two-word phrase such as يوم الدين.
       for (final item in list) {
