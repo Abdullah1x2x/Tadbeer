@@ -9,6 +9,7 @@ class AppUpdateInfo {
   final String changelog;
   final String telegramUrl;
   final String downloadUrl;
+  final String apkUrl;
   final bool isMandatory;
 
   const AppUpdateInfo({
@@ -19,6 +20,7 @@ class AppUpdateInfo {
     required this.changelog,
     required this.telegramUrl,
     required this.downloadUrl,
+    this.apkUrl = '',
     this.isMandatory = false,
   });
 
@@ -33,6 +35,7 @@ class AppUpdateInfo {
           json['telegram_url'] as String? ?? 'https://t.me/tadbeerapp',
       downloadUrl: json['download_url'] as String? ??
           'https://github.com/Abdullah1x2x/Tadbeer/releases/latest',
+      apkUrl: json['apk_url'] as String? ?? '',
       isMandatory: json['is_mandatory'] as bool? ?? false,
     );
   }
@@ -45,8 +48,16 @@ class AppUpdateInfo {
     'changelog': changelog,
     'telegram_url': telegramUrl,
     'download_url': downloadUrl,
+    'apk_url': apkUrl,
     'is_mandatory': isMandatory,
   };
+
+  /// الرابط المباشر لملف الـ APK للتنزيل والتثبيت الفوري.
+  String get directApkUrl {
+    if (apkUrl.isNotEmpty) return apkUrl;
+    if (downloadUrl.endsWith('.apk')) return downloadUrl;
+    return 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/app-arm64-v8a-release.apk';
+  }
 
   /// يتحقق مما إذا كان هذا التحديث أحدث من الإصدار المثبت حالياً.
   bool isNewerThan(int currentBuildNumber, String currentVersion) {

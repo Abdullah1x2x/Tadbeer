@@ -41,6 +41,7 @@ void main() {
     expect(find.text('v1.2.0'), findsOneWidget);
     expect(find.text('2026-11-10'), findsOneWidget);
     expect(find.textContaining('روابط الآيات'), findsOneWidget);
+    expect(find.textContaining('تحميل وتثبيت التحديث تلقائياً'), findsOneWidget);
     expect(find.textContaining('تحميل عبر قناة تيليجرام الرسمية'), findsOneWidget);
     expect(find.textContaining('تحميل من GitHub'), findsOneWidget);
     expect(find.text('لاحقاً'), findsOneWidget);

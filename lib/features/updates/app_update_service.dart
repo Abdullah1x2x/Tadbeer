@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../app/localization.dart';
@@ -189,4 +190,89 @@ class AppUpdateService {
       return false;
     }
   }
+
+  static const MethodChannel _deviceChannel = MethodChannel('tadbeer/device');
+
+  /// يحصل على المسار المحلي لتخزين ملف الـ APK المحمّل.
+  Future<File> getUpdateApkFile(int buildNumber) async {
+    final tempDir = await getTemporaryDirectory();
+    return File('${tempDir.path}/tadbeer_update_$buildNumber.apk');
+  }
+
+  /// يثبّت ملف الـ APK المخصص لأندرويد عبر استدعاء النظام الأصلي.
+  Future<bool> installApk(String filePath) async {
+    if (!Platform.isAndroid) return false;
+    try {
+      final res = await _deviceChannel.invokeMethod<bool>('installApk', {
+        'filePath': filePath,
+      });
+      return res ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// ينزل ملف الـ APK في مجلد الكاش مع إرسال نسبة التقدم (0.0 إلى 1.0) وإجمالي البايتات.
+  Stream<DownloadProgress> downloadApkFile({
+    required String url,
+    required File targetFile,
+  }) async* {
+    final client = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 15);
+
+    IOSink? sink;
+    try {
+      if (await targetFile.exists()) {
+        await targetFile.delete();
+      }
+      sink = targetFile.openWrite();
+
+      final request = await client.getUrl(Uri.parse(url));
+      request.headers.set(
+        HttpHeaders.userAgentHeader,
+        'TadbeerApp/$currentVersion (Android; Offline-First)',
+      );
+      final response = await request.close();
+
+      if (response.statusCode != HttpStatus.ok) {
+        throw HttpException(
+          'Download failed with status ${response.statusCode}',
+        );
+      }
+
+      final total = response.contentLength;
+      var received = 0;
+
+      await for (final chunk in response) {
+        sink.add(chunk);
+        received += chunk.length;
+        yield DownloadProgress(
+          receivedBytes: received,
+          totalBytes: total > 0 ? total : 0,
+        );
+      }
+
+      await sink.flush();
+    } finally {
+      await sink?.close();
+      client.close();
+    }
+  }
+}
+
+/// بيانات تقدم تنزيل ملف التحديث.
+class DownloadProgress {
+  final int receivedBytes;
+  final int totalBytes;
+
+  const DownloadProgress({
+    required this.receivedBytes,
+    required this.totalBytes,
+  });
+
+  double get progress =>
+      totalBytes > 0 ? (receivedBytes / totalBytes).clamp(0.0, 1.0) : 0.0;
+
+  String get receivedMb => (receivedBytes / (1024 * 1024)).toStringAsFixed(1);
+  String get totalMb => (totalBytes / (1024 * 1024)).toStringAsFixed(1);
 }
