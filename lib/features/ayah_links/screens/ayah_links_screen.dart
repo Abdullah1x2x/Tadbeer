@@ -306,6 +306,7 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             l10n.ayahLinks,
@@ -423,7 +424,14 @@ class _AyahLinksScreenState extends State<AyahLinksScreen> {
                           ),
                         )
                       : ListView.separated(
-                          padding: const EdgeInsets.all(16),
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: EdgeInsets.fromLTRB(
+                            16,
+                            16,
+                            16,
+                            16 + MediaQuery.viewInsetsOf(context).bottom,
+                          ),
                           itemCount: links.length,
                           separatorBuilder: (_, _) =>
                               const SizedBox(height: 12),

@@ -137,9 +137,9 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
   </tr>
 </table>
 
-## Privacy
+## Privacy & Updates
 
-Your data stays on your device. No account, ads or analytics. The internet is used only for recitation, and approximate location only for the Qibla. See the [privacy policy](PRIVACY_POLICY.md).
+Your data stays on your device. No account, ads or analytics. The internet is used only for audio recitation and checking for new updates (which can be downloaded directly from GitHub or our official [Telegram Channel](https://t.me/tadbeerapp)), and approximate location only for the Qibla. See the [privacy policy](PRIVACY_POLICY.md).
 
 ## Getting started
 

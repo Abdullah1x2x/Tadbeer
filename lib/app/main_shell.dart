@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
@@ -11,6 +14,7 @@ import '../features/quran/screens/quran_screen.dart';
 import '../features/quran/widgets/ayah_rosette.dart';
 import '../features/reminders/startup_permissions.dart';
 import '../features/tasbeeh/tasbeeh_screen.dart';
+import '../features/updates/app_update_service.dart';
 import 'app.dart';
 import 'localization.dart';
 import '../core/design_system/app_icons.dart';
@@ -69,13 +73,27 @@ class _MainShellState extends State<MainShell>
   late ShellTab _tab = widget.initialTab;
   late final Set<ShellTab> _visited = {widget.initialTab};
 
+  Timer? _updateTimer;
+
   @override
   void initState() {
     super.initState();
     MainShell._mountedCount++;
     MainShell.requestedTab.addListener(_onTabRequested);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _welcome();
+      if (mounted) {
+        _welcome();
+        if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+          _updateTimer = Timer(const Duration(seconds: 3), () {
+            if (mounted) {
+              AppUpdateService.instance.checkForUpdates(
+                context,
+                showFeedback: false,
+              );
+            }
+          });
+        }
+      }
     });
   }
 
@@ -113,6 +131,7 @@ class _MainShellState extends State<MainShell>
 
   @override
   void dispose() {
+    _updateTimer?.cancel();
     MainShell._mountedCount--;
     MainShell.requestedTab.removeListener(_onTabRequested);
     _eased.dispose();
@@ -246,6 +265,7 @@ class _MainShellState extends State<MainShell>
           _select(ShellTab.home);
         },
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           // المصحف يأخذ الشاشة كاملة دائماً، فلا يتغير حجم خطه بظهور الشريط.
           extendBody: _tab == ShellTab.quran,
           body: GestureDetector(
@@ -275,19 +295,16 @@ class _MainShellState extends State<MainShell>
             valueListenable: _quranControlsVisible,
             builder: (context, controlsVisible, bar) {
               final hidden = _tab == ShellTab.quran && !controlsVisible;
-              // ينزلق ويتلاشى دون أن يتغير ارتفاعه.
+              // يتلاشى دون حركة رأسية.
               return IgnorePointer(
                 ignoring: hidden,
                 child: TweenAnimationBuilder<double>(
                   tween: Tween(end: hidden ? 0 : 1),
-                  duration: AppMotion.duration(context, AppMotion.slow),
-                  curve: Curves.easeOutCubic,
+                  duration: AppMotion.duration(context, AppMotion.chrome),
+                  curve: Curves.easeInOut,
                   builder: (context, t, child) => Opacity(
                     opacity: t,
-                    child: Transform.translate(
-                      offset: Offset(0, 96 * (1 - t)),
-                      child: child,
-                    ),
+                    child: child,
                   ),
                   child: bar,
                 ),

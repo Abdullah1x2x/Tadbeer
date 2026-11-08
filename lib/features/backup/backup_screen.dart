@@ -221,6 +221,7 @@ class _BackupScreenState extends State<BackupScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             l10n.backup,

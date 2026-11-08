@@ -9,6 +9,12 @@ class ArabicSearchNormalizer {
   );
 
   static final RegExp _tatweelRegex = RegExp(r'\u0640');
+  static final RegExp _alifMaqsuraRegex = RegExp(r'ى\u0670(?=[\u0621-\u064A])');
+  static final RegExp _hamzaAlifRegex = RegExp(r'[أإآٱ]');
+  static final RegExp _multiAlifRegex = RegExp(r'ا+');
+  static final RegExp _ilahRegex = RegExp(r'(^|\s|[وفبك])الاه($|\s|[انكهي])');
+  static final RegExp _whitespaceRegex = RegExp(r'\s+');
+  static final RegExp _hamzaCharsRegex = RegExp('[\u0621\u0624\u0626\u0654]');
 
   /// نسخة موحّدة من [text] للمطابقة، لا للعرض.
   static String normalize(String text) {
@@ -21,7 +27,7 @@ class ArabicSearchNormalizer {
     result = result.replaceAll('و\u0670', 'ا');
 
     // الألف المقصورة قبل خنجرية في وسط الكلمة (هَدَىٰكُمْ) تصير ألفاً قائمة.
-    result = result.replaceAll(RegExp(r'ى\u0670(?=[\u0621-\u064A])'), 'ا');
+    result = result.replaceAll(_alifMaqsuraRegex, 'ا');
     // وفي آخر الكلمة (عَلَىٰ، مُوسَىٰ) تبقى مقصورة وتُطبّع لاحقاً.
     result = result.replaceAll('ى\u0670', 'ى');
 
@@ -36,7 +42,7 @@ class ArabicSearchNormalizer {
 
     // ٤. صور الهمزة والألف (أ، إ، آ، ٱ، ءا) تصير ألفاً.
     result = result.replaceAll('ءا', 'ا');
-    result = result.replaceAll(RegExp(r'[أإآٱ]'), 'ا');
+    result = result.replaceAll(_hamzaAlifRegex, 'ا');
 
     // ٥. التاء المربوطة تصير هاءً.
     result = result.replaceAll('ة', 'ه');
@@ -49,7 +55,7 @@ class ArabicSearchNormalizer {
     result = result.replaceAll('ئ', 'ي');
 
     // ٨. دمج الألفات المتتالية (ربوا ← رباا ← ربا).
-    result = result.replaceAll(RegExp(r'ا+'), 'ا');
+    result = result.replaceAll(_multiAlifRegex, 'ا');
 
     // ٩. فروق إملائية شائعة مع الرسم القياسي: الرحمن / الرحمان.
     result = result.replaceAll('الرحمان', 'الرحمن');
@@ -78,7 +84,7 @@ class ArabicSearchNormalizer {
 
     // إلاه ← اله، دون المساس بكلمات تبدأ بـ "الأهل" أو "الأهرام".
     result = result.replaceAllMapped(
-      RegExp(r'(^|\s|[وفبك])الاه($|\s|[انكهي])'),
+      _ilahRegex,
       (m) => '${m[1]}اله${m[2]}',
     );
 
@@ -101,7 +107,7 @@ class ArabicSearchNormalizer {
     result = result.replaceAll('علمين', 'عالمين');
 
     // ١٠. المسافات الزائدة.
-    result = result.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+    result = result.replaceAll(_whitespaceRegex, ' ').trim().toLowerCase();
 
     return result;
   }
@@ -110,7 +116,7 @@ class ArabicSearchNormalizer {
   /// على غير كرسيها في الإملاء (يستهزءون، رءوف، مسـٔولا، إسرٰٓءيل)، فتُطابق بها
   /// الكتابة الشائعة (يستهزئون، رؤوف، مسؤولا، إسرائيل).
   static String withoutHamza(String text) =>
-      normalize(text.replaceAll(RegExp('[\u0621\u0624\u0626\u0654]'), ''));
+      normalize(text.replaceAll(_hamzaCharsRegex, ''));
 
   /// يحوّل الأرقام اللاتينية في [input] إلى أرقام عربية هندية ("5–7" ← "٥–٧").
   static String convertDigits(String input) {
@@ -141,13 +147,17 @@ class ArabicSearchNormalizer {
   /// لوحة مفاتيح.
   static String toEnglishDigits(String input) {
     if (input.isEmpty) return input;
-    var result = input;
-    const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-    for (int i = 0; i < 10; i++) {
-      result = result.replaceAll(arabicDigits[i], '$i');
-      result = result.replaceAll(persianDigits[i], '$i');
+    final buffer = StringBuffer();
+    for (int i = 0; i < input.length; i++) {
+      final code = input.codeUnitAt(i);
+      if (code >= 0x0660 && code <= 0x0669) {
+        buffer.writeCharCode(0x30 + (code - 0x0660));
+      } else if (code >= 0x06F0 && code <= 0x06F9) {
+        buffer.writeCharCode(0x30 + (code - 0x06F0));
+      } else {
+        buffer.write(input[i]);
+      }
     }
-    return result;
+    return buffer.toString();
   }
 }

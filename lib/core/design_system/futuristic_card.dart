@@ -88,6 +88,65 @@ class _FuturisticCardState extends State<FuturisticCard> {
       );
     }
 
+    final cardDecoration = BoxDecoration(
+      color: baseBg,
+      borderRadius: BorderRadius.circular(radius),
+      border: Border.all(color: borderColor, width: borderWidth),
+      boxShadow: shadows,
+    );
+
+    final cardBody = ClipRRect(
+      borderRadius: BorderRadius.circular(radius - borderWidth),
+      child: Stack(
+        children: [
+          if (widget.showTopAccentGlow || widget.isSelected)
+            Positioned(
+              top: 0,
+              left: 16,
+              right: 16,
+              height: 1.5,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      accent.withValues(alpha: 0.0),
+                      accent.withValues(alpha: isDark ? 0.90 : 0.70),
+                      accent.withValues(alpha: 0.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: widget.onTap == null
+                  ? null
+                  : () {
+                      HapticFeedback.selectionClick();
+                      widget.onTap!();
+                    },
+              onLongPress: widget.onLongPress,
+              onHover: (hovered) => setState(() => _isHovered = hovered),
+              onFocusChange: (focused) =>
+                  setState(() => _isFocused = focused),
+              borderRadius: BorderRadius.circular(radius - borderWidth),
+              splashColor: accent.withValues(alpha: 0.12),
+              hoverColor: accent.withValues(alpha: 0.05),
+              focusColor: accent.withValues(alpha: 0.08),
+              child: Padding(
+                padding:
+                    widget.padding ??
+                    const EdgeInsets.all(AppTokens.spaceMd),
+                child: widget.child,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
     final Widget content = Card(
       elevation: 0,
       margin: EdgeInsets.zero,
@@ -95,67 +154,17 @@ class _FuturisticCardState extends State<FuturisticCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),
       ),
-      child: AnimatedContainer(
-        duration: AppMotion.fast,
-        curve: AppMotion.emphasized,
-        decoration: BoxDecoration(
-          color: baseBg,
-          borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: borderColor, width: borderWidth),
-          boxShadow: shadows,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(radius - borderWidth),
-          child: Stack(
-            children: [
-              if (widget.showTopAccentGlow || widget.isSelected)
-                Positioned(
-                  top: 0,
-                  left: 16,
-                  right: 16,
-                  height: 1.5,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          accent.withValues(alpha: 0.0),
-                          accent.withValues(alpha: isDark ? 0.90 : 0.70),
-                          accent.withValues(alpha: 0.0),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: widget.onTap == null
-                      ? null
-                      : () {
-                          HapticFeedback.selectionClick();
-                          widget.onTap!();
-                        },
-                  onLongPress: widget.onLongPress,
-                  onHover: (hovered) => setState(() => _isHovered = hovered),
-                  onFocusChange: (focused) =>
-                      setState(() => _isFocused = focused),
-                  borderRadius: BorderRadius.circular(radius - borderWidth),
-                  splashColor: accent.withValues(alpha: 0.12),
-                  hoverColor: accent.withValues(alpha: 0.05),
-                  focusColor: accent.withValues(alpha: 0.08),
-                  child: Padding(
-                    padding:
-                        widget.padding ??
-                        const EdgeInsets.all(AppTokens.spaceMd),
-                    child: widget.child,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: widget.isSelected
+          ? AnimatedContainer(
+              duration: AppMotion.fast,
+              curve: AppMotion.emphasized,
+              decoration: cardDecoration,
+              child: cardBody,
+            )
+          : Container(
+              decoration: cardDecoration,
+              child: cardBody,
+            ),
     );
 
     if (widget.onTap != null) {

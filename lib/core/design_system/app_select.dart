@@ -187,12 +187,16 @@ class _SelectSheetState<T> extends State<_SelectSheet<T>> {
     ArabicSearchNormalizer.convertDigits(text),
   );
 
+  late final Map<AppSelectOption<T>, String> _cachedKeys = {
+    for (final o in widget.options) o: _key(o.label),
+  };
+
   List<AppSelectOption<T>> get _shown {
     final q = _key(_query.trim());
     if (q.isEmpty) return widget.options;
     return [
       for (final o in widget.options)
-        if (_key(o.label).contains(q)) o,
+        if ((_cachedKeys[o] ?? _key(o.label)).contains(q)) o,
     ];
   }
 

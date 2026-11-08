@@ -41,8 +41,9 @@ extension _QuranPageParts on _QuranPageViewState {
     required Widget fallback,
   }) {
     final memorized = HifzStore.ids();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return RepaintBoundary(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (widget.showHeader)
           _buildPageHeader(
@@ -99,7 +100,8 @@ extension _QuranPageParts on _QuranPageViewState {
           )
         else
           const SizedBox(height: 4),
-      ],
+        ],
+      ),
     );
   }
 

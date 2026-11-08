@@ -162,6 +162,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.lightBackground,
@@ -284,7 +285,14 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                 child: filtered.isEmpty
                     ? _buildEmptyState(isDark, primaryColor)
                     : ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          8,
+                          16,
+                          24 + MediaQuery.viewInsetsOf(context).bottom,
+                        ),
                         physics: const BouncingScrollPhysics(),
                         itemCount: filtered.length,
                         separatorBuilder: (_, _) => const SizedBox(height: 10),

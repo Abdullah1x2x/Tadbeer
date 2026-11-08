@@ -70,5 +70,35 @@ void main() {
       await repository.deleteNote(note.id);
       expect(repository.allNotes.isEmpty, isTrue);
     });
+
+    test('Duplicate note creates new independent clone', () async {
+      final original = await repository.saveNote(
+        type: NoteType.free,
+        title: 'خاطرة أصيلة',
+        content: 'تأملات وتدبرات',
+      );
+
+      final duplicated = await repository.duplicateNote(original);
+      expect(duplicated.id, isNot(equals(original.id)));
+      expect(duplicated.title, equals('خاطرة أصيلة (نسخة)'));
+      expect(duplicated.content, equals('تأملات وتدبرات'));
+      expect(repository.allNotes.length, equals(2));
+
+      // Duplicating an Ayah note preserves ayah metadata
+      final ayahNote = await repository.saveNote(
+        type: NoteType.ayah,
+        content: 'خاطرة حول الآية',
+        ayahId: 10,
+        surahNumber: 2,
+        ayahNumber: 5,
+        page: 2,
+      );
+
+      final dupAyahNote = await repository.duplicateNote(ayahNote);
+      expect(dupAyahNote.id, isNot(equals(ayahNote.id)));
+      expect(dupAyahNote.surahNumber, equals(2));
+      expect(dupAyahNote.ayahNumber, equals(5));
+      expect(dupAyahNote.content, equals('خاطرة حول الآية'));
+    });
   });
 }

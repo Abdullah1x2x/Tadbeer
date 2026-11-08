@@ -29,16 +29,15 @@ Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   registerBundledAssetLicenses();
 
-  // 1. التخزين المحلي، ويعيد جدولة التذكيرات عبر خدمتها كلما تغيّرت.
+  // 1. التخزين المحلي، وبيانات القرآن، والتسبيح بالتوازي.
   UserDataStore.instance.reminderScheduler = LocalReminderService.instance;
-  await UserDataStore.instance.init();
-  // يرحّل عدادات التسبيح الآن، لتدخل أي نسخة احتياطية قبل فتح شاشتها.
-  await TasbeehRepository.instance.init();
+  await Future.wait([
+    UserDataStore.instance.init(),
+    TasbeehRepository.instance.init(),
+    QuranRepository.instance.init(),
+  ]);
 
-  // 2. بيانات القرآن.
-  await QuranRepository.instance.init();
-
-  // 3. التذكيرات، تُجدول من جديد مما حُفظ.
+  // 2. التذكيرات، تُجدول من جديد مما حُفظ.
   await LocalReminderService.instance.init(onTapped: _openFromReminder);
   await LocalReminderService.instance.syncAllReminders(
     UserDataStore.instance.reminders,
@@ -59,7 +58,9 @@ Future<void> bootstrap() async {
 /// يُستدعى بعد أول إطار: مقاس الشاشة قد يكون صفراً قبله. ويُقاس من الشاشة لا
 /// من النافذة، فلا يغيّره تقسيم الشاشة.
 void lockPhonesToPortrait() {
-  final view = WidgetsBinding.instance.platformDispatcher.views.first;
+  final views = WidgetsBinding.instance.platformDispatcher.views;
+  if (views.isEmpty) return;
+  final view = views.first;
   final display = view.display;
   final shortest = display.size.isEmpty
       ? view.physicalSize.shortestSide / view.devicePixelRatio

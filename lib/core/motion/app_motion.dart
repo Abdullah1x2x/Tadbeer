@@ -13,6 +13,9 @@ class AppMotion {
   /// لتبديل التبويبات وظهور اللوحات.
   static const Duration normal = Duration(milliseconds: 200);
 
+  /// لظهور واختفاء أشرطة التحكم (كأشرطة المصحف والهيكل).
+  static const Duration chrome = Duration(milliseconds: 260);
+
   /// لانتقالات الصفحات وحركة الشبكة.
   static const Duration slow = Duration(milliseconds: 350);
 
@@ -58,15 +61,17 @@ class AppMotion {
       pageBuilder: (dialogCtx, _, _) => builder(dialogCtx),
       transitionBuilder: (dialogCtx, anim1, anim2, child) {
         if (!shouldAnimate(dialogCtx)) return child;
-        final curved = CurvedAnimation(
-          parent: anim1,
-          curve: emphasized,
-          reverseCurve: Curves.easeInCubic,
+        final curve = anim1.status == AnimationStatus.reverse
+            ? Curves.easeInCubic
+            : emphasized;
+        final curvedAnimation = anim1.drive(CurveTween(curve: curve));
+        final scaleAnimation = anim1.drive(
+          Tween<double>(begin: 0.94, end: 1.0).chain(CurveTween(curve: curve)),
         );
         return FadeTransition(
-          opacity: curved,
+          opacity: curvedAnimation,
           child: ScaleTransition(
-            scale: Tween<double>(begin: 0.94, end: 1.0).animate(curved),
+            scale: scaleAnimation,
             child: child,
           ),
         );
@@ -123,11 +128,39 @@ class _ScaleOnPressState extends State<ScaleOnPress> {
       onPointerCancel: (_) => _setPressed(false),
       child: AnimatedScale(
         scale: _isPressed ? widget.pressedScale : 1.0,
-        // ينضغط بسرعة، ثم يرتد مع تجاوز خفيف.
-        duration: _isPressed ? widget.duration : AppMotion.normal,
-        curve: _isPressed ? AppMotion.emphasized : Curves.easeOutBack,
+        // ينضغط بسرعة ويرتد بسلاسة دون ممانعة انتقال الشاشات.
+        duration: widget.duration,
+        curve: _isPressed ? AppMotion.emphasized : Curves.easeOutCubic,
         child: widget.child,
       ),
+    );
+  }
+}
+
+/// انتقال صفحات فائق السلاسة والخفة يعتمد على تلاشٍ انسيابي مريح للعين
+/// دون أي تحجيم (Scale) أو إزاحة تسبب تشوه النصوص أو تقطيع الإطارات.
+class SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
+  const SmoothPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    if (!AppMotion.shouldAnimate(context)) {
+      return child;
+    }
+
+    return FadeTransition(
+      opacity: CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      ),
+      child: child,
     );
   }
 }

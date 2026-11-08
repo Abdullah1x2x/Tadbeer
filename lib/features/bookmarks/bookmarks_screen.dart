@@ -37,6 +37,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             l10n.bookmarks,
@@ -81,6 +82,8 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
               );
             }).toList();
 
+            final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
             return Column(
               children: [
                 Padding(
@@ -112,7 +115,9 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                           ),
                         )
                       : ListView.separated(
-                          padding: const EdgeInsets.all(16),
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomInset),
                           itemCount: bookmarks.length,
                           separatorBuilder: (_, _) =>
                               const SizedBox(height: 10),
@@ -126,40 +131,42 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                               item.ayahNumber,
                             );
 
-                            return _BookmarkTile(
-                              item: item,
-                              surahName: surah.name,
-                              ayahText: ayah?.text ?? '',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => QuranScreen(
-                                      initialPage: item.page,
-                                      targetSurahNumber: item.surahNumber,
-                                      targetAyahNumber: item.ayahNumber,
+                            return RepaintBoundary(
+                              child: _BookmarkTile(
+                                item: item,
+                                surahName: surah.name,
+                                ayahText: ayah?.text ?? '',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => QuranScreen(
+                                        initialPage: item.page,
+                                        targetSurahNumber: item.surahNumber,
+                                        targetAyahNumber: item.ayahNumber,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              onDelete: () {
-                                UserDataStore.instance.removeBookmark(item.id);
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(l10n.bookmarkRemoved),
-                                    action: SnackBarAction(
-                                      label: l10n.undo,
-                                      onPressed: () {
-                                        UserDataStore.instance.putBookmark(
-                                          item,
-                                        );
-                                      },
+                                  );
+                                },
+                                onDelete: () {
+                                  UserDataStore.instance.removeBookmark(item.id);
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l10n.bookmarkRemoved),
+                                      action: SnackBarAction(
+                                        label: l10n.undo,
+                                        onPressed: () {
+                                          UserDataStore.instance.putBookmark(
+                                            item,
+                                          );
+                                        },
+                                      ),
+                                      duration: const Duration(seconds: 4),
                                     ),
-                                    duration: const Duration(seconds: 4),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             );
                           },
                         ),

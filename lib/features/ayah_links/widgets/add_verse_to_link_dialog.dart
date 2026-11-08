@@ -9,6 +9,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../quran/qcf/qcf_ayah_text.dart';
+import '../../../data/models/ayah_link_model.dart';
 import '../data/ayah_link_repository.dart';
 
 /// إضافة آية إلى رابط.
@@ -59,6 +60,11 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   /// الآية المختارة؛ لا شيء حتى يختار القارئ.
   Ayah? _selected;
+  int? _fromAyahNumber;
+  int? _toAyahNumber;
+
+  /// الآيات المحددة للتحديد المتعدد.
+  final List<Ayah> _selectedMulti = [];
 
   /// هل منتقي السورة والرقم مفتوح.
   bool _byNumber = false;
@@ -90,7 +96,74 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   bool _isAdded(Ayah ayah) => widget.existingAyahIds.contains(ayah.id);
 
-  void _choose(Ayah? ayah) => setState(() => _selected = ayah);
+  void _choose(Ayah? ayah) => setState(() {
+    _selected = ayah;
+    _fromAyahNumber = ayah?.ayahNumber;
+    _toAyahNumber = ayah?.ayahNumber;
+  });
+
+  void _toggleMulti(Ayah ayah) {
+    if (_isAdded(ayah)) return;
+    setState(() {
+      final idx = _selectedMulti.indexWhere((a) => a.id == ayah.id);
+      if (idx != -1) {
+        _selectedMulti.removeAt(idx);
+      } else {
+        _selectedMulti.add(ayah);
+        _selectedMulti.sort((a, b) {
+          if (a.surahNumber != b.surahNumber) {
+            return a.surahNumber.compareTo(b.surahNumber);
+          }
+          return a.ayahNumber.compareTo(b.ayahNumber);
+        });
+      }
+    });
+  }
+
+  bool _canMergeMulti() {
+    if (_selectedMulti.length < 2) return false;
+    final first = _selectedMulti.first;
+    for (var i = 0; i < _selectedMulti.length; i++) {
+      if (_selectedMulti[i].surahNumber != first.surahNumber) return false;
+      if (_selectedMulti[i].ayahNumber != first.ayahNumber + i) return false;
+    }
+    return true;
+  }
+
+  Future<void> _submitMulti({bool asMerged = false}) async {
+    if (_selectedMulti.isEmpty || _isAdding) return;
+    setState(() => _isAdding = true);
+    try {
+      if (asMerged && _canMergeMulti()) {
+        final first = _selectedMulti.first;
+        final last = _selectedMulti.last;
+        await AyahLinkRepository().addVerseToLink(
+          widget.linkId,
+          ayahId: first.id,
+          surahNumber: first.surahNumber,
+          ayahNumber: first.ayahNumber,
+          toAyahNumber: last.ayahNumber,
+          page: first.page,
+        );
+      } else {
+        final verses = [
+          for (final a in _selectedMulti)
+            if (!_isAdded(a))
+              AyahLinkVerse(
+                ayahId: a.id,
+                surahNumber: a.surahNumber,
+                ayahNumber: a.ayahNumber,
+                page: a.page,
+                addedAt: DateTime.now(),
+              ),
+        ];
+        await AyahLinkRepository().addVersesToLink(widget.linkId, verses);
+      }
+      if (mounted) Navigator.pop(context, true);
+    } finally {
+      if (mounted) setState(() => _isAdding = false);
+    }
+  }
 
   /// الآيات المحفوظة والمظلّلة، كل آية مرة واحدة.
   List<Ayah> get _savedAyahs {
@@ -111,16 +184,21 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
   Future<void> _submit() async {
     final ayah = _selected;
-    if (ayah == null || _isAdded(ayah)) return;
+    if (ayah == null) return;
+    final from = _fromAyahNumber ?? ayah.ayahNumber;
+    final to = _toAyahNumber ?? ayah.ayahNumber;
+    final startAyah = QuranRepository.instance.getAyah(ayah.surahNumber, from) ?? ayah;
+    if (_isAdded(startAyah)) return;
     setState(() => _isAdding = true);
     try {
       final note = _noteController.text.trim();
       await AyahLinkRepository().addVerseToLink(
         widget.linkId,
-        ayahId: ayah.id,
-        surahNumber: ayah.surahNumber,
-        ayahNumber: ayah.ayahNumber,
-        page: ayah.page,
+        ayahId: startAyah.id,
+        surahNumber: startAyah.surahNumber,
+        ayahNumber: from,
+        toAyahNumber: to > from ? to : null,
+        page: startAyah.page,
         note: note.isEmpty ? null : note,
       );
       if (mounted) Navigator.pop(context, true);
@@ -157,7 +235,11 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _Header(title: l10n.addVerseTitle),
+                  _Header(
+                    title: l10n.addVerseTitle,
+                    selectedCount: _selectedMulti.length,
+                    onClearSelection: () => setState(_selectedMulti.clear),
+                  ),
                   Flexible(
                     child: ListView(
                       shrinkWrap: true,
@@ -169,19 +251,82 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-                    child: FilledButton.icon(
-                      onPressed: canAdd ? _submit : null,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      icon: _isAdding
-                          ? const SizedBox.square(
-                              dimension: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(AppIcons.link, size: 18),
-                      label: Text(l10n.addVerseAction),
-                    ),
+                    child: _selectedMulti.isNotEmpty
+                        ? (_canMergeMulti()
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  FilledButton.icon(
+                                    onPressed: _isAdding
+                                        ? null
+                                        : () => _submitMulti(asMerged: true),
+                                    style: FilledButton.styleFrom(
+                                      minimumSize: const Size.fromHeight(48),
+                                    ),
+                                    icon: _isAdding
+                                        ? const SizedBox.square(
+                                            dimension: 18,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : const Icon(AppIcons.link, size: 18),
+                                    label: Text(
+                                      l10n.isArabic
+                                          ? 'دمج (${_selectedMulti.length}) آيات في كرت واحد'
+                                          : 'Merge (${_selectedMulti.length}) verses in one card',
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  OutlinedButton(
+                                    onPressed: _isAdding
+                                        ? null
+                                        : () => _submitMulti(asMerged: false),
+                                    style: OutlinedButton.styleFrom(
+                                      minimumSize: const Size.fromHeight(44),
+                                    ),
+                                    child: Text(
+                                      l10n.isArabic
+                                          ? 'إضافتها كبطاقات منفصلة'
+                                          : 'Add as separate cards',
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : FilledButton.icon(
+                                onPressed: _isAdding
+                                    ? null
+                                    : () => _submitMulti(asMerged: false),
+                                style: FilledButton.styleFrom(
+                                  minimumSize: const Size.fromHeight(50),
+                                ),
+                                icon: _isAdding
+                                    ? const SizedBox.square(
+                                        dimension: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(AppIcons.link, size: 18),
+                                label: Text(
+                                  l10n.isArabic
+                                      ? 'إضافة (${_selectedMulti.length}) آيات محددة'
+                                      : 'Add (${_selectedMulti.length}) selected verses',
+                                ),
+                              ))
+                        : FilledButton.icon(
+                            onPressed: canAdd ? _submit : null,
+                            style: FilledButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            icon: _isAdding
+                                ? const SizedBox.square(
+                                    dimension: 18,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                                : const Icon(AppIcons.link, size: 18),
+                            label: Text(l10n.addVerseAction),
+                          ),
                   ),
                 ],
               ),
@@ -228,7 +373,15 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
           _AyahTile(
             ayah: ayah,
             added: _isAdded(ayah),
-            onTap: () => _choose(ayah),
+            isSelected: _selectedMulti.any((a) => a.id == ayah.id),
+            onCheckboxChanged: (_) => _toggleMulti(ayah),
+            onTap: () {
+              if (_selectedMulti.isNotEmpty) {
+                _toggleMulti(ayah);
+              } else {
+                _choose(ayah);
+              }
+            },
           ),
       ] else ...[
         Align(
@@ -250,7 +403,15 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
             _AyahTile(
               ayah: ayah,
               added: _isAdded(ayah),
-              onTap: () => _choose(ayah),
+              isSelected: _selectedMulti.any((a) => a.id == ayah.id),
+              onCheckboxChanged: (_) => _toggleMulti(ayah),
+              onTap: () {
+                if (_selectedMulti.isNotEmpty) {
+                  _toggleMulti(ayah);
+                } else {
+                  _choose(ayah);
+                }
+              },
             ),
         ],
       ],
@@ -260,8 +421,14 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
   /// الآية المختارة، وطريقة لتغييرها، والخاطرة الاختيارية.
   List<Widget> _chosen(BuildContext context, AppStrings l10n, Ayah ayah) {
     final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
+    final fromAyahNum = _fromAyahNumber ?? ayah.ayahNumber;
+    final toAyahNum = _toAyahNumber ?? ayah.ayahNumber;
+    final isRange = fromAyahNum < toAyahNum;
     final added = _isAdded(ayah);
     final gold = AppColors.accentGold(context);
+    final isMadinah =
+        UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
+
     return [
       Container(
         padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
@@ -281,10 +448,14 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               children: [
                 Expanded(
                   child: Text(
-                    l10n.ayahReference(
-                      surah.name,
-                      l10n.digits(ayah.ayahNumber),
-                    ),
+                    isRange
+                        ? (l10n.isArabic
+                            ? '${surah.name} [الآيات ${l10n.digits(fromAyahNum)} - ${l10n.digits(toAyahNum)}]'
+                            : '${surah.name} [Ayahs $fromAyahNum - $toAyahNum]')
+                        : l10n.ayahReference(
+                            surah.name,
+                            l10n.digits(ayah.ayahNumber),
+                          ),
                     style: TextStyle(fontWeight: FontWeight.bold, color: gold),
                   ),
                 ),
@@ -294,13 +465,73 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 ),
               ],
             ),
-            UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah
-                ? QcfAyahText(
-                    ayah: ayah,
-                    fontSize: 17,
-                    height: 1.9,
-                    color: AppColors.textPrimary(context),
-                    fallback: Text(
+            if (isRange) ...[
+              Builder(
+                builder: (ctx) {
+                  final rangeAyahs = [
+                    for (int a = fromAyahNum; a <= toAyahNum; a++)
+                      QuranRepository.instance.getAyah(ayah.surahNumber, a),
+                  ].whereType<Ayah>().toList();
+
+                  return Column(
+                    children: [
+                      for (final a in rangeAyahs)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: isMadinah
+                              ? QcfAyahText(
+                                  ayah: a,
+                                  fontSize: 16,
+                                  height: 1.8,
+                                  color: AppColors.textPrimary(context),
+                                  fallback: Text(
+                                    '﴿ ${a.text} ﴾ [${l10n.digits(a.ayahNumber)}]',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: UserDataStore
+                                          .instance
+                                          .quranFontFamily,
+                                      fontSize: 16,
+                                      height: 1.8,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  '﴿ ${a.text} ﴾ [${l10n.digits(a.ayahNumber)}]',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: UserDataStore
+                                        .instance
+                                        .quranFontFamily,
+                                    fontSize: 16,
+                                    height: 1.8,
+                                  ),
+                                ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ] else ...[
+              isMadinah
+                  ? QcfAyahText(
+                      ayah: ayah,
+                      fontSize: 17,
+                      height: 1.9,
+                      color: AppColors.textPrimary(context),
+                      fallback: Text(
+                        ayah.text,
+                        textAlign: TextAlign.center,
+                        maxLines: 6,
+                        overflow: TextOverflow.fade,
+                        style: TextStyle(
+                          fontFamily: UserDataStore.instance.quranFontFamily,
+                          fontSize: 17,
+                          height: 1.9,
+                        ),
+                      ),
+                    )
+                  : Text(
                       ayah.text,
                       textAlign: TextAlign.center,
                       maxLines: 6,
@@ -311,18 +542,152 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                         height: 1.9,
                       ),
                     ),
-                  )
-                : Text(
-                    ayah.text,
-                    textAlign: TextAlign.center,
-                    maxLines: 6,
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontFamily: UserDataStore.instance.quranFontFamily,
-                      fontSize: 17,
-                      height: 1.9,
+            ],
+            if (!added) ...[
+              const Divider(height: 20),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  if (fromAyahNum > 1)
+                    ActionChip(
+                      avatar: const Icon(AppIcons.caretUp, size: 16),
+                      label: Text(
+                        l10n.isArabic
+                            ? 'ضم الآية السابقة (${l10n.digits(fromAyahNum - 1)})'
+                            : 'Include previous ayah (${fromAyahNum - 1})',
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _fromAyahNumber = fromAyahNum - 1;
+                        });
+                      },
+                    ),
+                  if (fromAyahNum < ayah.ayahNumber)
+                    ActionChip(
+                      avatar: const Icon(AppIcons.x, size: 14),
+                      label: Text(
+                        l10n.isArabic
+                            ? 'استبعاد (${l10n.digits(fromAyahNum)})'
+                            : 'Exclude ($fromAyahNum)',
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _fromAyahNumber = fromAyahNum + 1;
+                        });
+                      },
+                    ),
+                  if (toAyahNum < surah.ayahCount)
+                    ActionChip(
+                      avatar: const Icon(AppIcons.caretDown, size: 16),
+                      label: Text(
+                        l10n.isArabic
+                            ? 'ضم الآية اللاحقة (${l10n.digits(toAyahNum + 1)})'
+                            : 'Include next ayah (${toAyahNum + 1})',
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _toAyahNumber = toAyahNum + 1;
+                        });
+                      },
+                    ),
+                  if (toAyahNum > ayah.ayahNumber)
+                    ActionChip(
+                      avatar: const Icon(AppIcons.x, size: 14),
+                      label: Text(
+                        l10n.isArabic
+                            ? 'استبعاد (${l10n.digits(toAyahNum)})'
+                            : 'Exclude ($toAyahNum)',
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _toAyahNumber = toAyahNum - 1;
+                        });
+                      },
+                    ),
+                ],
+              ),
+              if (ayah.ayahNumber > 1 && !isRange) ...[
+                const SizedBox(height: 4),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    ),
+                    icon: const Icon(AppIcons.arrowLeft, size: 16),
+                    label: Text(
+                      l10n.isArabic
+                          ? 'اختيار الآية السابقة فقط (${l10n.digits(ayah.ayahNumber - 1)})'
+                          : 'Select previous ayah only (${ayah.ayahNumber - 1})',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    onPressed: () {
+                      final prev = QuranRepository.instance.getAyah(
+                        ayah.surahNumber,
+                        ayah.ayahNumber - 1,
+                      );
+                      if (prev != null) _choose(prev);
+                    },
+                  ),
+                ),
+              ],
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          l10n.isArabic ? 'من:' : 'From:',
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        DropdownButton<int>(
+                          value: fromAyahNum,
+                          isDense: true,
+                          items: [
+                            for (int a = 1; a <= toAyahNum; a++)
+                              DropdownMenuItem(
+                                value: a,
+                                child: Text(l10n.digits(a)),
+                              ),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) setState(() => _fromAyahNumber = val);
+                          },
+                        ),
+                      ],
                     ),
                   ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          l10n.isArabic ? 'إلى:' : 'To:',
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        DropdownButton<int>(
+                          value: toAyahNum,
+                          isDense: true,
+                          items: [
+                            for (int a = fromAyahNum; a <= surah.ayahCount; a++)
+                              DropdownMenuItem(
+                                value: a,
+                                child: Text(l10n.digits(a)),
+                              ),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) setState(() => _toAyahNumber = val);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
             if (added) ...[
               const SizedBox(height: 6),
               Row(
@@ -596,8 +961,14 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
 
 class _Header extends StatelessWidget {
   final String title;
+  final int selectedCount;
+  final VoidCallback? onClearSelection;
 
-  const _Header({required this.title});
+  const _Header({
+    required this.title,
+    this.selectedCount = 0,
+    this.onClearSelection,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -617,13 +988,24 @@ class _Header extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  title,
+                  selectedCount > 0
+                      ? (context.l10n.isArabic
+                          ? 'تحديد متعدد ($selectedCount)'
+                          : 'Selected ($selectedCount)')
+                      : title,
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
+              if (selectedCount > 0 && onClearSelection != null)
+                TextButton(
+                  onPressed: onClearSelection,
+                  child: Text(
+                    context.l10n.isArabic ? 'إلغاء التحديد' : 'Deselect',
+                  ),
+                ),
               IconButton(
                 tooltip: context.l10n.close,
                 icon: const Icon(AppIcons.x, size: 20),
@@ -660,11 +1042,15 @@ class _SectionTitle extends StatelessWidget {
 class _AyahTile extends StatelessWidget {
   final Ayah ayah;
   final bool added;
+  final bool isSelected;
+  final ValueChanged<bool?>? onCheckboxChanged;
   final VoidCallback onTap;
 
   const _AyahTile({
     required this.ayah,
     required this.added,
+    this.isSelected = false,
+    this.onCheckboxChanged,
     required this.onTap,
   });
 
@@ -674,13 +1060,17 @@ class _AyahTile extends StatelessWidget {
     final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      leading: Checkbox(
+        value: isSelected,
+        onChanged: added ? null : onCheckboxChanged,
+      ),
       title: Text(
         ayah.text,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+        textDirection: TextDirection.rtl,
         style: TextStyle(
           fontFamily: UserDataStore.instance.quranFontFamily,
-          fontSize: 15,
+          fontSize: 16,
+          height: 1.6,
         ),
       ),
       subtitle: Text(

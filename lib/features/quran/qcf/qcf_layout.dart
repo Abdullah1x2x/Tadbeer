@@ -65,10 +65,22 @@ class QcfLayout {
   Future<void> _load() async {
     final data = await rootBundle.load(assetPath);
     final compressed = data.buffer.asUint8List();
-    // خيط منفصل: فك الملف كله يقطع حركة فتح المصحف.
-    _pages = await Isolate.run(
-      () => parse(jsonDecode(utf8.decode(gzip.decode(compressed))) as List),
-    );
+    // خيط منفصل: فك الملف وفهرسة الآيات لئلا يتقطع مسار الواجهة.
+    final result = await Isolate.run(() {
+      final pages =
+          parse(jsonDecode(utf8.decode(gzip.decode(compressed))) as List);
+      final index = <(int, int), int>{};
+      for (var p = 0; p < pages.length; p++) {
+        for (final line in pages[p]) {
+          for (final w in line.words) {
+            index[(w.surah, w.ayah)] = p + 1;
+          }
+        }
+      }
+      return (pages, index);
+    });
+    _pages = result.$1;
+    _pageOf = result.$2;
   }
 
   Map<(int, int), int>? _pageOf;
@@ -77,6 +89,7 @@ class QcfLayout {
   ///
   /// صفحات الطبعة الحديثة قد تقدّم آية أو تؤخرها عن صفحات بيانات التطبيق.
   int? pageOf(int surah, int ayah) {
+    if (_pageOf != null) return _pageOf![(surah, ayah)];
     final pages = _pages;
     if (pages == null) return null;
     final index = _pageOf ??= {

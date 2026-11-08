@@ -154,14 +154,14 @@
               <div class="privacy-bullet">✓</div>
               <div>
                 <strong>عدم جمع أي بيانات شخصية (Zero Data Collection):</strong>
-                لا يجمع التطبيق ولا يرسل ولا يشارك أي بيانات شخصية أو معرّفات أجهزة أو سجلات قراءة أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق. ولا يتصل بأي خادم إلا لتنزيل التلاوة المسموعة حين تطلبها، كما في البند التالي.
+                لا يجمع التطبيق ولا يرسل ولا يشارك أي بيانات شخصية أو معرّفات أجهزة أو سجلات قراءة أو إحصاءات استخدام مع أي طرف خارجي على الإطلاق. ولا يتصل بأي خادم إلا لتنزيل التلاوة المسموعة أو التحقق من التحديثات، كما في البند التالي.
               </div>
             </li>
             <li>
               <div class="privacy-bullet">✓</div>
               <div>
-                <strong>يعمل دون إنترنت، والإنترنت للتلاوة المسموعة فقط (Offline-First):</strong>
-                المصحف والمعاني والتدبر والملاحظات وكل ميزات التطبيق تعمل دون اتصال. يطلب التطبيق إذن الإنترنت (<code>android.permission.INTERNET</code>) لغرض واحد: تشغيل التلاوة المسموعة أو تنزيلها حين تطلبها أنت، من خادم <code>cdn.islamic.network</code>. يصل إلى هذا الخادم عنوان IP الخاص بجهازك واسم الملف الصوتي المطلوب (رقم الآية والقارئ) كما في أي تنزيل من الإنترنت، ولا يُرسَل معه أي شيء من بياناتك. وبعد تنزيل السورة تُسمع من جهازك دون اتصال.
+                <strong>يعمل دون إنترنت، والإنترنت للتلاوة المسموعة والتحقق من التحديثات فقط (Offline-First):</strong>
+                المصحف والمعاني والتدبر والملاحظات وكل ميزات التطبيق تعمل دون اتصال. يطلب التطبيق إذن الإنترنت (<code>android.permission.INTERNET</code>) لغرضين فقط: تشغيل التلاوة المسموعة أو تنزيلها حين تطلبها أنت من خادم <code>cdn.islamic.network</code>، وقراءة ملف معلومات الإصدار العام (<code>version.json</code>) في المستودع المفتوح للتحقق من وجود تحديثات جديدة (يدوياً أو تلقائياً حسب رغبتك) دون إرسال أي معرّفات أو بيانات شخصية.
               </div>
             </li>
             <li>
@@ -178,7 +178,7 @@
                 <ul class="privacy-sublist">
                   <li><strong>الإشعارات والمنبهات</strong> (<code>POST_NOTIFICATIONS</code>، <code>SCHEDULE_EXACT_ALARM</code>، <code>RECEIVE_BOOT_COMPLETED</code>، <code>VIBRATE</code>): لتذكيرات الورد والختمة والالتزام اليومي التي تجدولها أنت فقط، ولا تُستخدم لأي غرض ترويجي.</li>
                   <li><strong>الموقع التقريبي</strong> (<code>ACCESS_COARSE_LOCATION</code>): اختياري، ويُطلب فقط حين تفتح اتجاه القبلة. يُحدَّد من GPS بدقة منخفضة، ويُحسب اتجاه القبلة على جهازك، ويُحفظ آخر موقع على جهازك فقط ولا يُرسل إلى أي جهة.</li>
-                  <li><strong>الإنترنت</strong> (<code>INTERNET</code>): للتلاوة المسموعة فقط، كما في البند السابق.</li>
+                  <li><strong>الإنترنت</strong> (<code>INTERNET</code>): للتلاوة المسموعة والتحقق من التحديثات فقط، كما في البند السابق.</li>
                   <li><strong>التشغيل في الخلفية</strong> (<code>FOREGROUND_SERVICE</code>، <code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code>، <code>WAKE_LOCK</code>): لتستمر التلاوة حين تغلق الشاشة، مع أزرار التحكم في الإشعار.</li>
                   <li><strong>التخزين</strong> (<code>WRITE_EXTERNAL_STORAGE</code>، لأندرويد 10 وما قبله فقط): لحفظ بطاقة الآية في الصور حين تطلب ذلك.</li>
                 </ul>
@@ -199,14 +199,14 @@
               <div class="privacy-bullet">✓</div>
               <div>
                 <strong>Zero Personal Data Collection:</strong>
-                Tadbeer does not collect, transmit, store on servers, or share any personal information, device identifiers, reading habits, or analytics with any third party. It contacts no server except to fetch audio recitation when you ask for it, as described below.
+                Tadbeer does not collect, transmit, store on servers, or share any personal information, device identifiers, reading habits, or analytics with any third party. It contacts no server except to fetch audio recitation when you ask for it, or to check for app updates, as described below.
               </div>
             </li>
             <li>
               <div class="privacy-bullet">✓</div>
               <div>
-                <strong>Offline-First, with Internet Used Only for Audio Recitation:</strong>
-                The Mushaf, word meanings, reflections, notes and every other feature work without a connection. The app requests internet permission (<code>android.permission.INTERNET</code>) for one purpose only: streaming or downloading audio recitation, when you ask for it, from <code>cdn.islamic.network</code>. As with any download, that server receives your device's IP address and the name of the requested audio file (the ayah number and reciter). None of your data is sent with it. Once a surah is downloaded, it plays from your device offline.
+                <strong>Offline-First, with Internet Used Only for Audio Recitation and Update Checks:</strong>
+                The Mushaf, word meanings, reflections, notes and every other feature work without a connection. The app requests internet permission (<code>android.permission.INTERNET</code>) for two explicit purposes only: streaming or downloading audio recitation, when you ask for it, from <code>cdn.islamic.network</code>, and checking for app updates against the public <code>version.json</code> metadata file on the open-source repository (manually or automatically via user settings). None of your personal data or device identifiers are ever collected or transmitted.
               </div>
             </li>
             <li>
@@ -223,7 +223,7 @@
                 <ul class="privacy-sublist">
                   <li><strong>Notifications &amp; alarms</strong> (<code>POST_NOTIFICATIONS</code>, <code>SCHEDULE_EXACT_ALARM</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>VIBRATE</code>): only for the reading, khatma and streak reminders you schedule. Never promotional.</li>
                   <li><strong>Approximate location</strong> (<code>ACCESS_COARSE_LOCATION</code>): optional, requested only when you open the Qibla direction. It is read from GPS at low accuracy, the Qibla bearing is computed on your device, and the last location is saved on your device only. It is never sent anywhere.</li>
-                  <li><strong>Internet</strong> (<code>INTERNET</code>): only for audio recitation, as described above.</li>
+                  <li><strong>Internet</strong> (<code>INTERNET</code>): only for audio recitation and checking for updates, as described above.</li>
                   <li><strong>Background playback</strong> (<code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code>, <code>WAKE_LOCK</code>): keeps recitation playing with the screen off, with controls in the notification.</li>
                   <li><strong>Storage</strong> (<code>WRITE_EXTERNAL_STORAGE</code>, Android 10 and earlier only): saves an ayah card to Photos when you ask.</li>
                 </ul>
@@ -246,7 +246,7 @@
             </p>
             <ul>
               <li><strong>Zero Data Collection:</strong> Tadbeer does not collect, track, transmit, rent, or sell any personal data, usage analytics, or device identifiers.</li>
-              <li><strong>Network Use:</strong> The application declares <code>android.permission.INTERNET</code> solely to stream or download audio recitation, on the user's request, from <code>cdn.islamic.network</code>. That server receives the device's IP address and the requested audio file name only. No user data, identifiers or analytics are transmitted. All other functionality executes locally on-device.</li>
+              <li><strong>Network Use:</strong> The application declares <code>android.permission.INTERNET</code> solely to stream or download audio recitation from <code>cdn.islamic.network</code> and check for new app versions against the public repository <code>version.json</code>. That server receives the device's IP address and the requested audio file name only. No user data, identifiers or analytics are transmitted. All other functionality executes locally on-device.</li>
               <li><strong>Location:</strong> Approximate location (<code>ACCESS_COARSE_LOCATION</code>) is optional and requested only for the Qibla direction. It is processed and stored on-device only and never transmitted.</li>
               <li><strong>Local Persistence &amp; AES-256 Backups:</strong> All user notes, reflections, bookmarks, highlights, and verse links reside exclusively within the local SQLite database. User-initiated backups (<code>.quranbackup</code>) are encrypted locally using AES-256-CBC with a user-supplied password.</li>
               <li><strong>Permissions:</strong> Notification and alarm permissions (<code>POST_NOTIFICATIONS</code>, <code>SCHEDULE_EXACT_ALARM</code>, <code>RECEIVE_BOOT_COMPLETED</code>, <code>VIBRATE</code>) trigger local, user-scheduled reminders only. Foreground-service permissions (<code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_MEDIA_PLAYBACK</code>, <code>WAKE_LOCK</code>) keep audio recitation playing in the background. <code>WRITE_EXTERNAL_STORAGE</code> (Android 10 and earlier) saves ayah cards to Photos on request.</li>

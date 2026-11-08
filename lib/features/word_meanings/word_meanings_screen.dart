@@ -79,6 +79,7 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.lightBackground,
@@ -232,9 +233,13 @@ class _WordMeaningsScreenState extends State<WordMeaningsScreen> {
               child: _displayedWords.isEmpty
                   ? _buildEmptyState(context, isDark)
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        8,
+                        16,
+                        8 + MediaQuery.viewInsetsOf(context).bottom,
                       ),
                       itemCount: _displayedWords.length,
                       itemBuilder: (context, index) {

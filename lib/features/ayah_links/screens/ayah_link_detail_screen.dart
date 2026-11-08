@@ -11,6 +11,7 @@ import '../widgets/add_verse_to_link_dialog.dart';
 import '../widgets/create_link_dialog.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_menu.dart';
+import '../../../data/quran/quran_repository.dart';
 
 /// تفاصيل رابط: بعرض الشبكة أو القائمة المرتبة.
 class AyahLinkDetailScreen extends StatefulWidget {
@@ -48,7 +49,13 @@ class _AyahLinkDetailScreenState extends State<AyahLinkDetailScreen> {
     await AddVerseToLinkDialog.show(
       context,
       linkId: link.id,
-      existingAyahIds: link.verses.map((v) => v.ayahId).toList(),
+      existingAyahIds: [
+        for (final v in link.verses) ...[
+          v.ayahId,
+          for (var a = v.ayahNumber; a <= v.effectiveEndAyah; a++)
+            QuranRepository.instance.getAyah(v.surahNumber, a)?.id ?? v.ayahId,
+        ],
+      ],
     );
   }
 

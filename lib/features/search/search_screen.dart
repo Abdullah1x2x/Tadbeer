@@ -76,7 +76,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
   /// يؤخّر البحث قليلاً أثناء الكتابة، فلا يتكرر مع كل حرف.
   void _onSearchChanged(String query) {
-    if (mounted) setState(() {});
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 180), () {
       _executeSearch(query);
@@ -164,6 +163,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             l10n.search,
@@ -192,7 +192,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 child: TextField(
                   controller: _controller,
-                  autofocus: widget.initialQuery == null,
+                  autofocus: false,
                   onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     hintText: _selectedProviderId != null
@@ -461,23 +461,34 @@ class _SearchScreenState extends State<SearchScreen> {
     bool isDark,
     List<SearchProvider> providers,
   ) {
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
     if (_selectedProviderId != null) {
       final provider = providers.firstWhere(
         (p) => p.id == _selectedProviderId,
         orElse: () => providers.first,
       );
 
-      return ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildGroupHeader(
-            title: provider.getSectionTitle(context),
-            count: _results.length,
-            icon: provider.icon,
-          ),
-          const SizedBox(height: 10),
-          ..._results.map((item) => _buildResultCard(context, item, isDark)),
-        ],
+      return ListView.builder(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomInset),
+        itemCount: _results.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _buildGroupHeader(
+                title: provider.getSectionTitle(context),
+                count: _results.length,
+                icon: provider.icon,
+              ),
+            );
+          }
+          final item = _results[index - 1];
+          return RepaintBoundary(
+            child: _buildResultCard(context, item, isDark),
+          );
+        },
       );
     }
 
@@ -486,24 +497,40 @@ class _SearchScreenState extends State<SearchScreen> {
       grouped.putIfAbsent(item.providerId, () => []).add(item);
     }
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        for (final provider in providers)
-          if (grouped.containsKey(provider.id) &&
-              grouped[provider.id]!.isNotEmpty) ...[
-            _buildGroupHeader(
-              title: provider.getSectionTitle(context),
-              count: grouped[provider.id]!.length,
-              icon: provider.icon,
+    final listEntries = <({SearchProvider? header, SearchResultItem? item, int count})>[];
+    for (final provider in providers) {
+      final items = grouped[provider.id];
+      if (items != null && items.isNotEmpty) {
+        listEntries.add((header: provider, item: null, count: items.length));
+        for (final item in items) {
+          listEntries.add((header: null, item: item, count: 0));
+        }
+      }
+    }
+
+    return ListView.builder(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomInset),
+      itemCount: listEntries.length,
+      itemBuilder: (context, index) {
+        final entry = listEntries[index];
+        if (entry.header != null) {
+          return Padding(
+            padding: EdgeInsets.only(
+              top: index == 0 ? 0 : 16,
+              bottom: 8,
             ),
-            const SizedBox(height: 8),
-            ...grouped[provider.id]!.map(
-              (item) => _buildResultCard(context, item, isDark),
+            child: _buildGroupHeader(
+              title: entry.header!.getSectionTitle(context),
+              count: entry.count,
+              icon: entry.header!.icon,
             ),
-            const SizedBox(height: 16),
-          ],
-      ],
+          );
+        }
+        return RepaintBoundary(
+          child: _buildResultCard(context, entry.item!, isDark),
+        );
+      },
     );
   }
 

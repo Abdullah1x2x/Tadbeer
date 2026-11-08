@@ -163,4 +163,9 @@ class NoteRepository {
   Future<void> deleteNote(String id) async {
     await _store.deleteNote(id);
   }
+
+  /// يكرّر خاطرة موجودة وينشئ نسخة جديدة مطابقة لها.
+  Future<NoteItem> duplicateNote(NoteItem note) async {
+    return _store.duplicateNote(note);
+  }
 }

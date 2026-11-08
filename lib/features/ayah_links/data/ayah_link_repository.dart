@@ -11,6 +11,8 @@ import '../../../data/models/ayah_link_model.dart';
 ///
 /// تُحفظ مواضع العقد على الخريطة، دون تكرار نص القرآن في التخزين.
 class AyahLinkRepository {
+  static final AyahLinkRepository instance = AyahLinkRepository();
+
   final UserDataStore _store;
 
   /// [store] للاختبارات؛ الافتراضي هو المخزن العام.
@@ -54,6 +56,7 @@ class AyahLinkRepository {
     required int ayahId,
     required int surahNumber,
     required int ayahNumber,
+    int? toAyahNumber,
     required int page,
     String? note,
   }) async {
@@ -61,6 +64,7 @@ class AyahLinkRepository {
       ayahId: ayahId,
       surahNumber: surahNumber,
       ayahNumber: ayahNumber,
+      toAyahNumber: toAyahNumber,
       page: page,
       note: note,
       addedAt: DateTime.now(),
@@ -68,13 +72,47 @@ class AyahLinkRepository {
     await _store.addVerseToLink(linkId, verse);
   }
 
+  /// يضيف عدة آيات دفعة واحدة إلى الرابط.
+  Future<void> addVersesToLink(
+    String linkId,
+    List<AyahLinkVerse> verses,
+  ) async {
+    await _store.addVersesToLink(linkId, verses);
+  }
+
   /// يزيل آية من الرابط.
   Future<void> removeVerseFromLink(
     String linkId,
     int surahNumber,
-    int ayahNumber,
+    int ayahNumber, [
+    int? toAyahNumber,
+    String? verseId,
+  ]) async {
+    await _store.removeVerseFromLink(
+      linkId,
+      surahNumber,
+      ayahNumber,
+      toAyahNumber,
+      verseId,
+    );
+  }
+
+  /// يغيّر موضع بطاقة آية في القائمة المرتبة.
+  Future<void> reorderVerseInLink(
+    String linkId,
+    int oldIndex,
+    int newIndex,
   ) async {
-    await _store.removeVerseFromLink(linkId, surahNumber, ayahNumber);
+    await _store.reorderVerseInLink(linkId, oldIndex, newIndex);
+  }
+
+  /// يغيّر موضع بطاقة خاطرة في القائمة المرتبة.
+  Future<void> reorderNoteInLink(
+    String linkId,
+    int oldIndex,
+    int newIndex,
+  ) async {
+    await _store.reorderNoteInLink(linkId, oldIndex, newIndex);
   }
 
   /// يعدّل خاطرة آية داخل الرابط.
@@ -82,9 +120,16 @@ class AyahLinkRepository {
     String linkId,
     int surahNumber,
     int ayahNumber,
-    String? note,
-  ) async {
-    await _store.updateVerseNote(linkId, surahNumber, ayahNumber, note);
+    String? note, [
+    String? verseId,
+  ]) async {
+    await _store.updateVerseNote(
+      linkId,
+      surahNumber,
+      ayahNumber,
+      note,
+      verseId,
+    );
   }
 
   /// يضيف بطاقة خاطرة إلى الرابط.
@@ -173,6 +218,22 @@ class AyahLinkRepository {
         ),
       );
     }
+  }
+
+  /// يكرّر بطاقة خاطرة داخل الرابط.
+  Future<AyahLinkNote?> duplicateNoteInLink(
+    String linkId,
+    String noteId,
+  ) async {
+    return _store.duplicateNoteInLink(linkId, noteId);
+  }
+
+  /// يكرّر كرت آية داخل الرابط.
+  Future<AyahLinkVerse?> duplicateVerseInLink(
+    String linkId,
+    AyahLinkVerse verse,
+  ) async {
+    return _store.duplicateVerseInLink(linkId, verse);
   }
 
   /// يمد خيطاً بين بطاقتين (آية أو خاطرة)، أو يقطعه إن كان موجوداً.

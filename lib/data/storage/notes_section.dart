@@ -79,4 +79,27 @@ mixin _NotesSection on _StoreState {
       await userDb.deleteNote(id);
     }
   }
+
+  /// يكرّر خاطرة موجودة وينشئ نسخة جديدة مطابقة لها في أول القائمة.
+  Future<NoteItem> duplicateNote(NoteItem note) async {
+    final now = DateTime.now();
+    final copyTitle = note.title != null && note.title!.trim().isNotEmpty
+        ? '${note.title!.trim()} (نسخة)'
+        : null;
+    final duplicated = NoteItem(
+      id: const Uuid().v4(),
+      type: note.type,
+      title: copyTitle,
+      content: note.content,
+      ayahId: note.ayahId,
+      surahNumber: note.surahNumber,
+      ayahNumber: note.ayahNumber,
+      page: note.page,
+      ayahText: note.ayahText,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await putNote(duplicated);
+    return duplicated;
+  }
 }

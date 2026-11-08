@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
-import '../../data/models/user_settings_model.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/quran/quran_repository.dart';
-import '../quran/qcf/qcf_ayah_text.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -37,6 +35,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             l10n.highlights,
@@ -81,6 +80,8 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
               );
             }).toList();
 
+            final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
             return Column(
               children: [
                 Padding(
@@ -112,7 +113,9 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                           ),
                         )
                       : ListView.separated(
-                          padding: const EdgeInsets.all(16),
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomInset),
                           itemCount: highlights.length,
                           separatorBuilder: (_, _) =>
                               const SizedBox(height: 10),
@@ -131,20 +134,21 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                   AppColors.highlightColors.length - 1,
                                 )];
 
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => QuranScreen(
-                                      initialPage: item.page,
-                                      targetSurahNumber: item.surahNumber,
-                                      targetAyahNumber: item.ayahNumber,
+                            return RepaintBoundary(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => QuranScreen(
+                                        initialPage: item.page,
+                                        targetSurahNumber: item.surahNumber,
+                                        targetAyahNumber: item.ayahNumber,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              borderRadius: BorderRadius.circular(12),
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(12),
                               child: Container(
                                 padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
@@ -239,60 +243,25 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(6),
                                               ),
-                                              child: UserDataStore.instance.settings.mushafStyle ==
-                                                      MushafStyle.madinah
-                                                  ? QcfAyahText(
-                                                      ayah: ayah,
-                                                      fontSize: 14,
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
-                                                      color: isDark
-                                                          ? AppColors
-                                                              .nightQuranText
-                                                          : AppColors
-                                                              .dayQuranText,
-                                                      fallback: Text(
-                                                        '﴿ ${ayah.text} ﴾',
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textDirection:
-                                                            TextDirection.rtl,
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                              UserDataStore
-                                                                  .instance
-                                                                  .quranFontFamily,
-                                                          fontSize: 14,
-                                                          color: isDark
-                                                              ? AppColors
-                                                                  .nightQuranText
-                                                              : AppColors
-                                                                  .dayQuranText,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Text(
-                                                      '﴿ ${ayah.text} ﴾',
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow
-                                                          .ellipsis,
-                                                      textDirection:
-                                                          TextDirection.rtl,
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            UserDataStore
-                                                                .instance
-                                                                .quranFontFamily,
-                                                        fontSize: 14,
-                                                        color: isDark
-                                                            ? AppColors
-                                                                .nightQuranText
-                                                            : AppColors
-                                                                .dayQuranText,
-                                                      ),
-                                                    ),
+                                              child: Text(
+                                                '﴿ ${ayah.text} ﴾',
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                textDirection:
+                                                    TextDirection.rtl,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      UserDataStore
+                                                          .instance
+                                                          .quranFontFamily,
+                                                  fontSize: 14,
+                                                  color: isDark
+                                                      ? AppColors
+                                                          .nightQuranText
+                                                      : AppColors
+                                                          .dayQuranText,
+                                                ),
+                                              ),
                                             ),
                                         ],
                                       ),
@@ -321,7 +290,8 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                   ],
                                 ),
                               ),
-                            );
+                            ),
+                          );
                           },
                         ),
                 ),

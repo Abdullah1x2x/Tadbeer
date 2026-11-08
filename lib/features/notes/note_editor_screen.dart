@@ -8,7 +8,9 @@ import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import 'note_pdf_exporter.dart';
 import '../../data/models/note_model.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../data/quran/quran_repository.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
 import '../../core/design_system/app_icons.dart';
 
 /// محرر الخواطر بملء الشاشة، للخواطر الطويلة.
@@ -27,8 +29,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   late final String _initialContent;
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
-  int _charCount = 0;
-  int _wordCount = 0;
+  late final ValueNotifier<({int words, int chars})> _countsNotifier;
   bool _isSaving = false;
 
   @override
@@ -38,11 +39,10 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     _initialContent = widget.existingNote?.content ?? '';
     _titleController = TextEditingController(text: _initialTitle);
     _contentController = TextEditingController(text: _initialContent);
-
-    _updateCounts(_contentController.text);
-    _contentController.addListener(() {
-      _updateCounts(_contentController.text);
-    });
+    _countsNotifier = ValueNotifier<({int words, int chars})>(
+      _computeCounts(_initialContent),
+    );
+    _contentController.addListener(_onContentChanged);
   }
 
   /// هل في العنوان أو المحتوى تعديل لم يُحفظ.
@@ -80,22 +80,24 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     );
   }
 
-  /// يحدّث عدّاد الكلمات والأحرف.
-  void _updateCounts(String text) {
+  void _onContentChanged() {
+    _countsNotifier.value = _computeCounts(_contentController.text);
+  }
+
+  static ({int words, int chars}) _computeCounts(String text) {
     final trimmed = text.trim();
     final words = trimmed.isEmpty
         ? 0
         : trimmed.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).length;
-    setState(() {
-      _charCount = text.length;
-      _wordCount = words;
-    });
+    return (words: words, chars: text.length);
   }
 
   @override
   void dispose() {
+    _contentController.removeListener(_onContentChanged);
     _titleController.dispose();
     _contentController.dispose();
+    _countsNotifier.dispose();
     super.dispose();
   }
 
@@ -173,6 +175,55 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     }
   }
 
+  /// يكرّر الخاطرة الحالية وينشئ نسخة جديدة منها.
+  Future<void> _duplicateAsNewNote() async {
+    final content = _contentController.text.trim();
+    if (content.isEmpty || _isSaving) return;
+
+    setState(() => _isSaving = true);
+    try {
+      final existing = widget.existingNote;
+      final rawTitle = _titleController.text.trim();
+      final copyTitle = rawTitle.isNotEmpty ? '$rawTitle (نسخة)' : null;
+
+      if (existing != null && existing.isAyahNote) {
+        await UserDataStore.instance.saveNote(
+          type: NoteType.ayah,
+          title: copyTitle,
+          content: content,
+          ayahId: existing.ayahId,
+          surahNumber: existing.surahNumber,
+          ayahNumber: existing.ayahNumber,
+          page: existing.page,
+          ayahText: existing.ayahText,
+        );
+      } else {
+        await UserDataStore.instance.saveNote(
+          type: NoteType.free,
+          title: copyTitle,
+          content: content,
+        );
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              context.l10n.isArabic
+                  ? 'تم إنشاء نسخة مكررة جديدة بنجاح'
+                  : 'New duplicated note created successfully',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        Navigator.of(context).pop(true);
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -222,7 +273,20 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               ],
             ),
             actions: [
-              if (_contentController.text.isNotEmpty)
+              if (_contentController.text.isNotEmpty) ...[
+                if (existing != null)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 4),
+                    child: FuturisticIconButton(
+                      icon: AppIcons.copy,
+                      tooltip: l10n.isArabic
+                          ? 'تكرار كخاطرة جديدة'
+                          : 'Duplicate as New Note',
+                      size: 38,
+                      iconSize: 20,
+                      onTap: _duplicateAsNewNote,
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 4),
                   child: FuturisticIconButton(
@@ -233,6 +297,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     onTap: _exportPdf,
                   ),
                 ),
+              ],
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: FuturisticButton(
@@ -320,18 +385,39 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                 ],
-                                Text(
-                                  '﴿ ${existing.ayahText} ﴾',
-                                  textAlign: TextAlign.center,
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                    fontFamily: 'AmiriQuran',
-                                    fontSize: 17,
-                                    height: 1.8,
-                                    color: isDark
-                                        ? AppColors.nightQuranText
-                                        : AppColors.dayQuranText,
-                                  ),
+                                Builder(
+                                  builder: (ctx) {
+                                    final ayah = existing.surahNumber != null && existing.ayahNumber != null
+                                        ? QuranRepository.instance.getAyah(existing.surahNumber!, existing.ayahNumber!)
+                                        : null;
+                                    final isMadinah = UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
+                                    final fallback = Text(
+                                      '﴿ ${existing.ayahText} ﴾',
+                                      textAlign: TextAlign.center,
+                                      textDirection: TextDirection.rtl,
+                                      style: TextStyle(
+                                        fontFamily: UserDataStore.instance.quranFontFamily,
+                                        fontSize: 17,
+                                        height: 1.8,
+                                        color: isDark
+                                            ? AppColors.nightQuranText
+                                            : AppColors.dayQuranText,
+                                      ),
+                                    );
+                                    if (isMadinah && ayah != null) {
+                                      return QcfAyahText(
+                                        ayah: ayah,
+                                        fontSize: 18,
+                                        height: 1.8,
+                                        textAlign: TextAlign.center,
+                                        color: isDark
+                                            ? AppColors.nightQuranText
+                                            : AppColors.dayQuranText,
+                                        fallback: fallback,
+                                      );
+                                    }
+                                    return fallback;
+                                  },
                                 ),
                               ],
                             ),
@@ -430,13 +516,16 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        l10n.noteWordCharCount(_wordCount, _charCount),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isDark
-                              ? AppColors.nightSubtitle
-                              : AppColors.daySubtitle,
+                      ValueListenableBuilder<({int words, int chars})>(
+                        valueListenable: _countsNotifier,
+                        builder: (context, counts, _) => Text(
+                          l10n.noteWordCharCount(counts.words, counts.chars),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
+                          ),
                         ),
                       ),
                       Text(

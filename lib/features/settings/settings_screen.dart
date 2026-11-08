@@ -15,6 +15,7 @@ import '../../app/main_shell.dart';
 import '../onboarding/tour/home_walkthrough.dart';
 import '../onboarding/tour/tour_screen.dart';
 import '../tasbeeh/tasbeeh_model.dart';
+import '../updates/app_update_service.dart';
 
 part 'settings_widgets.dart';
 part 'settings_dialogs.dart';
@@ -706,7 +707,9 @@ class SettingsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  l10n.versionInfo,
+                                  isArabic
+                                      ? 'الإصدار ${l10n.digits(AppUpdateService.currentVersion)} · مجاني وبدون إعلانات أو إنترنت'
+                                      : 'Version ${AppUpdateService.currentVersion} · Free, ad-free & offline',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: isDark
@@ -778,7 +781,8 @@ class SettingsScreen extends StatelessWidget {
                                   showLicensePage(
                                     context: context,
                                     applicationName: l10n.appName,
-                                    applicationVersion: '1.0.0',
+                                    applicationVersion:
+                                        AppUpdateService.currentVersion,
                                     applicationLegalese:
                                         'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
                                         'Quran Text: Tanzil.net (CC BY 3.0)\n'
@@ -797,6 +801,63 @@ class SettingsScreen extends StatelessWidget {
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () => AppUpdateService.instance
+                                    .checkForUpdates(context, showFeedback: true),
+                                icon: const Icon(AppIcons.arrowClockwise, size: 17),
+                                label: Text(
+                                  isArabic
+                                      ? 'التحقق من التحديثات'
+                                      : 'Check for Updates',
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    AppUpdateService.instance.openTelegram(),
+                                icon: const Icon(AppIcons.arrowSquareOut, size: 17),
+                                label: Text(
+                                  isArabic ? 'قناة تيليجرام' : 'Telegram Channel',
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        SwitchListTile.adaptive(
+                          value: settings.autoCheckUpdates,
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            isArabic
+                                ? 'التحقق التلقائي عند فتح التطبيق'
+                                : 'Auto check on launch',
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                          subtitle: Text(
+                            isArabic
+                                ? 'إشعارك عبر تيليجرام أو التطبيق عند توفر إصدار جديد'
+                                : 'Notify via Telegram or app when update is available',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isDark
+                                  ? AppColors.nightSubtitle
+                                  : AppColors.daySubtitle,
+                            ),
+                          ),
+                          onChanged: (val) {
+                            UserDataStore.instance.setAutoCheckUpdates(val);
+                          },
                         ),
                       ],
                     ),

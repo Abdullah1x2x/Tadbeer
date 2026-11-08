@@ -47,15 +47,17 @@ class AyahActionSheet extends StatefulWidget {
       pageBuilder: (context, anim1, anim2) =>
           AyahActionSheet(ayah: ayah, mode: mode),
       transitionBuilder: (context, anim1, anim2, child) {
-        final curved = CurvedAnimation(
-          parent: anim1,
-          curve: Curves.easeOutCubic,
-          reverseCurve: Curves.easeInCubic,
+        final curve = anim1.status == AnimationStatus.reverse
+            ? Curves.easeInCubic
+            : Curves.easeOutCubic;
+        final curvedAnimation = anim1.drive(CurveTween(curve: curve));
+        final scaleAnimation = anim1.drive(
+          Tween<double>(begin: 0.94, end: 1.0).chain(CurveTween(curve: curve)),
         );
         return FadeTransition(
-          opacity: curved,
+          opacity: curvedAnimation,
           child: ScaleTransition(
-            scale: Tween<double>(begin: 0.94, end: 1.0).animate(curved),
+            scale: scaleAnimation,
             child: child,
           ),
         );
@@ -177,11 +179,12 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
     return Center(
       child: Material(
         color: Colors.transparent,
-        child: Container(
-          width: MediaQuery.of(context).size.width.clamp(300.0, 520.0),
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkBackground : AppColors.comsilkLight,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Container(
+            width: MediaQuery.of(context).size.width.clamp(300.0, 520.0),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkBackground : AppColors.comsilkLight,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.border(context), width: 1.5),
             boxShadow: [
@@ -572,7 +575,8 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }
 

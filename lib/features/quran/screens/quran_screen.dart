@@ -260,10 +260,17 @@ class _QuranScreenState extends State<QuranScreen> {
     if (_pageController.hasClients) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _showCurrentItem());
     } else {
+      _pagerPosition?.isScrollingNotifier.removeListener(_onPagerScrolling);
+      _pagerPosition = null;
       _pageController.dispose();
       _pageController = PageController(
         initialPage: _itemFor(_currentPageIndex),
       );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_pageController.hasClients) return;
+        _pagerPosition = _pageController.position;
+        _pagerPosition!.isScrollingNotifier.addListener(_onPagerScrolling);
+      });
     }
   }
 
@@ -943,6 +950,7 @@ class _QuranScreenState extends State<QuranScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         key: _scaffoldKey,
+        resizeToAvoidBottomInset: false,
         drawer: QuranSideMenu(
           currentPage: currentPageNumber,
           onPageSelected: _jumpToMushafPage,
@@ -962,20 +970,11 @@ class _QuranScreenState extends State<QuranScreen> {
                 bottom: false,
                 child: IgnorePointer(
                   ignoring: !_showTopBar,
-                  child: AnimatedSlide(
-                    offset: (_showTopBar || !shouldAnimate)
-                        ? Offset.zero
-                        : const Offset(0, -0.08),
-                    duration: shouldAnimate ? AppMotion.normal : Duration.zero,
-                    curve: AppMotion.emphasized,
-                    child: AnimatedOpacity(
-                      opacity: _showTopBar ? 1.0 : 0.0,
-                      duration: shouldAnimate
-                          ? AppMotion.normal
-                          : Duration.zero,
-                      curve: AppMotion.standard,
-                      child: _buildTopBar(context, currentPageNumber),
-                    ),
+                  child: AnimatedOpacity(
+                    opacity: _showTopBar ? 1.0 : 0.0,
+                    duration: shouldAnimate ? AppMotion.chrome : Duration.zero,
+                    curve: Curves.easeInOut,
+                    child: _buildTopBar(context, currentPageNumber),
                   ),
                 ),
               ),
@@ -989,22 +988,13 @@ class _QuranScreenState extends State<QuranScreen> {
                 top: false,
                 child: IgnorePointer(
                   ignoring: !_showTopBar,
-                  child: AnimatedSlide(
-                    offset: (_showTopBar || !shouldAnimate)
-                        ? Offset.zero
-                        : const Offset(0, 0.08),
-                    duration: shouldAnimate ? AppMotion.normal : Duration.zero,
-                    curve: AppMotion.emphasized,
-                    child: AnimatedOpacity(
-                      opacity: _showTopBar ? 1.0 : 0.0,
-                      duration: shouldAnimate
-                          ? AppMotion.normal
-                          : Duration.zero,
-                      curve: AppMotion.standard,
-                      child: KeyedSubtree(
-                        key: _bottomBarKey,
-                        child: _buildBottomBar(context, currentPageNumber),
-                      ),
+                  child: AnimatedOpacity(
+                    opacity: _showTopBar ? 1.0 : 0.0,
+                    duration: shouldAnimate ? AppMotion.chrome : Duration.zero,
+                    curve: Curves.easeInOut,
+                    child: KeyedSubtree(
+                      key: _bottomBarKey,
+                      child: _buildBottomBar(context, currentPageNumber),
                     ),
                   ),
                 ),
@@ -1018,20 +1008,24 @@ class _QuranScreenState extends State<QuranScreen> {
               child: GuideAutoShow(topic: GuideTopic.mushaf),
             ),
 
-            // التلاوة، فوق الشريط السفلي مباشرة حين يظهر.
-            AnimatedPositioned(
-              duration: shouldAnimate ? AppMotion.normal : Duration.zero,
-              curve: AppMotion.emphasized,
+            // التلاوة، تتلاشى مع بقية عناصر التحكم في موضع ثابت دون أي حركة.
+            Positioned(
               left: 12,
               right: 12,
-              // مرفوع قليلاً عن الحافة؛ لا يلاصق أسفل الشاشة ولا الشريط.
-              bottom: _showTopBar
-                  ? MediaQuery.paddingOf(context).bottom + _bottomBarHeight + 16
-                  : MediaQuery.viewPaddingOf(context).bottom + 32,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 560),
-                  child: const AudioBar(),
+              bottom:
+                  MediaQuery.paddingOf(context).bottom + _bottomBarHeight + 16,
+              child: IgnorePointer(
+                ignoring: !_showTopBar,
+                child: AnimatedOpacity(
+                  opacity: _showTopBar ? 1.0 : 0.0,
+                  duration: shouldAnimate ? AppMotion.chrome : Duration.zero,
+                  curve: Curves.easeInOut,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 560),
+                      child: const AudioBar(),
+                    ),
+                  ),
                 ),
               ),
             ),

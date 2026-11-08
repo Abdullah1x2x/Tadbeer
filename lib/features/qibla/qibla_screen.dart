@@ -135,7 +135,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
     });
   }
 
-  Future<void> _locate() async {
+  Future<void> _locate({bool showFeedback = false}) async {
     setState(() => _locating = true);
     final fix = await widget.locator.locate();
     if (!mounted) return;
@@ -149,6 +149,53 @@ class _QiblaScreenState extends State<QiblaScreen> {
         _problem = fix;
       }
     });
+    if (showFeedback && mounted) {
+      final l10n = context.l10n;
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.clearSnackBars();
+      if (fix is QiblaLocated) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(AppIcons.checkCircleFill, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.isArabic
+                        ? 'تم تحديث موقعك الحالي بنجاح'
+                        : 'Location updated successfully',
+                  ),
+                ),
+              ],
+            ),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else if (fix is QiblaLocationOff) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.qiblaLocationOff),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else if (fix is QiblaPermissionDenied) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.qiblaNeedsLocation),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.qiblaLocationFailed),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -164,8 +211,17 @@ class _QiblaScreenState extends State<QiblaScreen> {
             const GuideButton(topic: GuideTopic.qibla),
             IconButton(
               tooltip: l10n.qiblaUpdateLocation,
-              onPressed: _locating ? null : _locate,
-              icon: const Icon(AppIcons.crosshair),
+              onPressed: _locating ? null : () => _locate(showFeedback: true),
+              icon: _locating
+                  ? SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                  : const Icon(AppIcons.crosshair),
             ),
           ],
         ),

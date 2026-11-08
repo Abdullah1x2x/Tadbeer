@@ -1,0 +1,95 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:tadbeer/features/updates/app_update_model.dart';
+
+void main() {
+  group('AppUpdateInfo', () {
+    test('parses complete json correctly', () {
+      final json = {
+        'latest_version': '1.2.0',
+        'build_number': 15,
+        'release_date': '2026-11-10',
+        'is_mandatory': true,
+        'title': 'تحديث هام',
+        'changelog': 'إصلاحات وتحسينات هامة',
+        'download_url': 'https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.2.0',
+        'telegram_url': 'https://t.me/tadbeerapp/42',
+      };
+
+      final info = AppUpdateInfo.fromJson(json);
+
+      expect(info.latestVersion, '1.2.0');
+      expect(info.buildNumber, 15);
+      expect(info.releaseDate, '2026-11-10');
+      expect(info.isMandatory, isTrue);
+      expect(info.title, 'تحديث هام');
+      expect(info.changelog, 'إصلاحات وتحسينات هامة');
+      expect(info.downloadUrl, 'https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.2.0');
+      expect(info.telegramUrl, 'https://t.me/tadbeerapp/42');
+    });
+
+    test('falls back to safe defaults when keys are missing or null', () {
+      final info = AppUpdateInfo.fromJson({});
+
+      expect(info.latestVersion, '1.0.0');
+      expect(info.buildNumber, 1);
+      expect(info.releaseDate, '');
+      expect(info.isMandatory, isFalse);
+      expect(info.title, 'تحديث جديد');
+      expect(info.changelog, '');
+      expect(info.downloadUrl, contains('github.com'));
+      expect(info.telegramUrl, 'https://t.me/tadbeerapp');
+    });
+
+    group('isNewerThan', () {
+      test('returns true when remote build number is greater', () {
+        final update = AppUpdateInfo.fromJson({
+          'latest_version': '1.0.0',
+          'build_number': 5,
+        });
+
+        expect(update.isNewerThan(4, '1.0.0'), isTrue);
+      });
+
+      test('returns false when remote build number is smaller', () {
+        final update = AppUpdateInfo.fromJson({
+          'latest_version': '1.0.0',
+          'build_number': 3,
+        });
+
+        expect(update.isNewerThan(4, '1.0.0'), isFalse);
+      });
+
+      test('compares semantic version when build numbers are equal', () {
+        final updatePatch = AppUpdateInfo.fromJson({
+          'latest_version': '1.0.1',
+          'build_number': 10,
+        });
+        expect(updatePatch.isNewerThan(10, '1.0.0'), isTrue);
+
+        final updateMinor = AppUpdateInfo.fromJson({
+          'latest_version': '1.1.0',
+          'build_number': 10,
+        });
+        expect(updateMinor.isNewerThan(10, '1.0.9'), isTrue);
+
+        final updateMajor = AppUpdateInfo.fromJson({
+          'latest_version': '2.0.0',
+          'build_number': 10,
+        });
+        expect(updateMajor.isNewerThan(10, '1.9.9'), isTrue);
+
+        final updateSame = AppUpdateInfo.fromJson({
+          'latest_version': '1.0.0',
+          'build_number': 10,
+        });
+        expect(updateSame.isNewerThan(10, '1.0.0'), isFalse);
+
+        final updateOlder = AppUpdateInfo.fromJson({
+          'latest_version': '0.9.9',
+          'build_number': 10,
+        });
+        expect(updateOlder.isNewerThan(10, '1.0.0'), isFalse);
+      });
+    });
+  });
+}

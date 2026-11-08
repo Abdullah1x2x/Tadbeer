@@ -56,6 +56,7 @@ class _StarLatticePainter extends CustomPainter {
   const _StarLatticePainter(this.color, this.reach);
 
   static const _cell = 64.0;
+  static final Path _cellStarPath = eightPointStar(Offset.zero, _cell * 0.3);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -74,7 +75,10 @@ class _StarLatticePainter extends CustomPainter {
       dot.color = paint.color;
       for (var col = 0; col < columns; col++) {
         final c = Offset(startX + col * _cell, _cell / 2 + row * _cell);
-        canvas.drawPath(eightPointStar(c, _cell * 0.3), paint);
+        canvas.save();
+        canvas.translate(c.dx, c.dy);
+        canvas.drawPath(_cellStarPath, paint);
+        canvas.restore();
         // معيّنات صغيرة حيث تلتقي أربع خلايا.
         canvas.drawCircle(c + const Offset(_cell / 2, _cell / 2), 1.4, dot);
       }

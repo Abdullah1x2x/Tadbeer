@@ -7,7 +7,9 @@ import '../../../data/models/user_settings_model.dart';
 import '../../../data/storage/user_data_store.dart';
 import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/models/ayah_link_model.dart';
+import '../data/ayah_link_repository.dart';
 import 'ayah_link_edit_dialogs.dart';
+import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../quran/qcf/qcf_ayah_text.dart';
 import '../../quran/screens/quran_screen.dart';
@@ -126,14 +128,54 @@ class AyahLinkOrderedView extends StatelessWidget {
                 ],
               ),
             ),
-            for (final note in notes)
+            for (var i = 0; i < notes.length; i++)
               _AyahLinkNoteCard(
-                note: note,
+                note: notes[i],
                 isDark: isDark,
-                onEdit: () => editAyahLinkNoteCard(context, link.id, note),
+                onEdit: () => editAyahLinkNoteCard(context, link.id, notes[i]),
                 onDelete: () =>
-                    confirmDeleteAyahLinkNoteCard(context, link.id, note),
-                onCopy: () => _copyNoteCard(context, note),
+                    confirmDeleteAyahLinkNoteCard(context, link.id, notes[i]),
+                onCopy: () => _copyNoteCard(context, notes[i]),
+                onDuplicate: () async {
+                  await HapticFeedback.lightImpact();
+                  await AyahLinkRepository.instance.duplicateNoteInLink(
+                    link.id,
+                    notes[i].id,
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          context.l10n.isArabic
+                              ? 'تم تكرار بطاقة الخاطرة في الرابط'
+                              : 'Note card duplicated in link',
+                        ),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+                onMoveUp: i > 0
+                    ? () async {
+                        await HapticFeedback.lightImpact();
+                        await UserDataStore.instance.reorderNoteInLink(
+                          link.id,
+                          i,
+                          i - 1,
+                        );
+                      }
+                    : null,
+                onMoveDown: i < notes.length - 1
+                    ? () async {
+                        await HapticFeedback.lightImpact();
+                        await UserDataStore.instance.reorderNoteInLink(
+                          link.id,
+                          i,
+                          i + 1,
+                        );
+                      }
+                    : null,
               ),
             const SizedBox(height: 12),
           ],
@@ -265,10 +307,14 @@ class AyahLinkOrderedView extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              context.l10n.ayahReference(
-                                surah.name,
-                                verse.ayahNumber,
-                              ),
+                              verse.isRange
+                                  ? (context.l10n.isArabic
+                                      ? '${surah.name} [الآيات ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)} - ${ArabicSearchNormalizer.toArabicDigits(verse.toAyahNumber!)}]'
+                                      : '${surah.name} [Ayahs ${verse.ayahNumber} - ${verse.toAyahNumber}]')
+                                  : context.l10n.ayahReference(
+                                      surah.name,
+                                      verse.ayahNumber,
+                                    ),
                               style: TextStyle(
                                 fontFamily: 'IBMPlexSansArabic',
                                 fontSize: 14,
@@ -278,10 +324,75 @@ class AyahLinkOrderedView extends StatelessWidget {
                             ),
                           ],
                         ),
-                        PopupMenuButton<String>(
-                          icon: appMenuIcon,
-                          onSelected: (val) {
-                            if (val == 'quran') {
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                              if (verses.length > 1) ...[
+                                IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  icon: const Icon(AppIcons.caretUp, size: 20),
+                                  tooltip: context.l10n.isArabic
+                                      ? 'تقديم للأعلى'
+                                      : 'Move Up',
+                                  color: index > 0
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                          .disabledColor
+                                          .withValues(alpha: 0.3),
+                                  onPressed: index > 0
+                                      ? () async {
+                                          await HapticFeedback.lightImpact();
+                                          await UserDataStore.instance
+                                              .reorderVerseInLink(
+                                            link.id,
+                                            index,
+                                            index - 1,
+                                          );
+                                        }
+                                      : null,
+                                ),
+                                IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  icon: const Icon(AppIcons.caretDown, size: 20),
+                                  tooltip: context.l10n.isArabic
+                                      ? 'تأخير للأسفل'
+                                      : 'Move Down',
+                                  color: index < verses.length - 1
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                          .disabledColor
+                                          .withValues(alpha: 0.3),
+                                  onPressed: index < verses.length - 1
+                                      ? () async {
+                                          await HapticFeedback.lightImpact();
+                                          await UserDataStore.instance
+                                              .reorderVerseInLink(
+                                            link.id,
+                                            index,
+                                            index + 1,
+                                          );
+                                        }
+                                      : null,
+                                ),
+                              ],
+                              PopupMenuButton<String>(
+                                icon: appMenuIcon,
+                          onSelected: (val) async {
+                            if (val == 'move_up') {
+                              await HapticFeedback.lightImpact();
+                              await UserDataStore.instance.reorderVerseInLink(
+                                link.id,
+                                index,
+                                index - 1,
+                              );
+                            } else if (val == 'move_down') {
+                              await HapticFeedback.lightImpact();
+                              await UserDataStore.instance.reorderVerseInLink(
+                                link.id,
+                                index,
+                                index + 1,
+                              );
+                            } else if (val == 'quran') {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -293,9 +404,29 @@ class AyahLinkOrderedView extends StatelessWidget {
                                 ),
                               );
                             } else if (val == 'note') {
-                              editAyahLinkVerseNote(context, link.id, verse);
+                              await editAyahLinkVerseNote(context, link.id, verse);
+                            } else if (val == 'duplicate') {
+                              await HapticFeedback.lightImpact();
+                              await AyahLinkRepository.instance.duplicateVerseInLink(
+                                link.id,
+                                verse,
+                              );
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      context.l10n.isArabic
+                                          ? 'تم تكرار كرت الآية في الرابط'
+                                          : 'Verse card duplicated in link',
+                                    ),
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
                             } else if (val == 'delete') {
-                              confirmRemoveAyahLinkVerse(
+                              await confirmRemoveAyahLinkVerse(
                                 context,
                                 link.id,
                                 verse,
@@ -303,6 +434,22 @@ class AyahLinkOrderedView extends StatelessWidget {
                             }
                           },
                           itemBuilder: (ctx) => [
+                            if (index > 0)
+                              appMenuItem(
+                                value: 'move_up',
+                                icon: AppIcons.caretUp,
+                                label: context.l10n.isArabic
+                                    ? 'تقديم للأعلى'
+                                    : 'Move Up',
+                              ),
+                            if (index < verses.length - 1)
+                              appMenuItem(
+                                value: 'move_down',
+                                icon: AppIcons.caretDown,
+                                label: context.l10n.isArabic
+                                    ? 'تأخير للأسفل'
+                                    : 'Move Down',
+                              ),
                             appMenuItem(
                               value: 'quran',
                               icon: AppIcons.bookOpenFill,
@@ -314,6 +461,13 @@ class AyahLinkOrderedView extends StatelessWidget {
                               label: context.l10n.editVerseNote,
                             ),
                             appMenuItem(
+                              value: 'duplicate',
+                              icon: AppIcons.copy,
+                              label: context.l10n.isArabic
+                                  ? 'تكرار كرت الآية'
+                                  : 'Duplicate Card',
+                            ),
+                            appMenuItem(
                               value: 'delete',
                               icon: AppIcons.trash,
                               label: context.l10n.removeVerseFromLink,
@@ -323,9 +477,89 @@ class AyahLinkOrderedView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                  ],
+                ),
+                const SizedBox(height: 10),
 
-                    if (ayah != null)
+                    if (verse.isRange) ...[
+                      Builder(
+                        builder: (ctx) {
+                          final rangeAyahs = [
+                            for (var a = verse.ayahNumber;
+                                a <= verse.effectiveEndAyah;
+                                a++)
+                              QuranRepository.instance.getAyah(
+                                verse.surahNumber,
+                                a,
+                              ),
+                          ].whereType<Ayah>().toList();
+
+                          final isMadinah =
+                              UserDataStore.instance.settings.mushafStyle ==
+                                  MushafStyle.madinah;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              for (final a in rangeAyahs)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => QuranScreen(
+                                            initialPage: a.page,
+                                            targetSurahNumber: a.surahNumber,
+                                            targetAyahNumber: a.ayahNumber,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: isMadinah
+                                        ? QcfAyahText(
+                                            ayah: a,
+                                            fontSize: fontSize,
+                                            color: isDark
+                                                ? AppColors.nightQuranText
+                                                : AppColors.dayQuranText,
+                                            height: 1.8,
+                                            fallback: Text(
+                                              '﴿ ${a.text} ﴾ [${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}]',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontFamily: UserDataStore
+                                                    .instance
+                                                    .quranFontFamily,
+                                                fontSize: fontSize,
+                                                height: 1.8,
+                                                color: isDark
+                                                    ? AppColors.nightQuranText
+                                                    : AppColors.dayQuranText,
+                                              ),
+                                            ),
+                                          )
+                                        : Text(
+                                            '﴿ ${a.text} ﴾ [${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}]',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontFamily: UserDataStore
+                                                  .instance.quranFontFamily,
+                                              fontSize: fontSize,
+                                              height: 1.8,
+                                              color: isDark
+                                                  ? AppColors.nightQuranText
+                                                  : AppColors.dayQuranText,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ] else if (ayah != null)
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -433,6 +667,9 @@ class _AyahLinkNoteCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onCopy;
+  final VoidCallback? onDuplicate;
+  final VoidCallback? onMoveUp;
+  final VoidCallback? onMoveDown;
 
   const _AyahLinkNoteCard({
     required this.note,
@@ -440,6 +677,9 @@ class _AyahLinkNoteCard extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onCopy,
+    this.onDuplicate,
+    this.onMoveUp,
+    this.onMoveDown,
   });
 
   @override
@@ -495,33 +735,96 @@ class _AyahLinkNoteCard extends StatelessWidget {
                   ),
                 ),
               ),
-              PopupMenuButton<String>(
-                icon: appMenuIcon,
-                onSelected: (val) {
-                  if (val == 'edit') {
-                    onEdit();
-                  } else if (val == 'copy') {
-                    onCopy();
-                  } else if (val == 'delete') {
-                    onDelete();
-                  }
-                },
-                itemBuilder: (ctx) => [
-                  appMenuItem(
-                    value: 'edit',
-                    icon: AppIcons.pencilSimple,
-                    label: context.l10n.editVerseNote,
-                  ),
-                  appMenuItem(
-                    value: 'copy',
-                    icon: AppIcons.copy,
-                    label: context.l10n.copyText,
-                  ),
-                  appMenuItem(
-                    value: 'delete',
-                    icon: AppIcons.trash,
-                    label: context.l10n.deleteNote,
-                    destructive: true,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (onMoveUp != null || onMoveDown != null) ...[
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      tooltip: context.l10n.isArabic
+                          ? 'تقديم للأعلى'
+                          : 'Move Up',
+                      icon: const Icon(AppIcons.caretUp, size: 20),
+                      color: onMoveUp != null
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context)
+                              .disabledColor
+                              .withValues(alpha: 0.3),
+                      onPressed: onMoveUp,
+                    ),
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      tooltip: context.l10n.isArabic
+                          ? 'تأخير للأسفل'
+                          : 'Move Down',
+                      icon: const Icon(AppIcons.caretDown, size: 20),
+                      color: onMoveDown != null
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context)
+                              .disabledColor
+                              .withValues(alpha: 0.3),
+                      onPressed: onMoveDown,
+                    ),
+                  ],
+                  PopupMenuButton<String>(
+                    icon: appMenuIcon,
+                    onSelected: (val) {
+                      if (val == 'move_up') {
+                        onMoveUp?.call();
+                      } else if (val == 'move_down') {
+                        onMoveDown?.call();
+                      } else if (val == 'edit') {
+                        onEdit();
+                      } else if (val == 'copy') {
+                        onCopy();
+                      } else if (val == 'duplicate') {
+                        onDuplicate?.call();
+                      } else if (val == 'delete') {
+                        onDelete();
+                      }
+                    },
+                    itemBuilder: (ctx) => [
+                      if (onMoveUp != null)
+                        appMenuItem(
+                          value: 'move_up',
+                          icon: AppIcons.caretUp,
+                          label: context.l10n.isArabic
+                              ? 'تقديم للأعلى'
+                              : 'Move Up',
+                        ),
+                      if (onMoveDown != null)
+                        appMenuItem(
+                          value: 'move_down',
+                          icon: AppIcons.caretDown,
+                          label: context.l10n.isArabic
+                              ? 'تأخير للأسفل'
+                              : 'Move Down',
+                        ),
+                      appMenuItem(
+                        value: 'edit',
+                        icon: AppIcons.pencilSimple,
+                        label: context.l10n.editVerseNote,
+                      ),
+                      appMenuItem(
+                        value: 'copy',
+                        icon: AppIcons.copy,
+                        label: context.l10n.copyText,
+                      ),
+                      if (onDuplicate != null)
+                        appMenuItem(
+                          value: 'duplicate',
+                          icon: AppIcons.copy,
+                          label: context.l10n.isArabic
+                              ? 'تكرار البطاقة'
+                              : 'Duplicate Card',
+                        ),
+                      appMenuItem(
+                        value: 'delete',
+                        icon: AppIcons.trash,
+                        label: context.l10n.deleteNote,
+                        destructive: true,
+                      ),
+                    ],
                   ),
                 ],
               ),

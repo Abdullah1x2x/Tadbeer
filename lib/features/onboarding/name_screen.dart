@@ -88,7 +88,7 @@ class _NameScreenState extends State<NameScreen> {
                       const SizedBox(height: 24),
                       TextField(
                         controller: _name,
-                        autofocus: true,
+                        autofocus: false,
                         textAlign: TextAlign.center,
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.done,

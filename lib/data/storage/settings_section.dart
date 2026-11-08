@@ -35,4 +35,12 @@ mixin _SettingsSection on _StoreState {
   Future<void> setQuranFontFamily(QuranFontFamilyOption fontFamily) async {
     await updateSettings(_settings.copyWith(quranFontFamily: fontFamily));
   }
+
+  Future<void> setAutoCheckUpdates(bool enabled) async {
+    await updateSettings(_settings.copyWith(autoCheckUpdates: enabled));
+  }
+
+  Future<void> dismissUpdateVersion(String version) async {
+    await updateSettings(_settings.copyWith(dismissedUpdateVersion: version));
+  }
 }

@@ -427,5 +427,120 @@ void main() {
         expect(threads.single.toAyahKey, '2:154');
       },
     );
+
+    test('19: Consecutive Ayahs Range Card supports ranges and serialization', () async {
+      final link = await repo.createLink(title: 'آية الكرسي وما بعدها');
+      await repo.addVerseToLink(
+        link.id,
+        ayahId: 262,
+        surahNumber: 2,
+        ayahNumber: 255,
+        toAyahNumber: 257,
+        page: 42,
+      );
+
+      final updated = repo.getLink(link.id)!;
+      expect(updated.verses.length, 1);
+      final verse = updated.verses.first;
+      expect(verse.isRange, isTrue);
+      expect(verse.effectiveEndAyah, 257);
+      expect(verse.verseCount, 3);
+      expect(verse.ayahKey, '2:255-257');
+      expect(verse.containsAyah(2, 255), isTrue);
+      expect(verse.containsAyah(2, 256), isTrue);
+      expect(verse.containsAyah(2, 257), isTrue);
+      expect(verse.containsAyah(2, 258), isFalse);
+      expect(updated.containsAyah(2, 256), isTrue);
+
+      // JSON serialization & restoration
+      final json = updated.toJson();
+      final restored = AyahLinkItem.fromJson(json);
+      expect(restored.verses.first.isRange, isTrue);
+      expect(restored.verses.first.toAyahNumber, 257);
+
+      // Remove range verse
+      await repo.removeVerseFromLink(link.id, 2, 255, 257);
+      expect(repo.getLink(link.id)!.verses, isEmpty);
+    });
+
+    test('20: Batch adding verses and card reordering (verses and notes)', () async {
+      final link = await repo.createLink(title: 'ترتيب وإضافة جماعية');
+
+      // Add batch verses
+      final verses = [
+        AyahLinkVerse(ayahId: 1, surahNumber: 1, ayahNumber: 1, page: 1, addedAt: DateTime.now()),
+        AyahLinkVerse(ayahId: 2, surahNumber: 1, ayahNumber: 2, page: 1, addedAt: DateTime.now()),
+        AyahLinkVerse(ayahId: 3, surahNumber: 1, ayahNumber: 3, page: 1, addedAt: DateTime.now()),
+      ];
+      await repo.addVersesToLink(link.id, verses);
+      var current = repo.getLink(link.id)!;
+      expect(current.verses.map((v) => v.ayahNumber).toList(), [1, 2, 3]);
+
+      // Reorder verse: move ayah 3 to first position
+      await repo.reorderVerseInLink(link.id, 2, 0);
+      current = repo.getLink(link.id)!;
+      expect(current.verses.map((v) => v.ayahNumber).toList(), [3, 1, 2]);
+
+      // Add 2 notes and reorder them
+      final note1 = await repo.addNoteToLink(link.id, content: 'ملاحظة 1');
+      final note2 = await repo.addNoteToLink(link.id, content: 'ملاحظة 2');
+      current = repo.getLink(link.id)!;
+      expect(current.notes.map((n) => n.id).toList(), [note1.id, note2.id]);
+
+      await repo.reorderNoteInLink(link.id, 1, 0);
+      current = repo.getLink(link.id)!;
+      expect(current.notes.map((n) => n.id).toList(), [note2.id, note1.id]);
+    });
+
+    test('21: Duplicate verse card and duplicate note card in link', () async {
+      final link = await repo.createLink(title: 'تكرار البطاقات');
+
+      // Add verse
+      final verse = AyahLinkVerse(
+        ayahId: 1,
+        surahNumber: 1,
+        ayahNumber: 1,
+        page: 1,
+        note: 'ملاحظة خاصة بالآية',
+        addedAt: DateTime.now(),
+      );
+      await repo.addVerseToLink(
+        link.id,
+        ayahId: verse.ayahId,
+        surahNumber: verse.surahNumber,
+        ayahNumber: verse.ayahNumber,
+        page: verse.page,
+        note: verse.note,
+      );
+
+      // Duplicate verse card
+      final dupVerse = await repo.duplicateVerseInLink(link.id, verse);
+      expect(dupVerse, isNotNull);
+      expect(dupVerse!.nodeKey, isNot(equals(verse.nodeKey)));
+      var current = repo.getLink(link.id)!;
+      expect(current.verses.length, equals(2));
+      expect(current.verses[1].ayahNumber, equals(1));
+      expect(current.verses[1].note, equals('ملاحظة خاصة بالآية (نسخة)'));
+      expect(current.positions.containsKey(dupVerse.nodeKey), isTrue);
+
+      // Add note card
+      final note = await repo.addNoteToLink(
+        link.id,
+        title: 'عنوان الخاطرة',
+        content: 'محتوى الخاطرة',
+      );
+      current = repo.getLink(link.id)!;
+      expect(current.notes.length, equals(1));
+
+      // Duplicate note card
+      final dupNote = await repo.duplicateNoteInLink(link.id, note.id);
+      expect(dupNote, isNotNull);
+      expect(dupNote!.id, isNot(equals(note.id)));
+      expect(dupNote.title, equals('عنوان الخاطرة (نسخة)'));
+      expect(dupNote.content, equals('محتوى الخاطرة'));
+
+      current = repo.getLink(link.id)!;
+      expect(current.notes.length, equals(2));
+    });
   });
 }

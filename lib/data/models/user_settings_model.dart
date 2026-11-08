@@ -193,6 +193,12 @@ class UserSettings {
   /// الاسم الذي يناديه به التذكير؛ فارغ إن لم يكتبه. يبقى على الجهاز فقط.
   final String userName;
 
+  /// التحقق التلقائي الهادئ من توفر تحديثات جديدة للتطبيق عبر المستودع.
+  final bool autoCheckUpdates;
+
+  /// آخر إصدار تجاهله المستخدم (لا يُزعجه بالتنبيه مجدداً).
+  final String? dismissedUpdateVersion;
+
   /// اسم خط المصحف للاستخدام المباشر في أنماط النص.
   String get quranFontFamilyName => quranFontFamily.fontFamily;
 
@@ -210,6 +216,8 @@ class UserSettings {
     this.mushafStyle = MushafStyle.madinah,
     this.themeChosen = false,
     this.userName = '',
+    this.autoCheckUpdates = true,
+    this.dismissedUpdateVersion,
   });
 
   Map<String, dynamic> toJson() => {
@@ -226,6 +234,9 @@ class UserSettings {
     'mushafStyle': mushafStyle.name,
     'themeChosen': themeChosen,
     'userName': userName,
+    'autoCheckUpdates': autoCheckUpdates,
+    if (dismissedUpdateVersion != null)
+      'dismissedUpdateVersion': dismissedUpdateVersion,
   };
 
   factory UserSettings.fromJson(Map<String, dynamic> json) {
@@ -296,6 +307,8 @@ class UserSettings {
       ),
       themeChosen: json['themeChosen'] as bool? ?? true,
       userName: json['userName'] as String? ?? '',
+      autoCheckUpdates: json['autoCheckUpdates'] as bool? ?? true,
+      dismissedUpdateVersion: json['dismissedUpdateVersion'] as String?,
     );
   }
 
@@ -313,6 +326,8 @@ class UserSettings {
     MushafStyle? mushafStyle,
     bool? themeChosen,
     String? userName,
+    bool? autoCheckUpdates,
+    String? dismissedUpdateVersion,
   }) {
     final newQuranFontSize = quranFontSize != null
         ? quranFontSize.clamp(minQuranFontSize, maxQuranFontSize)
@@ -335,6 +350,9 @@ class UserSettings {
       mushafStyle: mushafStyle ?? this.mushafStyle,
       themeChosen: themeChosen ?? this.themeChosen,
       userName: userName?.trim() ?? this.userName,
+      autoCheckUpdates: autoCheckUpdates ?? this.autoCheckUpdates,
+      dismissedUpdateVersion:
+          dismissedUpdateVersion ?? this.dismissedUpdateVersion,
     );
   }
 }

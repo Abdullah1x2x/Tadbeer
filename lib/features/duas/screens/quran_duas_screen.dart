@@ -64,6 +64,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.lightBackground,
@@ -278,7 +279,14 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                 ),
               )
             : ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  16,
+                  16,
+                  24 + MediaQuery.viewInsetsOf(context).bottom,
+                ),
                 itemCount: _filteredDuas.length,
                 separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {

@@ -68,6 +68,16 @@ class _AllTab extends StatelessWidget {
         icon: AppIcons.flowerLotus,
         title: l10n.noReflectionsYet,
         hint: l10n.noReflectionsHint,
+        actionLabel: l10n.openMushaf,
+        actionIcon: AppIcons.bookOpenFill,
+        onAction: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => QuranScreen(
+              initialPage: UserDataStore.instance.readingPosition.page,
+            ),
+          ),
+        ),
       );
     }
     return ListView.builder(
@@ -211,6 +221,16 @@ class _CommitmentsTab extends StatelessWidget {
         icon: AppIcons.sealCheck,
         title: l10n.reflectionsCommitments,
         hint: l10n.noCommitmentsYet,
+        actionLabel: l10n.openMushaf,
+        actionIcon: AppIcons.bookOpenFill,
+        onAction: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => QuranScreen(
+              initialPage: UserDataStore.instance.readingPosition.page,
+            ),
+          ),
+        ),
       );
     }
     return ListView.builder(

@@ -310,169 +310,293 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                       showQuestion = free >= question + 6;
                     }
                     final showActions = !bounded || box.maxHeight >= 110;
-                    return AnimatedSwitcher(
-                      duration: Duration(milliseconds: motion ? 450 : 0),
-                      switchInCurve: Curves.easeOutCubic,
-                      switchOutCurve: Curves.easeInCubic,
-                      layoutBuilder: (current, previous) => Stack(
-                        alignment: Alignment.topCenter,
-                        children: [...previous, ?current],
-                      ),
-                      transitionBuilder: (child, animation) => FadeTransition(
-                        opacity: animation,
-                        child: SlideTransition(
-                          position: Tween(
-                            begin: const Offset(0, 0.04),
-                            end: Offset.zero,
-                          ).animate(animation),
-                          child: child,
-                        ),
-                      ),
-                      child: Column(
-                        key: ValueKey(ayah.id),
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                AppIcons.sunFill,
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              AppIcons.sunFill,
+                              color: gold,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              l10n.widgetAyahTitle,
+                              style: const TextStyle(
                                 color: gold,
-                                size: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(width: 6),
-                              Text(
-                                l10n.widgetAyahTitle,
-                                style: const TextStyle(
-                                  color: gold,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              // أسماء السور الطويلة تصغر بدل أن تفيض.
-                              Expanded(
-                                child: Text(
-                                  l10n.ayahReference(
-                                    surah.name,
-                                    ayah.ayahNumber,
-                                  ),
-                                  textAlign: TextAlign.end,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12.5,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          if (bounded)
+                            ),
+                            const SizedBox(width: 8),
+                            // أسماء السور الطويلة تصغر بدل أن تفيض.
                             Expanded(
-                              child: _FittedVerse(
-                                looks: looks,
-                                shown: looks[_index],
-                              ),
-                            )
-                          else
-                            _SteadyHeight(
-                              items: [
-                                for (final l in looks) (l.text, l.at(21, 2)),
-                              ],
-                              child: Text(
-                                looks[_index].text,
-                                semanticsLabel: looks[_index].spoken,
-                                textAlign: TextAlign.center,
-                                style: looks[_index].at(21, 2),
-                              ),
-                            ),
-                          const SizedBox(height: 8),
-                          // علامة تظهر بعد التدبر في هذه الآية.
-                          if (showQuestion)
-                            _SteadyHeight(
-                              items: [
-                                for (var i = 0; i < _ayahs.length; i++)
-                                  (
-                                    AyahOfTheDay.questionFor(_day, i),
-                                    questionStyle,
-                                  ),
-                              ],
-                              child: ListenableBuilder(
-                                listenable: UserDataStore.instance,
-                                builder: (context, _) {
-                                  final done =
-                                      UserDataStore.instance.getTadbeer(
-                                        ayah.surahNumber,
-                                        ayah.ayahNumber,
-                                      ) !=
-                                      null;
-                                  return done
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              AppIcons.checkCircleFill,
-                                              color: gold,
-                                              size: 16,
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              l10n.reflectedToday,
-                                              style: questionStyle,
-                                            ),
-                                          ],
-                                        )
-                                      : Text(
-                                          AyahOfTheDay.questionFor(
-                                            _day,
-                                            _index,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                          style: questionStyle,
-                                        );
-                                },
-                              ),
-                            ),
-                          if (showQuestion) const SizedBox(height: 6),
-                          // تلتف في الهواتف الضيقة بدل أن تفيض.
-                          if (showActions)
-                            Wrap(
-                              alignment: WrapAlignment.center,
-                              children: [
-                                _Action(
-                                  icon: AppIcons.flowerLotusFill,
-                                  label: l10n.reflectOnIt,
-                                  onTap: () => TadbeerPauseSheet.show(
-                                    context,
-                                    ayah,
-                                    initialQuestion: AyahOfTheDay.questionIndex(
-                                      _day,
-                                      _index,
+                              child: AnimatedSwitcher(
+                                duration: Duration(
+                                  milliseconds: motion ? 250 : 0,
+                                ),
+                                switchInCurve: Curves.easeOutCubic,
+                                switchOutCurve: Curves.easeInCubic,
+                                layoutBuilder: (current, previous) => Stack(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  children: [...previous, ?current],
+                                ),
+                                transitionBuilder: (child, animation) =>
+                                    FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                                child: Align(
+                                  key: ValueKey(ayah.id),
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  child: Text(
+                                    l10n.ayahReference(
+                                      surah.name,
+                                      ayah.ayahNumber,
+                                    ),
+                                    textAlign: TextAlign.end,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
-                                _Action(
-                                  icon: AppIcons.export,
-                                  label: l10n.share,
-                                  onTap: () =>
-                                      AyahShareSheet.show(context, ayah),
-                                ),
-                                _Action(
-                                  icon: AppIcons.personSimpleTaiChi,
-                                  label: l10n.focusMode,
-                                  onTap: () =>
-                                      FocusModeScreen.open(context, ayah),
-                                ),
-                              ],
+                              ),
                             ),
-                          _Dots(
-                            count: _ayahs.length,
-                            current: _index,
-                            color: gold,
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        if (bounded)
+                          Expanded(
+                            child: AnimatedSwitcher(
+                              duration: Duration(
+                                milliseconds: motion ? 280 : 0,
+                              ),
+                              switchInCurve: Curves.easeOutCubic,
+                              switchOutCurve: Curves.easeInCubic,
+                              layoutBuilder: (current, previous) => Stack(
+                                fit: StackFit.expand,
+                                children: [...previous, ?current],
+                              ),
+                              transitionBuilder: (child, animation) =>
+                                  FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              ),
+                              child: KeyedSubtree(
+                                key: ValueKey(ayah.id),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Expanded(
+                                      child: _FittedVerse(
+                                        looks: looks,
+                                        shown: looks[_index],
+                                      ),
+                                    ),
+                                    if (showQuestion) ...[
+                                      const SizedBox(height: 8),
+                                      _SteadyHeight(
+                                        items: [
+                                          for (
+                                            var i = 0;
+                                            i < _ayahs.length;
+                                            i++
+                                          )
+                                            (
+                                              AyahOfTheDay.questionFor(
+                                                _day,
+                                                i,
+                                              ),
+                                              questionStyle,
+                                            ),
+                                        ],
+                                        child: ListenableBuilder(
+                                          listenable: UserDataStore.instance,
+                                          builder: (context, _) {
+                                            final done =
+                                                UserDataStore.instance
+                                                    .getTadbeer(
+                                                      ayah.surahNumber,
+                                                      ayah.ayahNumber,
+                                                    ) !=
+                                                null;
+                                            return done
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const Icon(
+                                                        AppIcons
+                                                            .checkCircleFill,
+                                                        color: gold,
+                                                        size: 16,
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        l10n.reflectedToday,
+                                                        style: questionStyle,
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Text(
+                                                    AyahOfTheDay.questionFor(
+                                                      _day,
+                                                      _index,
+                                                    ),
+                                                    textAlign:
+                                                        TextAlign.center,
+                                                    style: questionStyle,
+                                                  );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        else ...[
+                          AnimatedSwitcher(
+                            duration: Duration(
+                              milliseconds: motion ? 280 : 0,
+                            ),
+                            switchInCurve: Curves.easeOutCubic,
+                            switchOutCurve: Curves.easeInCubic,
+                            layoutBuilder: (current, previous) => Stack(
+                              alignment: Alignment.center,
+                              children: [...previous, ?current],
+                            ),
+                            transitionBuilder: (child, animation) =>
+                                FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            ),
+                            child: KeyedSubtree(
+                              key: ValueKey(ayah.id),
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.stretch,
+                                children: [
+                                  _SteadyHeight(
+                                    items: [
+                                      for (final l in looks)
+                                        (l.text, l.at(21, 2)),
+                                    ],
+                                    child: Text(
+                                      looks[_index].text,
+                                      semanticsLabel: looks[_index].spoken,
+                                      textAlign: TextAlign.center,
+                                      style: looks[_index].at(21, 2),
+                                    ),
+                                  ),
+                                  if (showQuestion) ...[
+                                    const SizedBox(height: 8),
+                                    _SteadyHeight(
+                                      items: [
+                                        for (
+                                          var i = 0;
+                                          i < _ayahs.length;
+                                          i++
+                                        )
+                                          (
+                                            AyahOfTheDay.questionFor(
+                                              _day,
+                                              i,
+                                            ),
+                                            questionStyle,
+                                          ),
+                                      ],
+                                      child: ListenableBuilder(
+                                        listenable: UserDataStore.instance,
+                                        builder: (context, _) {
+                                          final done =
+                                              UserDataStore.instance
+                                                  .getTadbeer(
+                                                    ayah.surahNumber,
+                                                    ayah.ayahNumber,
+                                                  ) !=
+                                              null;
+                                          return done
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .center,
+                                                  children: [
+                                                    const Icon(
+                                                      AppIcons
+                                                          .checkCircleFill,
+                                                      color: gold,
+                                                      size: 16,
+                                                    ),
+                                                    const SizedBox(width: 6),
+                                                    Text(
+                                                      l10n.reflectedToday,
+                                                      style: questionStyle,
+                                                    ),
+                                                  ],
+                                                )
+                                              : Text(
+                                                  AyahOfTheDay.questionFor(
+                                                    _day,
+                                                    _index,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  style: questionStyle,
+                                                );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
                           ),
                         ],
-                      ),
+                        if (showQuestion) const SizedBox(height: 6),
+                        // تلتف في الهواتف الضيقة بدل أن تفيض.
+                        if (showActions)
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            children: [
+                              _Action(
+                                icon: AppIcons.flowerLotusFill,
+                                label: l10n.reflectOnIt,
+                                onTap: () => TadbeerPauseSheet.show(
+                                  context,
+                                  ayah,
+                                  initialQuestion: AyahOfTheDay.questionIndex(
+                                    _day,
+                                    _index,
+                                  ),
+                                ),
+                              ),
+                              _Action(
+                                icon: AppIcons.export,
+                                label: l10n.share,
+                                onTap: () =>
+                                    AyahShareSheet.show(context, ayah),
+                              ),
+                              _Action(
+                                icon: AppIcons.personSimpleTaiChi,
+                                label: l10n.focusMode,
+                                onTap: () =>
+                                    FocusModeScreen.open(context, ayah),
+                              ),
+                            ],
+                          ),
+                        _Dots(
+                          count: _ayahs.length,
+                          current: _index,
+                          color: gold,
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -657,7 +781,9 @@ class _Dots extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             for (var i = 0; i < count; i++)
-              Container(
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOutCubic,
                 width: i == current ? 14 : 5,
                 height: 5,
                 margin: const EdgeInsets.symmetric(horizontal: 2),

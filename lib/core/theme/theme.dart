@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 import '../design_system/app_icons.dart';
+import '../motion/app_motion.dart';
 
 /// ثيمات الألوان التي يختار منها القارئ؛ الكحلي هو الافتراضي.
 enum AppColorTheme {
@@ -563,9 +564,27 @@ class AppTheme {
   /// انحناء الحوارات واللوحات السفلية.
   static const double sheetRadius = 28;
 
-  static ThemeData get lightTheme => _build(Brightness.light);
+  static ThemeData? _cachedLightTheme;
+  static ThemeData? _cachedDarkTheme;
+  static AppColorTheme? _cachedTheme;
 
-  static ThemeData get darkTheme => _build(Brightness.dark);
+  static void _checkCache() {
+    if (_cachedTheme != AppColors.theme) {
+      _cachedTheme = AppColors.theme;
+      _cachedLightTheme = null;
+      _cachedDarkTheme = null;
+    }
+  }
+
+  static ThemeData get lightTheme {
+    _checkCache();
+    return _cachedLightTheme ??= _build(Brightness.light);
+  }
+
+  static ThemeData get darkTheme {
+    _checkCache();
+    return _cachedDarkTheme ??= _build(Brightness.dark);
+  }
 
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
@@ -1029,11 +1048,11 @@ class AppTheme {
       ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
-          TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+          TargetPlatform.android: SmoothPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.windows: FadeForwardsPageTransitionsBuilder(),
-          TargetPlatform.linux: FadeForwardsPageTransitionsBuilder(),
+          TargetPlatform.windows: SmoothPageTransitionsBuilder(),
+          TargetPlatform.linux: SmoothPageTransitionsBuilder(),
         },
       ),
     );

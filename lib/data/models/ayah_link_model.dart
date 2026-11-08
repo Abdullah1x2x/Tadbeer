@@ -43,25 +43,57 @@ class AyahLinkVerse {
 
   final int ayahNumber;
 
+  /// رقم الآية الأخيرة إن كان الكرت لنطاق آيات متتالية، وإلا null.
+  final int? toAyahNumber;
+
   /// رقم الصفحة في مصحف المدينة.
   final int page;
 
   /// خاطرة القارئ على هذه الآية داخل هذا الرابط.
   final String? note;
 
+  /// معرّف فريد للكرت لتمييزه خاصة عند تكرار الآية في نفس الرابط.
+  final String id;
+
   final DateTime addedAt;
 
-  const AyahLinkVerse({
+  AyahLinkVerse({
+    String? id,
     required this.ayahId,
     required this.surahNumber,
     required this.ayahNumber,
+    this.toAyahNumber,
     required this.page,
     this.note,
     required this.addedAt,
-  });
+  }) : id = id ??
+            (toAyahNumber != null && toAyahNumber > ayahNumber
+                ? '$surahNumber:$ayahNumber-$toAyahNumber'
+                : '$surahNumber:$ayahNumber');
 
-  /// مفتاح الآية "سورة:آية".
-  String get ayahKey => '$surahNumber:$ayahNumber';
+  /// هل الكرت يحتوي على نطاق آيات متتالية (آيتين أو أكثر).
+  bool get isRange => toAyahNumber != null && toAyahNumber! > ayahNumber;
+
+  /// رقم الآية الأخيرة في الكرت.
+  int get effectiveEndAyah => isRange ? toAyahNumber! : ayahNumber;
+
+  /// عدد الآيات في الكرت.
+  int get verseCount => isRange ? (toAyahNumber! - ayahNumber + 1) : 1;
+
+  /// مفتاح الآية "سورة:آية" أو "سورة:بداية-نهاية".
+  String get ayahKey => isRange
+      ? '$surahNumber:$ayahNumber-$toAyahNumber'
+      : '$surahNumber:$ayahNumber';
+
+  /// مفتاح العقدة على شبكة الروابط.
+  String get nodeKey => id;
+
+  /// هل يحتوي هذا الكرت على الآية المحددة.
+  bool containsAyah(int surah, int ayah) {
+    if (surah != surahNumber) return false;
+    if (!isRange) return ayah == ayahNumber;
+    return ayah >= ayahNumber && ayah <= toAyahNumber!;
+  }
 
   /// الخاطرة المعروضة للآية: خاطرتها في هذا الرابط، وإلا خاطرة القارئ العامة أو
   /// وقفة التدبر عليها.
@@ -73,19 +105,27 @@ class AyahLinkVerse {
   }
 
   Map<String, dynamic> toJson() => {
+    'id': id,
     'ayahId': ayahId,
     'surahNumber': surahNumber,
     'ayahNumber': ayahNumber,
+    if (toAyahNumber != null) 'toAyahNumber': toAyahNumber,
     'page': page,
     if (note != null && note!.isNotEmpty) 'note': note,
     'addedAt': addedAt.toIso8601String(),
   };
 
   factory AyahLinkVerse.fromJson(Map<String, dynamic> json) {
+    final s = json['surahNumber'] as int;
+    final a = json['ayahNumber'] as int;
+    final to = json['toAyahNumber'] as int?;
+    final defaultId = (to != null && to > a) ? '$s:$a-$to' : '$s:$a';
     return AyahLinkVerse(
+      id: json['id'] as String? ?? defaultId,
       ayahId: json['ayahId'] as int,
-      surahNumber: json['surahNumber'] as int,
-      ayahNumber: json['ayahNumber'] as int,
+      surahNumber: s,
+      ayahNumber: a,
+      toAyahNumber: to,
       page: json['page'] as int,
       note: json['note'] as String?,
       addedAt: json.containsKey('addedAt')
@@ -94,11 +134,13 @@ class AyahLinkVerse {
     );
   }
 
-  AyahLinkVerse copyWith({String? note}) {
+  AyahLinkVerse copyWith({String? id, String? note, int? toAyahNumber}) {
     return AyahLinkVerse(
+      id: id ?? this.id,
       ayahId: ayahId,
       surahNumber: surahNumber,
       ayahNumber: ayahNumber,
+      toAyahNumber: toAyahNumber ?? this.toAyahNumber,
       page: page,
       note: note ?? this.note,
       addedAt: addedAt,
@@ -267,8 +309,7 @@ class AyahLinkItem {
   });
 
   bool containsAyah(int surahNumber, int ayahNumber) {
-    final key = '$surahNumber:$ayahNumber';
-    return verses.any((v) => v.ayahKey == key);
+    return verses.any((v) => v.containsAyah(surahNumber, ayahNumber));
   }
 
   Map<String, dynamic> toJson() => {

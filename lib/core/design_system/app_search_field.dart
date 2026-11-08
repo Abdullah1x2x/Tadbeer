@@ -37,23 +37,23 @@ class AppSearchField extends StatelessWidget {
         ),
         boxShadow: AppTokens.cardShadow(isDark: isDark),
       ),
-      child: ListenableBuilder(
-        listenable: controller,
-        builder: (context, _) => TextField(
-          controller: controller,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
-              fontSize: 14,
-              color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
-            ),
-            prefixIcon: Icon(
-              AppIcons.magnifyingGlass,
-              color: AppColors.cyberEmerald,
-            ),
-            suffixIcon: controller.text.isNotEmpty
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(
+            fontFamily: 'IBMPlexSansArabic',
+            fontSize: 14,
+            color: isDark ? AppColors.nightSubtitle : AppColors.daySubtitle,
+          ),
+          prefixIcon: Icon(
+            AppIcons.magnifyingGlass,
+            color: AppColors.cyberEmerald,
+          ),
+          suffixIcon: ListenableBuilder(
+            listenable: controller,
+            builder: (context, _) => controller.text.isNotEmpty
                 ? IconButton(
                     tooltip: clearTooltip,
                     icon: const Icon(AppIcons.x, size: 20),
@@ -62,12 +62,12 @@ class AppSearchField extends StatelessWidget {
                       onChanged('');
                     },
                   )
-                : null,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
+                : const SizedBox.shrink(),
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
           ),
         ),
       ),

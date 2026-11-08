@@ -92,6 +92,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             l10n.reminders,

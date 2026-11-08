@@ -43,6 +43,7 @@ class HomeScreen extends StatelessWidget {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: PatternBackground(
           child: SafeArea(
             child: LayoutBuilder(

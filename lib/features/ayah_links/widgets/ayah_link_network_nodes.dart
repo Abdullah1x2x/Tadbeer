@@ -252,7 +252,11 @@ class _VerseCanvasNode extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '${surah.name} · ${context.l10n.digits(verse.ayahNumber)}',
+                    verse.isRange
+                        ? (context.l10n.isArabic
+                            ? '${surah.name} · ${context.l10n.digits(verse.ayahNumber)}-${context.l10n.digits(verse.toAyahNumber!)}'
+                            : '${surah.name} · ${verse.ayahNumber}-${verse.toAyahNumber}')
+                        : '${surah.name} · ${context.l10n.digits(verse.ayahNumber)}',
                     style: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',
                       fontSize: 13,
@@ -268,7 +272,59 @@ class _VerseCanvasNode extends StatelessWidget {
             ),
             const SizedBox(height: 6),
 
-            if (ayah != null)
+            if (verse.isRange)
+              Builder(
+                builder: (ctx) {
+                  final rangeAyahs = [
+                    for (var a = verse.ayahNumber; a <= verse.effectiveEndAyah; a++)
+                      QuranRepository.instance.getAyah(verse.surahNumber, a),
+                  ].whereType<Ayah>().toList();
+                  final isMadinah = UserDataStore.instance.settings.mushafStyle ==
+                      MushafStyle.madinah;
+                  return Column(
+                    children: [
+                      for (final a in rangeAyahs)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: isMadinah
+                              ? QcfAyahText(
+                                  ayah: a,
+                                  fontSize: fontSize * 0.78,
+                                  height: 1.6,
+                                  color: isDark
+                                      ? AppColors.nightQuranText
+                                      : AppColors.dayQuranText,
+                                  fallback: Text(
+                                    '﴿ ${a.text} ﴾ [${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}]',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: UserDataStore.instance.quranFontFamily,
+                                      fontSize: fontSize * 0.78,
+                                      height: 1.6,
+                                      color: isDark
+                                          ? AppColors.nightQuranText
+                                          : AppColors.dayQuranText,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  '﴿ ${a.text} ﴾ [${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}]',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: UserDataStore.instance.quranFontFamily,
+                                    fontSize: fontSize * 0.78,
+                                    height: 1.6,
+                                    color: isDark
+                                        ? AppColors.nightQuranText
+                                        : AppColors.dayQuranText,
+                                  ),
+                                ),
+                        ),
+                    ],
+                  );
+                },
+              )
+            else if (ayah != null)
               UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah
                   ? QcfAyahText(
                       ayah: ayah,

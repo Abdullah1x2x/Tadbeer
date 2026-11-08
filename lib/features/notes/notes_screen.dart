@@ -8,7 +8,9 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import 'note_pdf_exporter.dart';
 import 'tadbeer_journal_exporter.dart';
 import '../../data/models/note_model.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../data/quran/quran_repository.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
 import '../quran/screens/quran_screen.dart';
 import 'note_editor_screen.dart';
 import '../../core/design_system/app_icons.dart';
@@ -53,6 +55,7 @@ class _NotesScreenState extends State<NotesScreen> {
     return Directionality(
       textDirection: context.currentLanguage.direction,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(
             l10n.notes,
@@ -145,20 +148,22 @@ class _NotesScreenState extends State<NotesScreen> {
               child: ListenableBuilder(
                 listenable: UserDataStore.instance,
                 builder: (context, _) {
-                  final notes = UserDataStore.instance.notes.where((n) {
-                    if (_query.isEmpty) return true;
-                    final q = ArabicSearchNormalizer.normalize(_query);
-                    final title = ArabicSearchNormalizer.normalize(
-                      n.title ?? '',
-                    );
-                    final content = ArabicSearchNormalizer.normalize(n.content);
-                    final verse = ArabicSearchNormalizer.normalize(
-                      n.ayahText ?? '',
-                    );
-                    return title.contains(q) ||
-                        content.contains(q) ||
-                        verse.contains(q);
-                  }).toList();
+                  final normalizedQuery =
+                      _query.isEmpty ? '' : ArabicSearchNormalizer.normalize(_query);
+                  final notes = _query.isEmpty
+                      ? UserDataStore.instance.notes
+                      : UserDataStore.instance.notes.where((n) {
+                          final title = ArabicSearchNormalizer.normalize(
+                            n.title ?? '',
+                          );
+                          final content = ArabicSearchNormalizer.normalize(n.content);
+                          final verse = ArabicSearchNormalizer.normalize(
+                            n.ayahText ?? '',
+                          );
+                          return title.contains(normalizedQuery) ||
+                              content.contains(normalizedQuery) ||
+                              verse.contains(normalizedQuery);
+                        }).toList();
 
                   if (notes.isEmpty) {
                     return Center(
@@ -188,38 +193,41 @@ class _NotesScreenState extends State<NotesScreen> {
                     );
                   }
 
+                  final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
                   return ListView.separated(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + bottomInset),
                     itemCount: notes.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final note = notes[index];
-                      return _NoteCard(
-                        note: note,
-                        onTap: () {
-                          if (note.isAyahNote &&
-                              note.surahNumber != null &&
-                              note.ayahNumber != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => QuranScreen(
-                                  initialPage: note.page,
-                                  targetSurahNumber: note.surahNumber,
-                                  targetAyahNumber: note.ayahNumber,
+                      return RepaintBoundary(
+                        child: _NoteCard(
+                          note: note,
+                          onTap: () {
+                            if (note.isAyahNote &&
+                                note.surahNumber != null &&
+                                note.ayahNumber != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => QuranScreen(
+                                    initialPage: note.page,
+                                    targetSurahNumber: note.surahNumber,
+                                    targetAyahNumber: note.ayahNumber,
+                                  ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            _openFreeNoteEditor(note);
-                          }
-                        },
-                        onEdit: () => _openFreeNoteEditor(note),
-                        onDelete: () => _showDeleteConfirmDialog(note),
-                        onExportPdf: () => _exportNotePdf(note),
+                              );
+                            } else {
+                              _openFreeNoteEditor(note);
+                            }
+                          },
+                          onEdit: () => _openFreeNoteEditor(note),
+                          onDuplicate: () => _duplicateNote(note),
+                          onDelete: () => _showDeleteConfirmDialog(note),
+                          onExportPdf: () => _exportNotePdf(note),
+                        ),
                       );
                     },
                   );
@@ -244,6 +252,50 @@ class _NotesScreenState extends State<NotesScreen> {
               context.l10n.exportNoteFailed(e),
               style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
+          ),
+        );
+      }
+    }
+  }
+
+  /// يكرّر الخاطرة وينشئ نسخة جديدة مطابقة لها.
+  Future<void> _duplicateNote(NoteItem note) async {
+    try {
+      final duplicated = await UserDataStore.instance.duplicateNote(note);
+      if (mounted) {
+        final l10n = context.l10n;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.isArabic
+                  ? 'تم تكرار الملاحظة بنجاح'
+                  : 'Note duplicated successfully',
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: l10n.edit,
+              textColor: Colors.white,
+              onPressed: () {
+                _openFreeNoteEditor(duplicated);
+              },
+            ),
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              context.l10n.isArabic
+                  ? 'تعذر تكرار الملاحظة'
+                  : 'Failed to duplicate note',
+              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+            ),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
           ),
         );
       }
@@ -306,6 +358,7 @@ class _NoteCard extends StatelessWidget {
   final NoteItem note;
   final VoidCallback onTap;
   final VoidCallback onEdit;
+  final VoidCallback onDuplicate;
   final VoidCallback onDelete;
   final VoidCallback onExportPdf;
 
@@ -313,6 +366,7 @@ class _NoteCard extends StatelessWidget {
     required this.note,
     required this.onTap,
     required this.onEdit,
+    required this.onDuplicate,
     required this.onDelete,
     required this.onExportPdf,
   });
@@ -362,6 +416,7 @@ class _NoteCard extends StatelessWidget {
                     icon: appMenuIcon,
                     onSelected: (val) {
                       if (val == 'edit') onEdit();
+                      if (val == 'duplicate') onDuplicate();
                       if (val == 'pdf') onExportPdf();
                       if (val == 'delete') onDelete();
                     },
@@ -372,6 +427,13 @@ class _NoteCard extends StatelessWidget {
                           icon: AppIcons.pencilSimpleFill,
                           label: l10n.edit,
                         ),
+                      appMenuItem(
+                        value: 'duplicate',
+                        icon: AppIcons.copy,
+                        label: l10n.isArabic
+                            ? 'تكرار الملاحظة'
+                            : 'Duplicate',
+                      ),
                       appMenuItem(
                         value: 'pdf',
                         icon: AppIcons.filePdfFill,
@@ -442,18 +504,37 @@ class _NoteCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                   ],
-                  Text(
-                    '﴿ ${note.ayahText} ﴾',
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      fontFamily: 'AmiriQuran',
-                      fontSize: 15,
-                      color: isDark
-                          ? AppColors.nightQuranText
-                          : AppColors.dayQuranText,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  Builder(
+                    builder: (ctx) {
+                      final ayah = note.surahNumber != null && note.ayahNumber != null
+                          ? QuranRepository.instance.getAyah(note.surahNumber!, note.ayahNumber!)
+                          : null;
+                      final isMadinah = UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
+                      final fallback = Text(
+                        '﴿ ${note.ayahText} ﴾',
+                        textDirection: TextDirection.rtl,
+                        style: TextStyle(
+                          fontFamily: UserDataStore.instance.quranFontFamily,
+                          fontSize: 16,
+                          height: 1.6,
+                          color: isDark
+                              ? AppColors.nightQuranText
+                              : AppColors.dayQuranText,
+                        ),
+                      );
+                      if (isMadinah && ayah != null) {
+                        return QcfAyahText(
+                          ayah: ayah,
+                          fontSize: 16,
+                          height: 1.6,
+                          color: isDark
+                              ? AppColors.nightQuranText
+                              : AppColors.dayQuranText,
+                          fallback: fallback,
+                        );
+                      }
+                      return fallback;
+                    },
                   ),
                 ],
               ),

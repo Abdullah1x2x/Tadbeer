@@ -85,22 +85,121 @@ class AudioBar extends StatelessWidget {
                 ),
                 playButton,
                 control(AppIcons.skipForwardFill, l10n.nextAyah, audio.next),
-                // متابعة التلاوة أو الوقوف عند آية واحدة.
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  tooltip: audio.continuous
-                      ? l10n.continuousRecitation
-                      : l10n.singleAyahRecitation,
-                  isSelected: !audio.continuous,
-                  onPressed: () {
-                    HapticFeedback.selectionClick();
-                    audio.setContinuous(!audio.continuous);
-                  },
-                  icon: Icon(
-                    audio.continuous ? AppIcons.repeat : AppIcons.repeatOnce,
-                    size: 20,
-                    color: audio.continuous ? null : gold,
+                // خيارات تكرار الآية ونمط التلاوة.
+                PopupMenuButton<int>(
+                  tooltip: l10n.isArabic
+                      ? 'تكرار الآية ونمط التلاوة'
+                      : 'Repeat and playback options',
+                  padding: EdgeInsets.zero,
+                  icon: Badge(
+                    label: Text(
+                      '×${l10n.digits(audio.repeat)}',
+                      style: const TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    backgroundColor: gold,
+                    offset: const Offset(6, -6),
+                    isLabelVisible: audio.repeat > 1,
+                    child: Icon(
+                      audio.continuous ? AppIcons.repeat : AppIcons.repeatOnce,
+                      size: 20,
+                      color: (audio.repeat > 1 || !audio.continuous)
+                          ? gold
+                          : null,
+                    ),
                   ),
+                  onSelected: (val) {
+                    HapticFeedback.selectionClick();
+                    if (val == -1) {
+                      audio.setContinuous(!audio.continuous);
+                    } else {
+                      audio.setRepeat(val);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem<int>(
+                      value: -1,
+                      child: Row(
+                        children: [
+                          Icon(
+                            audio.continuous
+                                ? AppIcons.repeat
+                                : AppIcons.repeatOnce,
+                            size: 18,
+                            color: audio.continuous ? primary : gold,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              audio.continuous
+                                  ? (l10n.isArabic
+                                      ? 'نمط التلاوة: مستمر'
+                                      : 'Mode: Continuous')
+                                  : (l10n.isArabic
+                                      ? 'نمط التلاوة: آية واحدة'
+                                      : 'Mode: Single Ayah'),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            audio.continuous
+                                ? (l10n.isArabic
+                                    ? '(تبديل لفردي)'
+                                    : '(Switch)')
+                                : (l10n.isArabic
+                                    ? '(تبديل لمستمر)'
+                                    : '(Switch)'),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSecondary(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuDivider(),
+                    ...[1, 2, 3, 5, 10].map(
+                      (n) => PopupMenuItem<int>(
+                        value: n,
+                        child: Row(
+                          children: [
+                            Icon(
+                              audio.repeat == n
+                                  ? AppIcons.checkCircleFill
+                                  : AppIcons.circle,
+                              size: 16,
+                              color: audio.repeat == n
+                                  ? primary
+                                  : Colors.transparent,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              n == 1
+                                  ? (l10n.isArabic
+                                      ? 'بدون تكرار (مرة واحدة)'
+                                      : 'No repeat (1x)')
+                                  : (l10n.isArabic
+                                      ? 'تكرار الآية ×${l10n.digits(n)} مرات'
+                                      : 'Repeat ayah ×$n times'),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: audio.repeat == n
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: audio.repeat == n ? primary : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 4),
                 Expanded(

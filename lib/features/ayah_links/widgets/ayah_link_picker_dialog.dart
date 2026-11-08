@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/localization.dart';
+import '../../../core/design_system/app_icons.dart';
 import '../../../core/theme/theme.dart';
-import '../../../data/storage/user_data_store.dart';
-import '../data/ayah_link_repository.dart';
+import '../../../data/models/user_settings_model.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
+import '../../../data/storage/user_data_store.dart';
+import '../../quran/qcf/qcf_ayah_text.dart';
+import '../data/ayah_link_repository.dart';
 import 'create_link_dialog.dart';
-import '../../../core/design_system/app_icons.dart';
 
-/// لوحة لإضافة آية من المصحف إلى رابط موجود أو جديد.
+/// لوحة لإضافة آية أو نطاق آيات متتالية من المصحف إلى رابط موجود أو جديد.
 class AyahLinkPickerDialog extends StatefulWidget {
   final Ayah ayah;
 
@@ -20,6 +22,7 @@ class AyahLinkPickerDialog extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      useSafeArea: true,
       builder: (_) => AyahLinkPickerDialog(ayah: ayah),
     );
   }
@@ -30,31 +33,76 @@ class AyahLinkPickerDialog extends StatefulWidget {
 
 class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
   final AyahLinkRepository _repo = AyahLinkRepository();
+  final TextEditingController _noteController = TextEditingController();
 
-  /// يضيف الآية إلى الرابط، ثم يغلق ويؤكد.
+  late Ayah _currentAyah;
+  late int _fromAyahNumber;
+  late int _toAyahNumber;
+  bool _isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAyah = widget.ayah;
+    _fromAyahNumber = widget.ayah.ayahNumber;
+    _toAyahNumber = widget.ayah.ayahNumber;
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  void _switchAyah(Ayah ayah) {
+    setState(() {
+      _currentAyah = ayah;
+      _fromAyahNumber = ayah.ayahNumber;
+      _toAyahNumber = ayah.ayahNumber;
+    });
+  }
+
+  /// يضيف الآية أو نطاق الآيات إلى الرابط مع الخاطرة، ثم يغلق ويؤكد.
   Future<void> _addVerseToLink(String linkId, String linkTitle) async {
-    await _repo.addVerseToLink(
-      linkId,
-      ayahId: widget.ayah.id,
-      surahNumber: widget.ayah.surahNumber,
-      ayahNumber: widget.ayah.ayahNumber,
-      page: widget.ayah.page,
-    );
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
 
-    if (mounted) {
-      Navigator.pop(context);
-      final l10n = context.l10n;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.verseAddedToLink(linkTitle)),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          behavior: SnackBarBehavior.floating,
-        ),
+    try {
+      final startAyah = QuranRepository.instance.getAyah(
+            _currentAyah.surahNumber,
+            _fromAyahNumber,
+          ) ??
+          _currentAyah;
+
+      final noteText = _noteController.text.trim();
+
+      await _repo.addVerseToLink(
+        linkId,
+        ayahId: startAyah.id,
+        surahNumber: startAyah.surahNumber,
+        ayahNumber: _fromAyahNumber,
+        toAyahNumber: _toAyahNumber > _fromAyahNumber ? _toAyahNumber : null,
+        page: startAyah.page,
+        note: noteText.isEmpty ? null : noteText,
       );
+
+      if (mounted) {
+        Navigator.pop(context);
+        final l10n = context.l10n;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.verseAddedToLink(linkTitle)),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
-  /// ينشئ رابطاً جديداً ويضيف الآية إليه.
+  /// ينشئ رابطاً جديداً ويضيف الآية أو نطاق الآيات إليه.
   Future<void> _createNewLinkAndAdd() async {
     final created = await CreateLinkDialog.show(context);
     if (created != null && mounted) {
@@ -66,7 +114,12 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surah = QuranRepository.instance.getSurah(widget.ayah.surahNumber);
+    final surah = QuranRepository.instance.getSurah(_currentAyah.surahNumber);
+    final isMadinah = UserDataStore.instance.settings.mushafStyle ==
+        MushafStyle.madinah;
+    final isRange = _toAyahNumber > _fromAyahNumber;
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final gold = Theme.of(context).colorScheme.primary;
 
     return Directionality(
       textDirection: context.currentLanguage.direction,
@@ -75,205 +128,549 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
         builder: (context, _) {
           final allLinks = _repo.allLinks;
 
-          return Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.7,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.surface(context),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
+          return Padding(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.88,
               ),
-              border: Border.all(color: AppColors.border(context)),
-            ),
-            child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      margin: const EdgeInsets.only(top: 10, bottom: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(2),
+              decoration: BoxDecoration(
+                color: AppColors.surface(context),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+                border: Border.all(color: AppColors.border(context)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.only(top: 10, bottom: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
                       ),
                     ),
-                  ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              AppIcons.graph,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.addToAyahLink,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                    // Header row
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                AppIcons.graph,
+                                color: gold,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.addToAyahLink,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            tooltip: l10n.close,
+                            icon: const Icon(AppIcons.x, size: 20),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+
+                    Flexible(
+                      child: ListView(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                        children: [
+                          // Ayah preview & range box
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: gold.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: gold.withValues(alpha: 0.35),
                               ),
                             ),
-                          ],
-                        ),
-                        IconButton(
-                          tooltip: context.l10n.close,
-                          icon: const Icon(AppIcons.x, size: 20),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                  ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      AppIcons.bookOpenFill,
+                                      size: 16,
+                                      color: gold,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        isRange
+                                            ? (l10n.isArabic
+                                                ? '${surah.name} [الآيات ${l10n.digits(_fromAyahNumber)} - ${l10n.digits(_toAyahNumber)}]'
+                                                : '${surah.name} [Ayahs $_fromAyahNumber - $_toAyahNumber]')
+                                            : l10n.ayahReference(
+                                                surah.name,
+                                                l10n.digits(_currentAyah.ayahNumber),
+                                              ),
+                                        style: TextStyle(
+                                          fontFamily: 'IBMPlexSansArabic',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: gold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
 
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary
-                          .withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      l10n.ayahReference(surah.name, widget.ayah.ayahNumber),
-                      style: TextStyle(
-                        fontFamily: 'IBMPlexSansArabic',
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
+                                // Verse texts preview
+                                Builder(
+                                  builder: (ctx) {
+                                    final rangeAyahs = [
+                                      for (int a = _fromAyahNumber;
+                                          a <= _toAyahNumber;
+                                          a++)
+                                        QuranRepository.instance.getAyah(
+                                          _currentAyah.surahNumber,
+                                          a,
+                                        ),
+                                    ].whereType<Ayah>().toList();
 
-                  const Divider(height: 1),
+                                    return Column(
+                                      children: [
+                                        for (final a in rangeAyahs)
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 4,
+                                            ),
+                                            child: isMadinah
+                                                ? QcfAyahText(
+                                                    ayah: a,
+                                                    fontSize: 16,
+                                                    height: 1.8,
+                                                    color: AppColors.textPrimary(
+                                                      context,
+                                                    ),
+                                                    fallback: Text(
+                                                      '﴿ ${a.text} ﴾ [${l10n.digits(a.ayahNumber)}]',
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            UserDataStore
+                                                                .instance
+                                                                .quranFontFamily,
+                                                        fontSize: 16,
+                                                        height: 1.8,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    '﴿ ${a.text} ﴾ [${l10n.digits(a.ayahNumber)}]',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontFamily: UserDataStore
+                                                          .instance
+                                                          .quranFontFamily,
+                                                      fontSize: 16,
+                                                      height: 1.8,
+                                                    ),
+                                                  ),
+                                          ),
+                                      ],
+                                    );
+                                  },
+                                ),
 
-                  ListTile(
-                    leading: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary
-                            .withValues(alpha: 0.15),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        AppIcons.plus,
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      l10n.newAyahLink,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    subtitle: Text(
-                      l10n.createLinkWithVerseHint,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    onTap: _createNewLinkAndAdd,
-                  ),
+                                const Divider(height: 16),
 
-                  const Divider(height: 1),
+                                // Quick chips to expand/trim range
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    if (_fromAyahNumber > 1)
+                                      ActionChip(
+                                        avatar: const Icon(
+                                          AppIcons.caretUp,
+                                          size: 16,
+                                        ),
+                                        label: Text(
+                                          l10n.isArabic
+                                              ? 'ضم الآية السابقة (${l10n.digits(_fromAyahNumber - 1)})'
+                                              : 'Include previous (${_fromAyahNumber - 1})',
+                                        ),
+                                        onPressed: () {
+                                          setState(() => _fromAyahNumber -= 1);
+                                        },
+                                      ),
+                                    if (_fromAyahNumber <
+                                        _currentAyah.ayahNumber)
+                                      ActionChip(
+                                        avatar: const Icon(
+                                          AppIcons.x,
+                                          size: 14,
+                                        ),
+                                        label: Text(
+                                          l10n.isArabic
+                                              ? 'استبعاد (${l10n.digits(_fromAyahNumber)})'
+                                              : 'Exclude ($_fromAyahNumber)',
+                                        ),
+                                        onPressed: () {
+                                          setState(() => _fromAyahNumber += 1);
+                                        },
+                                      ),
+                                    if (_toAyahNumber < surah.ayahCount)
+                                      ActionChip(
+                                        avatar: const Icon(
+                                          AppIcons.caretDown,
+                                          size: 16,
+                                        ),
+                                        label: Text(
+                                          l10n.isArabic
+                                              ? 'ضم الآية اللاحقة (${l10n.digits(_toAyahNumber + 1)})'
+                                              : 'Include next (${_toAyahNumber + 1})',
+                                        ),
+                                        onPressed: () {
+                                          setState(() => _toAyahNumber += 1);
+                                        },
+                                      ),
+                                    if (_toAyahNumber > _currentAyah.ayahNumber)
+                                      ActionChip(
+                                        avatar: const Icon(
+                                          AppIcons.x,
+                                          size: 14,
+                                        ),
+                                        label: Text(
+                                          l10n.isArabic
+                                              ? 'استبعاد (${l10n.digits(_toAyahNumber)})'
+                                              : 'Exclude ($_toAyahNumber)',
+                                        ),
+                                        onPressed: () {
+                                          setState(() => _toAyahNumber -= 1);
+                                        },
+                                      ),
+                                  ],
+                                ),
 
-                  if (allLinks.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 30,
-                        horizontal: 20,
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(
-                            AppIcons.graph,
-                            size: 40,
-                            color: Colors.grey.withValues(alpha: 0.5),
+                                // Quick switch to previous ayah only button
+                                if (_currentAyah.ayahNumber > 1 && !isRange) ...[
+                                  const SizedBox(height: 4),
+                                  Align(
+                                    alignment: AlignmentDirectional.centerStart,
+                                    child: TextButton.icon(
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 4,
+                                          vertical: 2,
+                                        ),
+                                      ),
+                                      icon: const Icon(
+                                        AppIcons.arrowLeft,
+                                        size: 16,
+                                      ),
+                                      label: Text(
+                                        l10n.isArabic
+                                            ? 'اختيار الآية السابقة فقط (${l10n.digits(_currentAyah.ayahNumber - 1)})'
+                                            : 'Select previous ayah only (${_currentAyah.ayahNumber - 1})',
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      onPressed: () {
+                                        final prev =
+                                            QuranRepository.instance.getAyah(
+                                          _currentAyah.surahNumber,
+                                          _currentAyah.ayahNumber - 1,
+                                        );
+                                        if (prev != null) _switchAyah(prev);
+                                      },
+                                    ),
+                                  ),
+                                ],
+
+                                const SizedBox(height: 8),
+
+                                // Manual Dropdowns for range
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            l10n.isArabic ? 'من:' : 'From:',
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          DropdownButton<int>(
+                                            value: _fromAyahNumber,
+                                            isDense: true,
+                                            items: [
+                                              for (int a = 1;
+                                                  a <= _toAyahNumber;
+                                                  a++)
+                                                DropdownMenuItem(
+                                                  value: a,
+                                                  child: Text(l10n.digits(a)),
+                                                ),
+                                            ],
+                                            onChanged: (val) {
+                                              if (val != null) {
+                                                setState(
+                                                  () => _fromAyahNumber = val,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            l10n.isArabic ? 'إلى:' : 'To:',
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          DropdownButton<int>(
+                                            value: _toAyahNumber,
+                                            isDense: true,
+                                            items: [
+                                              for (int a = _fromAyahNumber;
+                                                  a <= surah.ayahCount;
+                                                  a++)
+                                                DropdownMenuItem(
+                                                  value: a,
+                                                  child: Text(l10n.digits(a)),
+                                                ),
+                                            ],
+                                            onChanged: (val) {
+                                              if (val != null) {
+                                                setState(
+                                                  () => _toAyahNumber = val,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 10),
+
+                          const SizedBox(height: 12),
+
+                          // Optional reflection note field
+                          TextField(
+                            controller: _noteController,
+                            minLines: 1,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              hintText: l10n.isArabic
+                                  ? 'خاطرة حول الآية / الآيات في هذا الرابط (اختياري)...'
+                                  : 'Reflection note on verse / range (optional)...',
+                              prefixIcon:
+                                  const Icon(AppIcons.notePencil, size: 18),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 14),
+
+                          // Create new link tile
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: gold.withValues(alpha: 0.35),
+                              ),
+                            ),
+                            child: ListTile(
+                              leading: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: gold.withValues(alpha: 0.15),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  AppIcons.plus,
+                                  color: gold,
+                                  size: 20,
+                                ),
+                              ),
+                              title: Text(
+                                l10n.newAyahLink,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: gold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                l10n.createLinkWithVerseHint,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              onTap:
+                                  _isSubmitting ? null : _createNewLinkAndAdd,
+                            ),
+                          ),
+
+                          const SizedBox(height: 14),
+
+                          // Existing links section
                           Text(
-                            l10n.noAyahLinksYet,
+                            l10n.isArabic
+                                ? 'إضافة إلى رابط موجود (${allLinks.length}):'
+                                : 'Add to existing link (${allLinks.length}):',
                             style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
                               color: isDark
                                   ? AppColors.nightSubtitle
                                   : AppColors.daySubtitle,
                             ),
                           ),
+                          const SizedBox(height: 8),
+
+                          if (allLinks.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      AppIcons.graph,
+                                      size: 36,
+                                      color: Colors.grey.withValues(alpha: 0.4),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      l10n.noAyahLinksYet,
+                                      style: TextStyle(
+                                        color: isDark
+                                            ? AppColors.nightSubtitle
+                                            : AppColors.daySubtitle,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          else
+                            for (final link in allLinks) ...[
+                              () {
+                                final isAlreadyLinked = [
+                                  for (var a = _fromAyahNumber;
+                                      a <= _toAyahNumber;
+                                      a++)
+                                    a,
+                                ].any(
+                                  (a) => link.containsAyah(
+                                    _currentAyah.surahNumber,
+                                    a,
+                                  ),
+                                );
+
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 8),
+                                  decoration: BoxDecoration(
+                                    color: isAlreadyLinked
+                                        ? gold.withValues(alpha: 0.05)
+                                        : AppColors.surface(context),
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: isAlreadyLinked
+                                          ? gold.withValues(alpha: 0.3)
+                                          : AppColors.border(context),
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    leading: Icon(
+                                      isAlreadyLinked
+                                          ? AppIcons.checkCircleFill
+                                          : AppIcons.circle,
+                                      color:
+                                          isAlreadyLinked ? gold : Colors.grey,
+                                      size: 22,
+                                    ),
+                                    title: Text(
+                                      link.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '${l10n.linkedAyahsCount(link.verses.length)}${link.description != null ? ' · ${link.description}' : ''}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: isDark
+                                            ? AppColors.nightSubtitle
+                                            : AppColors.daySubtitle,
+                                      ),
+                                    ),
+                                    trailing: isAlreadyLinked
+                                        ? Text(
+                                            l10n.alreadyAdded,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: gold,
+                                            ),
+                                          )
+                                        : (_isSubmitting
+                                            ? const SizedBox.square(
+                                                dimension: 16,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                ),
+                                              )
+                                            : const Icon(
+                                                AppIcons.caretRight,
+                                                size: 14,
+                                              )),
+                                    onTap: (isAlreadyLinked || _isSubmitting)
+                                        ? null
+                                        : () => _addVerseToLink(
+                                              link.id,
+                                              link.title,
+                                            ),
+                                  ),
+                                );
+                              }(),
+                            ],
                         ],
                       ),
-                    )
-                  else
-                    Expanded(
-                      child: ListView.separated(
-                        itemCount: allLinks.length,
-                        separatorBuilder: (_, _) => const Divider(height: 1),
-                        itemBuilder: (context, index) {
-                          final link = allLinks[index];
-                          final isAlreadyLinked = link.containsAyah(
-                            widget.ayah.surahNumber,
-                            widget.ayah.ayahNumber,
-                          );
-
-                          return ListTile(
-                            leading: Icon(
-                              isAlreadyLinked
-                                  ? AppIcons.checkCircleFill
-                                  : AppIcons.circle,
-                              color: isAlreadyLinked
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.grey,
-                              size: 22,
-                            ),
-                            title: Text(
-                              link.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            subtitle: Text(
-                              '${l10n.linkedAyahsCount(link.verses.length)}${link.description != null ? ' · ${link.description}' : ''}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: isDark
-                                    ? AppColors.nightSubtitle
-                                    : AppColors.daySubtitle,
-                              ),
-                            ),
-                            trailing: isAlreadyLinked
-                                ? Text(
-                                    l10n.alreadyAdded,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary,
-                                    ),
-                                  )
-                                : Icon(AppIcons.caretRight, size: 14),
-                            onTap: isAlreadyLinked
-                                ? null
-                                : () => _addVerseToLink(link.id, link.title),
-                          );
-                        },
-                      ),
                     ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

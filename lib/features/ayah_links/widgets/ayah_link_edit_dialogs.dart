@@ -27,6 +27,7 @@ Future<void> editAyahLinkVerseNote(
       verse.surahNumber,
       verse.ayahNumber,
       updatedNote.isEmpty ? null : updatedNote,
+      verse.id,
     );
   }
 }
@@ -67,6 +68,8 @@ Future<void> confirmRemoveAyahLinkVerse(
       linkId,
       verse.surahNumber,
       verse.ayahNumber,
+      verse.toAyahNumber,
+      verse.id,
     );
   }
 }

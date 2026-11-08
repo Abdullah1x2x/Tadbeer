@@ -12,6 +12,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/models/ayah_link_model.dart';
 import '../data/ayah_link_repository.dart';
 import 'ayah_link_edit_dialogs.dart';
+import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../quran/qcf/qcf_ayah_text.dart';
 import '../../quran/screens/quran_screen.dart';
@@ -110,9 +111,9 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     } else {
       _positions.clear();
       for (final v in verses) {
-        final pos = existing[v.ayahKey];
+        final pos = existing[v.nodeKey] ?? existing[v.ayahKey];
         if (pos != null) {
-          _positions[v.ayahKey] = Offset(pos.dx, pos.dy);
+          _positions[v.nodeKey] = Offset(pos.dx, pos.dy);
         }
       }
       for (final n in notes) {
@@ -134,7 +135,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
   ) {
     _positions.clear();
     final allKeys = [
-      ...verses.map((v) => v.ayahKey),
+      ...verses.map((v) => v.nodeKey),
       ...notes.map((n) => n.noteKey),
     ];
     final count = allKeys.length;
@@ -209,7 +210,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
       Offset(size.width / 2, size.height / 2),
     );
     final keys = [
-      ...widget.link.verses.map((v) => v.ayahKey),
+      ...widget.link.verses.map((v) => v.nodeKey),
       ...widget.link.notes.map((n) => n.noteKey),
     ];
     _positions.removeWhere((k, _) => !keys.contains(k));
@@ -233,7 +234,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     List<AyahLinkNote> notes,
   ) {
     final allKeys = [
-      ...verses.map((v) => v.ayahKey),
+      ...verses.map((v) => v.nodeKey),
       ...notes.map((n) => n.noteKey),
     ];
     for (int i = 0; i < allKeys.length; i++) {
@@ -348,7 +349,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
   /// يقرّب الكاميرا من عقدة الآية، ثم يفتح لوحة تفاصيلها.
   void _focusAyahNode(AyahLinkVerse verse) {
-    final pos = _positions[verse.ayahKey];
+    final pos = _positions[verse.nodeKey];
     if (pos == null) return;
 
     final viewportSize = MediaQuery.of(context).size;
@@ -383,12 +384,16 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     _showInspectorSheet(
-      nodeKey: verse.ayahKey,
+      nodeKey: verse.nodeKey,
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            context.l10n.ayahReference(surah.name, verse.ayahNumber),
+            verse.isRange
+                ? (context.l10n.isArabic
+                    ? '${surah.name} [الآيات ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)} - ${ArabicSearchNormalizer.toArabicDigits(verse.toAyahNumber!)}]'
+                    : '${surah.name} [Ayahs ${verse.ayahNumber} - ${verse.toAyahNumber}]')
+                : context.l10n.ayahReference(surah.name, verse.ayahNumber),
             style: TextStyle(
               fontFamily: 'IBMPlexSansArabic',
               fontSize: 16,
@@ -410,7 +415,73 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (ayah != null)
+          if (verse.isRange)
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkBackground : AppColors.comsilk,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Builder(
+                builder: (ctx) {
+                  final rangeAyahs = [
+                    for (var a = verse.ayahNumber;
+                        a <= verse.effectiveEndAyah;
+                        a++)
+                      QuranRepository.instance.getAyah(verse.surahNumber, a),
+                  ].whereType<Ayah>().toList();
+                  final isMadinah =
+                      UserDataStore.instance.settings.mushafStyle ==
+                          MushafStyle.madinah;
+                  return Column(
+                    children: [
+                      for (final a in rangeAyahs)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: isMadinah
+                              ? QcfAyahText(
+                                  ayah: a,
+                                  fontSize: 18,
+                                  color: isDark
+                                      ? AppColors.nightQuranText
+                                      : AppColors.dayQuranText,
+                                  height: 1.8,
+                                  fallback: Text(
+                                    '﴿ ${a.text} ﴾ [${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}]',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: UserDataStore
+                                          .instance
+                                          .quranFontFamily,
+                                      fontSize: 18,
+                                      height: 1.8,
+                                      color: isDark
+                                          ? AppColors.nightQuranText
+                                          : AppColors.dayQuranText,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  '﴿ ${a.text} ﴾ [${ArabicSearchNormalizer.toArabicDigits(a.ayahNumber)}]',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: UserDataStore
+                                        .instance
+                                        .quranFontFamily,
+                                    fontSize: 18,
+                                    height: 1.8,
+                                    color: isDark
+                                        ? AppColors.nightQuranText
+                                        : AppColors.dayQuranText,
+                                  ),
+                                ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            )
+          else if (ayah != null)
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -508,60 +579,124 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           }(),
         ],
       ),
-      actions: (bottomSheetCtx) => Row(
-        children: [
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pop(bottomSheetCtx);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => QuranScreen(
-                      initialPage: verse.page,
-                      targetSurahNumber: verse.surahNumber,
-                      targetAyahNumber: verse.ayahNumber,
+      actions: (bottomSheetCtx) {
+        final verses = widget.link.verses;
+        final vIndex = verses.indexOf(verse);
+        return Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(bottomSheetCtx);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => QuranScreen(
+                        initialPage: verse.page,
+                        targetSurahNumber: verse.surahNumber,
+                        targetAyahNumber: verse.ayahNumber,
+                      ),
                     ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.olive,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                icon: const Icon(AppIcons.bookOpenFill, size: 18),
+                label: Text(
+                  context.l10n.openInQuran,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            if (verses.length > 1) ...[
+              IconButton.filledTonal(
+                icon: const Icon(AppIcons.caretUp, size: 20),
+                tooltip: context.l10n.isArabic ? 'تقديم للأعلى' : 'Move Up',
+                onPressed: vIndex > 0
+                    ? () async {
+                        Navigator.pop(bottomSheetCtx);
+                        await HapticFeedback.lightImpact();
+                        await UserDataStore.instance.reorderVerseInLink(
+                          widget.link.id,
+                          vIndex,
+                          vIndex - 1,
+                        );
+                      }
+                    : null,
+              ),
+              const SizedBox(width: 6),
+              IconButton.filledTonal(
+                icon: const Icon(AppIcons.caretDown, size: 20),
+                tooltip: context.l10n.isArabic ? 'تأخير للأسفل' : 'Move Down',
+                onPressed: vIndex >= 0 && vIndex < verses.length - 1
+                    ? () async {
+                        Navigator.pop(bottomSheetCtx);
+                        await HapticFeedback.lightImpact();
+                        await UserDataStore.instance.reorderVerseInLink(
+                          widget.link.id,
+                          vIndex,
+                          vIndex + 1,
+                        );
+                      }
+                    : null,
+              ),
+              const SizedBox(width: 6),
+            ],
+
+            IconButton.filledTonal(
+              icon: const Icon(AppIcons.copy, size: 20),
+              tooltip: context.l10n.isArabic ? 'تكرار كرت الآية' : 'Duplicate Verse Card',
+              onPressed: () async {
+                Navigator.pop(bottomSheetCtx);
+                await HapticFeedback.lightImpact();
+                await _repo.duplicateVerseInLink(
+                  widget.link.id,
+                  verse,
+                );
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      context.l10n.isArabic
+                          ? 'تم تكرار كرت الآية بنجاح'
+                          : 'Verse card duplicated',
+                    ),
+                    behavior: SnackBarBehavior.floating,
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.olive,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              icon: const Icon(AppIcons.bookOpenFill, size: 18),
-              label: Text(
-                context.l10n.openInQuran,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
             ),
-          ),
-          const SizedBox(width: 8),
+            const SizedBox(width: 6),
 
-          IconButton.filledTonal(
-            icon: const Icon(AppIcons.notePencil, size: 20),
-            tooltip: context.l10n.reflectionNote,
-            onPressed: () {
-              Navigator.pop(bottomSheetCtx);
-              editAyahLinkVerseNote(context, widget.link.id, verse);
-            },
-          ),
-          const SizedBox(width: 6),
+            IconButton.filledTonal(
+              icon: const Icon(AppIcons.notePencil, size: 20),
+              tooltip: context.l10n.reflectionNote,
+              onPressed: () {
+                Navigator.pop(bottomSheetCtx);
+                editAyahLinkVerseNote(context, widget.link.id, verse);
+              },
+            ),
+            const SizedBox(width: 6),
 
-          IconButton.filledTonal(
-            icon: const Icon(AppIcons.trash, size: 20, color: Colors.redAccent),
-            tooltip: context.l10n.removeVerseFromLink,
-            onPressed: () {
-              Navigator.pop(bottomSheetCtx);
-              confirmRemoveAyahLinkVerse(context, widget.link.id, verse);
-            },
-          ),
-        ],
-      ),
+            IconButton.filledTonal(
+              icon: const Icon(AppIcons.trash, size: 20, color: Colors.redAccent),
+              tooltip: context.l10n.removeVerseFromLink,
+              onPressed: () {
+                Navigator.pop(bottomSheetCtx);
+                confirmRemoveAyahLinkVerse(context, widget.link.id, verse);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -643,58 +778,122 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
           ),
         ),
       ),
-      actions: (bottomSheetCtx) => Row(
-        children: [
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {
+      actions: (bottomSheetCtx) {
+        final notes = widget.link.notes;
+        final nIndex = notes.indexOf(note);
+        return Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pop(bottomSheetCtx);
+                  Clipboard.setData(ClipboardData(text: note.content));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(context.l10n.noteCopiedToClipboard),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.olive,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                icon: const Icon(AppIcons.copy, size: 18),
+                label: Text(
+                  context.l10n.copyText,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            if (notes.length > 1) ...[
+              IconButton.filledTonal(
+                icon: const Icon(AppIcons.caretUp, size: 20),
+                tooltip: context.l10n.isArabic ? 'تقديم للأعلى' : 'Move Up',
+                onPressed: nIndex > 0
+                    ? () async {
+                        Navigator.pop(bottomSheetCtx);
+                        await HapticFeedback.lightImpact();
+                        await UserDataStore.instance.reorderNoteInLink(
+                          widget.link.id,
+                          nIndex,
+                          nIndex - 1,
+                        );
+                      }
+                    : null,
+              ),
+              const SizedBox(width: 6),
+              IconButton.filledTonal(
+                icon: const Icon(AppIcons.caretDown, size: 20),
+                tooltip: context.l10n.isArabic ? 'تأخير للأسفل' : 'Move Down',
+                onPressed: nIndex >= 0 && nIndex < notes.length - 1
+                    ? () async {
+                        Navigator.pop(bottomSheetCtx);
+                        await HapticFeedback.lightImpact();
+                        await UserDataStore.instance.reorderNoteInLink(
+                          widget.link.id,
+                          nIndex,
+                          nIndex + 1,
+                        );
+                      }
+                    : null,
+              ),
+              const SizedBox(width: 6),
+            ],
+
+            IconButton.filledTonal(
+              icon: const Icon(AppIcons.copy, size: 20),
+              tooltip: context.l10n.isArabic ? 'تكرار البطاقة' : 'Duplicate Card',
+              onPressed: () async {
                 Navigator.pop(bottomSheetCtx);
-                Clipboard.setData(ClipboardData(text: note.content));
+                await HapticFeedback.lightImpact();
+                await _repo.duplicateNoteInLink(
+                  widget.link.id,
+                  note.id,
+                );
+                if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(context.l10n.noteCopiedToClipboard),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    content: Text(
+                      context.l10n.isArabic
+                          ? 'تم تكرار البطاقة بنجاح'
+                          : 'Card duplicated',
+                    ),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.olive,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              icon: const Icon(AppIcons.copy, size: 18),
-              label: Text(
-                context.l10n.copyText,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
             ),
-          ),
-          const SizedBox(width: 8),
+            const SizedBox(width: 6),
 
-          IconButton.filledTonal(
-            icon: const Icon(AppIcons.notePencil, size: 20),
-            tooltip: context.l10n.editVerseNote,
-            onPressed: () {
-              Navigator.pop(bottomSheetCtx);
-              editAyahLinkNoteCard(context, widget.link.id, note);
-            },
-          ),
-          const SizedBox(width: 6),
+            IconButton.filledTonal(
+              icon: const Icon(AppIcons.notePencil, size: 20),
+              tooltip: context.l10n.editVerseNote,
+              onPressed: () {
+                Navigator.pop(bottomSheetCtx);
+                editAyahLinkNoteCard(context, widget.link.id, note);
+              },
+            ),
+            const SizedBox(width: 6),
 
-          IconButton.filledTonal(
-            icon: const Icon(AppIcons.trash, size: 20, color: Colors.redAccent),
-            tooltip: context.l10n.deleteNote,
-            onPressed: () {
-              Navigator.pop(bottomSheetCtx);
-              confirmDeleteAyahLinkNoteCard(context, widget.link.id, note);
-            },
-          ),
-        ],
-      ),
+            IconButton.filledTonal(
+              icon: const Icon(AppIcons.trash, size: 20, color: Colors.redAccent),
+              tooltip: context.l10n.deleteNote,
+              onPressed: () {
+                Navigator.pop(bottomSheetCtx);
+                confirmDeleteAyahLinkNoteCard(context, widget.link.id, note);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -1006,24 +1205,25 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               ),
 
               for (final verse in verses)
-                if (_positions.containsKey(verse.ayahKey))
+                if (_positions.containsKey(verse.nodeKey))
                   Positioned(
-                    left: _positions[verse.ayahKey]!.dx - (nodeWidth / 2),
-                    top: _positions[verse.ayahKey]!.dy - 60,
+                    key: ValueKey(verse.nodeKey),
+                    left: _positions[verse.nodeKey]!.dx - (nodeWidth / 2),
+                    top: _positions[verse.nodeKey]!.dy - 60,
                     child: _threadOutline(
-                      verse.ayahKey,
+                      verse.nodeKey,
                       _VerseCanvasNode(
                         verse: verse,
-                        isDark: _cardIsDark(verse.ayahKey, isDark),
-                        tint: _cardTint(verse.ayahKey),
+                        isDark: _cardIsDark(verse.nodeKey, isDark),
+                        tint: _cardTint(verse.nodeKey),
                         onTap: () => _onCardTap(
-                          verse.ayahKey,
+                          verse.nodeKey,
                           () => _focusAyahNode(verse),
                         ),
                         onPanUpdate: (delta) {
                           setState(() {
-                            final current = _positions[verse.ayahKey]!;
-                            _positions[verse.ayahKey] = current + delta;
+                            final current = _positions[verse.nodeKey]!;
+                            _positions[verse.nodeKey] = current + delta;
                           });
                         },
                         onPanEnd: () => _persistManualPositions(),
