@@ -806,17 +806,73 @@ class SettingsScreen extends StatelessWidget {
                         Row(
                           children: [
                             Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () => AppUpdateService.instance
-                                    .checkForUpdates(context, showFeedback: true),
-                                icon: const Icon(AppIcons.arrowClockwise, size: 17),
-                                label: Text(
-                                  isArabic
-                                      ? 'التحقق من التحديثات'
-                                      : 'Check for Updates',
-                                  style: const TextStyle(fontSize: 12),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                              child: ValueListenableBuilder<UpdateDownloadState>(
+                                valueListenable:
+                                    AppUpdateService.instance.downloadState,
+                                builder: (context, downloadState, _) {
+                                  if (downloadState.isDownloading) {
+                                    final percent = (downloadState.progress != null)
+                                        ? (downloadState.progress!.progress * 100).toInt()
+                                        : 0;
+                                    return ElevatedButton.icon(
+                                      onPressed: () => AppUpdateService.instance
+                                          .checkForUpdates(context, showFeedback: true),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      icon: const SizedBox(
+                                        width: 13,
+                                        height: 13,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      label: Text(
+                                        isArabic
+                                            ? 'جارٍ التحميل ($percent%)'
+                                            : 'Downloading ($percent%)',
+                                        style: const TextStyle(fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }
+
+                                  if (downloadState.isCompleted) {
+                                    return ElevatedButton.icon(
+                                      onPressed: () => AppUpdateService.instance
+                                          .checkForUpdates(context, showFeedback: true),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      icon: const Icon(AppIcons.checkCircleFill, size: 16),
+                                      label: Text(
+                                        isArabic
+                                            ? 'جاهز للتثبيت'
+                                            : 'Ready to Install',
+                                        style: const TextStyle(fontSize: 12),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }
+
+                                  return ElevatedButton.icon(
+                                    onPressed: () => AppUpdateService.instance
+                                        .checkForUpdates(context, showFeedback: true),
+                                    icon: const Icon(AppIcons.arrowClockwise, size: 17),
+                                    label: Text(
+                                      isArabic
+                                          ? 'التحقق من التحديثات'
+                                          : 'Check for Updates',
+                                      style: const TextStyle(fontSize: 12),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                             const SizedBox(width: 8),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tadbeer/features/updates/app_update_dialog.dart';
 import 'package:tadbeer/features/updates/app_update_model.dart';
+import 'package:tadbeer/features/updates/app_update_service.dart';
 
 void main() {
   testWidgets('AppUpdateDialog renders update info and action buttons correctly',
@@ -51,5 +52,49 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('تحديث هام متاح الآن'), findsNothing);
+  });
+
+  testWidgets('AppUpdateDialog renders downloading state when active in AppUpdateService',
+      (tester) async {
+    const update = AppUpdateInfo(
+      latestVersion: '1.2.0',
+      buildNumber: 15,
+      releaseDate: '2026-11-10',
+      title: 'تحديث تجريبي',
+      changelog: 'تحسينات',
+      telegramUrl: 'https://t.me/tadbeerapp',
+      downloadUrl: 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest',
+      isMandatory: false,
+    );
+
+    // ضبط الحالة المركزية إلى جارٍ التنزيل
+    AppUpdateService.instance.downloadState.value = const UpdateDownloadState(
+      status: UpdateDownloadStatus.downloading,
+      updateInfo: update,
+      progress: DownloadProgress(
+        receivedBytes: 25 * 1024 * 1024,
+        totalBytes: 50 * 1024 * 1024,
+      ),
+    );
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: AppUpdateDialog(update: update),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('جارٍ التحميل والتثبيت التلقائي'), findsOneWidget);
+    expect(find.text('50%'), findsOneWidget);
+    expect(find.textContaining('25.0 MB / 50.0 MB'), findsOneWidget);
+    expect(find.text('إلغاء التحميل'), findsOneWidget);
+
+    // النقر على إلغاء التحميل
+    await tester.tap(find.text('إلغاء التحميل'));
+    await tester.pumpAndSettle();
+
+    expect(AppUpdateService.instance.downloadState.value.isIdle, isTrue);
   });
 }

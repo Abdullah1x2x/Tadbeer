@@ -14,6 +14,7 @@ import '../features/quran/screens/quran_screen.dart';
 import '../features/quran/widgets/ayah_rosette.dart';
 import '../features/reminders/startup_permissions.dart';
 import '../features/tasbeeh/tasbeeh_screen.dart';
+import '../features/updates/app_update_dialog.dart';
 import '../features/updates/app_update_service.dart';
 import 'app.dart';
 import 'localization.dart';
@@ -310,14 +311,242 @@ class _MainShellState extends State<MainShell>
                 ),
               );
             },
-            child: FloatingNavBar(
-              items: items,
-              selectedIndex: _tab.index,
-              onSelected: (i) => _select(ShellTab.values[i]),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const _UpdateDownloadFloatingBanner(),
+                FloatingNavBar(
+                  items: items,
+                  selectedIndex: _tab.index,
+                  onSelected: (i) => _select(ShellTab.values[i]),
+                ),
+              ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// شريط عائم مصغر يظهر فوق شريط التنقل لمتابعة تقدم تنزيل التحديث في الخلفية.
+class _UpdateDownloadFloatingBanner extends StatelessWidget {
+  const _UpdateDownloadFloatingBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: AppUpdateService.instance.isDialogVisible,
+      builder: (context, isDialogVisible, _) {
+        if (isDialogVisible) return const SizedBox.shrink();
+
+        return ValueListenableBuilder<UpdateDownloadState>(
+          valueListenable: AppUpdateService.instance.downloadState,
+          builder: (context, state, _) {
+            if (state.isIdle || state.isError) {
+              return const SizedBox.shrink();
+            }
+
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            final primary = Theme.of(context).colorScheme.primary;
+
+            if (state.isDownloading && state.updateInfo != null) {
+              final percent = (state.progress != null)
+                  ? (state.progress!.progress * 100).toInt()
+                  : 0;
+              final progressVal = state.progress?.progress;
+
+              return Container(
+                margin: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E222A) : Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: primary.withValues(alpha: 0.35),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        value: progressVal,
+                        color: primary,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                context.l10n.isArabic
+                                    ? 'جارٍ تنزيل التحديث...'
+                                    : 'Downloading update...',
+                                style: const TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '$percent%',
+                                style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: LinearProgressIndicator(
+                              value: progressVal,
+                              minHeight: 4,
+                              backgroundColor: primary.withValues(alpha: 0.15),
+                              valueColor: AlwaysStoppedAnimation<Color>(primary),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        AppUpdateDialog.show(context, state.updateInfo!);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        context.l10n.isArabic ? 'عرض' : 'View',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: primary,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        AppUpdateService.instance.cancelDownload();
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Icon(
+                          AppIcons.x,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state.isCompleted &&
+                state.targetFile != null &&
+                state.updateInfo != null) {
+              return Container(
+                margin: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E222A) : Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.green.withValues(alpha: 0.4),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const Icon(AppIcons.checkCircleFill,
+                        color: Colors.green, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        context.l10n.isArabic
+                            ? 'اكتمل التنزيل! جاهز للتثبيت'
+                            : 'Update downloaded! Ready to install',
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        AppUpdateService.instance.installCurrentDownloadedApk();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        context.l10n.isArabic ? 'تثبيت' : 'Install',
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: () {
+                        AppUpdateService.instance.cancelDownload();
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: const Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Icon(
+                          AppIcons.x,
+                          size: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        );
+      },
     );
   }
 }

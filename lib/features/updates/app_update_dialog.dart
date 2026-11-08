@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../../app/localization.dart';
@@ -11,122 +8,23 @@ import 'app_update_model.dart';
 import 'app_update_service.dart';
 
 /// نافذة تنبيه وتنزيل التحديثات لتطبيق «تدبير».
-class AppUpdateDialog extends StatefulWidget {
+class AppUpdateDialog extends StatelessWidget {
   final AppUpdateInfo update;
 
   const AppUpdateDialog({super.key, required this.update});
 
-  static Future<void> show(BuildContext context, AppUpdateInfo update) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => AppUpdateDialog(update: update),
-    );
-  }
-
-  @override
-  State<AppUpdateDialog> createState() => _AppUpdateDialogState();
-}
-
-class _AppUpdateDialogState extends State<AppUpdateDialog> {
-  bool _isDownloading = false;
-  DownloadProgress? _downloadProgress;
-  String? _errorMessage;
-  File? _downloadedFile;
-  StreamSubscription<DownloadProgress>? _downloadSub;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkExistingFile();
-  }
-
-  @override
-  void dispose() {
-    unawaited(_downloadSub?.cancel());
-    super.dispose();
-  }
-
-  Future<void> _checkExistingFile() async {
+  static Future<void> show(BuildContext context, AppUpdateInfo update) async {
+    AppUpdateService.instance.isDialogVisible.value = true;
     try {
-      final file = await AppUpdateService.instance.getUpdateApkFile(
-        widget.update.buildNumber,
+      return await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => AppUpdateDialog(update: update),
       );
-      if (await file.exists() && await file.length() > 1024 * 1024) {
-        if (mounted) {
-          setState(() {
-            _downloadedFile = file;
-          });
-        }
-      }
-    } catch (_) {}
-  }
-
-  Future<void> _startDownload() async {
-    setState(() {
-      _isDownloading = true;
-      _errorMessage = null;
-      _downloadProgress = null;
-    });
-
-    try {
-      final file = await AppUpdateService.instance.getUpdateApkFile(
-        widget.update.buildNumber,
-      );
-
-      await _downloadSub?.cancel();
-      _downloadSub = AppUpdateService.instance
-          .downloadApkFile(
-            url: widget.update.directApkUrl,
-            targetFile: file,
-          )
-          .listen(
-            (progress) {
-              if (!mounted) return;
-              setState(() {
-                _downloadProgress = progress;
-              });
-            },
-            onError: (err) {
-              if (!mounted) return;
-              setState(() {
-                _isDownloading = false;
-                _errorMessage = err.toString();
-              });
-            },
-            onDone: () async {
-              if (!mounted) return;
-              setState(() {
-                _isDownloading = false;
-                _downloadedFile = file;
-              });
-              // استدعاء مثبت النظام التلقائي في أندرويد
-              await AppUpdateService.instance.installApk(file.path);
-            },
-            cancelOnError: true,
-          );
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _isDownloading = false;
-        _errorMessage = e.toString();
-      });
+    } finally {
+      AppUpdateService.instance.isDialogVisible.value = false;
     }
-  }
-
-  void _cancelDownload() {
-    unawaited(_downloadSub?.cancel());
-    _downloadSub = null;
-    setState(() {
-      _isDownloading = false;
-      _downloadProgress = null;
-    });
-  }
-
-  Future<void> _installDownloadedApk() async {
-    if (_downloadedFile == null) return;
-    await AppUpdateService.instance.installApk(_downloadedFile!.path);
   }
 
   @override
@@ -136,170 +34,169 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     final primary = Theme.of(context).colorScheme.primary;
     final gold = AppColors.accentGold(context);
 
-    return PopScope(
-      canPop: !_isDownloading,
-      onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && _isDownloading) {
-          _cancelDownload();
-          Navigator.pop(context);
-        }
-      },
-      child: Directionality(
-        textDirection: context.currentLanguage.direction,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(
-              color: isDark
-                  ? AppColors.darkSurfaceVariant
-                  : AppColors.lightBorder,
-            ),
+    return Directionality(
+      textDirection: context.currentLanguage.direction,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightBorder,
           ),
-          child: SafeArea(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(context).height * 0.85,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // مقبض السحب
-                  Center(
-                    child: Container(
-                      width: 38,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.white24 : Colors.black12,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
+        ),
+        child: SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // مقبض السحب
+                Center(
+                  child: Container(
+                    width: 38,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white24 : Colors.black12,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
+                ),
 
-                  // رأس النافذة مع شارة التحديث
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: gold.withValues(alpha: 0.15),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: gold.withValues(alpha: 0.4),
-                            width: 1.5,
-                          ),
+                // رأس النافذة مع شارة التحديث
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: gold.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: gold.withValues(alpha: 0.4),
+                          width: 1.5,
                         ),
-                        child: Icon(AppIcons.sparkleFill, color: gold, size: 26),
                       ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.update.title.isNotEmpty
-                                  ? widget.update.title
-                                  : (l10n.isArabic
-                                      ? 'يتوفر تحديث جديد'
-                                      : 'New Update Available'),
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
+                      child: Icon(AppIcons.sparkleFill, color: gold, size: 26),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            update.title.isNotEmpty
+                                ? update.title
+                                : (l10n.isArabic
+                                    ? 'يتوفر تحديث جديد'
+                                    : 'New Update Available'),
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 2),
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: primary.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    'v${widget.update.latestVersion}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: primary,
-                                    ),
+                          ),
+                          const SizedBox(height: 2),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: primary.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  'v${update.latestVersion}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: primary,
                                   ),
                                 ),
-                                if (widget.update.releaseDate.isNotEmpty) ...[
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    widget.update.releaseDate,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.textSecondary(context),
-                                    ),
+                              ),
+                              if (update.releaseDate.isNotEmpty) ...[
+                                const SizedBox(width: 8),
+                                Text(
+                                  update.releaseDate,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary(context),
                                   ),
-                                ],
+                                ),
                               ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // سجل التغييرات والتحسينات
-                  Text(
-                    l10n.isArabic
-                        ? 'ما الجديد في هذا الإصدار:'
-                        : "What's new in this release:",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  Flexible(
-                    child: Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkBackground
-                            : AppColors.comsilk,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder,
-                        ),
-                      ),
-                      child: SingleChildScrollView(
-                        child: Text(
-                          widget.update.changelog.isNotEmpty
-                              ? widget.update.changelog
-                              : (l10n.isArabic
-                                  ? 'تحسينات عامة في الأداء والواجهة.'
-                                  : 'General performance and UI improvements.'),
-                          style: TextStyle(
-                            fontSize: 13.5,
-                            height: 1.6,
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightPrimaryDark,
+                            ],
                           ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // سجل التغييرات والتحسينات
+                Text(
+                  l10n.isArabic
+                      ? 'ما الجديد في هذا الإصدار:'
+                      : "What's new in this release:",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                Flexible(
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.darkBackground
+                          : AppColors.comsilk,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Text(
+                        update.changelog.isNotEmpty
+                            ? update.changelog
+                            : (l10n.isArabic
+                                ? 'تحسينات عامة في الأداء والواجهة.'
+                                : 'General performance and UI improvements.'),
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          height: 1.6,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightPrimaryDark,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                ),
+                const SizedBox(height: 16),
 
-                  // قسم التحكم وأزرار التحميل
-                  _buildActionSection(context, isDark, primary),
-                ],
-              ),
+                // قسم أزرار التحميل متصل بالحالة المركزية
+                ValueListenableBuilder<UpdateDownloadState>(
+                  valueListenable: AppUpdateService.instance.downloadState,
+                  builder: (context, downloadState, _) {
+                    return _buildActionSection(
+                      context,
+                      isDark,
+                      primary,
+                      downloadState,
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),
@@ -311,15 +208,16 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     BuildContext context,
     bool isDark,
     Color primary,
+    UpdateDownloadState downloadState,
   ) {
     final l10n = context.l10n;
 
-    // حالة جارٍ التنزيل
-    if (_isDownloading) {
-      final percent = (_downloadProgress != null)
-          ? (_downloadProgress!.progress * 100).toInt()
+    // حالة جارٍ التنزيل في الخلفية
+    if (downloadState.isDownloading) {
+      final percent = (downloadState.progress != null)
+          ? (downloadState.progress!.progress * 100).toInt()
           : 0;
-      final progressVal = _downloadProgress?.progress;
+      final progressVal = downloadState.progress?.progress;
 
       return Container(
         padding: const EdgeInsets.all(14),
@@ -382,8 +280,8 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  _downloadProgress != null
-                      ? '${_downloadProgress!.receivedMb} MB / ${_downloadProgress!.totalMb} MB'
+                  downloadState.progress != null
+                      ? '${downloadState.progress!.receivedMb} MB / ${downloadState.progress!.totalMb} MB'
                       : '...',
                   style: TextStyle(
                     fontSize: 12,
@@ -391,7 +289,9 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
                   ),
                 ),
                 TextButton(
-                  onPressed: _cancelDownload,
+                  onPressed: () {
+                    AppUpdateService.instance.cancelDownload();
+                  },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     visualDensity: VisualDensity.compact,
@@ -412,7 +312,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     }
 
     // حالة اكتمال التنزيل وجاهزية التثبيت
-    if (_downloadedFile != null) {
+    if (downloadState.isCompleted && downloadState.targetFile != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -444,7 +344,9 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
             ),
           ),
           ElevatedButton.icon(
-            onPressed: _installDownloadedApk,
+            onPressed: () {
+              AppUpdateService.instance.installCurrentDownloadedApk();
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: primary,
               foregroundColor: Colors.white,
@@ -467,7 +369,9 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: _startDownload,
+                  onPressed: () {
+                    AppUpdateService.instance.startDownload(update);
+                  },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
@@ -495,7 +399,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     }
 
     // حالة حدوث خطأ أثناء التنزيل
-    if (_errorMessage != null) {
+    if (downloadState.isError) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -532,7 +436,9 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
             ),
           ),
           ElevatedButton.icon(
-            onPressed: _startDownload,
+            onPressed: () {
+              AppUpdateService.instance.startDownload(update);
+            },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
@@ -553,7 +459,7 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
                   onPressed: () {
                     Navigator.pop(context);
                     AppUpdateService.instance.openTelegram(
-                      widget.update.telegramUrl,
+                      update.telegramUrl,
                     );
                   },
                   child: Text(
@@ -581,7 +487,9 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
       children: [
         // الزر الأساسي: تحميل وتثبيت التحديث مباشرة داخل التطبيق
         ElevatedButton.icon(
-          onPressed: _startDownload,
+          onPressed: () {
+            AppUpdateService.instance.startDownload(update);
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: primary,
             foregroundColor: Colors.white,
@@ -604,11 +512,11 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
         ),
         const SizedBox(height: 8),
 
-        // الخيارات البديلة: تيليجرام و GitHub ومتصفح
+        // الخيار البديل: تيليجرام
         ElevatedButton.icon(
           onPressed: () {
             Navigator.pop(context);
-            AppUpdateService.instance.openTelegram(widget.update.telegramUrl);
+            AppUpdateService.instance.openTelegram(update.telegramUrl);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF229ED9),
@@ -635,9 +543,9 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
         TextButton(
           onPressed: () async {
             Navigator.pop(context);
-            if (!widget.update.isMandatory) {
+            if (!update.isMandatory) {
               await UserDataStore.instance.dismissUpdateVersion(
-                widget.update.latestVersion,
+                update.latestVersion,
               );
             }
           },

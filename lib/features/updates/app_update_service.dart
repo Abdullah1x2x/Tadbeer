@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,7 +12,37 @@ import '../../data/storage/user_data_store.dart';
 import 'app_update_dialog.dart';
 import 'app_update_model.dart';
 
-/// خدمة التحقق من توفر تحديث جديد للتطبيق عبر ملف `version.json` في المستودع.
+/// حالات تنزيل التحديث في الخلفية.
+enum UpdateDownloadStatus {
+  idle,
+  downloading,
+  completed,
+  error,
+}
+
+/// بيانات حالة التنزيل الشاملة المشتركة عبر التطبيق.
+class UpdateDownloadState {
+  final UpdateDownloadStatus status;
+  final AppUpdateInfo? updateInfo;
+  final DownloadProgress? progress;
+  final File? targetFile;
+  final String? errorMessage;
+
+  const UpdateDownloadState({
+    this.status = UpdateDownloadStatus.idle,
+    this.updateInfo,
+    this.progress,
+    this.targetFile,
+    this.errorMessage,
+  });
+
+  bool get isDownloading => status == UpdateDownloadStatus.downloading;
+  bool get isCompleted => status == UpdateDownloadStatus.completed;
+  bool get isError => status == UpdateDownloadStatus.error;
+  bool get isIdle => status == UpdateDownloadStatus.idle;
+}
+
+/// خدمة التحقق من توفر تحديث جديد للتطبيق وتنزيله في الخلفية.
 ///
 /// تعمل الخدمة بخصوصية مطلقة دون جمع أو إرسال أي معرفات أو بيانات جهاز.
 class AppUpdateService {
@@ -40,6 +71,15 @@ class AppUpdateService {
       'https://github.com/Abdullah1x2x/Tadbeer/releases/latest';
 
   DateTime? _lastSilentCheck;
+
+  /// حالة التنزيل المركزية المتوفرة لجميع شاشات وعناصر التطبيق.
+  final ValueNotifier<UpdateDownloadState> downloadState =
+      ValueNotifier(const UpdateDownloadState());
+
+  /// يعكس ما إذا كانت نافذة التحديث معروضة الآن في الواجهة (لتجنب ازدواجية الشريط العائم).
+  final ValueNotifier<bool> isDialogVisible = ValueNotifier(false);
+
+  StreamSubscription<DownloadProgress>? _downloadSub;
 
   /// يجلب بيانات التحديث من المستودع عبر HTTP GET مجهول.
   Future<AppUpdateInfo?> fetchUpdateInfo() async {
@@ -75,12 +115,22 @@ class AppUpdateService {
   }
 
   /// يتحقق من التحديثات:
+  /// - إذا كان التنزيل جارياً، يعيد فتح نافذة التحديث مباشرة.
   /// - إذا كان [showFeedback] صحيحاً (فحص يدوي): يُظهر حالة الفحص ونتيجته للمستخدم.
   /// - إذا كان خاطئاً (فحص تلقائي صامت): يفحص في الخلفية فقط إذا كان الخيار مفعلاً.
   Future<void> checkForUpdates(
     BuildContext context, {
     bool showFeedback = true,
   }) async {
+    // إذا كان التحميل جارياً أو مكتملاً، نفتح نافذة التحديث فوراً
+    if ((downloadState.value.isDownloading || downloadState.value.isCompleted) &&
+        downloadState.value.updateInfo != null) {
+      if (context.mounted) {
+        await AppUpdateDialog.show(context, downloadState.value.updateInfo!);
+      }
+      return;
+    }
+
     if (!showFeedback) {
       final settings = UserDataStore.instance.settings;
       if (!settings.autoCheckUpdates) return;
@@ -131,6 +181,10 @@ class AppUpdateService {
 
       if (update != null &&
           update.isNewerThan(currentBuildNumber, currentVersion)) {
+        // التحقق مما إذا كان الملف محملاً مسبقاً
+        await checkExistingDownloadedApk(update);
+        if (!context.mounted) return;
+
         // التحقق مما إذا كان المستخدم قد تجاهل هذا الإصدار من قبل في الفحص الصامت.
         final settings = UserDataStore.instance.settings;
         if (!showFeedback &&
@@ -169,6 +223,106 @@ class AppUpdateService {
         );
       }
     }
+  }
+
+  /// يتحقق مما إذا كانت حزمة التحديث قد حُمّلت مسبقاً وجاهزة للتثبيت.
+  Future<void> checkExistingDownloadedApk(AppUpdateInfo update) async {
+    try {
+      final file = await getUpdateApkFile(update.buildNumber);
+      if (await file.exists() && await file.length() > 1024 * 1024) {
+        downloadState.value = UpdateDownloadState(
+          status: UpdateDownloadStatus.completed,
+          updateInfo: update,
+          targetFile: file,
+          progress: const DownloadProgress(
+            receivedBytes: 100,
+            totalBytes: 100,
+          ),
+        );
+      }
+    } catch (_) {}
+  }
+
+  /// يبدأ تنزيل ملف التحديث في الخلفية مع تحديث الحالة المركزية.
+  Future<void> startDownload(AppUpdateInfo update) async {
+    if (downloadState.value.isDownloading) return;
+
+    try {
+      final file = await getUpdateApkFile(update.buildNumber);
+
+      downloadState.value = UpdateDownloadState(
+        status: UpdateDownloadStatus.downloading,
+        updateInfo: update,
+        targetFile: file,
+      );
+
+      await _downloadSub?.cancel();
+      _downloadSub = downloadApkFile(
+        url: update.directApkUrl,
+        targetFile: file,
+      ).listen(
+        (progress) {
+          downloadState.value = UpdateDownloadState(
+            status: UpdateDownloadStatus.downloading,
+            updateInfo: update,
+            progress: progress,
+            targetFile: file,
+          );
+        },
+        onError: (err) {
+          downloadState.value = UpdateDownloadState(
+            status: UpdateDownloadStatus.error,
+            updateInfo: update,
+            targetFile: file,
+            errorMessage: err.toString(),
+          );
+        },
+        onDone: () async {
+          downloadState.value = UpdateDownloadState(
+            status: UpdateDownloadStatus.completed,
+            updateInfo: update,
+            targetFile: file,
+            progress: const DownloadProgress(
+              receivedBytes: 100,
+              totalBytes: 100,
+            ),
+          );
+          // استدعاء مثبت النظام التلقائي في أندرويد
+          await installApk(file.path);
+        },
+        cancelOnError: true,
+      );
+    } catch (e) {
+      downloadState.value = UpdateDownloadState(
+        status: UpdateDownloadStatus.error,
+        updateInfo: update,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  /// إلغاء التنزيل الحالي ومسح الملف المؤقت والحالة.
+  void cancelDownload() {
+    unawaited(_downloadSub?.cancel());
+    _downloadSub = null;
+    final file = downloadState.value.targetFile;
+    if (file != null) {
+      try {
+        if (file.existsSync()) {
+          file.deleteSync();
+        }
+      } catch (_) {}
+    }
+    downloadState.value = const UpdateDownloadState(
+      status: UpdateDownloadStatus.idle,
+    );
+  }
+
+  /// تثبيت الحزمة المحملة حالياً عبر مثبت النظام.
+  Future<bool> installCurrentDownloadedApk() async {
+    final file = downloadState.value.targetFile;
+    if (file == null || !await file.exists()) return false;
+    return installApk(file.path);
   }
 
   /// يفتح قناة تيليجرام الرسمية لتنزيل التحديث.
