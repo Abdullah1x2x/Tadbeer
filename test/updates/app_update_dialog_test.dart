@@ -43,7 +43,7 @@ void main() {
     expect(find.textContaining('روابط الآيات'), findsOneWidget);
     expect(find.textContaining('تحميل وتثبيت التحديث تلقائياً'), findsOneWidget);
     expect(find.textContaining('تحميل عبر قناة تيليجرام الرسمية'), findsOneWidget);
-    expect(find.textContaining('تحميل من GitHub'), findsOneWidget);
+    expect(find.textContaining('تحميل من GitHub'), findsNothing);
     expect(find.text('لاحقاً'), findsOneWidget);
 
     // إغلاق النافذة عبر النقر على "لاحقاً"

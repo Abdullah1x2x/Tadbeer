@@ -631,47 +631,22 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
         ),
         const SizedBox(height: 8),
 
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  AppUpdateService.instance.openDownload(
-                    widget.update.downloadUrl,
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                icon: const Icon(AppIcons.cloudArrowDown, size: 16),
-                label: Text(
-                  l10n.isArabic ? 'تحميل من GitHub' : 'Download via GitHub',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
+        // زر لاحقاً
+        TextButton(
+          onPressed: () async {
+            Navigator.pop(context);
+            if (!widget.update.isMandatory) {
+              await UserDataStore.instance.dismissUpdateVersion(
+                widget.update.latestVersion,
+              );
+            }
+          },
+          child: Text(
+            l10n.isArabic ? 'لاحقاً' : 'Later',
+            style: TextStyle(
+              color: AppColors.textSecondary(context),
             ),
-            const SizedBox(width: 8),
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                if (!widget.update.isMandatory) {
-                  await UserDataStore.instance.dismissUpdateVersion(
-                    widget.update.latestVersion,
-                  );
-                }
-              },
-              child: Text(
-                l10n.isArabic ? 'لاحقاً' : 'Later',
-                style: TextStyle(
-                  color: AppColors.textSecondary(context),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
