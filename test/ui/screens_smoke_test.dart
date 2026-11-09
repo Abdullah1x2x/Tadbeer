@@ -32,7 +32,6 @@ import 'package:tadbeer/features/reminders/reminders_screen.dart';
 import 'package:tadbeer/features/search/search_screen.dart';
 import 'package:tadbeer/features/settings/settings_screen.dart';
 import 'package:tadbeer/features/tasbeeh/tasbeeh_screen.dart';
-import 'package:tadbeer/features/word_meanings/word_meanings_screen.dart';
 
 /// Opens every screen at a small and a regular phone size, in light and dark
 /// mode, with some user data present, and fails on any error or overflow.
@@ -103,7 +102,6 @@ void main() {
     'MushafMap': () => const MushafMapScreen(),
     'Pathways': () => const GuidedPathwaysScreen(),
     'Memorization': () => const MemorizationScreen(),
-    'WordMeanings': () => const WordMeaningsScreen(),
     'AyahLinks': () => const AyahLinksScreen(),
     'Books': () => const BooksScreen(),
     'Downloads': () => const RecitationDownloadsScreen(),

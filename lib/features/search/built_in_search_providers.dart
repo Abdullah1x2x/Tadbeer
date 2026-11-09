@@ -507,58 +507,6 @@ class RemindersSearchProvider implements SearchProvider {
   }
 }
 
-/// البحث في معاني الكلمات.
-class WordMeaningsSearchProvider implements SearchProvider {
-  const WordMeaningsSearchProvider();
-
-  @override
-  String get id => 'word_meanings';
-
-  @override
-  String getSectionTitle(BuildContext context) => context.l10n.wordMeanings;
-
-  @override
-  IconData get icon => AppIcons.bookOpenTextFill;
-
-  @override
-  Future<List<SearchResultItem>> search(
-    String query,
-    BuildContext context,
-  ) async {
-    final repo = QuranRepository.instance;
-    final words = repo.searchWordMeanings(query, limit: 30);
-
-    return words.map((w) {
-      final surah = repo.getSurah(w.surah);
-      return SearchResultItem(
-        id: 'word_${w.surah}_${w.ayah}_${w.word}',
-        providerId: id,
-        sectionTitle: getSectionTitle(context),
-        title:
-            '${w.word} — سورة ${surah.name} (${ArabicSearchNormalizer.toArabicDigits(w.ayah)})',
-        snippet: w.meaning,
-        surahNumber: w.surah,
-        ayahNumber: w.ayah,
-        page: w.page,
-        badge: 'ص ${ArabicSearchNormalizer.toArabicDigits(w.page)}',
-        icon: icon,
-        onTap: (ctx) {
-          Navigator.push(
-            ctx,
-            MaterialPageRoute(
-              builder: (_) => QuranScreen(
-                initialPage: w.page,
-                targetSurahNumber: w.surah,
-                targetAyahNumber: w.ayah,
-              ),
-            ),
-          );
-        },
-      );
-    }).toList();
-  }
-}
-
 /// البحث في الكتب والملازم: العنوان والسلسلة والمؤلف والفصول والوصف، بأكثر من
 /// كلمة.
 class BooksSearchProvider implements SearchProvider {

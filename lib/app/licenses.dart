@@ -20,17 +20,6 @@ Terms of Use:
     );
 
     yield const LicenseEntryWithLineBreaks(
-      <String>['quranpedia_word_meanings'],
-      '''Quranpedia.net Open Quranic Encyclopedia Dataset (Version 2026-10-10)
-Source: https://quranpedia.net
-License: https://quranpedia.net/dumps/LICENSE.md
-
-- Free to use inside apps, websites, bots, and research tools.
-- Republishing this data as a downloadable dataset credits Quranpedia.net
-  (https://quranpedia.net) with dump version 2026-10-10.''',
-    );
-
-    yield const LicenseEntryWithLineBreaks(
       <String>[
         'Scheherazade New Font',
         'Noto Naskh Arabic Font',

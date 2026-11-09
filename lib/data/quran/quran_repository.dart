@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 import '../../core/utils/arabic_root_search_helper.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
-import 'custom_word_meanings.dart';
 import 'quran_models.dart';
 
 /// نص القرآن وبيانات المصحف، للقراءة فقط.
@@ -19,7 +18,7 @@ class QuranRepository {
 
   bool _isLoaded = false;
 
-  /// هل حُمّلت بيانات القرآن ومعاني الكلمات.
+  /// هل حُمّلت بيانات القرآن.
   bool get isLoaded => _isLoaded;
 
   final List<Surah> _surahs = [];
@@ -30,21 +29,12 @@ class QuranRepository {
 
   /// نصوص الآيات دون همزة، لتطابق الهمزة المكتوبة على غير رسم المصحف.
   final List<String> _hamzaFreeAyahTexts = [];
-  final List<QuranWordMeaning> _wordMeanings = [];
-  final Map<int, List<QuranWordMeaning>> _wordMeaningsByPage = {};
-  final Map<int, List<QuranWordMeaning>> _wordMeaningsBySurah = {};
-  final List<String> _normalizedWordOnly = [];
-  final List<String> _normalizedMeaningOnly = [];
 
   List<Surah> get surahs => List.unmodifiable(_surahs);
 
   List<QuranPage> get pages => List.unmodifiable(_pages);
 
   List<Ayah> get allAyahs => List.unmodifiable(_allAyahs);
-
-  /// معاني الكلمات الغريبة.
-  List<QuranWordMeaning> get allWordMeanings =>
-      List.unmodifiable(_wordMeanings);
 
   /// يحمّل بيانات القرآن ومعاني الكلمات ويبني فهارس البحث؛ يُستدعى مرة عند
   /// الإقلاع.
@@ -78,52 +68,6 @@ class QuranRepository {
         _normalizedAyahTexts.add(ArabicSearchNormalizer.normalize(ayah.text));
         _hamzaFreeAyahTexts.add(ArabicSearchNormalizer.withoutHamza(ayah.text));
       }
-    }
-
-    // معاني الكلمات (السراج في بيان غريب القرآن)، ومعها ما أضافه المطور في
-    // [customWordMeanings].
-    final meanings = <QuranWordMeaning>[];
-    try {
-      final meaningsString = await rootBundle.loadString(
-        'assets/quran/word_meanings.json',
-      );
-      final rawMeanings = jsonDecode(meaningsString) as List<dynamic>;
-      for (final item in rawMeanings) {
-        final map = item as Map<String, dynamic>;
-        final surahNum = (map['surah'] ?? map['surah_number']) as int? ?? 1;
-        final ayahNum = (map['ayah'] ?? map['ayah_number']) as int? ?? 1;
-        final pageNum = _ayahsByKey['$surahNum:$ayahNum']?.page ?? 1;
-        meanings.add(QuranWordMeaning.fromJson(map, page: pageNum));
-      }
-    } catch (_) {
-      // في الاختبارات المعزولة قد لا تُتاح ملفات الأصول، فتُكمل البيانات
-      // بدونها.
-    }
-    for (final customItem in customWordMeanings) {
-      final ayah = _ayahsByKey['${customItem.surah}:${customItem.ayah}'];
-      meanings.add(customItem.toQuranWordMeaning(ayah?.page ?? 1));
-    }
-
-    // بترتيب المصحف: السورة ثم الآية، وكلمات الآية الواحدة على ترتيبها.
-    final order = {for (final (i, m) in meanings.indexed) m: i};
-    meanings.sort((a, b) {
-      final bySurah = a.surah.compareTo(b.surah);
-      if (bySurah != 0) return bySurah;
-      final byAyah = a.ayah.compareTo(b.ayah);
-      return byAyah != 0 ? byAyah : order[a]!.compareTo(order[b]!);
-    });
-
-    _wordMeanings.clear();
-    _wordMeaningsByPage.clear();
-    _wordMeaningsBySurah.clear();
-    _normalizedWordOnly.clear();
-    _normalizedMeaningOnly.clear();
-    for (final m in meanings) {
-      _wordMeanings.add(m);
-      _wordMeaningsByPage.putIfAbsent(m.page, () => []).add(m);
-      _wordMeaningsBySurah.putIfAbsent(m.surah, () => []).add(m);
-      _normalizedWordOnly.add(ArabicSearchNormalizer.normalize(m.word));
-      _normalizedMeaningOnly.add(ArabicSearchNormalizer.normalize(m.meaning));
     }
 
     _isLoaded = true;
@@ -375,67 +319,5 @@ class QuranRepository {
       if (results.length >= limit) break;
     }
     return results;
-  }
-
-  /// معاني الكلمات في صفحة [pageNumber].
-  List<QuranWordMeaning> getWordMeaningsForPage(int pageNumber) {
-    assert(_isLoaded, 'QuranRepository must be initialized before use');
-    if (pageNumber < 1 || pageNumber > 604) {
-      pageNumber = pageNumber.clamp(1, 604);
-    }
-    return _wordMeaningsByPage[pageNumber] ?? const [];
-  }
-
-  /// معاني الكلمات في سورة [surahNumber].
-  List<QuranWordMeaning> getWordMeaningsForSurah(int surahNumber) {
-    assert(_isLoaded, 'QuranRepository must be initialized before use');
-    if (surahNumber < 1 || surahNumber > 114) {
-      surahNumber = surahNumber.clamp(1, 114);
-    }
-    return _wordMeaningsBySurah[surahNumber] ?? const [];
-  }
-
-  /// بحث في معاني الكلمات، المطابقة التامة أولاً.
-  List<QuranWordMeaning> searchWordMeanings(String query, {int limit = 50}) {
-    if (!_isLoaded) return const [];
-    if (query.trim().isEmpty) {
-      return _wordMeanings.take(limit).toList();
-    }
-
-    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
-    if (normalizedQuery.isEmpty) return _wordMeanings.take(limit).toList();
-
-    final exactMatches = <QuranWordMeaning>[];
-    final prefixMatches = <QuranWordMeaning>[];
-    final wordContainsMatches = <QuranWordMeaning>[];
-    final meaningMatches = <QuranWordMeaning>[];
-
-    for (int i = 0; i < _wordMeanings.length; i++) {
-      final item = _wordMeanings[i];
-      final wordNorm = _normalizedWordOnly[i];
-      final meaningNorm = _normalizedMeaningOnly[i];
-
-      if (wordNorm == normalizedQuery) {
-        exactMatches.add(item);
-      } else if (wordNorm.startsWith(normalizedQuery)) {
-        prefixMatches.add(item);
-      } else if (wordNorm.contains(normalizedQuery)) {
-        wordContainsMatches.add(item);
-      } else if (meaningNorm.contains(normalizedQuery)) {
-        meaningMatches.add(item);
-      }
-    }
-
-    final combined = <QuranWordMeaning>[
-      ...exactMatches,
-      ...prefixMatches,
-      ...wordContainsMatches,
-      ...meaningMatches,
-    ];
-
-    if (combined.length > limit) {
-      return combined.sublist(0, limit);
-    }
-    return combined;
   }
 }

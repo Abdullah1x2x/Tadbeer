@@ -16,7 +16,6 @@ enum GuideTopic {
   ayahLinks,
   pathways,
   memorization,
-  wordMeanings,
   notes,
   search,
   books,
@@ -155,13 +154,6 @@ abstract final class SectionGuide {
           (t) => MemorizeScene(t: t),
           l10n.guideMemorizationTitle,
           l10n.guideMemorizationBody,
-        ),
-      ],
-      GuideTopic.wordMeanings => [
-        _GuideStep(
-          (t) => MeaningsScene(t: t),
-          l10n.guideWordMeaningsTitle,
-          l10n.guideWordMeaningsBody,
         ),
       ],
       GuideTopic.notes => [

@@ -74,7 +74,6 @@ void main() {
     'duas': (t) => DuasScene(t: t),
     'memorize': (t) => MemorizeScene(t: t),
     'notes': (t) => NotesScene(t: t),
-    'meanings': (t) => MeaningsScene(t: t),
     'books': (t) => BooksScene(t: t),
     'pathway days': (t) => PathwayDaysScene(t: t),
     'today ayah': (t) => TodayAyahScene(t: t),

@@ -97,9 +97,9 @@ void main() {
   }
 
   group('SearchRegistry Architecture & Extensibility Tests', () {
-    test('Registry initializes with all 11 built-in providers', () {
+    test('Registry initializes with all 10 built-in providers', () {
       final registry = SearchRegistry.instance;
-      expect(registry.providers.length, equals(11));
+      expect(registry.providers.length, equals(10));
       expect(registry.getProvider('quran'), isNotNull);
       expect(registry.getProvider('books'), isNotNull);
       expect(registry.getProvider('notes'), isNotNull);
@@ -110,7 +110,6 @@ void main() {
       expect(registry.getProvider('duas'), isNotNull);
       expect(registry.getProvider('pathways'), isNotNull);
       expect(registry.getProvider('reminders'), isNotNull);
-      expect(registry.getProvider('word_meanings'), isNotNull);
     });
 
     test('Registry supports dynamic registration and unregistration', () {
@@ -119,11 +118,11 @@ void main() {
 
       registry.register(customProvider);
       expect(registry.getProvider('custom_test'), isNotNull);
-      expect(registry.providers.length, equals(12));
+      expect(registry.providers.length, equals(11));
 
       registry.unregister('custom_test');
       expect(registry.getProvider('custom_test'), isNull);
-      expect(registry.providers.length, equals(11));
+      expect(registry.providers.length, equals(10));
     });
 
     testWidgets(

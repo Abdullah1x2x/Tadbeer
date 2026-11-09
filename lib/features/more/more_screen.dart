@@ -20,7 +20,6 @@ import '../reminders/reminders_screen.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import '../updates/app_update_service.dart';
-import '../word_meanings/word_meanings_screen.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
 
@@ -71,12 +70,6 @@ class MoreScreen extends StatelessWidget {
                     label: l10n.search,
                     hint: l10n.searchCardHint,
                     onTap: () => open(const SearchScreen()),
-                  ),
-                  _SectionCard(
-                    icon: AppIcons.books,
-                    label: l10n.wordMeanings,
-                    hint: l10n.wordMeaningsCardHint,
-                    onTap: () => open(const WordMeaningsScreen()),
                   ),
                   _SectionCard(
                     icon: AppIcons.graphFill,

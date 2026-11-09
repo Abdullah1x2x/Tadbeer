@@ -114,12 +114,10 @@ void main() {
         // Top bar buttons
         final menuFinder = find.byIcon(AppIcons.list);
         final searchFinder = find.byIcon(AppIcons.magnifyingGlass);
-        final meaningsTopFinder = find.byTooltip('معاني كلمات الصفحة');
         final fontSizeFinder = find.byIcon(AppIcons.textAa);
 
         expect(menuFinder, findsOneWidget);
         expect(searchFinder, findsOneWidget);
-        expect(meaningsTopFinder, findsOneWidget);
         expect(fontSizeFinder, findsOneWidget);
 
         // Bottom navigation bar items
@@ -137,6 +135,7 @@ void main() {
         expect(find.byIcon(AppIcons.dotsThreeVertical), findsNothing);
         expect(find.byIcon(AppIcons.arrowLeft), findsNothing);
         expect(find.byIcon(AppIcons.arrowRight), findsNothing);
+        expect(find.byTooltip('معاني كلمات الصفحة'), findsNothing);
 
         // Test ☰ opens Drawer
         await tester.tap(menuFinder);
@@ -161,39 +160,6 @@ void main() {
         await tester.tap(searchFinder);
         await tester.pumpAndSettle();
         expect(find.byType(SearchScreen), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'Word meanings window opens from bottom bar / top bar and dismisses when tapping outside',
-      (tester) async {
-        await tester.pumpWidget(buildTestScreen());
-        await tester.pumpAndSettle();
-
-        // Reveal controls
-        await tester.tap(find.byType(QuranScreen));
-        await tester.pumpAndSettle();
-
-        // Open word meanings window via top bar button
-        await tester.tap(find.byTooltip('معاني كلمات الصفحة'));
-        await tester.pumpAndSettle();
-
-        // Word meanings window is visible
-        expect(find.textContaining('معاني كلمات صفحة'), findsOneWidget);
-
-        // Tap outside the meanings window (e.g., at top area)
-        await tester.tapAt(const Offset(200, 100));
-        await tester.pumpAndSettle();
-
-        // Window dismisses
-        final panelFinder = find
-            .descendant(
-              of: find.byType(QuranScreen),
-              matching: find.byType(AnimatedOpacity),
-            )
-            .last;
-        final panelOpacity = tester.widget<AnimatedOpacity>(panelFinder);
-        expect(panelOpacity.opacity, 0.0);
       },
     );
 

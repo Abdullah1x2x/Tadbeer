@@ -100,7 +100,6 @@ class SearchRegistry {
     register(const DuasSearchProvider());
     register(const PathwaysSearchProvider());
     register(const RemindersSearchProvider());
-    register(const WordMeaningsSearchProvider());
   }
 
   /// يعيد السجل إلى المزوّدات المدمجة.

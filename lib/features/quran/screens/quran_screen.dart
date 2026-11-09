@@ -16,7 +16,6 @@ import '../widgets/ayah_rosette.dart';
 import '../widgets/text_scale_control.dart';
 import '../../audio/audio_bar.dart';
 import '../../audio/quran_audio.dart';
-import '../widgets/word_meanings_panel.dart';
 import '../../focus/focus_mode_screen.dart';
 import '../../search/search_screen.dart';
 import 'quran_page_view.dart';
@@ -79,7 +78,6 @@ class _QuranScreenState extends State<QuranScreen> {
   }
   Ayah? _activeSelectedAyah;
   bool _showTopBar = false;
-  bool _showMeaningsPanel = false;
   bool _suppressNextPageTap = false;
   Timer? _suppressTimer;
 
@@ -618,23 +616,6 @@ class _QuranScreenState extends State<QuranScreen> {
                 onTap: _openSearch,
               ),
               const SizedBox(width: 8),
-              FuturisticIconButton(
-                icon: _showMeaningsPanel
-                    ? AppIcons.bookOpenTextFill
-                    : AppIcons.bookOpenText,
-                tooltip: context.l10n.pageMeaningsTooltip,
-                size: 38,
-                iconSize: 20,
-                iconColor: _showMeaningsPanel
-                    ? (isDark ? AppColors.cyberEmerald : primary)
-                    : null,
-                onTap: () {
-                  setState(() {
-                    _showMeaningsPanel = !_showMeaningsPanel;
-                  });
-                },
-              ),
-              const SizedBox(width: 8),
               // طريقة عرض المصحف (Aa)؛ والحجم تلقائي.
               FuturisticIconButton(
                 icon: AppIcons.textAa,
@@ -665,8 +646,6 @@ class _QuranScreenState extends State<QuranScreen> {
         ? repo.getSurah(firstAyah.surahNumber).name
         : '';
     final juzNumber = firstAyah?.juz ?? 1;
-    final meaningsCount = repo.getWordMeaningsForPage(currentPageNumber).length;
-    final meaningsDigits = l10n.digits(meaningsCount);
     final primary = isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
     return Center(
@@ -696,7 +675,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-              // السورة والجزء، وشارة المعاني، وشارة الصفحة.
+              // السورة والجزء، وشارة الصفحة.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -714,25 +693,6 @@ class _QuranScreenState extends State<QuranScreen> {
                             : AppColors.lightTextPrimary,
                       ),
                       overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _showMeaningsPanel = !_showMeaningsPanel;
-                      });
-                    },
-                    borderRadius: BorderRadius.circular(AppTokens.radiusPill),
-                    child: FuturisticBadge(
-                      label: context.l10n.meaningsBadge(meaningsDigits),
-                      icon: AppIcons.books,
-                      color: _showMeaningsPanel
-                          ? (isDark ? AppColors.cyberEmerald : primary)
-                          : (isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary),
-                      isCompact: true,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -1024,64 +984,6 @@ class _QuranScreenState extends State<QuranScreen> {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 560),
                       child: const AudioBar(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // النقر خارج لوحة المعاني يُغلقها.
-            if (_showMeaningsPanel)
-              Positioned.fill(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    setState(() {
-                      _showMeaningsPanel = false;
-                    });
-                  },
-                  child: Container(
-                    color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.15),
-                  ),
-                ),
-              ),
-
-            // لوحة المعاني في الأسفل.
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: SafeArea(
-                top: false,
-                child: IgnorePointer(
-                  ignoring: !_showMeaningsPanel,
-                  child: AnimatedOpacity(
-                    opacity: _showMeaningsPanel ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeInOut,
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 600),
-                        child: WordMeaningsPanel(
-                          pageNumber: currentPageNumber,
-                          isExpanded: _showMeaningsPanel,
-                          onToggle: () {
-                            setState(() {
-                              _showMeaningsPanel = !_showMeaningsPanel;
-                            });
-                          },
-                          onClose: () {
-                            setState(() {
-                              _showMeaningsPanel = false;
-                            });
-                          },
-                          onDismiss: () {
-                            setState(() {
-                              _showMeaningsPanel = false;
-                            });
-                          },
-                        ),
-                      ),
                     ),
                   ),
                 ),
