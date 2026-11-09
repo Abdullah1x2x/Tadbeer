@@ -178,7 +178,7 @@ void main() {
       '9: Auto-Layout produces non-overlapping distinct coordinates',
       () async {
         final link = await repo.createLink(title: 'اختبار التوزيع');
-        // Add 12 verses
+        // Add 12 verses (allowing repeated verses as per user feature)
         for (int i = 1; i <= 12; i++) {
           await repo.addVerseToLink(
             link.id,
@@ -189,12 +189,45 @@ void main() {
           );
         }
 
-        // Check model serialization & distinct keys
+        // Check model serialization & multiple verses supported
         final fetched = repo.getLink(link.id)!;
         expect(
           fetched.verses.length,
-          equals(7),
-        ); // Unique keys (Al-Fatiha 1..7)
+          equals(12),
+        );
+      },
+    );
+
+    test(
+      '9b: Adding same verse multiple times keeps warning capability and creates unique IDs',
+      () async {
+        final link = await repo.createLink(title: 'اختبار التكرار');
+        // Add Ayah 1:1 first time
+        await repo.addVerseToLink(
+          link.id,
+          ayahId: 1,
+          surahNumber: 1,
+          ayahNumber: 1,
+          page: 1,
+          note: 'المرة الأولى',
+        );
+        // Add Ayah 1:1 second time
+        await repo.addVerseToLink(
+          link.id,
+          ayahId: 1,
+          surahNumber: 1,
+          ayahNumber: 1,
+          page: 1,
+          note: 'المرة الثانية',
+        );
+
+        final fetched = repo.getLink(link.id)!;
+        expect(fetched.verses.length, equals(2));
+        expect(fetched.verses.first.id, isNot(equals(fetched.verses.last.id)));
+        expect(fetched.verses.first.ayahNumber, equals(1));
+        expect(fetched.verses.last.ayahNumber, equals(1));
+        expect(fetched.verses.first.note, equals('المرة الأولى'));
+        expect(fetched.verses.last.note, equals('المرة الثانية'));
       },
     );
 

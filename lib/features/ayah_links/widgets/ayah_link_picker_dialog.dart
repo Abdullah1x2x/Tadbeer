@@ -596,74 +596,119 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                   ),
                                 );
 
-                                return Container(
-                                  margin: const EdgeInsets.only(bottom: 8),
-                                  decoration: BoxDecoration(
-                                    color: isAlreadyLinked
-                                        ? gold.withValues(alpha: 0.05)
-                                        : AppColors.surface(context),
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
+                                  return Container(
+                                    margin: const EdgeInsets.only(bottom: 8),
+                                    decoration: BoxDecoration(
                                       color: isAlreadyLinked
-                                          ? gold.withValues(alpha: 0.3)
-                                          : AppColors.border(context),
-                                    ),
-                                  ),
-                                  child: ListTile(
-                                    leading: Icon(
-                                      isAlreadyLinked
-                                          ? AppIcons.checkCircleFill
-                                          : AppIcons.circle,
-                                      color:
-                                          isAlreadyLinked ? gold : Colors.grey,
-                                      size: 22,
-                                    ),
-                                    title: Text(
-                                      link.title,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
+                                          ? AppColors.statusWarning.withValues(alpha: 0.05)
+                                          : AppColors.surface(context),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: isAlreadyLinked
+                                            ? AppColors.statusWarning.withValues(alpha: 0.4)
+                                            : AppColors.border(context),
                                       ),
                                     ),
-                                    subtitle: Text(
-                                      '${l10n.linkedAyahsCount(link.verses.length)}${link.description != null ? ' · ${link.description}' : ''}',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: isDark
-                                            ? AppColors.nightSubtitle
-                                            : AppColors.daySubtitle,
+                                    child: ListTile(
+                                      leading: Icon(
+                                        isAlreadyLinked
+                                            ? AppIcons.checkCircleFill
+                                            : AppIcons.circle,
+                                        color: isAlreadyLinked
+                                            ? AppColors.statusWarning
+                                            : Colors.grey,
+                                        size: 22,
                                       ),
-                                    ),
-                                    trailing: isAlreadyLinked
-                                        ? Text(
-                                            l10n.alreadyAdded,
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: gold,
-                                            ),
-                                          )
-                                        : (_isSubmitting
-                                            ? const SizedBox.square(
-                                                dimension: 16,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
+                                      title: Text(
+                                        link.title,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        '${l10n.linkedAyahsCount(link.verses.length)}${link.description != null ? ' · ${link.description}' : ''}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: isDark
+                                              ? AppColors.nightSubtitle
+                                              : AppColors.daySubtitle,
+                                        ),
+                                      ),
+                                      trailing: _isSubmitting
+                                          ? const SizedBox.square(
+                                              dimension: 16,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                            )
+                                          : Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (isAlreadyLinked) ...[
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                      horizontal: 6,
+                                                      vertical: 2,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors
+                                                          .statusWarning
+                                                          .withValues(
+                                                              alpha: 0.15),
+                                                      borderRadius:
+                                                          BorderRadius.circular(6),
+                                                      border: Border.all(
+                                                        color: AppColors
+                                                            .statusWarning
+                                                            .withValues(
+                                                                alpha: 0.4),
+                                                      ),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        const Icon(
+                                                          AppIcons.warning,
+                                                          size: 12,
+                                                          color: AppColors
+                                                              .statusWarning,
+                                                        ),
+                                                        const SizedBox(width: 4),
+                                                        Text(
+                                                          l10n.alreadyAdded,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 11,
+                                                            color: AppColors
+                                                                .statusWarning,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                ],
+                                                const Icon(
+                                                  AppIcons.caretRight,
+                                                  size: 14,
                                                 ),
-                                              )
-                                            : const Icon(
-                                                AppIcons.caretRight,
-                                                size: 14,
-                                              )),
-                                    onTap: (isAlreadyLinked || _isSubmitting)
-                                        ? null
-                                        : () => _addVerseToLink(
-                                              link.id,
-                                              link.title,
+                                              ],
                                             ),
-                                  ),
-                                );
+                                      onTap: _isSubmitting
+                                          ? null
+                                          : () => _addVerseToLink(
+                                                link.id,
+                                                link.title,
+                                              ),
+                                    ),
+                                  );
                               }(),
                             ],
                         ],

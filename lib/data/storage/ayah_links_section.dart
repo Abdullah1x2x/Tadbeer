@@ -37,29 +37,39 @@ mixin _AyahLinksSection on _StoreState {
     }
   }
 
-  /// يضيف آية (أو نطاق آيات) إلى رابط.
+  /// يضيف آية (أو نطاق آيات) إلى رابط مع إمكانية إضافتها مجدداً بمعرّف فريد.
   Future<void> addVerseToLink(String linkId, AyahLinkVerse verse) async {
     final idx = _ayahLinks.indexWhere((l) => l.id == linkId);
     if (idx != -1) {
       final existing = _ayahLinks[idx];
-      final isAlready = existing.verses.any((v) => v.ayahKey == verse.ayahKey);
-      if (!isAlready) {
-        final updatedVerses = [...existing.verses, verse];
-        final updated = existing.copyWith(
-          verses: updatedVerses,
-          updatedAt: DateTime.now(),
+      var verseToAdd = verse;
+      if (existing.verses.any((v) => v.id == verse.id)) {
+        verseToAdd = AyahLinkVerse(
+          id: '${verse.id}_${const Uuid().v4().substring(0, 8)}',
+          ayahId: verse.ayahId,
+          surahNumber: verse.surahNumber,
+          ayahNumber: verse.ayahNumber,
+          toAyahNumber: verse.toAyahNumber,
+          page: verse.page,
+          note: verse.note,
+          addedAt: verse.addedAt,
         );
-        _ayahLinks[idx] = updated;
-        notifyListeners();
-        final userDb = UserDatabase.instance;
-        if (userDb.isOpen) {
-          await userDb.insertOrUpdateAyahLink(updated);
-        }
+      }
+      final updatedVerses = [...existing.verses, verseToAdd];
+      final updated = existing.copyWith(
+        verses: updatedVerses,
+        updatedAt: DateTime.now(),
+      );
+      _ayahLinks[idx] = updated;
+      notifyListeners();
+      final userDb = UserDatabase.instance;
+      if (userDb.isOpen) {
+        await userDb.insertOrUpdateAyahLink(updated);
       }
     }
   }
 
-  /// يضيف عدة آيات دفعة واحدة إلى رابط.
+  /// يضيف عدة آيات دفعة واحدة إلى رابط مع دعم الإضافة المتكررة.
   Future<void> addVersesToLink(String linkId, List<AyahLinkVerse> verses) async {
     if (verses.isEmpty) return;
     final idx = _ayahLinks.indexWhere((l) => l.id == linkId);
@@ -67,9 +77,20 @@ mixin _AyahLinksSection on _StoreState {
       final existing = _ayahLinks[idx];
       final newVerses = <AyahLinkVerse>[...existing.verses];
       for (final v in verses) {
-        if (!newVerses.any((ev) => ev.ayahKey == v.ayahKey)) {
-          newVerses.add(v);
+        var verseToAdd = v;
+        if (newVerses.any((ev) => ev.id == v.id)) {
+          verseToAdd = AyahLinkVerse(
+            id: '${v.id}_${const Uuid().v4().substring(0, 8)}',
+            ayahId: v.ayahId,
+            surahNumber: v.surahNumber,
+            ayahNumber: v.ayahNumber,
+            toAyahNumber: v.toAyahNumber,
+            page: v.page,
+            note: v.note,
+            addedAt: v.addedAt,
+          );
         }
+        newVerses.add(verseToAdd);
       }
       final updated = existing.copyWith(
         verses: newVerses,
