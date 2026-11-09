@@ -594,7 +594,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sunnahDuasTitle => 'أدعية من السنة النبوية';
 
   @override
-  String get sunnahDuasSubtitle => 'أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب';
+  String get sunnahDuasSubtitle => 'أدعية عن النبي صلى الله عليه وعلى آله';
 
   @override
   String get jawamiDuasTitle => 'جوامع الدعاء والرجاء';

@@ -1085,7 +1085,7 @@ class QuranDuasRepository {
       ayahNumber: 112,
       ayahEndNumber: 112,
       ayahDisplay: '112',
-      title: 'دعاء النبي صلى الله عليه وسلم',
+      title: 'دعاء النبي صلى الله عليه وعلى آله',
       duaText: 'قَالَ رَبِّ احْكُمْ بِالْحَقِّ وَرَبُّنَا الرَّحْمَٰنُ الْمُسْتَعَانُ عَلَىٰ مَا تَصِفُونَ',
       defaultPage: 331,
       category: 'الصبر والنصر',

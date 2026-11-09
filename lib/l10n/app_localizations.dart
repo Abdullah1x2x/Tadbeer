@@ -1223,7 +1223,7 @@ abstract class AppLocalizations {
   /// No description provided for @sunnahDuasSubtitle.
   ///
   /// In ar, this message translates to:
-  /// **'أدعية مأثورة وصحيحة عن النبي ﷺ لكشف الكرب'**
+  /// **'أدعية عن النبي صلى الله عليه وعلى آله'**
   String get sunnahDuasSubtitle;
 
   /// No description provided for @jawamiDuasTitle.
