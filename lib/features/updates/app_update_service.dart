@@ -66,6 +66,9 @@ class AppUpdateService {
   /// رابط قناة تيليجرام الرسمية الافتراضي.
   static const String defaultTelegramUrl = 'https://t.me/tadbeerapp';
 
+  /// رابط بوت التيليجرام لاستقبال الآراء والمقترحات.
+  static const String feedbackBotUrl = 'https://t.me/TadbeerFeedbackBot';
+
   /// رابط صفحة الإصدارات الافتراضي.
   static const String defaultReleasesUrl =
       'https://github.com/Abdullah1x2x/Tadbeer/releases/latest';
@@ -328,6 +331,16 @@ class AppUpdateService {
   /// يفتح قناة تيليجرام الرسمية لتنزيل التحديث.
   Future<bool> openTelegram([String? url]) async {
     final target = Uri.parse(url ?? defaultTelegramUrl);
+    try {
+      return await launchUrl(target, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// يفتح بوت التيليجرام الرسمي لاستقبال الآراء والمقترحات.
+  Future<bool> openFeedbackBot([String? url]) async {
+    final target = Uri.parse(url ?? feedbackBotUrl);
     try {
       return await launchUrl(target, mode: LaunchMode.externalApplication);
     } catch (_) {

@@ -19,6 +19,7 @@ import '../pathways/guided_pathways_screen.dart';
 import '../reminders/reminders_screen.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
+import '../updates/app_update_service.dart';
 import '../word_meanings/word_meanings_screen.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/ornaments.dart';
@@ -154,6 +155,13 @@ class MoreScreen extends StatelessWidget {
                     icon: AppIcons.gearFill,
                     label: l10n.settings,
                     onTap: () => open(const SettingsScreen()),
+                  ),
+                  _Tile(
+                    icon: AppIcons.megaphone,
+                    label: l10n.isArabic
+                        ? 'الآراء والمقترحات'
+                        : 'Feedback & Suggestions',
+                    onTap: () => AppUpdateService.instance.openFeedbackBot(),
                   ),
                 ],
               ),

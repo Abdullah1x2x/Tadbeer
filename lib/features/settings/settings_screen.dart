@@ -890,6 +890,19 @@ class SettingsScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 8),
+                        OutlinedButton.icon(
+                          onPressed: () =>
+                              AppUpdateService.instance.openFeedbackBot(),
+                          icon: const Icon(AppIcons.megaphone, size: 17),
+                          label: Text(
+                            isArabic
+                                ? 'إرسال رأي أو اقتراح (بوت تيليجرام)'
+                                : 'Send Feedback / Ideas (Telegram Bot)',
+                            style: const TextStyle(fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         const SizedBox(height: 10),
                         SwitchListTile.adaptive(
                           value: settings.autoCheckUpdates,
