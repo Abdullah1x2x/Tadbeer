@@ -407,20 +407,14 @@ void main() {
     );
 
     testWidgets(
-      'TasbeehScreen renders full virtue text completely without truncation',
+      'TasbeehScreen does NOT render virtue text in the card',
       (WidgetTester tester) async {
         await tester.pumpWidget(buildTestWidget(const TasbeehScreen()));
         await tester.pumpAndSettle();
 
-        // 1. Verify the active dhikr's full virtue text is displayed
         final activeVirtue = repo.activeDhikr.virtue;
         expect(activeVirtue.isNotEmpty, isTrue);
-        final virtueFinder = find.text(activeVirtue);
-        expect(virtueFinder, findsOneWidget);
-
-        // 2. Verify Text widget has no maxLines truncation constraint
-        final textWidget = tester.widget<Text>(virtueFinder);
-        expect(textWidget.maxLines, isNull);
+        expect(find.text(activeVirtue), findsNothing);
       },
     );
   });

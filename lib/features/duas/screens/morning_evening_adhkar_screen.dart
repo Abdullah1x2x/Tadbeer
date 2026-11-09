@@ -433,19 +433,7 @@ class _AdhkarCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  item.source,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+              const Spacer(),
               IconButton(
                 tooltip: l10n.copyDhikr,
                 icon: const Icon(AppIcons.copy, size: 17),
@@ -535,43 +523,6 @@ class _AdhkarCard extends StatelessWidget {
                 ? AppColors.darkTextPrimary
                 : AppColors.lightTextPrimary,
           ),
-
-          if (item.virtue.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkBackground.withValues(alpha: 0.5)
-                    : AppColors.comsilk,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    AppIcons.sparkleFill,
-                    size: 13,
-                    color: isDark
-                        ? AppColors.darkAccentGold
-                        : AppColors.oliveDark,
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      item.virtue,
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 1.35,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ],
       ),
     );

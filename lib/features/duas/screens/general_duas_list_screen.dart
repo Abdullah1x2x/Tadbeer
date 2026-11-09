@@ -71,7 +71,6 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
     final filtered = _filteredItems;
 
     return Directionality(
@@ -234,31 +233,6 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                                   ? AppColors.darkTextPrimary
                                   : AppColors.lightTextPrimary,
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                item.occasion,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: isDark
-                                      ? AppColors.darkAccentGold
-                                      : primaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                item.source,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.lightTextSecondary,
-                                ),
-                              ),
-                            ],
                           ),
                         ],
                       ),

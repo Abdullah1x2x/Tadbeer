@@ -61,21 +61,24 @@ void main() {
       expect(find.textContaining('أذكار الصباح'), findsWidgets);
       expect(find.textContaining('أذكار المساء'), findsWidgets);
 
-      // Verify first morning dhikr is present
+      // Verify first dhikr is present and virtue is not displayed
       expect(
-        find.textContaining(
-          'اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
-        ),
+        find.textContaining('اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ'),
         findsOneWidget,
       );
+      expect(find.textContaining('أُجير من الشياطين'), findsNothing);
 
       // Tap on evening adhkar tab
       final eveningTab = find.textContaining('أذكار المساء').first;
       await tester.tap(eveningTab);
       await tester.pumpAndSettle();
 
-      // Check evening dhikr (Ayat Al-Kursi or Amsayna)
-      expect(find.textContaining('أُجير من الشياطين حتى يصبح'), findsOneWidget);
+      // Verify dhikr is still rendered and virtue remains not displayed
+      expect(
+        find.textContaining('اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('أُجير من الشياطين'), findsNothing);
     });
 
     testWidgets('MorningEveningAdhkarScreen taps counter and copies dhikr', (
