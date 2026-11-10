@@ -7,19 +7,14 @@ void main() {
   setUp(() {
     HttpOverrides.global = null;
   });
-  test('AppUpdateService fetches live version.json from GitHub and detects v1.0.1',
+  test('AppUpdateService fetches live version.json and parses version metadata',
       () async {
     final updateInfo = await AppUpdateService.instance.fetchUpdateInfo();
 
     expect(updateInfo, isNotNull);
-    expect(updateInfo!.latestVersion, '1.0.1');
-    expect(updateInfo.buildNumber, 2);
-    expect(
-      updateInfo.isNewerThan(
-        AppUpdateService.currentBuildNumber,
-        AppUpdateService.currentVersion,
-      ),
-      isTrue,
-    );
+    expect(updateInfo!.latestVersion, isNotEmpty);
+    expect(updateInfo.buildNumber, greaterThanOrEqualTo(1));
+    expect(updateInfo.title, isNotEmpty);
+    expect(updateInfo.changelog, isNotEmpty);
   });
 }

@@ -1,11 +1,11 @@
 {
-  "latest_version": "1.0.1",
-  "build_number": 2,
-  "release_date": "2026-11-09",
-  "title": "تحديث تجريبي لتطبيق تدبير (v1.0.1)",
-  "changelog": "• نجاح اختبار نظام التحديثات الجديد عبر المستودع وتيليجرام.\n• إمكانية التحقق من التحديثات يدوياً أو تلقائياً عند فتح التطبيق.\n• زر التحميل المباشر عبر قناة تيليجرام الرسمية وزر التحميل من GitHub.\n• تحسينات في استقرار روابط الآيات والملاحظات.",
+  "latest_version": "1.0.0",
+  "build_number": 1,
+  "release_date": "2026-11-10",
+  "title": "الإصدار الرسمي الأول لتطبيق تدبير (v1.0.0)",
+  "changelog": "• الإطلاق الرسمي لتطبيق تَدبِير للقراءة والتدبر القرآني الشامل.\n• مصحف إلكتروني متكامل عالي الدقة دون إنترنت (604 صفحات).\n• أدوات تدبر متقدمة: وقفات تدبر، دفتر الملاحظات، تظليل الآيات والفواصل الملونة.\n• شبكة روابط الآيات ومسارات تدبرية منهجية.\n• أذكار يومية، سبحة إلكترونية، بوصلة القبلة، ومكتبة تدبرية محلية.\n• خصوصية تامة وأمان محلي 100% دون جمع بيانات أو إعلانات.",
   "telegram_url": "https://t.me/tadbeerapp",
-  "download_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.0.1",
-  "apk_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/app-arm64-v8a-release.apk",
+  "download_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.0.0",
+  "apk_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.0/app-arm64-v8a-release.apk",
   "is_mandatory": false
 }
