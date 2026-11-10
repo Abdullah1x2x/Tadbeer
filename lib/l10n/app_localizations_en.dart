@@ -393,12 +393,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tadbeerSectionTitle => 'Tadbeer';
 
   @override
-  String get wordMeanings => 'Word Meanings';
-
-  @override
-  String get wordMeaningsScreenTitle => 'Quran Word Meanings';
-
-  @override
   String get approvedSourcesTitle => 'Approved Sources';
 
   @override
@@ -625,20 +619,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchSurahsHint => 'Search surahs...';
 
   @override
-  String get searchWordMeaningsHint => 'Search Quranic word or meaning...';
-
-  @override
   String get allSurahsWithCount => 'All Surahs (114 Surahs)';
-
-  @override
-  String get noWordsFound => 'No words match your search';
-
-  @override
-  String get noWordsFoundSubtitle =>
-      'Try searching for another word or clear filters to browse all words.';
-
-  @override
-  String get lexicalMeaningTitle => 'Lexical Meaning:';
 
   @override
   String get verifiedDocumentation => 'Verified Source';
@@ -2091,9 +2072,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchCardHint => 'The Quran and all you saved';
 
   @override
-  String get wordMeaningsCardHint => 'Word meanings in Mushaf order';
-
-  @override
   String get ayahLinksCardHint => 'Link ayahs by theme';
 
   @override
@@ -2360,13 +2338,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add the ayahs you memorize and review what is due each day. What you master comes back less often; what you forget returns soon.';
 
   @override
-  String get guideWordMeaningsTitle => 'Word meanings';
-
-  @override
-  String get guideWordMeaningsBody =>
-      'Meanings of unusual words in Mushaf order. Search by word or meaning, or pick a surah to see it alone.';
-
-  @override
   String get guideNotesTitle => 'Notes';
 
   @override
@@ -2470,18 +2441,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mushafMenu => 'Menu';
 
   @override
-  String get pageMeaningsTooltip => 'Word meanings on this page';
-
-  @override
   String get previousPage => 'Previous page';
 
   @override
   String get nextPage => 'Next page';
-
-  @override
-  String meaningsBadge(String count) {
-    return 'Meanings ($count)';
-  }
 
   @override
   String get enterPageRange => 'Enter a page number from 1 to 604';
@@ -2490,17 +2453,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get doneLabel => 'Done';
 
   @override
-  String wordMeaningsCount(String count) {
-    return 'Word meanings ($count)';
-  }
-
-  @override
   String get hideBar => 'Hide the bar';
-
-  @override
-  String pageWordMeanings(String page) {
-    return 'Word meanings of page $page';
-  }
 
   @override
   String wordsCount(String count) {
@@ -2509,9 +2462,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get closePanel => 'Close the panel';
-
-  @override
-  String get noPageMeanings => 'No words on this page need explaining';
 
   @override
   String get stopAlarm => 'Stop alarm';
@@ -2557,9 +2507,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tourNextReview => 'Review in 3 days';
-
-  @override
-  String get tourMeaningLabel => 'Meaning';
 
   @override
   String get tourBookSample => 'Guidance of the Quran';

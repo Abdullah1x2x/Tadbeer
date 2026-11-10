@@ -398,7 +398,7 @@ void main() {
         expect(find.text('المصحف'), findsOneWidget);
         expect(find.text('وقفاتي'), findsOneWidget);
         expect(find.text('الملاحظات'), findsOneWidget);
-        // Ayah links sit with the shortcuts; word meanings is in «المزيد».
+        // Ayah links sit with the shortcuts; word meanings has been completely removed.
         expect(find.text('معاني الكلمات'), findsNothing);
         expect(find.text('روابط الآيات'), findsOneWidget);
         expect(tester.takeException(), isNull);

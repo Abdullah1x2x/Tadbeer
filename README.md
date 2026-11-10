@@ -40,7 +40,7 @@
 
 | القسم | ما يقدمه |
 | --- | --- |
-| **المصحف** | 604 صفحات بخط مصحف المدينة الرقمي (Digital Khatt) أو بخطوط نصية، وتقليب سلس، وقائمة دائرية للآية، ومعاني الكلمات |
+| **المصحف** | 604 صفحات بخط مصحف المدينة الرقمي (Digital Khatt) أو بخطوط نصية، وتقليب سلس، وقائمة دائرية للآية، وتظليل الآيات والفواصل |
 | **الاستماع** | 7 قرّاء، سورة أو آية واحدة، وتنزيل للاستماع دون إنترنت |
 | **رحلتي** | ختمة بخطة، وسلسلة أيام، وأهداف، وخريطة للمصحف، وتقرير شهري |
 | **الحفظ** | مراجعة متباعدة للآيات التي تحفظها |
@@ -125,9 +125,8 @@
 
 <table>
   <tr>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/22_notes.png" alt="الملاحظات" width="100%"><br><sub><b>الملاحظات</b></sub></td>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/23_word_meanings.png" alt="معاني الكلمات" width="100%"><br><sub><b>معاني الكلمات</b></sub></td>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/24_search.png" alt="البحث" width="100%"><br><sub><b>البحث</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/22_notes.png" alt="الملاحظات" width="100%"><br><sub><b>الملاحظات</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/24_search.png" alt="البحث" width="100%"><br><sub><b>البحث</b></sub></td>
   </tr>
 </table>
 

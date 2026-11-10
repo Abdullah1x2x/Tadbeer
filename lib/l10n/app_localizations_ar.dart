@@ -392,12 +392,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tadbeerSectionTitle => 'التدبر';
 
   @override
-  String get wordMeanings => 'معاني الكلمات';
-
-  @override
-  String get wordMeaningsScreenTitle => 'معاني كلمات القرآن';
-
-  @override
   String get approvedSourcesTitle => 'المصادر المعتمدة';
 
   @override
@@ -623,20 +617,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchSurahsHint => 'بحث في السور...';
 
   @override
-  String get searchWordMeaningsHint => 'ابحث عن كلمة قرآنية أو معناها...';
-
-  @override
   String get allSurahsWithCount => 'جميع السور (١١٤ سورة)';
-
-  @override
-  String get noWordsFound => 'لا توجد كلمات مطابقة لبحثك';
-
-  @override
-  String get noWordsFoundSubtitle =>
-      'جرب البحث بكلمة أخرى أو قم بإلغاء التصفية لتصفح جميع الكلمات.';
-
-  @override
-  String get lexicalMeaningTitle => 'المعنى اللغوي المعجمي:';
 
   @override
   String get verifiedDocumentation => 'توثيق معتمد';
@@ -2084,9 +2065,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchCardHint => 'في القرآن وكل ما حفظت';
 
   @override
-  String get wordMeaningsCardHint => 'معاني الكلمات بترتيب المصحف';
-
-  @override
   String get ayahLinksCardHint => 'اربط الآيات بموضوع واحد';
 
   @override
@@ -2350,13 +2328,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'أضف الآيات التي تحفظها، وراجع كل يوم ما حان وقته. ما تتقنه تتباعد مراجعته، وما تنساه يعود إليك قريباً.';
 
   @override
-  String get guideWordMeaningsTitle => 'معاني الكلمات';
-
-  @override
-  String get guideWordMeaningsBody =>
-      'معاني الكلمات الغريبة بترتيب المصحف. ابحث بكلمة أو معنى، أو اختر سورة لتراها وحدها.';
-
-  @override
   String get guideNotesTitle => 'الملاحظات';
 
   @override
@@ -2459,18 +2430,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get mushafMenu => 'القائمة';
 
   @override
-  String get pageMeaningsTooltip => 'معاني كلمات الصفحة';
-
-  @override
   String get previousPage => 'الصفحة السابقة';
 
   @override
   String get nextPage => 'الصفحة التالية';
-
-  @override
-  String meaningsBadge(String count) {
-    return 'المعاني ($count)';
-  }
 
   @override
   String get enterPageRange => 'أدخل رقم الصفحة بين ١ و ٦٠٤';
@@ -2479,17 +2442,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get doneLabel => 'تم';
 
   @override
-  String wordMeaningsCount(String count) {
-    return 'معاني الكلمات ($count)';
-  }
-
-  @override
   String get hideBar => 'إخفاء الشريط';
-
-  @override
-  String pageWordMeanings(String page) {
-    return 'معاني كلمات صفحة $page';
-  }
 
   @override
   String wordsCount(String count) {
@@ -2498,9 +2451,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get closePanel => 'إغلاق اللوحة';
-
-  @override
-  String get noPageMeanings => 'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة';
 
   @override
   String get stopAlarm => 'إيقاف المنبه';
@@ -2546,9 +2496,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tourNextReview => 'المراجعة بعد ٣ أيام';
-
-  @override
-  String get tourMeaningLabel => 'المعنى';
 
   @override
   String get tourBookSample => 'هدي القرآن';

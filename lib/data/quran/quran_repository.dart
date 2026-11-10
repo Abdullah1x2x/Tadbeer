@@ -36,7 +36,7 @@ class QuranRepository {
 
   List<Ayah> get allAyahs => List.unmodifiable(_allAyahs);
 
-  /// يحمّل بيانات القرآن ومعاني الكلمات ويبني فهارس البحث؛ يُستدعى مرة عند
+  /// يحمّل بيانات القرآن ويبني فهارس البحث؛ يُستدعى مرة عند
   /// الإقلاع.
   Future<void> init() async {
     if (_isLoaded) return;

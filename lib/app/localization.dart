@@ -272,9 +272,6 @@ extension type AppStrings._(AppLocalizations _l) implements AppLocalizations {
   String pdfPageFailed(String page, String error) =>
       _l.pdfPageFailed(page, error);
   String booksCountLabel(String count) => _l.booksCountLabel(count);
-  String meaningsBadge(String count) => _l.meaningsBadge(count);
-  String wordMeaningsCount(String count) => _l.wordMeaningsCount(count);
-  String pageWordMeanings(String page) => _l.pageWordMeanings(page);
   String wordsCount(String count) => _l.wordsCount(count);
   String pageAbbrOfTotal(dynamic page, dynamic total) =>
       _l.pageAbbrOfTotal(digits(page), digits(total));

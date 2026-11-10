@@ -124,8 +124,6 @@
   "searchRemindersHint": "ابحث في التنبيهات...",
   "searchNotesHint": "ابحث في الملاحظات...",
   "tadbeerSectionTitle": "التدبر",
-  "wordMeanings": "معاني الكلمات",
-  "wordMeaningsScreenTitle": "معاني كلمات القرآن",
   "approvedSourcesTitle": "المصادر المعتمدة",
   "searchInAllSections": "البحث في جميع الأقسام",
   "filterSearchTitle": "تصفية نطاق البحث",
@@ -196,11 +194,7 @@
   "meccan": "مكية",
   "medinan": "مدنية",
   "searchSurahsHint": "بحث في السور...",
-  "searchWordMeaningsHint": "ابحث عن كلمة قرآنية أو معناها...",
   "allSurahsWithCount": "جميع السور (١١٤ سورة)",
-  "noWordsFound": "لا توجد كلمات مطابقة لبحثك",
-  "noWordsFoundSubtitle": "جرب البحث بكلمة أخرى أو قم بإلغاء التصفية لتصفح جميع الكلمات.",
-  "lexicalMeaningTitle": "المعنى اللغوي المعجمي:",
   "verifiedDocumentation": "توثيق معتمد",
   "edit": "تعديل",
   "editNote": "تعديل الملاحظة",
@@ -1234,7 +1228,6 @@
   "notesCardHint": "خواطرك على الآيات",
   "memorizationCardHint": "احفظ وراجع في وقته",
   "searchCardHint": "في القرآن وكل ما حفظت",
-  "wordMeaningsCardHint": "معاني الكلمات بترتيب المصحف",
   "ayahLinksCardHint": "اربط الآيات بموضوع واحد",
   "guidedPathwaysCardHint": "رحلات تدبر يومًا بيوم",
   "booksAndBookletsCardHint": "الملازم والكتب للقراءة",
@@ -1315,8 +1308,6 @@
   "guideMushafBody": "اسحب لتقليب الصفحات، واضغط مطوّلاً على الآية لقائمتها. وتظهر علاماتك من حفظ وملاحظة وتدبّر فوق رقم الآية.",
   "guideMemorizationTitle": "الحفظ والمراجعة",
   "guideMemorizationBody": "أضف الآيات التي تحفظها، وراجع كل يوم ما حان وقته. ما تتقنه تتباعد مراجعته، وما تنساه يعود إليك قريباً.",
-  "guideWordMeaningsTitle": "معاني الكلمات",
-  "guideWordMeaningsBody": "معاني الكلمات الغريبة بترتيب المصحف. ابحث بكلمة أو معنى، أو اختر سورة لتراها وحدها.",
   "guideNotesTitle": "الملاحظات",
   "guideNotesBody": "اكتب خاطرتك على آية أو خاطرة عامة، وصدّرها PDF أو اجمعها في دفتر تدبّر.",
   "guideSearchTitle": "البحث",
@@ -1402,36 +1393,11 @@
     }
   },
   "mushafMenu": "القائمة",
-  "pageMeaningsTooltip": "معاني كلمات الصفحة",
   "previousPage": "الصفحة السابقة",
   "nextPage": "الصفحة التالية",
-  "meaningsBadge": "المعاني ({count})",
-  "@meaningsBadge": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
   "enterPageRange": "أدخل رقم الصفحة بين ١ و ٦٠٤",
   "doneLabel": "تم",
-  "wordMeaningsCount": "معاني الكلمات ({count})",
-  "@wordMeaningsCount": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
   "hideBar": "إخفاء الشريط",
-  "pageWordMeanings": "معاني كلمات صفحة {page}",
-  "@pageWordMeanings": {
-    "placeholders": {
-      "page": {
-        "type": "String"
-      }
-    }
-  },
   "wordsCount": "{count} كلمات",
   "@wordsCount": {
     "placeholders": {
@@ -1441,7 +1407,6 @@
     }
   },
   "closePanel": "إغلاق اللوحة",
-  "noPageMeanings": "لا توجد كلمات تحتاج إلى شرح في هذه الصفحة",
   "stopAlarm": "إيقاف المنبه",
   "testAlarmTitle": "منبه تجريبي — تَدبِير",
   "testNoticeTitle": "إشعار تجريبي — تَدبِير",
@@ -1466,7 +1431,6 @@
   "tourRemembered": "تذكّرت",
   "tourForgot": "نسيت",
   "tourNextReview": "المراجعة بعد ٣ أيام",
-  "tourMeaningLabel": "المعنى",
   "tourBookSample": "هدي القرآن",
   "dhikrSubhanAllah": "سبحان الله",
   "tourDuaQuran": "القرآن",

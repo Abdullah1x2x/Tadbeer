@@ -21,7 +21,7 @@
 ---
 
 ### 3. العمل المحلي دون إنترنت، والإنترنت للتلاوة المسموعة والتحقق من التحديثات فقط (Offline-First)
-- كافة العمليات، بما في ذلك: قراءة وتصفح المصحف، البحث القرآني الصرفي، معجم المفردات (6,465 كلمة)، قراءة الملازم والكتب، اتجاه القبلة، وحساب أوقات التنبيهات، تنفذ محلياً بالكامل على جهازك دون اتصال.
+- كافة العمليات، بما في ذلك: قراءة وتصفح المصحف، البحث القرآني الصرفي، قراءة الملازم والكتب، اتجاه القبلة، وحساب أوقات التنبيهات، تنفذ محلياً بالكامل على جهازك دون اتصال.
 - يطلب التطبيق إذن الإنترنت (`android.permission.INTERNET`) **لغرضين حصريين:**
   1. تشغيل التلاوة المسموعة أو تنزيلها حين تطلبها أنت، من خادم شبكة Islamic Network (`cdn.islamic.network`). يصل إلى هذا الخادم ما يصل في أي تنزيل من الإنترنت: **عنوان IP الخاص بجهازك واسم الملف الصوتي المطلوب** (رقم الآية والقارئ). لا يُرسَل معه أي شيء من بياناتك أو ملاحظاتك أو معرّفات جهازك. يخضع هذا الخادم لسياسة الخصوصية الخاصة بمشغّله. وبعد تنزيل السورة تُحفظ ملفاتها على جهازك وتُسمع دون اتصال.
   2. التحقق من وجود إصدارات وتحديثات جديدة للتطبيق عبر قراءة ملف الإصدار العام (`version.json`) من المستودع المفتوح، وذلك يدوياً عبر زر الإعدادات أو تلقائياً في الخلفية (يمكن تعطيله من الإعدادات). لا يتم إرسال أي معرّفات للجهاز أو بيانات شخصية أثناء الفحص.
@@ -81,7 +81,7 @@
 ---
 
 ### 3. Offline-First Architecture, with Internet Used Only for Audio Recitation and Update Checks
-- All application functionalities, including the Mushaf (604 pages), morphological root search, the lexicon of 6,465 Quranic word meanings, book and PDF readers, the Qibla direction, and notification scheduling, run strictly on the local hardware without a connection.
+- All application functionalities, including the Mushaf (604 pages), morphological root search, book and PDF readers, the Qibla direction, and notification scheduling, run strictly on the local hardware without a connection.
 - The application declares internet permission (`android.permission.INTERNET`) **for two explicit purposes only:**
   1. Streaming or downloading audio recitation, on the user's request, from the Islamic Network CDN (`cdn.islamic.network`). That server receives **the device's IP address and the name of the requested audio file** (ayah number and reciter). No user data, notes, device identifiers or analytics are sent. Downloaded surahs are stored on the device and play offline.
   2. Checking for new app versions and updates by reading the public version metadata file (`version.json`) from the repository, either manually via the Settings screen or automatically at launch (which can be toggled in Settings). No identifiers, telemetries, or personal info are transmitted.

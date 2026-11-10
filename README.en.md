@@ -38,7 +38,7 @@ The app helps you understand the Quran and act on it, not only read it. It is bu
 
 | Section | What it offers |
 | --- | --- |
-| **Mushaf** | 604 pages in the Madinah font (Digital Khatt) or text fonts, smooth paging, a radial ayah menu and word meanings |
+| **Mushaf** | 604 pages in the Madinah font (Digital Khatt) or text fonts, smooth paging, a radial ayah menu, verse highlights and bookmarks |
 | **Listening** | 7 reciters, a whole surah or one ayah, and downloads for offline listening |
 | **Journey** | Khatma plans, day streaks, goals, a Mushaf map and a monthly report |
 | **Memorization** | Spaced review of the ayahs you memorize |
@@ -123,9 +123,8 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
 
 <table>
   <tr>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/24_search.png" alt="Search" width="100%"><br><sub><b>Search</b></sub></td>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/23_word_meanings.png" alt="Word meanings" width="100%"><br><sub><b>Word meanings</b></sub></td>
-    <td align="center" width="33%"><img src="docs/assets/screenshots/22_notes.png" alt="Notes" width="100%"><br><sub><b>Notes</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/24_search.png" alt="Search" width="100%"><br><sub><b>Search</b></sub></td>
+    <td align="center" width="50%"><img src="docs/assets/screenshots/22_notes.png" alt="Notes" width="100%"><br><sub><b>Notes</b></sub></td>
   </tr>
 </table>
 

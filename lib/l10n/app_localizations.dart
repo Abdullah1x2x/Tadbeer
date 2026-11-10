@@ -842,18 +842,6 @@ abstract class AppLocalizations {
   /// **'التدبر'**
   String get tadbeerSectionTitle;
 
-  /// No description provided for @wordMeanings.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني الكلمات'**
-  String get wordMeanings;
-
-  /// No description provided for @wordMeaningsScreenTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني كلمات القرآن'**
-  String get wordMeaningsScreenTitle;
-
   /// No description provided for @approvedSourcesTitle.
   ///
   /// In ar, this message translates to:
@@ -1274,35 +1262,11 @@ abstract class AppLocalizations {
   /// **'بحث في السور...'**
   String get searchSurahsHint;
 
-  /// No description provided for @searchWordMeaningsHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'ابحث عن كلمة قرآنية أو معناها...'**
-  String get searchWordMeaningsHint;
-
   /// No description provided for @allSurahsWithCount.
   ///
   /// In ar, this message translates to:
   /// **'جميع السور (١١٤ سورة)'**
   String get allSurahsWithCount;
-
-  /// No description provided for @noWordsFound.
-  ///
-  /// In ar, this message translates to:
-  /// **'لا توجد كلمات مطابقة لبحثك'**
-  String get noWordsFound;
-
-  /// No description provided for @noWordsFoundSubtitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'جرب البحث بكلمة أخرى أو قم بإلغاء التصفية لتصفح جميع الكلمات.'**
-  String get noWordsFoundSubtitle;
-
-  /// No description provided for @lexicalMeaningTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'المعنى اللغوي المعجمي:'**
-  String get lexicalMeaningTitle;
 
   /// No description provided for @verifiedDocumentation.
   ///
@@ -3720,12 +3684,6 @@ abstract class AppLocalizations {
   /// **'في القرآن وكل ما حفظت'**
   String get searchCardHint;
 
-  /// No description provided for @wordMeaningsCardHint.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني الكلمات بترتيب المصحف'**
-  String get wordMeaningsCardHint;
-
   /// No description provided for @ayahLinksCardHint.
   ///
   /// In ar, this message translates to:
@@ -4206,18 +4164,6 @@ abstract class AppLocalizations {
   /// **'أضف الآيات التي تحفظها، وراجع كل يوم ما حان وقته. ما تتقنه تتباعد مراجعته، وما تنساه يعود إليك قريباً.'**
   String get guideMemorizationBody;
 
-  /// No description provided for @guideWordMeaningsTitle.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني الكلمات'**
-  String get guideWordMeaningsTitle;
-
-  /// No description provided for @guideWordMeaningsBody.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني الكلمات الغريبة بترتيب المصحف. ابحث بكلمة أو معنى، أو اختر سورة لتراها وحدها.'**
-  String get guideWordMeaningsBody;
-
   /// No description provided for @guideNotesTitle.
   ///
   /// In ar, this message translates to:
@@ -4380,12 +4326,6 @@ abstract class AppLocalizations {
   /// **'القائمة'**
   String get mushafMenu;
 
-  /// No description provided for @pageMeaningsTooltip.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني كلمات الصفحة'**
-  String get pageMeaningsTooltip;
-
   /// No description provided for @previousPage.
   ///
   /// In ar, this message translates to:
@@ -4397,12 +4337,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الصفحة التالية'**
   String get nextPage;
-
-  /// No description provided for @meaningsBadge.
-  ///
-  /// In ar, this message translates to:
-  /// **'المعاني ({count})'**
-  String meaningsBadge(String count);
 
   /// No description provided for @enterPageRange.
   ///
@@ -4416,23 +4350,11 @@ abstract class AppLocalizations {
   /// **'تم'**
   String get doneLabel;
 
-  /// No description provided for @wordMeaningsCount.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني الكلمات ({count})'**
-  String wordMeaningsCount(String count);
-
   /// No description provided for @hideBar.
   ///
   /// In ar, this message translates to:
   /// **'إخفاء الشريط'**
   String get hideBar;
-
-  /// No description provided for @pageWordMeanings.
-  ///
-  /// In ar, this message translates to:
-  /// **'معاني كلمات صفحة {page}'**
-  String pageWordMeanings(String page);
 
   /// No description provided for @wordsCount.
   ///
@@ -4445,12 +4367,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إغلاق اللوحة'**
   String get closePanel;
-
-  /// No description provided for @noPageMeanings.
-  ///
-  /// In ar, this message translates to:
-  /// **'لا توجد كلمات تحتاج إلى شرح في هذه الصفحة'**
-  String get noPageMeanings;
 
   /// No description provided for @stopAlarm.
   ///
@@ -4535,12 +4451,6 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'المراجعة بعد ٣ أيام'**
   String get tourNextReview;
-
-  /// No description provided for @tourMeaningLabel.
-  ///
-  /// In ar, this message translates to:
-  /// **'المعنى'**
-  String get tourMeaningLabel;
 
   /// No description provided for @tourBookSample.
   ///

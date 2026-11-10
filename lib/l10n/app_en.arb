@@ -124,8 +124,6 @@
   "searchRemindersHint": "Search reminders...",
   "searchNotesHint": "Search notes...",
   "tadbeerSectionTitle": "Tadbeer",
-  "wordMeanings": "Word Meanings",
-  "wordMeaningsScreenTitle": "Quran Word Meanings",
   "approvedSourcesTitle": "Approved Sources",
   "searchInAllSections": "Search in All Sections",
   "filterSearchTitle": "Filter Search Scope",
@@ -196,11 +194,7 @@
   "meccan": "Meccan",
   "medinan": "Medinan",
   "searchSurahsHint": "Search surahs...",
-  "searchWordMeaningsHint": "Search Quranic word or meaning...",
   "allSurahsWithCount": "All Surahs (114 Surahs)",
-  "noWordsFound": "No words match your search",
-  "noWordsFoundSubtitle": "Try searching for another word or clear filters to browse all words.",
-  "lexicalMeaningTitle": "Lexical Meaning:",
   "verifiedDocumentation": "Verified Source",
   "edit": "Edit",
   "editNote": "Edit Note",
@@ -665,7 +659,6 @@
   "notesCardHint": "Your thoughts on the ayahs",
   "memorizationCardHint": "Memorize, review on time",
   "searchCardHint": "The Quran and all you saved",
-  "wordMeaningsCardHint": "Word meanings in Mushaf order",
   "ayahLinksCardHint": "Link ayahs by theme",
   "guidedPathwaysCardHint": "Day-by-day reflection journeys",
   "booksAndBookletsCardHint": "Booklets and books to read",
@@ -746,8 +739,6 @@
   "guideMushafBody": "Swipe to turn pages and long-press an ayah for its menu. Your marks for memorization, notes and reflections appear above the ayah number.",
   "guideMemorizationTitle": "Memorization and review",
   "guideMemorizationBody": "Add the ayahs you memorize and review what is due each day. What you master comes back less often; what you forget returns soon.",
-  "guideWordMeaningsTitle": "Word meanings",
-  "guideWordMeaningsBody": "Meanings of unusual words in Mushaf order. Search by word or meaning, or pick a surah to see it alone.",
   "guideNotesTitle": "Notes",
   "guideNotesBody": "Write a thought on an ayah or a general one, and export it as PDF or gather it into a reflection journal.",
   "guideSearchTitle": "Search",
@@ -813,36 +804,11 @@
     }
   },
   "mushafMenu": "Menu",
-  "pageMeaningsTooltip": "Word meanings on this page",
   "previousPage": "Previous page",
   "nextPage": "Next page",
-  "meaningsBadge": "Meanings ({count})",
-  "@meaningsBadge": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
   "enterPageRange": "Enter a page number from 1 to 604",
   "doneLabel": "Done",
-  "wordMeaningsCount": "Word meanings ({count})",
-  "@wordMeaningsCount": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
   "hideBar": "Hide the bar",
-  "pageWordMeanings": "Word meanings of page {page}",
-  "@pageWordMeanings": {
-    "placeholders": {
-      "page": {
-        "type": "String"
-      }
-    }
-  },
   "wordsCount": "{count} words",
   "@wordsCount": {
     "placeholders": {
@@ -852,7 +818,6 @@
     }
   },
   "closePanel": "Close the panel",
-  "noPageMeanings": "No words on this page need explaining",
   "stopAlarm": "Stop alarm",
   "testAlarmTitle": "Test alarm — Tadbeer",
   "testNoticeTitle": "Test notification — Tadbeer",
@@ -877,7 +842,6 @@
   "tourRemembered": "Remembered",
   "tourForgot": "Forgot",
   "tourNextReview": "Review in 3 days",
-  "tourMeaningLabel": "Meaning",
   "tourBookSample": "Guidance of the Quran",
   "dhikrSubhanAllah": "Subhan Allah",
   "tourDuaQuran": "Quran",

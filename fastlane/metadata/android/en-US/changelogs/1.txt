@@ -1,5 +1,5 @@
 Initial stable release of Tadbeer:
 - Full 604-page Uthmani Mushaf with 5 open-source Quranic fonts.
-- Integrated offline Quranic word meanings lexicon.
+- Integrated offline duas, adhkar, and tasbeeh collections.
 - Verse-linked reflection notes, bookmarks, and encrypted backup and restore.
 - Local daily Quran reading reminders and alarms.
