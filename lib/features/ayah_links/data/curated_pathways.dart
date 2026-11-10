@@ -50,6 +50,50 @@ class CuratedPathwaysRegistry {
 
   static const List<CuratedPathway> pathways = [
     CuratedPathway(
+      id: 'quran_itself',
+      title: 'القرآن',
+      description:
+          'سبعة أيام مع القرآن كما وصف نفسه: مبارك، ميسّر، هادٍ، وشفاء.',
+      category: 'القرآن والتدبر',
+      verses: [
+        CuratedPathwayVerse(
+          surah: 38,
+          ayah: 29,
+          note: 'أُنزل ليُتدبّر: غاية القراءة فهمٌ يحرّك القلب.',
+        ),
+        CuratedPathwayVerse(
+          surah: 47,
+          ayah: 24,
+          note: 'أفلا يتدبرون القرآن: سؤال موجّه إلى قلبك.',
+        ),
+        CuratedPathwayVerse(
+          surah: 17,
+          ayah: 9,
+          note: 'يهدي للتي هي أقوم في كل شأن.',
+        ),
+        CuratedPathwayVerse(
+          surah: 54,
+          ayah: 17,
+          note: 'ولقد يسرنا القرآن للذكر: فهل من مدكر؟',
+        ),
+        CuratedPathwayVerse(
+          surah: 59,
+          ayah: 21,
+          note: 'لو أُنزل على جبل لخشع: فأين قلوبنا؟',
+        ),
+        CuratedPathwayVerse(
+          surah: 4,
+          ayah: 82,
+          note: 'لا اختلاف فيه: دليل أنه من عند الله.',
+        ),
+        CuratedPathwayVerse(
+          surah: 10,
+          ayah: 57,
+          note: 'موعظة وشفاء لما في الصدور وهدى ورحمة.',
+        ),
+      ],
+    ),
+    CuratedPathway(
       id: 'names_of_allah',
       title: 'أسماء الله الحسنى وجلال الصفات',
       description: 'آيات جامعة في التعرف على الخالق سبحانه بأسمائه الحسنى وصفاته العلى وأثرها في يقين القلب.',
@@ -58,7 +102,8 @@ class CuratedPathwaysRegistry {
         CuratedPathwayVerse(
           surah: 2,
           ayah: 255,
-          note: 'آية الكرسي: أعظم آية في كتاب الله؛ قيوميته وحياته التي لا يعتريها سنة ولا نوم.',
+          note:
+              'الحي القيوم الذي لا تأخذه سِنة ولا نوم: يقينٌ يملأ الروح طمأنينة بأن رعاية الله محيطة بك وبأمرك في كل لحظة.',
         ),
         CuratedPathwayVerse(
           surah: 59,
@@ -116,7 +161,7 @@ class CuratedPathwaysRegistry {
         CuratedPathwayVerse(
           surah: 20,
           ayah: 25,
-          note: 'دعاء موسى عليه السلام: شرح الصدر وتيسير الأمر تمهيداً لأعظم رسالة.',
+          note: 'دعاء موسى عليه السلام: شرح الصدر وتيسير الأمر تمهيداً للرسالة.',
         ),
         CuratedPathwayVerse(
           surah: 7,
@@ -290,7 +335,8 @@ class CuratedPathwaysRegistry {
         CuratedPathwayVerse(
           surah: 50,
           ayah: 16,
-          note: 'أقرب إليك من حبل الوريد، فلا تحتاج إلى وسيط لتناجيه.',
+          note:
+              'أقرب إليك من حبل الوريد: معية إلهية محيطة، يعلم سرك ونجواك وخواطر نفسك قبل أن تنطق بها.',
         ),
         CuratedPathwayVerse(
           surah: 57,
@@ -653,50 +699,6 @@ class CuratedPathwaysRegistry {
           surah: 102,
           ayah: 8,
           note: 'ثم لتسألن يومئذ عن النعيم: النعمة مسؤولية.',
-        ),
-      ],
-    ),
-    CuratedPathway(
-      id: 'quran_itself',
-      title: 'القرآن',
-      description:
-          'سبعة أيام مع القرآن كما وصف نفسه: مبارك، ميسّر، هادٍ، وشفاء.',
-      category: 'القرآن والتدبر',
-      verses: [
-        CuratedPathwayVerse(
-          surah: 38,
-          ayah: 29,
-          note: 'أُنزل ليُتدبّر: غاية القراءة فهمٌ يحرّك القلب.',
-        ),
-        CuratedPathwayVerse(
-          surah: 47,
-          ayah: 24,
-          note: 'أفلا يتدبرون القرآن: سؤال موجّه إلى قلبك.',
-        ),
-        CuratedPathwayVerse(
-          surah: 17,
-          ayah: 9,
-          note: 'يهدي للتي هي أقوم في كل شأن.',
-        ),
-        CuratedPathwayVerse(
-          surah: 54,
-          ayah: 17,
-          note: 'ولقد يسرنا القرآن للذكر: فهل من مدكر؟',
-        ),
-        CuratedPathwayVerse(
-          surah: 59,
-          ayah: 21,
-          note: 'لو أُنزل على جبل لخشع: فأين قلوبنا؟',
-        ),
-        CuratedPathwayVerse(
-          surah: 4,
-          ayah: 82,
-          note: 'لا اختلاف فيه: دليل أنه من عند الله.',
-        ),
-        CuratedPathwayVerse(
-          surah: 10,
-          ayah: 57,
-          note: 'موعظة وشفاء لما في الصدور وهدى ورحمة.',
         ),
       ],
     ),
