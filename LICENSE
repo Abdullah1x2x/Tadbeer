@@ -21,15 +21,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 -----------------------------------------------------------------------
+STRICT INTEGRITY RESTRICTION ON RELIGIOUS & SACRED CONTENT:
+- While the software source code and architecture are licensed under the
+  MIT License, ALL RELIGIOUS, SACRED, AND HERITAGE CONTENTS bundled with
+  or used by this software (including, but not limited to: the Holy Quranic
+  texts, prophetic and Ahlulbayt duas, supplications, adhkar, curated
+  contemplative pathways, and classical Islamic heritage works) are strictly
+  subject to an UNALTERABLE INTEGRITY REQUIREMENT:
+  * Any alteration, modification, distortion, omission, falsification, or
+    unauthorized tampering with the religious texts, their wordings,
+    meanings, or traditional attributions is STRICTLY PROHIBITED.
+  * Any redistribution, fork, derivative work, or copy of this software
+    that includes these religious contents MUST preserve them completely
+    unaltered (verbatim) and in their original integrity.
+
+-----------------------------------------------------------------------
 NOTICE ON SEPARATE THIRD-PARTY ASSETS AND QURANIC DATA:
-- The Uthmani Quranic text and Mushaf metadata in `assets/quran/quran_data.json`
+- The Uthmani Quranic text and Mushaf metadata in `assets/quran/`
   are provided by the Tanzil Project (https://tanzil.net) under the
   Creative Commons Attribution 3.0 Unported License (CC BY 3.0) and
   Tanzil Terms of Use (Modification of the Quranic text is strictly
   prohibited).
-- The lexical word meanings dataset in `assets/quran/word_meanings.json`
-  is governed by the Quranpedia.net Data License (https://quranpedia.net,
-  Version 2026-10-10) and classical Arabic lexicons in the Public Domain.
-- Bundled font files in `assets/fonts/*.ttf` are licensed under the
+- Bundled font files in `assets/fonts/*.ttf` and `*.otf` are licensed under the
   SIL Open Font License, Version 1.1 (OFL-1.1).
 See `THIRD_PARTY_NOTICES.md` for complete notices.

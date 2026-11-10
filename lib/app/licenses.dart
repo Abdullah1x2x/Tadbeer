@@ -8,6 +8,22 @@ import 'package:flutter/foundation.dart';
 void registerBundledAssetLicenses() {
   LicenseRegistry.addLicense(() async* {
     yield const LicenseEntryWithLineBreaks(
+      <String>[
+        'tadbeer_content_integrity',
+        'حماية وسلامة النصوص والمحتوى الديني',
+      ],
+      '''شرط حظر تعديل أو تحريف النصوص الدينية والتراثية (Religious Content Integrity Clause)
+
+بموجب هذه الوثيقة، ورغم أن الكود البرمجي لتطبيق تدبير منشور تحت رخصة MIT، فإن جميع النصوص الدينية والمحتويات التراثية المضمنة (بما في ذلك نصوص القرآن الكريم، وأدعية السنة النبوية المطهرة، وأدعية أئمة أهل البيت عليهم السلام، والأذكار، وصيغ التسابيح، والمسارات التدبرية، وكتب التراث والملازم) تخضع لشرط النزاهة والأمانة التامة غير القابل للإسقاط:
+
+1. يُحظر حظراً تاماً ومطلقاً أي تحريف، أو تبديل، أو تعديل، أو حذف، أو تشويه، أو نسبة غير صحيحة لأي نص من النصوص الدينية أو صيغها المعتمدة.
+2. عند أخذ نسخة أو اشتقاق فرع (Fork) أو إعادة توزيع للبرمجية مع المحتويات الدينية، يجب الحفاظ التام والكامل على هذه النصوص كما هي بصيغتها الأصلية المعتمدة دون أي مساس بها.
+
+Strict Integrity Restriction on Religious Content:
+All religious, sacred, and heritage texts bundled in this software are strictly non-modifiable. Any alteration, distortion, or falsification is strictly prohibited upon copying, forking, or redistributing.''',
+    );
+
+    yield const LicenseEntryWithLineBreaks(
       <String>['tanzil_quran_text'],
       '''Tanzil Quran Text (Uthmani Script & Mushaf Metadata)
 Copyright (C) 2007-2026 Tanzil Project (https://tanzil.net)

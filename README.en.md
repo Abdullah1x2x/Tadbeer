@@ -168,11 +168,14 @@ flutter analyze && flutter test
 
 Fixes and ideas are welcome through [issues](https://github.com/Abdullah1x2x/Tadbeer/issues) and pull requests. If you find an error in a religious text, please report it first.
 
-## License and sources
+## License & Content Integrity
 
-The app code is under the [MIT License](LICENSE). Bundled content has its own sources and terms:
+The application source code and architecture are licensed under the [MIT License](LICENSE).
 
-- Quran text: [Tanzil Project](https://tanzil.net).
+### Religious Content Integrity Requirement:
+**Any alteration, modification, distortion, omission, or unauthorized tampering with the religious, sacred, and heritage texts bundled in this software** (including, but not limited to: Holy Quranic texts, prophetic and Ahlulbayt duas and supplications, adhkar, tasbeeh formulas, and classical heritage books) **is STRICTLY PROHIBITED** upon cloning, copying, forking, or redistributing the software. These contents must be preserved verbatim in their complete, original, and authenticated state.
+
+Bundled third-party assets and fonts retain their respective licenses and terms:
+- Quran text: [Tanzil Project](https://tanzil.net) (alteration is strictly prohibited).
 - Mushaf font: Digital Khatt (Amine Anane and Tarteel), SIL OFL 1.1; page text from the DigitalKhatt project (MIT).
-- Word meanings: [Quranpedia](https://quranpedia.net).
 - Full details are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
