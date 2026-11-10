@@ -274,16 +274,6 @@ class SettingsScreen extends StatelessWidget {
                             color: AppColors.textSecondary(context),
                           ),
                         ),
-                        if (madinah) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            l10n.digitalKhattAttribution,
-                            style: TextStyle(
-                              fontSize: 11.5,
-                              color: AppColors.textSecondary(context),
-                            ),
-                          ),
-                        ],
                         const Divider(height: 28),
                         // اختيار الخط يخص النص المتدفق وحده.
                         if (!madinah) ...[
@@ -670,239 +660,280 @@ class SettingsScreen extends StatelessWidget {
                 _buildSectionHeader(context, l10n.about),
                 _buildCard(
                   context: context,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
                           children: [
                             Container(
-                              width: 38,
-                              height: 38,
+                              width: 42,
+                              height: 42,
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
                                     .withValues(alpha: 0.15),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 AppIcons.bookOpenFill,
                                 color: Theme.of(context).colorScheme.primary,
-                                size: 20,
+                                size: 22,
                               ),
                             ),
                             const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  l10n.appName,
-                                  style: TextStyle(
-                                    fontFamily: isArabic ? 'Amiri' : null,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark
-                                        ? AppColors.darkTextPrimary
-                                        : AppColors.lightPrimaryDark,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.appName,
+                                    style: TextStyle(
+                                      fontFamily: isArabic ? 'Amiri' : null,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? AppColors.darkTextPrimary
+                                          : AppColors.lightPrimaryDark,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  isArabic
-                                      ? 'الإصدار ${l10n.digits(AppUpdateService.currentVersion)} · مجاني وبدون إعلانات أو إنترنت'
-                                      : 'Version ${AppUpdateService.currentVersion} · Free, ad-free & offline',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: isDark
-                                        ? AppColors.nightSubtitle
-                                        : AppColors.daySubtitle,
+                                  Text(
+                                    isArabic
+                                        ? 'الإصدار ${l10n.digits(AppUpdateService.currentVersion)} · مجاني وبدون إعلانات أو إنترنت'
+                                        : 'Version ${AppUpdateService.currentVersion} · Free, ad-free & offline',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: isDark
+                                          ? AppColors.nightSubtitle
+                                          : AppColors.daySubtitle,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 14),
-                        Text(
-                          l10n.aboutContent,
-                          style: TextStyle(
-                            fontSize: 13,
-                            height: 1.7,
-                            color: isDark
-                                ? AppColors.nightSubtitle
-                                : AppColors.daySubtitle,
-                          ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: Icon(
+                          AppIcons.bookOpenText,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        const SizedBox(height: 16),
-                        const Divider(height: 1),
-                        const SizedBox(height: 14),
-                        Text(
-                          l10n.sourcesAndCredits,
-                          style: TextStyle(
-                            fontFamily: isArabic ? 'IBMPlexSansArabic' : null,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightPrimaryDark,
-                          ),
+                        title: Text(
+                          isArabic
+                              ? 'عن تَدبِير والمصادر المعتمدة'
+                              : 'About Tadbeer & Sources',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          l10n.sourcesAndCreditsDetails,
+                        subtitle: Text(
+                          isArabic
+                              ? 'نبذة عن المنهج والمصادر والتوثيق'
+                              : 'Mission, methodology & sources',
                           style: TextStyle(
                             fontSize: 12,
-                            height: 1.7,
                             color: isDark
                                 ? AppColors.nightSubtitle
                                 : AppColors.daySubtitle,
                           ),
                         ),
-                        const SizedBox(height: 14),
-                        const Divider(height: 1),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () =>
-                                    _showPrivacyPolicyDialog(context),
-                                icon: const Icon(AppIcons.shield, size: 17),
-                                label: Text(
-                                  l10n.privacyPolicy,
-                                  style: const TextStyle(fontSize: 12),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () {
-                                  showLicensePage(
-                                    context: context,
-                                    applicationName: l10n.appName,
-                                    applicationVersion:
-                                        AppUpdateService.currentVersion,
-                                    applicationLegalese:
-                                        'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
-                                        'Quran Text: Tanzil.net (CC BY 3.0)\n'
-                                        'Fonts: SIL Open Font License 1.1, including the Digital Khatt Mushaf font\n'
-                                        'Mushaf text and layout: DigitalKhatt (MIT)\n'
-                                        'Books: rights remain with their owners',
-                                  );
-                                },
-                                icon: const Icon(AppIcons.fileText, size: 17),
-                                label: Text(
-                                  l10n.openSourceLicenses,
-                                  style: const TextStyle(fontSize: 12),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                          ],
+                        trailing: const Icon(AppIcons.caretRight, size: 20),
+                        onTap: () => _showAboutAndSourcesDialog(context),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: Icon(
+                          AppIcons.shieldCheck,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ValueListenableBuilder<UpdateDownloadState>(
-                                valueListenable:
-                                    AppUpdateService.instance.downloadState,
-                                builder: (context, downloadState, _) {
-                                  if (downloadState.isDownloading) {
-                                    final percent = (downloadState.progress != null)
-                                        ? (downloadState.progress!.progress * 100).toInt()
-                                        : 0;
-                                    return ElevatedButton.icon(
-                                      onPressed: () => AppUpdateService.instance
-                                          .checkForUpdates(context, showFeedback: true),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      icon: const SizedBox(
-                                        width: 13,
-                                        height: 13,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      label: Text(
-                                        isArabic
-                                            ? 'جارٍ التحميل ($percent%)'
-                                            : 'Downloading ($percent%)',
-                                        style: const TextStyle(fontSize: 12),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }
-
-                                  if (downloadState.isCompleted) {
-                                    return ElevatedButton.icon(
-                                      onPressed: () => AppUpdateService.instance
-                                          .checkForUpdates(context, showFeedback: true),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      icon: const Icon(AppIcons.checkCircleFill, size: 16),
-                                      label: Text(
-                                        isArabic
-                                            ? 'جاهز للتثبيت'
-                                            : 'Ready to Install',
-                                        style: const TextStyle(fontSize: 12),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }
-
-                                  return ElevatedButton.icon(
-                                    onPressed: () => AppUpdateService.instance
-                                        .checkForUpdates(context, showFeedback: true),
-                                    icon: const Icon(AppIcons.arrowClockwise, size: 17),
-                                    label: Text(
-                                      isArabic
-                                          ? 'التحقق من التحديثات'
-                                          : 'Check for Updates',
-                                      style: const TextStyle(fontSize: 12),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () =>
-                                    AppUpdateService.instance.openTelegram(),
-                                icon: const Icon(AppIcons.arrowSquareOut, size: 17),
-                                label: Text(
-                                  isArabic ? 'قناة تيليجرام' : 'Telegram Channel',
-                                  style: const TextStyle(fontSize: 12),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                          ],
+                        title: Text(
+                          l10n.privacyPolicy,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
-                        const SizedBox(height: 8),
-                        OutlinedButton.icon(
-                          onPressed: () =>
-                              AppUpdateService.instance.openFeedbackBot(),
-                          icon: const Icon(AppIcons.megaphone, size: 17),
-                          label: Text(
-                            isArabic
-                                ? 'إرسال رأي أو اقتراح (بوت تيليجرام)'
-                                : 'Send Feedback / Ideas (Telegram Bot)',
-                            style: const TextStyle(fontSize: 12),
-                            overflow: TextOverflow.ellipsis,
+                        subtitle: Text(
+                          isArabic
+                              ? 'خصوصية تامة محلياً دون جمع أي بيانات'
+                              : 'Strict offline privacy, zero data collection',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        trailing: const Icon(AppIcons.caretRight, size: 20),
+                        onTap: () => _showPrivacyPolicyDialog(context),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: Icon(
+                          AppIcons.fileText,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        title: Text(
+                          l10n.openSourceLicenses,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          isArabic
+                              ? 'تراخيص البرمجيات والخطوط والمصحف'
+                              : 'Software, typography & Quran licenses',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
+                          ),
+                        ),
+                        trailing: const Icon(AppIcons.caretRight, size: 20),
+                        onTap: () {
+                          showLicensePage(
+                            context: context,
+                            applicationName: l10n.appName,
+                            applicationVersion: AppUpdateService.currentVersion,
+                            applicationLegalese:
+                                'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
+                                'Quran Text: Tanzil.net (CC BY 3.0)\n'
+                                'Fonts: SIL Open Font License 1.1, including Digital Khatt font\n'
+                                'Mushaf text and layout: DigitalKhatt (MIT)\n'
+                                'Books: rights remain with their owners',
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // ٦. التحديثات والتواصل
+                _buildSectionHeader(
+                  context,
+                  isArabic ? 'التحديثات والمجتمع' : 'Updates & Community',
+                ),
+                _buildCard(
+                  context: context,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ValueListenableBuilder<UpdateDownloadState>(
+                          valueListenable:
+                              AppUpdateService.instance.downloadState,
+                          builder: (context, downloadState, _) {
+                            if (downloadState.isDownloading) {
+                              final percent = (downloadState.progress != null)
+                                  ? (downloadState.progress!.progress * 100)
+                                      .toInt()
+                                  : 0;
+                              return ElevatedButton.icon(
+                                onPressed: () => AppUpdateService.instance
+                                    .checkForUpdates(context, showFeedback: true),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                icon: const SizedBox(
+                                  width: 15,
+                                  height: 15,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                label: Text(
+                                  isArabic
+                                      ? 'جارٍ تحميل التحديث ($percent%)'
+                                      : 'Downloading update ($percent%)',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              );
+                            }
+
+                            if (downloadState.isCompleted) {
+                              return ElevatedButton.icon(
+                                onPressed: () => AppUpdateService.instance
+                                    .checkForUpdates(context, showFeedback: true),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                icon: const Icon(
+                                  AppIcons.checkCircleFill,
+                                  size: 18,
+                                ),
+                                label: Text(
+                                  isArabic
+                                      ? 'التحديث جاهز للتثبيت'
+                                      : 'Update ready to install',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return ElevatedButton.icon(
+                              onPressed: () => AppUpdateService.instance
+                                  .checkForUpdates(context, showFeedback: true),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: isDark ? 0.2 : 0.1),
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: BorderSide(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.3),
+                                  ),
+                                ),
+                              ),
+                              icon: const Icon(
+                                AppIcons.arrowClockwise,
+                                size: 18,
+                              ),
+                              label: Text(
+                                isArabic
+                                    ? 'التحقق من التحديثات'
+                                    : 'Check for Updates',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        const Divider(height: 1),
+                        const SizedBox(height: 6),
                         SwitchListTile.adaptive(
                           value: settings.autoCheckUpdates,
                           contentPadding: EdgeInsets.zero,
@@ -910,14 +941,17 @@ class SettingsScreen extends StatelessWidget {
                             isArabic
                                 ? 'التحقق التلقائي عند فتح التطبيق'
                                 : 'Auto check on launch',
-                            style: const TextStyle(fontSize: 13),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           subtitle: Text(
                             isArabic
-                                ? 'إشعارك عبر تيليجرام أو التطبيق عند توفر إصدار جديد'
-                                : 'Notify via Telegram or app when update is available',
+                                ? 'إشعارك عند توفر إصدار رسمي جديد'
+                                : 'Notify when a new version is available',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 11.5,
                               color: isDark
                                   ? AppColors.nightSubtitle
                                   : AppColors.daySubtitle,
@@ -926,6 +960,66 @@ class SettingsScreen extends StatelessWidget {
                           onChanged: (val) {
                             UserDataStore.instance.setAutoCheckUpdates(val);
                           },
+                        ),
+                        const SizedBox(height: 6),
+                        const Divider(height: 1),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    AppUpdateService.instance.openTelegram(),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 8,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                icon: const Icon(
+                                  AppIcons.arrowSquareOut,
+                                  size: 16,
+                                ),
+                                label: Text(
+                                  isArabic
+                                      ? 'قناة تيليجرام'
+                                      : 'Telegram',
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    AppUpdateService.instance.openFeedbackBot(),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 8,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                icon: const Icon(
+                                  AppIcons.megaphone,
+                                  size: 16,
+                                ),
+                                label: Text(
+                                  isArabic
+                                      ? 'إرسال رأي أو اقتراح'
+                                      : 'Send Feedback',
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

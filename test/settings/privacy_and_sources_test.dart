@@ -81,7 +81,7 @@ void main() {
     );
 
     testWidgets(
-      'SettingsScreen Sources card displays comprehensive Arabic attribution',
+      'SettingsScreen Sources tile opens About & Sources bottom sheet with comprehensive Arabic attribution',
       (tester) async {
         await tester.pumpWidget(
           AppLocalizationScope(
@@ -93,22 +93,25 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        // Scroll down to the Sources card
+        // Scroll down to the About section
         for (int i = 0; i < 4; i++) {
           await tester.drag(find.byType(ListView), const Offset(0, -800));
           await tester.pumpAndSettle();
         }
 
+        final aboutTileFinder = find.text('عن تَدبِير والمصادر المعتمدة');
+        expect(aboutTileFinder, findsOneWidget);
+
+        // Tap the tile to open the bottom sheet
+        await tester.tap(aboutTileFinder);
+        await tester.pumpAndSettle();
+
         final sourcesFinder = find.textContaining(
           'مشروع تنزيل (Tanzil Project',
         );
 
-        // Verify Sources card text includes Tanzil, Quranpedia, Malazem, Tasbeeh and the full list
+        // Verify Sources sheet text includes Tanzil, Malazem, Tasbeeh and the full list
         expect(sourcesFinder, findsOneWidget);
-        expect(
-          find.textContaining('الموسوعة القرآنية (Quranpedia.net'),
-          findsOneWidget,
-        );
         expect(find.textContaining('ملازم هدي القرآن الكريم'), findsOneWidget);
         expect(find.textContaining('THIRD_PARTY_NOTICES.md'), findsOneWidget);
         expect(find.textContaining('باقة الاستغفار والتسبيح'), findsOneWidget);
@@ -116,7 +119,7 @@ void main() {
     );
 
     testWidgets(
-      'SettingsScreen Sources card displays comprehensive English attribution in English locale',
+      'SettingsScreen Sources tile opens About & Sources bottom sheet in English locale',
       (tester) async {
         await tester.pumpWidget(
           AppLocalizationScope(
@@ -128,11 +131,17 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        // Scroll down to the Sources card
+        // Scroll down to the About section
         for (int i = 0; i < 4; i++) {
           await tester.drag(find.byType(ListView), const Offset(0, -800));
           await tester.pumpAndSettle();
         }
+
+        final aboutTileFinder = find.text('About Tadbeer & Sources');
+        expect(aboutTileFinder, findsOneWidget);
+
+        await tester.tap(aboutTileFinder);
+        await tester.pumpAndSettle();
 
         expect(find.text('Sources & Documentation:'), findsOneWidget);
 
@@ -140,10 +149,6 @@ void main() {
           'Holy Quran Text: Tanzil Project',
         );
         expect(sourcesFinder, findsOneWidget);
-        expect(
-          find.textContaining('Quran Vocabulary Lexicon: Quranic Encyclopedia'),
-          findsOneWidget,
-        );
         expect(
           find.textContaining('Lessons from the Guidance of the Holy Quran'),
           findsOneWidget,
@@ -154,8 +159,6 @@ void main() {
           ),
           findsOneWidget,
         );
-        expect(find.text('Privacy Policy'), findsOneWidget);
-        expect(find.text('Open Source Licenses'), findsOneWidget);
       },
     );
   });
