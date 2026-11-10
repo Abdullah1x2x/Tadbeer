@@ -145,9 +145,7 @@ class _CenterThemeNode extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              context.l10n.isArabic
-                  ? '${ArabicSearchNormalizer.convertDigits('$versesCount')} آيات مرتبطة'
-                  : '$versesCount linked verses',
+              context.l10n.linkedVersesCount(context.l10n.digits(versesCount)),
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -253,9 +251,7 @@ class _VerseCanvasNode extends StatelessWidget {
                 Expanded(
                   child: Text(
                     verse.isRange
-                        ? (context.l10n.isArabic
-                            ? '${surah.name} · ${context.l10n.digits(verse.ayahNumber)}-${context.l10n.digits(verse.toAyahNumber!)}'
-                            : '${surah.name} · ${verse.ayahNumber}-${verse.toAyahNumber}')
+                        ? '${surah.name} · ${context.l10n.digits(verse.ayahNumber)}-${context.l10n.digits(verse.toAyahNumber!)}'
                         : '${surah.name} · ${context.l10n.digits(verse.ayahNumber)}',
                     style: TextStyle(
                       fontFamily: 'IBMPlexSansArabic',

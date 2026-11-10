@@ -151,9 +151,7 @@ class MoreScreen extends StatelessWidget {
                   ),
                   _Tile(
                     icon: AppIcons.megaphone,
-                    label: l10n.isArabic
-                        ? 'الآراء والمقترحات'
-                        : 'Feedback & Suggestions',
+                    label: l10n.feedbackSuggestions,
                     onTap: () => AppUpdateService.instance.openFeedbackBot(),
                   ),
                 ],

@@ -162,9 +162,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    l10n.isArabic
-                        ? 'تم تحديث موقعك الحالي بنجاح'
-                        : 'Location updated successfully',
+                    l10n.locationUpdatedSuccessfully,
                   ),
                 ),
               ],

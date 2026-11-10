@@ -8,7 +8,7 @@
     <!-- The recitation goes on with the screen off, from a media service. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-    <!-- Only the Quran recitation streams from the internet. -->
+    <!-- The internet serves only the Quran recitation and the update check. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- The Qibla needs only a city-level location. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

@@ -87,9 +87,7 @@ class AudioBar extends StatelessWidget {
                 control(AppIcons.skipForwardFill, l10n.nextAyah, audio.next),
                 // خيارات تكرار الآية ونمط التلاوة.
                 PopupMenuButton<int>(
-                  tooltip: l10n.isArabic
-                      ? 'تكرار الآية ونمط التلاوة'
-                      : 'Repeat and playback options',
+                  tooltip: l10n.repeatAndPlaybackOptions,
                   padding: EdgeInsets.zero,
                   icon: Badge(
                     label: Text(
@@ -135,12 +133,8 @@ class AudioBar extends StatelessWidget {
                           Expanded(
                             child: Text(
                               audio.continuous
-                                  ? (l10n.isArabic
-                                      ? 'نمط التلاوة: مستمر'
-                                      : 'Mode: Continuous')
-                                  : (l10n.isArabic
-                                      ? 'نمط التلاوة: آية واحدة'
-                                      : 'Mode: Single Ayah'),
+                                  ? l10n.modeContinuous
+                                  : l10n.modeSingleAyah,
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -149,12 +143,8 @@ class AudioBar extends StatelessWidget {
                           ),
                           Text(
                             audio.continuous
-                                ? (l10n.isArabic
-                                    ? '(تبديل لفردي)'
-                                    : '(Switch)')
-                                : (l10n.isArabic
-                                    ? '(تبديل لمستمر)'
-                                    : '(Switch)'),
+                                ? l10n.switchToSingleMode
+                                : l10n.switchToContinuousMode,
                             style: TextStyle(
                               fontSize: 11,
                               color: AppColors.textSecondary(context),
@@ -181,12 +171,8 @@ class AudioBar extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               n == 1
-                                  ? (l10n.isArabic
-                                      ? 'بدون تكرار (مرة واحدة)'
-                                      : 'No repeat (1x)')
-                                  : (l10n.isArabic
-                                      ? 'تكرار الآية ×${l10n.digits(n)} مرات'
-                                      : 'Repeat ayah ×$n times'),
+                                  ? l10n.noRepeat1x
+                                  : l10n.repeatAyahTimes(l10n.digits(n)),
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: audio.repeat == n

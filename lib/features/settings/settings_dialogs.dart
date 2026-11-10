@@ -470,9 +470,7 @@ extension _SettingsDialogs on SettingsScreen {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                isArabic
-                                    ? 'عن تَدبِير والمصادر المعتمدة'
-                                    : 'About Tadbeer & Sources',
+                                l10n.aboutTadbeerSources,
                                 style: TextStyle(
                                   fontFamily: isArabic ? 'Amiri' : null,
                                   fontSize: 17,
@@ -483,9 +481,7 @@ extension _SettingsDialogs on SettingsScreen {
                                 ),
                               ),
                               Text(
-                                isArabic
-                                    ? 'الرسالة، والمنهج، ومصادر التوثيق'
-                                    : 'Mission, methodology & credits',
+                                l10n.missionMethodologyCredits,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: isDark

@@ -1754,7 +1754,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sourcesAndCreditsDetails =>
-      '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (91 ملزمة موثقة كاملة).\n• الأدعية والأذكار والتسبيح: 91 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: بياناتك على جهازك، بلا حساب ولا خوادم ولا تتبع ولا إعلانات. الإنترنت للتلاوة المسموعة فقط، والموقع التقريبي لاتجاه القبلة فقط، والنسخ الاحتياطية مشفّرة بمعيار AES-256.\n• خط مصحف المدينة: Digital Khatt (أمين عنان وTarteel) برخصة SIL OFL 1.1، ونص صفحاته وتخطيط أسطرها من مشروع DigitalKhatt (MIT).\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).\n• قائمة المصادر والتراخيص كاملة: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md';
+      '• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (91 ملزمة موثقة كاملة).\n• الأدعية والأذكار والتسبيح: 91 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: بياناتك على جهازك، بلا حساب ولا خوادم ولا تتبع ولا إعلانات. الإنترنت للتلاوة المسموعة والتحقق من التحديثات فقط، والموقع التقريبي لاتجاه القبلة فقط، والنسخ الاحتياطية مشفّرة بمعيار AES-256.\n• خط مصحف المدينة: Digital Khatt (أمين عنان وTarteel) برخصة SIL OFL 1.1، ونص صفحاته وتخطيط أسطرها من مشروع DigitalKhatt (MIT).\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).\n• قائمة المصادر والتراخيص كاملة: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md';
 
   @override
   String get unsavedChanges => 'تغييرات غير محفوظة';
@@ -2588,4 +2588,280 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get showThreads => 'إظهار الخيوط اليدوية';
+
+  @override
+  String get downloadingUpdate => 'جارٍ تنزيل التحديث...';
+
+  @override
+  String get viewAction => 'عرض';
+
+  @override
+  String get updateDownloadedReadyToInstall => 'اكتمل التنزيل! جاهز للتثبيت';
+
+  @override
+  String get installAction => 'تثبيت';
+
+  @override
+  String get repeatAndPlaybackOptions => 'تكرار الآية ونمط التلاوة';
+
+  @override
+  String get modeContinuous => 'نمط التلاوة: مستمر';
+
+  @override
+  String get modeSingleAyah => 'نمط التلاوة: آية واحدة';
+
+  @override
+  String get switchToSingleMode => '(تبديل لفردي)';
+
+  @override
+  String get switchToContinuousMode => '(تبديل لمستمر)';
+
+  @override
+  String get noRepeat1x => 'بدون تكرار (مرة واحدة)';
+
+  @override
+  String get addAsSeparateCards => 'إضافتها كبطاقات منفصلة';
+
+  @override
+  String get addToLinkAgain => 'إضافة إلى الرابط مجدداً';
+
+  @override
+  String get rangeFromLabel => 'من:';
+
+  @override
+  String get rangeToLabel => 'إلى:';
+
+  @override
+  String get deselect => 'إلغاء التحديد';
+
+  @override
+  String get moveUp => 'تقديم للأعلى';
+
+  @override
+  String get moveDown => 'تأخير للأسفل';
+
+  @override
+  String get duplicateVerseCard => 'تكرار كرت الآية';
+
+  @override
+  String get verseCardDuplicated => 'تم تكرار كرت الآية بنجاح';
+
+  @override
+  String get duplicateCard => 'تكرار البطاقة';
+
+  @override
+  String get cardDuplicated => 'تم تكرار البطاقة بنجاح';
+
+  @override
+  String get noteCardDuplicatedInLink => 'تم تكرار بطاقة الخاطرة في الرابط';
+
+  @override
+  String get verseCardDuplicatedInLink => 'تم تكرار كرت الآية في الرابط';
+
+  @override
+  String get duplicateVerseCardShort => 'تكرار كرت الآية';
+
+  @override
+  String get linkReflectionNoteHint =>
+      'خاطرة حول الآية / الآيات في هذا الرابط (اختياري)...';
+
+  @override
+  String get feedbackSuggestions => 'الآراء والمقترحات';
+
+  @override
+  String get newDuplicatedNoteCreatedSuccessfully =>
+      'تم إنشاء نسخة مكررة جديدة بنجاح';
+
+  @override
+  String get duplicateAsNewNote => 'تكرار كخاطرة جديدة';
+
+  @override
+  String get noteDuplicatedSuccessfully => 'تم تكرار الملاحظة بنجاح';
+
+  @override
+  String get failedToDuplicateNote => 'تعذر تكرار الملاحظة';
+
+  @override
+  String get duplicateNoteAction => 'تكرار الملاحظة';
+
+  @override
+  String get locationUpdatedSuccessfully => 'تم تحديث موقعك الحالي بنجاح';
+
+  @override
+  String get aboutTadbeerSources => 'عن تَدبِير والمصادر المعتمدة';
+
+  @override
+  String get missionMethodologyCredits => 'الرسالة، والمنهج، ومصادر التوثيق';
+
+  @override
+  String get missionMethodologySources => 'نبذة عن المنهج والمصادر والتوثيق';
+
+  @override
+  String get strictOfflinePrivacyZeroDataCollection =>
+      'خصوصية تامة محلياً دون جمع أي بيانات';
+
+  @override
+  String get softwareTypographyQuranLicenses =>
+      'تراخيص البرمجيات والخطوط والمصحف';
+
+  @override
+  String get updatesCommunity => 'التحديثات والمجتمع';
+
+  @override
+  String get updateReadyToInstall => 'التحديث جاهز للتثبيت';
+
+  @override
+  String get checkForUpdates => 'التحقق من التحديثات';
+
+  @override
+  String get autoCheckOnLaunch => 'التحقق التلقائي عند فتح التطبيق';
+
+  @override
+  String get notifyOnNewVersion => 'إشعارك عند توفر إصدار رسمي جديد';
+
+  @override
+  String get telegramChannel => 'قناة تيليجرام';
+
+  @override
+  String get sendFeedback => 'إرسال رأي أو اقتراح';
+
+  @override
+  String get newUpdateAvailable => 'يتوفر تحديث جديد';
+
+  @override
+  String get whatsNewInRelease => 'ما الجديد في هذا الإصدار:';
+
+  @override
+  String get generalPerformanceAndUiImprovements =>
+      'تحسينات عامة في الأداء والواجهة.';
+
+  @override
+  String get downloadingAndPreparingInstall =>
+      'جارٍ التحميل والتثبيت التلقائي...';
+
+  @override
+  String get cancelUpdateDownload => 'إلغاء التحميل';
+
+  @override
+  String get downloadCompleteTapInstall =>
+      'اكتمل التحميل! اضغط على التثبيت لتحديث التطبيق.';
+
+  @override
+  String get installUpdateNow => 'تثبيت التحديث الآن';
+
+  @override
+  String get reDownload => 'إعادة التنزيل';
+
+  @override
+  String get autoDownloadFailed =>
+      'تعذر إكمال التحميل التلقائي. يمكنك إعادة المحاولة أو التحميل عبر تيليجرام.';
+
+  @override
+  String get retryDownload => 'إعادة المحاولة';
+
+  @override
+  String get telegramLabel => 'تيليجرام';
+
+  @override
+  String get downloadInstallUpdate => 'تحميل وتثبيت التحديث تلقائياً';
+
+  @override
+  String get downloadViaOfficialTelegram => 'تحميل عبر قناة تيليجرام الرسمية';
+
+  @override
+  String get checkingForUpdates => 'جارٍ التحقق من وجود تحديثات...';
+
+  @override
+  String get updateCheckFailed =>
+      'تعذر التحقق من التحديثات، يرجى التأكد من اتصالك بالإنترنت.';
+
+  @override
+  String appVersionTagline(String version) {
+    return 'الإصدار $version · مجاني وبدون إعلانات، ويعمل دون إنترنت';
+  }
+
+  @override
+  String downloadingUpdatePercent(Object percent) {
+    return 'جارٍ تحميل التحديث ($percent%)';
+  }
+
+  @override
+  String ayahRangeReference(String surahName, String fromAyah, String toAyah) {
+    return '$surahName [الآيات $fromAyah - $toAyah]';
+  }
+
+  @override
+  String mergeVersesInOneCard(Object count) {
+    return 'دمج ($count) آيات في كرت واحد';
+  }
+
+  @override
+  String addSelectedVerses(Object count) {
+    return 'إضافة ($count) آيات محددة';
+  }
+
+  @override
+  String includePreviousAyah(String ayah) {
+    return 'ضم الآية السابقة ($ayah)';
+  }
+
+  @override
+  String includePreviousAyahShort(String ayah) {
+    return 'ضم الآية السابقة ($ayah)';
+  }
+
+  @override
+  String includeNextAyah(String ayah) {
+    return 'ضم الآية اللاحقة ($ayah)';
+  }
+
+  @override
+  String includeNextAyahShort(String ayah) {
+    return 'ضم الآية اللاحقة ($ayah)';
+  }
+
+  @override
+  String excludeAyah(String ayah) {
+    return 'استبعاد ($ayah)';
+  }
+
+  @override
+  String selectPreviousAyahOnly(String ayah) {
+    return 'اختيار الآية السابقة فقط ($ayah)';
+  }
+
+  @override
+  String multiSelectedCount(Object count) {
+    return 'تحديد متعدد ($count)';
+  }
+
+  @override
+  String addToExistingLinkCount(Object count) {
+    return 'إضافة إلى رابط موجود ($count):';
+  }
+
+  @override
+  String repeatAyahTimes(String times) {
+    return 'تكرار الآية ×$times مرات';
+  }
+
+  @override
+  String usingLatestVersion(String version) {
+    return 'أنت تستخدم أحدث إصدار من تطبيق تدبير (v$version)';
+  }
+
+  @override
+  String linkedVersesCount(String count) {
+    return '$count آيات مرتبطة';
+  }
+
+  @override
+  String duaVersesLabel(String ayahs) {
+    return 'الآيات $ayahs';
+  }
+
+  @override
+  String duaVerseLabel(String ayah) {
+    return 'الآية $ayah';
+  }
 }

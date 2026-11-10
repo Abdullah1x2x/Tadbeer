@@ -164,9 +164,7 @@ class AppUpdateService {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  context.l10n.isArabic
-                      ? 'جارٍ التحقق من وجود تحديثات...'
-                      : 'Checking for updates...',
+                  context.l10n.checkingForUpdates,
                 ),
               ],
             ),
@@ -203,9 +201,7 @@ class AppUpdateService {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              context.l10n.isArabic
-                  ? 'أنت تستخدم أحدث إصدار من تطبيق تدبير (v$currentVersion)'
-                  : 'You are using the latest version of Tadbeer (v$currentVersion)',
+              context.l10n.usingLatestVersion(currentVersion),
             ),
             behavior: SnackBarBehavior.floating,
           ),
@@ -217,9 +213,7 @@ class AppUpdateService {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              context.l10n.isArabic
-                  ? 'تعذر التحقق من التحديثات، يرجى التأكد من اتصالك بالإنترنت.'
-                  : 'Failed to check for updates. Please check your internet connection.',
+              context.l10n.updateCheckFailed,
             ),
             behavior: SnackBarBehavior.floating,
           ),
@@ -314,6 +308,10 @@ class AppUpdateService {
         if (file.existsSync()) {
           file.deleteSync();
         }
+        final part = File('${file.path}.part');
+        if (part.existsSync()) {
+          part.deleteSync();
+        }
       } catch (_) {}
     }
     downloadState.value = const UpdateDownloadState(
@@ -387,12 +385,14 @@ class AppUpdateService {
     final client = HttpClient()
       ..connectionTimeout = const Duration(seconds: 15);
 
+    // يُكتب في ملف مؤقت ثم يُعاد تسميته، فلا يوجد الملف النهائي إلا كاملاً.
+    final partFile = File('${targetFile.path}.part');
     IOSink? sink;
     try {
       if (await targetFile.exists()) {
         await targetFile.delete();
       }
-      sink = targetFile.openWrite();
+      sink = partFile.openWrite();
 
       final request = await client.getUrl(Uri.parse(url));
       request.headers.set(
@@ -419,7 +419,11 @@ class AppUpdateService {
         );
       }
 
-      await sink.flush();
+      await sink.close();
+      if (total > 0 && received != total) {
+        throw HttpException('Download incomplete: $received of $total bytes');
+      }
+      await partFile.rename(targetFile.path);
     } finally {
       await sink?.close();
       client.close();

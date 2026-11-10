@@ -189,13 +189,9 @@ class QuranDuaCard extends StatelessWidget {
           // ٤. رقم الآية (سورة : آيات).
           Center(
             child: Text(
-              l10n.isArabic
-                  ? (dua.ayahDisplay.contains('–')
-                        ? 'الآيات ${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)}'
-                        : 'الآية ${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)}')
-                  : (dua.ayahDisplay.contains('–')
-                        ? 'Verses ${dua.ayahDisplay}'
-                        : 'Verse ${dua.ayahDisplay}'),
+              dua.ayahDisplay.contains('–')
+                  ? l10n.duaVersesLabel(l10n.digits(dua.ayahDisplay))
+                  : l10n.duaVerseLabel(l10n.digits(dua.ayahDisplay)),
               style: TextStyle(
                 fontFamily: 'IBMPlexSansArabic',
                 fontSize: 14,

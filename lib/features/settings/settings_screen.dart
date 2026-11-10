@@ -699,9 +699,7 @@ class SettingsScreen extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    isArabic
-                                        ? 'الإصدار ${l10n.digits(AppUpdateService.currentVersion)} · مجاني وبدون إعلانات أو إنترنت'
-                                        : 'Version ${AppUpdateService.currentVersion} · Free, ad-free & offline',
+                                    l10n.appVersionTagline(l10n.digits(AppUpdateService.currentVersion)),
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: isDark
@@ -722,15 +720,11 @@ class SettingsScreen extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         title: Text(
-                          isArabic
-                              ? 'عن تَدبِير والمصادر المعتمدة'
-                              : 'About Tadbeer & Sources',
+                          l10n.aboutTadbeerSources,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          isArabic
-                              ? 'نبذة عن المنهج والمصادر والتوثيق'
-                              : 'Mission, methodology & sources',
+                          l10n.missionMethodologySources,
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark
@@ -752,9 +746,7 @@ class SettingsScreen extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          isArabic
-                              ? 'خصوصية تامة محلياً دون جمع أي بيانات'
-                              : 'Strict offline privacy, zero data collection',
+                          l10n.strictOfflinePrivacyZeroDataCollection,
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark
@@ -776,9 +768,7 @@ class SettingsScreen extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          isArabic
-                              ? 'تراخيص البرمجيات والخطوط والمصحف'
-                              : 'Software, typography & Quran licenses',
+                          l10n.softwareTypographyQuranLicenses,
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark
@@ -809,7 +799,7 @@ class SettingsScreen extends StatelessWidget {
                 // ٦. التحديثات والتواصل
                 _buildSectionHeader(
                   context,
-                  isArabic ? 'التحديثات والمجتمع' : 'Updates & Community',
+                  l10n.updatesCommunity,
                 ),
                 _buildCard(
                   context: context,
@@ -850,9 +840,7 @@ class SettingsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 label: Text(
-                                  isArabic
-                                      ? 'جارٍ تحميل التحديث ($percent%)'
-                                      : 'Downloading update ($percent%)',
+                                  l10n.downloadingUpdatePercent(percent),
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
@@ -880,9 +868,7 @@ class SettingsScreen extends StatelessWidget {
                                   size: 18,
                                 ),
                                 label: Text(
-                                  isArabic
-                                      ? 'التحديث جاهز للتثبيت'
-                                      : 'Update ready to install',
+                                  l10n.updateReadyToInstall,
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
@@ -920,9 +906,7 @@ class SettingsScreen extends StatelessWidget {
                                 size: 18,
                               ),
                               label: Text(
-                                isArabic
-                                    ? 'التحقق من التحديثات'
-                                    : 'Check for Updates',
+                                l10n.checkForUpdates,
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
@@ -938,18 +922,14 @@ class SettingsScreen extends StatelessWidget {
                           value: settings.autoCheckUpdates,
                           contentPadding: EdgeInsets.zero,
                           title: Text(
-                            isArabic
-                                ? 'التحقق التلقائي عند فتح التطبيق'
-                                : 'Auto check on launch',
+                            l10n.autoCheckOnLaunch,
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           subtitle: Text(
-                            isArabic
-                                ? 'إشعارك عند توفر إصدار رسمي جديد'
-                                : 'Notify when a new version is available',
+                            l10n.notifyOnNewVersion,
                             style: TextStyle(
                               fontSize: 11.5,
                               color: isDark
@@ -984,9 +964,7 @@ class SettingsScreen extends StatelessWidget {
                                   size: 16,
                                 ),
                                 label: Text(
-                                  isArabic
-                                      ? 'قناة تيليجرام'
-                                      : 'Telegram',
+                                  l10n.telegramChannel,
                                   style: const TextStyle(fontSize: 12),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -1011,9 +989,7 @@ class SettingsScreen extends StatelessWidget {
                                   size: 16,
                                 ),
                                 label: Text(
-                                  isArabic
-                                      ? 'إرسال رأي أو اقتراح'
-                                      : 'Send Feedback',
+                                  l10n.sendFeedback,
                                   style: const TextStyle(fontSize: 12),
                                   overflow: TextOverflow.ellipsis,
                                 ),

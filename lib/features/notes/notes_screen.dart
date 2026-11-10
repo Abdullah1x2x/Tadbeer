@@ -267,9 +267,7 @@ class _NotesScreenState extends State<NotesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              l10n.isArabic
-                  ? 'تم تكرار الملاحظة بنجاح'
-                  : 'Note duplicated successfully',
+              l10n.noteDuplicatedSuccessfully,
               style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -289,9 +287,7 @@ class _NotesScreenState extends State<NotesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              context.l10n.isArabic
-                  ? 'تعذر تكرار الملاحظة'
-                  : 'Failed to duplicate note',
+              context.l10n.failedToDuplicateNote,
               style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
             ),
             backgroundColor: Colors.redAccent,
@@ -430,9 +426,7 @@ class _NoteCard extends StatelessWidget {
                       appMenuItem(
                         value: 'duplicate',
                         icon: AppIcons.copy,
-                        label: l10n.isArabic
-                            ? 'تكرار الملاحظة'
-                            : 'Duplicate',
+                        label: l10n.duplicateNoteAction,
                       ),
                       appMenuItem(
                         value: 'pdf',

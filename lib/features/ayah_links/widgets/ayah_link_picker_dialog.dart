@@ -217,9 +217,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                     Expanded(
                                       child: Text(
                                         isRange
-                                            ? (l10n.isArabic
-                                                ? '${surah.name} [الآيات ${l10n.digits(_fromAyahNumber)} - ${l10n.digits(_toAyahNumber)}]'
-                                                : '${surah.name} [Ayahs $_fromAyahNumber - $_toAyahNumber]')
+                                            ? l10n.ayahRangeReference(surah.name, l10n.digits(_fromAyahNumber), l10n.digits(_toAyahNumber))
                                             : l10n.ayahReference(
                                                 surah.name,
                                                 l10n.digits(_currentAyah.ayahNumber),
@@ -308,9 +306,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                           size: 16,
                                         ),
                                         label: Text(
-                                          l10n.isArabic
-                                              ? 'ضم الآية السابقة (${l10n.digits(_fromAyahNumber - 1)})'
-                                              : 'Include previous (${_fromAyahNumber - 1})',
+                                          l10n.includePreviousAyahShort(l10n.digits(_fromAyahNumber - 1)),
                                         ),
                                         onPressed: () {
                                           setState(() => _fromAyahNumber -= 1);
@@ -324,9 +320,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                           size: 14,
                                         ),
                                         label: Text(
-                                          l10n.isArabic
-                                              ? 'استبعاد (${l10n.digits(_fromAyahNumber)})'
-                                              : 'Exclude ($_fromAyahNumber)',
+                                          l10n.excludeAyah(l10n.digits(_fromAyahNumber)),
                                         ),
                                         onPressed: () {
                                           setState(() => _fromAyahNumber += 1);
@@ -339,9 +333,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                           size: 16,
                                         ),
                                         label: Text(
-                                          l10n.isArabic
-                                              ? 'ضم الآية اللاحقة (${l10n.digits(_toAyahNumber + 1)})'
-                                              : 'Include next (${_toAyahNumber + 1})',
+                                          l10n.includeNextAyahShort(l10n.digits(_toAyahNumber + 1)),
                                         ),
                                         onPressed: () {
                                           setState(() => _toAyahNumber += 1);
@@ -354,9 +346,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                           size: 14,
                                         ),
                                         label: Text(
-                                          l10n.isArabic
-                                              ? 'استبعاد (${l10n.digits(_toAyahNumber)})'
-                                              : 'Exclude ($_toAyahNumber)',
+                                          l10n.excludeAyah(l10n.digits(_toAyahNumber)),
                                         ),
                                         onPressed: () {
                                           setState(() => _toAyahNumber -= 1);
@@ -382,9 +372,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                         size: 16,
                                       ),
                                       label: Text(
-                                        l10n.isArabic
-                                            ? 'اختيار الآية السابقة فقط (${l10n.digits(_currentAyah.ayahNumber - 1)})'
-                                            : 'Select previous ayah only (${_currentAyah.ayahNumber - 1})',
+                                        l10n.selectPreviousAyahOnly(l10n.digits(_currentAyah.ayahNumber - 1)),
                                         style: const TextStyle(fontSize: 12),
                                       ),
                                       onPressed: () {
@@ -408,7 +396,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                       child: Row(
                                         children: [
                                           Text(
-                                            l10n.isArabic ? 'من:' : 'From:',
+                                            l10n.rangeFromLabel,
                                             style: const TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.bold,
@@ -442,7 +430,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                                       child: Row(
                                         children: [
                                           Text(
-                                            l10n.isArabic ? 'إلى:' : 'To:',
+                                            l10n.rangeToLabel,
                                             style: const TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.bold,
@@ -486,9 +474,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
                             minLines: 1,
                             maxLines: 3,
                             decoration: InputDecoration(
-                              hintText: l10n.isArabic
-                                  ? 'خاطرة حول الآية / الآيات في هذا الرابط (اختياري)...'
-                                  : 'Reflection note on verse / range (optional)...',
+                              hintText: l10n.linkReflectionNoteHint,
                               prefixIcon:
                                   const Icon(AppIcons.notePencil, size: 18),
                               border: OutlineInputBorder(
@@ -544,9 +530,7 @@ class _AyahLinkPickerDialogState extends State<AyahLinkPickerDialog> {
 
                           // Existing links section
                           Text(
-                            l10n.isArabic
-                                ? 'إضافة إلى رابط موجود (${allLinks.length}):'
-                                : 'Add to existing link (${allLinks.length}):',
+                            l10n.addToExistingLinkCount(allLinks.length),
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,

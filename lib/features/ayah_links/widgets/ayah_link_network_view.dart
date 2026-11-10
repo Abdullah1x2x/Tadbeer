@@ -390,9 +390,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         children: [
           Text(
             verse.isRange
-                ? (context.l10n.isArabic
-                    ? '${surah.name} [الآيات ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)} - ${ArabicSearchNormalizer.toArabicDigits(verse.toAyahNumber!)}]'
-                    : '${surah.name} [Ayahs ${verse.ayahNumber} - ${verse.toAyahNumber}]')
+                ? context.l10n.ayahRangeReference(surah.name, context.l10n.digits(verse.ayahNumber), context.l10n.digits(verse.toAyahNumber))
                 : context.l10n.ayahReference(surah.name, verse.ayahNumber),
             style: TextStyle(
               fontFamily: 'IBMPlexSansArabic',
@@ -619,7 +617,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
             if (verses.length > 1) ...[
               IconButton.filledTonal(
                 icon: const Icon(AppIcons.caretUp, size: 20),
-                tooltip: context.l10n.isArabic ? 'تقديم للأعلى' : 'Move Up',
+                tooltip: context.l10n.moveUp,
                 onPressed: vIndex > 0
                     ? () async {
                         Navigator.pop(bottomSheetCtx);
@@ -635,7 +633,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               const SizedBox(width: 6),
               IconButton.filledTonal(
                 icon: const Icon(AppIcons.caretDown, size: 20),
-                tooltip: context.l10n.isArabic ? 'تأخير للأسفل' : 'Move Down',
+                tooltip: context.l10n.moveDown,
                 onPressed: vIndex >= 0 && vIndex < verses.length - 1
                     ? () async {
                         Navigator.pop(bottomSheetCtx);
@@ -653,7 +651,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
             IconButton.filledTonal(
               icon: const Icon(AppIcons.copy, size: 20),
-              tooltip: context.l10n.isArabic ? 'تكرار كرت الآية' : 'Duplicate Verse Card',
+              tooltip: context.l10n.duplicateVerseCard,
               onPressed: () async {
                 Navigator.pop(bottomSheetCtx);
                 await HapticFeedback.lightImpact();
@@ -665,9 +663,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      context.l10n.isArabic
-                          ? 'تم تكرار كرت الآية بنجاح'
-                          : 'Verse card duplicated',
+                      context.l10n.verseCardDuplicated,
                     ),
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -816,7 +812,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
             if (notes.length > 1) ...[
               IconButton.filledTonal(
                 icon: const Icon(AppIcons.caretUp, size: 20),
-                tooltip: context.l10n.isArabic ? 'تقديم للأعلى' : 'Move Up',
+                tooltip: context.l10n.moveUp,
                 onPressed: nIndex > 0
                     ? () async {
                         Navigator.pop(bottomSheetCtx);
@@ -832,7 +828,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               const SizedBox(width: 6),
               IconButton.filledTonal(
                 icon: const Icon(AppIcons.caretDown, size: 20),
-                tooltip: context.l10n.isArabic ? 'تأخير للأسفل' : 'Move Down',
+                tooltip: context.l10n.moveDown,
                 onPressed: nIndex >= 0 && nIndex < notes.length - 1
                     ? () async {
                         Navigator.pop(bottomSheetCtx);
@@ -850,7 +846,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
 
             IconButton.filledTonal(
               icon: const Icon(AppIcons.copy, size: 20),
-              tooltip: context.l10n.isArabic ? 'تكرار البطاقة' : 'Duplicate Card',
+              tooltip: context.l10n.duplicateCard,
               onPressed: () async {
                 Navigator.pop(bottomSheetCtx);
                 await HapticFeedback.lightImpact();
@@ -862,9 +858,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      context.l10n.isArabic
-                          ? 'تم تكرار البطاقة بنجاح'
-                          : 'Card duplicated',
+                      context.l10n.cardDuplicated,
                     ),
                     behavior: SnackBarBehavior.floating,
                   ),

@@ -1758,7 +1758,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourcesAndCreditsDetails =>
-      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (91 documented pamphlets).\n• Supplications, Adhkar & Tasbeeh: 91 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Your data stays on your device, with no account, servers, tracking, or ads. The internet is used only for recitation audio and approximate location only for the Qibla; backups are encrypted with AES-256.\n• Madinah Mushaf font: Digital Khatt (Amine Anane and Tarteel) under SIL OFL 1.1, with its page text and line layout from the DigitalKhatt project (MIT).\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).\n• Full list of sources and licenses: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md';
+      '• Holy Quran Text: Tanzil Project (https://tanzil.net) authentic text in Uthmani script under Creative Commons Attribution 3.0 (CC BY 3.0 — modification strictly prohibited).\n• Open-Source Quranic Typography: Scheherazade New, Noto Naskh Arabic, Harmattan, Lateef, and Amiri Quran (AmiriQuran & Amiri) under SIL Open Font License 1.1.\n• Contemplation Books & Pamphlets Library: Lessons from the Guidance of the Holy Quran by Sayyed Hussein Badreddin al-Houthi (91 documented pamphlets).\n• Supplications, Adhkar & Tasbeeh: 91 Quranic duas arranged in Mushaf order, Hisn al-Muslim morning and evening adhkar, Tasbeeh & Istighfar sanctuary (49 authenticated formulas), and supplications from Ahlulbayt and the Noble Sunnah.\n• Application License: 100% free and open-source project licensed under the MIT License.\n• Local Privacy & Security: Your data stays on your device, with no account, servers, tracking, or ads. The internet is used only for recitation audio and update checks, and approximate location only for the Qibla; backups are encrypted with AES-256.\n• Madinah Mushaf font: Digital Khatt (Amine Anane and Tarteel) under SIL OFL 1.1, with its page text and line layout from the DigitalKhatt project (MIT).\n• Recitations: Islamic Network; rights remain with the reciters or their estates.\n• Twelve duas of Al-Sahifa Al-Sajjadiyya: Arabic Wikisource (CC BY-SA 4.0).\n• Full list of sources and licenses: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md';
 
   @override
   String get unsavedChanges => 'Unsaved Changes';
@@ -2601,4 +2601,281 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showThreads => 'Show manual threads';
+
+  @override
+  String get downloadingUpdate => 'Downloading update...';
+
+  @override
+  String get viewAction => 'View';
+
+  @override
+  String get updateDownloadedReadyToInstall =>
+      'Update downloaded! Ready to install';
+
+  @override
+  String get installAction => 'Install';
+
+  @override
+  String get repeatAndPlaybackOptions => 'Repeat and playback options';
+
+  @override
+  String get modeContinuous => 'Mode: Continuous';
+
+  @override
+  String get modeSingleAyah => 'Mode: Single Ayah';
+
+  @override
+  String get switchToSingleMode => '(Switch)';
+
+  @override
+  String get switchToContinuousMode => '(Switch)';
+
+  @override
+  String get noRepeat1x => 'No repeat (1x)';
+
+  @override
+  String get addAsSeparateCards => 'Add as separate cards';
+
+  @override
+  String get addToLinkAgain => 'Add to Link Again';
+
+  @override
+  String get rangeFromLabel => 'From:';
+
+  @override
+  String get rangeToLabel => 'To:';
+
+  @override
+  String get deselect => 'Deselect';
+
+  @override
+  String get moveUp => 'Move Up';
+
+  @override
+  String get moveDown => 'Move Down';
+
+  @override
+  String get duplicateVerseCard => 'Duplicate Verse Card';
+
+  @override
+  String get verseCardDuplicated => 'Verse card duplicated';
+
+  @override
+  String get duplicateCard => 'Duplicate Card';
+
+  @override
+  String get cardDuplicated => 'Card duplicated';
+
+  @override
+  String get noteCardDuplicatedInLink => 'Note card duplicated in link';
+
+  @override
+  String get verseCardDuplicatedInLink => 'Verse card duplicated in link';
+
+  @override
+  String get duplicateVerseCardShort => 'Duplicate Card';
+
+  @override
+  String get linkReflectionNoteHint =>
+      'Reflection note on verse / range (optional)...';
+
+  @override
+  String get feedbackSuggestions => 'Feedback & Suggestions';
+
+  @override
+  String get newDuplicatedNoteCreatedSuccessfully =>
+      'New duplicated note created successfully';
+
+  @override
+  String get duplicateAsNewNote => 'Duplicate as New Note';
+
+  @override
+  String get noteDuplicatedSuccessfully => 'Note duplicated successfully';
+
+  @override
+  String get failedToDuplicateNote => 'Failed to duplicate note';
+
+  @override
+  String get duplicateNoteAction => 'Duplicate';
+
+  @override
+  String get locationUpdatedSuccessfully => 'Location updated successfully';
+
+  @override
+  String get aboutTadbeerSources => 'About Tadbeer & Sources';
+
+  @override
+  String get missionMethodologyCredits => 'Mission, methodology & credits';
+
+  @override
+  String get missionMethodologySources => 'Mission, methodology & sources';
+
+  @override
+  String get strictOfflinePrivacyZeroDataCollection =>
+      'Strict offline privacy, zero data collection';
+
+  @override
+  String get softwareTypographyQuranLicenses =>
+      'Software, typography & Quran licenses';
+
+  @override
+  String get updatesCommunity => 'Updates & Community';
+
+  @override
+  String get updateReadyToInstall => 'Update ready to install';
+
+  @override
+  String get checkForUpdates => 'Check for Updates';
+
+  @override
+  String get autoCheckOnLaunch => 'Auto check on launch';
+
+  @override
+  String get notifyOnNewVersion => 'Notify when a new version is available';
+
+  @override
+  String get telegramChannel => 'Telegram';
+
+  @override
+  String get sendFeedback => 'Send Feedback';
+
+  @override
+  String get newUpdateAvailable => 'New Update Available';
+
+  @override
+  String get whatsNewInRelease => 'What\'s new in this release:';
+
+  @override
+  String get generalPerformanceAndUiImprovements =>
+      'General performance and UI improvements.';
+
+  @override
+  String get downloadingAndPreparingInstall =>
+      'Downloading and preparing install...';
+
+  @override
+  String get cancelUpdateDownload => 'Cancel';
+
+  @override
+  String get downloadCompleteTapInstall =>
+      'Download complete! Tap Install to update.';
+
+  @override
+  String get installUpdateNow => 'Install Update Now';
+
+  @override
+  String get reDownload => 'Re-download';
+
+  @override
+  String get autoDownloadFailed =>
+      'Auto-download failed. You can retry or download via Telegram.';
+
+  @override
+  String get retryDownload => 'Retry Download';
+
+  @override
+  String get telegramLabel => 'Telegram';
+
+  @override
+  String get downloadInstallUpdate => 'Download & Install Update';
+
+  @override
+  String get downloadViaOfficialTelegram => 'Download via Official Telegram';
+
+  @override
+  String get checkingForUpdates => 'Checking for updates...';
+
+  @override
+  String get updateCheckFailed =>
+      'Failed to check for updates. Please check your internet connection.';
+
+  @override
+  String appVersionTagline(String version) {
+    return 'Version $version · Free, ad-free, works offline';
+  }
+
+  @override
+  String downloadingUpdatePercent(Object percent) {
+    return 'Downloading update ($percent%)';
+  }
+
+  @override
+  String ayahRangeReference(String surahName, String fromAyah, String toAyah) {
+    return '$surahName [Ayahs $fromAyah - $toAyah]';
+  }
+
+  @override
+  String mergeVersesInOneCard(Object count) {
+    return 'Merge ($count) verses in one card';
+  }
+
+  @override
+  String addSelectedVerses(Object count) {
+    return 'Add ($count) selected verses';
+  }
+
+  @override
+  String includePreviousAyah(String ayah) {
+    return 'Include previous ayah ($ayah)';
+  }
+
+  @override
+  String includePreviousAyahShort(String ayah) {
+    return 'Include previous ($ayah)';
+  }
+
+  @override
+  String includeNextAyah(String ayah) {
+    return 'Include next ayah ($ayah)';
+  }
+
+  @override
+  String includeNextAyahShort(String ayah) {
+    return 'Include next ($ayah)';
+  }
+
+  @override
+  String excludeAyah(String ayah) {
+    return 'Exclude ($ayah)';
+  }
+
+  @override
+  String selectPreviousAyahOnly(String ayah) {
+    return 'Select previous ayah only ($ayah)';
+  }
+
+  @override
+  String multiSelectedCount(Object count) {
+    return 'Selected ($count)';
+  }
+
+  @override
+  String addToExistingLinkCount(Object count) {
+    return 'Add to existing link ($count):';
+  }
+
+  @override
+  String repeatAyahTimes(String times) {
+    return 'Repeat ayah ×$times times';
+  }
+
+  @override
+  String usingLatestVersion(String version) {
+    return 'You are using the latest version of Tadbeer (v$version)';
+  }
+
+  @override
+  String linkedVersesCount(String count) {
+    return '$count linked verses';
+  }
+
+  @override
+  String duaVersesLabel(String ayahs) {
+    return 'Verses $ayahs';
+  }
+
+  @override
+  String duaVerseLabel(String ayah) {
+    return 'Verse $ayah';
+  }
 }

@@ -3147,7 +3147,7 @@ abstract class AppLocalizations {
   /// No description provided for @sourcesAndCreditsDetails.
   ///
   /// In ar, this message translates to:
-  /// **'• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (91 ملزمة موثقة كاملة).\n• الأدعية والأذكار والتسبيح: 91 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: بياناتك على جهازك، بلا حساب ولا خوادم ولا تتبع ولا إعلانات. الإنترنت للتلاوة المسموعة فقط، والموقع التقريبي لاتجاه القبلة فقط، والنسخ الاحتياطية مشفّرة بمعيار AES-256.\n• خط مصحف المدينة: Digital Khatt (أمين عنان وTarteel) برخصة SIL OFL 1.1، ونص صفحاته وتخطيط أسطرها من مشروع DigitalKhatt (MIT).\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).\n• قائمة المصادر والتراخيص كاملة: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md'**
+  /// **'• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (91 ملزمة موثقة كاملة).\n• الأدعية والأذكار والتسبيح: 91 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: بياناتك على جهازك، بلا حساب ولا خوادم ولا تتبع ولا إعلانات. الإنترنت للتلاوة المسموعة والتحقق من التحديثات فقط، والموقع التقريبي لاتجاه القبلة فقط، والنسخ الاحتياطية مشفّرة بمعيار AES-256.\n• خط مصحف المدينة: Digital Khatt (أمين عنان وTarteel) برخصة SIL OFL 1.1، ونص صفحاته وتخطيط أسطرها من مشروع DigitalKhatt (MIT).\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).\n• قائمة المصادر والتراخيص كاملة: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md'**
   String get sourcesAndCreditsDetails;
 
   /// No description provided for @unsavedChanges.
@@ -4619,6 +4619,468 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'إظهار الخيوط اليدوية'**
   String get showThreads;
+
+  /// No description provided for @downloadingUpdate.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ تنزيل التحديث...'**
+  String get downloadingUpdate;
+
+  /// No description provided for @viewAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض'**
+  String get viewAction;
+
+  /// No description provided for @updateDownloadedReadyToInstall.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتمل التنزيل! جاهز للتثبيت'**
+  String get updateDownloadedReadyToInstall;
+
+  /// No description provided for @installAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تثبيت'**
+  String get installAction;
+
+  /// No description provided for @repeatAndPlaybackOptions.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار الآية ونمط التلاوة'**
+  String get repeatAndPlaybackOptions;
+
+  /// No description provided for @modeContinuous.
+  ///
+  /// In ar, this message translates to:
+  /// **'نمط التلاوة: مستمر'**
+  String get modeContinuous;
+
+  /// No description provided for @modeSingleAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'نمط التلاوة: آية واحدة'**
+  String get modeSingleAyah;
+
+  /// No description provided for @switchToSingleMode.
+  ///
+  /// In ar, this message translates to:
+  /// **'(تبديل لفردي)'**
+  String get switchToSingleMode;
+
+  /// No description provided for @switchToContinuousMode.
+  ///
+  /// In ar, this message translates to:
+  /// **'(تبديل لمستمر)'**
+  String get switchToContinuousMode;
+
+  /// No description provided for @noRepeat1x.
+  ///
+  /// In ar, this message translates to:
+  /// **'بدون تكرار (مرة واحدة)'**
+  String get noRepeat1x;
+
+  /// No description provided for @addAsSeparateCards.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافتها كبطاقات منفصلة'**
+  String get addAsSeparateCards;
+
+  /// No description provided for @addToLinkAgain.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة إلى الرابط مجدداً'**
+  String get addToLinkAgain;
+
+  /// No description provided for @rangeFromLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'من:'**
+  String get rangeFromLabel;
+
+  /// No description provided for @rangeToLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلى:'**
+  String get rangeToLabel;
+
+  /// No description provided for @deselect.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء التحديد'**
+  String get deselect;
+
+  /// No description provided for @moveUp.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقديم للأعلى'**
+  String get moveUp;
+
+  /// No description provided for @moveDown.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأخير للأسفل'**
+  String get moveDown;
+
+  /// No description provided for @duplicateVerseCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار كرت الآية'**
+  String get duplicateVerseCard;
+
+  /// No description provided for @verseCardDuplicated.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تكرار كرت الآية بنجاح'**
+  String get verseCardDuplicated;
+
+  /// No description provided for @duplicateCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار البطاقة'**
+  String get duplicateCard;
+
+  /// No description provided for @cardDuplicated.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تكرار البطاقة بنجاح'**
+  String get cardDuplicated;
+
+  /// No description provided for @noteCardDuplicatedInLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تكرار بطاقة الخاطرة في الرابط'**
+  String get noteCardDuplicatedInLink;
+
+  /// No description provided for @verseCardDuplicatedInLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تكرار كرت الآية في الرابط'**
+  String get verseCardDuplicatedInLink;
+
+  /// No description provided for @duplicateVerseCardShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار كرت الآية'**
+  String get duplicateVerseCardShort;
+
+  /// No description provided for @linkReflectionNoteHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'خاطرة حول الآية / الآيات في هذا الرابط (اختياري)...'**
+  String get linkReflectionNoteHint;
+
+  /// No description provided for @feedbackSuggestions.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآراء والمقترحات'**
+  String get feedbackSuggestions;
+
+  /// No description provided for @newDuplicatedNoteCreatedSuccessfully.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إنشاء نسخة مكررة جديدة بنجاح'**
+  String get newDuplicatedNoteCreatedSuccessfully;
+
+  /// No description provided for @duplicateAsNewNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار كخاطرة جديدة'**
+  String get duplicateAsNewNote;
+
+  /// No description provided for @noteDuplicatedSuccessfully.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تكرار الملاحظة بنجاح'**
+  String get noteDuplicatedSuccessfully;
+
+  /// No description provided for @failedToDuplicateNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر تكرار الملاحظة'**
+  String get failedToDuplicateNote;
+
+  /// No description provided for @duplicateNoteAction.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار الملاحظة'**
+  String get duplicateNoteAction;
+
+  /// No description provided for @locationUpdatedSuccessfully.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تحديث موقعك الحالي بنجاح'**
+  String get locationUpdatedSuccessfully;
+
+  /// No description provided for @aboutTadbeerSources.
+  ///
+  /// In ar, this message translates to:
+  /// **'عن تَدبِير والمصادر المعتمدة'**
+  String get aboutTadbeerSources;
+
+  /// No description provided for @missionMethodologyCredits.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرسالة، والمنهج، ومصادر التوثيق'**
+  String get missionMethodologyCredits;
+
+  /// No description provided for @missionMethodologySources.
+  ///
+  /// In ar, this message translates to:
+  /// **'نبذة عن المنهج والمصادر والتوثيق'**
+  String get missionMethodologySources;
+
+  /// No description provided for @strictOfflinePrivacyZeroDataCollection.
+  ///
+  /// In ar, this message translates to:
+  /// **'خصوصية تامة محلياً دون جمع أي بيانات'**
+  String get strictOfflinePrivacyZeroDataCollection;
+
+  /// No description provided for @softwareTypographyQuranLicenses.
+  ///
+  /// In ar, this message translates to:
+  /// **'تراخيص البرمجيات والخطوط والمصحف'**
+  String get softwareTypographyQuranLicenses;
+
+  /// No description provided for @updatesCommunity.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحديثات والمجتمع'**
+  String get updatesCommunity;
+
+  /// No description provided for @updateReadyToInstall.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحديث جاهز للتثبيت'**
+  String get updateReadyToInstall;
+
+  /// No description provided for @checkForUpdates.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق من التحديثات'**
+  String get checkForUpdates;
+
+  /// No description provided for @autoCheckOnLaunch.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق التلقائي عند فتح التطبيق'**
+  String get autoCheckOnLaunch;
+
+  /// No description provided for @notifyOnNewVersion.
+  ///
+  /// In ar, this message translates to:
+  /// **'إشعارك عند توفر إصدار رسمي جديد'**
+  String get notifyOnNewVersion;
+
+  /// No description provided for @telegramChannel.
+  ///
+  /// In ar, this message translates to:
+  /// **'قناة تيليجرام'**
+  String get telegramChannel;
+
+  /// No description provided for @sendFeedback.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال رأي أو اقتراح'**
+  String get sendFeedback;
+
+  /// No description provided for @newUpdateAvailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتوفر تحديث جديد'**
+  String get newUpdateAvailable;
+
+  /// No description provided for @whatsNewInRelease.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما الجديد في هذا الإصدار:'**
+  String get whatsNewInRelease;
+
+  /// No description provided for @generalPerformanceAndUiImprovements.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحسينات عامة في الأداء والواجهة.'**
+  String get generalPerformanceAndUiImprovements;
+
+  /// No description provided for @downloadingAndPreparingInstall.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ التحميل والتثبيت التلقائي...'**
+  String get downloadingAndPreparingInstall;
+
+  /// No description provided for @cancelUpdateDownload.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء التحميل'**
+  String get cancelUpdateDownload;
+
+  /// No description provided for @downloadCompleteTapInstall.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتمل التحميل! اضغط على التثبيت لتحديث التطبيق.'**
+  String get downloadCompleteTapInstall;
+
+  /// No description provided for @installUpdateNow.
+  ///
+  /// In ar, this message translates to:
+  /// **'تثبيت التحديث الآن'**
+  String get installUpdateNow;
+
+  /// No description provided for @reDownload.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة التنزيل'**
+  String get reDownload;
+
+  /// No description provided for @autoDownloadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر إكمال التحميل التلقائي. يمكنك إعادة المحاولة أو التحميل عبر تيليجرام.'**
+  String get autoDownloadFailed;
+
+  /// No description provided for @retryDownload.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة المحاولة'**
+  String get retryDownload;
+
+  /// No description provided for @telegramLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'تيليجرام'**
+  String get telegramLabel;
+
+  /// No description provided for @downloadInstallUpdate.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحميل وتثبيت التحديث تلقائياً'**
+  String get downloadInstallUpdate;
+
+  /// No description provided for @downloadViaOfficialTelegram.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحميل عبر قناة تيليجرام الرسمية'**
+  String get downloadViaOfficialTelegram;
+
+  /// No description provided for @checkingForUpdates.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ التحقق من وجود تحديثات...'**
+  String get checkingForUpdates;
+
+  /// No description provided for @updateCheckFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذر التحقق من التحديثات، يرجى التأكد من اتصالك بالإنترنت.'**
+  String get updateCheckFailed;
+
+  /// No description provided for @appVersionTagline.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإصدار {version} · مجاني وبدون إعلانات، ويعمل دون إنترنت'**
+  String appVersionTagline(String version);
+
+  /// No description provided for @downloadingUpdatePercent.
+  ///
+  /// In ar, this message translates to:
+  /// **'جارٍ تحميل التحديث ({percent}%)'**
+  String downloadingUpdatePercent(Object percent);
+
+  /// No description provided for @ayahRangeReference.
+  ///
+  /// In ar, this message translates to:
+  /// **'{surahName} [الآيات {fromAyah} - {toAyah}]'**
+  String ayahRangeReference(String surahName, String fromAyah, String toAyah);
+
+  /// No description provided for @mergeVersesInOneCard.
+  ///
+  /// In ar, this message translates to:
+  /// **'دمج ({count}) آيات في كرت واحد'**
+  String mergeVersesInOneCard(Object count);
+
+  /// No description provided for @addSelectedVerses.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة ({count}) آيات محددة'**
+  String addSelectedVerses(Object count);
+
+  /// No description provided for @includePreviousAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'ضم الآية السابقة ({ayah})'**
+  String includePreviousAyah(String ayah);
+
+  /// No description provided for @includePreviousAyahShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'ضم الآية السابقة ({ayah})'**
+  String includePreviousAyahShort(String ayah);
+
+  /// No description provided for @includeNextAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'ضم الآية اللاحقة ({ayah})'**
+  String includeNextAyah(String ayah);
+
+  /// No description provided for @includeNextAyahShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'ضم الآية اللاحقة ({ayah})'**
+  String includeNextAyahShort(String ayah);
+
+  /// No description provided for @excludeAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'استبعاد ({ayah})'**
+  String excludeAyah(String ayah);
+
+  /// No description provided for @selectPreviousAyahOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار الآية السابقة فقط ({ayah})'**
+  String selectPreviousAyahOnly(String ayah);
+
+  /// No description provided for @multiSelectedCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحديد متعدد ({count})'**
+  String multiSelectedCount(Object count);
+
+  /// No description provided for @addToExistingLinkCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة إلى رابط موجود ({count}):'**
+  String addToExistingLinkCount(Object count);
+
+  /// No description provided for @repeatAyahTimes.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكرار الآية ×{times} مرات'**
+  String repeatAyahTimes(String times);
+
+  /// No description provided for @usingLatestVersion.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت تستخدم أحدث إصدار من تطبيق تدبير (v{version})'**
+  String usingLatestVersion(String version);
+
+  /// No description provided for @linkedVersesCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{count} آيات مرتبطة'**
+  String linkedVersesCount(String count);
+
+  /// No description provided for @duaVersesLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآيات {ayahs}'**
+  String duaVersesLabel(String ayahs);
+
+  /// No description provided for @duaVerseLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآية {ayah}'**
+  String duaVerseLabel(String ayah);
 }
 
 class _AppLocalizationsDelegate

@@ -209,9 +209,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              context.l10n.isArabic
-                  ? 'تم إنشاء نسخة مكررة جديدة بنجاح'
-                  : 'New duplicated note created successfully',
+              context.l10n.newDuplicatedNoteCreatedSuccessfully,
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
             behavior: SnackBarBehavior.floating,
@@ -279,9 +277,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                     padding: const EdgeInsetsDirectional.only(end: 4),
                     child: FuturisticIconButton(
                       icon: AppIcons.copy,
-                      tooltip: l10n.isArabic
-                          ? 'تكرار كخاطرة جديدة'
-                          : 'Duplicate as New Note',
+                      tooltip: l10n.duplicateAsNewNote,
                       size: 38,
                       iconSize: 20,
                       onTap: _duplicateAsNewNote,

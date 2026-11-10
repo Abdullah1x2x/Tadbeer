@@ -90,9 +90,7 @@ class AppUpdateDialog extends StatelessWidget {
                           Text(
                             update.title.isNotEmpty
                                 ? update.title
-                                : (l10n.isArabic
-                                    ? 'يتوفر تحديث جديد'
-                                    : 'New Update Available'),
+                                : l10n.newUpdateAvailable,
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
@@ -140,9 +138,7 @@ class AppUpdateDialog extends StatelessWidget {
 
                 // سجل التغييرات والتحسينات
                 Text(
-                  l10n.isArabic
-                      ? 'ما الجديد في هذا الإصدار:'
-                      : "What's new in this release:",
+                  l10n.whatsNewInRelease,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -168,9 +164,7 @@ class AppUpdateDialog extends StatelessWidget {
                       child: Text(
                         update.changelog.isNotEmpty
                             ? update.changelog
-                            : (l10n.isArabic
-                                ? 'تحسينات عامة في الأداء والواجهة.'
-                                : 'General performance and UI improvements.'),
+                            : l10n.generalPerformanceAndUiImprovements,
                         style: TextStyle(
                           fontSize: 13.5,
                           height: 1.6,
@@ -245,9 +239,7 @@ class AppUpdateDialog extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      l10n.isArabic
-                          ? 'جارٍ التحميل والتثبيت التلقائي...'
-                          : 'Downloading and preparing install...',
+                      l10n.downloadingAndPreparingInstall,
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -297,7 +289,7 @@ class AppUpdateDialog extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                   ),
                   child: Text(
-                    l10n.isArabic ? 'إلغاء التحميل' : 'Cancel',
+                    l10n.cancelUpdateDownload,
                     style: TextStyle(
                       fontSize: 12,
                       color: Theme.of(context).colorScheme.error,
@@ -330,9 +322,7 @@ class AppUpdateDialog extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    l10n.isArabic
-                        ? 'اكتمل التحميل! اضغط على التثبيت لتحديث التطبيق.'
-                        : 'Download complete! Tap Install to update.',
+                    l10n.downloadCompleteTapInstall,
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -357,7 +347,7 @@ class AppUpdateDialog extends StatelessWidget {
             ),
             icon: const Icon(AppIcons.checkCircle, size: 20),
             label: Text(
-              l10n.isArabic ? 'تثبيت التحديث الآن' : 'Install Update Now',
+              l10n.installUpdateNow,
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -379,7 +369,7 @@ class AppUpdateDialog extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    l10n.isArabic ? 'إعادة التنزيل' : 'Re-download',
+                    l10n.reDownload,
                     style: const TextStyle(fontSize: 13),
                   ),
                 ),
@@ -388,7 +378,7 @@ class AppUpdateDialog extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  l10n.isArabic ? 'لاحقاً' : 'Later',
+                  l10n.permissionsLater,
                   style: TextStyle(color: AppColors.textSecondary(context)),
                 ),
               ),
@@ -423,9 +413,7 @@ class AppUpdateDialog extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    l10n.isArabic
-                        ? 'تعذر إكمال التحميل التلقائي. يمكنك إعادة المحاولة أو التحميل عبر تيليجرام.'
-                        : 'Auto-download failed. You can retry or download via Telegram.',
+                    l10n.autoDownloadFailed,
                     style: TextStyle(
                       fontSize: 12.5,
                       color: Theme.of(context).colorScheme.error,
@@ -447,7 +435,7 @@ class AppUpdateDialog extends StatelessWidget {
             ),
             icon: const Icon(AppIcons.arrowCounterClockwise, size: 18),
             label: Text(
-              l10n.isArabic ? 'إعادة المحاولة' : 'Retry Download',
+              l10n.retryDownload,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -463,7 +451,7 @@ class AppUpdateDialog extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    l10n.isArabic ? 'تيليجرام' : 'Telegram',
+                    l10n.telegramLabel,
                   ),
                 ),
               ),
@@ -471,7 +459,7 @@ class AppUpdateDialog extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  l10n.isArabic ? 'إغلاق' : 'Close',
+                  l10n.close,
                   style: TextStyle(color: AppColors.textSecondary(context)),
                 ),
               ),
@@ -501,9 +489,7 @@ class AppUpdateDialog extends StatelessWidget {
           ),
           icon: const Icon(AppIcons.cloudArrowDown, size: 20),
           label: Text(
-            l10n.isArabic
-                ? 'تحميل وتثبيت التحديث تلقائياً'
-                : 'Download & Install Update',
+            l10n.downloadInstallUpdate,
             style: const TextStyle(
               fontSize: 14.5,
               fontWeight: FontWeight.bold,
@@ -528,9 +514,7 @@ class AppUpdateDialog extends StatelessWidget {
           ),
           icon: const Icon(AppIcons.arrowSquareOut, size: 18),
           label: Text(
-            l10n.isArabic
-                ? 'تحميل عبر قناة تيليجرام الرسمية'
-                : 'Download via Official Telegram',
+            l10n.downloadViaOfficialTelegram,
             style: const TextStyle(
               fontSize: 13.5,
               fontWeight: FontWeight.bold,
@@ -550,7 +534,7 @@ class AppUpdateDialog extends StatelessWidget {
             }
           },
           child: Text(
-            l10n.isArabic ? 'لاحقاً' : 'Later',
+            l10n.permissionsLater,
             style: TextStyle(
               color: AppColors.textSecondary(context),
             ),

@@ -146,9 +146,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          context.l10n.isArabic
-                              ? 'تم تكرار بطاقة الخاطرة في الرابط'
-                              : 'Note card duplicated in link',
+                          context.l10n.noteCardDuplicatedInLink,
                         ),
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         behavior: SnackBarBehavior.floating,
@@ -308,9 +306,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               verse.isRange
-                                  ? (context.l10n.isArabic
-                                      ? '${surah.name} [الآيات ${ArabicSearchNormalizer.toArabicDigits(verse.ayahNumber)} - ${ArabicSearchNormalizer.toArabicDigits(verse.toAyahNumber!)}]'
-                                      : '${surah.name} [Ayahs ${verse.ayahNumber} - ${verse.toAyahNumber}]')
+                                  ? context.l10n.ayahRangeReference(surah.name, context.l10n.digits(verse.ayahNumber), context.l10n.digits(verse.toAyahNumber))
                                   : context.l10n.ayahReference(
                                       surah.name,
                                       verse.ayahNumber,
@@ -331,9 +327,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                                 IconButton(
                                   visualDensity: VisualDensity.compact,
                                   icon: const Icon(AppIcons.caretUp, size: 20),
-                                  tooltip: context.l10n.isArabic
-                                      ? 'تقديم للأعلى'
-                                      : 'Move Up',
+                                  tooltip: context.l10n.moveUp,
                                   color: index > 0
                                       ? Theme.of(context).colorScheme.primary
                                       : Theme.of(context)
@@ -354,9 +348,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                                 IconButton(
                                   visualDensity: VisualDensity.compact,
                                   icon: const Icon(AppIcons.caretDown, size: 20),
-                                  tooltip: context.l10n.isArabic
-                                      ? 'تأخير للأسفل'
-                                      : 'Move Down',
+                                  tooltip: context.l10n.moveDown,
                                   color: index < verses.length - 1
                                       ? Theme.of(context).colorScheme.primary
                                       : Theme.of(context)
@@ -415,9 +407,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                      context.l10n.isArabic
-                                          ? 'تم تكرار كرت الآية في الرابط'
-                                          : 'Verse card duplicated in link',
+                                      context.l10n.verseCardDuplicatedInLink,
                                     ),
                                     backgroundColor:
                                         Theme.of(context).colorScheme.primary,
@@ -438,17 +428,13 @@ class AyahLinkOrderedView extends StatelessWidget {
                               appMenuItem(
                                 value: 'move_up',
                                 icon: AppIcons.caretUp,
-                                label: context.l10n.isArabic
-                                    ? 'تقديم للأعلى'
-                                    : 'Move Up',
+                                label: context.l10n.moveUp,
                               ),
                             if (index < verses.length - 1)
                               appMenuItem(
                                 value: 'move_down',
                                 icon: AppIcons.caretDown,
-                                label: context.l10n.isArabic
-                                    ? 'تأخير للأسفل'
-                                    : 'Move Down',
+                                label: context.l10n.moveDown,
                               ),
                             appMenuItem(
                               value: 'quran',
@@ -463,9 +449,7 @@ class AyahLinkOrderedView extends StatelessWidget {
                             appMenuItem(
                               value: 'duplicate',
                               icon: AppIcons.copy,
-                              label: context.l10n.isArabic
-                                  ? 'تكرار كرت الآية'
-                                  : 'Duplicate Card',
+                              label: context.l10n.duplicateVerseCardShort,
                             ),
                             appMenuItem(
                               value: 'delete',
@@ -741,9 +725,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                   if (onMoveUp != null || onMoveDown != null) ...[
                     IconButton(
                       visualDensity: VisualDensity.compact,
-                      tooltip: context.l10n.isArabic
-                          ? 'تقديم للأعلى'
-                          : 'Move Up',
+                      tooltip: context.l10n.moveUp,
                       icon: const Icon(AppIcons.caretUp, size: 20),
                       color: onMoveUp != null
                           ? Theme.of(context).colorScheme.primary
@@ -754,9 +736,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                     ),
                     IconButton(
                       visualDensity: VisualDensity.compact,
-                      tooltip: context.l10n.isArabic
-                          ? 'تأخير للأسفل'
-                          : 'Move Down',
+                      tooltip: context.l10n.moveDown,
                       icon: const Icon(AppIcons.caretDown, size: 20),
                       color: onMoveDown != null
                           ? Theme.of(context).colorScheme.primary
@@ -788,17 +768,13 @@ class _AyahLinkNoteCard extends StatelessWidget {
                         appMenuItem(
                           value: 'move_up',
                           icon: AppIcons.caretUp,
-                          label: context.l10n.isArabic
-                              ? 'تقديم للأعلى'
-                              : 'Move Up',
+                          label: context.l10n.moveUp,
                         ),
                       if (onMoveDown != null)
                         appMenuItem(
                           value: 'move_down',
                           icon: AppIcons.caretDown,
-                          label: context.l10n.isArabic
-                              ? 'تأخير للأسفل'
-                              : 'Move Down',
+                          label: context.l10n.moveDown,
                         ),
                       appMenuItem(
                         value: 'edit',
@@ -814,9 +790,7 @@ class _AyahLinkNoteCard extends StatelessWidget {
                         appMenuItem(
                           value: 'duplicate',
                           icon: AppIcons.copy,
-                          label: context.l10n.isArabic
-                              ? 'تكرار البطاقة'
-                              : 'Duplicate Card',
+                          label: context.l10n.duplicateCard,
                         ),
                       appMenuItem(
                         value: 'delete',

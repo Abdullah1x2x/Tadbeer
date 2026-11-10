@@ -395,9 +395,7 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                context.l10n.isArabic
-                                    ? 'جارٍ تنزيل التحديث...'
-                                    : 'Downloading update...',
+                                context.l10n.downloadingUpdate,
                                 style: const TextStyle(
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.bold,
@@ -437,7 +435,7 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        context.l10n.isArabic ? 'عرض' : 'View',
+                        context.l10n.viewAction,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -492,9 +490,7 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        context.l10n.isArabic
-                            ? 'اكتمل التنزيل! جاهز للتثبيت'
-                            : 'Update downloaded! Ready to install',
+                        context.l10n.updateDownloadedReadyToInstall,
                         style: const TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.bold,
@@ -518,7 +514,7 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        context.l10n.isArabic ? 'تثبيت' : 'Install',
+                        context.l10n.installAction,
                         style: const TextStyle(
                             fontSize: 12, fontWeight: FontWeight.bold),
                       ),

@@ -269,9 +269,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                                           )
                                         : const Icon(AppIcons.link, size: 18),
                                     label: Text(
-                                      l10n.isArabic
-                                          ? 'دمج (${_selectedMulti.length}) آيات في كرت واحد'
-                                          : 'Merge (${_selectedMulti.length}) verses in one card',
+                                      l10n.mergeVersesInOneCard(_selectedMulti.length),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
@@ -283,9 +281,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                                       minimumSize: const Size.fromHeight(44),
                                     ),
                                     child: Text(
-                                      l10n.isArabic
-                                          ? 'إضافتها كبطاقات منفصلة'
-                                          : 'Add as separate cards',
+                                      l10n.addAsSeparateCards,
                                     ),
                                   ),
                                 ],
@@ -306,9 +302,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                                       )
                                     : const Icon(AppIcons.link, size: 18),
                                 label: Text(
-                                  l10n.isArabic
-                                      ? 'إضافة (${_selectedMulti.length}) آيات محددة'
-                                      : 'Add (${_selectedMulti.length}) selected verses',
+                                  l10n.addSelectedVerses(_selectedMulti.length),
                                 ),
                               ))
                         : FilledButton.icon(
@@ -329,9 +323,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                                   ),
                             label: Text(
                               selected != null && _isAdded(selected)
-                                  ? (l10n.isArabic
-                                      ? 'إضافة إلى الرابط مجدداً'
-                                      : 'Add to Link Again')
+                                  ? l10n.addToLinkAgain
                                   : l10n.addVerseAction,
                             ),
                           ),
@@ -457,9 +449,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                 Expanded(
                   child: Text(
                     isRange
-                        ? (l10n.isArabic
-                            ? '${surah.name} [الآيات ${l10n.digits(fromAyahNum)} - ${l10n.digits(toAyahNum)}]'
-                            : '${surah.name} [Ayahs $fromAyahNum - $toAyahNum]')
+                        ? l10n.ayahRangeReference(surah.name, l10n.digits(fromAyahNum), l10n.digits(toAyahNum))
                         : l10n.ayahReference(
                             surah.name,
                             l10n.digits(ayah.ayahNumber),
@@ -592,9 +582,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ActionChip(
                     avatar: const Icon(AppIcons.caretUp, size: 16),
                     label: Text(
-                      l10n.isArabic
-                          ? 'ضم الآية السابقة (${l10n.digits(fromAyahNum - 1)})'
-                          : 'Include previous ayah (${fromAyahNum - 1})',
+                      l10n.includePreviousAyah(l10n.digits(fromAyahNum - 1)),
                     ),
                     onPressed: () {
                       setState(() {
@@ -606,9 +594,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ActionChip(
                     avatar: const Icon(AppIcons.x, size: 14),
                     label: Text(
-                      l10n.isArabic
-                          ? 'استبعاد (${l10n.digits(fromAyahNum)})'
-                          : 'Exclude ($fromAyahNum)',
+                      l10n.excludeAyah(l10n.digits(fromAyahNum)),
                     ),
                     onPressed: () {
                       setState(() {
@@ -620,9 +606,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ActionChip(
                     avatar: const Icon(AppIcons.caretDown, size: 16),
                     label: Text(
-                      l10n.isArabic
-                          ? 'ضم الآية اللاحقة (${l10n.digits(toAyahNum + 1)})'
-                          : 'Include next ayah (${toAyahNum + 1})',
+                      l10n.includeNextAyah(l10n.digits(toAyahNum + 1)),
                     ),
                     onPressed: () {
                       setState(() {
@@ -634,9 +618,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ActionChip(
                     avatar: const Icon(AppIcons.x, size: 14),
                     label: Text(
-                      l10n.isArabic
-                          ? 'استبعاد (${l10n.digits(toAyahNum)})'
-                          : 'Exclude ($toAyahNum)',
+                      l10n.excludeAyah(l10n.digits(toAyahNum)),
                     ),
                     onPressed: () {
                       setState(() {
@@ -656,9 +638,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   ),
                   icon: const Icon(AppIcons.arrowLeft, size: 16),
                   label: Text(
-                    l10n.isArabic
-                        ? 'اختيار الآية السابقة فقط (${l10n.digits(ayah.ayahNumber - 1)})'
-                        : 'Select previous ayah only (${ayah.ayahNumber - 1})',
+                    l10n.selectPreviousAyahOnly(l10n.digits(ayah.ayahNumber - 1)),
                     style: const TextStyle(fontSize: 12),
                   ),
                   onPressed: () {
@@ -678,7 +658,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   child: Row(
                     children: [
                       Text(
-                        l10n.isArabic ? 'من:' : 'From:',
+                        l10n.rangeFromLabel,
                         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(width: 8),
@@ -703,7 +683,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
                   child: Row(
                     children: [
                       Text(
-                        l10n.isArabic ? 'إلى:' : 'To:',
+                        l10n.rangeToLabel,
                         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(width: 8),
@@ -1005,9 +985,7 @@ class _Header extends StatelessWidget {
               Expanded(
                 child: Text(
                   selectedCount > 0
-                      ? (context.l10n.isArabic
-                          ? 'تحديد متعدد ($selectedCount)'
-                          : 'Selected ($selectedCount)')
+                      ? context.l10n.multiSelectedCount(selectedCount)
                       : title,
                   style: const TextStyle(
                     fontSize: 17,
@@ -1019,7 +997,7 @@ class _Header extends StatelessWidget {
                 TextButton(
                   onPressed: onClearSelection,
                   child: Text(
-                    context.l10n.isArabic ? 'إلغاء التحديد' : 'Deselect',
+                    context.l10n.deselect,
                   ),
                 ),
               IconButton(

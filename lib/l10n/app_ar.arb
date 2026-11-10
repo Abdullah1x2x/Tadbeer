@@ -1041,7 +1041,7 @@
   "downloadsHint": "السور المنزّلة تُسمع دون إنترنت، وما لم يُنزَّل يُسمع مباشرة عند الاتصال.",
   "mushaf": "المصحف",
   "appColorTheme": "لون التطبيق",
-  "sourcesAndCreditsDetails": "• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (91 ملزمة موثقة كاملة).\n• الأدعية والأذكار والتسبيح: 91 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: بياناتك على جهازك، بلا حساب ولا خوادم ولا تتبع ولا إعلانات. الإنترنت للتلاوة المسموعة فقط، والموقع التقريبي لاتجاه القبلة فقط، والنسخ الاحتياطية مشفّرة بمعيار AES-256.\n• خط مصحف المدينة: Digital Khatt (أمين عنان وTarteel) برخصة SIL OFL 1.1، ونص صفحاته وتخطيط أسطرها من مشروع DigitalKhatt (MIT).\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).\n• قائمة المصادر والتراخيص كاملة: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md",
+  "sourcesAndCreditsDetails": "• نص القرآن الكريم: مشروع تنزيل (Tanzil Project - https://tanzil.net) بالنص العثماني المعتمد برخصة المشاع الإبداعي (CC BY 3.0 — يُمنع التعديل).\n• الخطوط القرآنية المفتوحة المصدر: خط شهرزاد الجديد (Scheherazade New)، خط نوتو نسخ (Noto Naskh Arabic)، خط هرمتان (Harmattan)، خط لطيف (Lateef)، وخط أميري القرآني (AmiriQuran & Amiri) برخصة الخطوط المفتوحة SIL Open Font License 1.1.\n• مكتبة الكتب والملازم التدبرية: ملازم هدي القرآن الكريم للسيد حسين بدر الدين الحوثي (91 ملزمة موثقة كاملة).\n• الأدعية والأذكار والتسبيح: 91 دعاءً قرآنياً مرتبة حسب المصحف، وحصن المسلم لأذكار الصباح والمساء، وباقة الاستغفار والتسبيح (49 صيغة مأثورة موثقة)، وأدعية أهل البيت والسنة النبوية الشريفة.\n• ترخيص التطبيق: مشروع مفتوح المصدر بالكامل تحت رخصة MIT License.\n• الخصوصية والأمان المحلي: بياناتك على جهازك، بلا حساب ولا خوادم ولا تتبع ولا إعلانات. الإنترنت للتلاوة المسموعة والتحقق من التحديثات فقط، والموقع التقريبي لاتجاه القبلة فقط، والنسخ الاحتياطية مشفّرة بمعيار AES-256.\n• خط مصحف المدينة: Digital Khatt (أمين عنان وTarteel) برخصة SIL OFL 1.1، ونص صفحاته وتخطيط أسطرها من مشروع DigitalKhatt (MIT).\n• التلاوات: Islamic Network، والحقوق للقرّاء أو ورثتهم.\n• اثنا عشر دعاءً من الصحيفة السجادية: ويكي مصدر (CC BY-SA 4.0).\n• قائمة المصادر والتراخيص كاملة: https://github.com/Abdullah1x2x/Tadbeer/blob/main/THIRD_PARTY_NOTICES.md",
   "unsavedChanges": "تغييرات غير محفوظة",
   "discardChangesConfirm": "هل تريد مغادرة المحرر وتجاهل التعديلات غير المحفوظة؟",
   "discard": "تجاهل والخروج",
@@ -1463,5 +1463,214 @@
   "hideHubLines": "إخفاء الخطوط التلقائية",
   "showHubLines": "إظهار الخطوط التلقائية",
   "hideThreads": "إخفاء الخيوط اليدوية",
-  "showThreads": "إظهار الخيوط اليدوية"
+  "showThreads": "إظهار الخيوط اليدوية",
+  "downloadingUpdate": "جارٍ تنزيل التحديث...",
+  "viewAction": "عرض",
+  "updateDownloadedReadyToInstall": "اكتمل التنزيل! جاهز للتثبيت",
+  "installAction": "تثبيت",
+  "repeatAndPlaybackOptions": "تكرار الآية ونمط التلاوة",
+  "modeContinuous": "نمط التلاوة: مستمر",
+  "modeSingleAyah": "نمط التلاوة: آية واحدة",
+  "switchToSingleMode": "(تبديل لفردي)",
+  "switchToContinuousMode": "(تبديل لمستمر)",
+  "noRepeat1x": "بدون تكرار (مرة واحدة)",
+  "addAsSeparateCards": "إضافتها كبطاقات منفصلة",
+  "addToLinkAgain": "إضافة إلى الرابط مجدداً",
+  "rangeFromLabel": "من:",
+  "rangeToLabel": "إلى:",
+  "deselect": "إلغاء التحديد",
+  "moveUp": "تقديم للأعلى",
+  "moveDown": "تأخير للأسفل",
+  "duplicateVerseCard": "تكرار كرت الآية",
+  "verseCardDuplicated": "تم تكرار كرت الآية بنجاح",
+  "duplicateCard": "تكرار البطاقة",
+  "cardDuplicated": "تم تكرار البطاقة بنجاح",
+  "noteCardDuplicatedInLink": "تم تكرار بطاقة الخاطرة في الرابط",
+  "verseCardDuplicatedInLink": "تم تكرار كرت الآية في الرابط",
+  "duplicateVerseCardShort": "تكرار كرت الآية",
+  "linkReflectionNoteHint": "خاطرة حول الآية / الآيات في هذا الرابط (اختياري)...",
+  "feedbackSuggestions": "الآراء والمقترحات",
+  "newDuplicatedNoteCreatedSuccessfully": "تم إنشاء نسخة مكررة جديدة بنجاح",
+  "duplicateAsNewNote": "تكرار كخاطرة جديدة",
+  "noteDuplicatedSuccessfully": "تم تكرار الملاحظة بنجاح",
+  "failedToDuplicateNote": "تعذر تكرار الملاحظة",
+  "duplicateNoteAction": "تكرار الملاحظة",
+  "locationUpdatedSuccessfully": "تم تحديث موقعك الحالي بنجاح",
+  "aboutTadbeerSources": "عن تَدبِير والمصادر المعتمدة",
+  "missionMethodologyCredits": "الرسالة، والمنهج، ومصادر التوثيق",
+  "missionMethodologySources": "نبذة عن المنهج والمصادر والتوثيق",
+  "strictOfflinePrivacyZeroDataCollection": "خصوصية تامة محلياً دون جمع أي بيانات",
+  "softwareTypographyQuranLicenses": "تراخيص البرمجيات والخطوط والمصحف",
+  "updatesCommunity": "التحديثات والمجتمع",
+  "updateReadyToInstall": "التحديث جاهز للتثبيت",
+  "checkForUpdates": "التحقق من التحديثات",
+  "autoCheckOnLaunch": "التحقق التلقائي عند فتح التطبيق",
+  "notifyOnNewVersion": "إشعارك عند توفر إصدار رسمي جديد",
+  "telegramChannel": "قناة تيليجرام",
+  "sendFeedback": "إرسال رأي أو اقتراح",
+  "newUpdateAvailable": "يتوفر تحديث جديد",
+  "whatsNewInRelease": "ما الجديد في هذا الإصدار:",
+  "generalPerformanceAndUiImprovements": "تحسينات عامة في الأداء والواجهة.",
+  "downloadingAndPreparingInstall": "جارٍ التحميل والتثبيت التلقائي...",
+  "cancelUpdateDownload": "إلغاء التحميل",
+  "downloadCompleteTapInstall": "اكتمل التحميل! اضغط على التثبيت لتحديث التطبيق.",
+  "installUpdateNow": "تثبيت التحديث الآن",
+  "reDownload": "إعادة التنزيل",
+  "autoDownloadFailed": "تعذر إكمال التحميل التلقائي. يمكنك إعادة المحاولة أو التحميل عبر تيليجرام.",
+  "retryDownload": "إعادة المحاولة",
+  "telegramLabel": "تيليجرام",
+  "downloadInstallUpdate": "تحميل وتثبيت التحديث تلقائياً",
+  "downloadViaOfficialTelegram": "تحميل عبر قناة تيليجرام الرسمية",
+  "checkingForUpdates": "جارٍ التحقق من وجود تحديثات...",
+  "updateCheckFailed": "تعذر التحقق من التحديثات، يرجى التأكد من اتصالك بالإنترنت.",
+  "appVersionTagline": "الإصدار {version} · مجاني وبدون إعلانات، ويعمل دون إنترنت",
+  "@appVersionTagline": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadingUpdatePercent": "جارٍ تحميل التحديث ({percent}%)",
+  "@downloadingUpdatePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "Object"
+      }
+    }
+  },
+  "ayahRangeReference": "{surahName} [الآيات {fromAyah} - {toAyah}]",
+  "@ayahRangeReference": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "fromAyah": {
+        "type": "String"
+      },
+      "toAyah": {
+        "type": "String"
+      }
+    }
+  },
+  "mergeVersesInOneCard": "دمج ({count}) آيات في كرت واحد",
+  "@mergeVersesInOneCard": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "addSelectedVerses": "إضافة ({count}) آيات محددة",
+  "@addSelectedVerses": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "includePreviousAyah": "ضم الآية السابقة ({ayah})",
+  "@includePreviousAyah": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      }
+    }
+  },
+  "includePreviousAyahShort": "ضم الآية السابقة ({ayah})",
+  "@includePreviousAyahShort": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      }
+    }
+  },
+  "includeNextAyah": "ضم الآية اللاحقة ({ayah})",
+  "@includeNextAyah": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      }
+    }
+  },
+  "includeNextAyahShort": "ضم الآية اللاحقة ({ayah})",
+  "@includeNextAyahShort": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      }
+    }
+  },
+  "excludeAyah": "استبعاد ({ayah})",
+  "@excludeAyah": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      }
+    }
+  },
+  "selectPreviousAyahOnly": "اختيار الآية السابقة فقط ({ayah})",
+  "@selectPreviousAyahOnly": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      }
+    }
+  },
+  "multiSelectedCount": "تحديد متعدد ({count})",
+  "@multiSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "addToExistingLinkCount": "إضافة إلى رابط موجود ({count}):",
+  "@addToExistingLinkCount": {
+    "placeholders": {
+      "count": {
+        "type": "Object"
+      }
+    }
+  },
+  "repeatAyahTimes": "تكرار الآية ×{times} مرات",
+  "@repeatAyahTimes": {
+    "placeholders": {
+      "times": {
+        "type": "String"
+      }
+    }
+  },
+  "usingLatestVersion": "أنت تستخدم أحدث إصدار من تطبيق تدبير (v{version})",
+  "@usingLatestVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "linkedVersesCount": "{count} آيات مرتبطة",
+  "@linkedVersesCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "duaVersesLabel": "الآيات {ayahs}",
+  "@duaVersesLabel": {
+    "placeholders": {
+      "ayahs": {
+        "type": "String"
+      }
+    }
+  },
+  "duaVerseLabel": "الآية {ayah}",
+  "@duaVerseLabel": {
+    "placeholders": {
+      "ayah": {
+        "type": "String"
+      }
+    }
+  }
 }
