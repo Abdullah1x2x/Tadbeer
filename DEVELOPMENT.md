@@ -54,6 +54,18 @@ flutter build apk --release --split-per-abi
 flutter build appbundle --release
 ```
 
+### إصدار نسخة جديدة
+
+```bash
+dart run tool/release.dart 1.0.1
+```
+
+يقرأ السطور تحت `## غير منشور` في `CHANGELOG.md`، ثم يكتب رقم الإصدار في `pubspec.yaml`، وثابتَي `AppUpdateService`، و`CHANGELOG.md`، و`version.json` و`docs/version.json`، وسجل المتجر العربي في `fastlane/`. لا يعمل commit ولا يرفع شيئاً؛ يطبع الأوامر التالية.
+
+- **ارفع الوسم وحده** (`git push origin v1.0.1`). التطبيقات المثبّتة تقرأ `version.json` من `main`، فيحرّك `release.yml` الفرع `main` إلى commit الوسم بعد رفع ملفات APK، فلا يُعرض تحديث قبل وجود ملفه.
+- `test/updates/release_sync_test.dart` يفشل إن اختلف `pubspec.yaml` عن ثابتَي الخدمة، أو اختلفت نسختا `version.json`.
+- التحديث داخل التطبيق ينزّل ملف معمارية الجهاز: `AppUpdateInfo.apkUrlFor` يبدّل `arm64-v8a` في `apk_url` بما تعيده قناة `tadbeer/device` (`abi`). أسماء ملفات الإصدار يجب أن تبقى `app-<abi>-release.apk`.
+
 ---
 
 ## 3. خريطة ملفات المشروع (`lib/`)

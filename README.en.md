@@ -12,7 +12,7 @@ An open-source Quran app that works offline, with no ads and no tracking.
 [![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-[Download](https://github.com/Abdullah1x2x/Tadbeer/releases) · [Telegram channel](https://t.me/tadbeerapp) · [Website](https://tadbeerquran.netlify.app/) · [Developer guide](DEVELOPMENT.md) · [العربية](README.md)
+[Download](https://github.com/Abdullah1x2x/Tadbeer/releases) · [Telegram channel](https://t.me/tadbeerapp) · [Feedback & suggestions](https://t.me/TadbeerFeedbackBot) · [Website](https://tadbeerquran.netlify.app/) · [Developer guide](DEVELOPMENT.md) · [العربية](README.md)
 
 </div>
 
