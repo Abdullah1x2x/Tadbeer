@@ -126,21 +126,25 @@ class _FocusModeScreenState extends State<FocusModeScreen>
               itemBuilder: (context, i) =>
                   _AyahPanel(ayah: _ayahs[i], active: i == _index),
             ),
-            // الشريط العلوي: الإغلاق.
-            Align(
-              alignment: Alignment.topCenter,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        tooltip: l10n.close,
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(AppIcons.x),
-                        color: Colors.white70,
-                      ),
-                    ],
+            // الشريط العلوي: الإغلاق، في جهة البداية بلغة الواجهة. الصفحات وحدها
+            // تبقى من اليمين كالمصحف.
+            Directionality(
+              textDirection: context.currentLanguage.direction,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          tooltip: l10n.close,
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(AppIcons.x),
+                          color: Colors.white70,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

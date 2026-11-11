@@ -259,7 +259,10 @@ class AppUpdateService {
           ),
         );
       }
-    } catch (_) {}
+    } catch (e) {
+      // path_provider أو نظام الملفات: يبقى التحديث قابلاً للتنزيل من جديد.
+      debugPrint('Checking the downloaded update failed: $e');
+    }
   }
 
   /// يبدأ تنزيل ملف التحديث في الخلفية مع تحديث الحالة المركزية.
@@ -334,7 +337,9 @@ class AppUpdateService {
         if (part.existsSync()) {
           part.deleteSync();
         }
-      } catch (_) {}
+      } on FileSystemException catch (e) {
+        debugPrint('Deleting the update download failed: $e');
+      }
     }
     downloadState.value = const UpdateDownloadState(
       status: UpdateDownloadStatus.idle,

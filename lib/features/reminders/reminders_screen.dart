@@ -476,7 +476,6 @@ class _AddOrEditReminderDialogState extends State<_AddOrEditReminderDialog> {
           children: [
             TextField(
               controller: _titleController,
-              textDirection: TextDirection.rtl,
               style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
               decoration: InputDecoration(
                 labelText: l10n.reminderTitle,
