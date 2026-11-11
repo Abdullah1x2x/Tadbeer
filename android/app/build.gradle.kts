@@ -68,7 +68,7 @@ android {
     dependenciesInfo {
         // Required by F-Droid / IzzyOnDroid: excludes Google's encrypted dependency blob from APKs
         includeInApk = false
-        // Retains dependency metadata in Android App Bundles (.aab) for Google Play Console
+        // Retains dependency metadata in Android App Bundles (.aab)
         includeInBundle = true
     }
 }

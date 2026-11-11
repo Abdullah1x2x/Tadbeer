@@ -50,7 +50,7 @@ flutter run
 # 5. بناء حزم الإصدار والإنتاج
 # ملف APK لكل معمارية معالج (حوالي ثلث حجم الملف الشامل)
 flutter build apk --release --split-per-abi
-# حزمة Google Play، التي تعطي كل جهاز ما يحتاجه فقط
+# حزمة AAB، التي تعطي كل جهاز ما يحتاجه فقط
 flutter build appbundle --release
 ```
 

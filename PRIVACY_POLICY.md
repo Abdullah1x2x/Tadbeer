@@ -2,7 +2,7 @@
 
 > **تطبيق «تَدبِير» (Tadbeer) — تطبيق قرآني وتدبري مفتوح المصدر يعمل محلياً دون إنترنت، ولا يستخدم الإنترنت إلا للتلاوة المسموعة والتحقق من التحديثات.**  
 > **Effective Date:** October 2026 | **تاريخ السريان:** أكتوبر 2026  
-> **Compliance:** Fully compliant with Google Play Developer Policy, Apple App Store Review Guidelines, and GDPR/CCPA.
+> **Compliance:** Fully compliant with GDPR/CCPA.
 
 ---
 

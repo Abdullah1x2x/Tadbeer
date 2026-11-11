@@ -15,7 +15,7 @@ A comprehensive legal and architectural audit was conducted across all component
 - **Platform Toolchains and Native Runtime Engines** across target platforms (Android, iOS, Linux, Windows, macOS, Web).
 
 ### Audit Verdict
-- **Legal Compliance:** **100% compliant** with open-source licensing standards and official application distribution requirements (**Google Play**, **Apple App Store**, and **F-Droid**).
+- **Legal Compliance:** **100% compliant** with open-source licensing standards and official application distribution requirements (**F-Droid**).
 - **Software Packages:** Permissive licenses only (MIT, BSD, Apache-2.0); `dbus` is MPL-2.0 and used on Linux only.
 - **Content:** The Mushaf fonts and layout, recitations and some books have their own terms and are not covered by the MIT License.
 - **Automated In-App Attribution:** All software package licenses are registered into Flutter's native `LicenseRegistry`, rendered automatically within the app via `showLicensePage`.
@@ -246,6 +246,4 @@ limitations under the License.
 This document certifies that **Tadbeer (`تَدبِير`)**:
 1. **Contains zero licensing conflicts**, and all direct and platform dependencies are legally compatible with the primary [MIT License](LICENSE).
 2. **Complies fully with store distribution criteria**:
-   - **Google Play:** Meets all policies regarding privacy disclosure, minimal permissions, and IP compliance.
-   - **Apple App Store:** Conforms to third-party software acknowledgment rules and the required `PrivacyInfo.xcprivacy` schema.
    - **F-Droid:** 100% compliant with Free and Open Source Software (FOSS) criteria, free of proprietary binaries or anti-features.
