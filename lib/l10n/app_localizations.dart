@@ -1430,12 +1430,6 @@ abstract class AppLocalizations {
   /// **'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات وعدادات التسبيح وتقدم الختمة والحفظ واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.'**
   String get resetWarningMessage;
 
-  /// No description provided for @versionInfo.
-  ///
-  /// In ar, this message translates to:
-  /// **'الإصدار ١.٠.٠ · مجاني وبدون إعلانات أو إنترنت'**
-  String get versionInfo;
-
   /// No description provided for @sourcesAndCredits.
   ///
   /// In ar, this message translates to:

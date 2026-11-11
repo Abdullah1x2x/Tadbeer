@@ -28,6 +28,8 @@ class MainActivity : AudioServiceActivity() {
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "manufacturer" -> result.success(Build.MANUFACTURER)
+                    // The update download picks the APK built for this ABI.
+                    "abi" -> result.success(Build.SUPPORTED_ABIS.firstOrNull())
                     // The compass reads magnetic north; the Qibla bearing is from
                     // true north. The gap here, in degrees east.
                     "declination" -> {

@@ -59,6 +59,15 @@ class AppUpdateInfo {
     return 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/app-arm64-v8a-release.apk';
   }
 
+  /// المعماريات التي يُبنى لها ملف APK في كل إصدار.
+  static const _builtAbis = {'arm64-v8a', 'armeabi-v7a', 'x86_64'};
+
+  /// رابط حزمة معمارية الجهاز [abi]؛ ملفات الإصدار تختلف في اسم المعمارية
+  /// فقط. معمارية مجهولة تُبقي رابط arm64.
+  String apkUrlFor(String? abi) => _builtAbis.contains(abi)
+      ? directApkUrl.replaceFirst('arm64-v8a', abi!)
+      : directApkUrl;
+
   /// يتحقق مما إذا كان هذا التحديث أحدث من الإصدار المثبت حالياً.
   bool isNewerThan(int currentBuildNumber, String currentVersion) {
     if (buildNumber > currentBuildNumber) return true;

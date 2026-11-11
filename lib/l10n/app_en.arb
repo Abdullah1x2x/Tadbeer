@@ -222,7 +222,6 @@
   "confirmReset": "Confirm Reset",
   "resetSuccess": "Data reset successfully",
   "resetWarningMessage": "Are you sure you want to delete all notes, bookmarks, highlights, tasbeeh counts, and khatma and memorization progress, and restore default app settings? This cannot be undone unless you have a backup.",
-  "versionInfo": "Version 1.0.0 · Free, ad-free & offline",
   "sourcesAndCredits": "Sources & Documentation:",
   "openSourceLicenses": "Open Source Licenses",
   "privacyPolicy": "Privacy Policy",

@@ -77,6 +77,12 @@ jobs:
             build/app/outputs/bundle/release/app-release.aab
             build/app/outputs/flutter-apk/app-*-release.apk
 
+      # version.json on main is what installed apps read. Moving main to the
+      # tag only now means nobody is offered an update before its files exist.
+      - name: Announce the update to installed apps
+        if: startsWith(github.ref, 'refs/tags/')
+        run: git push origin "$GITHUB_SHA:refs/heads/main"
+
       - name: Keep the files on manual runs
         uses: actions/upload-artifact@v4
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}

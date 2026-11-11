@@ -268,9 +268,15 @@ class AppUpdateService {
   /// يبدأ تنزيل ملف التحديث في الخلفية مع تحديث الحالة المركزية.
   Future<void> startDownload(AppUpdateInfo update) async {
     if (downloadState.value.isDownloading) return;
+    // ملف APK لأندرويد وحده؛ غيره يفتح صفحة الإصدار.
+    if (!Platform.isAndroid) {
+      await openDownload(update.downloadUrl);
+      return;
+    }
 
     try {
       final file = await getUpdateApkFile(update.buildNumber);
+      final abi = await _deviceAbi();
 
       downloadState.value = UpdateDownloadState(
         status: UpdateDownloadStatus.downloading,
@@ -280,7 +286,7 @@ class AppUpdateService {
 
       await _downloadSub?.cancel();
       _downloadSub = downloadApkFile(
-        url: update.directApkUrl,
+        url: update.apkUrlFor(abi),
         targetFile: file,
       ).listen(
         (progress) {
@@ -384,6 +390,16 @@ class AppUpdateService {
   }
 
   static const MethodChannel _deviceChannel = MethodChannel('tadbeer/device');
+
+  /// معمارية الجهاز (مثل `armeabi-v7a`)، أو null إن تعذّرت قراءتها.
+  Future<String?> _deviceAbi() async {
+    try {
+      return await _deviceChannel.invokeMethod<String>('abi');
+    } catch (e) {
+      debugPrint('Reading the device ABI failed: $e');
+      return null;
+    }
+  }
 
   /// يحصل على المسار المحلي لتخزين ملف الـ APK المحمّل.
   Future<File> getUpdateApkFile(int buildNumber) async {

@@ -703,9 +703,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'هل أنت متأكد من رغبتك في حذف جميع الملاحظات والمحفوظات والتمييزات وعدادات التسبيح وتقدم الختمة والحفظ واستعادة الإعدادات الأصلية للتطبيق؟\n\nلا يمكن التراجع عن هذا الإجراء إلا إذا كانت لديك نسخة احتياطية سابقة.';
 
   @override
-  String get versionInfo => 'الإصدار ١.٠.٠ · مجاني وبدون إعلانات أو إنترنت';
-
-  @override
   String get sourcesAndCredits => 'المصادر والتوثيق المعتمد:';
 
   @override

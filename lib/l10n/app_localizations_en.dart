@@ -706,9 +706,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete all notes, bookmarks, highlights, tasbeeh counts, and khatma and memorization progress, and restore default app settings? This cannot be undone unless you have a backup.';
 
   @override
-  String get versionInfo => 'Version 1.0.0 · Free, ad-free & offline';
-
-  @override
   String get sourcesAndCredits => 'Sources & Documentation:';
 
   @override
