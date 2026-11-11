@@ -96,9 +96,13 @@ void main() {
       await UserDataStore.instance.init(File('${tempDir.path}/data.json'));
       AppUpdateService.instance.downloadState.value =
           const UpdateDownloadState();
+      AppUpdateService.instance.isDialogVisible.value = false;
+      AppUpdateService.instance.resetSilentCheckForTesting();
     });
 
     tearDown(() async {
+      AppUpdateService.instance.isDialogVisible.value = false;
+      AppUpdateService.instance.resetSilentCheckForTesting();
       if (tempDir.existsSync()) {
         await tempDir.delete(recursive: true);
       }
@@ -213,6 +217,129 @@ void main() {
 
       expect(find.byType(SnackBar), findsNothing);
     });
+
+    testWidgets(
+      'silent check retries immediately after failure and enforces 2h cooldown after success',
+      (tester) async {
+        final deadServer = await tester.runAsync(
+          () => HttpServer.bind(InternetAddress.loopbackIPv4, 0),
+        );
+        final deadPort = deadServer!.port;
+        await tester.runAsync(() => deadServer.close(force: true));
+
+        var requestCount = 0;
+        final server = await tester.runAsync(() async {
+          final s = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+          s.listen((request) async {
+            requestCount++;
+            request.response
+              ..statusCode = HttpStatus.ok
+              ..write(
+                jsonEncode({
+                  'latest_version': AppUpdateService.currentVersion,
+                  'build_number': AppUpdateService.currentBuildNumber,
+                }),
+              );
+            await request.response.close();
+          });
+          return s;
+        });
+        addTearDown(() => tester.runAsync(() => server!.close(force: true)));
+
+        final context = await pumpHost(tester);
+        final t0 = DateTime(2026, 11, 12, 2, 0);
+
+        // 1. Offline failure must NOT lock the cooldown.
+        await tester.runAsync(
+          () => AppUpdateService.instance.checkForUpdates(
+            context,
+            showFeedback: false,
+            urls: ['http://127.0.0.1:$deadPort/version.json'],
+            currentTime: t0,
+          ),
+        );
+
+        // 2. Immediate retry 1 minute later succeeds.
+        await tester.runAsync(
+          () => AppUpdateService.instance.checkForUpdates(
+            context,
+            showFeedback: false,
+            urls: ['http://127.0.0.1:${server!.port}/version.json'],
+            currentTime: t0.add(const Duration(minutes: 1)),
+          ),
+        );
+        expect(requestCount, 1);
+
+        // 3. Within 2 hours of success, silent check is skipped.
+        await tester.runAsync(
+          () => AppUpdateService.instance.checkForUpdates(
+            context,
+            showFeedback: false,
+            urls: ['http://127.0.0.1:${server!.port}/version.json'],
+            currentTime: t0.add(const Duration(hours: 1, minutes: 59)),
+          ),
+        );
+        expect(requestCount, 1);
+
+        // 4. After 2 hours, silent check runs again.
+        await tester.runAsync(
+          () => AppUpdateService.instance.checkForUpdates(
+            context,
+            showFeedback: false,
+            urls: ['http://127.0.0.1:${server!.port}/version.json'],
+            currentTime: t0.add(const Duration(hours: 2, minutes: 1)),
+          ),
+        );
+        expect(requestCount, 2);
+      },
+    );
+
+    testWidgets(
+      'silent check automatically opens update dialog when newer version exists',
+      (tester) async {
+        final server = await tester.runAsync(() async {
+          final s = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+          s.listen((request) async {
+            request.response
+              ..statusCode = HttpStatus.ok
+              ..write(
+                jsonEncode({
+                  'latest_version': '9.9.9',
+                  'build_number': AppUpdateService.currentBuildNumber + 1,
+                  'title': 'تحديث جديد متاح',
+                  'changelog': '• تحسين مهم',
+                }),
+              );
+            await request.response.close();
+          });
+          return s;
+        });
+        addTearDown(() => tester.runAsync(() => server!.close(force: true)));
+
+        final context = await pumpHost(tester);
+
+        // Show dialog via silent check; don't await because showModalBottomSheet
+        // resolves when dismissed.
+        late Future<void> checkFuture;
+        await tester.runAsync(() async {
+          checkFuture = AppUpdateService.instance.checkForUpdates(
+            context,
+            showFeedback: false,
+            urls: ['http://127.0.0.1:${server!.port}/version.json'],
+          );
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+        });
+        await tester.pumpAndSettle();
+
+        expect(find.text('تحديث جديد متاح'), findsOneWidget);
+        expect(find.text('v9.9.9'), findsOneWidget);
+
+        // Dismiss the bottom sheet cleanly so checkFuture completes.
+        Navigator.of(context).pop();
+        await tester.pumpAndSettle();
+        await tester.runAsync(() => checkFuture);
+      },
+    );
   });
 
   group('downloadApkFile', () {

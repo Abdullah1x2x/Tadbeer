@@ -21,7 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
+      # Full history: the last step moves main forward to the tag, and git
+      # refuses that push from a shallow copy.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-java@v4
         with:
@@ -59,10 +63,8 @@ jobs:
             echo "storePassword=$STORE_PASSWORD"
           } > android/key.properties
 
-      - name: Build app bundle and APKs
-        run: |
-          flutter build appbundle --release
-          flutter build apk --release --split-per-abi
+      - name: Build v7 and v8 APKs
+        run: flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64
 
       - name: Remove signing files
         if: always()
@@ -74,7 +76,6 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            build/app/outputs/bundle/release/app-release.aab
             build/app/outputs/flutter-apk/app-*-release.apk
 
       # version.json on main is what installed apps read. Moving main to the
@@ -89,5 +90,4 @@ jobs:
         with:
           name: android-release
           path: |
-            build/app/outputs/bundle/release/app-release.aab
             build/app/outputs/flutter-apk/app-*-release.apk

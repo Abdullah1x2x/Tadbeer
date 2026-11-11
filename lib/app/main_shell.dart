@@ -65,37 +65,69 @@ class MainShell extends StatefulWidget {
     return true;
   }
 
+  /// خطاف اختباري لتتبع الفحص التلقائي في الاختبارات دون اتصال خارجي.
+  @visibleForTesting
+  static Future<void> Function(BuildContext)? silentUpdateCheckForTesting;
+
   @override
   State<MainShell> createState() => _MainShellState();
 }
 
 class _MainShellState extends State<MainShell>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late ShellTab _tab = widget.initialTab;
   late final Set<ShellTab> _visited = {widget.initialTab};
 
   Timer? _updateTimer;
+  bool _startupDone = false;
 
   @override
   void initState() {
     super.initState();
     MainShell._mountedCount++;
     MainShell.requestedTab.addListener(_onTabRequested);
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _welcome();
-        if (!Platform.environment.containsKey('FLUTTER_TEST')) {
-          _updateTimer = Timer(const Duration(seconds: 3), () {
-            if (mounted) {
-              AppUpdateService.instance.checkForUpdates(
-                context,
-                showFeedback: false,
-              );
-            }
-          });
-        }
+        unawaited(_runStartupFlow());
       }
     });
+  }
+
+  /// يعرض الأذونات والدليل أولاً، ثم يبدأ الفحص التلقائي للتحديثات.
+  Future<void> _runStartupFlow() async {
+    await _welcome();
+    if (!mounted) return;
+    _startupDone = true;
+    _scheduleSilentUpdateCheck(const Duration(seconds: 3));
+  }
+
+  void _scheduleSilentUpdateCheck(Duration delay) {
+    final testHook = MainShell.silentUpdateCheckForTesting;
+    if (Platform.environment.containsKey('FLUTTER_TEST') && testHook == null) {
+      return;
+    }
+    _updateTimer?.cancel();
+    _updateTimer = Timer(delay, () {
+      if (!mounted) return;
+      if (testHook != null) {
+        unawaited(testHook(context));
+      } else {
+        unawaited(
+          AppUpdateService.instance.checkForUpdates(
+            context,
+            showFeedback: false,
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _startupDone && mounted) {
+      _scheduleSilentUpdateCheck(const Duration(seconds: 1));
+    }
   }
 
   /// الأذونات أولاً، ثم دليل الرئيسية لمن وصلها أول مرة.
@@ -133,6 +165,7 @@ class _MainShellState extends State<MainShell>
   @override
   void dispose() {
     _updateTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     MainShell._mountedCount--;
     MainShell.requestedTab.removeListener(_onTabRequested);
     _eased.dispose();

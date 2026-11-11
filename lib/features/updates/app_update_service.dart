@@ -50,10 +50,13 @@ class AppUpdateService {
   static final AppUpdateService instance = AppUpdateService._();
 
   /// الإصدار الحالي المثبت من التطبيق.
-  static const String currentVersion = '1.0.1';
+  static const String currentVersion = '1.0.0';
 
   /// رقم البناء الحالي.
-  static const int currentBuildNumber = 2;
+  static const int currentBuildNumber = 1;
+
+  /// مدة الانتظار بين محاولات الفحص التلقائي الناجحة في نفس الجلسة.
+  static const Duration silentCheckCooldown = Duration(hours: 2);
 
   /// الرابط الأساسي لملف الإصدار في مستودع GitHub.
   static const String _primaryUrl =
@@ -74,6 +77,13 @@ class AppUpdateService {
       'https://github.com/Abdullah1x2x/Tadbeer/releases/latest';
 
   DateTime? _lastSilentCheck;
+  bool _isChecking = false;
+
+  @visibleForTesting
+  void resetSilentCheckForTesting() {
+    _lastSilentCheck = null;
+    _isChecking = false;
+  }
 
   /// حالة التنزيل المركزية المتوفرة لجميع شاشات وعناصر التطبيق.
   final ValueNotifier<UpdateDownloadState> downloadState =
@@ -106,6 +116,7 @@ class AppUpdateService {
             HttpHeaders.userAgentHeader,
             'TadbeerApp/$currentVersion (Android; Offline-First)',
           );
+          request.headers.set(HttpHeaders.cacheControlHeader, 'no-cache');
           final response = await request.close().timeout(
             const Duration(seconds: 6),
           );
@@ -141,106 +152,119 @@ class AppUpdateService {
     BuildContext context, {
     bool showFeedback = true,
     @visibleForTesting List<String>? urls,
+    @visibleForTesting DateTime? currentTime,
   }) async {
-    // إذا كان التحميل جارياً أو مكتملاً، نفتح نافذة التحديث فوراً
+    // إذا كان التحميل جارياً أو مكتملاً، نفتح نافذة التحديث فوراً عند الطلب اليدوي.
     if ((downloadState.value.isDownloading || downloadState.value.isCompleted) &&
         downloadState.value.updateInfo != null) {
-      if (context.mounted) {
+      if (showFeedback && context.mounted) {
         await AppUpdateDialog.show(context, downloadState.value.updateInfo!);
       }
       return;
     }
 
+    if (_isChecking) return;
+
+    final now = currentTime ?? DateTime.now();
     if (!showFeedback) {
+      if (isDialogVisible.value) return;
       final settings = UserDataStore.instance.settings;
       if (!settings.autoCheckUpdates) return;
 
-      // منع تكرار الفحص الصامت أكثر من مرة كل 12 ساعة في نفس الجلسة.
-      final now = DateTime.now();
+      // منع تكرار الفحص الصامت الناجح أكثر من مرة كل ساعتين في نفس الجلسة.
       if (_lastSilentCheck != null &&
-          now.difference(_lastSilentCheck!).inHours < 12) {
+          now.difference(_lastSilentCheck!) < silentCheckCooldown) {
         return;
       }
-      _lastSilentCheck = now;
     }
 
-    if (showFeedback) {
-      await HapticFeedback.lightImpact();
-      if (context.mounted) {
-        ScaffoldMessenger.of(context)
-          ..clearSnackBars()
-          ..showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    context.l10n.checkingForUpdates,
-                  ),
-                ],
-              ),
-              duration: const Duration(seconds: 2),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-      }
-    }
-
-    final AppUpdateInfo update;
+    _isChecking = true;
     try {
-      update = await fetchUpdateInfo(urls: urls);
-    } catch (_) {
-      if (showFeedback && context.mounted) {
+      if (showFeedback) {
+        await HapticFeedback.lightImpact();
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+            ..clearSnackBars()
+            ..showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      context.l10n.checkingForUpdates,
+                    ),
+                  ],
+                ),
+                duration: const Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+        }
+      }
+
+      final AppUpdateInfo update;
+      try {
+        update = await fetchUpdateInfo(urls: urls);
+      } catch (_) {
+        if (showFeedback && context.mounted) {
+          ScaffoldMessenger.of(context)
+            ..clearSnackBars()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  context.l10n.updateCheckFailed,
+                ),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+        }
+        return;
+      }
+
+      // يُسجَّل وقت الفحص الصامت بعد نجاح الجلب فقط، كي لا يُحجب التكرار عند فشل الشبكة.
+      if (!showFeedback) {
+        _lastSilentCheck = now;
+      }
+
+      if (!context.mounted) return;
+
+      if (update.isNewerThan(currentBuildNumber, currentVersion)) {
+        // التحقق مما إذا كان الملف محملاً مسبقاً
+        await checkExistingDownloadedApk(update);
+        if (!context.mounted) return;
+
+        // التحقق مما إذا كان المستخدم قد تجاهل هذا الإصدار من قبل في الفحص الصامت.
+        final settings = UserDataStore.instance.settings;
+        if (!showFeedback &&
+            !update.isMandatory &&
+            settings.dismissedUpdateVersion == update.latestVersion) {
+          return;
+        }
+
+        // إظهار نافذة التحديث
+        await AppUpdateDialog.show(context, update);
+      } else if (showFeedback) {
         ScaffoldMessenger.of(context)
           ..clearSnackBars()
           ..showSnackBar(
             SnackBar(
               content: Text(
-                context.l10n.updateCheckFailed,
+                context.l10n.usingLatestVersion(currentVersion),
               ),
               behavior: SnackBarBehavior.floating,
             ),
           );
       }
-      return;
-    }
-
-    if (!context.mounted) return;
-
-    if (update.isNewerThan(currentBuildNumber, currentVersion)) {
-      // التحقق مما إذا كان الملف محملاً مسبقاً
-      await checkExistingDownloadedApk(update);
-      if (!context.mounted) return;
-
-      // التحقق مما إذا كان المستخدم قد تجاهل هذا الإصدار من قبل في الفحص الصامت.
-      final settings = UserDataStore.instance.settings;
-      if (!showFeedback &&
-          !update.isMandatory &&
-          settings.dismissedUpdateVersion == update.latestVersion) {
-        return;
-      }
-
-      // إظهار نافذة التحديث
-      await AppUpdateDialog.show(context, update);
-    } else if (showFeedback) {
-      ScaffoldMessenger.of(context)
-        ..clearSnackBars()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(
-              context.l10n.usingLatestVersion(currentVersion),
-            ),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+    } finally {
+      _isChecking = false;
     }
   }
 

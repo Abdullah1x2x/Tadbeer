@@ -42,6 +42,7 @@ void main() {
     });
 
     test('keeps the arm64 link for an ABI no APK is built for', () {
+      expect(update.apkUrlFor('x86_64'), update.directApkUrl);
       expect(update.apkUrlFor('x86'), update.directApkUrl);
       expect(update.apkUrlFor(null), update.directApkUrl);
     });
@@ -88,8 +89,8 @@ void main() {
       final json = versionJson('1.0.1', 2, '2026-11-12', ['أ', 'ب']);
       expect(json['changelog'], '• أ\n• ب');
       expect(
-        AppUpdateInfo.fromJson(json).apkUrlFor('x86_64'),
-        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/app-x86_64-release.apk',
+        AppUpdateInfo.fromJson(json).apkUrlFor('armeabi-v7a'),
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/app-armeabi-v7a-release.apk',
       );
     });
   });
