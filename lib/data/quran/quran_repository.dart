@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/utils/arabic_root_search_helper.dart';
@@ -10,7 +11,8 @@ import 'quran_models.dart';
 ///
 /// النص العثماني من مشروع تنزيل (`assets/quran/quran_data.json`): ١١٤ سورة،
 /// و٦٢٣٦ آية برقم ثابت لكل آية، و٦٠٤ صفحات. القوائم المعادة غير قابلة للتعديل،
-/// ويُحفظ نص كل آية مطبّعاً مسبقاً ليكون البحث فورياً.
+/// وفهرس البحث (نص كل آية مطبّعاً) يُبنى خارج الإقلاع: في الخلفية بـ
+/// [warmSearchIndex]، أو عند أول بحث إن سبقها.
 class QuranRepository {
   static final QuranRepository instance = QuranRepository._internal();
 
@@ -25,10 +27,31 @@ class QuranRepository {
   final List<QuranPage> _pages = [];
   final List<Ayah> _allAyahs = [];
   final Map<String, Ayah> _ayahsByKey = {};
-  final List<String> _normalizedAyahTexts = [];
+  ({List<String> normalized, List<String> hamzaFree})? _searchIndex;
+
+  ({List<String> normalized, List<String> hamzaFree}) get _index =>
+      _searchIndex ??= _buildSearchIndex([for (final a in _allAyahs) a.text]);
+
+  List<String> get _normalizedAyahTexts => _index.normalized;
 
   /// نصوص الآيات دون همزة، لتطابق الهمزة المكتوبة على غير رسم المصحف.
-  final List<String> _hamzaFreeAyahTexts = [];
+  List<String> get _hamzaFreeAyahTexts => _index.hamzaFree;
+
+  static ({List<String> normalized, List<String> hamzaFree}) _buildSearchIndex(
+    List<String> texts,
+  ) => (
+    normalized: texts.map(ArabicSearchNormalizer.normalize).toList(),
+    hamzaFree: texts.map(ArabicSearchNormalizer.withoutHamza).toList(),
+  );
+
+  /// يبني فهرس البحث في خيط منفصل، فلا يؤخر الإقلاع ولا يجمّد أول بحث.
+  Future<void> warmSearchIndex() async {
+    if (_searchIndex != null) return;
+    final built = await compute(_buildSearchIndex, [
+      for (final a in _allAyahs) a.text,
+    ]);
+    _searchIndex ??= built;
+  }
 
   List<Surah> get surahs => List.unmodifiable(_surahs);
 
@@ -56,8 +79,7 @@ class QuranRepository {
     _pages.clear();
     _allAyahs.clear();
     _ayahsByKey.clear();
-    _normalizedAyahTexts.clear();
-    _hamzaFreeAyahTexts.clear();
+    _searchIndex = null;
 
     for (final p in rawPages) {
       final page = QuranPage.fromJson(p);
@@ -65,8 +87,6 @@ class QuranRepository {
       for (final ayah in page.ayahs) {
         _allAyahs.add(ayah);
         _ayahsByKey[ayah.key] = ayah;
-        _normalizedAyahTexts.add(ArabicSearchNormalizer.normalize(ayah.text));
-        _hamzaFreeAyahTexts.add(ArabicSearchNormalizer.withoutHamza(ayah.text));
       }
     }
 

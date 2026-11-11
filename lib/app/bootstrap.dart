@@ -46,6 +46,14 @@ Future<void> bootstrap() async {
   _attachSyncs();
   await _startBackgroundRecitation();
 
+  // فهرس البحث يُبنى في الخلفية، فيجهز قبل أول بحث.
+  unawaited(
+    QuranRepository.instance.warmSearchIndex().catchError((Object e) {
+      // يُبنى عند أول بحث إن تعذّر هنا.
+      debugPrint('Warming the search index failed: $e');
+    }),
+  );
+
   // تخطيط مصحف المدينة يُفك في الخلفية، فيجهز قبل فتح المصحف.
   if (UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah) {
     unawaited(QcfLayout.instance.init());

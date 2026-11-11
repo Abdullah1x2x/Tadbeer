@@ -12,6 +12,13 @@ void main() {
       '${a.surahNumber}:${a.ayahNumber}',
   ];
 
+  // First, so the index comes from the background build and not a search.
+  test('the index built in the background serves the search', () async {
+    await QuranRepository.instance.warmSearchIndex();
+    expect(find('أولئك'), contains('2:5'));
+    expect(find('الصلاة'), contains('2:3'));
+  });
+
   test('the common hamza spelling finds the Mushaf words', () {
     expect(find('يستهزئون'), contains('6:5'));
     expect(find('السيئات'), contains('4:18'));
