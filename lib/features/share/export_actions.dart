@@ -28,6 +28,12 @@ Future<PhotoSaveResult> saveImageToPhotos(Uint8List bytes, String name) async {
   }
 }
 
+/// موضع [context] على الشاشة، تتعلق به قائمة المشاركة في iPad وإلا لم تظهر.
+Rect? shareOrigin(BuildContext context) {
+  final box = context.findRenderObject() as RenderBox?;
+  return box == null ? null : box.localToGlobal(Offset.zero) & box.size;
+}
+
 /// يسأل القارئ ماذا يفعل بملف صدّره: يشاركه، أو يحفظه في جهازه.
 Future<void> shareOrSaveFile(
   BuildContext context, {
@@ -38,6 +44,7 @@ Future<void> shareOrSaveFile(
   String? mimeType,
 }) async {
   final l10n = context.l10n;
+  final origin = shareOrigin(context);
   final save = await showModalBottomSheet<bool>(
     context: context,
     showDragHandle: true,
@@ -66,6 +73,7 @@ Future<void> shareOrSaveFile(
         files: [XFile(file.path, name: fileName, mimeType: mimeType)],
         subject: subject,
         text: text,
+        sharePositionOrigin: origin,
       ),
     );
     return;

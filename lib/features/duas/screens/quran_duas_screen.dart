@@ -290,7 +290,8 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
                 itemCount: _filteredDuas.length,
                 separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {
-                  return QuranDuaCard(dua: _filteredDuas[index]);
+                  final dua = _filteredDuas[index];
+                  return QuranDuaCard(key: ValueKey(dua.id), dua: dua);
                 },
               ),
       ),

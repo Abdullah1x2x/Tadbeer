@@ -256,7 +256,7 @@ class NotePdfExporter {
 
     final dir = await getTemporaryDirectory();
     final file = File(
-      '${dir.path}/tadbeer_note_${note.id.substring(0, 8)}.pdf',
+      '${dir.path}/tadbeer_note_${note.id.length > 8 ? note.id.substring(0, 8) : note.id}.pdf',
     );
     await file.writeAsBytes(await pdf.save());
     return file;

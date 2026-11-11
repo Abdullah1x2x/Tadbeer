@@ -504,10 +504,7 @@ class _AddOrEditReminderDialogState extends State<_AddOrEditReminderDialog> {
                 ),
               ),
               trailing: Text(
-                ReminderItem.formatTime12Hour(
-                  _selectedTime.hour,
-                  _selectedTime.minute,
-                ),
+                _formatTime(context, _selectedTime.hour, _selectedTime.minute),
                 style: TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: 18,
@@ -897,7 +894,9 @@ class _ReminderCard extends StatelessWidget {
                       ? (isDark ? AppColors.comsilk : AppColors.oliveDark)
                       : (isDark ? AppColors.nightSubtitle : Colors.grey),
                 ),
-                child: Text(reminder.formattedTime),
+                child: Text(
+                  _formatTime(context, reminder.hour, reminder.minute),
+                ),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -976,3 +975,11 @@ class _ReminderCard extends StatelessWidget {
     );
   }
 }
+
+/// وقت التذكير بلغة الواجهة: ص/م بالأرقام العربية، وإلا صيغة النظام.
+String _formatTime(BuildContext context, int hour, int minute) =>
+    context.currentLanguage == AppLanguage.arabic
+    ? ReminderItem.formatTime12Hour(hour, minute)
+    : MaterialLocalizations.of(
+        context,
+      ).formatTimeOfDay(TimeOfDay(hour: hour, minute: minute));

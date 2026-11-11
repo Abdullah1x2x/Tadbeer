@@ -183,12 +183,21 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
   bool _revealed = false;
   int _remembered = 0;
 
+  /// تقييم جارٍ، فلا يُقيَّم الآية نقرٌ ثانٍ سريع ولا تُتخطّى التي بعدها.
+  bool _grading = false;
+
   bool get _finished => _index >= widget.verses.length;
 
   Future<void> _grade(bool remembered) async {
+    if (_grading || _finished) return;
+    _grading = true;
     final (s, a) = widget.verses[_index];
     unawaited(HapticFeedback.selectionClick());
-    await HifzStore.grade(s, a, remembered: remembered);
+    try {
+      await HifzStore.grade(s, a, remembered: remembered);
+    } finally {
+      _grading = false;
+    }
     if (!mounted) return;
     setState(() {
       if (remembered) _remembered++;

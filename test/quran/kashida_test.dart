@@ -10,6 +10,13 @@ void main() {
 
   test('no kashida where it would break the word', () {
     expect(kashidaSpots('ٱللَّهِ'), isEmpty, reason: 'the name of Allah');
+    // Digital Khatt puts the shadda before the fatha.
+    expect(
+      kashidaSpots('ٱلل\u0651\u064eهِ'),
+      isEmpty,
+      reason: 'the name of Allah, shadda first',
+    );
+    expect(kashidaSpots('شَيْءٍ'), [2], reason: 'never before a lone hamza');
     expect(kashidaSpots('لا'), isEmpty, reason: 'the lam-alef ligature');
     expect(kashidaSpots('دار'), isEmpty, reason: 'letters that do not join');
     // حتىٰ: the dagger alef on the last letter would come loose.

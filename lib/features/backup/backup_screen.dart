@@ -12,6 +12,7 @@ import 'backup_crypto_service.dart';
 import '../../core/design_system/app_icons.dart';
 import '../onboarding/tour/section_guide.dart';
 import '../tasbeeh/tasbeeh_model.dart';
+import '../share/export_actions.dart';
 
 /// إنشاء النسخ الاحتياطية المشفرة واستعادتها.
 ///
@@ -113,6 +114,7 @@ class _BackupScreenState extends State<BackupScreen> {
 
   /// يصدّر النسخة ويشاركها عبر قائمة المشاركة في النظام.
   Future<void> _shareBackup() async {
+    final origin = shareOrigin(context);
     setState(() => _isProcessing = true);
 
     try {
@@ -120,7 +122,11 @@ class _BackupScreenState extends State<BackupScreen> {
       if (filePath == null) return;
 
       await SharePlus.instance.share(
-        ShareParams(files: [XFile(filePath)], subject: 'Tadbeer Backup'),
+        ShareParams(
+          files: [XFile(filePath)],
+          subject: 'Tadbeer Backup',
+          sharePositionOrigin: origin,
+        ),
       );
     } catch (e) {
       if (mounted) {

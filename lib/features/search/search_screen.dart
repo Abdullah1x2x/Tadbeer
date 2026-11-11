@@ -82,9 +82,13 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  /// رقم آخر بحث، فلا تكتب نتيجة بحث أبطأ فوق نتيجة أحدث منها.
+  int _searchId = 0;
+
   /// يبحث ويحدّث النتائج؛ [force] يعيد البحث ولو لم يتغير النص.
   Future<void> _executeSearch(String query, {bool force = false}) async {
     final trimmed = query.trim();
+    final searchId = ++_searchId;
     if (!force &&
         trimmed == _currentQuery &&
         _selectedProviderId == _lastSearchedProviderId &&
@@ -116,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
       providerId: _selectedProviderId,
     );
 
-    if (!mounted) return;
+    if (!mounted || searchId != _searchId) return;
 
     setState(() {
       _results = results;

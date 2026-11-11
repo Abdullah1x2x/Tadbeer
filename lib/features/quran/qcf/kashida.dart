@@ -13,8 +13,8 @@ final _joinsNext = RegExp(
   'ٮٯڡی]',
 );
 
-/// الحروف العربية.
-final _letter = RegExp('[ء-يٮ-ۓ]');
+/// الحروف العربية، دون الهمزة المنفردة: لا يتصل بها ما قبلها.
+final _letter = RegExp('[آ-يٮ-ۓ]');
 
 /// علامات التشكيل والضبط، ومنها فاصل الحروف (U+034F) في نص Digital Khatt.
 bool _isMark(int c) =>
@@ -30,8 +30,10 @@ bool _isMark(int c) =>
 /// الجلالة، ولا بين اللام والألف (لا)، ولا قبل حرف عليه ألف خنجرية أو مدّة،
 /// ولا بعد حرف عليه ألف خنجرية: تنفصل عنه.
 List<int> kashidaSpots(String word) {
-  if (word.contains('لله') || word.contains('للَّه')) return const [];
   final chars = word.runes.toList();
+  // ترتيب الشدة والفتحة يختلف بين المصادر، فيُفحص لفظ الجلالة دون تشكيل.
+  final bare = String.fromCharCodes(chars.where((c) => !_isMark(c)));
+  if (bare.contains('لله')) return const [];
   final offsets = <int>[];
   var offset = 0;
   for (final c in chars) {

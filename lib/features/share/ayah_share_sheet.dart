@@ -115,6 +115,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
   }
 
   Future<void> _share() async {
+    final origin = shareOrigin(context);
     setState(() => _sharing = true);
     try {
       final bytes = await _capture();
@@ -130,6 +131,7 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
         ShareParams(
           files: [XFile(file.path, mimeType: 'image/png')],
           text: '﴿${ayah.text}﴾ [${surah.name}: ${ayah.ayahNumber}]',
+          sharePositionOrigin: origin,
         ),
       );
     } finally {

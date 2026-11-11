@@ -398,7 +398,7 @@ mixin _AyahLinksSection on _StoreState {
         );
       } else {
         final count = updatedVerses.length + existing.notes.length;
-        final angle = (2 * math.pi * count / math.max(1, count));
+        final angle = (2 * math.pi * (count % 8)) / 8;
         const radius = 340.0;
         final dx = 1500.0 + (radius * math.cos(angle));
         final dy = 1500.0 + (radius * math.sin(angle));

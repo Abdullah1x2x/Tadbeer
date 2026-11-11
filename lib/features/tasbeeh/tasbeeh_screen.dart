@@ -61,6 +61,17 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // التبويب المخفي يبقى حياً في MainShell، والمؤقت لا يتبع TickerMode.
+    if (!TickerMode.valuesOf(context).enabled) {
+      _autoCountTimer?.cancel();
+      _autoCountTimer = null;
+      _isAutoCounting = false;
+    }
+  }
+
+  @override
   void dispose() {
     _autoCountTimer?.cancel();
     _repo.removeListener(_onRepoChanged);
