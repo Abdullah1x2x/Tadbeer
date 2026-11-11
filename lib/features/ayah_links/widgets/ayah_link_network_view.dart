@@ -653,11 +653,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               icon: const Icon(AppIcons.copy, size: 20),
               tooltip: context.l10n.duplicateVerseCard,
               onPressed: () async {
+                final copyLabel = context.l10n.copyLabel;
                 Navigator.pop(bottomSheetCtx);
                 await HapticFeedback.lightImpact();
                 await _repo.duplicateVerseInLink(
                   widget.link.id,
                   verse,
+                  copyLabel: copyLabel,
                 );
                 if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -848,11 +850,13 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               icon: const Icon(AppIcons.copy, size: 20),
               tooltip: context.l10n.duplicateCard,
               onPressed: () async {
+                final copyLabel = context.l10n.copyLabel;
                 Navigator.pop(bottomSheetCtx);
                 await HapticFeedback.lightImpact();
                 await _repo.duplicateNoteInLink(
                   widget.link.id,
                   note.id,
+                  copyLabel: copyLabel,
                 );
                 if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(

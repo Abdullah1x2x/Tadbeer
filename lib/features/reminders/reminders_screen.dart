@@ -199,7 +199,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
                       ),
                     )
                   : ListView.separated(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        16,
+                        16,
+                        16 + MediaQuery.viewInsetsOf(context).bottom,
+                      ),
                       itemCount: reminders.length,
                       separatorBuilder: (_, _) =>
                           const SizedBox(height: 12),
@@ -504,7 +509,7 @@ class _AddOrEditReminderDialogState extends State<_AddOrEditReminderDialog> {
                 ),
               ),
               trailing: Text(
-                _formatTime(context, _selectedTime.hour, _selectedTime.minute),
+                formatReminderTime(context, _selectedTime.hour, _selectedTime.minute),
                 style: TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: 18,
@@ -895,7 +900,7 @@ class _ReminderCard extends StatelessWidget {
                       : (isDark ? AppColors.nightSubtitle : Colors.grey),
                 ),
                 child: Text(
-                  _formatTime(context, reminder.hour, reminder.minute),
+                  formatReminderTime(context, reminder.hour, reminder.minute),
                 ),
               ),
               Row(
@@ -977,7 +982,7 @@ class _ReminderCard extends StatelessWidget {
 }
 
 /// وقت التذكير بلغة الواجهة: ص/م بالأرقام العربية، وإلا صيغة النظام.
-String _formatTime(BuildContext context, int hour, int minute) =>
+String formatReminderTime(BuildContext context, int hour, int minute) =>
     context.currentLanguage == AppLanguage.arabic
     ? ReminderItem.formatTime12Hour(hour, minute)
     : MaterialLocalizations.of(

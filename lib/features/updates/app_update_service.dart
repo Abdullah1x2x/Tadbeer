@@ -85,15 +85,23 @@ class AppUpdateService {
   StreamSubscription<DownloadProgress>? _downloadSub;
 
   /// يجلب بيانات التحديث من المستودع عبر HTTP GET مجهول.
-  Future<AppUpdateInfo?> fetchUpdateInfo() async {
+  ///
+  /// يرمي استثناءً عند تعذر الوصول إلى جميع الروابط أو فشل قراءة الاستجابة.
+  Future<AppUpdateInfo> fetchUpdateInfo({
+    @visibleForTesting List<String>? urls,
+  }) async {
     final client = HttpClient()
       ..connectionTimeout = const Duration(seconds: 6);
 
+    Object? lastError;
     try {
       // محاولة عبر الرابط الأساسي، ثم الاحتياطي إن تعذر.
-      for (final url in [_primaryUrl, _fallbackUrl]) {
+      for (final url in urls ?? [_primaryUrl, _fallbackUrl]) {
         try {
-          final request = await client.getUrl(Uri.parse(url));
+          final uri = Uri.parse(url);
+          final request = await client.getUrl(uri).timeout(
+            const Duration(seconds: 6),
+          );
           request.headers.set(
             HttpHeaders.userAgentHeader,
             'TadbeerApp/$currentVersion (Android; Offline-First)',
@@ -103,18 +111,26 @@ class AppUpdateService {
           );
 
           if (response.statusCode == HttpStatus.ok) {
-            final jsonStr = await response.transform(utf8.decoder).join();
+            final jsonStr = await response
+                .transform(utf8.decoder)
+                .join()
+                .timeout(const Duration(seconds: 6));
             final data = json.decode(jsonStr) as Map<String, dynamic>;
             return AppUpdateInfo.fromJson(data);
           }
-        } catch (_) {
-          continue;
+          await response.drain<void>();
+          lastError = HttpException(
+            'Update check failed with status ${response.statusCode}',
+            uri: uri,
+          );
+        } catch (e) {
+          lastError = e;
         }
       }
     } finally {
       client.close();
     }
-    return null;
+    throw lastError ?? const SocketException('Failed to fetch update info');
   }
 
   /// يتحقق من التحديثات:
@@ -124,6 +140,7 @@ class AppUpdateService {
   Future<void> checkForUpdates(
     BuildContext context, {
     bool showFeedback = true,
+    @visibleForTesting List<String>? urls,
   }) async {
     // إذا كان التحميل جارياً أو مكتملاً، نفتح نافذة التحديث فوراً
     if ((downloadState.value.isDownloading || downloadState.value.isCompleted) &&
@@ -150,55 +167,73 @@ class AppUpdateService {
     if (showFeedback) {
       await HapticFeedback.lightImpact();
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  context.l10n.checkingForUpdates,
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Text(
+                    context.l10n.checkingForUpdates,
+                  ),
+                ],
+              ),
+              duration: const Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
             ),
-            duration: const Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+          );
       }
     }
 
+    final AppUpdateInfo update;
     try {
-      final update = await fetchUpdateInfo();
+      update = await fetchUpdateInfo(urls: urls);
+    } catch (_) {
+      if (showFeedback && context.mounted) {
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                context.l10n.updateCheckFailed,
+              ),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+      }
+      return;
+    }
 
+    if (!context.mounted) return;
+
+    if (update.isNewerThan(currentBuildNumber, currentVersion)) {
+      // التحقق مما إذا كان الملف محملاً مسبقاً
+      await checkExistingDownloadedApk(update);
       if (!context.mounted) return;
 
-      if (update != null &&
-          update.isNewerThan(currentBuildNumber, currentVersion)) {
-        // التحقق مما إذا كان الملف محملاً مسبقاً
-        await checkExistingDownloadedApk(update);
-        if (!context.mounted) return;
+      // التحقق مما إذا كان المستخدم قد تجاهل هذا الإصدار من قبل في الفحص الصامت.
+      final settings = UserDataStore.instance.settings;
+      if (!showFeedback &&
+          !update.isMandatory &&
+          settings.dismissedUpdateVersion == update.latestVersion) {
+        return;
+      }
 
-        // التحقق مما إذا كان المستخدم قد تجاهل هذا الإصدار من قبل في الفحص الصامت.
-        final settings = UserDataStore.instance.settings;
-        if (!showFeedback &&
-            !update.isMandatory &&
-            settings.dismissedUpdateVersion == update.latestVersion) {
-          return;
-        }
-
-        // إظهار نافذة التحديث
-        await AppUpdateDialog.show(context, update);
-      } else if (showFeedback) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
+      // إظهار نافذة التحديث
+      await AppUpdateDialog.show(context, update);
+    } else if (showFeedback) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
           SnackBar(
             content: Text(
               context.l10n.usingLatestVersion(currentVersion),
@@ -206,19 +241,6 @@ class AppUpdateService {
             behavior: SnackBarBehavior.floating,
           ),
         );
-      }
-    } catch (_) {
-      if (showFeedback && context.mounted) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.l10n.updateCheckFailed,
-            ),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
     }
   }
 

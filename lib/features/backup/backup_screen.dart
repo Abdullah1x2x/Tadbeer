@@ -44,6 +44,18 @@ class _BackupScreenState extends State<BackupScreen> {
   /// ينشئ ملف النسخة المشفرة في المجلد المؤقت، ويعيد مساره.
   Future<String?> _generateBackupFile() async {
     final tempDir = await getTemporaryDirectory();
+    // نسخ سابقة شوركت وانتهت مشاركتها: لا تبقى مشفّرة في المؤقت بلا حاجة.
+    try {
+      await for (final old in tempDir.list()) {
+        final name = old.path.split('/').last;
+        if (name.startsWith('tadbeer_backup_') &&
+            name.endsWith('.quranbackup')) {
+          await old.delete();
+        }
+      }
+    } on FileSystemException catch (e) {
+      debugPrint('Old backup cleanup failed: $e');
+    }
     final now = DateTime.now();
     final timestamp =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}';
@@ -83,6 +95,7 @@ class _BackupScreenState extends State<BackupScreen> {
 
       final file = File(filePath);
       final bytes = await file.readAsBytes();
+      await file.delete();
       final fileName = filePath.split('/').last;
 
       final savedUri = await FilePicker.saveFile(
@@ -239,7 +252,13 @@ class _BackupScreenState extends State<BackupScreen> {
           actions: [GuideButton(topic: GuideTopic.backup)],
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          // لوحة المفاتيح لا تغطي حقل كلمة المرور.
+          padding: EdgeInsets.fromLTRB(
+            20,
+            20,
+            20,
+            20 + MediaQuery.viewInsetsOf(context).bottom,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

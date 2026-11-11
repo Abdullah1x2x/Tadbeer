@@ -230,7 +230,7 @@ class _RosetteState extends State<_Rosette>
         label: l10n.highlight,
         tint: highlight == null
             ? null
-            : AppColors.highlightColors[highlight.colorIndex],
+            : AppColors.highlightAt(highlight.colorIndex),
         run: () =>
             AyahActionSheet.show(host, _ayah, mode: AyahSheetMode.highlight),
       ),

@@ -7,6 +7,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/sunnah_duas_repository.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../core/design_system/app_search_field.dart';
+import '../../../core/design_system/empty_state.dart';
 import '../../quran/qcf/qcf_page_body.dart';
 
 /// أدعية السنة النبوية أو جوامع الدعاء، مع بحث.
@@ -129,117 +130,126 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                 ),
               ),
 
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final item = filtered[index];
-                    return Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? AppColors.darkSurface
-                            : AppColors.lightSurface,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
+              if (filtered.isEmpty)
+                Expanded(
+                  child: EmptyState(
+                    icon: AppIcons.magnifyingGlass,
+                    title: context.l10n.noSearchResults,
+                    hint: context.l10n.noSearchResultsHint,
+                  ),
+                )
+              else
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: filtered.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final item = filtered[index];
+                      return Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
                           color: isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder,
+                              ? AppColors.darkSurface
+                              : AppColors.lightSurface,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.2 : 0.03,
+                              ),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(
-                              alpha: isDark ? 0.2 : 0.03,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 3,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        (isDark
+                                                ? AppColors.darkAccentGold
+                                                : AppColors.olive)
+                                            .withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    l10n.duaIndex(
+                                      l10n.isArabic
+                                          ? ArabicSearchNormalizer.toArabicDigits(
+                                              index + 1,
+                                            )
+                                          : (index + 1),
+                                    ),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? AppColors.darkAccentGold
+                                          : AppColors.oliveDark,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    item.title,
+                                    style: TextStyle(
+                                      fontFamily: 'IBMPlexSansArabic',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? AppColors.darkTextPrimary
+                                          : AppColors.lightTextPrimary,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: l10n.copyDuaTooltip,
+                                  icon: const Icon(AppIcons.copy, size: 17),
+                                  visualDensity: VisualDensity.compact,
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 32,
+                                    minHeight: 32,
+                                  ),
+                                  onPressed: () => _copyDua(item),
+                                ),
+                              ],
                             ),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 3,
-                                ),
-                                decoration: BoxDecoration(
-                                  color:
-                                      (isDark
-                                              ? AppColors.darkAccentGold
-                                              : AppColors.olive)
-                                          .withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  l10n.duaIndex(
-                                    l10n.isArabic
-                                        ? ArabicSearchNormalizer.toArabicDigits(
-                                            index + 1,
-                                          )
-                                        : (index + 1),
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark
-                                        ? AppColors.darkAccentGold
-                                        : AppColors.oliveDark,
-                                  ),
-                                ),
+                            const SizedBox(height: 10),
+                            Text(
+                              item.text,
+                              textAlign: TextAlign.center,
+                              style: QcfPageBody.scriptStyle(
+                                fontSize: 19,
+                                height: 1.9,
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  item.title,
-                                  style: TextStyle(
-                                    fontFamily: 'IBMPlexSansArabic',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark
-                                        ? AppColors.darkTextPrimary
-                                        : AppColors.lightTextPrimary,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              IconButton(
-                                tooltip: l10n.copyDuaTooltip,
-                                icon: const Icon(AppIcons.copy, size: 17),
-                                visualDensity: VisualDensity.compact,
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(
-                                  minWidth: 32,
-                                  minHeight: 32,
-                                ),
-                                onPressed: () => _copyDua(item),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            item.text,
-                            textAlign: TextAlign.center,
-                            style: QcfPageBody.scriptStyle(
-                              fontSize: 19,
-                              height: 1.9,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary,
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
             ],
           ),
         ),

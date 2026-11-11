@@ -165,6 +165,20 @@ class _JumpToPageDialog extends StatefulWidget {
 class _JumpToPageDialogState extends State<_JumpToPageDialog> {
   late final TextEditingController _controller;
 
+  /// رقم خارج المصحف، فيُنبَّه القارئ بدل أن يتجاهل الزر نقرته.
+  bool _invalid = false;
+
+  void _submit() {
+    final raw = ArabicSearchNormalizer.toEnglishDigits(_controller.text.trim());
+    final val = int.tryParse(raw);
+    if (val == null || val < 1 || val > 604) {
+      setState(() => _invalid = true);
+      return;
+    }
+    Navigator.pop(context);
+    widget.onPageSelected(val);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -205,10 +219,16 @@ class _JumpToPageDialogState extends State<_JumpToPageDialog> {
             controller: _controller,
             autofocus: true,
             keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.go,
+            onSubmitted: (_) => _submit(),
+            onChanged: (_) {
+              if (_invalid) setState(() => _invalid = false);
+            },
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             decoration: InputDecoration(
               hintText: '1 - 604',
+              errorText: _invalid ? context.l10n.enterPageRange : null,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
@@ -227,16 +247,7 @@ class _JumpToPageDialogState extends State<_JumpToPageDialog> {
           child: Text(l10n.cancel),
         ),
         ElevatedButton(
-          onPressed: () {
-            final raw = ArabicSearchNormalizer.toEnglishDigits(
-              _controller.text.trim(),
-            );
-            final val = int.tryParse(raw);
-            if (val != null && val >= 1 && val <= 604) {
-              Navigator.pop(context);
-              widget.onPageSelected(val);
-            }
-          },
+          onPressed: _submit,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.olive,
             foregroundColor: Colors.white,

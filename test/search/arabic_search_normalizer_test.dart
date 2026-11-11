@@ -293,5 +293,10 @@ void main() {
       expect(takathurMatches.first['surahNumber'], equals(102));
       expect(takathurMatches.first['ayahNumber'], equals(1));
     });
+
+    test('Arabic-Indic digits match Latin ones', () {
+      expect(ArabicSearchNormalizer.normalize('٢٥٥'), '255');
+      expect(ArabicSearchNormalizer.normalize('۱۲'), '12');
+    });
   });
 }

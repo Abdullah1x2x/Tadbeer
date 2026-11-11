@@ -10,6 +10,9 @@ import 'dart:isolate';
 
 import 'package:flutter/services.dart';
 
+import '../../../data/models/user_settings_model.dart';
+import '../../../data/quran/quran_models.dart';
+
 /// كلمة واحدة من المصحف بنص Digital Khatt.
 class QcfWord {
   final int surah;
@@ -98,6 +101,25 @@ class QcfLayout {
           for (final w in line.words) (w.surah, w.ayah): p + 1,
     };
     return index[(surah, ayah)];
+  }
+
+  /// صفحة [ayah] في المصحف المعروض بـ[style]: مصحف المدينة بطبعته الحديثة قد
+  /// يقدّمها أو يؤخرها صفحة عن بيانات التطبيق.
+  int pageFor(Ayah ayah, MushafStyle style) => style == MushafStyle.madinah
+      ? pageOf(ayah.surahNumber, ayah.ayahNumber) ?? ayah.page
+      : ayah.page;
+
+  /// الآيات التي تبدأ في [page] بترتيبها، دون ما بدأ في الصفحة قبلها.
+  List<(int, int)> ayahsStartingOn(int page) {
+    final before = {
+      for (final line in this.page(page - 1))
+        for (final w in line.words) (w.surah, w.ayah),
+    };
+    return {
+      for (final line in this.page(page))
+        for (final w in line.words)
+          if (!before.contains((w.surah, w.ayah))) (w.surah, w.ayah),
+    }.toList();
   }
 
   /// أسطر [page] (1..604)؛ فارغة حتى ينتهي [init].

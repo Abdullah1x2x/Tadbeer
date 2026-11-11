@@ -74,7 +74,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>يحتاج تدبير موقعك التقريبي لحساب اتجاه القبلة، ولا يُرسل إلى أي مكان.</string>
+	<string>يحتاج تدبير موقعك التقريبي لحساب اتجاه القبلة، ولا يُرسل إلى أي مكان. — Tadbeer uses your approximate location only to find the Qibla direction; it is never sent anywhere.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

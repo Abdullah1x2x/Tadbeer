@@ -67,15 +67,10 @@ class _QuranScreenState extends State<QuranScreen> {
   List<int> _pagesOf(int item) =>
       _wide ? [item * 2 + 1, item * 2 + 2] : [item + 1];
 
-  /// صفحة [ayah] في المصحف المعروض: مصحف المدينة بطبعته الحديثة قد يقدّمها أو
-  /// يؤخرها صفحة عن بيانات التطبيق.
-  int _pageOf(Ayah ayah) {
-    if (UserDataStore.instance.settings.mushafStyle != MushafStyle.madinah) {
-      return ayah.page;
-    }
-    return QcfLayout.instance.pageOf(ayah.surahNumber, ayah.ayahNumber) ??
-        ayah.page;
-  }
+  int _pageOf(Ayah ayah) => QcfLayout.instance.pageFor(
+    ayah,
+    UserDataStore.instance.settings.mushafStyle,
+  );
   Ayah? _activeSelectedAyah;
   bool _showTopBar = false;
   bool _suppressNextPageTap = false;

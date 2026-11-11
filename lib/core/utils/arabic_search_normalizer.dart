@@ -106,7 +106,8 @@ class ArabicSearchNormalizer {
     result = result.replaceAll('العلمين', 'العالمين');
     result = result.replaceAll('علمين', 'عالمين');
 
-    // ١٠. المسافات الزائدة.
+    // ١٠. الأرقام اللاتينية، فيُطابق ٢٥٥ ما كُتب 255. والمسافات الزائدة.
+    result = toEnglishDigits(result);
     result = result.replaceAll(_whitespaceRegex, ' ').trim().toLowerCase();
 
     return result;

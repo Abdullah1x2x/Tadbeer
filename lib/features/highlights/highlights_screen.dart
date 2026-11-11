@@ -128,11 +128,9 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                               item.surahNumber,
                               item.ayahNumber,
                             );
-                            final color =
-                                AppColors.highlightColors[item.colorIndex.clamp(
-                                  0,
-                                  AppColors.highlightColors.length - 1,
-                                )];
+                            final color = AppColors.highlightAt(
+                              item.colorIndex,
+                            );
 
                             return RepaintBoundary(
                               child: InkWell(
@@ -270,13 +268,31 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                       icon: appMenuIcon,
                                       tooltip: l10n.removeHighlight,
                                       onSelected: (val) {
-                                        if (val == 'delete') {
-                                          UserDataStore.instance
-                                              .removeHighlight(
-                                                item.surahNumber,
-                                                item.ayahNumber,
-                                              );
-                                        }
+                                        if (val != 'delete') return;
+                                        UserDataStore.instance.removeHighlight(
+                                          item.surahNumber,
+                                          item.ayahNumber,
+                                        );
+                                        final messenger = ScaffoldMessenger.of(
+                                          context,
+                                        );
+                                        messenger.clearSnackBars();
+                                        messenger.showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              l10n.highlightRemoved,
+                                            ),
+                                            action: SnackBarAction(
+                                              label: l10n.undo,
+                                              onPressed: () => UserDataStore
+                                                  .instance
+                                                  .putHighlight(item),
+                                            ),
+                                            duration: const Duration(
+                                              seconds: 4,
+                                            ),
+                                          ),
+                                        );
                                       },
                                       itemBuilder: (ctx) => [
                                         appMenuItem(

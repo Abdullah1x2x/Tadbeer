@@ -98,7 +98,9 @@ class _NameScreenState extends State<NameScreen> {
                           hintText: l10n.askNameField,
                           counterText: '',
                         ),
-                        onSubmitted: (_) => _go(keep: true),
+                        onSubmitted: (_) {
+                          if (_name.text.trim().isNotEmpty) _go(keep: true);
+                        },
                       ),
                       const SizedBox(height: 20),
                       ListenableBuilder(

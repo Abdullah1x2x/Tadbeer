@@ -137,10 +137,12 @@ class AyahLinkOrderedView extends StatelessWidget {
                     confirmDeleteAyahLinkNoteCard(context, link.id, notes[i]),
                 onCopy: () => _copyNoteCard(context, notes[i]),
                 onDuplicate: () async {
+                  final copyLabel = context.l10n.copyLabel;
                   await HapticFeedback.lightImpact();
                   await AyahLinkRepository.instance.duplicateNoteInLink(
                     link.id,
                     notes[i].id,
+                    copyLabel: copyLabel,
                   );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -398,10 +400,12 @@ class AyahLinkOrderedView extends StatelessWidget {
                             } else if (val == 'note') {
                               await editAyahLinkVerseNote(context, link.id, verse);
                             } else if (val == 'duplicate') {
+                              final copyLabel = context.l10n.copyLabel;
                               await HapticFeedback.lightImpact();
                               await AyahLinkRepository.instance.duplicateVerseInLink(
                                 link.id,
                                 verse,
+                                copyLabel: copyLabel,
                               );
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(

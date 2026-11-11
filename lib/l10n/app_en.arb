@@ -864,7 +864,9 @@
   "cardColorHighlight": "Highlight {n}",
   "@cardColorHighlight": {
     "placeholders": {
-      "n": {"type": "String"}
+      "n": {
+        "type": "String"
+      }
     }
   },
   "threadModeOn": "Draw a thread between two cards",
@@ -911,7 +913,6 @@
   "missionMethodologyCredits": "Mission, methodology & credits",
   "missionMethodologySources": "Mission, methodology & sources",
   "strictOfflinePrivacyZeroDataCollection": "Strict offline privacy, zero data collection",
-  "softwareTypographyQuranLicenses": "Software, typography & Quran licenses",
   "updatesCommunity": "Updates & Community",
   "updateReadyToInstall": "Update ready to install",
   "checkForUpdates": "Check for Updates",
@@ -951,5 +952,93 @@
   "usingLatestVersion": "You are using the latest version of Tadbeer (v{version})",
   "linkedVersesCount": "{count} linked verses",
   "duaVersesLabel": "Verses {ayahs}",
-  "duaVerseLabel": "Verse {ayah}"
+  "duaVerseLabel": "Verse {ayah}",
+  "copyLabel": "copy",
+  "searchRootSection": "{section} (root: {root})",
+  "@searchRootSection": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "root": {
+        "type": "String"
+      }
+    }
+  },
+  "rootLabel": "Root: {root}",
+  "@rootLabel": {
+    "placeholders": {
+      "root": {
+        "type": "String"
+      }
+    }
+  },
+  "noteAyahTitle": "Reflection · Surah {surahName} · Verse {ayahNumber}",
+  "@noteAyahTitle": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "tadbeerPauseRecorded": "Recorded reflection pause",
+  "tadbeerPauseReference": "Tadbeer pause: Surah {surahName} · Verse {ayahNumber}",
+  "@tadbeerPauseReference": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "duaTitleReference": "{title} · Surah {surahName} ({ayahs})",
+  "@duaTitleReference": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "surahName": {
+        "type": "String"
+      },
+      "ayahs": {
+        "type": "String"
+      }
+    }
+  },
+  "duaFromSurah": "Supplication from Surah {surahName} · Verse {ayahs}",
+  "@duaFromSurah": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahs": {
+        "type": "String"
+      }
+    }
+  },
+  "daily": "Daily",
+  "reminderTimeAt": "Reminder time: {time}",
+  "@reminderTimeAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAuthor": "Author: {author}",
+  "@bookAuthor": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfBooklet": "PDF booklet",
+  "textBook": "Text book",
+  "highlightRemoved": "Highlight removed"
 }

@@ -757,40 +757,6 @@ class SettingsScreen extends StatelessWidget {
                         trailing: const Icon(AppIcons.caretRight, size: 20),
                         onTap: () => _showPrivacyPolicyDialog(context),
                       ),
-                      const Divider(height: 1),
-                      ListTile(
-                        leading: Icon(
-                          AppIcons.fileText,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        title: Text(
-                          l10n.openSourceLicenses,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          l10n.softwareTypographyQuranLicenses,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark
-                                ? AppColors.nightSubtitle
-                                : AppColors.daySubtitle,
-                          ),
-                        ),
-                        trailing: const Icon(AppIcons.caretRight, size: 20),
-                        onTap: () {
-                          showLicensePage(
-                            context: context,
-                            applicationName: l10n.appName,
-                            applicationVersion: AppUpdateService.currentVersion,
-                            applicationLegalese:
-                                'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
-                                'Quran Text: Tanzil.net (CC BY 3.0)\n'
-                                'Fonts: SIL Open Font License 1.1, including Digital Khatt font\n'
-                                'Mushaf text and layout: DigitalKhatt (MIT)\n'
-                                'Books: rights remain with their owners',
-                          );
-                        },
-                      ),
                     ],
                   ),
                 ),

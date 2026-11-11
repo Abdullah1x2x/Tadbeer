@@ -37,9 +37,15 @@ mixin _JourneySection on _StoreState {
 
   /// يسجّل ورد اليوم كاملاً دفعة واحدة.
   Future<void> completeTodayPortion() async {
+    final hadPlan = _journey.plan != null;
     await _saveJourney(_journey.completePortion(DateTime.now()));
     final plan = _journey.plan;
-    if (plan != null) await _moveReadingPositionTo(plan.currentPage);
+    if (plan != null) {
+      await _moveReadingPositionTo(plan.currentPage);
+    } else if (hadPlan) {
+      // الورد أتمّ الختمة، فتُغلق الخطة والقارئ عند آخر المصحف.
+      await _moveReadingPositionTo(mushafPageCount);
+    }
   }
 
   /// الختمة تتبع موضع القراءة: صفحتها حيث يقف القارئ، والمنجز ما قبلها منذ

@@ -547,7 +547,11 @@ void main() {
       );
 
       // Duplicate verse card
-      final dupVerse = await repo.duplicateVerseInLink(link.id, verse);
+      final dupVerse = await repo.duplicateVerseInLink(
+        link.id,
+        verse,
+        copyLabel: 'نسخة',
+      );
       expect(dupVerse, isNotNull);
       expect(dupVerse!.nodeKey, isNot(equals(verse.nodeKey)));
       var current = repo.getLink(link.id)!;
@@ -566,7 +570,11 @@ void main() {
       expect(current.notes.length, equals(1));
 
       // Duplicate note card
-      final dupNote = await repo.duplicateNoteInLink(link.id, note.id);
+      final dupNote = await repo.duplicateNoteInLink(
+        link.id,
+        note.id,
+        copyLabel: 'نسخة',
+      );
       expect(dupNote, isNotNull);
       expect(dupNote!.id, isNot(equals(note.id)));
       expect(dupNote.title, equals('عنوان الخاطرة (نسخة)'));

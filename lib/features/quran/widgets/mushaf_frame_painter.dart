@@ -39,13 +39,13 @@ class MarginStampData {
     required this.surahNumber,
   });
 
-  /// علامات الهامش لصفحة [page].
-  static List<MarginStampData> forPage(QuranPage page) {
+  /// علامات الهامش لصفحة آياتها [ayahs].
+  static List<MarginStampData> forAyahs(List<Ayah> ayahs) {
     final stamps = <MarginStampData>[];
-    if (page.ayahs.isEmpty) return stamps;
+    if (ayahs.isEmpty) return stamps;
 
-    for (int i = 0; i < page.ayahs.length; i++) {
-      final ayah = page.ayahs[i];
+    for (int i = 0; i < ayahs.length; i++) {
+      final ayah = ayahs[i];
 
       // ١. مواضع السجود.
       if (ayah.isSajdah) {
@@ -62,7 +62,7 @@ class MarginStampData {
       // ٢. بدايات الأجزاء والأحزاب والأرباع.
       bool isQuarterStart = false;
       if (i > 0) {
-        isQuarterStart = ayah.quarter != page.ayahs[i - 1].quarter;
+        isQuarterStart = ayah.quarter != ayahs[i - 1].quarter;
       } else if (ayah.id > 1 && QuranRepository.instance.isLoaded) {
         final all = QuranRepository.instance.allAyahs;
         if (ayah.id - 2 < all.length) {

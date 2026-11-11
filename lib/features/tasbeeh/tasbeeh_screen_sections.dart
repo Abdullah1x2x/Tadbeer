@@ -387,7 +387,7 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
               icon: const Icon(AppIcons.minus, size: 16),
               visualDensity: VisualDensity.compact,
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
               color: isDark
                   ? AppColors.darkTextSecondary
                   : AppColors.lightTextSecondary,
@@ -429,7 +429,7 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
               icon: const Icon(AppIcons.plus, size: 16),
               visualDensity: VisualDensity.compact,
               padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
               color: isDark
                   ? AppColors.darkTextSecondary
                   : AppColors.lightTextSecondary,

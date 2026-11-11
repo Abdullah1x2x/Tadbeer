@@ -565,7 +565,39 @@ extension _SettingsDialogs on SettingsScreen {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
+                          Center(
+                            child: TextButton(
+                              onPressed: () {
+                                showLicensePage(
+                                  context: context,
+                                  applicationName: l10n.appName,
+                                  applicationVersion:
+                                      AppUpdateService.currentVersion,
+                                  applicationLegalese:
+                                      'Copyright © 2026 Tadbeer Project Contributors (MIT License)\n'
+                                      'Quran Text: Tanzil.net (CC BY 3.0)\n'
+                                      'Fonts: SIL Open Font License 1.1, including Digital Khatt font\n'
+                                      'Mushaf text and layout: DigitalKhatt (MIT)\n'
+                                      'Books: rights remain with their owners',
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: isDark
+                                    ? AppColors.nightSubtitle
+                                    : AppColors.daySubtitle,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                              ),
+                              child: Text(
+                                l10n.openSourceLicenses,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
                         ],
                       ),
                     ),

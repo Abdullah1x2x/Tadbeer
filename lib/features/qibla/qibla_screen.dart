@@ -58,7 +58,6 @@ class _QiblaScreenState extends State<QiblaScreen> {
   bool _locating = false;
 
   StreamSubscription<double>? _compass;
-  Timer? _noCompassTimer;
 
   /// هل وصل اتجاه ولو مرة؛ وإلا تُعرض البوصلة والشمال أعلى.
   bool _hasCompass = false;
@@ -99,7 +98,6 @@ class _QiblaScreenState extends State<QiblaScreen> {
   @override
   void dispose() {
     _compass?.cancel();
-    _noCompassTimer?.cancel();
     super.dispose();
   }
 

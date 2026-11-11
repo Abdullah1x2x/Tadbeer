@@ -4836,12 +4836,6 @@ abstract class AppLocalizations {
   /// **'خصوصية تامة محلياً دون جمع أي بيانات'**
   String get strictOfflinePrivacyZeroDataCollection;
 
-  /// No description provided for @softwareTypographyQuranLicenses.
-  ///
-  /// In ar, this message translates to:
-  /// **'تراخيص البرمجيات والخطوط والمصحف'**
-  String get softwareTypographyQuranLicenses;
-
   /// No description provided for @updatesCommunity.
   ///
   /// In ar, this message translates to:
@@ -5081,6 +5075,90 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'الآية {ayah}'**
   String duaVerseLabel(String ayah);
+
+  /// No description provided for @copyLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخة'**
+  String get copyLabel;
+
+  /// No description provided for @searchRootSection.
+  ///
+  /// In ar, this message translates to:
+  /// **'{section} (جذر: {root})'**
+  String searchRootSection(String section, String root);
+
+  /// No description provided for @rootLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'جذر: {root}'**
+  String rootLabel(String root);
+
+  /// No description provided for @noteAyahTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدبر سورة {surahName} · آية {ayahNumber}'**
+  String noteAyahTitle(String surahName, String ayahNumber);
+
+  /// No description provided for @tadbeerPauseRecorded.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفة تدبرية مسجلة'**
+  String get tadbeerPauseRecorded;
+
+  /// No description provided for @tadbeerPauseReference.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفة تدبر: سورة {surahName} · الآية {ayahNumber}'**
+  String tadbeerPauseReference(String surahName, String ayahNumber);
+
+  /// No description provided for @duaTitleReference.
+  ///
+  /// In ar, this message translates to:
+  /// **'{title} · سورة {surahName} ({ayahs})'**
+  String duaTitleReference(String title, String surahName, String ayahs);
+
+  /// No description provided for @duaFromSurah.
+  ///
+  /// In ar, this message translates to:
+  /// **'دعاء من سورة {surahName} · الآية {ayahs}'**
+  String duaFromSurah(String surahName, String ayahs);
+
+  /// No description provided for @daily.
+  ///
+  /// In ar, this message translates to:
+  /// **'يومي'**
+  String get daily;
+
+  /// No description provided for @reminderTimeAt.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقت التنبيه: {time}'**
+  String reminderTimeAt(String time);
+
+  /// No description provided for @bookAuthor.
+  ///
+  /// In ar, this message translates to:
+  /// **'المؤلف: {author}'**
+  String bookAuthor(String author);
+
+  /// No description provided for @pdfBooklet.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملزمة PDF'**
+  String get pdfBooklet;
+
+  /// No description provided for @textBook.
+  ///
+  /// In ar, this message translates to:
+  /// **'كتاب نصي'**
+  String get textBook;
+
+  /// No description provided for @highlightRemoved.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُزيل التظليل'**
+  String get highlightRemoved;
 }
 
 class _AppLocalizationsDelegate

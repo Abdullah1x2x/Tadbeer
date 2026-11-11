@@ -323,8 +323,9 @@ mixin _AyahLinksSection on _StoreState {
   /// يكرّر بطاقة خاطرة داخل الرابط.
   Future<AyahLinkNote?> duplicateNoteInLink(
     String linkId,
-    String noteId,
-  ) async {
+    String noteId, {
+    required String copyLabel,
+  }) async {
     final idx = _ayahLinks.indexWhere((l) => l.id == linkId);
     if (idx != -1) {
       final existing = _ayahLinks[idx];
@@ -334,7 +335,7 @@ mixin _AyahLinksSection on _StoreState {
         final now = DateTime.now();
         final duplicated = AyahLinkNote(
           id: const Uuid().v4(),
-          title: targetNote.title != null ? '${targetNote.title} (نسخة)' : null,
+          title: targetNote.title != null ? '${targetNote.title} ($copyLabel)' : null,
           content: targetNote.content,
           createdAt: now,
           updatedAt: now,
@@ -368,8 +369,9 @@ mixin _AyahLinksSection on _StoreState {
   /// يكرّر كرت آية داخل الرابط مع إمكانية ربطه بخواطر أو خيوط إضافية.
   Future<AyahLinkVerse?> duplicateVerseInLink(
     String linkId,
-    AyahLinkVerse verse,
-  ) async {
+    AyahLinkVerse verse, {
+    required String copyLabel,
+  }) async {
     final idx = _ayahLinks.indexWhere((l) => l.id == linkId);
     if (idx != -1) {
       final existing = _ayahLinks[idx];
@@ -382,7 +384,7 @@ mixin _AyahLinksSection on _StoreState {
         ayahNumber: verse.ayahNumber,
         toAyahNumber: verse.toAyahNumber,
         page: verse.page,
-        note: verse.note != null ? '${verse.note} (نسخة)' : null,
+        note: verse.note != null ? '${verse.note} ($copyLabel)' : null,
         addedAt: DateTime.now(),
       );
       final updatedVerses = [...existing.verses, duplicated];

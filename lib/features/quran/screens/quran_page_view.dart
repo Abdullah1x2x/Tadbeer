@@ -16,6 +16,7 @@ import '../widgets/surah_header_banner.dart';
 import '../../../core/design_system/app_icons.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../qcf/qcf_page_body.dart';
+import '../qcf/qcf_layout.dart';
 import '../../../app/localization.dart';
 
 part 'quran_page_parts.dart';
@@ -401,8 +402,20 @@ class _QuranPageViewState extends State<QuranPageView> {
         final surah = repo.getSurah(firstSurahNumber);
         final surahBlocks = _groupAyahsBySurah(quranPage.ayahs);
 
-        final marginStamps = MarginStampData.forPage(quranPage);
         final useQcf = storage.settings.mushafStyle == MushafStyle.madinah;
+        // علامات الهامش من آيات الصفحة المعروضة: مصحف المدينة قد يقدّم آية أو
+        // يؤخرها صفحة عن بيانات التطبيق.
+        final qcfAyahs = useQcf
+            ? [
+                for (final (s, a) in QcfLayout.instance.ayahsStartingOn(
+                  pageNumber,
+                ))
+                  ?repo.getAyah(s, a),
+              ]
+            : const <Ayah>[];
+        final marginStamps = MarginStampData.forAyahs(
+          qcfAyahs.isNotEmpty ? qcfAyahs : quranPage.ayahs,
+        );
 
         return Directionality(
           textDirection: TextDirection.rtl,

@@ -81,7 +81,7 @@ extension _QuranPageParts on _QuranPageViewState {
               }
               final highlight = storage.getHighlight(s, a);
               if (highlight == null) return null;
-              final base = AppColors.highlightColors[highlight.colorIndex];
+              final base = AppColors.highlightAt(highlight.colorIndex);
               return base.withValues(alpha: isDark ? 0.35 : 0.25);
             },
             markersFor: (s, a) =>
@@ -380,7 +380,7 @@ extension _QuranPageParts on _QuranPageViewState {
             ? AppColors.darkSelectedAyah
             : const Color(0x36B89745);
       } else if (highlight != null) {
-        final baseColor = AppColors.highlightColors[highlight.colorIndex];
+        final baseColor = AppColors.highlightAt(highlight.colorIndex);
         highlightColor = isDark
             ? baseColor.withValues(alpha: 0.35)
             : baseColor.withValues(alpha: 0.25);

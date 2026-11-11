@@ -11,6 +11,7 @@ import '../../../data/models/note_model.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../qcf/qcf_ayah_text.dart';
+import '../qcf/qcf_layout.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../../memorization/memorization_model.dart';
@@ -131,6 +132,12 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
   }
 
   /// النافذة تصعد فوق لوحة المفاتيح، وتتوسط ما تبقّى من الشاشة.
+  /// صفحة الآية في المصحف المعروض، لا في بيانات التطبيق وحدها.
+  int get _page => QcfLayout.instance.pageFor(
+    widget.ayah,
+    UserDataStore.instance.settings.mushafStyle,
+  );
+
   @override
   Widget build(BuildContext context) {
     return AnimatedPadding(
@@ -241,7 +248,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '${context.l10n.pageAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.page) : widget.ayah.page)} · ${context.l10n.juzAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.juz) : widget.ayah.juz)}',
+                      '${context.l10n.pageAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(_page) : _page)} · ${context.l10n.juzAbbr(context.currentLanguage == AppLanguage.arabic ? ArabicSearchNormalizer.toArabicDigits(widget.ayah.juz) : widget.ayah.juz)}',
                       style: TextStyle(
                         fontFamily:
                             context.currentLanguage == AppLanguage.arabic
@@ -517,8 +524,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         icon: AppIcons.highlighterCircle,
                         label: l10n.highlight,
                         iconColor: currentHighlight != null
-                            ? AppColors.highlightColors[currentHighlight
-                                  .colorIndex]
+                            ? AppColors.highlightAt(currentHighlight.colorIndex)
                             : null,
                         onTap: () =>
                             setState(() => _isHighlightPickerOpen = true),

@@ -2701,10 +2701,6 @@ class AppLocalizationsAr extends AppLocalizations {
       'خصوصية تامة محلياً دون جمع أي بيانات';
 
   @override
-  String get softwareTypographyQuranLicenses =>
-      'تراخيص البرمجيات والخطوط والمصحف';
-
-  @override
   String get updatesCommunity => 'التحديثات والمجتمع';
 
   @override
@@ -2864,4 +2860,62 @@ class AppLocalizationsAr extends AppLocalizations {
   String duaVerseLabel(String ayah) {
     return 'الآية $ayah';
   }
+
+  @override
+  String get copyLabel => 'نسخة';
+
+  @override
+  String searchRootSection(String section, String root) {
+    return '$section (جذر: $root)';
+  }
+
+  @override
+  String rootLabel(String root) {
+    return 'جذر: $root';
+  }
+
+  @override
+  String noteAyahTitle(String surahName, String ayahNumber) {
+    return 'تدبر سورة $surahName · آية $ayahNumber';
+  }
+
+  @override
+  String get tadbeerPauseRecorded => 'وقفة تدبرية مسجلة';
+
+  @override
+  String tadbeerPauseReference(String surahName, String ayahNumber) {
+    return 'وقفة تدبر: سورة $surahName · الآية $ayahNumber';
+  }
+
+  @override
+  String duaTitleReference(String title, String surahName, String ayahs) {
+    return '$title · سورة $surahName ($ayahs)';
+  }
+
+  @override
+  String duaFromSurah(String surahName, String ayahs) {
+    return 'دعاء من سورة $surahName · الآية $ayahs';
+  }
+
+  @override
+  String get daily => 'يومي';
+
+  @override
+  String reminderTimeAt(String time) {
+    return 'وقت التنبيه: $time';
+  }
+
+  @override
+  String bookAuthor(String author) {
+    return 'المؤلف: $author';
+  }
+
+  @override
+  String get pdfBooklet => 'ملزمة PDF';
+
+  @override
+  String get textBook => 'كتاب نصي';
+
+  @override
+  String get highlightRemoved => 'أُزيل التظليل';
 }

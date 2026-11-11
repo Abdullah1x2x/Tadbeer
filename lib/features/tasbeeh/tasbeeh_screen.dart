@@ -90,6 +90,13 @@ class _TasbeehScreenState extends State<TasbeehScreen>
     return double.parse(total.clamp(0.8, 10.0).toStringAsFixed(1));
   }
 
+  /// [offset] في حدود الإيقاع (0.8 إلى 10 ثوانٍ)، فلا تتراكم نقرات بلا أثر.
+  double _clampedPaceOffset(double offset) {
+    final basePace = _repo.activeDhikr.estimatedPaceSeconds;
+    final clamped = offset.clamp(0.8 - basePace, 10.0 - basePace);
+    return double.parse(clamped.toStringAsFixed(1));
+  }
+
   /// يبدأ مؤقت العدّ التلقائي بالإيقاع الحالي، أو يعيد ضبطه.
   void _startAutoCountTimer() {
     _autoCountTimer?.cancel();
@@ -129,9 +136,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   void _speedUpPace() {
     HapticFeedback.selectionClick();
     setState(() {
-      _paceOffsetSeconds = double.parse(
-        (_paceOffsetSeconds - 0.2).toStringAsFixed(1),
-      );
+      _paceOffsetSeconds = _clampedPaceOffset(_paceOffsetSeconds - 0.2);
       if (_isAutoCounting) {
         _startAutoCountTimer();
       }
@@ -142,9 +147,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   void _slowDownPace() {
     HapticFeedback.selectionClick();
     setState(() {
-      _paceOffsetSeconds = double.parse(
-        (_paceOffsetSeconds + 0.2).toStringAsFixed(1),
-      );
+      _paceOffsetSeconds = _clampedPaceOffset(_paceOffsetSeconds + 0.2);
       if (_isAutoCounting) {
         _startAutoCountTimer();
       }

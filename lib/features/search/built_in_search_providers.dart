@@ -38,6 +38,7 @@ class QuranSearchProvider implements SearchProvider {
     BuildContext context,
   ) async {
     final repo = QuranRepository.instance;
+    final l10n = context.l10n;
     final isRoot = ArabicRootSearchHelper.isRootQuery(query);
     final root = isRoot ? ArabicRootSearchHelper.extractRoot(query) : '';
     final ayahs = repo.searchAyahs(query, limit: 40);
@@ -50,17 +51,18 @@ class QuranSearchProvider implements SearchProvider {
             : 'quran_${ayah.surahNumber}_${ayah.ayahNumber}',
         providerId: id,
         sectionTitle: isRoot
-            ? '${getSectionTitle(context)} (جذر: $root)'
+            ? l10n.searchRootSection(getSectionTitle(context), root)
             : getSectionTitle(context),
-        title:
-            'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}',
+        title: l10n.ayahReference(surah.name, ayah.ayahNumber),
         snippet: '﴿ ${ayah.text} ﴾',
         surahNumber: ayah.surahNumber,
         ayahNumber: ayah.ayahNumber,
         page: ayah.page,
-        badge: isRoot
-            ? 'جذر: $root · ص ${ArabicSearchNormalizer.toArabicDigits(ayah.page)} · ج ${ArabicSearchNormalizer.toArabicDigits(ayah.juz)}'
-            : 'ص ${ArabicSearchNormalizer.toArabicDigits(ayah.page)} · ج ${ArabicSearchNormalizer.toArabicDigits(ayah.juz)}',
+        badge: [
+          if (isRoot) l10n.rootLabel(root),
+          l10n.pageAbbr(ayah.page),
+          l10n.juzAbbr(ayah.juz),
+        ].join(' · '),
         icon: icon,
         onTap: (ctx) {
           Navigator.push(
@@ -112,7 +114,12 @@ class NotesSearchProvider implements SearchProvider {
           ? QuranRepository.instance.getSurah(note.surahNumber!).name
           : '';
       final title = note.isAyahNote
-          ? 'تدبر سورة $surahName · آية ${note.ayahNumber != null ? ArabicSearchNormalizer.toArabicDigits(note.ayahNumber!) : ""}'
+          ? context.l10n.noteAyahTitle(
+              surahName,
+              note.ayahNumber != null
+                  ? context.l10n.digits(note.ayahNumber)
+                  : '',
+            )
           : (note.title?.isNotEmpty == true
                 ? note.title!
                 : context.l10n.freeNoteLabel);
@@ -200,21 +207,23 @@ class TadbeerSearchProvider implements SearchProvider {
       );
       final snippet = item.combinedSummary.isNotEmpty
           ? item.combinedSummary
-          : (ayah != null ? '﴿ ${ayah.text} ﴾' : 'وقفة تدبرية مسجلة');
+          : (ayah != null
+                ? '﴿ ${ayah.text} ﴾'
+                : context.l10n.tadbeerPauseRecorded);
 
       return SearchResultItem(
         id: 'tadbeer_${item.id}',
         providerId: id,
         sectionTitle: getSectionTitle(context),
-        title:
-            'وقفة تدبر: سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(item.ayahNumber)}',
+        title: context.l10n.tadbeerPauseReference(
+          surah.name,
+          context.l10n.digits(item.ayahNumber),
+        ),
         snippet: snippet,
         surahNumber: item.surahNumber,
         ayahNumber: item.ayahNumber,
         page: ayah?.page,
-        badge: ayah != null
-            ? 'ص ${ArabicSearchNormalizer.toArabicDigits(ayah.page)}'
-            : null,
+        badge: ayah != null ? context.l10n.pageAbbr(ayah.page) : null,
         icon: icon,
         onTap: (ctx) {
           if (ayah != null) {
@@ -273,13 +282,12 @@ class BookmarksSearchProvider implements SearchProvider {
         id: 'bookmark_${b.id}',
         providerId: id,
         sectionTitle: getSectionTitle(context),
-        title:
-            'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(b.ayahNumber)}',
+        title: context.l10n.ayahReference(surah.name, b.ayahNumber),
         snippet: ayah != null ? '﴿ ${ayah.text} ﴾' : '',
         surahNumber: b.surahNumber,
         ayahNumber: b.ayahNumber,
         page: b.page,
-        badge: 'ص ${ArabicSearchNormalizer.toArabicDigits(b.page)}',
+        badge: context.l10n.pageAbbr(b.page),
         icon: icon,
         onTap: (ctx) {
           Navigator.push(
@@ -336,13 +344,12 @@ class HighlightsSearchProvider implements SearchProvider {
         id: 'highlight_${h.id}',
         providerId: id,
         sectionTitle: getSectionTitle(context),
-        title:
-            'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(h.ayahNumber)}',
+        title: context.l10n.ayahReference(surah.name, h.ayahNumber),
         snippet: ayah != null ? '﴿ ${ayah.text} ﴾' : '',
         surahNumber: h.surahNumber,
         ayahNumber: h.ayahNumber,
         page: h.page,
-        badge: 'ص ${ArabicSearchNormalizer.toArabicDigits(h.page)}',
+        badge: context.l10n.pageAbbr(h.page),
         icon: icon,
         onTap: (ctx) {
           Navigator.push(
@@ -389,9 +396,10 @@ class AyahLinksSearchProvider implements SearchProvider {
         title: link.title,
         snippet:
             link.description ??
-            '${ArabicSearchNormalizer.toArabicDigits(link.verses.length)} آيات مرتبطة',
-        badge:
-            '${ArabicSearchNormalizer.toArabicDigits(link.verses.length)} آيات',
+            context.l10n.linkedVersesCount(
+              context.l10n.digits(link.verses.length),
+            ),
+        badge: context.l10n.versesCount(link.verses.length),
         icon: icon,
         onTap: (ctx) {
           Navigator.push(
@@ -432,8 +440,15 @@ class DuasSearchProvider implements SearchProvider {
         providerId: id,
         sectionTitle: getSectionTitle(context),
         title: dua.title.isNotEmpty
-            ? '${dua.title} · سورة ${dua.surahName} (${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)})'
-            : 'دعاء من سورة ${dua.surahName} · الآية ${ArabicSearchNormalizer.convertDigits(dua.ayahDisplay)}',
+            ? context.l10n.duaTitleReference(
+                dua.title,
+                dua.surahName,
+                context.l10n.digits(dua.ayahDisplay),
+              )
+            : context.l10n.duaFromSurah(
+                dua.surahName,
+                context.l10n.digits(dua.ayahDisplay),
+              ),
         snippet: dua.isMultiAyah ? dua.formattedTextWithMarkers : dua.duaText,
         surahNumber: dua.surahNumber,
         ayahNumber: dua.ayahNumber,
@@ -483,17 +498,19 @@ class RemindersSearchProvider implements SearchProvider {
 
     return reminders.map((r) {
       final repeatText = r.repeatMode == ReminderRepeatMode.daily
-          ? 'يومي'
+          ? context.l10n.daily
           : (r.repeatMode == ReminderRepeatMode.weekdays
-                ? 'أيام محددة'
-                : 'مرة واحدة');
+                ? context.l10n.specificDays
+                : context.l10n.once);
 
       return SearchResultItem(
         id: 'reminder_${r.id}',
         providerId: id,
         sectionTitle: getSectionTitle(context),
         title: r.title,
-        snippet: 'وقت التنبيه: ${r.formattedTime}',
+        snippet: context.l10n.reminderTimeAt(
+          formatReminderTime(context, r.hour, r.minute),
+        ),
         badge: repeatText,
         icon: icon,
         onTap: (ctx) {
@@ -527,19 +544,18 @@ class BooksSearchProvider implements SearchProvider {
     BuildContext context,
   ) async {
     final sectionTitle = getSectionTitle(context);
+    final l10n = context.l10n;
     final repo = BookRepository.instance;
     if (!repo.isInitialized) {
       await repo.init();
     }
 
+    // البحث الفارغ مع اختيار القسم يعرض كل الملازم، كبقية الأقسام.
     final normalizedQuery = ArabicSearchNormalizer.normalize(query);
-    if (normalizedQuery.isEmpty) return const [];
-
     final tokens = normalizedQuery
         .split(' ')
         .where((w) => w.isNotEmpty)
         .toList();
-    if (tokens.isEmpty) return const [];
 
     final results = <SearchResultItem>[];
 
@@ -591,7 +607,13 @@ class BooksSearchProvider implements SearchProvider {
             break;
           }
           if (tokens.length > 1 &&
-              tokens.every((t) => chTitleNorm.contains(t))) {
+              tokens.every(
+                (t) =>
+                    chTitleNorm.contains(t) ||
+                    (t.startsWith('ال') &&
+                        t.length >= 4 &&
+                        chTitleNorm.contains(t.substring(2))),
+              )) {
             match = true;
             break;
           }
@@ -602,12 +624,12 @@ class BooksSearchProvider implements SearchProvider {
         final snippet = book.subtitle.isNotEmpty
             ? book.subtitle
             : (book.author.isNotEmpty
-                  ? 'المؤلف: ${book.author}'
+                  ? l10n.bookAuthor(book.author)
                   : (book.badgeText != null && book.badgeText!.isNotEmpty
                         ? book.badgeText!
                         : book.category));
 
-        final badge = book.isPdf ? 'ملزمة PDF' : 'كتاب نصي';
+        final badge = book.isPdf ? l10n.pdfBooklet : l10n.textBook;
 
         results.add(
           SearchResultItem(
@@ -652,7 +674,6 @@ class PathwaysSearchProvider implements SearchProvider {
     BuildContext context,
   ) async {
     final q = ArabicSearchNormalizer.normalize(query);
-    if (q.isEmpty) return const [];
     bool matches(String text) =>
         ArabicSearchNormalizer.normalize(text).contains(q);
 

@@ -112,6 +112,8 @@ class _TadbeerAppState extends State<TadbeerApp> {
       listenable: UserDataStore.instance.settingsNotifier,
       builder: (context, _) {
         final settings = UserDataStore.instance.settingsNotifier.value;
+        // اللغة تتبع الإعدادات، فتتغير بعد التصفير أو استعادة نسخة احتياطية.
+        _currentLanguage = AppLanguage.fromCode(settings.languageCode);
         // ألوان الثيم تُقرأ مباشرة من [AppColors]، فتغييرها يتطلب إعادة بناء
         // الشجرة كلها مرة واحدة.
         if (AppColors.use(settings.colorTheme)) {

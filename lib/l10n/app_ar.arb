@@ -1453,7 +1453,9 @@
   "cardColorHighlight": "تمييز {n}",
   "@cardColorHighlight": {
     "placeholders": {
-      "n": {"type": "String"}
+      "n": {
+        "type": "String"
+      }
     }
   },
   "threadModeOn": "مدّ خيط بين بطاقتين",
@@ -1500,7 +1502,6 @@
   "missionMethodologyCredits": "الرسالة، والمنهج، ومصادر التوثيق",
   "missionMethodologySources": "نبذة عن المنهج والمصادر والتوثيق",
   "strictOfflinePrivacyZeroDataCollection": "خصوصية تامة محلياً دون جمع أي بيانات",
-  "softwareTypographyQuranLicenses": "تراخيص البرمجيات والخطوط والمصحف",
   "updatesCommunity": "التحديثات والمجتمع",
   "updateReadyToInstall": "التحديث جاهز للتثبيت",
   "checkForUpdates": "التحقق من التحديثات",
@@ -1672,5 +1673,93 @@
         "type": "String"
       }
     }
-  }
+  },
+  "copyLabel": "نسخة",
+  "searchRootSection": "{section} (جذر: {root})",
+  "@searchRootSection": {
+    "placeholders": {
+      "section": {
+        "type": "String"
+      },
+      "root": {
+        "type": "String"
+      }
+    }
+  },
+  "rootLabel": "جذر: {root}",
+  "@rootLabel": {
+    "placeholders": {
+      "root": {
+        "type": "String"
+      }
+    }
+  },
+  "noteAyahTitle": "تدبر سورة {surahName} · آية {ayahNumber}",
+  "@noteAyahTitle": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "tadbeerPauseRecorded": "وقفة تدبرية مسجلة",
+  "tadbeerPauseReference": "وقفة تدبر: سورة {surahName} · الآية {ayahNumber}",
+  "@tadbeerPauseReference": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "duaTitleReference": "{title} · سورة {surahName} ({ayahs})",
+  "@duaTitleReference": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "surahName": {
+        "type": "String"
+      },
+      "ayahs": {
+        "type": "String"
+      }
+    }
+  },
+  "duaFromSurah": "دعاء من سورة {surahName} · الآية {ayahs}",
+  "@duaFromSurah": {
+    "placeholders": {
+      "surahName": {
+        "type": "String"
+      },
+      "ayahs": {
+        "type": "String"
+      }
+    }
+  },
+  "daily": "يومي",
+  "reminderTimeAt": "وقت التنبيه: {time}",
+  "@reminderTimeAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookAuthor": "المؤلف: {author}",
+  "@bookAuthor": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfBooklet": "ملزمة PDF",
+  "textBook": "كتاب نصي",
+  "highlightRemoved": "أُزيل التظليل"
 }

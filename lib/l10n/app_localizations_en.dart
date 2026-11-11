@@ -2715,10 +2715,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Strict offline privacy, zero data collection';
 
   @override
-  String get softwareTypographyQuranLicenses =>
-      'Software, typography & Quran licenses';
-
-  @override
   String get updatesCommunity => 'Updates & Community';
 
   @override
@@ -2878,4 +2874,62 @@ class AppLocalizationsEn extends AppLocalizations {
   String duaVerseLabel(String ayah) {
     return 'Verse $ayah';
   }
+
+  @override
+  String get copyLabel => 'copy';
+
+  @override
+  String searchRootSection(String section, String root) {
+    return '$section (root: $root)';
+  }
+
+  @override
+  String rootLabel(String root) {
+    return 'Root: $root';
+  }
+
+  @override
+  String noteAyahTitle(String surahName, String ayahNumber) {
+    return 'Reflection · Surah $surahName · Verse $ayahNumber';
+  }
+
+  @override
+  String get tadbeerPauseRecorded => 'Recorded reflection pause';
+
+  @override
+  String tadbeerPauseReference(String surahName, String ayahNumber) {
+    return 'Tadbeer pause: Surah $surahName · Verse $ayahNumber';
+  }
+
+  @override
+  String duaTitleReference(String title, String surahName, String ayahs) {
+    return '$title · Surah $surahName ($ayahs)';
+  }
+
+  @override
+  String duaFromSurah(String surahName, String ayahs) {
+    return 'Supplication from Surah $surahName · Verse $ayahs';
+  }
+
+  @override
+  String get daily => 'Daily';
+
+  @override
+  String reminderTimeAt(String time) {
+    return 'Reminder time: $time';
+  }
+
+  @override
+  String bookAuthor(String author) {
+    return 'Author: $author';
+  }
+
+  @override
+  String get pdfBooklet => 'PDF booklet';
+
+  @override
+  String get textBook => 'Text book';
+
+  @override
+  String get highlightRemoved => 'Highlight removed';
 }

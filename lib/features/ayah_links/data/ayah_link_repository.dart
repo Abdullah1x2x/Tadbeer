@@ -223,17 +223,19 @@ class AyahLinkRepository {
   /// يكرّر بطاقة خاطرة داخل الرابط.
   Future<AyahLinkNote?> duplicateNoteInLink(
     String linkId,
-    String noteId,
-  ) async {
-    return _store.duplicateNoteInLink(linkId, noteId);
+    String noteId, {
+    required String copyLabel,
+  }) async {
+    return _store.duplicateNoteInLink(linkId, noteId, copyLabel: copyLabel);
   }
 
   /// يكرّر كرت آية داخل الرابط.
   Future<AyahLinkVerse?> duplicateVerseInLink(
     String linkId,
-    AyahLinkVerse verse,
-  ) async {
-    return _store.duplicateVerseInLink(linkId, verse);
+    AyahLinkVerse verse, {
+    required String copyLabel,
+  }) async {
+    return _store.duplicateVerseInLink(linkId, verse, copyLabel: copyLabel);
   }
 
   /// يمد خيطاً بين بطاقتين (آية أو خاطرة)، أو يقطعه إن كان موجوداً.

@@ -395,6 +395,10 @@ class AppColors {
     Color(0x55D99A9A), // Rose highlight
   ];
 
+  /// لون التظليل [index]، مقيّداً بالمتاح: نسخة احتياطية قديمة قد تحمل غيره.
+  static Color highlightAt(int index) =>
+      highlightColors[index.clamp(0, highlightColors.length - 1)];
+
   // ألوان تتبع الوضع الفاتح أو الداكن للسياق
 
   static Color background(BuildContext context) =>

@@ -333,7 +333,7 @@ class _QuranSideMenuState extends State<QuranSideMenu>
         ? surahs
         : [
             for (final (i, s) in surahs.indexed)
-              if (_surahKeys[i].contains(query) || '${s.number}' == _filter) s,
+              if (_surahKeys[i].contains(query) || '${s.number}' == query) s,
           ];
 
     return LayoutBuilder(

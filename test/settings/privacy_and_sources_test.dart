@@ -161,5 +161,52 @@ void main() {
         );
       },
     );
+
+    testWidgets(
+      'Open Source Licenses is hidden from SettingsScreen and accessible at the bottom of About & Sources sheet',
+      (tester) async {
+        await tester.pumpWidget(
+          AppLocalizationScope(
+            currentLanguage: AppLanguage.arabic,
+            strings: AppStrings(AppLanguage.arabic),
+            onLanguageChanged: (_) {},
+            child: const MaterialApp(home: SettingsScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Scroll to the bottom of SettingsScreen and confirm the tile is absent
+        for (int i = 0; i < 4; i++) {
+          await tester.drag(find.byType(ListView), const Offset(0, -800));
+          await tester.pumpAndSettle();
+        }
+        expect(find.text('تراخيص المصادر المفتوحة'), findsNothing);
+
+        // Open About & Sources sheet
+        await tester.tap(find.text('عن تَدبِير والمصادر المعتمدة'));
+        await tester.pumpAndSettle();
+
+        // Scroll down inside the sheet to reach the subtle licenses button
+        final sheetListFinder = find.byType(ListView).last;
+        final licensesButton = find.text('تراخيص المصادر المفتوحة');
+        await tester.scrollUntilVisible(
+          licensesButton,
+          300,
+          scrollable: find.descendant(
+            of: sheetListFinder,
+            matching: find.byType(Scrollable),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(licensesButton, findsOneWidget);
+
+        // Tap it and verify LicensePage opens
+        await tester.tap(licensesButton);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(LicensePage), findsOneWidget);
+      },
+    );
   });
 }
