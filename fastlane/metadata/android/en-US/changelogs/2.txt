@@ -1,0 +1,8 @@
+- Letters are no longer stretched inside the name of Allah in the Madinah Mushaf.
+- Search accepts Arabic and Western digits, and ignores "ال" in surah names.
+- The updater downloads the file built for your device's processor, and keeps it only when complete.
+- Undo for a removed highlight.
+- Focus mode and the reminder title field follow the interface language.
+- Sharing and backup work on tablets.
+- The app opens faster.
+- Clearer settings, and small fixes in the tasbeeh, reminders and memorization.

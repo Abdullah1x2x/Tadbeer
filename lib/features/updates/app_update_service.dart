@@ -50,10 +50,10 @@ class AppUpdateService {
   static final AppUpdateService instance = AppUpdateService._();
 
   /// الإصدار الحالي المثبت من التطبيق.
-  static const String currentVersion = '1.0.0';
+  static const String currentVersion = '1.0.1';
 
   /// رقم البناء الحالي.
-  static const int currentBuildNumber = 1;
+  static const int currentBuildNumber = 2;
 
   /// الرابط الأساسي لملف الإصدار في مستودع GitHub.
   static const String _primaryUrl =
