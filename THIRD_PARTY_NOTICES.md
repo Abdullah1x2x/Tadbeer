@@ -16,7 +16,7 @@ A comprehensive legal and architectural audit was conducted across all component
 
 ### Audit Verdict
 - **Legal Compliance:** **100% compliant** with open-source licensing standards and official application distribution requirements (**F-Droid**).
-- **Software Packages:** Permissive licenses only (MIT, BSD, Apache-2.0); `dbus` is MPL-2.0 and used on Linux only.
+- **Software Packages:** Permissive licenses only (MIT, BSD, Apache-2.0); `dbus` is MPL-2.0 and used on Linux only. The Windows build ships libmpv and FFmpeg as LGPL-2.1-or-later DLLs (see section 5).
 - **Content:** The Mushaf fonts and layout, recitations and some books have their own terms and are not covered by the MIT License.
 - **Automated In-App Attribution:** All software package licenses are registered into Flutter's native `LicenseRegistry`, rendered automatically within the app via `showLicensePage`.
 
@@ -75,6 +75,9 @@ Packages explicitly declared in [`pubspec.yaml`](pubspec.yaml) and bundled into 
 | **`home_widget`** | `0.10.0` | Home-screen widget with the ayah of the day | BSD-3-Clause | Copyright (c) 2020, Anton Borries. |
 | **`intl`** | `0.20.3` | Date and number formatting | BSD-3-Clause | Copyright 2013, the Dart project authors. |
 | **`just_audio`** | `0.10.6` | Audio recitation playback | MIT | Copyright (c) 2019-2020 Ryan Heise and the project contributors. |
+| **`just_audio_media_kit`** | `2.1.0` | Recitation playback on Linux and Windows through libmpv | Unlicense (public domain) | Pato05 and contributors. |
+| **`media_kit_libs_linux`** | `1.2.1` | Links the system libmpv on Linux | MIT | Copyright (c) 2021 & onwards Hitesh Kumar Saini. |
+| **`media_kit_libs_windows_audio`** | `1.0.9` | Bundles an audio-only libmpv build on Windows | MIT | Copyright (c) 2021 & onwards Hitesh Kumar Saini. |
 | **`path`** | `1.9.1` | File system path manipulation | BSD-3-Clause | Copyright 2014, the Dart project authors. |
 | **`path_provider`** | `2.1.6` | Access to persistent local storage directories | BSD-3-Clause | Copyright 2013 The Flutter Authors. |
 | **`pdf`** | `3.13.1` | PDF generation for notes and reflection journals | Apache-2.0 | Copyright (c) 2017, David PHAM-VAN. |
@@ -108,6 +111,8 @@ The complete dependency tree parsed from `pubspec.lock` contains **95 transitive
   The `dbus` package (Linux desktop D-Bus client). MPL-2.0 is a file-level copyleft license; because `dbus` is consumed as an unmodified standalone dependency without modifying its source files, all MPL obligations are met without affecting the rest of the application codebase.
 - **Platform Toolchains & Native Runtimes:**  
   - **Android:** `AndroidX` libraries and `desugar_jdk_libs` (Apache-2.0), `libsqlite3.so` (Public Domain).
+  - **Windows:** `libmpv-2.dll` with its FFmpeg libraries, the audio-only LGPL build from [media-kit/libmpv-win32-audio-build](https://github.com/media-kit/libmpv-win32-audio-build) (LGPL-2.1-or-later). They are separate, unmodified DLLs next to `tadbeer.exe` that a user can replace; their source is at that link.
+  - **Linux:** libmpv is not bundled; the app uses the system's own (`mpv-libs` on Fedora, `libmpv2` on Debian and Ubuntu).
   - **Flutter Engine:** `libflutter.so` / `Flutter.framework` based on Skia, Impeller, HarfBuzz, BoringSSL, and ICU (permissive BSD, MIT, Apache, and Unicode licenses; bundled within binary notices).
 
 ---

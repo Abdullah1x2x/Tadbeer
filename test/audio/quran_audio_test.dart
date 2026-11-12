@@ -28,6 +28,11 @@ class _FakeEngine implements AudioEngine {
   bool failLoad = false;
   bool isIdle = false;
 
+  /// Repeats the index playing before a seek lands, as the desktop player
+  /// (media_kit) does with every position update.
+  bool echoes = false;
+  int? _last;
+
   @override
   bool get idle => isIdle;
 
@@ -48,7 +53,7 @@ class _FakeEngine implements AudioEngine {
     if (failLoad) throw Exception('offline');
     loaded = [for (final t in tracks) t.uri];
     titles = [for (final t in tracks) t.title];
-    indexes.add(start);
+    indexes.add(_last = start);
   }
 
   @override
@@ -66,7 +71,8 @@ class _FakeEngine implements AudioEngine {
   @override
   Future<void> seekTo(int index) async {
     calls.add('seek $index');
-    indexes.add(index);
+    if (echoes) indexes.add(_last);
+    indexes.add(_last = index);
   }
 
   @override
@@ -387,6 +393,23 @@ void main() {
         async.flushMicrotasks();
         expect(engine.calls, isNot(contains('pause')));
         expect(audio.resting, isFalse);
+      });
+    });
+
+    test('a repeated index before a jump lands does not pause or stop', () {
+      fakeAsync((async) {
+        final engine = _FakeEngine()..echoes = true;
+        final audio = QuranAudio.withEngine(engine);
+        audio.setPauseSeconds(5);
+        async.flushMicrotasks();
+        audio.playFrom(repo.getAyah(112, 2)!);
+        async.flushMicrotasks();
+        engine.calls.clear();
+        audio.next();
+        async.flushMicrotasks();
+        expect(engine.calls, isNot(contains('pause')));
+        expect(audio.resting, isFalse);
+        expect(audio.current!.ayahNumber, 3);
       });
     });
 

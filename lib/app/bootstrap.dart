@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 
 import '../data/models/user_settings_model.dart';
 import '../data/quran/quran_repository.dart';
@@ -28,6 +29,7 @@ import 'main_shell.dart';
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
   registerBundledAssetLicenses();
+  _startDesktopAudio();
 
   // 1. التخزين المحلي، وبيانات القرآن، والتسبيح بالتوازي.
   UserDataStore.instance.reminderScheduler = LocalReminderService.instance;
@@ -114,6 +116,18 @@ void _attachSyncs() {
   // إتمام جولة تسبيح يُحتسب في سلسلة الأيام.
   TasbeehRepository.instance.onTargetReached = () =>
       UserDataStore.instance.markActiveDay();
+}
+
+/// يشغّل التلاوة على لينكس وويندوز عبر libmpv؛ أندرويد وiOS لهما مشغّلهما.
+///
+/// على لينكس تأتي libmpv من النظام (حزمة mpv-libs أو libmpv2)، ودونها يعمل
+/// التطبيق بلا صوت.
+void _startDesktopAudio() {
+  try {
+    JustAudioMediaKit.ensureInitialized();
+  } on Object catch (e) {
+    debugPrint('Desktop audio unavailable: $e');
+  }
 }
 
 /// تستمر التلاوة في الخلفية مع أزرارها في الإشعار؛ وعلى سطح المكتب تعمل داخل

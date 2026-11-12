@@ -460,6 +460,8 @@ class QuranAudio extends ChangeNotifier {
     if (index == null || queue == null || index >= queue.ayahs.length) return;
     final ayah = queue.ayahs[index];
     final previous = current;
+    // مشغّل سطح المكتب يكرر الرقم نفسه مع كل تقدّم، فلا يُستهلك به أثر القفز.
+    if (previous != null && previous.id == ayah.id) return;
     final jumped = _jumping;
     _jumping = false;
     // اختار القارئ آية واحدة أثناء التلاوة: تقف عند نهاية الجارية.
