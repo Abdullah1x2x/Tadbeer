@@ -8,5 +8,10 @@
   "download_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.0.0",
   "apk_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.0/app-arm64-v8a-release.apk",
   "linux_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.0/tadbeer-linux-x64.tar.gz",
-  "is_mandatory": false
+  "is_mandatory": false,
+  "apk_sha256s": {
+    "arm64-v8a": "03155e78e21158043de848b3cac35be4d6d4632a674aed7d8cfb7134d1aaf592",
+    "armeabi-v7a": "8085ea52e3ebd63bdff2cb2042e5dc49d9a08605366cc07d1d185b518a582963"
+  },
+  "linux_sha256": "65626610b0834805f65d4e2e92fbf7b51f74e16fea4b1c0573ca70232420cb46"
 }
