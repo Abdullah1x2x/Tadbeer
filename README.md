@@ -142,9 +142,19 @@
 
 كل بياناتك تبقى على جهازك. لا حساب ولا إعلانات ولا تحليلات. والإنترنت يُستخدم للتلاوة المسموعة والتحقق من وجود تحديثات جديدة فقط (ويمكن تنزيلها ومتابعتها عبر [قناة تيليجرام الرسمية](https://t.me/tadbeerapp) أو GitHub)، والموقع التقريبي للقبلة فقط. التفاصيل في [سياسة الخصوصية](PRIVACY_POLICY.md).
 
+## التثبيت
+
+ملفات كل إصدار في [صفحة الإصدارات](https://github.com/Abdullah1x2x/Tadbeer/releases/latest)، ومع كل ملف بصمة SHA-256 في `SHA256SUMS-*.txt`.
+
+- **أندرويد:** `app-arm64-v8a-release.apk` لأغلب الهواتف، و`app-armeabi-v7a-release.apk` للهواتف القديمة.
+- **لينكس (x64):** فك `tadbeer-linux-x64.tar.gz` في `~/.local/opt`، وشغّل `~/.local/opt/tadbeer/tadbeer`. التلاوة تحتاج مكتبة mpv: `sudo dnf install mpv-libs` في Fedora، أو `sudo apt install libmpv2` في Ubuntu وDebian.
+- **ويندوز (10 وما بعده، x64):** فك `tadbeer-windows-x64.zip` في `%LOCALAPPDATA%\Programs`، وشغّل `tadbeer\tadbeer.exe`. الملف غير موقّع، فيظهر عند أول تشغيل تحذير «Windows protected your PC»: اضغط «More info» ثم «Run anyway».
+
+على لينكس وويندوز يثبّت التطبيق تحديثاته بنفسه ما دام في مجلد يملك الكتابة فيه (مثل المجلدين أعلاه، لا `/opt` ولا `Program Files`).
+
 ## التشغيل
 
-تحتاج Flutter 3.47.6 وAndroid SDK. والخطوات الكاملة للمطورين في [دليل التطوير](DEVELOPMENT.md).
+تحتاج Flutter 3.47.6 وAndroid SDK (ولنسخة لينكس: `libgtk-3-dev` و`libmpv-dev`). والخطوات الكاملة للمطورين في [دليل التطوير](DEVELOPMENT.md).
 
 <div dir="ltr">
 

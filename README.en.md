@@ -140,9 +140,19 @@ Pick the look of the app on first launch, and change it any time in settings. Fi
 
 Your data stays on your device. No account, ads or analytics. The internet is used only for audio recitation and checking for new updates (which can be downloaded directly from GitHub or our official [Telegram Channel](https://t.me/tadbeerapp)), and approximate location only for the Qibla. See the [privacy policy](PRIVACY_POLICY.md).
 
+## Install
+
+Each release's files are on the [releases page](https://github.com/Abdullah1x2x/Tadbeer/releases/latest), with SHA-256 hashes in `SHA256SUMS-*.txt`.
+
+- **Android:** `app-arm64-v8a-release.apk` for most phones, `app-armeabi-v7a-release.apk` for older ones.
+- **Linux (x64):** extract `tadbeer-linux-x64.tar.gz` into `~/.local/opt` and run `~/.local/opt/tadbeer/tadbeer`. Recitation needs the mpv library: `sudo dnf install mpv-libs` on Fedora, `sudo apt install libmpv2` on Ubuntu and Debian.
+- **Windows (10 or later, x64):** extract `tadbeer-windows-x64.zip` into `%LOCALAPPDATA%\Programs` and run `tadbeer\tadbeer.exe`. The file is not signed, so the first run shows "Windows protected your PC": choose "More info", then "Run anyway".
+
+On Linux and Windows the app installs its own updates, as long as it sits in a folder it can write to (like the ones above, not `/opt` or `Program Files`).
+
 ## Getting started
 
-You need Flutter 3.47.6 and the Android SDK. Full setup steps are in the [developer guide](DEVELOPMENT.md) (Arabic).
+You need Flutter 3.47.6 and the Android SDK (and for Linux, `libgtk-3-dev` and `libmpv-dev`). Full setup steps are in the [developer guide](DEVELOPMENT.md) (Arabic).
 
 ```bash
 git clone https://github.com/Abdullah1x2x/Tadbeer.git

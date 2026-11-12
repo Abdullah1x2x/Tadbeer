@@ -30,7 +30,9 @@
 ### متطلبات البيئة
 - **Flutter SDK:** الإصدار `3.47.6`.
 - **Dart SDK:** الإصدار `^3.4.0`.
-- **المنصات المدعومة:** Android و iOS (مع دعم كامل لـ Linux و macOS و Windows للتطوير وتشغيل الاختبارات عبر `sqflite_common_ffi`).
+- **المنصات المدعومة:** Android وLinux وWindows تُنشر في كل إصدار؛ وiOS وmacOS تُبنى ولا تُنشر. قاعدة البيانات على سطح المكتب عبر `sqflite_common_ffi`.
+- **لبناء لينكس:** `clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libasound2-dev libsqlite3-dev libmpv-dev` (أسماء Ubuntu؛ في Fedora `gtk3-devel` و`mpv-devel`).
+- **نسخة ويندوز** لا تُبنى إلا على ويندوز (Visual Studio مع «Desktop development with C++»)؛ يبنيها `release.yml` على `windows-latest`.
 
 ### الأوامر الأساسية
 
@@ -52,6 +54,10 @@ flutter run
 flutter build apk --release --split-per-abi
 # حزمة AAB، التي تعطي كل جهاز ما يحتاجه فقط
 flutter build appbundle --release
+# لينكس: الناتج في build/linux/x64/release/bundle/
+flutter build linux --release
+# ويندوز (على ويندوز فقط): الناتج في build/windows/x64/runner/Release/
+flutter build windows --release
 ```
 
 ### إصدار نسخة جديدة
@@ -62,8 +68,16 @@ dart run tool/release.dart 1.0.1
 
 يقرأ السطور تحت `## غير منشور` في `CHANGELOG.md`، ثم يكتب رقم الإصدار في `pubspec.yaml`، وثابتَي `AppUpdateService`، و`CHANGELOG.md`، و`version.json` و`docs/version.json`، وسجل المتجر العربي في `fastlane/`. لا يعمل commit ولا يرفع شيئاً؛ يطبع الأوامر التالية.
 
-- **ارفع الوسم وحده** (`git push origin v1.0.1`). التطبيقات المثبّتة تقرأ `version.json` من `main`، فيحرّك `release.yml` الفرع `main` إلى commit الوسم بعد رفع ملفات APK، فلا يُعرض تحديث قبل وجود ملفه.
+- **ارفع الوسم وحده** (`git push origin v1.0.1`). التطبيقات المثبّتة تقرأ `version.json` من `main`. يبني `release.yml` ثلاث مهام (`android` و`linux` و`windows`) ويرفع ملفاتها، ثم تكتب مهمة `announce` بصماتها (`apk_sha256s` و`linux_sha256` و`windows_sha256`) في `version.json` و`docs/version.json` في commit فوق الوسم، وتدفعه إلى `main`. فلا يُعرض تحديث قبل وجود ملفه، والتطبيق يرفض أي ملف لا تطابق بصمته.
+- **ملفات كل إصدار:** `app-arm64-v8a-release.apk` و`app-armeabi-v7a-release.apk` و`SHA256SUMS-android.txt`، و`tadbeer-linux-x64.tar.gz` و`SHA256SUMS-linux.txt`، و`tadbeer-windows-x64.zip` و`SHA256SUMS-windows.txt`. الأرشيفان فيهما مجلد واحد اسمه `tadbeer/`.
+- **إن غيّر الإصدار ملفاً في `.github/workflows/`** فارفع `main` قبل الوسم: GitHub يرفض أن يدفع `GITHUB_TOKEN` إلى `main` commits تعدّل ملفات workflow.
+- **للتجربة دون نشر:** Actions ← Release ← Run workflow على `main`، أو `gh workflow run release.yml --ref main`. تُحفظ الملفات في نتيجة التشغيل، ولا تعمل `announce`.
 - `test/updates/release_sync_test.dart` يفشل إن اختلف `pubspec.yaml` عن ثابتَي الخدمة، أو اختلفت نسختا `version.json`.
+- **التحديث على لينكس وويندوز** (`installCurrentDownloadedApk` في `AppUpdateService`):
+  1. بعد التنزيل والتحقق من البصمة، يفحص `isSafeUpdateArchiveListing` قائمة الأرشيف (كل المسارات داخل `tadbeer/`، بلا `..` ولا مسار مطلق)، ثم يفكه `stageDesktopUpdate` بأمر `tar` (ويندوز 10 يحمل bsdtar الذي يقرأ zip) إلى `<مجلد التطبيق>.update`، ويرفضه إن نقص الملف التنفيذي أو `data/` أو وُجد فيه رابط رمزي.
+  2. يُشغَّل سكربت منفصل (`linuxSwapScript` بـ `sh`، أو `windowsSwapScript` بـ PowerShell) ينتظر خروج التطبيق، ثم ينقل المجلد القديم إلى `.old` والجديد مكانه، ويعيد القديم إن فشل النقل.
+  3. زر «تثبيت التحديث الآن» يكتب `<مجلد التطبيق>.relaunch` ويغلق التطبيق، فيعيد السكربت تشغيله. ودون الزر يُطبَّق التحديث عند الإغلاق التالي.
+  - نسخ التطوير (`!kReleaseMode`) والمجلدات التي لا يكتب فيها التطبيق (Flatpak، `/opt`، `Program Files`) تفتح مجلد التنزيلات بدل ذلك.
 - التحديث داخل التطبيق ينزّل ملف معمارية الجهاز: `AppUpdateInfo.apkUrlFor` يبدّل `arm64-v8a` في `apk_url` بما تعيده قناة `tadbeer/device` (`abi`). أسماء ملفات الإصدار يجب أن تبقى `app-<abi>-release.apk`.
 
 ---
@@ -183,6 +197,8 @@ lib/
 - **`QuranAudio`:** `playFrom(ayah)` يتلو إلى آخر السورة وما بعدها، و`playAyah(ayah)` يتلو آية واحدة ثم يتوقف. لكل طلب رقم، فيُلغي الطلبُ الأحدث ما قبله وهو ما زال يُحمَّل.
 - **منع التعليق:** ينتهي انتظار أول ملف بعد `QuranAudio.loadTimeout` (20 ثانية)، ويُوقَف المحرك عند الخطأ، ويعيد `toggle()` الآية حين يكون المحرك متوقفاً، ولا ينتظر التالي والسابق وقفة التدبر.
 - **التشغيل في الخلفية:** يعرض `RecitationHandler` (audio_service) المشغّل في الإشعار، وزر الإيقاف فيه يغلق التلاوة عبر `onStop`.
+- **سطح المكتب:** `just_audio` لا مشغّل له على لينكس وويندوز، فيشغّله `just_audio_media_kit` عبر libmpv (`JustAudioMediaKit.ensureInitialized` في `bootstrap.dart`). على ويندوز يضم `media_kit_libs_windows_audio` نسخة LGPL صوتية من `libmpv-2.dll`، وعلى لينكس تأتي من النظام (`mpv-libs` أو `libmpv2`). إن غابت على لينكس (`linuxHasLibmpv` في `desktop_player.dart`) يُضبط `QuranAudio.onPlayerMissing`، فيعرض زر التلاوة أمر التثبيت المناسب للتوزيعة (`mpvInstallCommand` من `/etc/os-release`) مع زر نسخ.
+- **رقم الآية المكرر:** مشغّل media_kit يعيد رقم العنصر الجاري مع كل تقدّم، فيتجاهل `_onIndex` الرقم الذي لا يغيّر الآية، كي لا يُستهلك به أثر القفز (`_jumping`) ولا تبدأ وقفة التدبر بعد «التالي».
 - **أيقونة الإشعارات:** `@drawable/ic_stat_tadbeer` بيضاء، لأن أندرويد يرسم الأيقونة الصغيرة من شفافيتها وحدها. يولّدها من طبقة الشعار `python3 tool/brand/notification_icon.py`.
 
 ### 4.10. آية للتدبر وودجت الشاشة الرئيسية (`lib/features/daily/` و`lib/features/widgets/`)
