@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../app/localization.dart';
 import '../../core/theme/theme.dart';
+import '../../core/utils/arabic_search_normalizer.dart';
 import 'tasbeeh_model.dart';
 import '../../core/design_system/app_icons.dart';
 import '../../core/design_system/design_system.dart';
@@ -45,7 +46,12 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   @override
   void initState() {
     super.initState();
-    _repo.init();
+    _repo.init().then((_) {
+      if (!mounted) return;
+      if (widget.initialSection != null) {
+        _repo.setActiveSection(widget.initialSection!);
+      }
+    });
     if (widget.initialSection != null) {
       _repo.setActiveSection(widget.initialSection!);
     }
@@ -74,6 +80,7 @@ class _TasbeehScreenState extends State<TasbeehScreen>
   @override
   void dispose() {
     _autoCountTimer?.cancel();
+    _repo.flushPersistence();
     _repo.removeListener(_onRepoChanged);
     _pulseController.dispose();
     super.dispose();
@@ -213,8 +220,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             content: Text(
               context.l10n.targetReachedAuto(finishedTarget),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
+              style: TextStyle(
+                fontFamily: context.l10n.isArabic ? 'IBMPlexSansArabic' : null,
                 fontSize: 14,
               ),
             ),
@@ -235,8 +242,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
             content: Text(
               context.l10n.targetReached(finishedTarget),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
+              style: TextStyle(
+                fontFamily: context.l10n.isArabic ? 'IBMPlexSansArabic' : null,
                 fontSize: 15,
               ),
             ),
@@ -262,7 +269,10 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         content: Text(
           context.l10n.dhikrCopied,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
+          style: TextStyle(
+            fontFamily: context.l10n.isArabic ? 'IBMPlexSansArabic' : null,
+            fontSize: 13,
+          ),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -291,8 +301,8 @@ class _TasbeehScreenState extends State<TasbeehScreen>
         appBar: AppBar(
           title: Text(
             l10n.tasbeehAndIstighfar,
-            style: const TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
+            style: TextStyle(
+              fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
               fontWeight: FontWeight.bold,
             ),
           ),

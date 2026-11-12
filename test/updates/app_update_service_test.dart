@@ -388,6 +388,40 @@ void main() {
       await expectLater(download().drain<void>(), throwsA(anything));
 
       expect(target.existsSync(), isFalse);
+      expect(File('${target.path}.part').existsSync(), isFalse);
+    });
+
+    test('a non-200 response cleans up without leaving a .part file', () async {
+      server.listen((request) async {
+        request.response.statusCode = HttpStatus.notFound;
+        await request.response.close();
+      });
+
+      await expectLater(download().drain<void>(), throwsA(isA<HttpException>()));
+
+      expect(target.existsSync(), isFalse);
+      expect(File('${target.path}.part').existsSync(), isFalse);
+    });
+
+    test('rejects download when sha256 checksum does not match', () async {
+      server.listen((request) async {
+        request.response.add([1, 2, 3, 4]);
+        await request.response.close();
+      });
+
+      await expectLater(
+        AppUpdateService.instance
+            .downloadApkFile(
+              url: 'http://127.0.0.1:${server.port}/update.tar.gz',
+              targetFile: target,
+              expectedSha256: 'deadbeef',
+            )
+            .drain<void>(),
+        throwsA(isA<HttpException>()),
+      );
+
+      expect(target.existsSync(), isFalse);
+      expect(File('${target.path}.part').existsSync(), isFalse);
     });
   });
 }

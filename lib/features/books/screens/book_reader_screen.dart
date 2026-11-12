@@ -66,7 +66,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     if (widget.book.hasAttachedFile && widget.book.isText) {
       _loadFileText();
     }
-    if (widget.book.isPdf) {
+    if (widget.book.chapters.isEmpty && widget.book.isPdf) {
       _loadPdf();
     }
   }
@@ -187,7 +187,9 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     ActivityKind.book,
     ref: widget.book.id,
     title: widget.book.title,
-    position: widget.book.isPdf ? _currentPdfPage : _currentChapterIndex,
+    position: widget.book.chapters.isEmpty && widget.book.isPdf
+        ? _currentPdfPage
+        : _currentChapterIndex,
   );
 
   void _changeChapter(int index) {
@@ -205,14 +207,16 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   }
 
   void _copyChapterContent() {
+    final l10n = context.l10n;
+    final signature = l10n.isArabic ? 'تطبيق تَدبِير' : l10n.appName;
     String textToCopy = '';
     if (widget.book.chapters.isNotEmpty) {
       final chapter = widget.book.chapters[_currentChapterIndex];
       textToCopy =
-          '${widget.book.title}\n${chapter.title}\n\n${chapter.content}\n\n— تطبيق تَدبِير';
+          '${widget.book.title}\n${chapter.title}\n\n${chapter.content}\n\n— $signature';
     } else if (_loadedFileContent != null) {
       textToCopy =
-          '${widget.book.title}\n\n$_loadedFileContent\n\n— تطبيق تَدبِير';
+          '${widget.book.title}\n\n$_loadedFileContent\n\n— $signature';
     }
 
     if (textToCopy.isEmpty) return;
@@ -222,9 +226,11 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.textCopied,
+          l10n.textCopied,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+          style: TextStyle(
+            fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+          ),
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -241,7 +247,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
       onPressed: _fontSize > 14 ? () => setState(() => _fontSize -= 1.5) : null,
     ),
     Text(
-      '${_fontSize.toInt()}',
+      context.l10n.digits(_fontSize.toInt()),
       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
     ),
     IconButton(
@@ -410,14 +416,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 }
               },
               onPageError: (page, error) {
-                if (mounted) {
-                  setState(() {
-                    _pdfLoadError = context.l10n.pdfPageFailed(
-                      '$page',
-                      '$error',
-                    );
-                  });
-                }
+                debugPrint('PDF page $page error: $error');
               },
               onPageChanged: (page, total) {
                 if (mounted) {

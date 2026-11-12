@@ -34,10 +34,12 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
   }
 
   void _copyAllText() {
+    final l10n = context.l10n;
+    final appLabel = l10n.isArabic ? 'تطبيق تَدبِير' : l10n.appName;
     Clipboard.setData(
       ClipboardData(
         text:
-            '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.content}\n\n— تطبيق تَدبِير',
+            '${widget.dua.title}\n(${widget.dua.attributedTo})\n\n${widget.dua.content}\n\n— $appLabel',
       ),
     );
     HapticFeedback.selectionClick();
@@ -45,9 +47,12 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.fullDuaCopiedSuccess,
+          l10n.fullDuaCopiedSuccess,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
+          style: TextStyle(
+            fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+            fontSize: 13,
+          ),
         ),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -205,6 +210,7 @@ class _AhlulbaytDuaReaderScreenState extends State<AhlulbaytDuaReaderScreen> {
                 ),
                 child: SelectableText(
                   widget.dua.content,
+                  textDirection: TextDirection.rtl,
                   textAlign: TextAlign.justify,
                   style: QcfPageBody.scriptStyle(
                     fontSize: _fontSize,

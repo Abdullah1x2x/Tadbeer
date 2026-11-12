@@ -42,7 +42,7 @@ class BookSectionConfig {
   /// القسم كـ[BookSection].
   BookSection toSectionModel() {
     return BookSection(
-      id: 'section_${name.hashCode.abs()}',
+      id: 'section_${stableBookIdHash(name)}',
       name: name,
       description: description,
       icon: icon,
@@ -51,6 +51,16 @@ class BookSectionConfig {
       seriesFilterList: seriesFilterList,
     );
   }
+}
+
+/// تجزئة FNV-1a ثابتة عبر الجلسات بدلاً من [String.hashCode].
+int stableBookIdHash(String input) {
+  var hash = 0x811c9dc5;
+  for (final unit in input.codeUnits) {
+    hash ^= unit;
+    hash = (hash * 0x01000193) & 0x7fffffff;
+  }
+  return hash;
 }
 
 /// كتاب يعرّفه المطور: بملف مرفق أو بفصول مكتوبة.
@@ -112,7 +122,7 @@ class BookConfig {
     }
 
     return BookModel(
-      id: id ?? 'book_${sectionName}_${title.hashCode.abs()}',
+      id: id ?? 'book_${sectionName}_${stableBookIdHash(title)}',
       title: title,
       subtitle: subtitle,
       author: author,

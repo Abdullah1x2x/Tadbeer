@@ -92,25 +92,36 @@ class _MonthlyReportSheetState extends State<MonthlyReportSheet> {
 
   /// البطاقة كما تظهر، بعرض 1080 بكسل.
   Future<Uint8List?> _capture() async {
-    final boundary =
-        _cardKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-    final image = await boundary.toImage(pixelRatio: 1080 / _width);
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    image.dispose();
-    return bytes?.buffer.asUint8List();
+    final ctx = _cardKey.currentContext;
+    if (ctx == null) return null;
+    final renderObject = ctx.findRenderObject();
+    if (renderObject is! RenderRepaintBoundary) return null;
+    final image = await renderObject.toImage(pixelRatio: 1080 / _width);
+    try {
+      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      return bytes?.buffer.asUint8List();
+    } finally {
+      image.dispose();
+    }
   }
 
   Future<void> _saveToPhotos() async {
     setState(() => _saving = true);
-    final bytes = await _capture();
-    final result = bytes == null
-        ? PhotoSaveResult.failed
-        : await saveImageToPhotos(bytes, _fileName);
-    if (mounted) {
-      setState(() {
-        _saving = false;
-        _saved = result;
-      });
+    var result = PhotoSaveResult.failed;
+    try {
+      final bytes = await _capture();
+      if (bytes != null) {
+        result = await saveImageToPhotos(bytes, _fileName);
+      }
+    } catch (_) {
+      result = PhotoSaveResult.failed;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _saved = result;
+        });
+      }
     }
   }
 

@@ -392,6 +392,41 @@ class UserDataStore extends _StoreState
     if (userDb.isOpen) {
       await userDb.clearAllUserData();
     }
+    await _cleanupExportArtifacts();
+  }
+
+  /// تنظيف ملفات التصدير المؤقتة لضمان عدم بقاء بيانات غير مشفرة على القرص.
+  Future<void> _cleanupExportArtifacts() async {
+    final dirs = <Directory>[];
+    try {
+      dirs.add(await getTemporaryDirectory());
+    } catch (_) {}
+    try {
+      dirs.add(await getApplicationCacheDirectory());
+    } catch (_) {}
+    // لا مرور عميق: مجلد المؤقت في لينكس هو /tmp المشترك بين البرامج، فنكتفي
+    // بالمستوى الأول وبمجلد النسخ الاحتياطية الذي ينشئه التطبيق.
+    dirs.addAll([
+      for (final d in [...dirs])
+        Directory('${d.path}${Platform.pathSeparator}backup_exports'),
+    ]);
+
+    for (final dir in dirs) {
+      try {
+        if (!await dir.exists()) continue;
+        await for (final entity in dir.list()) {
+          if (entity is File) {
+            final name = entity.path.split(Platform.pathSeparator).last;
+            if (name.startsWith('tadbeer_') ||
+                name.startsWith('monthly_report_')) {
+              try {
+                await entity.delete();
+              } catch (_) {}
+            }
+          }
+        }
+      } catch (_) {}
+    }
   }
 
   /// لقطة من بيانات القارئ للنسخ الاحتياطي، كاملة أو لأقسام مختارة.

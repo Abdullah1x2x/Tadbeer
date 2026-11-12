@@ -116,13 +116,18 @@ class AyahLinkOrderedView extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    context.l10n.reflectionNotesCount(notes.length),
-                    style: TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                  Expanded(
+                    child: Text(
+                      context.l10n.reflectionNotesCount(notes.length),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: context.l10n.isArabic
+                            ? 'IBMPlexSansArabic'
+                            : null,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                 ],
@@ -192,13 +197,18 @@ class AyahLinkOrderedView extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    context.l10n.connectedVersesCount(verses.length),
-                    style: TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                  Expanded(
+                    child: Text(
+                      context.l10n.connectedVersesCount(verses.length),
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: context.l10n.isArabic
+                            ? 'IBMPlexSansArabic'
+                            : null,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                 ],
@@ -278,25 +288,56 @@ class AyahLinkOrderedView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 26,
-                              height: 26,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary
-                                    .withValues(alpha: 0.15),
-                                shape: BoxShape.circle,
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 26,
+                                height: 26,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary
+                                      .withValues(alpha: 0.15),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    context.l10n.isArabic
+                                        ? ArabicSearchNormalizer.toArabicDigits(
+                                            index + 1,
+                                          )
+                                        : '${index + 1}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: Center(
+                              const SizedBox(width: 8),
+                              Expanded(
                                 child: Text(
-                                  context.l10n.isArabic
-                                      ? ArabicSearchNormalizer.toArabicDigits(
-                                          index + 1,
+                                  verse.isRange
+                                      ? context.l10n.ayahRangeReference(
+                                          surah.name,
+                                          context.l10n.digits(verse.ayahNumber),
+                                          context.l10n.digits(
+                                            verse.toAyahNumber,
+                                          ),
                                         )
-                                      : '${index + 1}',
+                                      : context.l10n.ayahReference(
+                                          surah.name,
+                                          verse.ayahNumber,
+                                        ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontFamily: context.l10n.isArabic
+                                        ? 'IBMPlexSansArabic'
+                                        : null,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Theme.of(context)
                                         .colorScheme
@@ -304,23 +345,8 @@ class AyahLinkOrderedView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              verse.isRange
-                                  ? context.l10n.ayahRangeReference(surah.name, context.l10n.digits(verse.ayahNumber), context.l10n.digits(verse.toAyahNumber))
-                                  : context.l10n.ayahReference(
-                                      surah.name,
-                                      verse.ayahNumber,
-                                    ),
-                              style: TextStyle(
-                                fontFamily: 'IBMPlexSansArabic',
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisSize: MainAxisSize.min,
@@ -716,7 +742,9 @@ class _AyahLinkNoteCard extends StatelessWidget {
                 child: Text(
                   hasTitle ? title.trim() : (context.l10n.reflectionNoteCard),
                   style: TextStyle(
-                    fontFamily: 'IBMPlexSansArabic',
+                    fontFamily: context.l10n.isArabic
+                        ? 'IBMPlexSansArabic'
+                        : null,
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.primary,

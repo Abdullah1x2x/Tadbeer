@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -41,13 +42,25 @@ class _BackupScreenState extends State<BackupScreen> {
     super.dispose();
   }
 
-  /// ينشئ ملف النسخة المشفرة في المجلد المؤقت، ويعيد مساره.
+  /// ينشئ ملف النسخة المشفرة في المجلد الآمن، ويعيد مساره.
   Future<String?> _generateBackupFile() async {
-    final tempDir = await getTemporaryDirectory();
-    // نسخ سابقة شوركت وانتهت مشاركتها: لا تبقى مشفّرة في المؤقت بلا حاجة.
+    Directory baseDir;
     try {
-      await for (final old in tempDir.list()) {
-        final name = old.path.split('/').last;
+      baseDir = Platform.isLinux
+          ? await getApplicationCacheDirectory()
+          : await getTemporaryDirectory();
+    } catch (_) {
+      baseDir = await getTemporaryDirectory();
+    }
+    final exportDir =
+        Directory('${baseDir.path}${Platform.pathSeparator}backup_exports');
+    if (!await exportDir.exists()) {
+      await exportDir.create(recursive: true);
+    }
+    // نسخ سابقة شوركت وانتهت مشاركتها: لا تبقى مشفّرة بلا حاجة.
+    try {
+      await for (final old in exportDir.list()) {
+        final name = old.path.split(Platform.pathSeparator).last;
         if (name.startsWith('tadbeer_backup_') &&
             name.endsWith('.quranbackup')) {
           await old.delete();
@@ -59,7 +72,10 @@ class _BackupScreenState extends State<BackupScreen> {
     final now = DateTime.now();
     final timestamp =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}';
-    final filePath = '${tempDir.path}/tadbeer_backup_$timestamp.quranbackup';
+    final randSuffix =
+        Random.secure().nextInt(1000000).toString().padLeft(6, '0');
+    final filePath =
+        '${exportDir.path}${Platform.pathSeparator}tadbeer_backup_${timestamp}_$randSuffix.quranbackup';
 
     final result = await BackupCryptoService.createBackupFile(
       targetPath: filePath,
@@ -88,15 +104,15 @@ class _BackupScreenState extends State<BackupScreen> {
   Future<void> _exportBackupToFiles() async {
     setState(() => _isProcessing = true);
     final l10n = context.l10n;
+    File? file;
 
     try {
       final filePath = await _generateBackupFile();
       if (filePath == null) return;
 
-      final file = File(filePath);
+      file = File(filePath);
       final bytes = await file.readAsBytes();
-      await file.delete();
-      final fileName = filePath.split('/').last;
+      final fileName = filePath.split(Platform.pathSeparator).last;
 
       final savedUri = await FilePicker.saveFile(
         dialogTitle: l10n.selectBackupLocation,
@@ -109,7 +125,9 @@ class _BackupScreenState extends State<BackupScreen> {
           SnackBar(
             content: Text(
               l10n.backupSavedSuccess,
-              style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+              style: TextStyle(
+                fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+              ),
             ),
             backgroundColor: AppColors.olive,
           ),
@@ -121,6 +139,11 @@ class _BackupScreenState extends State<BackupScreen> {
             .showSnackBar(SnackBar(content: Text(l10n.errorSavingFile(e))));
       }
     } finally {
+      if (file != null && await file.exists()) {
+        try {
+          await file.delete();
+        } catch (_) {}
+      }
       if (mounted) setState(() => _isProcessing = false);
     }
   }
@@ -129,11 +152,13 @@ class _BackupScreenState extends State<BackupScreen> {
   Future<void> _shareBackup() async {
     final origin = shareOrigin(context);
     setState(() => _isProcessing = true);
+    File? file;
 
     try {
       final filePath = await _generateBackupFile();
       if (filePath == null) return;
 
+      file = File(filePath);
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile(filePath)],
@@ -148,6 +173,11 @@ class _BackupScreenState extends State<BackupScreen> {
         );
       }
     } finally {
+      if (file != null && await file.exists()) {
+        try {
+          await file.delete();
+        } catch (_) {}
+      }
       if (mounted) setState(() => _isProcessing = false);
     }
   }
@@ -206,23 +236,33 @@ class _BackupScreenState extends State<BackupScreen> {
                 : AppColors.comsilkLight,
             title: Text(
               l10n.restoreFailed,
-              style: const TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
+              style: TextStyle(
+                fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
                 fontWeight: FontWeight.bold,
                 color: Colors.redAccent,
               ),
             ),
-            content: Text(switch (result.error) {
-              BackupError.wrongPassword => l10n.restoreWrongPassword,
-              BackupError.newerVersion => l10n.restoreNewerVersion,
-              _ => l10n.corruptBackupError,
-            }, style: const TextStyle(fontFamily: 'IBMPlexSansArabic')),
+            content: Text(
+              switch (result.error) {
+                BackupError.wrongPassword => l10n.restoreWrongPassword,
+                BackupError.newerVersion => l10n.restoreNewerVersion,
+                BackupError.writeFailed => l10n.errorSavingFile(
+                  result.errorMessage ?? '',
+                ),
+                _ => l10n.corruptBackupError,
+              },
+              style: TextStyle(
+                fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+              ),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
                 child: Text(
                   l10n.close,
-                  style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                  style: TextStyle(
+                    fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+                  ),
                 ),
               ),
             ],
@@ -506,13 +546,15 @@ class _BackupCard extends StatelessWidget {
               children: [
                 Icon(icon, color: AppColors.olive, size: 24),
                 const SizedBox(width: 10),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: 'Amiri',
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? AppColors.comsilk : AppColors.oliveDark,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: context.l10n.isArabic ? 'Amiri' : null,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? AppColors.comsilk : AppColors.oliveDark,
+                    ),
                   ),
                 ),
               ],
@@ -562,42 +604,48 @@ class _RestoreBackupPasswordDialogState
         children: [
           const Icon(AppIcons.warning, color: Colors.orangeAccent),
           const SizedBox(width: 8),
-          Text(
-            l10n.restoreWarningTitle,
-            style: const TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.restoreWarningMessage,
-            style: TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
-              fontSize: 14,
-              color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _controller,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: l10n.enterBackupPassword,
-              labelStyle: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
-              filled: true,
-              fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+          Expanded(
+            child: Text(
+              l10n.restoreWarningTitle,
+              style: TextStyle(
+                fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
         ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.restoreWarningMessage,
+              style: TextStyle(
+                fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+                fontSize: 14,
+                color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _controller,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: l10n.enterBackupPassword,
+                labelStyle: TextStyle(
+                  fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+                ),
+                filled: true,
+                fillColor: isDark ? AppColors.darkSurface : AppColors.comsilk,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(

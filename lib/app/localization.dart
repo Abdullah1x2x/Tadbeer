@@ -88,10 +88,18 @@ extension type AppStrings._(AppLocalizations _l) implements AppLocalizations {
 
   // الحفظ
   String versesMemorized(int n) => _l.versesMemorized(digits(n));
+  String versesInProgress(int n) => _l.versesInProgress(digits(n));
+  String inProgressShort(int n) => _l.inProgressShort(digits(n));
   String reviewToday(int n) => _l.reviewToday(digits(n));
+  String surahTrackedVerses(int n) => _l.surahTrackedVerses(digits(n));
+  String surahDueVerses(int n) => _l.surahDueVerses(digits(n));
+  String continueFromAyah(int n) => _l.continueFromAyah(digits(n));
   String versesOfTotal(int a, int b) => _l.versesOfTotal(digits(a), digits(b));
   String sessionSummary(int a, int b) =>
       _l.sessionSummary(digits(a), digits(b));
+  String sessionSummaryAllMastered(int n) =>
+      _l.sessionSummaryAllMastered(digits(n));
+  String moreWordsCount(int n) => _l.moreWordsCount(digits(n));
 
   // الختمة المتتابعة
   String fromMyPosition(int page) => _l.fromMyPosition(digits(page));

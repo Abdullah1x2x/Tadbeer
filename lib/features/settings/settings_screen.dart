@@ -284,10 +284,12 @@ class SettingsScreen extends StatelessWidget {
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                l10n.quranFontFamily,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
+                              Expanded(
+                                child: Text(
+                                  l10n.quranFontFamily,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ],
@@ -345,10 +347,12 @@ class SettingsScreen extends StatelessWidget {
                               color: Theme.of(context).colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
-                            Text(
-                              l10n.mushafPaperTone,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
+                            Expanded(
+                              child: Text(
+                                l10n.mushafPaperTone,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ],
@@ -477,9 +481,7 @@ class SettingsScreen extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          settings.languageCode == 'ar'
-                              ? 'العربية (افتراضي)'
-                              : 'English',
+                          settings.languageCode == 'ar' ? 'العربية' : 'English',
                           style: TextStyle(
                             fontSize: 12,
                             color: isDark

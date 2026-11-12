@@ -54,13 +54,15 @@ List<PortionNotice> portionNotices(
   var remaining = plan.totalPages - plan.advanced;
   final notices = <PortionNotice>[];
   for (var d = 0; d < days && remaining > 0; d++) {
+    final at = DateTime(now.year, now.month, now.day + d, hour, minute);
+    if (!at.isAfter(now)) continue;
     final target = d == 0
         ? math.max(0, plan.pagesPerDay - journey.portionPagesOn(now))
         : plan.pagesPerDay;
     final pages = math.min(target, remaining);
+    if (pages <= 0) continue;
     remaining -= pages;
-    final at = DateTime(now.year, now.month, now.day + d, hour, minute);
-    if (pages > 0 && at.isAfter(now)) notices.add(PortionNotice(at, pages));
+    notices.add(PortionNotice(at, pages));
   }
   return notices;
 }
@@ -70,6 +72,9 @@ class PortionReminderSync {
   PortionReminderSync._();
 
   static String? _lastKey;
+  static bool _lastEnabled = false;
+  static Future<void>? _syncing;
+  static bool _resyncNeeded = false;
 
   /// يبدأ الاستماع للمخزن؛ يُستدعى مرة بعد جاهزيته.
   static void attach() {
@@ -84,6 +89,7 @@ class PortionReminderSync {
         .firstOrNull;
     if (reminder == null) {
       _lastKey = null;
+      _lastEnabled = false;
       return;
     }
     final now = DateTime.now();
@@ -99,12 +105,30 @@ class PortionReminderSync {
     ].join('|');
     if (key == _lastKey) return;
     final first = _lastKey == null;
+    final wasEnabled = _lastEnabled;
     _lastKey = key;
-    // عند الإقلاع تكون كل التذكيرات قد جُدولت.
-    if (first) return;
-    LocalReminderService.instance.scheduleReminder(
-      reminder,
-      requestPermissionIfNeeded: false,
-    );
+    _lastEnabled = reminder.isEnabled;
+    // عند الإقلاع تكون كل التذكيرات قد جُدولت؛ وإن كان معطّلاً مسبقاً فلا عمل.
+    if (first || (!reminder.isEnabled && !wasEnabled)) return;
+    _resyncNeeded = true;
+    _syncing ??= _drain();
+  }
+
+  static Future<void> _drain() async {
+    try {
+      while (_resyncNeeded) {
+        _resyncNeeded = false;
+        final reminder = UserDataStore.instance.reminders
+            .where((r) => r.id == portionReminderId)
+            .firstOrNull;
+        if (reminder == null) continue;
+        await LocalReminderService.instance.scheduleReminder(
+          reminder,
+          requestPermissionIfNeeded: false,
+        );
+      }
+    } finally {
+      _syncing = null;
+    }
   }
 }

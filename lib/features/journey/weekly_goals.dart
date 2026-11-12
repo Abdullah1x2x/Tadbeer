@@ -84,7 +84,7 @@ class WeeklyGoalsCard extends StatelessWidget {
     final reflections = WeeklyGoals.reflectionsThisWeek(store, now);
 
     Widget bar(IconData icon, String label, int value, int goal, Color color) {
-      final done = goal == 0 || value >= goal;
+      final done = goal > 0 && value >= goal;
       return Padding(
         padding: const EdgeInsets.only(top: 12),
         child: Column(
@@ -109,7 +109,7 @@ class WeeklyGoalsCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: LinearProgressIndicator(
-                value: goal == 0 ? 1 : (value / goal).clamp(0, 1),
+                value: goal <= 0 ? 0.0 : (value / goal).clamp(0.0, 1.0),
                 minHeight: 8,
                 color: color,
               ),

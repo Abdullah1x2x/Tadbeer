@@ -12,7 +12,7 @@ extension _SettingsDialogs on SettingsScreen {
           children: [
             const Icon(AppIcons.warning, color: Colors.redAccent, size: 24),
             const SizedBox(width: 8),
-            Text(l10n.resetData),
+            Expanded(child: Text(l10n.resetData)),
           ],
         ),
         content: Text(l10n.resetWarningMessage),
@@ -244,8 +244,10 @@ extension _SettingsDialogs on SettingsScreen {
                             children: [
                               Text(
                                 context.l10n.privacyPolicyTitle,
-                                style: const TextStyle(
-                                  fontFamily: 'Amiri',
+                                style: TextStyle(
+                                  fontFamily: context.l10n.isArabic
+                                      ? 'Amiri'
+                                      : null,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -273,72 +275,80 @@ extension _SettingsDialogs on SettingsScreen {
                     const Divider(height: 1),
                     const SizedBox(height: 12),
                     Expanded(
-                      child: ListView(
-                        controller: scrollController,
-                        children: [
-                          _buildPrivacyTile(
-                            icon: AppIcons.cloudSlash,
-                            title: context.l10n.privacyOfflineTitle,
-                            description: context.l10n.privacyOfflineBody,
-                            isDark: isDark,
-                            primaryColor: primaryColor,
-                          ),
-                          _buildPrivacyTile(
-                            icon: AppIcons.userMinus,
-                            title: context.l10n.privacyNoDataTitle,
-                            description: context.l10n.privacyNoDataBody,
-                            isDark: isDark,
-                            primaryColor: primaryColor,
-                          ),
-                          _buildPrivacyTile(
-                            icon: AppIcons.lockKey,
-                            title: context.l10n.privacyStorageTitle,
-                            description: context.l10n.privacyStorageBody,
-                            isDark: isDark,
-                            primaryColor: primaryColor,
-                          ),
-                          _buildPrivacyTile(
-                            icon: AppIcons.bellRingingFill,
-                            title: context.l10n.privacyPermissionsTitle,
-                            description: context.l10n.privacyPermissionsBody,
-                            isDark: isDark,
-                            primaryColor: primaryColor,
-                          ),
-                          _buildPrivacyTile(
-                            icon: AppIcons.prohibit,
-                            title: context.l10n.privacyNoAdsTitle,
-                            description: context.l10n.privacyNoAdsBody,
-                            isDark: isDark,
-                            primaryColor: primaryColor,
-                          ),
-                          const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? AppColors.darkBackground
-                                  : AppColors.lightBackground,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
+                      child: SafeArea(
+                        top: false,
+                        child: ListView(
+                          controller: scrollController,
+                          children: [
+                            _buildPrivacyTile(
+                              isArabic: context.l10n.isArabic,
+                              icon: AppIcons.cloudSlash,
+                              title: context.l10n.privacyOfflineTitle,
+                              description: context.l10n.privacyOfflineBody,
+                              isDark: isDark,
+                              primaryColor: primaryColor,
+                            ),
+                            _buildPrivacyTile(
+                              isArabic: context.l10n.isArabic,
+                              icon: AppIcons.userMinus,
+                              title: context.l10n.privacyNoDataTitle,
+                              description: context.l10n.privacyNoDataBody,
+                              isDark: isDark,
+                              primaryColor: primaryColor,
+                            ),
+                            _buildPrivacyTile(
+                              isArabic: context.l10n.isArabic,
+                              icon: AppIcons.lockKey,
+                              title: context.l10n.privacyStorageTitle,
+                              description: context.l10n.privacyStorageBody,
+                              isDark: isDark,
+                              primaryColor: primaryColor,
+                            ),
+                            _buildPrivacyTile(
+                              isArabic: context.l10n.isArabic,
+                              icon: AppIcons.bellRingingFill,
+                              title: context.l10n.privacyPermissionsTitle,
+                              description: context.l10n.privacyPermissionsBody,
+                              isDark: isDark,
+                              primaryColor: primaryColor,
+                            ),
+                            _buildPrivacyTile(
+                              isArabic: context.l10n.isArabic,
+                              icon: AppIcons.prohibit,
+                              title: context.l10n.privacyNoAdsTitle,
+                              description: context.l10n.privacyNoAdsBody,
+                              isDark: isDark,
+                              primaryColor: primaryColor,
+                            ),
+                            const SizedBox(height: 12),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
                                 color: isDark
-                                    ? AppColors.darkBorder
-                                    : AppColors.lightBorder,
+                                    ? AppColors.darkBackground
+                                    : AppColors.lightBackground,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder,
+                                ),
+                              ),
+                              child: Text(
+                                context.l10n.privacyOpenSourceBody,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 1.6,
+                                  color: isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary,
+                                ),
                               ),
                             ),
-                            child: Text(
-                              context.l10n.privacyOpenSourceBody,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12,
-                                height: 1.6,
-                                color: isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                        ],
+                            const SizedBox(height: 16),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -353,6 +363,7 @@ extension _SettingsDialogs on SettingsScreen {
 
   /// بند في نافذة سياسة الخصوصية.
   Widget _buildPrivacyTile({
+    required bool isArabic,
     required IconData icon,
     required String title,
     required String description,
@@ -379,8 +390,8 @@ extension _SettingsDialogs on SettingsScreen {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontFamily: 'IBMPlexSansArabic',
+                  style: TextStyle(
+                    fontFamily: isArabic ? 'IBMPlexSansArabic' : null,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),

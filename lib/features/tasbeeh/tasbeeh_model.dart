@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../app/localization.dart';
 import '../../data/storage/user_data_store.dart';
 import 'data/curated_dhikrs.dart';
 
@@ -74,6 +75,10 @@ class TasbeehDhikr {
 
   bool get isTasbeeh => section == DhikrSection.tasbeeh;
 
+  /// اسم التصنيف مترجماً حسب لغة العرض.
+  String localizedCategory(AppStrings l10n) =>
+      isIstighfar ? l10n.istighfar : l10n.tasbeeh;
+
   /// تصنيفات التصفية.
   static const List<String> categories = ['الكل', 'استغفار', 'تسبيح'];
 
@@ -98,9 +103,12 @@ class TasbeehRepository extends ChangeNotifier {
   VoidCallback? onTargetReached;
 
   bool _initialized = false;
+  Future<void>? _initFuture;
+  DhikrSection? _pendingSection;
   TasbeehDhikr _activeDhikr = TasbeehDhikr.defaultDhikrs.first;
   int _currentCount = 0;
   int _targetCount = 100;
+  bool _targetCredited = false;
   int _lifetimeTotalCount = 0;
   int _todayTotalCount = 0;
   String _lastDateIso = '';
@@ -134,6 +142,11 @@ class TasbeehRepository extends ChangeNotifier {
   /// يقرأ الحالة والإحصاءات المحفوظة.
   Future<void> init() async {
     if (_initialized) return;
+    if (_initFuture != null) return _initFuture;
+    return _initFuture = _doInit();
+  }
+
+  Future<void> _doInit() async {
     final today = _getTodayDateIso();
     _lastDateIso = today;
 
@@ -161,6 +174,7 @@ class TasbeehRepository extends ChangeNotifier {
             (jsonMap['targetCount'] as num?)?.toInt() ??
             _activeDhikr.defaultTarget;
         _currentCount = (jsonMap['currentCount'] as num?)?.toInt() ?? 0;
+        _targetCredited = _targetCount > 0 && _currentCount >= _targetCount;
         _autoAdvanceEnabled = jsonMap['autoAdvanceEnabled'] as bool? ?? true;
       } else {
         _targetCount = _activeDhikr.defaultTarget;
@@ -171,6 +185,19 @@ class TasbeehRepository extends ChangeNotifier {
     }
 
     _initialized = true;
+    final pending = _pendingSection;
+    _pendingSection = null;
+    if (pending != null && _activeDhikr.section != pending) {
+      final targetDhikrs = pending == DhikrSection.istighfar
+          ? TasbeehDhikr.istighfarDhikrs
+          : TasbeehDhikr.tasbeehDhikrs;
+      if (targetDhikrs.isNotEmpty) {
+        _activeDhikr = targetDhikrs.first;
+        _currentCount = 0;
+        _targetCount = _activeDhikr.defaultTarget;
+        _targetCredited = false;
+      }
+    }
     notifyListeners();
   }
 
@@ -181,9 +208,13 @@ class TasbeehRepository extends ChangeNotifier {
     _lifetimeTotalCount++;
     _todayTotalCount++;
 
-    final targetReached = _targetCount > 0 && _currentCount == _targetCount;
+    final targetReached =
+        _targetCount > 0 && !_targetCredited && _currentCount >= _targetCount;
     // إتمام الدورة يحتسب اليوم في سلسلة القراءة.
-    if (targetReached) onTargetReached?.call();
+    if (targetReached) {
+      _targetCredited = true;
+      onTargetReached?.call();
+    }
     _persistDebounced();
     notifyListeners();
     return targetReached;
@@ -192,6 +223,7 @@ class TasbeehRepository extends ChangeNotifier {
   /// يصفّر الدورة الحالية، ويبقى المجموع.
   void resetCurrentCount() {
     _currentCount = 0;
+    _targetCredited = false;
     _persistDebounced();
     notifyListeners();
   }
@@ -200,6 +232,7 @@ class TasbeehRepository extends ChangeNotifier {
   void setTarget(int target) {
     if (_targetCount == target) return;
     _targetCount = target;
+    _targetCredited = false;
     _persistDebounced();
     notifyListeners();
   }
@@ -223,12 +256,29 @@ class TasbeehRepository extends ChangeNotifier {
     _activeDhikr = dhikr;
     _currentCount = 0;
     _targetCount = dhikr.defaultTarget;
+    _targetCredited = false;
     _persistDebounced();
     notifyListeners();
   }
 
   /// ينتقل إلى [section]، ويختار أول ذكر فيه إن لم يكن الجاري منه.
   void setActiveSection(DhikrSection section) {
+    if (!_initialized) {
+      _pendingSection = section;
+      if (_activeDhikr.section != section) {
+        final targetDhikrs = section == DhikrSection.istighfar
+            ? TasbeehDhikr.istighfarDhikrs
+            : TasbeehDhikr.tasbeehDhikrs;
+        if (targetDhikrs.isNotEmpty) {
+          _activeDhikr = targetDhikrs.first;
+          _currentCount = 0;
+          _targetCount = _activeDhikr.defaultTarget;
+          _targetCredited = false;
+          notifyListeners();
+        }
+      }
+      return;
+    }
     if (_activeDhikr.section == section) return;
     final targetDhikrs = section == DhikrSection.istighfar
         ? TasbeehDhikr.istighfarDhikrs
@@ -278,9 +328,12 @@ class TasbeehRepository extends ChangeNotifier {
   Future<void> reload() async {
     _saveTimer?.cancel();
     _initialized = false;
+    _initFuture = null;
+    _pendingSection = null;
     _lifetimeTotalCount = 0;
     _todayTotalCount = 0;
     _currentCount = 0;
+    _targetCredited = false;
     _autoAdvanceEnabled = true;
     _activeDhikr = TasbeehDhikr.defaultDhikrs.first;
     await init();
@@ -301,14 +354,22 @@ class TasbeehRepository extends ChangeNotifier {
     return legacy;
   }
 
-  // shortcut: آخر 400 مللي ثانية من العدّ تضيع إن قُتل التطبيق فوراً، وهذا مقبول
-  // مقابل ألا تُكتب القاعدة عند كل نقرة.
   void _persistDebounced() {
     _saveTimer?.cancel();
     _saveTimer = Timer(const Duration(milliseconds: 400), _saveState);
   }
 
+  /// يحفظ أي تعديل مؤجل فوراً قبل إغلاق الشاشة.
+  void flushPersistence() {
+    if (_saveTimer?.isActive ?? false) {
+      _saveTimer?.cancel();
+      _saveTimer = null;
+      _saveState();
+    }
+  }
+
   void _saveState() {
+    _saveTimer = null;
     unawaited(
       UserDataStore.instance.saveFeatureState(_stateKey, {
         'lifetimeTotalCount': _lifetimeTotalCount,

@@ -14,18 +14,32 @@ import '../../data/storage/user_data_store.dart';
 ///
 /// كل اختيار يُطبّق فوراً على التطبيق كله وهذه الشاشة معه، فيرى القارئ النتيجة
 /// الحقيقية قبل أن يبدأ.
-class ThemePickerScreen extends StatelessWidget {
+class ThemePickerScreen extends StatefulWidget {
   /// الشاشة التي تُفتح عند البدء.
   final WidgetBuilder next;
 
   const ThemePickerScreen({super.key, required this.next});
 
-  Future<void> _start(BuildContext context) async {
-    unawaited(HapticFeedback.mediumImpact());
-    final navigator = Navigator.of(context);
-    final store = UserDataStore.instance;
-    await store.updateSettings(store.settings.copyWith(themeChosen: true));
-    navigator.pushReplacement(MaterialPageRoute(builder: next));
+  @override
+  State<ThemePickerScreen> createState() => _ThemePickerScreenState();
+}
+
+class _ThemePickerScreenState extends State<ThemePickerScreen> {
+  bool _starting = false;
+
+  Future<void> _start() async {
+    if (_starting) return;
+    _starting = true;
+    try {
+      unawaited(HapticFeedback.mediumImpact());
+      final navigator = Navigator.of(context);
+      final store = UserDataStore.instance;
+      await store.updateSettings(store.settings.copyWith(themeChosen: true));
+      if (!mounted) return;
+      navigator.pushReplacement(MaterialPageRoute(builder: widget.next));
+    } finally {
+      if (mounted) _starting = false;
+    }
   }
 
   @override
@@ -120,7 +134,7 @@ class ThemePickerScreen extends StatelessWidget {
                           ),
                         const SizedBox(height: 12),
                         FilledButton.icon(
-                          onPressed: () => _start(context),
+                          onPressed: _start,
                           // يشير إلى الأمام: لليسار في العربية، ولليمين في
                           // الإنجليزية.
                           icon: const Icon(AppIcons.arrowRight),

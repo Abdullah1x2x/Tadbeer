@@ -124,7 +124,10 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
         ayahId: widget.ayah.id,
         surahNumber: widget.ayah.surahNumber,
         ayahNumber: widget.ayah.ayahNumber,
-        page: widget.ayah.page,
+        page: QcfLayout.instance.pageFor(
+          widget.ayah,
+          UserDataStore.instance.settings.mushafStyle,
+        ),
         ayahText: widget.ayah.text,
       );
     }
@@ -175,10 +178,11 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
         color: quranText,
       ),
     );
-    final inHifz = HifzStore.contains(
+    final hifzCard = HifzStore.card(
       widget.ayah.surahNumber,
       widget.ayah.ayahNumber,
     );
+    final inHifz = hifzCard != null;
     final hasReflection =
         storage.getTadbeer(widget.ayah.surahNumber, widget.ayah.ayahNumber) !=
         null;
@@ -531,7 +535,11 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                       ),
                       _ActionButton(
                         icon: inHifz ? AppIcons.brainFill : AppIcons.brain,
-                        label: l10n.memorizedDone,
+                        label: hifzCard == null
+                            ? l10n.addToHifz
+                            : hifzCard.isMemorized
+                            ? l10n.memorizedDone
+                            : l10n.inHifzProgress,
                         iconColor: inHifz
                             ? AppColors.accentGold(context)
                             : null,
@@ -558,7 +566,7 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                         label: l10n.copy,
                         onTap: () {
                           final shareText =
-                              '﴿${widget.ayah.text}﴾ [سورة ${surah.name}: ${widget.ayah.ayahNumber}]';
+                              '﴿${widget.ayah.text}﴾ [${l10n.ayahReference(surah.name, widget.ayah.ayahNumber)}]';
                           Clipboard.setData(ClipboardData(text: shareText));
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(

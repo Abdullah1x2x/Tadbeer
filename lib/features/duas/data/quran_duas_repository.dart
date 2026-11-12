@@ -43,6 +43,8 @@ class QuranDuasRepository {
   QuranDuasRepository._internal();
 
   List<QuranDua>? _cachedDuas;
+  bool _cachedWithLoadedRepo = false;
+  final Map<int, ({String title, String surahName, String category})> _normCache = {};
 
   /// محاور التصفية.
   static const List<String> categories = [
@@ -131,9 +133,11 @@ class QuranDuasRepository {
 
   /// كل الأدعية بترتيب المصحف.
   List<QuranDua> getDuas({QuranRepository? quranRepository}) {
-    if (_cachedDuas != null) return _cachedDuas!;
-
     final repo = quranRepository ?? QuranRepository.instance;
+    if (_cachedDuas != null &&
+        (_cachedWithLoadedRepo || !repo.isLoaded)) {
+      return _cachedDuas!;
+    }
     final list = <QuranDua>[];
 
     for (final entry in _catalog) {
@@ -167,6 +171,8 @@ class QuranDuasRepository {
       );
     }
 
+    _normCache.clear();
+    _cachedWithLoadedRepo = repo.isLoaded;
     _cachedDuas = List.unmodifiable(list);
     return _cachedDuas!;
   }
@@ -181,7 +187,7 @@ class QuranDuasRepository {
     final trimmed = query.trim();
     final normQuery = trimmed.isEmpty
         ? ''
-        : ArabicSearchNormalizer.normalize(trimmed);
+        : ArabicSearchNormalizer.normalize(trimmed).trim();
     final isAllCategory =
         categoryFilter == null ||
         categoryFilter.isEmpty ||
@@ -189,6 +195,9 @@ class QuranDuasRepository {
     final ayahNumQuery = int.tryParse(
       ArabicSearchNormalizer.toEnglishDigits(trimmed),
     );
+    if (trimmed.isNotEmpty && normQuery.isEmpty && ayahNumQuery == null) {
+      return const [];
+    }
 
     return all.where((dua) {
       // ١. المحور، أو فلتر القنوت.
@@ -203,18 +212,18 @@ class QuranDuasRepository {
       // ٢. نص الدعاء.
       if (dua.rawText.contains(normQuery)) return true;
 
-      // ٣. العنوان.
-      if (ArabicSearchNormalizer.normalize(dua.title).contains(normQuery)) {
-        return true;
-      }
-
-      // ٤. اسم السورة.
-      if (ArabicSearchNormalizer.normalize(dua.surahName).contains(normQuery)) {
-        return true;
-      }
-
-      // ٥. اسم المحور.
-      if (ArabicSearchNormalizer.normalize(dua.category).contains(normQuery)) {
+      // ٣. العنوان واسم السورة والمحور (مع تخزين مؤقت للتطبيع).
+      final norm = _normCache.putIfAbsent(
+        dua.id,
+        () => (
+          title: ArabicSearchNormalizer.normalize(dua.title),
+          surahName: ArabicSearchNormalizer.normalize(dua.surahName),
+          category: ArabicSearchNormalizer.normalize(dua.category),
+        ),
+      );
+      if (norm.title.contains(normQuery) ||
+          norm.surahName.contains(normQuery) ||
+          norm.category.contains(normQuery)) {
         return true;
       }
 

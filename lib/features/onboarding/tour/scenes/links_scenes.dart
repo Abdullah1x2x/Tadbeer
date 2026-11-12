@@ -363,7 +363,7 @@ class AddVersesScene extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    ArabicSearchNormalizer.toArabicDigits(index),
+                    l10n.digits(index),
                     style: _ui(9, c.primary, bold: true),
                   ),
                 ),

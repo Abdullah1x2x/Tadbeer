@@ -61,7 +61,9 @@ class QuranDuaCard extends StatelessWidget {
                 child: Text(
                   dua.category,
                   style: TextStyle(
-                    fontFamily: 'IBMPlexSansArabic',
+                    fontFamily: context.l10n.isArabic
+                        ? 'IBMPlexSansArabic'
+                        : null,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: isDark
@@ -73,9 +75,11 @@ class QuranDuaCard extends StatelessWidget {
 
               const Spacer(),
               Text(
-                '#${ArabicSearchNormalizer.toArabicDigits(dua.id)}',
+                '#${context.l10n.digits(dua.id)}',
                 style: TextStyle(
-                  fontFamily: 'IBMPlexSansArabic',
+                  fontFamily: context.l10n.isArabic
+                      ? 'IBMPlexSansArabic'
+                      : null,
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: isDark
@@ -344,15 +348,45 @@ class _DuaText extends StatefulWidget {
 
 class _DuaTextState extends State<_DuaText> {
   List<QcfGlyphs>? _glyphs;
+  MushafStyle? _loadedStyle;
+  int _loadGeneration = 0;
 
   @override
   void initState() {
     super.initState();
+    UserDataStore.instance.addListener(_onStoreChanged);
     _loadGlyphs();
   }
 
+  @override
+  void didUpdateWidget(covariant _DuaText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.dua.id != widget.dua.id ||
+        _loadedStyle != UserDataStore.instance.settings.mushafStyle) {
+      if (_glyphs != null) _glyphs = null;
+      _loadGlyphs();
+    }
+  }
+
+  @override
+  void dispose() {
+    UserDataStore.instance.removeListener(_onStoreChanged);
+    super.dispose();
+  }
+
+  void _onStoreChanged() {
+    if (!mounted) return;
+    if (UserDataStore.instance.settings.mushafStyle != _loadedStyle) {
+      _loadGlyphs();
+    }
+  }
+
   Future<void> _loadGlyphs() async {
-    if (UserDataStore.instance.settings.mushafStyle != MushafStyle.madinah) {
+    final gen = ++_loadGeneration;
+    final style = UserDataStore.instance.settings.mushafStyle;
+    _loadedStyle = style;
+    if (style != MushafStyle.madinah) {
+      if (_glyphs != null && mounted) setState(() => _glyphs = null);
       return;
     }
     final glyphs = <QcfGlyphs>[];
@@ -366,7 +400,7 @@ class _DuaTextState extends State<_DuaText> {
       if (part == null) return;
       glyphs.add(part);
     }
-    if (mounted) setState(() => _glyphs = glyphs);
+    if (mounted && gen == _loadGeneration) setState(() => _glyphs = glyphs);
   }
 
   @override

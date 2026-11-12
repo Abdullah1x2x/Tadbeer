@@ -25,12 +25,17 @@ void main() {
       final json = jsonDecode(primary) as Map<String, dynamic>;
       expect(json['latest_version'], version);
       expect(json['build_number'], build);
+      expect(
+        json['linux_url'],
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v$version/tadbeer-linux-x64.tar.gz',
+      );
     });
   });
 
   group('apkUrlFor', () {
     final update = AppUpdateInfo.fromJson({
       'apk_url': 'https://example.org/v2/app-arm64-v8a-release.apk',
+      'linux_url': 'https://example.org/v2/tadbeer-linux-x64.tar.gz',
     });
 
     test('names the APK built for the device', () {
@@ -45,6 +50,17 @@ void main() {
       expect(update.apkUrlFor('x86_64'), update.directApkUrl);
       expect(update.apkUrlFor('x86'), update.directApkUrl);
       expect(update.apkUrlFor(null), update.directApkUrl);
+    });
+
+    test('selects linux archive on Linux via packageUrlFor', () {
+      expect(
+        update.packageUrlFor(isLinux: true),
+        'https://example.org/v2/tadbeer-linux-x64.tar.gz',
+      );
+      expect(
+        update.packageUrlFor(abi: 'armeabi-v7a', isLinux: false),
+        'https://example.org/v2/app-armeabi-v7a-release.apk',
+      );
     });
   });
 
@@ -85,12 +101,17 @@ void main() {
       expect(service, contains('currentBuildNumber = 65'));
     });
 
-    test('version.json lists the notes and the tagged APK', () {
+    test('version.json lists the notes, tagged APK, and Linux archive', () {
       final json = versionJson('1.0.1', 2, '2026-11-12', ['أ', 'ب']);
       expect(json['changelog'], '• أ\n• ب');
+      final info = AppUpdateInfo.fromJson(json);
       expect(
-        AppUpdateInfo.fromJson(json).apkUrlFor('armeabi-v7a'),
+        info.apkUrlFor('armeabi-v7a'),
         'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/app-armeabi-v7a-release.apk',
+      );
+      expect(
+        info.directLinuxUrl,
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/tadbeer-linux-x64.tar.gz',
       );
     });
   });

@@ -23,6 +23,9 @@ mixin _HighlightsSection on _StoreState {
     notifyListeners();
     final userDb = UserDatabase.instance;
     if (userDb.isOpen) {
+      if (existing != null && existing.id != highlight.id) {
+        await userDb.deleteHighlight(existing.id);
+      }
       await userDb.insertOrUpdateHighlight(highlight);
     }
   }

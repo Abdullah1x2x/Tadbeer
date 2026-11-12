@@ -53,7 +53,8 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedProviderId = widget.initialProviderId;
+    _selectedProviderId =
+        widget.initialProviderId ?? (widget.returnToCaller ? 'quran' : null);
     if (widget.initialQuery != null && widget.initialQuery!.isNotEmpty) {
       _controller.text = widget.initialQuery!;
       _currentQuery = widget.initialQuery!.trim();
@@ -117,7 +118,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final results = await SearchRegistry.instance.searchAll(
       trimmed,
       context,
-      providerId: _selectedProviderId,
+      providerId: _selectedProviderId ?? (widget.returnToCaller ? 'quran' : null),
     );
 
     if (!mounted || searchId != _searchId) return;
@@ -130,6 +131,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   /// يغيّر القسم المختار ويعيد البحث.
   void _onSelectFilter(String? providerId) {
+    _debounceTimer?.cancel();
     // النقر على القسم المختار يعيد إلى "الكل".
     final newId = (_selectedProviderId == providerId) ? null : providerId;
     setState(() {
@@ -162,7 +164,10 @@ class _SearchScreenState extends State<SearchScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final hasQuery = _currentQuery.isNotEmpty;
-    final providers = SearchRegistry.instance.providers;
+    final allProviders = SearchRegistry.instance.providers;
+    final providers = widget.returnToCaller
+        ? allProviders.where((p) => p.id == 'quran').toList()
+        : allProviders;
 
     return Directionality(
       textDirection: context.currentLanguage.direction,
@@ -225,6 +230,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             tooltip: context.l10n.clearText,
                             icon: const Icon(AppIcons.x, size: 20),
                             onPressed: () {
+                              _debounceTimer?.cancel();
                               _controller.clear();
                               _executeSearch('', force: true);
                             },
@@ -242,75 +248,26 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
 
             // شرائح التصفية تلتف إلى سطر ثانٍ بدل أن تُقص عند حافة الشاشة.
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
-              child: Wrap(
-                runSpacing: 8,
-                children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 8),
-                    child: FilterChip(
-                      label: Text(
-                        l10n.searchAll,
-                        style: TextStyle(
-                          fontFamily: 'IBMPlexSansArabic',
-                          fontSize: 13,
-                          fontWeight: _selectedProviderId == null
-                              ? FontWeight.bold
-                              : FontWeight.w600,
-                          color: _selectedProviderId == null
-                              ? (isDark
-                                    ? AppColors.darkTextPrimary
-                                    : primaryColor)
-                              : (isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary),
-                        ),
-                      ),
-                      selected: _selectedProviderId == null,
-                      selectedColor: primaryColor.withValues(
-                        alpha: isDark ? 0.30 : 0.16,
-                      ),
-                      checkmarkColor: isDark
-                          ? AppColors.darkTextPrimary
-                          : primaryColor,
-                      side: BorderSide(
-                        color: _selectedProviderId == null
-                            ? primaryColor
-                            : (isDark
-                                  ? AppColors.darkBorder
-                                  : AppColors.lightBorder),
-                        width: _selectedProviderId == null ? 1.5 : 0.8,
-                      ),
-                      onSelected: (_) => _onSelectFilter(null),
-                    ),
-                  ),
-
-                  ...providers.map((p) {
-                    final isSelected = _selectedProviderId == p.id;
-                    return Padding(
+            if (!widget.returnToCaller || providers.length > 1)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+                child: Wrap(
+                  runSpacing: 8,
+                  children: [
+                    Padding(
                       padding: const EdgeInsetsDirectional.only(end: 8),
                       child: FilterChip(
-                        avatar: Icon(
-                          p.icon,
-                          size: 16,
-                          color: isSelected
-                              ? (isDark
-                                    ? AppColors.darkTextPrimary
-                                    : primaryColor)
-                              : (isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary),
-                        ),
                         label: Text(
-                          p.getSectionTitle(context),
+                          l10n.searchAll,
                           style: TextStyle(
-                            fontFamily: 'IBMPlexSansArabic',
+                            fontFamily: l10n.isArabic
+                                ? 'IBMPlexSansArabic'
+                                : null,
                             fontSize: 13,
-                            fontWeight: isSelected
+                            fontWeight: _selectedProviderId == null
                                 ? FontWeight.bold
                                 : FontWeight.w600,
-                            color: isSelected
+                            color: _selectedProviderId == null
                                 ? (isDark
                                       ? AppColors.darkTextPrimary
                                       : primaryColor)
@@ -319,7 +276,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       : AppColors.lightTextSecondary),
                           ),
                         ),
-                        selected: isSelected,
+                        selected: _selectedProviderId == null,
                         selectedColor: primaryColor.withValues(
                           alpha: isDark ? 0.30 : 0.16,
                         ),
@@ -327,20 +284,74 @@ class _SearchScreenState extends State<SearchScreen> {
                             ? AppColors.darkTextPrimary
                             : primaryColor,
                         side: BorderSide(
-                          color: isSelected
+                          color: _selectedProviderId == null
                               ? primaryColor
                               : (isDark
                                     ? AppColors.darkBorder
                                     : AppColors.lightBorder),
-                          width: isSelected ? 1.5 : 0.8,
+                          width: _selectedProviderId == null ? 1.5 : 0.8,
                         ),
-                        onSelected: (_) => _onSelectFilter(p.id),
+                        onSelected: (_) => _onSelectFilter(null),
                       ),
-                    );
-                  }),
-                ],
+                    ),
+
+                    ...providers.map((p) {
+                      final isSelected = _selectedProviderId == p.id;
+                      return Padding(
+                        padding: const EdgeInsetsDirectional.only(end: 8),
+                        child: FilterChip(
+                          avatar: Icon(
+                            p.icon,
+                            size: 16,
+                            color: isSelected
+                                ? (isDark
+                                      ? AppColors.darkTextPrimary
+                                      : primaryColor)
+                                : (isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary),
+                          ),
+                          label: Text(
+                            p.getSectionTitle(context),
+                            style: TextStyle(
+                              fontFamily: l10n.isArabic
+                                  ? 'IBMPlexSansArabic'
+                                  : null,
+                              fontSize: 13,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
+                              color: isSelected
+                                  ? (isDark
+                                        ? AppColors.darkTextPrimary
+                                        : primaryColor)
+                                  : (isDark
+                                        ? AppColors.darkTextSecondary
+                                        : AppColors.lightTextSecondary),
+                            ),
+                          ),
+                          selected: isSelected,
+                          selectedColor: primaryColor.withValues(
+                            alpha: isDark ? 0.30 : 0.16,
+                          ),
+                          checkmarkColor: isDark
+                              ? AppColors.darkTextPrimary
+                              : primaryColor,
+                          side: BorderSide(
+                            color: isSelected
+                                ? primaryColor
+                                : (isDark
+                                      ? AppColors.darkBorder
+                                      : AppColors.lightBorder),
+                            width: isSelected ? 1.5 : 0.8,
+                          ),
+                          onSelected: (_) => _onSelectFilter(p.id),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
-            ),
 
             const Divider(height: 1),
 

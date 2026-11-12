@@ -35,16 +35,26 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
     super.dispose();
   }
 
+  final Map<GeneralDuaItem, ({String title, String text, String occasion})>
+  _normCache = {};
+
   List<GeneralDuaItem> get _filteredItems {
-    if (_searchQuery.trim().isEmpty) return widget.items;
-    final normQuery = ArabicSearchNormalizer.normalize(_searchQuery);
+    final trimmed = _searchQuery.trim();
+    if (trimmed.isEmpty) return widget.items;
+    final normQuery = ArabicSearchNormalizer.normalize(trimmed).trim();
+    if (normQuery.isEmpty) return const [];
     return widget.items.where((d) {
-      final normTitle = ArabicSearchNormalizer.normalize(d.title);
-      final normText = ArabicSearchNormalizer.normalize(d.text);
-      final normOccasion = ArabicSearchNormalizer.normalize(d.occasion);
-      return normTitle.contains(normQuery) ||
-          normText.contains(normQuery) ||
-          normOccasion.contains(normQuery);
+      final norm = _normCache.putIfAbsent(
+        d,
+        () => (
+          title: ArabicSearchNormalizer.normalize(d.title),
+          text: ArabicSearchNormalizer.normalize(d.text),
+          occasion: ArabicSearchNormalizer.normalize(d.occasion),
+        ),
+      );
+      return norm.title.contains(normQuery) ||
+          norm.text.contains(normQuery) ||
+          norm.occasion.contains(normQuery);
     }).toList();
   }
 
@@ -54,12 +64,16 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
     );
     HapticFeedback.selectionClick();
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    final l10n = context.l10n;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.itemCopied(item.title),
+          l10n.itemCopied(item.title),
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
+          style: TextStyle(
+            fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+            fontSize: 13,
+          ),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -235,6 +249,7 @@ class _GeneralDuasListScreenState extends State<GeneralDuasListScreen> {
                             const SizedBox(height: 10),
                             Text(
                               item.text,
+                              textDirection: TextDirection.rtl,
                               textAlign: TextAlign.center,
                               style: QcfPageBody.scriptStyle(
                                 fontSize: 19,

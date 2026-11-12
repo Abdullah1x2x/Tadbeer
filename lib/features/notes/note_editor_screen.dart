@@ -5,7 +5,7 @@ import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../core/motion/app_motion.dart';
 import '../../data/storage/user_data_store.dart';
-import '../../core/utils/arabic_search_normalizer.dart';
+import '../../core/utils/text_direction.dart';
 import 'note_pdf_exporter.dart';
 import '../../data/models/note_model.dart';
 import '../../data/models/user_settings_model.dart';
@@ -30,6 +30,11 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
   late final ValueNotifier<({int words, int chars})> _countsNotifier;
+  TextDirection _fallbackDir = TextDirection.rtl;
+  bool _lastDirty = false;
+  bool _lastHasText = false;
+  late TextDirection _titleDir;
+  late TextDirection _contentDir;
   bool _isSaving = false;
 
   @override
@@ -42,7 +47,25 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     _countsNotifier = ValueNotifier<({int words, int chars})>(
       _computeCounts(_initialContent),
     );
-    _contentController.addListener(_onContentChanged);
+    _lastHasText = _initialContent.trim().isNotEmpty;
+    _titleDir = directionOfText(_initialTitle);
+    _contentDir = directionOfText(_initialContent);
+    _titleController.addListener(_onFieldsChanged);
+    _contentController.addListener(_onFieldsChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final newFallback = context.currentLanguage.direction;
+    if (newFallback != _fallbackDir) {
+      _fallbackDir = newFallback;
+      _titleDir = directionOfText(_titleController.text, fallback: _fallbackDir);
+      _contentDir = directionOfText(
+        _contentController.text,
+        fallback: _fallbackDir,
+      );
+    }
   }
 
   /// هل في العنوان أو المحتوى تعديل لم يُحفظ.
@@ -80,8 +103,29 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     );
   }
 
-  void _onContentChanged() {
+  void _onFieldsChanged() {
     _countsNotifier.value = _computeCounts(_contentController.text);
+    final isDirty = _hasUnsavedChanges;
+    final hasText = _contentController.text.trim().isNotEmpty;
+    final titleDir = directionOfText(
+      _titleController.text,
+      fallback: _fallbackDir,
+    );
+    final contentDir = directionOfText(
+      _contentController.text,
+      fallback: _fallbackDir,
+    );
+    if (isDirty != _lastDirty ||
+        hasText != _lastHasText ||
+        titleDir != _titleDir ||
+        contentDir != _contentDir) {
+      setState(() {
+        _lastDirty = isDirty;
+        _lastHasText = hasText;
+        _titleDir = titleDir;
+        _contentDir = contentDir;
+      });
+    }
   }
 
   static ({int words, int chars}) _computeCounts(String text) {
@@ -94,7 +138,8 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   @override
   void dispose() {
-    _contentController.removeListener(_onContentChanged);
+    _titleController.removeListener(_onFieldsChanged);
+    _contentController.removeListener(_onFieldsChanged);
     _titleController.dispose();
     _contentController.dispose();
     _countsNotifier.dispose();
@@ -120,12 +165,15 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
     try {
       final existing = widget.existingNote;
+      final rawTitle = _titleController.text.trim();
+      final title = rawTitle.isEmpty ? null : rawTitle;
       if (existing != null && existing.isAyahNote) {
         await UserDataStore.instance.saveNote(
           id: existing.id,
           type: NoteType.ayah,
           content: content,
-          title: _titleController.text.trim(),
+          title: title,
+          clearTitle: title == null,
           ayahId: existing.ayahId,
           surahNumber: existing.surahNumber,
           ayahNumber: existing.ayahNumber,
@@ -136,7 +184,8 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
         await UserDataStore.instance.saveNote(
           id: existing?.id,
           type: NoteType.free,
-          title: _titleController.text.trim(),
+          title: title,
+          clearTitle: title == null,
           content: content,
         );
       }
@@ -153,16 +202,25 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   /// يصدّر الخاطرة PDF ويفتح المشاركة.
   Future<void> _exportPdf() async {
-    final note =
-        widget.existingNote ??
-        NoteItem(
-          id: 'preview',
-          type: NoteType.free,
-          title: _titleController.text.trim(),
-          content: _contentController.text.trim(),
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+    final content = _contentController.text.trim();
+    if (content.isEmpty) return;
+    final rawTitle = _titleController.text.trim();
+    final now = DateTime.now();
+    final existing = widget.existingNote;
+    final note = existing != null
+        ? existing.copyWith(
+            title: rawTitle,
+            content: content,
+            updatedAt: now,
+          )
+        : NoteItem(
+            id: 'preview_${now.microsecondsSinceEpoch}',
+            type: NoteType.free,
+            title: rawTitle,
+            content: content,
+            createdAt: now,
+            updatedAt: now,
+          );
 
     try {
       await NotePdfExporter.exportAndShareNote(context, note);
@@ -183,8 +241,11 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     setState(() => _isSaving = true);
     try {
       final existing = widget.existingNote;
+      final l10n = context.l10n;
       final rawTitle = _titleController.text.trim();
-      final copyTitle = rawTitle.isNotEmpty ? '$rawTitle (نسخة)' : null;
+      final copyTitle = rawTitle.isNotEmpty
+          ? '$rawTitle (${l10n.copyLabel})'
+          : null;
 
       if (existing != null && existing.isAyahNote) {
         await UserDataStore.instance.saveNote(
@@ -271,7 +332,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               ],
             ),
             actions: [
-              if (_contentController.text.isNotEmpty) ...[
+              if (_contentController.text.trim().isNotEmpty) ...[
                 if (existing != null)
                   Padding(
                     padding: const EdgeInsetsDirectional.only(end: 4),
@@ -335,6 +396,8 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 if (existing!.surahNumber != null &&
+                                    existing.surahNumber! >= 1 &&
+                                    existing.surahNumber! <= 114 &&
                                     existing.ayahNumber != null) ...[
                                   Builder(
                                     builder: (ctx) {
@@ -347,11 +410,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                           Text(
                                             l10n.ayahReference(
                                               surah.name,
-                                              l10n.isArabic
-                                                  ? ArabicSearchNormalizer.toArabicDigits(
-                                                      existing.ayahNumber!,
-                                                    )
-                                                  : existing.ayahNumber!,
+                                              existing.ayahNumber!,
                                             ),
                                             style: TextStyle(
                                               fontFamily: 'IBMPlexSansArabic',
@@ -364,11 +423,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                           ),
                                           FuturisticBadge(
                                             label: l10n.pageAbbr(
-                                              l10n.isArabic
-                                                  ? ArabicSearchNormalizer.toArabicDigits(
-                                                      existing.page ?? 1,
-                                                    )
-                                                  : (existing.page ?? 1),
+                                              existing.page ?? 1,
                                             ),
                                             color: AppColors.accentGold(
                                               context,
@@ -383,8 +438,15 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                                 ],
                                 Builder(
                                   builder: (ctx) {
-                                    final ayah = existing.surahNumber != null && existing.ayahNumber != null
-                                        ? QuranRepository.instance.getAyah(existing.surahNumber!, existing.ayahNumber!)
+                                    final ayah =
+                                        existing.surahNumber != null &&
+                                            existing.surahNumber! >= 1 &&
+                                            existing.surahNumber! <= 114 &&
+                                            existing.ayahNumber != null
+                                        ? QuranRepository.instance.getAyah(
+                                            existing.surahNumber!,
+                                            existing.ayahNumber!,
+                                          )
                                         : null;
                                     final isMadinah = UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
                                     final fallback = Text(
@@ -423,7 +485,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
                         TextField(
                           controller: _titleController,
-                          textDirection: context.currentLanguage.direction,
+                          textDirection: _titleDir,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -458,7 +520,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                           controller: _contentController,
                           minLines: 12,
                           maxLines: null,
-                          textDirection: context.currentLanguage.direction,
+                          textDirection: _contentDir,
                           style: TextStyle(
                             fontSize: 16,
                             height: 1.65,

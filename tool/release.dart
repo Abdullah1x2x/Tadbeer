@@ -86,6 +86,8 @@ Map<String, Object> versionJson(
   // The app swaps the ABI name for the device's own.
   'apk_url':
       '$_repo/releases/download/v$version/app-arm64-v8a-release.apk',
+  'linux_url':
+      '$_repo/releases/download/v$version/tadbeer-linux-x64.tar.gz',
   'is_mandatory': false,
 };
 

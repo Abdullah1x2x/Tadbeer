@@ -7,6 +7,7 @@ import 'package:tadbeer/data/storage/user_data_store.dart';
 import 'package:tadbeer/data/storage/user_database.dart';
 import 'package:tadbeer/data/models/note_model.dart';
 import 'package:tadbeer/data/quran/quran_repository.dart';
+import 'package:tadbeer/features/memorization/memorization_model.dart';
 import 'package:tadbeer/features/quran/screens/quran_page_view.dart';
 import 'package:tadbeer/features/quran/widgets/ayah_action_sheet.dart';
 import 'package:tadbeer/features/tadbeer/tadbeer_intro_screen.dart';
@@ -134,7 +135,7 @@ void main() {
       expect(find.text('ملاحظة'), findsOneWidget);
       expect(find.text('علامة'), findsOneWidget);
       expect(find.text('تمييز'), findsOneWidget);
-      expect(find.text('تم الحفظ'), findsOneWidget);
+      expect(find.text('أضف للحفظ'), findsOneWidget);
       expect(find.text('نسخ'), findsOneWidget);
       expect(find.text('مشاركة'), findsOneWidget);
 
@@ -147,7 +148,7 @@ void main() {
           'ملاحظة',
           'علامة',
           'تمييز',
-          'تم الحفظ',
+          'أضف للحفظ',
           'مشاركة',
           'نسخ',
         ])
@@ -164,6 +165,43 @@ void main() {
         expect(r.width, closeTo(tiles.first.width, 0.5));
       }
       expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Hifz action label reflects add, in-progress, and memorized', (
+      tester,
+    ) async {
+      final ayah = QuranRepository.instance.getAyah(1, 2)!;
+      await tester.pumpWidget(wrapWithApp(AyahActionSheet(ayah: ayah)));
+      await tester.pumpAndSettle();
+
+      expect(find.text('أضف للحفظ'), findsOneWidget);
+
+      await tester.runAsync(() async {
+        await tester.tap(find.text('أضف للحفظ'));
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pumpAndSettle();
+      expect(find.text('قيد الحفظ'), findsOneWidget);
+
+      final today = DateTime.now();
+      await tester.runAsync(() async {
+        await HifzStore.grade(1, 2, remembered: true, now: today);
+        await HifzStore.grade(
+          1,
+          2,
+          remembered: true,
+          now: today.add(const Duration(days: 1)),
+        );
+        await HifzStore.grade(
+          1,
+          2,
+          remembered: true,
+          now: today.add(const Duration(days: 4)),
+        );
+      });
+      await tester.pumpWidget(wrapWithApp(AyahActionSheet(ayah: ayah)));
+      await tester.pumpAndSettle();
+      expect(find.text('تم الحفظ'), findsOneWidget);
     });
   });
 

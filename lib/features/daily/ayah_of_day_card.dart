@@ -112,9 +112,12 @@ class AyahOfTheDay {
   static Ayah forDay(DateTime day) => forDayAll(day).first;
 
   /// سؤال التدبر مع الآية رقم [index] في [day].
-  static String questionFor(DateTime day, int index) {
+  static String questionFor(DateTime day, int index, {bool isArabic = true}) {
     final ayah = forDayAll(day)[index];
-    return TadbeerQuestions.forAyah(ayah)[questionIndex(day, index)];
+    return TadbeerQuestions.forAyah(
+      ayah,
+      isArabic: isArabic,
+    )[questionIndex(day, index)];
   }
 
   /// أي الأسئلة الأربعة تطرحه البطاقة، ليفتح التدبر عليه.
@@ -139,10 +142,15 @@ class AyahOfTheDayCard extends StatefulWidget {
   static double minHeight(BuildContext context, double width) {
     final looks = _VerseLook.of(AyahOfTheDay.forDayAll(DateTime.now()));
     return _chrome +
-        _tallest(context, [
-          for (final l in looks)
-            (l.text, l.at(_FittedVerse.minSize, _FittedVerse.tightHeight)),
-        ], width - _AyahOfTheDayCardState._padH * 2);
+        _tallest(
+          context,
+          [
+            for (final l in looks)
+              (l.text, l.at(_FittedVerse.minSize, _FittedVerse.tightHeight)),
+          ],
+          width - _AyahOfTheDayCardState._padH * 2,
+          textDirection: TextDirection.rtl,
+        );
   }
 
   @override
@@ -161,10 +169,13 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   /// هل خطوط مصحف المدينة لآيات اليوم قيد التحميل.
   bool _preparing = false;
 
+  bool _prepareQueued = false;
+
   @override
   void initState() {
     super.initState();
     _load(DateTime.now());
+    _prepareGlyphs();
     _restart();
   }
 
@@ -177,6 +188,16 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     Future.wait(_ayahs.map(QcfGlyphs.prepare)).whenComplete(() {
       _preparing = false;
       if (mounted) setState(() {});
+    });
+  }
+
+  void _schedulePrepareGlyphs() {
+    if (_preparing || _prepareQueued || !_VerseLook.madinah) return;
+    if (_ayahs.every((a) => QcfGlyphs.of(a) != null)) return;
+    _prepareQueued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _prepareQueued = false;
+      if (mounted) _prepareGlyphs();
     });
   }
 
@@ -236,7 +257,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     final motion = AppMotion.shouldAnimate(context);
     const gold = Color(0xFFD9B566);
-    _prepareGlyphs();
+    _schedulePrepareGlyphs();
     final looks = _VerseLook.of(_ayahs);
     const questionStyle = TextStyle(
       color: gold,
@@ -285,20 +306,29 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                     // لا يظهر السؤال إلا إن بقيت الآية كاملة بجانبه.
                     var showQuestion = true;
                     if (bounded) {
-                      final verse = _tallest(context, [
-                        for (final l in looks)
-                          (
-                            l.text,
-                            l.at(
-                              _FittedVerse.minSize,
-                              _FittedVerse.tightHeight,
+                      final verse = _tallest(
+                        context,
+                        [
+                          for (final l in looks)
+                            (
+                              l.text,
+                              l.at(
+                                _FittedVerse.minSize,
+                                _FittedVerse.tightHeight,
+                              ),
                             ),
-                          ),
-                      ], box.maxWidth);
+                        ],
+                        box.maxWidth,
+                        textDirection: TextDirection.rtl,
+                      );
                       final question = _tallest(context, [
                         for (var i = 0; i < _ayahs.length; i++)
                           (
-                            AyahOfTheDay.questionFor(_day, i),
+                            AyahOfTheDay.questionFor(
+                              _day,
+                              i,
+                              isArabic: l10n.isArabic,
+                            ),
                             DefaultTextStyle.of(context).style
                                 .merge(questionStyle),
                           ),
@@ -411,6 +441,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                                               AyahOfTheDay.questionFor(
                                                 _day,
                                                 i,
+                                                isArabic: l10n.isArabic,
                                               ),
                                               questionStyle,
                                             ),
@@ -448,6 +479,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                                                     AyahOfTheDay.questionFor(
                                                       _day,
                                                       _index,
+                                                      isArabic: l10n.isArabic,
                                                     ),
                                                     textAlign:
                                                         TextAlign.center,
@@ -489,10 +521,12 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                                       for (final l in looks)
                                         (l.text, l.at(21, 2)),
                                     ],
+                                    textDirection: TextDirection.rtl,
                                     child: Text(
                                       looks[_index].text,
                                       semanticsLabel: looks[_index].spoken,
                                       textAlign: TextAlign.center,
+                                      textDirection: TextDirection.rtl,
                                       style: looks[_index].at(21, 2),
                                     ),
                                   ),
@@ -509,6 +543,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                                             AyahOfTheDay.questionFor(
                                               _day,
                                               i,
+                                              isArabic: l10n.isArabic,
                                             ),
                                             questionStyle,
                                           ),
@@ -546,6 +581,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
                                                   AyahOfTheDay.questionFor(
                                                     _day,
                                                     _index,
+                                                    isArabic: l10n.isArabic,
                                                   ),
                                                   textAlign: TextAlign.center,
                                                   style: questionStyle,
@@ -614,14 +650,24 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
 class _SteadyHeight extends StatelessWidget {
   final List<(String, TextStyle)> items;
   final Widget child;
+  final TextDirection? textDirection;
 
-  const _SteadyHeight({required this.items, required this.child});
+  const _SteadyHeight({
+    required this.items,
+    required this.child,
+    this.textDirection,
+  });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, box) => SizedBox(
-        height: _tallest(context, items, box.maxWidth),
+        height: _tallest(
+          context,
+          items,
+          box.maxWidth,
+          textDirection: textDirection,
+        ),
         child: Center(child: child),
       ),
     );
@@ -632,10 +678,11 @@ class _SteadyHeight extends StatelessWidget {
 double _tallest(
   BuildContext context,
   List<(String, TextStyle)> items,
-  double width,
-) {
+  double width, {
+  TextDirection? textDirection,
+}) {
   final scaler = MediaQuery.textScalerOf(context);
-  final direction = Directionality.of(context);
+  final direction = textDirection ?? Directionality.of(context);
   final base = DefaultTextStyle.of(context).style;
   var h = 0.0;
   for (final (text, style) in items) {
@@ -728,9 +775,12 @@ class _FittedVerse extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, box) {
         bool fits(double size, double height) =>
-            _tallest(context, [
-              for (final l in looks) (l.text, l.at(size, height)),
-            ], box.maxWidth) <=
+            _tallest(
+              context,
+              [for (final l in looks) (l.text, l.at(size, height))],
+              box.maxWidth,
+              textDirection: TextDirection.rtl,
+            ) <=
             box.maxHeight;
 
         var size = maxSize;
@@ -750,6 +800,7 @@ class _FittedVerse extends StatelessWidget {
             shown.text,
             semanticsLabel: shown.spoken,
             textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
             maxLines: lines,
             overflow: lines == null ? null : TextOverflow.ellipsis,
             style: style,

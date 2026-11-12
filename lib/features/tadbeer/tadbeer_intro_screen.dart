@@ -111,6 +111,7 @@ class _TadbeerIntroScreenState extends State<TadbeerIntroScreen>
       await UserDataStore.instance.updateSettings(
         settings.copyWith(hideTadbeerIntroPermanently: true),
       );
+      if (!mounted) return;
     }
 
     navigator.pushReplacement(

@@ -105,8 +105,9 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
     NavigatorState navigator,
     ScaffoldMessengerState messenger,
     AppStrings l10n,
-    int days,
-  ) async {
+    int days, {
+    int startPage = 1,
+  }) async {
     if (!navigator.mounted) return;
     final time = await showTimePicker(
       context: navigator.context,
@@ -114,7 +115,11 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
       initialTime: const TimeOfDay(hour: 20, minute: 0),
     );
     if (time == null) return;
-    final pages = (mushafPageCount / days).ceil();
+    final remainingPages = (mushafPageCount - startPage + 1).clamp(
+      1,
+      mushafPageCount,
+    );
+    final pages = (remainingPages / days).ceil();
     final reminder = ReminderItem(
       id: portionReminderId,
       title: l10n.portionReminderTitle(pages),
@@ -126,6 +131,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
     );
     await UserDataStore.instance.putReminder(reminder);
     await LocalReminderService.instance.scheduleReminder(reminder);
+    if (!messenger.mounted) return;
     messenger.showSnackBar(
       SnackBar(
         content: Text(l10n.portionReminderSet, textAlign: TextAlign.center),
@@ -136,6 +142,7 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
   static const _options = [7, 15, 30, 60, 90];
   int _days = 30;
   bool _fromCurrent = false;
+  bool _starting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +190,15 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
             ),
             const SizedBox(height: 10),
             Text(
-              l10n.pagesPerDayHint((mushafPageCount / _days).ceil()),
+              l10n.pagesPerDayHint(
+                ((mushafPageCount -
+                            (_fromCurrent
+                                ? UserDataStore.instance.readingPosition.page
+                                : 1) +
+                            1) /
+                        _days)
+                    .ceil(),
+              ),
               textAlign: TextAlign.center,
               style: TextStyle(color: gold, fontWeight: FontWeight.bold),
             ),
@@ -209,20 +224,34 @@ class _StartKhatmaCardState extends State<_StartKhatmaCard> {
             ),
             const SizedBox(height: 14),
             FilledButton.icon(
-              onPressed: () async {
-                unawaited(HapticFeedback.mediumImpact());
-                final navigator = Navigator.of(context);
-                final messenger = ScaffoldMessenger.of(context);
-                final l10n = context.l10n;
-                final days = _days;
-                await UserDataStore.instance.startKhatma(
-                  days,
-                  startPage: _fromCurrent
-                      ? UserDataStore.instance.readingPosition.page
-                      : 1,
-                );
-                await _offerPortionReminder(navigator, messenger, l10n, days);
-              },
+              onPressed: _starting
+                  ? null
+                  : () async {
+                      setState(() => _starting = true);
+                      try {
+                        unawaited(HapticFeedback.mediumImpact());
+                        final navigator = Navigator.of(context);
+                        final messenger = ScaffoldMessenger.of(context);
+                        final l10n = context.l10n;
+                        final days = _days;
+                        final startPage = _fromCurrent
+                            ? UserDataStore.instance.readingPosition.page
+                            : 1;
+                        await UserDataStore.instance.startKhatma(
+                          days,
+                          startPage: startPage,
+                        );
+                        await _offerPortionReminder(
+                          navigator,
+                          messenger,
+                          l10n,
+                          days,
+                          startPage: startPage,
+                        );
+                      } finally {
+                        if (mounted) setState(() => _starting = false);
+                      }
+                    },
               icon: const Icon(AppIcons.play),
               label: Text(l10n.startKhatma),
             ),

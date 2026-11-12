@@ -138,7 +138,12 @@ class ReminderItem {
       minute: json['minute'] as int,
       repeatMode: mode,
       alertType: alertType,
-      selectedDays: (json['selectedDays'] as List?)?.cast<int>() ?? const [],
+      selectedDays: (json['selectedDays'] as List?)
+              ?.whereType<int>()
+              .where((d) => d >= DateTime.monday && d <= DateTime.sunday)
+              .toSet()
+              .toList() ??
+          const [],
       isEnabled: json['isEnabled'] as bool? ?? true,
       createdAt: DateTime.parse(json['createdAt'] as String),
       scheduledFor: json['scheduledFor'] is String

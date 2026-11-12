@@ -10,7 +10,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 import '../../data/storage/user_data_store.dart';
 
 /// سبب فشل الاستعادة، لتعرض الواجهة رسالته بلغة القارئ.
-enum BackupError { wrongPassword, newerVersion, invalidFile }
+enum BackupError { wrongPassword, newerVersion, invalidFile, writeFailed }
 
 /// نتيجة تصدير نسخة احتياطية أو استعادتها.
 class BackupResult {
@@ -61,6 +61,35 @@ class BackupCryptoService {
   /// أقصى تكرارات تُقبل من رأس الملف، كي لا يعلّق ملف خبيث الاستعادة لدقائق.
   static const int _maxKdfIterations = 5000000;
 
+  /// أقصى حجم لملف النسخة الاحتياطية (32 ميجابايت).
+  static const int _maxBackupFileBytes = 32 * 1024 * 1024;
+
+  /// أقصى حجم للبيانات المفكوكة بعد ضغط gzip (64 ميجابايت).
+  static const int _maxDecompressedBytes = 64 * 1024 * 1024;
+
+  /// فك ضغط تدريجي مع سقف أقصى للبايتات لمنع استنزاف الذاكرة.
+  static List<int> _boundedGzipDecode(List<int> compressed) {
+    final builder = BytesBuilder(copy: false);
+    var total = 0;
+    final chunkSink = ByteConversionSink.withCallback((bytes) {
+      total += bytes.length;
+      if (total > _maxDecompressedBytes) {
+        throw const FormatException('Decompressed backup exceeds maximum allowed size');
+      }
+      builder.add(bytes);
+    });
+    final gzipSink = gzip.decoder.startChunkedConversion(chunkSink);
+    const chunkSize = 64 * 1024;
+    for (var offset = 0; offset < compressed.length; offset += chunkSize) {
+      final end = (offset + chunkSize < compressed.length)
+          ? offset + chunkSize
+          : compressed.length;
+      gzipSink.add(compressed.sublist(offset, end));
+    }
+    gzipSink.close();
+    return builder.takeBytes();
+  }
+
   /// بايتات عشوائية آمنة للملح ومتجه التهيئة.
   static Uint8List _generateRandomBytes(int length) {
     final rand = Random.secure();
@@ -99,24 +128,6 @@ class BackupCryptoService {
       block++;
     }
     return Uint8List.sublistView(out.takeBytes(), 0, length);
-  }
-
-  /// يشتق مفتاح التشفير ومفتاح التوقيع (32 بايت لكل منهما) في خيط منفصل، فلا
-  /// تتجمد الواجهة.
-  static Future<({Uint8List encKey, Uint8List macKey})> _deriveKeysV2(
-    String password,
-    Uint8List salt,
-    int iterations,
-  ) async {
-    final pw = utf8.encode(password);
-    final saltCopy = Uint8List.fromList(salt);
-    final material = await Isolate.run(
-      () => _pbkdf2(pw, saltCopy, iterations, 64),
-    );
-    return (
-      encKey: Uint8List.sublistView(material, 0, 32),
-      macKey: Uint8List.sublistView(material, 32, 64),
-    );
   }
 
   /// توقيع HMAC على كل حقول الملف المهمة (encrypt-then-MAC).
@@ -178,60 +189,78 @@ class BackupCryptoService {
         tadbeer: tadbeer,
         journey: journey,
       );
-
-      final rawPayloadBytes = utf8.encode(jsonEncode(snapshot));
-
-      // ١. الضغط.
-      final compressedBytes = gzip.encode(rawPayloadBytes);
-
-      // ٢. اشتقاق المفتاح بملح عشوائي.
-      final salt = _generateRandomBytes(16);
-      final ivBytes = _generateRandomBytes(16);
-      const iterations = defaultKdfIterations;
-      final keys = await _deriveKeysV2(password, salt, iterations);
-      final iv = enc.IV(ivBytes);
-
-      // ٣. التشفير ثم التوقيع.
-      final encrypter = enc.Encrypter(
-        enc.AES(enc.Key(keys.encKey), mode: enc.AESMode.cbc),
+      final schemaVersion = UserDataStore.currentSchemaVersion;
+      final outPath = await Isolate.run(
+        () => _encodeAndWriteBackup(
+          snapshot: snapshot,
+          password: password,
+          schemaVersion: schemaVersion,
+          targetPath: targetPath,
+        ),
       );
-      final encrypted = encrypter.encryptBytes(compressedBytes, iv: iv);
-
-      final saltB64 = base64.encode(salt);
-      final ivB64 = iv.base64;
-      final cipherB64 = encrypted.base64;
-      final mac = _computeMac(
-        keys.macKey,
-        version: formatVersion,
-        schemaVersion: UserDataStore.currentSchemaVersion,
-        iterations: iterations,
-        saltB64: saltB64,
-        ivB64: ivB64,
-        cipherB64: cipherB64,
-      );
-
-      // ٤. تجميع الملف، دون بصمة للنص الأصلي.
-      final package = {
-        'magic': magicHeader,
-        'version': formatVersion,
-        'schemaVersion': UserDataStore.currentSchemaVersion,
-        'kdf': 'pbkdf2-hmac-sha256',
-        'kdfIterations': iterations,
-        'passwordProtected': password.isNotEmpty,
-        'salt': saltB64,
-        'iv': ivB64,
-        'mac': mac,
-        'createdAt': DateTime.now().toIso8601String(),
-        'cipher': cipherB64,
-      };
-
-      final file = File(targetPath);
-      await file.writeAsString(jsonEncode(package), flush: true);
-
-      return BackupResult.success(file.path);
+      return BackupResult.success(outPath);
     } catch (e) {
       return BackupResult.failure(e.toString());
     }
+  }
+
+  static Future<String> _encodeAndWriteBackup({
+    required Map<String, dynamic> snapshot,
+    required String password,
+    required int schemaVersion,
+    required String targetPath,
+  }) async {
+    final rawPayloadBytes = utf8.encode(jsonEncode(snapshot));
+    final compressedBytes = gzip.encode(rawPayloadBytes);
+
+    final salt = _generateRandomBytes(16);
+    final ivBytes = _generateRandomBytes(16);
+    const iterations = defaultKdfIterations;
+    final material = _pbkdf2(
+      utf8.encode(password),
+      salt,
+      iterations,
+      64,
+    );
+    final encKey = Uint8List.sublistView(material, 0, 32);
+    final macKey = Uint8List.sublistView(material, 32, 64);
+    final iv = enc.IV(ivBytes);
+
+    final encrypter = enc.Encrypter(
+      enc.AES(enc.Key(encKey), mode: enc.AESMode.cbc),
+    );
+    final encrypted = encrypter.encryptBytes(compressedBytes, iv: iv);
+
+    final saltB64 = base64.encode(salt);
+    final ivB64 = iv.base64;
+    final cipherB64 = encrypted.base64;
+    final mac = _computeMac(
+      macKey,
+      version: formatVersion,
+      schemaVersion: schemaVersion,
+      iterations: iterations,
+      saltB64: saltB64,
+      ivB64: ivB64,
+      cipherB64: cipherB64,
+    );
+
+    final package = {
+      'magic': magicHeader,
+      'version': formatVersion,
+      'schemaVersion': schemaVersion,
+      'kdf': 'pbkdf2-hmac-sha256',
+      'kdfIterations': iterations,
+      'passwordProtected': password.isNotEmpty,
+      'salt': saltB64,
+      'iv': ivB64,
+      'mac': mac,
+      'createdAt': DateTime.now().toIso8601String(),
+      'cipher': cipherB64,
+    };
+
+    final file = File(targetPath);
+    await file.writeAsString(jsonEncode(package), flush: true);
+    return file.path;
   }
 
   /// يتحقق من ملف .quranbackup ثم يستعيده.
@@ -246,35 +275,123 @@ class BackupCryptoService {
       if (!await file.exists()) {
         return const BackupResult.failure('Backup file not found');
       }
+      if (await file.length() > _maxBackupFileBytes) {
+        return const BackupResult.failure('Backup file exceeds maximum allowed size');
+      }
 
+      final filePath = file.path;
+      const maxSchema = UserDataStore.currentSchemaVersion;
+      final decoded = await Isolate.run(
+        () => _readAndDecodeBackup(
+          filePath: filePath,
+          password: password,
+          maxSchemaVersion: maxSchema,
+        ),
+      );
+      if (decoded.failure != null) {
+        return decoded.failure!;
+      }
+
+      // ٧. الاستبدال الذرّي.
+      try {
+        await UserDataStore.instance.replaceAllUserData(decoded.payload!);
+      } on StateError catch (e) {
+        return BackupResult.failure(
+          'Failed to write restored data: $e',
+          BackupError.writeFailed,
+        );
+      }
+
+      return BackupResult.success(file.path);
+    } catch (e) {
+      return BackupResult.failure('Failed to restore backup: $e');
+    }
+  }
+
+  static Future<({Map<String, dynamic>? payload, BackupResult? failure})>
+  _readAndDecodeBackup({
+    required String filePath,
+    required String password,
+    required int maxSchemaVersion,
+  }) async {
+    try {
+      final file = File(filePath);
+      if (await file.length() > _maxBackupFileBytes) {
+        return (
+          payload: null,
+          failure: const BackupResult.failure('Backup file exceeds maximum allowed size'),
+        );
+      }
       final content = await file.readAsString();
-      final package = jsonDecode(content) as Map<String, dynamic>;
+      final decodedPkg = jsonDecode(content);
+      if (decodedPkg is! Map<String, dynamic>) {
+        return (
+          payload: null,
+          failure: const BackupResult.failure('Invalid backup file format'),
+        );
+      }
+      final package = decodedPkg;
 
       // ١. التحقق من توقيع نوع الملف.
       if (package['magic'] != magicHeader) {
-        return const BackupResult.failure('Invalid backup file format');
+        return (
+          payload: null,
+          failure: const BackupResult.failure('Invalid backup file format'),
+        );
       }
 
       // ٢. التحقق من توافق إصدار البيانات.
-      final schemaVersion = package['schemaVersion'] as int? ?? 0;
-      if (schemaVersion > UserDataStore.currentSchemaVersion) {
-        return const BackupResult.failure(
-          'Backup file was created with a newer version of Tadbeer',
-          BackupError.newerVersion,
+      final rawSchema = package['schemaVersion'];
+      if (rawSchema != null && (rawSchema is! num || rawSchema.toInt() < 1)) {
+        return (
+          payload: null,
+          failure: const BackupResult.failure('Invalid backup file format'),
+        );
+      }
+      final schemaVersion = (rawSchema as num?)?.toInt() ?? 0;
+      if (schemaVersion > maxSchemaVersion) {
+        return (
+          payload: null,
+          failure: const BackupResult.failure(
+            'Backup file was created with a newer version of Tadbeer',
+            BackupError.newerVersion,
+          ),
         );
       }
 
-      final fileVersion = package['version'] as int? ?? 1;
+      final rawVersion = package['version'];
+      if (rawVersion is! num) {
+        return (
+          payload: null,
+          failure: const BackupResult.failure('Invalid backup file format'),
+        );
+      }
+      final fileVersion = rawVersion.toInt();
+      if (fileVersion < 1) {
+        return (
+          payload: null,
+          failure: const BackupResult.failure('Invalid backup file format'),
+        );
+      }
       if (fileVersion > formatVersion) {
-        return const BackupResult.failure(
-          'Backup file was created with a newer version of Tadbeer',
-          BackupError.newerVersion,
+        return (
+          payload: null,
+          failure: const BackupResult.failure(
+            'Backup file was created with a newer version of Tadbeer',
+            BackupError.newerVersion,
+          ),
         );
       }
 
-      final saltB64 = package['salt'] as String;
-      final ivB64 = package['iv'] as String;
-      final cipherB64 = package['cipher'] as String;
+      final saltB64 = package['salt'];
+      final ivB64 = package['iv'];
+      final cipherB64 = package['cipher'];
+      if (saltB64 is! String || ivB64 is! String || cipherB64 is! String) {
+        return (
+          payload: null,
+          failure: const BackupResult.failure('Invalid backup file format'),
+        );
+      }
       final salt = Uint8List.fromList(base64.decode(saltB64));
       final iv = enc.IV.fromBase64(ivB64);
       final cipher = enc.Encrypted.fromBase64(cipherB64);
@@ -283,13 +400,25 @@ class BackupCryptoService {
       final enc.Key key;
       String? expectedChecksum;
       if (fileVersion >= 2) {
-        final iterations = package['kdfIterations'] as int? ?? 0;
-        if (iterations < 1 || iterations > _maxKdfIterations) {
-          return const BackupResult.failure('Invalid backup file format');
+        final rawIterations = package['kdfIterations'];
+        if (rawIterations is! num) {
+          return (
+            payload: null,
+            failure: const BackupResult.failure('Invalid backup file format'),
+          );
         }
-        final keys = await _deriveKeysV2(password, salt, iterations);
+        final iterations = rawIterations.toInt();
+        if (iterations < 1 || iterations > _maxKdfIterations) {
+          return (
+            payload: null,
+            failure: const BackupResult.failure('Invalid backup file format'),
+          );
+        }
+        final material = _pbkdf2(utf8.encode(password), salt, iterations, 64);
+        final encKey = Uint8List.sublistView(material, 0, 32);
+        final macKey = Uint8List.sublistView(material, 32, 64);
         final expectedMac = _computeMac(
-          keys.macKey,
+          macKey,
           version: fileVersion,
           schemaVersion: schemaVersion,
           iterations: iterations,
@@ -297,19 +426,22 @@ class BackupCryptoService {
           ivB64: ivB64,
           cipherB64: cipherB64,
         );
-        final actualMac = package['mac'] as String? ?? '';
+        final rawMac = package['mac'];
+        final actualMac = rawMac is String ? rawMac : '';
         if (!_constantTimeEquals(expectedMac, actualMac)) {
-          // كلمة مرور خاطئة أو ملف معدّل أو تالف: لا يُفك شيء.
-          return const BackupResult.failure(
-            'Incorrect password or corrupt file',
-            BackupError.wrongPassword,
+          return (
+            payload: null,
+            failure: const BackupResult.failure(
+              'Incorrect password or corrupt file',
+              BackupError.wrongPassword,
+            ),
           );
         }
-        key = enc.Key(keys.encKey);
+        key = enc.Key(encKey);
       } else {
-        // نسخ v1 القديمة.
         key = _deriveKeyV1(password, salt);
-        expectedChecksum = package['checksum'] as String?;
+        final rawChecksum = package['checksum'];
+        expectedChecksum = rawChecksum is String ? rawChecksum : null;
       }
       final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
 
@@ -317,20 +449,26 @@ class BackupCryptoService {
       try {
         decryptedCompressed = encrypter.decryptBytes(cipher, iv: iv);
       } catch (e) {
-        return const BackupResult.failure(
-          'Incorrect password or corrupt file',
-          BackupError.wrongPassword,
+        return (
+          payload: null,
+          failure: const BackupResult.failure(
+            'Incorrect password or corrupt file',
+            BackupError.wrongPassword,
+          ),
         );
       }
 
       // ٤. فك الضغط.
       List<int> decompressedBytes;
       try {
-        decompressedBytes = gzip.decode(decryptedCompressed);
+        decompressedBytes = _boundedGzipDecode(decryptedCompressed);
       } catch (e) {
-        return const BackupResult.failure(
-          'Incorrect password or corrupt backup data (decompression failed)',
-          BackupError.wrongPassword,
+        return (
+          payload: null,
+          failure: const BackupResult.failure(
+            'Incorrect password or corrupt backup data (decompression failed)',
+            BackupError.wrongPassword,
+          ),
         );
       }
 
@@ -338,25 +476,34 @@ class BackupCryptoService {
       if (fileVersion < 2) {
         final actualChecksum = sha256.convert(decompressedBytes).toString();
         if (actualChecksum != expectedChecksum) {
-          return const BackupResult.failure(
-            'Checksum mismatch: backup file data is corrupted',
+          return (
+            payload: null,
+            failure: const BackupResult.failure(
+              'Incorrect password or corrupt file',
+              BackupError.wrongPassword,
+            ),
           );
         }
       }
 
       // ٦. قراءة JSON والتحقق من بنيته.
-      final payloadJson =
-          jsonDecode(utf8.decode(decompressedBytes)) as Map<String, dynamic>;
-      if (payloadJson['app'] != 'Tadbeer') {
-        return const BackupResult.failure('Invalid app identifier in backup');
+      final payloadDecoded = jsonDecode(utf8.decode(decompressedBytes));
+      if (payloadDecoded is! Map<String, dynamic> ||
+          payloadDecoded['app'] != 'Tadbeer') {
+        return (
+          payload: null,
+          failure: const BackupResult.failure(
+            'Invalid app identifier in backup',
+          ),
+        );
       }
 
-      // ٧. الاستبدال الذرّي.
-      await UserDataStore.instance.replaceAllUserData(payloadJson);
-
-      return BackupResult.success(file.path);
+      return (payload: payloadDecoded, failure: null);
     } catch (e) {
-      return BackupResult.failure('Failed to restore backup: $e');
+      return (
+        payload: null,
+        failure: BackupResult.failure('Failed to restore backup: $e'),
+      );
     }
   }
 }

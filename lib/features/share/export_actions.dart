@@ -42,52 +42,89 @@ Future<void> shareOrSaveFile(
   String? subject,
   String? text,
   String? mimeType,
+  bool deleteTempFile = true,
 }) async {
-  final l10n = context.l10n;
-  final origin = shareOrigin(context);
-  final save = await showModalBottomSheet<bool>(
-    context: context,
-    showDragHandle: true,
-    builder: (sheet) => SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(AppIcons.shareNetwork),
-            title: Text(l10n.share),
-            onTap: () => Navigator.pop(sheet, false),
-          ),
-          ListTile(
-            leading: const Icon(AppIcons.downloadSimple),
-            title: Text(l10n.saveToDeviceFiles),
-            onTap: () => Navigator.pop(sheet, true),
-          ),
-        ],
-      ),
-    ),
-  );
-  if (save == null) return;
-  if (!save) {
-    await SharePlus.instance.share(
-      ShareParams(
-        files: [XFile(file.path, name: fileName, mimeType: mimeType)],
-        subject: subject,
-        text: text,
-        sharePositionOrigin: origin,
+  try {
+    final l10n = context.l10n;
+    final origin = shareOrigin(context);
+    final save = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheet) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(AppIcons.shareNetwork),
+              title: Text(l10n.share),
+              onTap: () => Navigator.pop(sheet, false),
+            ),
+            ListTile(
+              leading: const Icon(AppIcons.downloadSimple),
+              title: Text(l10n.saveToDeviceFiles),
+              onTap: () => Navigator.pop(sheet, true),
+            ),
+          ],
+        ),
       ),
     );
-    return;
-  }
+    if (save == null) return;
+    if (!save) {
+      try {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path, name: fileName, mimeType: mimeType)],
+            subject: subject,
+            text: text,
+            sharePositionOrigin: origin,
+          ),
+        );
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                l10n.fileShareError(e.toString()),
+                textAlign: TextAlign.center,
+              ),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+      return;
+    }
 
-  final saved = await FilePicker.saveFile(
-    fileName: fileName,
-    bytes: await file.readAsBytes(),
-  );
-  if (saved == null || !context.mounted) return;
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(l10n.fileSavedToDevice, textAlign: TextAlign.center),
-      behavior: SnackBarBehavior.floating,
-    ),
-  );
+    try {
+      final saved = await FilePicker.saveFile(
+        fileName: fileName,
+        bytes: await file.readAsBytes(),
+      );
+      if (saved == null || !context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.fileSavedToDevice, textAlign: TextAlign.center),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.errorSavingFile(e.toString()),
+              textAlign: TextAlign.center,
+            ),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  } finally {
+    if (deleteTempFile && await file.exists()) {
+      try {
+        await file.delete();
+      } catch (_) {}
+    }
+  }
 }

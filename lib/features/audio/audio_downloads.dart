@@ -107,6 +107,8 @@ class AudioDownloads extends ChangeNotifier {
   double? progressOf(Reciter reciter, int surah) =>
       _progress[(reciter.id, surah)];
 
+  final _activeClients = <(String, int), Set<HttpClient>>{};
+
   /// ينزّل [surah] بصوت [reciter]، ويعيد true إن اكتملت.
   Future<bool> downloadSurah(Reciter reciter, int surah) async {
     await ready();
@@ -122,6 +124,7 @@ class AudioDownloads extends ChangeNotifier {
     final folder = Directory('${_dir!.path}/${reciter.id}');
     await folder.create(recursive: true);
     final have = _have.putIfAbsent(reciter.id, () => <int>{});
+    final useDefaultHttp = _fetch == httpFetch;
     try {
       // بضعة ملفات معاً: سريع، دون إثقال الاتصال البطيء.
       for (var i = 0; i < missing.length; i += 4) {
@@ -131,29 +134,70 @@ class AudioDownloads extends ChangeNotifier {
             () async {
               final file = _file(reciter, id);
               final part = File('${file.path}.part');
-              await _fetch(reciter.urlFor(id), part);
-              await part.rename(file.path);
-              have.add(id);
-              done++;
-              _progress[key] = done / all.length;
-              notifyListeners();
+              HttpClient? client;
+              try {
+                if (useDefaultHttp) {
+                  client = HttpClient()
+                    ..connectionTimeout = const Duration(seconds: 20);
+                  _activeClients.putIfAbsent(key, () => <HttpClient>{}).add(
+                    client,
+                  );
+                  await _httpFetchWithClient(
+                    reciter.urlFor(id),
+                    part,
+                    client: client,
+                  );
+                } else {
+                  await _fetch(reciter.urlFor(id), part);
+                }
+                if (_cancelled.contains(key)) {
+                  if (part.existsSync()) await part.delete();
+                  return;
+                }
+                await part.rename(file.path);
+                have.add(id);
+                done++;
+                _progress[key] = done / all.length;
+                notifyListeners();
+              } catch (e) {
+                try {
+                  if (part.existsSync()) await part.delete();
+                } catch (_) {}
+                rethrow;
+              } finally {
+                if (client != null) {
+                  _activeClients[key]?.remove(client);
+                  client.close(force: true);
+                }
+              }
             }(),
         ]);
       }
-      return true;
+      return !_cancelled.contains(key);
     } on Object {
-      failed.add(key);
+      if (!_cancelled.contains(key)) {
+        failed.add(key);
+      }
       return false;
     } finally {
+      _activeClients.remove(key);
       _progress.remove(key);
       _cancelled.remove(key);
       notifyListeners();
     }
   }
 
-  /// يوقف تنزيل [surah] بعد الملفات التي بدأت فعلاً.
+  /// يوقف تنزيل [surah] فوراً ويحذف الملفات الجزئية.
   void cancel(Reciter reciter, int surah) {
-    _cancelled.add((reciter.id, surah));
+    final key = (reciter.id, surah);
+    _cancelled.add(key);
+    final clients = _activeClients.remove(key);
+    if (clients != null) {
+      for (final c in clients) {
+        c.close(force: true);
+      }
+    }
+    notifyListeners();
   }
 
   /// يحذف سورة، وتبقى البسملة ما دامت سورة أخرى منزّلة تحتاجها.
@@ -180,6 +224,13 @@ class AudioDownloads extends ChangeNotifier {
   /// يحذف كل تلاوات [reciter] المنزّلة.
   Future<void> deleteAll(Reciter reciter) async {
     await ready();
+    final activeKeys = [
+      for (final key in _progress.keys)
+        if (key.$1 == reciter.id) key,
+    ];
+    for (final key in activeKeys) {
+      cancel(reciter, key.$2);
+    }
     final folder = Directory('${_dir!.path}/${reciter.id}');
     if (folder.existsSync()) await folder.delete(recursive: true);
     _have.remove(reciter.id);
@@ -193,6 +244,7 @@ class AudioDownloads extends ChangeNotifier {
     if (!folder.existsSync()) return 0;
     var total = 0;
     for (final f in folder.listSync().whereType<File>()) {
+      if (!f.path.endsWith('.mp3')) continue;
       total += f.lengthSync();
     }
     return total;
@@ -205,16 +257,49 @@ Future<void> httpFetch(
   Uri url,
   File to, {
   Duration stall = const Duration(seconds: 30),
+}) => _httpFetchWithClient(url, to, stall: stall);
+
+Future<void> _httpFetchWithClient(
+  Uri url,
+  File to, {
+  HttpClient? client,
+  Duration stall = const Duration(seconds: 30),
+  int maxBytes = 32 * 1024 * 1024,
 }) async {
-  final client = HttpClient()..connectionTimeout = const Duration(seconds: 20);
+  final owned = client == null;
+  final effectiveClient =
+      client ?? (HttpClient()..connectionTimeout = const Duration(seconds: 20));
+  IOSink? sink;
   try {
-    final request = await client.getUrl(url);
+    final request = await effectiveClient.getUrl(url);
+    request.followRedirects = false;
     final response = await request.close().timeout(stall);
+    if (response.isRedirect ||
+        (response.statusCode >= 300 && response.statusCode < 400)) {
+      await response.drain<void>();
+      throw HttpException('HTTP redirect not permitted', uri: url);
+    }
     if (response.statusCode != HttpStatus.ok) {
+      await response.drain<void>();
       throw HttpException('HTTP ${response.statusCode}', uri: url);
     }
-    await response.timeout(stall).pipe(to.openWrite());
+    sink = to.openWrite();
+    var received = 0;
+    await for (final chunk in response.timeout(stall)) {
+      received += chunk.length;
+      if (received > maxBytes) {
+        throw HttpException('Audio file exceeds maximum size limit', uri: url);
+      }
+      sink.add(chunk);
+    }
+    await sink.close();
+    sink = null;
+  } catch (e) {
+    try {
+      await sink?.close();
+    } catch (_) {}
+    rethrow;
   } finally {
-    client.close(force: true);
+    if (owned) effectiveClient.close(force: true);
   }
 }

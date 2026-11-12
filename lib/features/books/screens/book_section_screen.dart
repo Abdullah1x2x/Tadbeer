@@ -25,6 +25,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
 
   String _selectedMalazemSeries = 'الكل';
   String _searchQuery = '';
+  final Map<String, String> _searchIndexCache = {};
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
   }
 
   void _onRepoChanged() {
+    _searchIndexCache.clear();
     if (mounted) setState(() {});
   }
 
@@ -50,84 +52,81 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
   List<BookModel> get _allSectionBooks =>
       _repo.getBooksBySection(widget.section.name);
 
+  bool _matchesSeries(BookModel b, String series) {
+    if (series == 'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
+      return b.subtitle.contains('آل عمران') &&
+          !b.subtitle.contains('رمضان');
+    }
+    if (series == 'سلسلة هدي القرآن: مدارسة سورة المائدة') {
+      return b.subtitle.contains('المائدة') &&
+          !b.subtitle.contains('رمضان');
+    }
+    if (series == 'سلسلة هدي القرآن: مدارسة سورة الصف') {
+      return b.subtitle.contains('الصف') || b.title.contains('الصف');
+    }
+    if (series == 'فهرس وتوثيق الملازم') {
+      return b.subtitle.contains('فهرس') || b.title.contains('فهرس');
+    }
+    if (series == 'المحاضرات الكبرى والمناسبات') {
+      return (b.subtitle.contains('المحاضرات') ||
+              b.subtitle.contains('دروس من هدي القرآن الكريم')) &&
+          !b.subtitle.contains('فهرس') &&
+          !b.title.contains('فهرس');
+    }
+    return b.subtitle.contains(series);
+  }
+
+  String _normalizedBookCorpus(BookModel b) => _searchIndexCache.putIfAbsent(
+    b.id,
+    () {
+      final buf = StringBuffer()
+        ..write(ArabicSearchNormalizer.normalize(b.title))
+        ..write('\n')
+        ..write(ArabicSearchNormalizer.normalize(b.subtitle))
+        ..write('\n')
+        ..write(ArabicSearchNormalizer.normalize(b.author));
+      if (b.fileName != null) {
+        buf
+          ..write('\n')
+          ..write(ArabicSearchNormalizer.normalize(b.fileName!));
+      }
+      for (final c in b.chapters) {
+        buf
+          ..write('\n')
+          ..write(ArabicSearchNormalizer.normalize(c.title))
+          ..write('\n')
+          ..write(ArabicSearchNormalizer.normalize(c.summary))
+          ..write('\n')
+          ..write(ArabicSearchNormalizer.normalize(c.content));
+      }
+      return buf.toString();
+    },
+  );
+
   List<BookModel> get _filteredBooks {
     var list = _allSectionBooks;
 
     // تصفية بالسلسلة، إن كان للقسم سلاسل.
     if (_hasSeriesFilter && _selectedMalazemSeries != 'الكل') {
-      list = list.where((b) {
-        if (_selectedMalazemSeries ==
-            'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
-          return b.subtitle.contains('آل عمران') &&
-              !b.subtitle.contains('رمضان');
-        }
-        if (_selectedMalazemSeries == 'سلسلة هدي القرآن: مدارسة سورة المائدة') {
-          return b.subtitle.contains('المائدة') &&
-              !b.subtitle.contains('رمضان');
-        }
-        if (_selectedMalazemSeries == 'سلسلة هدي القرآن: مدارسة سورة الصف') {
-          return b.subtitle.contains('الصف') || b.title.contains('الصف');
-        }
-        if (_selectedMalazemSeries == 'فهرس وتوثيق الملازم') {
-          return b.subtitle.contains('فهرس') || b.title.contains('فهرس');
-        }
-        if (_selectedMalazemSeries == 'المحاضرات الكبرى والمناسبات') {
-          return (b.subtitle.contains('المحاضرات') ||
-                  b.subtitle.contains('دروس من هدي القرآن الكريم')) &&
-              !b.subtitle.contains('فهرس') &&
-              !b.title.contains('فهرس');
-        }
-        return b.subtitle.contains(_selectedMalazemSeries);
-      }).toList();
+      list = list.where((b) => _matchesSeries(b, _selectedMalazemSeries)).toList();
     }
 
-    if (_searchQuery.trim().isEmpty) return list;
+    final trimmedQuery = _searchQuery.trim();
+    if (trimmedQuery.isEmpty) return list;
 
-    final normQuery = ArabicSearchNormalizer.normalize(_searchQuery);
-    return list.where((b) {
-      final normTitle = ArabicSearchNormalizer.normalize(b.title);
-      final normSubtitle = ArabicSearchNormalizer.normalize(b.subtitle);
-      final normAuthor = ArabicSearchNormalizer.normalize(b.author);
-      final normFileName = b.fileName != null
-          ? ArabicSearchNormalizer.normalize(b.fileName!)
-          : '';
+    final normQuery = ArabicSearchNormalizer.normalize(trimmedQuery).trim();
+    if (normQuery.isEmpty) return const [];
 
-      if (normTitle.contains(normQuery) ||
-          normSubtitle.contains(normQuery) ||
-          normAuthor.contains(normQuery) ||
-          normFileName.contains(normQuery)) {
-        return true;
-      }
-
-      return b.chapters.any((c) {
-        final normChapTitle = ArabicSearchNormalizer.normalize(c.title);
-        final normChapSummary = ArabicSearchNormalizer.normalize(c.summary);
-        final normChapContent = ArabicSearchNormalizer.normalize(c.content);
-        return normChapTitle.contains(normQuery) ||
-            normChapSummary.contains(normQuery) ||
-            normChapContent.contains(normQuery);
-      });
-    }).toList();
+    return list
+        .where((b) => _normalizedBookCorpus(b).contains(normQuery))
+        .toList();
   }
 
   String _formatSeriesLabel(String series, List<BookModel> allBooks) {
     if (series == 'الكل') {
       return '${context.l10n.allCategories} (${context.l10n.digits(allBooks.length)})';
     }
-    final count = allBooks.where((b) {
-      if (series == 'سلسلة هدي القرآن: مدارسة سورة آل عمران') {
-        return b.subtitle.contains('آل عمران');
-      }
-      if (series == 'سلسلة هدي القرآن: مدارسة سورة المائدة') {
-        return b.subtitle.contains('المائدة');
-      }
-      if (series == 'المحاضرات الكبرى والمناسبات') {
-        return b.subtitle.contains('المحاضرات') ||
-            b.subtitle.contains('دروس من هدي القرآن الكريم') ||
-            b.subtitle.contains('فهرس');
-      }
-      return b.subtitle.contains(series);
-    }).length;
+    final count = allBooks.where((b) => _matchesSeries(b, series)).length;
 
     final cleanName = series
         .replaceAll('سلسلة هدي القرآن: مدارسة ', '')
@@ -246,12 +245,14 @@ class _BookSectionScreenState extends State<BookSectionScreen> {
                         final label = _formatSeriesLabel(series, allBooks);
 
                         return Padding(
-                          padding: const EdgeInsets.only(left: 6),
+                          padding: const EdgeInsetsDirectional.only(end: 6),
                           child: ChoiceChip(
                             selected: isSelected,
                             label: Text(label),
                             labelStyle: TextStyle(
-                              fontFamily: 'IBMPlexSansArabic',
+                              fontFamily: context.l10n.isArabic
+                                  ? 'IBMPlexSansArabic'
+                                  : null,
                               fontSize: 12,
                               fontWeight: isSelected
                                   ? FontWeight.bold

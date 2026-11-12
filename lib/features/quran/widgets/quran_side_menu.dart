@@ -329,11 +329,19 @@ class _QuranSideMenuState extends State<QuranSideMenu>
   ) {
     final surahs = repo.surahs;
     final query = ArabicSearchNormalizer.normalize(_filter);
+    final latinQuery = ArabicSearchNormalizer.toEnglishDigits(_filter)
+        .trim()
+        .toLowerCase();
     final filteredSurahs = _filter.isEmpty
         ? surahs
         : [
             for (final (i, s) in surahs.indexed)
-              if (_surahKeys[i].contains(query) || '${s.number}' == query) s,
+              if (_surahKeys[i].contains(query) ||
+                  '${s.number}' == latinQuery ||
+                  (latinQuery.isNotEmpty &&
+                      (s.transliteration.toLowerCase().contains(latinQuery) ||
+                          s.translation.toLowerCase().contains(latinQuery))))
+                s,
           ];
 
     return LayoutBuilder(
@@ -478,10 +486,7 @@ Color _accent(bool isDark) =>
     isDark ? AppColors.darkPrimary : AppColors.lightPrimary;
 
 /// الرقم بأرقام الواجهة: عربية هندية في الواجهة العربية.
-Object _digits(BuildContext context, int n) =>
-    context.currentLanguage == AppLanguage.arabic
-    ? ArabicSearchNormalizer.toArabicDigits(n)
-    : n;
+String _digits(BuildContext context, int n) => context.l10n.digits(n);
 
 /// سطر في فهرس السور أو الأجزاء: رقمه، واسمه، وصفحة بدايته.
 class _IndexTile extends StatelessWidget {
@@ -532,7 +537,7 @@ class _IndexTile extends StatelessWidget {
           ),
         ),
         child: Text(
-          '${_digits(context, number)}',
+          _digits(context, number),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 12,

@@ -43,14 +43,17 @@ class KhatmaPlan {
 
   KhatmaPlan({
     required DateTime startDate,
-    required this.days,
-    this.startPage = 1,
+    required int days,
+    int startPage = 1,
     int? currentPage,
-    this.advanced = 0,
+    int advanced = 0,
     String? day,
     this.advancedAtDayStart = 0,
-  }) : startDate = DateTime(startDate.year, startDate.month, startDate.day),
-       currentPage = currentPage ?? startPage,
+  }) : days = days.clamp(1, 3650),
+       startPage = startPage.clamp(1, mushafPageCount),
+       startDate = DateTime(startDate.year, startDate.month, startDate.day),
+       currentPage = (currentPage ?? startPage).clamp(1, mushafPageCount),
+       advanced = advanced < 0 ? 0 : advanced,
        day = day ?? dayKey(startDate);
 
   /// صفحات الختمة: من صفحة البدء إلى آخر المصحف.
@@ -151,14 +154,20 @@ class KhatmaPlan {
     // المنجز.
     final pages = (json['readPages'] as List? ?? const []).length;
     final last = (json['lastPage'] as num?)?.toInt();
-    final current = last == null ? 1 : nextMushafPage(last);
+    final clampedLast = last?.clamp(1, mushafPageCount);
+    final current = clampedLast == null
+        ? 1
+        : (clampedLast >= mushafPageCount
+              ? mushafPageCount
+              : nextMushafPage(clampedLast));
+    // الختمة قد تبدأ قرب آخر المصحف وتكمل من أوله، فالبداية تلتف كذلك.
+    final startPage = clampedLast == null
+        ? 1
+        : (clampedLast - pages) % mushafPageCount + 1;
     return KhatmaPlan(
       startDate: startDate,
       days: days,
-      startPage:
-          ((current - 1 - pages) % mushafPageCount + mushafPageCount) %
-              mushafPageCount +
-          1,
+      startPage: startPage,
       currentPage: current,
       advanced: pages,
     );

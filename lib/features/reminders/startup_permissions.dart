@@ -21,7 +21,6 @@ class StartupPermissions {
     if (!(Platform.isAndroid || Platform.isIOS)) return;
     final store = UserDataStore.instance;
     if (store.featureState(_key)['asked'] == true) return;
-    await store.saveFeatureState(_key, {'asked': true});
     if (!context.mounted) return;
     final l10n = context.l10n;
     final allow = await showDialog<bool>(
@@ -42,6 +41,7 @@ class StartupPermissions {
         ],
       ),
     );
+    await store.saveFeatureState(_key, {'asked': true});
     if (allow == true) {
       await LocalReminderService.instance.requestPermissions(exactAlarms: true);
     }

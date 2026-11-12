@@ -2915,4 +2915,72 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get highlightRemoved => 'أُزيل التظليل';
+
+  @override
+  String get addToHifz => 'أضف للحفظ';
+
+  @override
+  String get inHifzProgress => 'قيد الحفظ';
+
+  @override
+  String versesInProgress(String n) {
+    return 'قيد الحفظ: $n';
+  }
+
+  @override
+  String inProgressShort(String n) {
+    return 'قيد الحفظ $n';
+  }
+
+  @override
+  String get surahAllVerses => 'كل آيات السورة';
+
+  @override
+  String surahTrackedVerses(String n) {
+    return 'الآيات المضافة للحفظ ($n)';
+  }
+
+  @override
+  String surahDueVerses(String n) {
+    return 'المستحقة اليوم في السورة ($n)';
+  }
+
+  @override
+  String get customAyahRange => 'تحديد نطاق آيات';
+
+  @override
+  String get startSession => 'بدء الجلسة';
+
+  @override
+  String continueFromAyah(String n) {
+    return 'المتابعة من الآية $n';
+  }
+
+  @override
+  String get revealNextWord => 'كلمة إضافية';
+
+  @override
+  String get removeFromHifz => 'إزالة من الحفظ';
+
+  @override
+  String sessionSummaryAllMastered(String n) {
+    return 'أتقنت جميع الآيات ($n)! بارك الله فيك.';
+  }
+
+  @override
+  String moreWordsCount(String n) {
+    return '+$n كلمات';
+  }
+
+  @override
+  String get restartPathway => 'إعادة المسار';
+
+  @override
+  String get inProgressFilter => 'قيد التقدم';
+
+  @override
+  String get completedFilter => 'مكتمل';
+
+  @override
+  String get myReflectionLabel => 'وقفتي';
 }

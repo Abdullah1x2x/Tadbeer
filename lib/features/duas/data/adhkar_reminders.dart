@@ -146,9 +146,13 @@ class _ReminderRow extends StatelessWidget {
           ? null
           : InkWell(
               onTap: changeTime,
-              child: Text(
-                time.format(context),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              borderRadius: BorderRadius.circular(6),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                child: Text(
+                  time.format(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
       value: reminder != null,

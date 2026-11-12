@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,7 @@ import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
+import '../quran/qcf/qcf_layout.dart';
 import '../tadbeer/tadbeer_pause_sheet.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -54,6 +56,32 @@ class _FocusModeScreenState extends State<FocusModeScreen>
     duration: const Duration(seconds: 24),
   );
 
+  Timer? _dwellTimer;
+  Timer? _finalPageTimer;
+  bool _pageDwelled = false;
+
+  void _startPageDwell() {
+    _dwellTimer?.cancel();
+    _pageDwelled = false;
+    _dwellTimer = Timer(const Duration(milliseconds: 800), () {
+      _pageDwelled = true;
+    });
+  }
+
+  void _scheduleFinalPageRead() {
+    _finalPageTimer?.cancel();
+    _finalPageTimer = null;
+    if (_ayahs.isEmpty || _index != _ayahs.length - 1) return;
+    final lastAyah = _ayahs[_index];
+    final style = UserDataStore.instance.settings.mushafStyle;
+    final page = QcfLayout.instance.pageFor(lastAyah, style);
+    _finalPageTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted && _index == _ayahs.length - 1) {
+        UserDataStore.instance.recordPageRead(page);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +92,8 @@ class _FocusModeScreenState extends State<FocusModeScreen>
     );
     _index = start < 0 ? 0 : start;
     _pages = PageController(initialPage: _index);
+    _startPageDwell();
+    _scheduleFinalPageRead();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
@@ -80,6 +110,8 @@ class _FocusModeScreenState extends State<FocusModeScreen>
 
   @override
   void dispose() {
+    _dwellTimer?.cancel();
+    _finalPageTimer?.cancel();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     _ambient.dispose();
     _pages.dispose();
@@ -98,53 +130,66 @@ class _FocusModeScreenState extends State<FocusModeScreen>
     ];
 
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: context.currentLanguage.direction,
       child: Scaffold(
         backgroundColor: deepest,
         body: Stack(
           fit: StackFit.expand,
           children: [
             // تدرج ليلي ينجرف ونجوم تتلألأ ببطء.
-            AnimatedBuilder(
-              animation: _ambient,
-              builder: (context, _) => CustomPaint(
-                painter: _NightSkyPainter(t: _ambient.value, sky: sky),
+            RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _ambient,
+                builder: (context, _) => CustomPaint(
+                  painter: _NightSkyPainter(t: _ambient.value, sky: sky),
+                ),
               ),
             ),
-            PageView.builder(
-              controller: _pages,
-              itemCount: _ayahs.length,
-              onPageChanged: (i) {
-                HapticFeedback.selectionClick();
-                // الانتقال من آخر آية في صفحة المصحف يُحسب الصفحة مقروءة، كما
-                // في المصحف.
-                if (i == _index + 1 && _ayahs[i].page != _ayahs[_index].page) {
-                  UserDataStore.instance.recordPageRead(_ayahs[_index].page);
-                }
-                setState(() => _index = i);
-              },
-              itemBuilder: (context, i) =>
-                  _AyahPanel(ayah: _ayahs[i], active: i == _index),
-            ),
-            // الشريط العلوي: الإغلاق، في جهة البداية بلغة الواجهة. الصفحات وحدها
-            // تبقى من اليمين كالمصحف.
             Directionality(
-              textDirection: context.currentLanguage.direction,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          tooltip: l10n.close,
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(AppIcons.x),
-                          color: Colors.white70,
-                        ),
-                      ],
-                    ),
+              textDirection: TextDirection.rtl,
+              child: PageView.builder(
+                controller: _pages,
+                itemCount: _ayahs.length,
+                onPageChanged: (i) {
+                  HapticFeedback.selectionClick();
+                  // الانتقال من آخر آية في صفحة المصحف بعد التمهّل يُحسب الصفحة مقروءة.
+                  final style = UserDataStore.instance.settings.mushafStyle;
+                  final prevPage = QcfLayout.instance.pageFor(
+                    _ayahs[_index],
+                    style,
+                  );
+                  final nextPage = QcfLayout.instance.pageFor(
+                    _ayahs[i],
+                    style,
+                  );
+                  if (nextPage != prevPage) {
+                    if (i == _index + 1 && _pageDwelled) {
+                      UserDataStore.instance.recordPageRead(prevPage);
+                    }
+                    _startPageDwell();
+                  }
+                  setState(() => _index = i);
+                  _scheduleFinalPageRead();
+                },
+                itemBuilder: (context, i) =>
+                    _AyahPanel(ayah: _ayahs[i], active: i == _index),
+              ),
+            ),
+            // الشريط العلوي: الإغلاق، في جهة البداية بلغة الواجهة.
+            Align(
+              alignment: Alignment.topCenter,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        tooltip: l10n.close,
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(AppIcons.x),
+                        color: Colors.white70,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -205,6 +250,7 @@ class _AyahPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final surah = QuranRepository.instance.getSurah(ayah.surahNumber);
     final font = UserDataStore.instance.quranFontFamily;
     const gold = Color(0xFFD9B566);
@@ -222,7 +268,10 @@ class _AyahPanel extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'سُورَةُ ${surah.name}',
+                l10n.isArabic
+                    ? 'سُورَةُ ${surah.name}'
+                    : l10n.surahTitle(surah.name),
+                textDirection: context.currentLanguage.direction,
                 style: const TextStyle(
                   fontFamily: AppTheme.appFontFamily,
                   color: gold,
@@ -237,22 +286,51 @@ class _AyahPanel extends StatelessWidget {
                 color: gold.withValues(alpha: 0.5),
               ),
               Expanded(
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: UserDataStore.instance.settings.mushafStyle ==
-                            MushafStyle.madinah
-                        ? QcfAyahText(
-                            ayah: ayah,
-                            fontSize: 30,
-                            color: const Color(0xFFF2EEE4),
-                            height: 2.1,
-                            shadows: const [
-                              Shadow(
-                                color: Color(0x66000000),
-                                blurRadius: 12,
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: UserDataStore.instance.settings.mushafStyle ==
+                              MushafStyle.madinah
+                          ? QcfAyahText(
+                              ayah: ayah,
+                              fontSize: 30,
+                              color: const Color(0xFFF2EEE4),
+                              height: 2.1,
+                              shadows: const [
+                                Shadow(
+                                  color: Color(0x66000000),
+                                  blurRadius: 12,
+                                ),
+                              ],
+                              fallback: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(text: _formatAyahText(ayah.text)),
+                                    TextSpan(
+                                      text:
+                                          ' ﴿${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}﴾',
+                                      style: const TextStyle(color: gold),
+                                    ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.center,
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(
+                                  fontFamily: font,
+                                  fontSize: 30,
+                                  height: 2.1,
+                                  color: const Color(0xFFF2EEE4),
+                                  shadows: const [
+                                    Shadow(
+                                      color: Color(0x66000000),
+                                      blurRadius: 12,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                            fallback: Text.rich(
+                            )
+                          : Text.rich(
                               TextSpan(
                                 children: [
                                   TextSpan(text: _formatAyahText(ayah.text)),
@@ -264,6 +342,7 @@ class _AyahPanel extends StatelessWidget {
                                 ],
                               ),
                               textAlign: TextAlign.center,
+                              textDirection: TextDirection.rtl,
                               style: TextStyle(
                                 fontFamily: font,
                                 fontSize: 30,
@@ -277,32 +356,7 @@ class _AyahPanel extends StatelessWidget {
                                 ],
                               ),
                             ),
-                          )
-                        : Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: _formatAyahText(ayah.text)),
-                                TextSpan(
-                                  text:
-                                      ' ﴿${ArabicSearchNormalizer.toArabicDigits(ayah.ayahNumber)}﴾',
-                                  style: const TextStyle(color: gold),
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: font,
-                              fontSize: 30,
-                              height: 2.1,
-                              color: const Color(0xFFF2EEE4),
-                              shadows: const [
-                                Shadow(
-                                  color: Color(0x66000000),
-                                  blurRadius: 12,
-                                ),
-                              ],
-                            ),
-                          ),
+                    ),
                   ),
                 ),
               ),

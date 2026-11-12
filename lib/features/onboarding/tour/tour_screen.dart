@@ -85,25 +85,34 @@ class _TourScreenState extends State<TourScreen>
     super.dispose();
   }
 
+  bool _finishing = false;
+
   Future<void> _finish() async {
-    unawaited(HapticFeedback.mediumImpact());
-    final navigator = Navigator.of(context);
-    await UserDataStore.instance.saveFeatureState(TourScreen._key, {
-      'seen': true,
-    });
-    final next = widget.next;
-    if (next == null) {
-      navigator.pop();
-      return;
+    if (_finishing) return;
+    _finishing = true;
+    try {
+      unawaited(HapticFeedback.mediumImpact());
+      final navigator = Navigator.of(context);
+      await UserDataStore.instance.saveFeatureState(TourScreen._key, {
+        'seen': true,
+      });
+      if (!mounted) return;
+      final next = widget.next;
+      if (next == null) {
+        navigator.pop();
+        return;
+      }
+      navigator.pushReplacement(
+        PageRouteBuilder<void>(
+          transitionDuration: const Duration(milliseconds: 500),
+          pageBuilder: (context, _, _) => next(context),
+          transitionsBuilder: (_, animation, _, child) =>
+              FadeTransition(opacity: animation, child: child),
+        ),
+      );
+    } finally {
+      if (mounted) _finishing = false;
     }
-    navigator.pushReplacement(
-      PageRouteBuilder<void>(
-        transitionDuration: const Duration(milliseconds: 500),
-        pageBuilder: (context, _, _) => next(context),
-        transitionsBuilder: (_, animation, _, child) =>
-            FadeTransition(opacity: animation, child: child),
-      ),
-    );
   }
 
   void _next(int count) {
@@ -157,12 +166,18 @@ class _TourScreenState extends State<TourScreen>
                         horizontal: 8,
                         vertical: 4,
                       ),
-                      child: AnimatedOpacity(
-                        opacity: last ? 0 : 1,
-                        duration: AppMotion.normal,
-                        child: TextButton(
-                          onPressed: last ? null : _finish,
-                          child: Text(l10n.tourSkip),
+                      child: IgnorePointer(
+                        ignoring: last,
+                        child: ExcludeSemantics(
+                          excluding: last,
+                          child: AnimatedOpacity(
+                            opacity: last ? 0 : 1,
+                            duration: AppMotion.normal,
+                            child: TextButton(
+                              onPressed: last ? null : _finish,
+                              child: Text(l10n.tourSkip),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -298,57 +313,67 @@ class _TourPageView extends StatelessWidget {
       builder: (context, p, child) => riseIn(p, child!, distance: 20),
       child: child,
     );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 440),
-                child: entering(
-                  0,
-                  SceneStory(
-                    playing: active,
-                    duration: page.duration,
-                    builder: (context, t) => page.scene(t),
+    final l10n = context.l10n;
+    return CustomScrollView(
+      slivers: [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 440),
+                      child: entering(
+                        0,
+                        SceneStory(
+                          playing: active,
+                          duration: page.duration,
+                          builder: (context, t) => page.scene(t),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 12),
+                entering(
+                  1,
+                  Text(
+                    page.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: page.ayahTitle
+                          ? tourQuranFamily
+                          : (l10n.isArabic ? 'Amiri' : null),
+                      fontSize: page.ayahTitle ? 24 : 26,
+                      height: page.ayahTitle ? 1.7 : null,
+                      fontWeight: page.ayahTitle ? null : FontWeight.bold,
+                      color: AppColors.textPrimary(context),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                entering(
+                  2,
+                  Text(
+                    page.body,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: l10n.isArabic ? AppTheme.appFontFamily : null,
+                      fontSize: 15,
+                      height: 1.6,
+                      color: AppColors.textSecondary(context),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
             ),
           ),
-          const SizedBox(height: 12),
-          entering(
-            1,
-            Text(
-              page.title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: page.ayahTitle ? tourQuranFamily : 'Amiri',
-                fontSize: page.ayahTitle ? 24 : 26,
-                height: page.ayahTitle ? 1.7 : null,
-                fontWeight: page.ayahTitle ? null : FontWeight.bold,
-                color: AppColors.textPrimary(context),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          entering(
-            2,
-            Text(
-              page.body,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: AppTheme.appFontFamily,
-                fontSize: 15,
-                height: 1.6,
-                color: AppColors.textSecondary(context),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

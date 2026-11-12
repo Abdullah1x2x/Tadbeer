@@ -84,11 +84,17 @@ class NoteItem {
     );
   }
 
-  NoteItem copyWith({String? title, String? content, DateTime? updatedAt}) {
+  static const Object _unset = Object();
+
+  NoteItem copyWith({
+    Object? title = _unset,
+    String? content,
+    DateTime? updatedAt,
+  }) {
     return NoteItem(
       id: id,
       type: type,
-      title: title ?? this.title,
+      title: identical(title, _unset) ? this.title : title as String?,
       content: content ?? this.content,
       ayahId: ayahId,
       surahNumber: surahNumber,
@@ -165,7 +171,10 @@ class NoteRepository {
   }
 
   /// يكرّر خاطرة موجودة وينشئ نسخة جديدة مطابقة لها.
-  Future<NoteItem> duplicateNote(NoteItem note) async {
-    return _store.duplicateNote(note);
+  Future<NoteItem> duplicateNote(
+    NoteItem note, {
+    String copyLabel = 'نسخة',
+  }) async {
+    return _store.duplicateNote(note, copyLabel: copyLabel);
   }
 }

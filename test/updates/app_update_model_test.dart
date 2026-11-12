@@ -27,6 +27,33 @@ void main() {
       expect(info.telegramUrl, 'https://t.me/tadbeerapp/42');
     });
 
+    test('parses linux_url, platforms.linux fallback, and sha256 hashes', () {
+      final flat = AppUpdateInfo.fromJson({
+        'latest_version': '1.2.0',
+        'linux_url': 'https://example.org/tadbeer-linux-x64.tar.gz',
+        'linux_sha256': 'abc123',
+        'apk_sha256s': {'arm64-v8a': 'def456', 'armeabi-v7a': 'v7hash'},
+      });
+      expect(flat.directLinuxUrl, 'https://example.org/tadbeer-linux-x64.tar.gz');
+      expect(flat.expectedSha256For(isLinux: true), 'abc123');
+      expect(flat.expectedSha256For(abi: 'arm64-v8a', isLinux: false), 'def456');
+      expect(flat.expectedSha256For(abi: 'armeabi-v7a', isLinux: false), 'v7hash');
+      // Same fallback as apkUrlFor: an unbuilt ABI downloads the arm64 file.
+      expect(flat.expectedSha256For(abi: 'x86_64', isLinux: false), 'def456');
+      expect(flat.expectedSha256For(isLinux: false), 'def456');
+
+      final nested = AppUpdateInfo.fromJson({
+        'platforms': {
+          'linux': {
+            'url': 'https://example.org/nested.tar.gz',
+            'sha256': 'nestedhash',
+          },
+        },
+      });
+      expect(nested.directLinuxUrl, 'https://example.org/nested.tar.gz');
+      expect(nested.expectedSha256For(isLinux: true), 'nestedhash');
+    });
+
     test('falls back to safe defaults when keys are missing or null', () {
       final info = AppUpdateInfo.fromJson({});
 
@@ -38,6 +65,7 @@ void main() {
       expect(info.changelog, '');
       expect(info.downloadUrl, contains('github.com'));
       expect(info.telegramUrl, 'https://t.me/tadbeerapp');
+      expect(info.directLinuxUrl, endsWith('tadbeer-linux-x64.tar.gz'));
     });
 
     group('isNewerThan', () {

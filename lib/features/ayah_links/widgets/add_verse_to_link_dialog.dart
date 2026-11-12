@@ -9,6 +9,7 @@ import '../../../core/utils/arabic_search_normalizer.dart';
 import '../../../data/quran/quran_models.dart';
 import '../../../data/quran/quran_repository.dart';
 import '../../quran/qcf/qcf_ayah_text.dart';
+import '../../quran/qcf/qcf_layout.dart';
 import '../../../data/models/ayah_link_model.dart';
 import '../data/ayah_link_repository.dart';
 
@@ -133,6 +134,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     if (_selectedMulti.isEmpty || _isAdding) return;
     setState(() => _isAdding = true);
     try {
+      final style = UserDataStore.instance.settings.mushafStyle;
       if (asMerged && _canMergeMulti()) {
         final first = _selectedMulti.first;
         final last = _selectedMulti.last;
@@ -142,7 +144,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
           surahNumber: first.surahNumber,
           ayahNumber: first.ayahNumber,
           toAyahNumber: last.ayahNumber,
-          page: first.page,
+          page: QcfLayout.instance.pageFor(first, style),
         );
       } else {
         final verses = [
@@ -151,7 +153,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
               ayahId: a.id,
               surahNumber: a.surahNumber,
               ayahNumber: a.ayahNumber,
-              page: a.page,
+              page: QcfLayout.instance.pageFor(a, style),
               addedAt: DateTime.now(),
             ),
         ];
@@ -186,6 +188,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
     final from = _fromAyahNumber ?? ayah.ayahNumber;
     final to = _toAyahNumber ?? ayah.ayahNumber;
     final startAyah = QuranRepository.instance.getAyah(ayah.surahNumber, from) ?? ayah;
+    final style = UserDataStore.instance.settings.mushafStyle;
     setState(() => _isAdding = true);
     try {
       final note = _noteController.text.trim();
@@ -195,7 +198,7 @@ class _AddVerseToLinkDialogState extends State<AddVerseToLinkDialog> {
         surahNumber: startAyah.surahNumber,
         ayahNumber: from,
         toAyahNumber: to > from ? to : null,
-        page: startAyah.page,
+        page: QcfLayout.instance.pageFor(startAyah, style),
         note: note.isEmpty ? null : note,
       );
       if (mounted) Navigator.pop(context, true);

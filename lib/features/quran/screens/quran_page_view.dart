@@ -192,6 +192,18 @@ class _QuranPageViewState extends State<QuranPageView> {
     if (next != _signature && mounted) setState(() => _signature = next);
   }
 
+  List<Ayah> _displayAyahs(int pageNumber, QuranPage page, MushafStyle style) {
+    if (style == MushafStyle.madinah) {
+      final repo = QuranRepository.instance;
+      final qcfAyahs = [
+        for (final (s, a) in QcfLayout.instance.ayahsStartingOn(pageNumber))
+          ?repo.getAyah(s, a),
+      ];
+      if (qcfAyahs.isNotEmpty) return qcfAyahs;
+    }
+    return page.ayahs;
+  }
+
   String _contentSignature() {
     final store = UserDataStore.instance;
     final s = store.settings;
@@ -202,7 +214,7 @@ class _QuranPageViewState extends State<QuranPageView> {
       '${s.quranFontSize}|${s.flowingTextScale}|${s.quranFontFamilyName}|${s.mushafPaperTone}|'
       '${s.mushafStyle}',
     );
-    for (final a in page.ayahs) {
+    for (final a in _displayAyahs(pageNumber, page, s.mushafStyle)) {
       final reflection = store.getTadbeer(a.surahNumber, a.ayahNumber);
       out
         ..write('|')
@@ -394,28 +406,25 @@ class _QuranPageViewState extends State<QuranPageView> {
         );
 
         final isOpeningPage = pageNumber <= 2;
-        final firstSurahNumber = quranPage.surahNumbers.isNotEmpty
-            ? quranPage.surahNumbers.first
-            : (quranPage.ayahs.isNotEmpty
-                  ? quranPage.ayahs.first.surahNumber
-                  : 1);
+        final style = storage.settings.mushafStyle;
+        final useQcf = style == MushafStyle.madinah;
+        final displayAyahs = _displayAyahs(pageNumber, quranPage, style);
+        final firstSurahNumber = (useQcf && displayAyahs.isNotEmpty)
+            ? displayAyahs.first.surahNumber
+            : (quranPage.surahNumbers.isNotEmpty
+                  ? quranPage.surahNumbers.first
+                  : (displayAyahs.isNotEmpty
+                        ? displayAyahs.first.surahNumber
+                        : 1));
         final surah = repo.getSurah(firstSurahNumber);
+        final displayJuzNumber = (useQcf && displayAyahs.isNotEmpty)
+            ? displayAyahs.first.juz
+            : quranPage.juzNumber;
         final surahBlocks = _groupAyahsBySurah(quranPage.ayahs);
 
-        final useQcf = storage.settings.mushafStyle == MushafStyle.madinah;
         // علامات الهامش من آيات الصفحة المعروضة: مصحف المدينة قد يقدّم آية أو
         // يؤخرها صفحة عن بيانات التطبيق.
-        final qcfAyahs = useQcf
-            ? [
-                for (final (s, a) in QcfLayout.instance.ayahsStartingOn(
-                  pageNumber,
-                ))
-                  ?repo.getAyah(s, a),
-              ]
-            : const <Ayah>[];
-        final marginStamps = MarginStampData.forAyahs(
-          qcfAyahs.isNotEmpty ? qcfAyahs : quranPage.ayahs,
-        );
+        final marginStamps = MarginStampData.forAyahs(displayAyahs);
 
         return Directionality(
           textDirection: TextDirection.rtl,
@@ -444,7 +453,7 @@ class _QuranPageViewState extends State<QuranPageView> {
                                 context,
                                 pageNumber: pageNumber,
                                 surah: surah,
-                                juzNumber: quranPage.juzNumber,
+                                juzNumber: displayJuzNumber,
                                 marginStamps: marginStamps,
                                 isDark: isDark,
                                 palette: palette,

@@ -82,7 +82,11 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
         widget.link.verses.length > oldWidget.link.verses.length ||
         widget.link.notes.length > oldWidget.link.notes.length;
     if (added && _positions.isNotEmpty) {
-      _placeNewAtViewportCenter();
+      if (widget.link.isManualLayout) {
+        _placeNewAtViewportCenter();
+      } else {
+        _computeAutoLayoutPositions(widget.link.verses, widget.link.notes);
+      }
       return;
     }
     if (oldWidget.link.verses.length != widget.link.verses.length ||
@@ -1182,7 +1186,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
                 size: const Size(_canvasSize, _canvasSize),
                 painter: _NetworkConnectionsPainter(
                   center: const Offset(_centerCoord, _centerCoord),
-                  positions: _positions,
+                  positions: Map.of(_positions),
                   threads: widget.link.hideThreads
                       ? const []
                       : widget.link.relationships,
@@ -1232,6 +1236,7 @@ class AyahLinkNetworkViewState extends State<AyahLinkNetworkView>
               for (final note in widget.link.notes)
                 if (_positions.containsKey(note.noteKey))
                   Positioned(
+                    key: ValueKey(note.noteKey),
                     left: _positions[note.noteKey]!.dx - (nodeWidth / 2),
                     top: _positions[note.noteKey]!.dy - 50,
                     child: _threadOutline(

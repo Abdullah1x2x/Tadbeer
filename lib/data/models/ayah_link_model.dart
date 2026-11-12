@@ -134,15 +134,23 @@ class AyahLinkVerse {
     );
   }
 
-  AyahLinkVerse copyWith({String? id, String? note, int? toAyahNumber}) {
+  static const Object _unset = Object();
+
+  AyahLinkVerse copyWith({
+    String? id,
+    Object? note = _unset,
+    Object? toAyahNumber = _unset,
+  }) {
     return AyahLinkVerse(
       id: id ?? this.id,
       ayahId: ayahId,
       surahNumber: surahNumber,
       ayahNumber: ayahNumber,
-      toAyahNumber: toAyahNumber ?? this.toAyahNumber,
+      toAyahNumber: identical(toAyahNumber, _unset)
+          ? this.toAyahNumber
+          : toAyahNumber as int?,
       page: page,
-      note: note ?? this.note,
+      note: identical(note, _unset) ? this.note : note as String?,
       addedAt: addedAt,
     );
   }
@@ -225,10 +233,16 @@ class AyahLinkNote {
     );
   }
 
-  AyahLinkNote copyWith({String? title, String? content, DateTime? updatedAt}) {
+  static const Object _unset = Object();
+
+  AyahLinkNote copyWith({
+    Object? title = _unset,
+    String? content,
+    DateTime? updatedAt,
+  }) {
     return AyahLinkNote(
       id: id,
-      title: title ?? this.title,
+      title: identical(title, _unset) ? this.title : title as String?,
       content: content ?? this.content,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -394,9 +408,11 @@ class AyahLinkItem {
     );
   }
 
+  static const Object _unset = Object();
+
   AyahLinkItem copyWith({
     String? title,
-    String? description,
+    Object? description = _unset,
     List<AyahLinkVerse>? verses,
     List<AyahLinkNote>? notes,
     Map<String, LinkNodePosition>? positions,
@@ -406,15 +422,17 @@ class AyahLinkItem {
     bool? hideThreads,
     bool? isManualLayout,
     String? lastViewMode,
-    double? panX,
-    double? panY,
-    double? zoomScale,
+    Object? panX = _unset,
+    Object? panY = _unset,
+    Object? zoomScale = _unset,
     DateTime? updatedAt,
   }) {
     return AyahLinkItem(
       id: id,
       title: title ?? this.title,
-      description: description ?? this.description,
+      description: identical(description, _unset)
+          ? this.description
+          : description as String?,
       verses: verses ?? this.verses,
       notes: notes ?? this.notes,
       positions: positions ?? this.positions,
@@ -424,9 +442,11 @@ class AyahLinkItem {
       hideThreads: hideThreads ?? this.hideThreads,
       isManualLayout: isManualLayout ?? this.isManualLayout,
       lastViewMode: lastViewMode ?? this.lastViewMode,
-      panX: panX ?? this.panX,
-      panY: panY ?? this.panY,
-      zoomScale: zoomScale ?? this.zoomScale,
+      panX: identical(panX, _unset) ? this.panX : panX as double?,
+      panY: identical(panY, _unset) ? this.panY : panY as double?,
+      zoomScale: identical(zoomScale, _unset)
+          ? this.zoomScale
+          : zoomScale as double?,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

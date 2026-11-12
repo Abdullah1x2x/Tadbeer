@@ -78,7 +78,7 @@ class BookRepository extends ChangeNotifier {
             if (!_sections.any((s) => s.name == secName)) {
               _sections.add(
                 BookSection(
-                  id: 'json_sec_${secName.hashCode.abs()}',
+                  id: 'json_sec_${stableBookIdHash(secName)}',
                   name: secName,
                   description: secItem['description'] as String? ?? '',
                 ),
@@ -94,7 +94,7 @@ class BookRepository extends ChangeNotifier {
                   final bookModel = BookModel(
                     id:
                         bookItem['id'] as String? ??
-                        'json_book_${secName}_${bTitle.hashCode.abs()}',
+                        'json_book_${secName}_${stableBookIdHash(bTitle)}',
                     title: bTitle,
                     subtitle: bookItem['subtitle'] as String? ?? '',
                     author: bookItem['author'] as String? ?? '',

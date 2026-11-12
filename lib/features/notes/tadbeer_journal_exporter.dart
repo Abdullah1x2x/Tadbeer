@@ -91,8 +91,9 @@ class TadbeerJournalExporter {
 
     final surahNames = <String>{};
     for (final n in filteredNotes) {
-      if (n.surahNumber != null) {
-        surahNames.add(repo.getSurah(n.surahNumber!).name);
+      final surahNum = n.surahNumber;
+      if (surahNum != null && surahNum >= 1 && surahNum <= 114) {
+        surahNames.add(repo.getSurah(surahNum).name);
       }
     }
     for (final t in filteredTadbeer) {
@@ -188,12 +189,23 @@ class TadbeerJournalExporter {
       buffer.writeln();
       for (final n in summary.notes) {
         if (n.isAyahNote) {
-          final surah = repo.getSurah(n.surahNumber!);
-          buffer.writeln(
-            '### سورة ${surah.name} — الآية ${ArabicSearchNormalizer.toArabicDigits(n.ayahNumber!)}',
-          );
-          if (n.ayahText != null) {
+          final surahNum = n.surahNumber;
+          final ayahNum = n.ayahNumber;
+          if (surahNum != null && surahNum >= 1 && surahNum <= 114) {
+            final surah = repo.getSurah(surahNum);
+            final ayahPart = ayahNum != null
+                ? ' — الآية ${ArabicSearchNormalizer.toArabicDigits(ayahNum)}'
+                : '';
+            buffer.writeln('### سورة ${surah.name}$ayahPart');
+          } else {
+            buffer.writeln('### ${n.title ?? 'خاطرة على آية'}');
+          }
+          if (n.ayahText != null && n.ayahText!.isNotEmpty) {
             buffer.writeln('> ﴿ ${n.ayahText} ﴾');
+            buffer.writeln();
+          }
+          if (n.title != null && n.title!.trim().isNotEmpty) {
+            buffer.writeln('**${n.title!.trim()}**');
             buffer.writeln();
           }
         } else {
@@ -526,7 +538,19 @@ class TadbeerJournalExporter {
               pw.SizedBox(height: 10),
               ...summary.notes.map((n) {
                 final isAyahNote = n.isAyahNote;
-                final surah = isAyahNote ? repo.getSurah(n.surahNumber!) : null;
+                final surahNum = n.surahNumber;
+                final ayahNum = n.ayahNumber;
+                final validSurah =
+                    isAyahNote &&
+                    surahNum != null &&
+                    surahNum >= 1 &&
+                    surahNum <= 114;
+                final surah = validSurah ? repo.getSurah(surahNum) : null;
+                final headerTitle = surah != null
+                    ? (ayahNum != null
+                          ? 'سورة ${surah.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(ayahNum)}'
+                          : 'سورة ${surah.name}')
+                    : (n.title ?? (isAyahNote ? 'خاطرة على آية' : 'خاطرة حرة'));
 
                 return pw.Container(
                   margin: const pw.EdgeInsets.only(bottom: 12),
@@ -544,9 +568,7 @@ class TadbeerJournalExporter {
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
                           pw.Text(
-                            isAyahNote
-                                ? 'سورة ${surah!.name} · الآية ${ArabicSearchNormalizer.toArabicDigits(n.ayahNumber!)}'
-                                : (n.title ?? 'خاطرة حرة'),
+                            headerTitle,
                             style: pw.TextStyle(
                               font: ttfBold,
                               fontSize: 11,

@@ -82,6 +82,24 @@ class _WalkthroughState extends State<_Walkthrough> {
     _Step(const [], l10n.walkTipTitle, l10n.walkTipBody),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final steps = _steps(context.l10n);
+      final target = steps[_index].targets.firstOrNull?.currentContext;
+      if (target != null && target.mounted) {
+        await Scrollable.ensureVisible(
+          target,
+          alignment: 0.5,
+          duration: AppMotion.duration(context, AppMotion.normal),
+        );
+        if (mounted) setState(() {});
+      }
+    });
+  }
+
   /// مكان [keys] على الشاشة، أو null إن لم يكن أيٌّ منها معروضاً.
   Rect? _rectOf(List<GlobalKey> keys) {
     Rect? rect;
@@ -107,7 +125,7 @@ class _WalkthroughState extends State<_Walkthrough> {
     }
     // الشاشات القصيرة تُمرّر، فيُجلب العنصر إلى المشهد قبل إضاءته.
     final target = steps[next].targets.firstOrNull?.currentContext;
-    if (target != null) {
+    if (target != null && target.mounted) {
       await Scrollable.ensureVisible(
         target,
         alignment: 0.5,
@@ -193,9 +211,10 @@ class _Bubble extends StatelessWidget {
     final l10n = context.l10n;
     final gold = AppColors.accentGold(context);
     final last = index == total - 1;
+    final maxBubbleHeight = MediaQuery.sizeOf(context).height * 0.45;
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 440),
+        constraints: BoxConstraints(maxWidth: 440, maxHeight: maxBubbleHeight),
         child: Container(
           padding: const EdgeInsets.fromLTRB(18, 14, 18, 8),
           decoration: BoxDecoration(
@@ -203,55 +222,57 @@ class _Bubble extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: gold.withValues(alpha: 0.6)),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.guideStep(index + 1, total),
-                style: TextStyle(
-                  fontFamily: AppTheme.appFontFamily,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: gold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                step.title,
-                style: TextStyle(
-                  fontFamily: 'Amiri',
-                  fontSize: 21,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary(context),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                step.body,
-                style: TextStyle(
-                  fontFamily: AppTheme.appFontFamily,
-                  fontSize: 14.5,
-                  height: 1.6,
-                  color: AppColors.textSecondary(context),
-                ),
-              ),
-              const SizedBox(height: 6),
-              // مع النص الكبير ينزل الزر تحت الآخر بدل أن يفيضا.
-              OverflowBar(
-                alignment: last
-                    ? MainAxisAlignment.end
-                    : MainAxisAlignment.spaceBetween,
-                children: [
-                  if (!last)
-                    TextButton(onPressed: onSkip, child: Text(l10n.tourSkip)),
-                  FilledButton(
-                    onPressed: onNext,
-                    child: Text(last ? l10n.tourGotIt : l10n.tourNext),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.guideStep(index + 1, total),
+                  style: TextStyle(
+                    fontFamily: l10n.isArabic ? AppTheme.appFontFamily : null,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: gold,
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  step.title,
+                  style: TextStyle(
+                    fontFamily: l10n.isArabic ? 'Amiri' : null,
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary(context),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  step.body,
+                  style: TextStyle(
+                    fontFamily: l10n.isArabic ? AppTheme.appFontFamily : null,
+                    fontSize: 14.5,
+                    height: 1.6,
+                    color: AppColors.textSecondary(context),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                // مع النص الكبير ينزل الزر تحت الآخر بدل أن يفيضا.
+                OverflowBar(
+                  alignment: last
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (!last)
+                      TextButton(onPressed: onSkip, child: Text(l10n.tourSkip)),
+                    FilledButton(
+                      onPressed: onNext,
+                      child: Text(last ? l10n.tourGotIt : l10n.tourNext),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

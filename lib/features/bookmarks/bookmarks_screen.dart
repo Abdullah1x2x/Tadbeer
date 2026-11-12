@@ -6,7 +6,11 @@ import '../../core/design_system/design_system.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
 import '../../data/models/bookmark_model.dart';
+import '../../data/models/user_settings_model.dart';
+import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
+import '../quran/qcf/qcf_layout.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -130,18 +134,25 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                               item.surahNumber,
                               item.ayahNumber,
                             );
+                            final style =
+                                UserDataStore.instance.settings.mushafStyle;
+                            final displayPage = ayah == null
+                                ? item.page
+                                : QcfLayout.instance.pageFor(ayah, style);
 
                             return RepaintBoundary(
                               child: _BookmarkTile(
                                 item: item,
                                 surahName: surah.name,
                                 ayahText: ayah?.text ?? '',
+                                ayah: ayah,
+                                displayPage: displayPage,
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) => QuranScreen(
-                                        initialPage: item.page,
+                                        initialPage: displayPage,
                                         targetSurahNumber: item.surahNumber,
                                         targetAyahNumber: item.ayahNumber,
                                       ),
@@ -185,6 +196,8 @@ class _BookmarkTile extends StatelessWidget {
   final BookmarkItem item;
   final String surahName;
   final String ayahText;
+  final Ayah? ayah;
+  final int? displayPage;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
@@ -192,6 +205,8 @@ class _BookmarkTile extends StatelessWidget {
     required this.item,
     required this.surahName,
     required this.ayahText,
+    this.ayah,
+    this.displayPage,
     required this.onTap,
     required this.onDelete,
   });
@@ -199,6 +214,24 @@ class _BookmarkTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final style = UserDataStore.instance.settings.mushafStyle;
+    final page =
+        displayPage ??
+        (ayah == null
+            ? item.page
+            : QcfLayout.instance.pageFor(ayah!, style));
+
+    Widget fallbackSnippet() => Text(
+      '﴿ $ayahText ﴾',
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      textDirection: TextDirection.rtl,
+      style: TextStyle(
+        fontFamily: UserDataStore.instance.quranFontFamily,
+        fontSize: 14,
+        color: isDark ? AppColors.nightQuranText : AppColors.dayQuranText,
+      ),
+    );
 
     return FuturisticCard(
       onTap: onTap,
@@ -258,8 +291,8 @@ class _BookmarkTile extends StatelessWidget {
                     FuturisticBadge(
                       label: context.l10n.pageAbbr(
                         context.currentLanguage == AppLanguage.arabic
-                            ? ArabicSearchNormalizer.toArabicDigits(item.page)
-                            : item.page,
+                            ? ArabicSearchNormalizer.toArabicDigits(page)
+                            : page,
                       ),
                       color: AppColors.cyberEmerald,
                       isCompact: true,
@@ -268,19 +301,19 @@ class _BookmarkTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 if (ayahText.isNotEmpty)
-                  Text(
-                    '﴿ $ayahText ﴾',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      fontFamily: 'AmiriQuran',
-                      fontSize: 14,
-                      color: isDark
-                          ? AppColors.nightQuranText
-                          : AppColors.dayQuranText,
-                    ),
-                  ),
+                  (style == MushafStyle.madinah && ayah != null)
+                      ? QcfAyahText(
+                          ayah: ayah!,
+                          fontSize: 14,
+                          height: 1.5,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          color: isDark
+                              ? AppColors.nightQuranText
+                              : AppColors.dayQuranText,
+                          fallback: fallbackSnippet(),
+                        )
+                      : fallbackSnippet(),
               ],
             ),
           ),

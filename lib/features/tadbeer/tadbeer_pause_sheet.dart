@@ -9,6 +9,7 @@ import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
 import '../../data/models/tadbeer_model.dart';
 import '../quran/qcf/qcf_ayah_text.dart';
+import '../quran/qcf/qcf_layout.dart';
 import 'tadbeer_questions.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -28,13 +29,13 @@ class TadbeerPauseSheet extends StatefulWidget {
     this.initialQuestion = 0,
   });
 
-  /// يفتح وقفة التدبر لوحةً سفلية.
-  static Future<void> show(
+  /// يفتح وقفة التدبر لوحةً سفلية، ويُرجع `true` إذا حُفظت إجابة غير فارغة.
+  static Future<bool?> show(
     BuildContext context,
     Ayah ayah, {
     int initialQuestion = 0,
   }) {
-    return showModalBottomSheet(
+    return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -49,9 +50,18 @@ class TadbeerPauseSheet extends StatefulWidget {
 
 class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
   int _currentQuestionIndex = 0; // 0..3, see TadbeerItem.questionKeys
-  late final List<String> _questions = TadbeerQuestions.forAyah(widget.ayah);
+  late List<String> _questions;
   final Map<int, TextEditingController> _controllers = {};
   bool _isSaving = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _questions = TadbeerQuestions.forAyah(
+      widget.ayah,
+      isArabic: context.l10n.isArabic,
+    );
+  }
 
   @override
   void initState() {
@@ -101,7 +111,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
     );
 
     if (mounted) {
-      Navigator.pop(context);
+      Navigator.pop(context, answers.isNotEmpty);
       final l10n = context.l10n;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -255,11 +265,17 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                           ),
                           Text(
                             l10n.pageAbbr(
-                              l10n.isArabic
-                                  ? ArabicSearchNormalizer.toArabicDigits(
-                                      widget.ayah.page,
-                                    )
-                                  : widget.ayah.page,
+                              (() {
+                                final page = QcfLayout.instance.pageFor(
+                                  widget.ayah,
+                                  UserDataStore.instance.settings.mushafStyle,
+                                );
+                                return l10n.isArabic
+                                    ? ArabicSearchNormalizer.toArabicDigits(
+                                        page,
+                                      )
+                                    : page;
+                              })(),
                             ),
                             style: TextStyle(
                               fontSize: 12,
@@ -283,6 +299,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                               fallback: Text(
                                 '﴿ ${widget.ayah.text} ﴾',
                                 textAlign: TextAlign.center,
+                                textDirection: TextDirection.rtl,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -299,6 +316,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                           : Text(
                               '﴿ ${widget.ayah.text} ﴾',
                               textAlign: TextAlign.center,
+                              textDirection: TextDirection.rtl,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -316,7 +334,7 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                 ),
                 const SizedBox(height: 16),
 
-                // مؤشر الأسئلة: نقاط واسم السؤال.
+                // مؤشر الأسئلة: نقاط قابلة للنقر واسم السؤال.
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -337,17 +355,27 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                                 .isNotEmpty ??
                             false);
 
-                        return Container(
-                          width: isCurrent ? 20 : 8,
-                          height: 8,
-                          margin: const EdgeInsets.only(left: 4),
-                          decoration: BoxDecoration(
-                            color: isCurrent
-                                ? AppColors.olive
-                                : isFilled
-                                ? AppColors.olive.withValues(alpha: 0.5)
-                                : Colors.grey.withValues(alpha: 0.25),
-                            borderRadius: BorderRadius.circular(4),
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () =>
+                              setState(() => _currentQuestionIndex = idx),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 2,
+                            ),
+                            child: Container(
+                              width: isCurrent ? 20 : 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: isCurrent
+                                    ? AppColors.olive
+                                    : isFilled
+                                    ? AppColors.olive.withValues(alpha: 0.5)
+                                    : Colors.grey.withValues(alpha: 0.25),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
                           ),
                         );
                       }),
@@ -367,8 +395,9 @@ class _TadbeerPauseSheetState extends State<TadbeerPauseSheet> {
                   ),
                   child: Text(
                     currentQuestion,
+                    textDirection: context.currentLanguage.direction,
                     style: TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
+                      fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       height: 1.4,

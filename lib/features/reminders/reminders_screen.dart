@@ -43,7 +43,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
       ),
     );
 
-    if (reminder != null && mounted) {
+    if (reminder != null && reminder.isEnabled && mounted) {
       final modeLabel = reminder.alertType == ReminderAlertType.alarm
           ? l10n.alarmAlert
           : l10n.notificationAlert;
@@ -51,8 +51,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
         SnackBar(
           content: Text(
             l10n.reminderScheduledSuccess(modeLabel),
-            style: const TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
+            style: TextStyle(
+              fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
             ),
           ),
           duration: const Duration(seconds: 2),
@@ -420,6 +420,7 @@ class _AddOrEditReminderDialogState extends State<_AddOrEditReminderDialog> {
   late ReminderRepeatMode _repeatMode;
   late ReminderAlertType _alertType;
   late final List<int> _selectedDays;
+  bool _saving = false;
 
   @override
   void initState() {
@@ -528,7 +529,7 @@ class _AddOrEditReminderDialogState extends State<_AddOrEditReminderDialog> {
                     );
                   },
                 );
-                if (picked != null) {
+                if (picked != null && mounted) {
                   setState(() => _selectedTime = picked);
                 }
               },
@@ -692,42 +693,60 @@ class _AddOrEditReminderDialogState extends State<_AddOrEditReminderDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(
             l10n.cancel,
-            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+            style: TextStyle(
+              fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+            ),
           ),
         ),
         ElevatedButton(
-          onPressed: () async {
-            final reminder = ReminderItem(
-              id: widget.existing?.id ?? const Uuid().v4(),
-              title: _titleController.text.trim().isNotEmpty
-                  ? _titleController.text.trim()
-                  : widget.defaultTitle,
-              hour: _selectedTime.hour,
-              minute: _selectedTime.minute,
-              repeatMode: _repeatMode,
-              alertType: _alertType,
-              selectedDays: _selectedDays,
-              isEnabled: widget.existing?.isEnabled ?? true,
-              createdAt: widget.existing?.createdAt ?? DateTime.now(),
-            );
+          onPressed: _saving
+              ? null
+              : () async {
+                  setState(() => _saving = true);
+                  try {
+                    final reminder = ReminderItem(
+                      id: widget.existing?.id ?? const Uuid().v4(),
+                      title: _titleController.text.trim().isNotEmpty
+                          ? _titleController.text.trim()
+                          : widget.defaultTitle,
+                      hour: _selectedTime.hour,
+                      minute: _selectedTime.minute,
+                      repeatMode: _repeatMode,
+                      alertType: _alertType,
+                      selectedDays: _selectedDays,
+                      isEnabled: widget.existing?.isEnabled ?? true,
+                      createdAt: widget.existing?.createdAt ?? DateTime.now(),
+                    );
 
-            await UserDataStore.instance.putReminder(reminder);
-            await LocalReminderService.instance.scheduleReminder(
-              reminder,
-            );
-            if (context.mounted) Navigator.pop(context, reminder);
-          },
+                    await UserDataStore.instance.putReminder(reminder);
+                    await LocalReminderService.instance.scheduleReminder(
+                      reminder,
+                    );
+                    if (context.mounted) Navigator.pop(context, reminder);
+                  } finally {
+                    if (mounted) setState(() => _saving = false);
+                  }
+                },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.olive,
             foregroundColor: Colors.white,
           ),
-          child: Text(
-            l10n.save,
-            style: const TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: _saving
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : Text(
+                  l10n.save,
+                  style: TextStyle(
+                    fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
         ),
       ],
     );
@@ -884,44 +903,64 @@ class _ReminderCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AnimatedDefaultTextStyle(
-                duration: AppMotion.normal,
-                curve: AppMotion.standard,
-                style: TextStyle(
-                  fontFamily: 'Amiri',
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: reminder.isEnabled
-                      ? (isDark ? AppColors.comsilk : AppColors.oliveDark)
-                      : (isDark ? AppColors.nightSubtitle : Colors.grey),
-                ),
-                child: Text(
-                  formatReminderTime(context, reminder.hour, reminder.minute),
-                ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
+          Flexible(
+            flex: 0,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 150),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(alertTypeIcon, size: 13, color: AppColors.cyberEmerald),
-                  const SizedBox(width: 4),
-                  Text(
-                    '$alertTypeLabel • $repeatSubtitle',
+                  AnimatedDefaultTextStyle(
+                    duration: AppMotion.normal,
+                    curve: AppMotion.standard,
                     style: TextStyle(
-                      fontFamily: 'IBMPlexSansArabic',
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.nightSubtitle
-                          : AppColors.daySubtitle,
+                      fontFamily: context.l10n.isArabic ? 'Amiri' : null,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: reminder.isEnabled
+                          ? (isDark ? AppColors.comsilk : AppColors.oliveDark)
+                          : (isDark ? AppColors.nightSubtitle : Colors.grey),
                     ),
+                    child: Text(
+                      formatReminderTime(
+                        context,
+                        reminder.hour,
+                        reminder.minute,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        alertTypeIcon,
+                        size: 13,
+                        color: AppColors.cyberEmerald,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          '$alertTypeLabel • $repeatSubtitle',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontFamily: context.l10n.isArabic
+                                ? 'IBMPlexSansArabic'
+                                : null,
+                            fontSize: 12,
+                            color: isDark
+                                ? AppColors.nightSubtitle
+                                : AppColors.daySubtitle,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
 
           Expanded(
             child: Column(

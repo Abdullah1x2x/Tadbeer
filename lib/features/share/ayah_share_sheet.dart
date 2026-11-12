@@ -93,24 +93,34 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
       }
       if (!mounted) return null;
     }
-    final boundary =
-        _cardKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-    final image = await boundary.toImage(pixelRatio: imageWidth / _cardWidth);
-    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    image.dispose();
-    return bytes?.buffer.asUint8List();
+    final boundaryObject = _cardKey.currentContext?.findRenderObject();
+    if (boundaryObject is! RenderRepaintBoundary) return null;
+    final image = await boundaryObject.toImage(
+      pixelRatio: imageWidth / _cardWidth,
+    );
+    try {
+      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+      return bytes?.buffer.asUint8List();
+    } finally {
+      image.dispose();
+    }
   }
 
   Future<void> _saveToPhotos() async {
     setState(() => _save = _SaveState.saving);
-    final bytes = await _capture();
-    final result = bytes == null
-        ? _SaveState.failed
-        : switch (await saveImageToPhotos(bytes, _fileName)) {
-            PhotoSaveResult.saved => _SaveState.saved,
-            PhotoSaveResult.denied => _SaveState.denied,
-            PhotoSaveResult.failed => _SaveState.failed,
-          };
+    var result = _SaveState.failed;
+    try {
+      final bytes = await _capture();
+      if (bytes != null) {
+        result = switch (await saveImageToPhotos(bytes, _fileName)) {
+          PhotoSaveResult.saved => _SaveState.saved,
+          PhotoSaveResult.denied => _SaveState.denied,
+          PhotoSaveResult.failed => _SaveState.failed,
+        };
+      }
+    } catch (_) {
+      result = _SaveState.failed;
+    }
     if (mounted) setState(() => _save = result);
   }
 
@@ -175,15 +185,12 @@ class _AyahShareSheetState extends State<AyahShareSheet> {
               child: FittedBox(
                 child: RepaintBoundary(
                   key: _cardKey,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    child: AyahCard(
-                      key: ValueKey('$_format-$_style-${AppColors.theme}'),
-                      ayah: widget.ayah,
-                      style: _style,
-                      width: _cardWidth,
-                      height: _cardWidth / aspect,
-                    ),
+                  child: AyahCard(
+                    key: ValueKey('$_format-$_style-${AppColors.theme}'),
+                    ayah: widget.ayah,
+                    style: _style,
+                    width: _cardWidth,
+                    height: _cardWidth / aspect,
                   ),
                 ),
               ),
@@ -332,24 +339,6 @@ class AyahCard extends StatelessWidget {
     final verseSize = height > width ? 28.0 : 24.0;
     final madinah =
         UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
-    final flowing = Text.rich(
-      TextSpan(
-        children: [
-          TextSpan(text: ayah.text),
-          TextSpan(
-            text: ' ﴿$ayahNumber﴾',
-            style: TextStyle(color: metaColor),
-          ),
-        ],
-      ),
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontFamily: quranFont,
-        fontSize: verseSize,
-        height: 2.0,
-        color: textColor,
-      ),
-    );
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -404,24 +393,71 @@ class AyahCard extends StatelessWidget {
                     ],
                   ),
                   Expanded(
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: width - 68),
-                          // بخط المصحف الذي اختاره القارئ: صفحات المدينة بعلامة
-                          // آيتها، أو خط النص المتدفق.
-                          child: madinah
-                              ? QcfAyahText(
-                                  ayah: ayah,
-                                  fontSize: verseSize,
-                                  height: 2.0,
-                                  color: textColor,
-                                  fallback: flowing,
-                                )
-                              : flowing,
-                        ),
-                      ),
+                    child: LayoutBuilder(
+                      builder: (context, box) {
+                        final maxWidth =
+                            (width - 68).clamp(0.0, box.maxWidth).toDouble();
+                        var fittedSize = verseSize;
+                        final span = TextSpan(
+                          children: [
+                            TextSpan(text: ayah.text),
+                            TextSpan(
+                              text: ' ﴿$ayahNumber﴾',
+                              style: TextStyle(color: metaColor),
+                            ),
+                          ],
+                        );
+                        if (box.maxHeight.isFinite && maxWidth > 0) {
+                          final painter = TextPainter(
+                            textAlign: TextAlign.center,
+                            textDirection: TextDirection.rtl,
+                          );
+                          while (fittedSize > 13.0) {
+                            painter.text = TextSpan(
+                              children: span.children,
+                              style: TextStyle(
+                                fontFamily: quranFont,
+                                fontSize: fittedSize,
+                                height: 2.0,
+                                color: textColor,
+                              ),
+                            );
+                            painter.layout(maxWidth: maxWidth);
+                            if (painter.height <= box.maxHeight) break;
+                            fittedSize -= 1.0;
+                          }
+                          painter.dispose();
+                        }
+                        final flowing = Text.rich(
+                          span,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: quranFont,
+                            fontSize: fittedSize,
+                            height: 2.0,
+                            color: textColor,
+                          ),
+                        );
+                        return Center(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: maxWidth),
+                              // بخط المصحف الذي اختاره القارئ: صفحات المدينة
+                              // بعلامة آيتها، أو خط النص المتدفق.
+                              child: madinah
+                                  ? QcfAyahText(
+                                      ayah: ayah,
+                                      fontSize: fittedSize,
+                                      height: 2.0,
+                                      color: textColor,
+                                      fallback: flowing,
+                                    )
+                                  : flowing,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   // توقيع التطبيق.

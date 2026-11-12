@@ -365,7 +365,7 @@ class _GuideSheetState extends State<_GuideSheet> {
                                 steps[i].title,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontFamily: 'Amiri',
+                                  fontFamily: l10n.isArabic ? 'Amiri' : null,
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textPrimary(context),

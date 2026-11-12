@@ -130,17 +130,20 @@ class AudioBar extends StatelessWidget {
                             color: audio.continuous ? primary : gold,
                           ),
                           const SizedBox(width: 8),
-                          Expanded(
+                          Flexible(
                             child: Text(
                               audio.continuous
                                   ? l10n.modeContinuous
                                   : l10n.modeSingleAyah,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
+                          const SizedBox(width: 8),
                           Text(
                             audio.continuous
                                 ? l10n.switchToSingleMode
@@ -169,16 +172,20 @@ class AudioBar extends StatelessWidget {
                                   : Colors.transparent,
                             ),
                             const SizedBox(width: 8),
-                            Text(
-                              n == 1
-                                  ? l10n.noRepeat1x
-                                  : l10n.repeatAyahTimes(l10n.digits(n)),
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: audio.repeat == n
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: audio.repeat == n ? primary : null,
+                            Flexible(
+                              child: Text(
+                                n == 1
+                                    ? l10n.noRepeat1x
+                                    : l10n.repeatAyahTimes(l10n.digits(n)),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: audio.repeat == n
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: audio.repeat == n ? primary : null,
+                                ),
                               ),
                             ),
                           ],

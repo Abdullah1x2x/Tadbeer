@@ -58,7 +58,16 @@ class TadbeerWidgetProvider : HomeWidgetProvider() {
                 views.setTextViewText(R.id.widget_ref, ayah.optString("r"))
                 val image = widgetData.getString("img_${ayah.optInt("s")}_${ayah.optInt("a")}", null)
                     ?.takeIf { File(it).exists() }
-                    ?.let { BitmapFactory.decodeFile(it) }
+                    ?.let { path ->
+                        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                        BitmapFactory.decodeFile(path, bounds)
+                        var sample = 1
+                        while (bounds.outWidth / sample > 1200 || bounds.outHeight / sample > 800) {
+                            sample *= 2
+                        }
+                        val opts = BitmapFactory.Options().apply { inSampleSize = sample }
+                        BitmapFactory.decodeFile(path, opts)
+                    }
                 if (image != null) {
                     views.setImageViewBitmap(R.id.widget_ayah_img, image)
                     views.setViewVisibility(R.id.widget_ayah_img, View.VISIBLE)
@@ -90,17 +99,19 @@ class TadbeerWidgetProvider : HomeWidgetProvider() {
                 )
                 views.setTextViewText(R.id.widget_khatma_title, widgetData.getString("khatma_title", ""))
                 val portionText = if (left == 0) {
-                    widgetData.getString("portion_done", "")
+                    widgetData.getString("portion_done", "").orEmpty()
                 } else {
-                    widgetData.getString("portion_template", "")
-                        ?.replace("{left}", number(left))
-                        ?.replace("{portion}", number(portion))
+                    widgetData.getString("portion_template", "").orEmpty()
+                        .replace("{left}", number(left))
+                        .replace("{portion}", number(portion))
                 }
                 val page = widgetData.getString("khatma_page", "").orEmpty()
-                views.setTextViewText(
-                    R.id.widget_portion,
-                    if (page.isEmpty()) portionText else "$portionText · $page",
-                )
+                val summary = when {
+                    portionText.isEmpty() -> page
+                    page.isEmpty() -> portionText
+                    else -> "$portionText · $page"
+                }
+                views.setTextViewText(R.id.widget_portion, summary)
                 views.setTextViewText(R.id.widget_read, widgetData.getString("read_label", ""))
                 views.setOnClickPendingIntent(R.id.widget_read, open(context, "tadbeer://khatma"))
             }

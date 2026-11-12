@@ -80,8 +80,21 @@ mixin _JourneySection on _StoreState {
   Future<void> cancelKhatma() => _saveJourney(_journey.cancelPlan());
 
   Future<void> _saveJourney(ReadingJourney journey) async {
+    final hadPlan = _journey.plan != null;
     _journey = journey;
+    ReminderItem? disabledPortion;
+    if (hadPlan && journey.plan == null) {
+      final idx = _reminders.indexWhere((r) => r.id == 'khatma_daily_portion');
+      if (idx != -1 && _reminders[idx].isEnabled) {
+        disabledPortion = _reminders[idx].copyWith(isEnabled: false);
+        _reminders[idx] = disabledPortion;
+      }
+    }
     notifyListeners();
-    await UserDatabase.instance.saveAppState(_journeyKey, journey.toJson());
+    final userDb = UserDatabase.instance;
+    await userDb.saveAppState(_journeyKey, journey.toJson());
+    if (disabledPortion != null && userDb.isOpen) {
+      await userDb.insertOrUpdateReminder(disabledPortion);
+    }
   }
 }

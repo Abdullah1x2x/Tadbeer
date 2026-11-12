@@ -1,5 +1,7 @@
 import '../../../data/quran/quran_repository.dart';
 import '../../../data/models/ayah_link_model.dart';
+import '../../../data/storage/user_data_store.dart';
+import '../../quran/qcf/qcf_layout.dart';
 import 'ayah_link_repository.dart';
 
 /// آية في مسار مقترح، مع فائدتها التدبرية.
@@ -711,24 +713,32 @@ class CuratedPathwaysRegistry {
   }) async {
     final linkRepo = repo ?? AyahLinkRepository();
     final quranRepo = QuranRepository.instance;
+    final style = UserDataStore.instance.settings.mushafStyle;
 
     final created = await linkRepo.createLink(
       title: pathway.title,
       description: pathway.description,
     );
 
+    final now = DateTime.now();
+    final verses = <AyahLinkVerse>[];
     for (final v in pathway.verses) {
       final ayah = quranRepo.getAyah(v.surah, v.ayah);
       if (ayah != null) {
-        await linkRepo.addVerseToLink(
-          created.id,
-          ayahId: ayah.id,
-          surahNumber: v.surah,
-          ayahNumber: v.ayah,
-          page: ayah.page,
-          note: v.note,
+        verses.add(
+          AyahLinkVerse(
+            ayahId: ayah.id,
+            surahNumber: v.surah,
+            ayahNumber: v.ayah,
+            page: QcfLayout.instance.pageFor(ayah, style),
+            note: v.note,
+            addedAt: now,
+          ),
         );
       }
+    }
+    if (verses.isNotEmpty) {
+      await linkRepo.addVersesToLink(created.id, verses);
     }
 
     return linkRepo.getLink(created.id) ?? created;

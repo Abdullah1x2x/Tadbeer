@@ -79,7 +79,7 @@ extension _BookReaderViews on _BookReaderScreenState {
                                         ? AppColors.darkBorder
                                         : AppColors.lightBorder),
                               child: Text(
-                                '${index + 1}',
+                                context.l10n.digits(index + 1),
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: isCurrent
@@ -94,7 +94,9 @@ extension _BookReaderViews on _BookReaderScreenState {
                               chap.title,
                               textDirection: directionOfText(chap.title),
                               style: TextStyle(
-                                fontFamily: 'IBMPlexSansArabic',
+                                fontFamily: context.l10n.isArabic
+                                    ? 'IBMPlexSansArabic'
+                                    : null,
                                 fontSize: 15,
                                 fontWeight: isCurrent
                                     ? FontWeight.bold
@@ -134,6 +136,9 @@ extension _BookReaderViews on _BookReaderScreenState {
   Future<void> _shareOrOpenFile() async {
     final path = widget.book.filePath;
     if (path == null) return;
+    final signature = context.l10n.isArabic
+        ? 'تطبيق تَدبِير'
+        : context.l10n.appName;
 
     try {
       File? fileToShare;
@@ -168,7 +173,7 @@ extension _BookReaderViews on _BookReaderScreenState {
           context,
           file: fileToShare,
           fileName: targetFileName,
-          text: '${widget.book.title} — تطبيق تَدبِير',
+          text: '${widget.book.title} — $signature',
         );
       } else {
         if (mounted) {
@@ -355,7 +360,8 @@ extension _BookReaderViews on _BookReaderScreenState {
                             child: OutlinedButton.icon(
                               icon: Icon(AppIcons.caretLeft, size: 18),
                               label: Text(
-                                widget.book.id == 'sahifah_sajjadiyah'
+                                widget.book.id == 'heritage_sahifah_sajjadiyah' ||
+                                        widget.book.id == 'sahifah_sajjadiyah'
                                     ? context.l10n.previousDua
                                     : context.l10n.previousSection,
                               ),
@@ -376,7 +382,8 @@ extension _BookReaderViews on _BookReaderScreenState {
                               ),
                               icon: Icon(AppIcons.caretRight, size: 18),
                               label: Text(
-                                widget.book.id == 'sahifah_sajjadiyah'
+                                widget.book.id == 'heritage_sahifah_sajjadiyah' ||
+                                        widget.book.id == 'sahifah_sajjadiyah'
                                     ? context.l10n.nextDua
                                     : context.l10n.nextSection,
                               ),

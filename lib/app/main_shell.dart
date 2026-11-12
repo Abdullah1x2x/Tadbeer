@@ -384,10 +384,12 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
             final primary = Theme.of(context).colorScheme.primary;
 
             if (state.isDownloading && state.updateInfo != null) {
-              final percent = (state.progress != null)
+              final totalBytes = state.progress?.totalBytes ?? 0;
+              final percent = (state.progress != null && totalBytes > 0)
                   ? (state.progress!.progress * 100).toInt()
                   : 0;
-              final progressVal = state.progress?.progress;
+              final progressVal =
+                  totalBytes > 0 ? state.progress?.progress : null;
 
               return Container(
                 margin: const EdgeInsets.fromLTRB(16, 0, 16, 6),
@@ -425,17 +427,21 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                context.l10n.downloadingUpdate,
-                                style: const TextStyle(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Text(
+                                  context.l10n.downloadingUpdate,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
+                              const SizedBox(width: 6),
                               Text(
-                                '$percent%',
+                                '${context.l10n.digits(percent)}%',
                                 style: TextStyle(
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.bold,
@@ -532,8 +538,19 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        AppUpdateService.instance.installCurrentDownloadedApk();
+                      onPressed: () async {
+                        final ok = await AppUpdateService.instance
+                            .installCurrentDownloadedApk();
+                        if (!ok && context.mounted) {
+                          ScaffoldMessenger.maybeOf(context)
+                            ?..clearSnackBars()
+                            ..showSnackBar(
+                              SnackBar(
+                                content: Text(context.l10n.downloadFailed),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,

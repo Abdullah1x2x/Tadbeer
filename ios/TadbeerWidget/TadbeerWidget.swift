@@ -24,6 +24,7 @@ struct TadbeerEntry: TimelineEntry {
     let reflectLabel: String
     /// The app's colour theme, which tints the glass.
     let theme: String
+    let isArabic: Bool
     let khatma: (title: String, progress: Int, portion: String, readLabel: String)?
 }
 
@@ -38,7 +39,7 @@ struct TadbeerProvider: TimelineProvider {
     func placeholder(in context: Context) -> TadbeerEntry {
         TadbeerEntry(
             date: Date(), title: "آية اليوم", ayah: "أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ",
-            reference: "", image: nil, verse: "", reflectLabel: "تدبّرها", theme: "navy", khatma: nil
+            reference: "", image: nil, verse: "", reflectLabel: "تدبّرها", theme: "navy", isArabic: true, khatma: nil
         )
     }
 
@@ -129,6 +130,7 @@ struct TadbeerProvider: TimelineProvider {
             verse: "s=\(ayah["s"] as? Int ?? 0)&a=\(ayah["a"] as? Int ?? 0)",
             reflectLabel: data?.string(forKey: "reflect_label") ?? "تدبّرها",
             theme: data?.string(forKey: "theme") ?? "navy",
+            isArabic: arabic,
             khatma: khatma
         )
     }
@@ -169,7 +171,9 @@ struct TadbeerWidgetView: View {
                         Circle().trim(from: 0, to: CGFloat(k.progress) / 100)
                             .stroke(gold, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                             .rotationEffect(.degrees(-90))
-                        Text("\(k.progress)٪").font(.system(size: 10, weight: .bold)).foregroundColor(gold)
+                        Text(entry.isArabic ? "\(k.progress)٪" : "\(k.progress)%")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(gold)
                     }
                     .frame(width: 40, height: 40)
                     VStack(alignment: .leading, spacing: 2) {
@@ -186,7 +190,7 @@ struct TadbeerWidgetView: View {
             }
         }
         .padding(14)
-        .environment(\.layoutDirection, .rightToLeft)
+        .environment(\.layoutDirection, entry.isArabic ? .rightToLeft : .leftToRight)
         .widgetURL(URL(string: "tadbeer://home?homeWidget"))
         .widgetBackground(Glass(theme: entry.theme))
     }

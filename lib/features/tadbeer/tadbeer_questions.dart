@@ -73,23 +73,26 @@ abstract final class TadbeerQuestions {
   static Set<String>? _duaKeys;
 
   /// آيات أدعية القرآن في التطبيق، بصيغة `سورة:آية`.
-  static Set<String> get _duas => _duaKeys ??= {
-    for (final d in QuranDuasRepository.instance.getDuas(
-      quranRepository: QuranRepository.instance,
-    ))
-      for (var a = d.ayahNumber; a <= d.ayahEndNumber; a++)
-        '${d.surahNumber}:$a',
-  };
+  static Set<String> get _duas {
+    if (_duaKeys != null) return _duaKeys!;
+    if (!QuranRepository.instance.isLoaded) return const {};
+    return _duaKeys = {
+      for (final d in QuranDuasRepository.instance.getDuas(
+        quranRepository: QuranRepository.instance,
+      ))
+        for (var a = d.ayahNumber; a <= d.ayahEndNumber; a++)
+          '${d.surahNumber}:$a',
+    };
+  }
 
   static AyahKind kindOf(Ayah ayah) {
     var text = _n(ayah.text);
     if (text.startsWith(_basmala)) {
       text = text.substring(_basmala.length).trim();
     }
-    final words = text.split(RegExp(r'\s+'));
+    final words = text.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).toList();
     if (_duas.contains('${ayah.surahNumber}:${ayah.ayahNumber}') ||
-        words.first == 'ربنا' ||
-        words.first == 'رب') {
+        (words.isNotEmpty && (words.first == 'ربنا' || words.first == 'رب'))) {
       return AyahKind.dua;
     }
     if (words.any(_promiseWords.contains)) return AyahKind.promise;
@@ -98,15 +101,21 @@ abstract final class TadbeerQuestions {
   }
 
   /// الأسئلة الأربعة لهذه الآية، بترتيب [TadbeerItem.questionKeys].
-  static List<String> forAyah(Ayah? ayah) {
-    final q = [...TadbeerItem.questions];
+  static List<String> forAyah(Ayah? ayah, {bool isArabic = true}) {
+    final q = [...TadbeerItem.questionsFor(isArabic: isArabic)];
     switch (ayah == null ? AyahKind.general : kindOf(ayah)) {
       case AyahKind.dua:
-        q[1] = 'ما الذي تحتاجه أنت من هذا الدعاء؟';
+        q[1] = isArabic
+            ? 'ما الذي تحتاجه أنت من هذا الدعاء؟'
+            : 'What do you need most from this supplication?';
       case AyahKind.story:
-        q[1] = 'ما الذي يشبه حالك في هذا الموقف؟';
+        q[1] = isArabic
+            ? 'ما الذي يشبه حالك في هذا الموقف؟'
+            : 'What in this scene resembles your situation?';
       case AyahKind.promise:
-        q[2] = 'أين أنت من هذه الآية؟';
+        q[2] = isArabic
+            ? 'أين أنت من هذه الآية؟'
+            : 'Where do you stand in relation to this ayah?';
       case AyahKind.general:
         break;
     }

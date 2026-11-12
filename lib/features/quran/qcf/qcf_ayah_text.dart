@@ -18,8 +18,14 @@ class QcfGlyphs {
   /// كلمات [ayah] في التخطيط.
   static List<QcfWord> _words(Ayah ayah) {
     final layout = QcfLayout.instance;
+    final qcfPage = layout.pageOf(ayah.surahNumber, ayah.ayahNumber);
     // صفحات الطبعة الحديثة قد تقدّم آية أو تؤخرها عن صفحة بيانات التطبيق.
-    for (final page in [ayah.page, ayah.page - 1, ayah.page + 1]) {
+    for (final page in <int>{
+      ?qcfPage,
+      ayah.page,
+      ayah.page - 1,
+      ayah.page + 1,
+    }) {
       final words = [
         for (final line in layout.page(page))
           for (final word in line.words)

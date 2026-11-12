@@ -7,8 +7,9 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:home_widget/home_widget.dart';
 
 import '../../app/localization.dart';
@@ -33,6 +34,7 @@ class HomeWidgetSync {
   static const quarters = 2 * 96;
 
   static String? _lastKey;
+  static AppLifecycleListener? _lifecycle;
 
   /// رقم ربع الساعة الذي يقع فيه [time]، محسوباً من 2020-01-01 بالتوقيت المحلي؛
   /// الكود الأصلي للودجت يحسب بنفس الطريقة.
@@ -102,6 +104,8 @@ class HomeWidgetSync {
 
   /// يرسل البيانات إلى الودجت إن تغيّرت منذ آخر مرة.
   static Future<void> update({DateTime? now}) async {
+    // ودجت الشاشة الرئيسية لأندرويد و iOS وحدهما.
+    if (!Platform.isAndroid && !Platform.isIOS) return;
     final at = now ?? DateTime.now();
     final store = UserDataStore.instance;
     final data = payload(store, at);
@@ -114,7 +118,7 @@ class HomeWidgetSync {
         await HomeWidget.saveWidgetData(entry.key, entry.value);
       }
       await HomeWidget.updateWidget(androidName: androidName, iOSName: iOSName);
-      unawaited(_renderAyahImages(at, store.settings.languageCode));
+      unawaited(_renderAyahImages(at));
     } catch (e) {
       // لا دعم للودجت على هذه المنصة (اختبارات أو سطح مكتب).
       debugPrint('Home widget update skipped: $e');
@@ -131,7 +135,7 @@ class HomeWidgetSync {
 
   /// يرسم كل آية من الأرباع المخزنة بالخط القرآني، مرة لكل آية، ويحذف الصور
   /// التي لم تعد لازمة.
-  static Future<void> _renderAyahImages(DateTime now, String language) async {
+  static Future<void> _renderAyahImages(DateTime now) async {
     if (_rendering) return;
     _rendering = true;
     try {
@@ -139,7 +143,7 @@ class HomeWidgetSync {
       final settings = UserDataStore.instance.settings;
       final madinah = settings.mushafStyle == MushafStyle.madinah;
       final font = UserDataStore.instance.quranFontFamily;
-      final stamp = '$_imageStyle-$language-${madinah ? 'madinah' : font}';
+      final stamp = '$_imageStyle-${madinah ? 'madinah' : font}';
       final sameStyle =
           await HomeWidget.getWidgetData<String>('img_stamp') == stamp;
       final previous =
@@ -170,7 +174,7 @@ class HomeWidgetSync {
           pixelRatio: 2.5,
         );
         // تُعرض الأولى فور وجودها.
-        if (++drew == 2) {
+        if (++drew == 1) {
           await HomeWidget.updateWidget(
             androidName: androidName,
             iOSName: iOSName,
@@ -183,7 +187,7 @@ class HomeWidgetSync {
       }
       await HomeWidget.saveWidgetData('img_keys', wanted.keys.join(','));
       await HomeWidget.saveWidgetData('img_stamp', stamp);
-      if (drew > 0) {
+      if (drew > 1) {
         await HomeWidget.updateWidget(
           androidName: androidName,
           iOSName: iOSName,
@@ -205,6 +209,7 @@ class HomeWidgetSync {
       _debounce?.cancel();
       _debounce = Timer(const Duration(milliseconds: 1500), update);
     });
+    _lifecycle ??= AppLifecycleListener(onResume: update);
     update();
   }
 }

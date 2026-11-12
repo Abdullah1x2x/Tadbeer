@@ -5,6 +5,8 @@
 /// و`home` الشاشة الرئيسية.
 library;
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 
@@ -22,6 +24,8 @@ class WidgetLinks {
   /// يعالج الرابط الذي فُتح به التطبيق وأي رابط لاحق؛ يُستدعى بعد أول إطار حين
   /// يوجد الـ navigator.
   static void attach() {
+    // لا ودجت على سطح المكتب، وقناته غير موجودة هناك.
+    if (!Platform.isAndroid && !Platform.isIOS) return;
     HomeWidget.initiallyLaunchedFromHomeWidget().then(open).catchError((_) {});
     HomeWidget.widgetClicked.listen(open, onError: (_) {});
   }

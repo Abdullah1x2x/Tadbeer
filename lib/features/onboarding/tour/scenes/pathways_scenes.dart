@@ -56,7 +56,7 @@ class PathwayDaysScene extends StatelessWidget {
                                   : c.muted.withValues(alpha: 0.25),
                             ),
                           ),
-                        _day(c, d, done, advance),
+                        _day(c, l10n, d, done, advance),
                       ],
                     ],
                   ),
@@ -69,7 +69,13 @@ class PathwayDaysScene extends StatelessWidget {
     );
   }
 
-  Widget _day(_Palette c, int d, int done, double advance) {
+  Widget _day(
+    _Palette c,
+    AppStrings l10n,
+    int d,
+    int done,
+    double advance,
+  ) {
     final isDone = d < done - 1 || (d == done - 1 && advance > 0.5);
     final isNext = d == done - 1 + (advance > 0.5 ? 1 : 0);
     final glow = isNext ? math.sin(advance * math.pi) : 0.0;
@@ -96,7 +102,7 @@ class PathwayDaysScene extends StatelessWidget {
       child: isDone
           ? const Icon(AppIcons.check, size: 14, color: Colors.white)
           : Text(
-              ArabicSearchNormalizer.toArabicDigits(d + 1),
+              l10n.digits(d + 1),
               style: _ui(10, isNext ? Colors.white : c.muted, bold: true),
             ),
     );

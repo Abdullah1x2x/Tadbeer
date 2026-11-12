@@ -98,6 +98,18 @@ class TadbeerItem {
     if (commitmentAsked) 'commitmentAsked': true,
   };
 
+  /// النص الإنجليزي للأسئلة الأربعة بالترتيب نفسه ([questionKeys]).
+  static const List<String> questionsEn = [
+    'What stopped you in this ayah?',
+    'What does this ayah say to you?',
+    'What feeling did it stir in you?',
+    'What action does this ayah call you to?',
+  ];
+
+  /// يعيد الأسئلة المناسبة للغة العرض دون تغيير [questionKeys].
+  static List<String> questionsFor({bool isArabic = true}) =>
+      isArabic ? questions : questionsEn;
+
   factory TadbeerItem.fromJson(Map<String, dynamic> json) {
     final rawAnswers = json['answers'] as Map<String, dynamic>? ?? {};
     final parsedAnswers = <int, String>{};

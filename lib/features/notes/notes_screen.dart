@@ -5,6 +5,7 @@ import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
+import '../../core/utils/text_direction.dart';
 import 'note_pdf_exporter.dart';
 import 'tadbeer_journal_exporter.dart';
 import '../../data/models/note_model.dart';
@@ -260,10 +261,13 @@ class _NotesScreenState extends State<NotesScreen> {
 
   /// يكرّر الخاطرة وينشئ نسخة جديدة مطابقة لها.
   Future<void> _duplicateNote(NoteItem note) async {
+    final l10n = context.l10n;
     try {
-      final duplicated = await UserDataStore.instance.duplicateNote(note);
+      final duplicated = await UserDataStore.instance.duplicateNote(
+        note,
+        copyLabel: l10n.copyLabel,
+      );
       if (mounted) {
-        final l10n = context.l10n;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -417,12 +421,11 @@ class _NoteCard extends StatelessWidget {
                       if (val == 'delete') onDelete();
                     },
                     itemBuilder: (_) => [
-                      if (!note.isAyahNote)
-                        appMenuItem(
-                          value: 'edit',
-                          icon: AppIcons.pencilSimpleFill,
-                          label: l10n.edit,
-                        ),
+                      appMenuItem(
+                        value: 'edit',
+                        icon: AppIcons.pencilSimpleFill,
+                        label: l10n.edit,
+                      ),
                       appMenuItem(
                         value: 'duplicate',
                         icon: AppIcons.copy,
@@ -464,7 +467,10 @@ class _NoteCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (note.surahNumber != null && note.ayahNumber != null) ...[
+                  if (note.surahNumber != null &&
+                      note.surahNumber! >= 1 &&
+                      note.surahNumber! <= 114 &&
+                      note.ayahNumber != null) ...[
                     Builder(
                       builder: (ctx) {
                         final surah = QuranRepository.instance.getSurah(
@@ -473,17 +479,10 @@ class _NoteCard extends StatelessWidget {
                         return Text(
                           l10n.surahAyahPageReference(
                             surah.name,
-                            context.currentLanguage == AppLanguage.arabic
-                                ? ArabicSearchNormalizer.toArabicDigits(
-                                    note.ayahNumber!,
-                                  )
-                                : note.ayahNumber!,
-                            context.currentLanguage == AppLanguage.arabic
-                                ? ArabicSearchNormalizer.toArabicDigits(
-                                    note.page ?? 1,
-                                  )
-                                : (note.page ?? 1),
+                            note.ayahNumber!,
+                            note.page ?? 1,
                           ),
+                          textDirection: context.currentLanguage.direction,
                           style: TextStyle(
                             fontFamily:
                                 context.currentLanguage == AppLanguage.arabic
@@ -500,10 +499,19 @@ class _NoteCard extends StatelessWidget {
                   ],
                   Builder(
                     builder: (ctx) {
-                      final ayah = note.surahNumber != null && note.ayahNumber != null
-                          ? QuranRepository.instance.getAyah(note.surahNumber!, note.ayahNumber!)
+                      final ayah =
+                          note.surahNumber != null &&
+                              note.surahNumber! >= 1 &&
+                              note.surahNumber! <= 114 &&
+                              note.ayahNumber != null
+                          ? QuranRepository.instance.getAyah(
+                              note.surahNumber!,
+                              note.ayahNumber!,
+                            )
                           : null;
-                      final isMadinah = UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
+                      final isMadinah =
+                          UserDataStore.instance.settings.mushafStyle ==
+                          MushafStyle.madinah;
                       final fallback = Text(
                         '﴿ ${note.ayahText} ﴾',
                         textDirection: TextDirection.rtl,
@@ -536,11 +544,13 @@ class _NoteCard extends StatelessWidget {
             const SizedBox(height: 10),
           ],
 
-          if (!note.isAyahNote &&
-              note.title != null &&
-              note.title!.isNotEmpty) ...[
+          if (note.title != null && note.title!.trim().isNotEmpty) ...[
             Text(
-              note.title!,
+              note.title!.trim(),
+              textDirection: directionOfText(
+                note.title!,
+                fallback: context.currentLanguage.direction,
+              ),
               style: TextStyle(
                 fontFamily: 'IBMPlexSansArabic',
                 fontSize: 16,
@@ -555,6 +565,10 @@ class _NoteCard extends StatelessWidget {
 
           Text(
             note.content,
+            textDirection: directionOfText(
+              note.content,
+              fallback: context.currentLanguage.direction,
+            ),
             style: TextStyle(
               fontFamily: 'IBMPlexSansArabic',
               fontSize: 14,
@@ -568,7 +582,7 @@ class _NoteCard extends StatelessWidget {
           if (note.isAyahNote) ...[
             const SizedBox(height: 8),
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerEnd,
               child: Text(
                 l10n.goToAyah,
                 style: TextStyle(

@@ -34,7 +34,7 @@ class JourneyScene extends StatelessWidget {
                         painter: _RingPainter(0.8 * ring, c.gold, c.muted),
                         child: Center(
                           child: Text(
-                            '${l10n.digits((80 * ring).round())}٪',
+                            l10n.percent((80 * ring).round()),
                             style: _ui(16, c.text, bold: true),
                           ),
                         ),

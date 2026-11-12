@@ -12,12 +12,28 @@ import '../books/screens/book_reader_screen.dart';
 import '../books/data/book_repository.dart';
 import '../duas/data/quran_duas_repository.dart';
 import '../../features/notes/note_editor_screen.dart';
+import '../../data/quran/quran_models.dart';
 import '../../data/quran/quran_repository.dart';
+import '../quran/qcf/qcf_layout.dart';
 import '../../features/quran/screens/quran_screen.dart';
 import '../../data/models/reminder_model.dart';
 import '../../features/reminders/reminders_screen.dart';
 import 'search_provider.dart';
 import '../../core/design_system/app_icons.dart';
+
+String? _normalizeSearchQuery(String query) {
+  final trimmed = query.trim();
+  if (trimmed.isEmpty) return '';
+  final normalized = ArabicSearchNormalizer.normalize(trimmed).trim();
+  return normalized.isEmpty ? null : normalized;
+}
+
+int _pageForAyah(Ayah ayah) {
+  return QcfLayout.instance.pageFor(
+    ayah,
+    UserDataStore.instance.settings.mushafStyle,
+  );
+}
 
 /// البحث في الآيات، بالنص أو بالجذر.
 class QuranSearchProvider implements SearchProvider {
@@ -45,6 +61,7 @@ class QuranSearchProvider implements SearchProvider {
 
     return ayahs.map((ayah) {
       final surah = repo.getSurah(ayah.surahNumber);
+      final displayPage = _pageForAyah(ayah);
       return SearchResultItem(
         id: isRoot
             ? 'quran_root_${ayah.surahNumber}_${ayah.ayahNumber}'
@@ -57,10 +74,10 @@ class QuranSearchProvider implements SearchProvider {
         snippet: '﴿ ${ayah.text} ﴾',
         surahNumber: ayah.surahNumber,
         ayahNumber: ayah.ayahNumber,
-        page: ayah.page,
+        page: displayPage,
         badge: [
           if (isRoot) l10n.rootLabel(root),
-          l10n.pageAbbr(ayah.page),
+          l10n.pageAbbr(displayPage),
           l10n.juzAbbr(ayah.juz),
         ].join(' · '),
         icon: icon,
@@ -69,7 +86,7 @@ class QuranSearchProvider implements SearchProvider {
             ctx,
             MaterialPageRoute(
               builder: (_) => QuranScreen(
-                initialPage: ayah.page,
+                initialPage: displayPage,
                 targetSurahNumber: ayah.surahNumber,
                 targetAyahNumber: ayah.ayahNumber,
               ),
@@ -99,7 +116,8 @@ class NotesSearchProvider implements SearchProvider {
     String query,
     BuildContext context,
   ) async {
-    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
+    final normalizedQuery = _normalizeSearchQuery(query);
+    if (normalizedQuery == null) return const [];
     final notes = UserDataStore.instance.notes.where((note) {
       final title = ArabicSearchNormalizer.normalize(note.title ?? '');
       final content = ArabicSearchNormalizer.normalize(note.content);
@@ -113,6 +131,13 @@ class NotesSearchProvider implements SearchProvider {
       final surahName = note.surahNumber != null
           ? QuranRepository.instance.getSurah(note.surahNumber!).name
           : '';
+      final ayah = (note.surahNumber != null && note.ayahNumber != null)
+          ? QuranRepository.instance.getAyah(
+              note.surahNumber!,
+              note.ayahNumber!,
+            )
+          : null;
+      final displayPage = ayah != null ? _pageForAyah(ayah) : note.page;
       final title = note.isAyahNote
           ? context.l10n.noteAyahTitle(
               surahName,
@@ -132,9 +157,9 @@ class NotesSearchProvider implements SearchProvider {
         snippet: note.content,
         surahNumber: note.surahNumber,
         ayahNumber: note.ayahNumber,
-        page: note.page,
+        page: displayPage,
         badge:
-            '${ArabicSearchNormalizer.toArabicDigits(note.createdAt.year)}/${ArabicSearchNormalizer.toArabicDigits(note.createdAt.month)}/${ArabicSearchNormalizer.toArabicDigits(note.createdAt.day)}',
+            '${context.l10n.digits(note.createdAt.year)}/${context.l10n.digits(note.createdAt.month)}/${context.l10n.digits(note.createdAt.day)}',
         icon: icon,
         onTap: (ctx) {
           Navigator.push(
@@ -168,7 +193,8 @@ class TadbeerSearchProvider implements SearchProvider {
     String query,
     BuildContext context,
   ) async {
-    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
+    final normalizedQuery = _normalizeSearchQuery(query);
+    if (normalizedQuery == null) return const [];
     final items = UserDataStore.instance.tadbeerItems.where((item) {
       final surah = QuranRepository.instance.getSurah(item.surahNumber);
       final surahNorm = ArabicSearchNormalizer.normalize(surah.name);
@@ -205,6 +231,7 @@ class TadbeerSearchProvider implements SearchProvider {
         item.surahNumber,
         item.ayahNumber,
       );
+      final displayPage = ayah != null ? _pageForAyah(ayah) : null;
       final snippet = item.combinedSummary.isNotEmpty
           ? item.combinedSummary
           : (ayah != null
@@ -222,16 +249,16 @@ class TadbeerSearchProvider implements SearchProvider {
         snippet: snippet,
         surahNumber: item.surahNumber,
         ayahNumber: item.ayahNumber,
-        page: ayah?.page,
-        badge: ayah != null ? context.l10n.pageAbbr(ayah.page) : null,
+        page: displayPage,
+        badge: displayPage != null ? context.l10n.pageAbbr(displayPage) : null,
         icon: icon,
         onTap: (ctx) {
-          if (ayah != null) {
+          if (ayah != null && displayPage != null) {
             Navigator.push(
               ctx,
               MaterialPageRoute(
                 builder: (_) => QuranScreen(
-                  initialPage: ayah.page,
+                  initialPage: displayPage,
                   targetSurahNumber: item.surahNumber,
                   targetAyahNumber: item.ayahNumber,
                 ),
@@ -262,7 +289,8 @@ class BookmarksSearchProvider implements SearchProvider {
     String query,
     BuildContext context,
   ) async {
-    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
+    final normalizedQuery = _normalizeSearchQuery(query);
+    if (normalizedQuery == null) return const [];
     final bookmarks = UserDataStore.instance.bookmarks.where((b) {
       return QuranRepository.instance.ayahMatches(
         b.surahNumber,
@@ -277,6 +305,7 @@ class BookmarksSearchProvider implements SearchProvider {
         b.surahNumber,
         b.ayahNumber,
       );
+      final displayPage = ayah != null ? _pageForAyah(ayah) : b.page;
 
       return SearchResultItem(
         id: 'bookmark_${b.id}',
@@ -286,15 +315,15 @@ class BookmarksSearchProvider implements SearchProvider {
         snippet: ayah != null ? '﴿ ${ayah.text} ﴾' : '',
         surahNumber: b.surahNumber,
         ayahNumber: b.ayahNumber,
-        page: b.page,
-        badge: context.l10n.pageAbbr(b.page),
+        page: displayPage,
+        badge: context.l10n.pageAbbr(displayPage),
         icon: icon,
         onTap: (ctx) {
           Navigator.push(
             ctx,
             MaterialPageRoute(
               builder: (_) => QuranScreen(
-                initialPage: b.page,
+                initialPage: displayPage,
                 targetSurahNumber: b.surahNumber,
                 targetAyahNumber: b.ayahNumber,
               ),
@@ -324,7 +353,8 @@ class HighlightsSearchProvider implements SearchProvider {
     String query,
     BuildContext context,
   ) async {
-    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
+    final normalizedQuery = _normalizeSearchQuery(query);
+    if (normalizedQuery == null) return const [];
     final highlights = UserDataStore.instance.highlights.where((h) {
       return QuranRepository.instance.ayahMatches(
         h.surahNumber,
@@ -339,6 +369,7 @@ class HighlightsSearchProvider implements SearchProvider {
         h.surahNumber,
         h.ayahNumber,
       );
+      final displayPage = ayah != null ? _pageForAyah(ayah) : h.page;
 
       return SearchResultItem(
         id: 'highlight_${h.id}',
@@ -348,15 +379,15 @@ class HighlightsSearchProvider implements SearchProvider {
         snippet: ayah != null ? '﴿ ${ayah.text} ﴾' : '',
         surahNumber: h.surahNumber,
         ayahNumber: h.ayahNumber,
-        page: h.page,
-        badge: context.l10n.pageAbbr(h.page),
+        page: displayPage,
+        badge: context.l10n.pageAbbr(displayPage),
         icon: icon,
         onTap: (ctx) {
           Navigator.push(
             ctx,
             MaterialPageRoute(
               builder: (_) => QuranScreen(
-                initialPage: h.page,
+                initialPage: displayPage,
                 targetSurahNumber: h.surahNumber,
                 targetAyahNumber: h.ayahNumber,
               ),
@@ -435,6 +466,11 @@ class DuasSearchProvider implements SearchProvider {
     final matchingDuas = QuranDuasRepository.instance.search(query);
 
     return matchingDuas.map((dua) {
+      final ayah = QuranRepository.instance.getAyah(
+        dua.surahNumber,
+        dua.ayahNumber,
+      );
+      final displayPage = ayah != null ? _pageForAyah(ayah) : dua.page;
       return SearchResultItem(
         id: 'dua_${dua.id}',
         providerId: id,
@@ -452,7 +488,7 @@ class DuasSearchProvider implements SearchProvider {
         snippet: dua.isMultiAyah ? dua.formattedTextWithMarkers : dua.duaText,
         surahNumber: dua.surahNumber,
         ayahNumber: dua.ayahNumber,
-        page: dua.page,
+        page: displayPage,
         badge: dua.category,
         icon: icon,
         onTap: (ctx) {
@@ -460,7 +496,7 @@ class DuasSearchProvider implements SearchProvider {
             ctx,
             MaterialPageRoute(
               builder: (_) => QuranScreen(
-                initialPage: dua.page,
+                initialPage: displayPage,
                 targetSurahNumber: dua.surahNumber,
                 targetAyahNumber: dua.ayahNumber,
               ),
@@ -490,7 +526,8 @@ class RemindersSearchProvider implements SearchProvider {
     String query,
     BuildContext context,
   ) async {
-    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
+    final normalizedQuery = _normalizeSearchQuery(query);
+    if (normalizedQuery == null) return const [];
     final reminders = UserDataStore.instance.reminders.where((r) {
       final titleNorm = ArabicSearchNormalizer.normalize(r.title);
       return titleNorm.contains(normalizedQuery);
@@ -551,7 +588,8 @@ class BooksSearchProvider implements SearchProvider {
     }
 
     // البحث الفارغ مع اختيار القسم يعرض كل الملازم، كبقية الأقسام.
-    final normalizedQuery = ArabicSearchNormalizer.normalize(query);
+    final normalizedQuery = _normalizeSearchQuery(query);
+    if (normalizedQuery == null) return const [];
     final tokens = normalizedQuery
         .split(' ')
         .where((w) => w.isNotEmpty)
@@ -673,7 +711,8 @@ class PathwaysSearchProvider implements SearchProvider {
     String query,
     BuildContext context,
   ) async {
-    final q = ArabicSearchNormalizer.normalize(query);
+    final q = _normalizeSearchQuery(query);
+    if (q == null) return const [];
     bool matches(String text) =>
         ArabicSearchNormalizer.normalize(text).contains(q);
 

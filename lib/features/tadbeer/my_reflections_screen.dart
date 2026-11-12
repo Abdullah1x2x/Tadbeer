@@ -43,9 +43,19 @@ class MyReflectionsScreen extends StatelessWidget {
 }
 
 /// يفتح الوقفة على [t] لقراءتها أو متابعة كتابتها.
-Future<void> _open(BuildContext context, TadbeerItem t) async {
+Future<void> _open(
+  BuildContext context,
+  TadbeerItem t, {
+  int initialQuestion = 0,
+}) async {
   final ayah = QuranRepository.instance.getAyah(t.surahNumber, t.ayahNumber);
-  if (ayah != null) await TadbeerPauseSheet.show(context, ayah);
+  if (ayah != null) {
+    await TadbeerPauseSheet.show(
+      context,
+      ayah,
+      initialQuestion: initialQuestion,
+    );
+  }
 }
 
 class _AllTab extends StatelessWidget {
@@ -256,7 +266,7 @@ class _CommitmentTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: InkWell(
         borderRadius: BorderRadius.circular(AppTheme.cardRadius),
-        onTap: () => _open(context, item),
+        onTap: () => _open(context, item, initialQuestion: 3),
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(4, 10, 14, 12),
           child: Row(

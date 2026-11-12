@@ -5,7 +5,10 @@ import '../../core/theme/theme.dart';
 import '../../core/design_system/design_system.dart';
 import '../../data/storage/user_data_store.dart';
 import '../../core/utils/arabic_search_normalizer.dart';
+import '../../data/models/user_settings_model.dart';
 import '../../data/quran/quran_repository.dart';
+import '../quran/qcf/qcf_ayah_text.dart';
+import '../quran/qcf/qcf_layout.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../core/design_system/app_icons.dart';
 
@@ -128,8 +131,28 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                               item.surahNumber,
                               item.ayahNumber,
                             );
+                            final style =
+                                UserDataStore.instance.settings.mushafStyle;
+                            final displayPage = ayah == null
+                                ? item.page
+                                : QcfLayout.instance.pageFor(ayah, style);
                             final color = AppColors.highlightAt(
                               item.colorIndex,
+                            );
+
+                            Widget fallbackSnippet() => Text(
+                              '﴿ ${ayah!.text} ﴾',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                fontFamily:
+                                    UserDataStore.instance.quranFontFamily,
+                                fontSize: 14,
+                                color: isDark
+                                    ? AppColors.nightQuranText
+                                    : AppColors.dayQuranText,
+                              ),
                             );
 
                             return RepaintBoundary(
@@ -139,7 +162,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) => QuranScreen(
-                                        initialPage: item.page,
+                                        initialPage: displayPage,
                                         targetSurahNumber: item.surahNumber,
                                         targetAyahNumber: item.ayahNumber,
                                       ),
@@ -183,42 +206,46 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                context.l10n.ayahReference(
-                                                  surah.name,
-                                                  context.currentLanguage ==
-                                                          AppLanguage.arabic
-                                                      ? ArabicSearchNormalizer.toArabicDigits(
-                                                          item.ayahNumber,
-                                                        )
-                                                      : item.ayahNumber,
-                                                ),
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      context.currentLanguage ==
-                                                          AppLanguage.arabic
-                                                      ? 'IBMPlexSansArabic'
-                                                      : null,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isDark
-                                                      ? AppColors
-                                                            .darkTextPrimary
-                                                      : AppColors
-                                                            .lightPrimaryDark,
+                                              Expanded(
+                                                child: Text(
+                                                  context.l10n.ayahReference(
+                                                    surah.name,
+                                                    context.currentLanguage ==
+                                                            AppLanguage.arabic
+                                                        ? ArabicSearchNormalizer.toArabicDigits(
+                                                            item.ayahNumber,
+                                                          )
+                                                        : item.ayahNumber,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        context.currentLanguage ==
+                                                            AppLanguage.arabic
+                                                        ? 'IBMPlexSansArabic'
+                                                        : null,
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: isDark
+                                                        ? AppColors
+                                                              .darkTextPrimary
+                                                        : AppColors
+                                                              .lightPrimaryDark,
+                                                  ),
                                                 ),
                                               ),
+                                              const SizedBox(width: 8),
                                               Text(
                                                 context.l10n.pageAbbr(
                                                   context.currentLanguage ==
                                                           AppLanguage.arabic
                                                       ? ArabicSearchNormalizer.toArabicDigits(
-                                                          item.page,
+                                                          displayPage,
                                                         )
-                                                      : item.page,
+                                                      : displayPage,
                                                 ),
                                                 style: TextStyle(
                                                   fontSize: 13,
@@ -241,25 +268,24 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
                                                 borderRadius:
                                                     BorderRadius.circular(6),
                                               ),
-                                              child: Text(
-                                                '﴿ ${ayah.text} ﴾',
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                textDirection:
-                                                    TextDirection.rtl,
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      UserDataStore
-                                                          .instance
-                                                          .quranFontFamily,
-                                                  fontSize: 14,
-                                                  color: isDark
-                                                      ? AppColors
-                                                          .nightQuranText
-                                                      : AppColors
-                                                          .dayQuranText,
-                                                ),
-                                              ),
+                                              child: style ==
+                                                      MushafStyle.madinah
+                                                  ? QcfAyahText(
+                                                      ayah: ayah,
+                                                      fontSize: 14,
+                                                      height: 1.5,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      color: isDark
+                                                          ? AppColors
+                                                                .nightQuranText
+                                                          : AppColors
+                                                                .dayQuranText,
+                                                      fallback:
+                                                          fallbackSnippet(),
+                                                    )
+                                                  : fallbackSnippet(),
                                             ),
                                         ],
                                       ),

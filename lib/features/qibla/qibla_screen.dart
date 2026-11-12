@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_device_compass/flutter_device_compass.dart';
@@ -70,16 +71,20 @@ class _QiblaScreenState extends State<QiblaScreen> {
   double _declination = 0;
 
   static const _device = MethodChannel('tadbeer/device');
+  int _declinationRequestId = 0;
 
   Future<void> _loadDeclination(QiblaLocated at) async {
     if (widget.hasHeadings || !Platform.isAndroid) return;
+    final requestId = ++_declinationRequestId;
     try {
       final value = await _device.invokeMethod<double>('declination', {
         'latitude': at.latitude,
         'longitude': at.longitude,
       });
-      if (value != null && mounted) setState(() => _declination = value);
-    } on PlatformException catch (e) {
+      if (value != null && mounted && requestId == _declinationRequestId) {
+        setState(() => _declination = value);
+      }
+    } on Exception catch (e) {
       debugPrint('Magnetic declination unavailable: $e');
     }
   }
@@ -116,10 +121,14 @@ class _QiblaScreenState extends State<QiblaScreen> {
     if (!mounted) return;
     final heading = (magnetic + _declination) % 360;
     setState(() {
-      _hasCompass = true;
-      // تقترب من الاتجاه الجديد بأقصر دوران، وهذا يهدّئ ارتعاش المستشعر أيضاً.
-      final current = _dial % 360;
-      _dial += turnTo(heading, current) * 0.35;
+      if (!_hasCompass) {
+        _hasCompass = true;
+        _dial = heading;
+      } else {
+        // تقترب من الاتجاه الجديد بأقصر دوران، وهذا يهدّئ ارتعاش المستشعر أيضاً.
+        final current = _dial % 360;
+        _dial += turnTo(heading, current) * 0.35;
+      }
       final location = _location;
       if (location != null) {
         final off = turnTo(
@@ -135,7 +144,12 @@ class _QiblaScreenState extends State<QiblaScreen> {
 
   Future<void> _locate({bool showFeedback = false}) async {
     setState(() => _locating = true);
-    final fix = await widget.locator.locate();
+    QiblaFix fix;
+    try {
+      fix = await widget.locator.locate();
+    } catch (_) {
+      fix = const QiblaLocationFailed();
+    }
     if (!mounted) return;
     setState(() {
       _locating = false;
@@ -174,6 +188,10 @@ class _QiblaScreenState extends State<QiblaScreen> {
           SnackBar(
             content: Text(l10n.qiblaLocationOff),
             behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: l10n.qiblaTurnOnLocation,
+              onPressed: () => widget.locator.openLocationSettings(),
+            ),
           ),
         );
       } else if (fix is QiblaPermissionDenied) {
@@ -181,6 +199,15 @@ class _QiblaScreenState extends State<QiblaScreen> {
           SnackBar(
             content: Text(l10n.qiblaNeedsLocation),
             behavior: SnackBarBehavior.floating,
+            action: fix.forever
+                ? SnackBarAction(
+                    label: l10n.qiblaOpenSettings,
+                    onPressed: () => widget.locator.openAppSettings(),
+                  )
+                : SnackBarAction(
+                    label: l10n.retry,
+                    onPressed: () => _locate(showFeedback: true),
+                  ),
           ),
         );
       } else {
@@ -188,6 +215,10 @@ class _QiblaScreenState extends State<QiblaScreen> {
           SnackBar(
             content: Text(l10n.qiblaLocationFailed),
             behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: l10n.retry,
+              onPressed: () => _locate(showFeedback: true),
+            ),
           ),
         );
       }
@@ -333,6 +364,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
+                            textDirection: context.currentLanguage.direction,
                           ),
                         ),
                       ),
@@ -406,6 +438,52 @@ class _QiblaScreenState extends State<QiblaScreen> {
                 color: AppColors.textSecondary(context),
               ),
             ),
+            if (_problem case final problem?
+                when problem is QiblaLocationOff ||
+                    problem is QiblaPermissionDenied) ...[
+              const SizedBox(height: 6),
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                children: [
+                  Text(
+                    problem is QiblaLocationOff
+                        ? l10n.qiblaLocationOff
+                        : l10n.qiblaNeedsLocation,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: AppColors.textSecondary(context),
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                    onPressed: () {
+                      if (problem is QiblaLocationOff) {
+                        widget.locator.openLocationSettings();
+                      } else if (problem is QiblaPermissionDenied &&
+                          problem.forever) {
+                        widget.locator.openAppSettings();
+                      } else {
+                        _locate(showFeedback: true);
+                      }
+                    },
+                    child: Text(
+                      problem is QiblaLocationOff
+                          ? l10n.qiblaTurnOnLocation
+                          : (problem is QiblaPermissionDenied &&
+                                    problem.forever)
+                                ? l10n.qiblaOpenSettings
+                                : l10n.qiblaAllowLocation,
+                    ),
+                  ),
+                ],
+              ),
+            ],
             if (_hasCompass) ...[
               const SizedBox(height: 6),
               Text(
@@ -543,6 +621,7 @@ class _DialPainter extends CustomPainter {
   final bool facing;
   final List<String> labels;
   final TextStyle labelStyle;
+  final TextDirection textDirection;
 
   _DialPainter({
     required this.bearing,
@@ -553,6 +632,7 @@ class _DialPainter extends CustomPainter {
     required this.facing,
     required this.labels,
     required this.labelStyle,
+    required this.textDirection,
   });
 
   @override
@@ -589,7 +669,7 @@ class _DialPainter extends CustomPainter {
           text: labels[i],
           style: i == 0 ? labelStyle.copyWith(color: gold) : labelStyle,
         ),
-        textDirection: TextDirection.rtl,
+        textDirection: textDirection,
       )..layout();
       final p = c + Offset(math.cos(a), math.sin(a)) * (r - 34);
       canvas.save();
@@ -618,7 +698,11 @@ class _DialPainter extends CustomPainter {
       old.facing != facing ||
       old.face != face ||
       old.ring != ring ||
-      old.gold != gold;
+      old.ticks != ticks ||
+      old.gold != gold ||
+      old.labelStyle != labelStyle ||
+      old.textDirection != textDirection ||
+      !listEquals(old.labels, labels);
 }
 
 /// السهم الثابت أعلى البوصلة: حيث يشير أعلى الجهاز.

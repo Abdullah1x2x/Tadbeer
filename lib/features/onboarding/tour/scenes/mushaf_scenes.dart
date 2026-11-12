@@ -30,7 +30,7 @@ class MushafScene extends StatelessWidget {
     final petals = <(IconData, String)>[
       (AppIcons.notePencil, l10n.addNote),
       (AppIcons.headphones, l10n.listen),
-      (AppIcons.brain, l10n.memorizedDone),
+      (AppIcons.brain, l10n.addToHifz),
       (AppIcons.bookmarkSimple, l10n.markAyah),
       (AppIcons.graph, l10n.ayahLinks),
     ];

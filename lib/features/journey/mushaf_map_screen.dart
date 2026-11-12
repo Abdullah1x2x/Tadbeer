@@ -7,6 +7,7 @@ import '../../core/design_system/design_system.dart';
 import '../../data/storage/user_data_store.dart';
 import '../memorization/memorization_model.dart';
 import '../../data/quran/quran_repository.dart';
+import '../quran/qcf/qcf_layout.dart';
 import '../quran/screens/quran_screen.dart';
 import '../../data/models/reading_journey.dart';
 import '../../core/design_system/app_icons.dart';
@@ -30,6 +31,7 @@ enum PageActivity {
 /// نشاط كل صفحة من بيانات القارئ (الفهرس ٠ = الصفحة ١).
 List<PageActivity> computePageActivity(UserDataStore store) {
   final repo = QuranRepository.instance;
+  final style = store.settings.mushafStyle;
   final levels = List.filled(mushafPageCount, PageActivity.none);
 
   void raise(int page, PageActivity level) {
@@ -37,7 +39,11 @@ List<PageActivity> computePageActivity(UserDataStore store) {
     if (level.index > levels[page - 1].index) levels[page - 1] = level;
   }
 
-  int? pageOf(int surah, int ayah) => repo.getAyah(surah, ayah)?.page;
+  int? pageOf(int surah, int ayah) {
+    final a = repo.getAyah(surah, ayah);
+    if (a == null) return null;
+    return QcfLayout.instance.pageFor(a, style);
+  }
 
   for (final pages in store.journey.dailyPages.values) {
     for (final p in pages) {
@@ -53,16 +59,18 @@ List<PageActivity> computePageActivity(UserDataStore store) {
     if (p != null) raise(p, PageActivity.marked);
   }
   for (final n in store.notes) {
-    final p =
-        n.page ??
-        (n.surahNumber != null && n.ayahNumber != null
-            ? pageOf(n.surahNumber!, n.ayahNumber!)
-            : null);
+    final p = (n.surahNumber != null && n.ayahNumber != null)
+        ? (pageOf(n.surahNumber!, n.ayahNumber!) ?? n.page)
+        : n.page;
     if (p != null) raise(p, PageActivity.reflected);
   }
-  for (final key in HifzStore.all().keys) {
+  for (final key in HifzStore.ids()) {
     final parts = key.split(':');
-    final p = pageOf(int.parse(parts[0]), int.parse(parts[1]));
+    if (parts.length != 2) continue;
+    final s = int.tryParse(parts[0]);
+    final a = int.tryParse(parts[1]);
+    if (s == null || a == null) continue;
+    final p = pageOf(s, a);
     if (p != null) raise(p, PageActivity.memorizing);
   }
   for (final t in store.tadbeerItems) {
@@ -138,94 +146,106 @@ class _MapTab extends StatelessWidget {
       byJuz.putIfAbsent(repo.getPage(p).juzNumber, () => []).add(p);
     }
 
-    return ListView(
+    final juzEntries = byJuz.entries.toList(growable: false);
+
+    return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-      children: [
-        Text(
-          l10n.pagesTouched(touched),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 10),
-        Wrap(
-          spacing: 14,
-          runSpacing: 6,
-          children: [
-            for (final a in PageActivity.values)
-              Row(
-                mainAxisSize: MainAxisSize.min,
+      itemCount: 1 + juzEntries.length,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.pagesTouched(touched),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 14,
+                runSpacing: 6,
                 children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: _color(context, a),
-                      borderRadius: BorderRadius.circular(3),
+                  for (final a in PageActivity.values)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: _color(context, a),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          l10n.activityLabel(a.index),
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            color: AppColors.textSecondary(context),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    l10n.activityLabel(a.index),
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: AppColors.textSecondary(context),
-                    ),
-                  ),
                 ],
               ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        for (final entry in byJuz.entries)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 30,
-                  child: Text(
-                    l10n.digits(entry.key),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary(context),
-                    ),
+              const SizedBox(height: 16),
+            ],
+          );
+        }
+        final entry = juzEntries[index - 1];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 30,
+                child: Text(
+                  l10n.digits(entry.key),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary(context),
                   ),
                 ),
-                Expanded(
-                  child: Wrap(
-                    spacing: 3,
-                    runSpacing: 3,
-                    children: [
-                      for (final p in entry.value)
-                        Tooltip(
-                          message: l10n.pageNumber(p),
-                          child: GestureDetector(
-                            onTap: () {
-                              HapticFeedback.selectionClick();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => QuranScreen(initialPage: p),
-                                ),
-                              );
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 400),
-                              width: 11,
-                              height: 11,
-                              decoration: BoxDecoration(
-                                color: _color(context, levels[p - 1]),
-                                borderRadius: BorderRadius.circular(2.5),
+              ),
+              Expanded(
+                child: Wrap(
+                  spacing: 3,
+                  runSpacing: 3,
+                  children: [
+                    for (final p in entry.value)
+                      Tooltip(
+                        message: l10n.pageNumber(p),
+                        child: GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => QuranScreen(initialPage: p),
                               ),
+                            );
+                          },
+                          child: Container(
+                            width: 11,
+                            height: 11,
+                            decoration: BoxDecoration(
+                              color: _color(context, levels[p - 1]),
+                              borderRadius: BorderRadius.circular(2.5),
                             ),
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-      ],
+        );
+      },
     );
   }
 }
@@ -277,102 +297,101 @@ class _ReflectionLogTab extends StatelessWidget {
         final surah = repo.getSurah(e.surah);
         final gold = AppColors.accentGold(context);
         final color = e.isReflection ? gold : AppColors.primary(context);
-        return IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // خط زمني بنقطة لكل عنصر.
-              SizedBox(
-                width: 24,
-                child: Column(
-                  children: [
-                    Container(
+        return Stack(
+          children: [
+            PositionedDirectional(
+              start: 0,
+              top: 0,
+              bottom: 0,
+              width: 24,
+              child: Column(
+                children: [
+                  Container(
+                    width: 2,
+                    height: 14,
+                    color: i == 0
+                        ? Colors.transparent
+                        : AppColors.border(context),
+                  ),
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
                       width: 2,
-                      height: 14,
-                      color: i == 0
+                      color: i == entries.length - 1
                           ? Colors.transparent
                           : AppColors.border(context),
                     ),
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        width: 2,
-                        color: i == entries.length - 1
-                            ? Colors.transparent
-                            : AppColors.border(context),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Card(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => QuranScreen(
-                          targetSurahNumber: e.surah,
-                          targetAyahNumber: e.ayah,
-                        ),
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 32),
+              child: Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: InkWell(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => QuranScreen(
+                        targetSurahNumber: e.surah,
+                        targetAyahNumber: e.ayah,
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                e.isReflection
-                                    ? AppIcons.flowerLotusFill
-                                    : AppIcons.notePencil,
-                                size: 18,
-                                color: color,
-                              ),
-                              const SizedBox(width: 6),
-                              Expanded(
-                                child: Text(
-                                  l10n.ayahReference(surah.name, e.ayah),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              e.isReflection
+                                  ? AppIcons.flowerLotusFill
+                                  : AppIcons.notePencil,
+                              size: 18,
+                              color: color,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                l10n.ayahReference(surah.name, e.ayah),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Text(
-                                l10n.shortDate(e.date),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textSecondary(context),
-                                ),
+                            ),
+                            Text(
+                              l10n.shortDate(e.date),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textSecondary(context),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            e.text,
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(height: 1.6),
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          e.text,
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(height: 1.6),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

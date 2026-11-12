@@ -32,6 +32,7 @@ mixin _NotesSection on _StoreState {
     String? id,
     required NoteType type,
     String? title,
+    bool clearTitle = false,
     required String content,
     int? ayahId,
     int? surahNumber,
@@ -40,12 +41,13 @@ mixin _NotesSection on _StoreState {
     String? ayahText,
   }) async {
     final now = DateTime.now();
+    final effectiveTitle = clearTitle ? null : title;
 
     if (id != null) {
       final existing = _notes.where((n) => n.id == id).firstOrNull;
       if (existing != null) {
         final updated = existing.copyWith(
-          title: title,
+          title: clearTitle ? null : (effectiveTitle ?? existing.title),
           content: content,
           updatedAt: now,
         );
@@ -57,7 +59,7 @@ mixin _NotesSection on _StoreState {
     final newNote = NoteItem(
       id: id ?? const Uuid().v4(),
       type: type,
-      title: title,
+      title: effectiveTitle,
       content: content,
       ayahId: ayahId,
       surahNumber: surahNumber,
@@ -81,10 +83,13 @@ mixin _NotesSection on _StoreState {
   }
 
   /// يكرّر خاطرة موجودة وينشئ نسخة جديدة مطابقة لها في أول القائمة.
-  Future<NoteItem> duplicateNote(NoteItem note) async {
+  Future<NoteItem> duplicateNote(
+    NoteItem note, {
+    String copyLabel = 'نسخة',
+  }) async {
     final now = DateTime.now();
     final copyTitle = note.title != null && note.title!.trim().isNotEmpty
-        ? '${note.title!.trim()} (نسخة)'
+        ? '${note.title!.trim()} ($copyLabel)'
         : null;
     final duplicated = NoteItem(
       id: const Uuid().v4(),

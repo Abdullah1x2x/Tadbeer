@@ -19,11 +19,33 @@ class AppUpdateDialog extends StatelessWidget {
       return await showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
+        isDismissible: !update.isMandatory,
+        enableDrag: !update.isMandatory,
         backgroundColor: Colors.transparent,
         builder: (_) => AppUpdateDialog(update: update),
       );
     } finally {
       AppUpdateService.instance.isDialogVisible.value = false;
+    }
+  }
+
+  Future<void> _installOrWarn(BuildContext context) async {
+    final ok = await AppUpdateService.instance.installCurrentDownloadedApk();
+    if (!ok && context.mounted) {
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      messenger
+        ?..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.downloadFailed),
+            behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: 'GitHub',
+              onPressed: () =>
+                  AppUpdateService.instance.openDownload(update.downloadUrl),
+            ),
+          ),
+        );
     }
   }
 
@@ -34,38 +56,41 @@ class AppUpdateDialog extends StatelessWidget {
     final primary = Theme.of(context).colorScheme.primary;
     final gold = AppColors.accentGold(context);
 
-    return Directionality(
-      textDirection: context.currentLanguage.direction,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          border: Border.all(
-            color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightBorder,
-          ),
-        ),
-        child: SafeArea(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+    return PopScope(
+      canPop: !update.isMandatory,
+      child: Directionality(
+        textDirection: context.currentLanguage.direction,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.comsilkLight,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border.all(
+              color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightBorder,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // مقبض السحب
-                Center(
-                  child: Container(
-                    width: 38,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.white24 : Colors.black12,
-                      borderRadius: BorderRadius.circular(2),
+          ),
+          child: SafeArea(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * 0.85,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (!update.isMandatory)
+                    // مقبض السحب
+                    Center(
+                      child: Container(
+                        width: 38,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.white24 : Colors.black12,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
 
                 // رأس النافذة مع شارة التحديث
                 Row(
@@ -178,19 +203,20 @@ class AppUpdateDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // قسم أزرار التحميل متصل بالحالة المركزية
-                ValueListenableBuilder<UpdateDownloadState>(
-                  valueListenable: AppUpdateService.instance.downloadState,
-                  builder: (context, downloadState, _) {
-                    return _buildActionSection(
-                      context,
-                      isDark,
-                      primary,
-                      downloadState,
-                    );
-                  },
-                ),
-              ],
+                  // قسم أزرار التحميل متصل بالحالة المركزية
+                  ValueListenableBuilder<UpdateDownloadState>(
+                    valueListenable: AppUpdateService.instance.downloadState,
+                    builder: (context, downloadState, _) {
+                      return _buildActionSection(
+                        context,
+                        isDark,
+                        primary,
+                        downloadState,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -208,10 +234,12 @@ class AppUpdateDialog extends StatelessWidget {
 
     // حالة جارٍ التنزيل في الخلفية
     if (downloadState.isDownloading) {
-      final percent = (downloadState.progress != null)
+      final totalBytes = downloadState.progress?.totalBytes ?? 0;
+      final percent = (downloadState.progress != null && totalBytes > 0)
           ? (downloadState.progress!.progress * 100).toInt()
           : 0;
-      final progressVal = downloadState.progress?.progress;
+      final progressVal =
+          totalBytes > 0 ? downloadState.progress?.progress : null;
 
       return Container(
         padding: const EdgeInsets.all(14),
@@ -224,29 +252,35 @@ class AppUpdateDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        value: progressVal,
-                        color: primary,
+                Expanded(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          value: progressVal,
+                          color: primary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.downloadingAndPreparingInstall,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          l10n.downloadingAndPreparingInstall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Text(
                   '$percent%',
                   style: TextStyle(
@@ -273,7 +307,9 @@ class AppUpdateDialog extends StatelessWidget {
               children: [
                 Text(
                   downloadState.progress != null
-                      ? '${downloadState.progress!.receivedMb} MB / ${downloadState.progress!.totalMb} MB'
+                      ? (totalBytes > 0
+                          ? '${downloadState.progress!.receivedMb} MB / ${downloadState.progress!.totalMb} MB'
+                          : '${downloadState.progress!.receivedMb} MB')
                       : '...',
                   style: TextStyle(
                     fontSize: 12,
@@ -334,9 +370,7 @@ class AppUpdateDialog extends StatelessWidget {
             ),
           ),
           ElevatedButton.icon(
-            onPressed: () {
-              AppUpdateService.instance.installCurrentDownloadedApk();
-            },
+            onPressed: () => _installOrWarn(context),
             style: ElevatedButton.styleFrom(
               backgroundColor: primary,
               foregroundColor: Colors.white,
@@ -374,14 +408,16 @@ class AppUpdateDialog extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  l10n.permissionsLater,
-                  style: TextStyle(color: AppColors.textSecondary(context)),
+              if (!update.isMandatory) ...[
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    l10n.permissionsLater,
+                    style: TextStyle(color: AppColors.textSecondary(context)),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ],
@@ -445,7 +481,6 @@ class AppUpdateDialog extends StatelessWidget {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () {
-                    Navigator.pop(context);
                     AppUpdateService.instance.openTelegram(
                       update.telegramUrl,
                     );
@@ -501,7 +536,7 @@ class AppUpdateDialog extends StatelessWidget {
         // الخيار البديل: تيليجرام
         ElevatedButton.icon(
           onPressed: () {
-            Navigator.pop(context);
+            if (!update.isMandatory) Navigator.pop(context);
             AppUpdateService.instance.openTelegram(update.telegramUrl);
           },
           style: ElevatedButton.styleFrom(
@@ -521,25 +556,25 @@ class AppUpdateDialog extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        if (!update.isMandatory) ...[
+          const SizedBox(height: 8),
 
-        // زر لاحقاً
-        TextButton(
-          onPressed: () async {
-            Navigator.pop(context);
-            if (!update.isMandatory) {
+          // زر لاحقاً
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
               await UserDataStore.instance.dismissUpdateVersion(
                 update.latestVersion,
               );
-            }
-          },
-          child: Text(
-            l10n.permissionsLater,
-            style: TextStyle(
-              color: AppColors.textSecondary(context),
+            },
+            child: Text(
+              l10n.permissionsLater,
+              style: TextStyle(
+                color: AppColors.textSecondary(context),
+              ),
             ),
           ),
-        ),
+        ],
       ],
     );
   }

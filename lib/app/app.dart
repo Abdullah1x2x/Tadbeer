@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../data/storage/user_data_store.dart';
@@ -38,11 +39,11 @@ class _TadbeerAppState extends State<TadbeerApp> {
   @override
   void initState() {
     super.initState();
-    final savedCode = UserDataStore.instance.settings.languageCode;
-    _currentLanguage = AppLanguage.fromCode(savedCode);
-    _initialHideIntro =
-        UserDataStore.instance.settings.hideTadbeerIntroPermanently;
-    _initialThemeChosen = UserDataStore.instance.settings.themeChosen;
+    final saved = UserDataStore.instance.settings;
+    _currentLanguage = AppLanguage.fromCode(saved.languageCode);
+    _initialHideIntro = saved.hideTadbeerIntroPermanently;
+    _initialThemeChosen = saved.themeChosen;
+    AppColors.use(saved.colorTheme);
     UserDatabase.instance.lastIssue.addListener(_scheduleDatabaseIssue);
     // مشكلات حدثت أثناء الإقلاع، قبل وجود هذه الواجهة.
     if (UserDatabase.instance.lastIssue.value != null) {
@@ -82,7 +83,11 @@ class _TadbeerAppState extends State<TadbeerApp> {
         SnackBar(
           content: Text(
             message,
-            style: const TextStyle(fontFamily: 'IBMPlexSansArabic'),
+            style: TextStyle(
+              fontFamily: _currentLanguage == AppLanguage.arabic
+                  ? 'IBMPlexSansArabic'
+                  : null,
+            ),
           ),
           duration: const Duration(seconds: 6),
         ),
@@ -131,6 +136,7 @@ class _TadbeerAppState extends State<TadbeerApp> {
             scaffoldMessengerKey: appScaffoldMessengerKey,
             title: 'تَدبِير · Tadbeer',
             debugShowCheckedModeBanner: false,
+            scrollBehavior: const TadbeerScrollBehavior(),
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: settings.themeMode,
@@ -160,4 +166,19 @@ class _TadbeerAppState extends State<TadbeerApp> {
       },
     );
   }
+}
+
+/// سلوك التمرير في التطبيق: يضيف سحب الفأرة على سطح المكتب لتقليب صفحات المصحف.
+class TadbeerScrollBehavior extends MaterialScrollBehavior {
+  const TadbeerScrollBehavior();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.stylus,
+    PointerDeviceKind.invertedStylus,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.unknown,
+  };
 }

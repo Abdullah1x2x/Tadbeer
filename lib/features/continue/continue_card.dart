@@ -104,31 +104,47 @@ class ContinueCard extends StatelessWidget {
     final l10n = context.l10n;
     switch (a.kind) {
       case ActivityKind.adhkar:
-        final morning = a.ref == AdhkarCategory.morning.name;
-        return _Entry(
-          icon: morning ? AppIcons.sunFill : AppIcons.moonStars,
-          title: morning
-              ? l10n.morningAdhkarReminder
-              : l10n.eveningAdhkarReminder,
-          subtitle: l10n.adhkarKind,
-          open: () => MorningEveningAdhkarScreen(
-            initialCategory: morning
-                ? AdhkarCategory.morning
-                : AdhkarCategory.evening,
+        final category =
+            AdhkarCategory.values
+                .where((c) => c.name == a.ref)
+                .firstOrNull ??
+            AdhkarCategory.evening;
+        final (icon, title) = switch (category) {
+          AdhkarCategory.morning => (
+            AppIcons.sunFill,
+            l10n.morningAdhkarReminder,
           ),
+          AdhkarCategory.evening => (
+            AppIcons.moonStars,
+            l10n.eveningAdhkarReminder,
+          ),
+          AdhkarCategory.sleep => (AppIcons.moonStars, l10n.sleepAdhkar),
+          AdhkarCategory.waking => (AppIcons.sunFill, l10n.wakingAdhkar),
+          AdhkarCategory.afterPrayer => (
+            AppIcons.handHeart,
+            l10n.afterPrayerAdhkar,
+          ),
+          AdhkarCategory.mosque => (AppIcons.bookOpen, l10n.mosqueAdhkar),
+        };
+        return _Entry(
+          icon: icon,
+          title: title,
+          subtitle: l10n.adhkarKind,
+          open: () => MorningEveningAdhkarScreen(initialCategory: category),
         );
       case ActivityKind.book:
         final book = BookRepository.instance.books
             .where((b) => b.id == a.ref)
             .firstOrNull;
         if (book == null) return null;
+        final isPdfBook = book.chapters.isEmpty && book.isPdf;
         return _Entry(
           icon: AppIcons.bookOpenTextFill,
           title: book.title,
-          subtitle: book.isPdf
+          subtitle: isPdfBook
               ? l10n.pageNumber(a.position + 1)
               : l10n.chapterN(a.position + 1),
-          open: () => book.isPdf
+          open: () => isPdfBook
               ? BookReaderScreen(book: book, initialPdfPage: a.position)
               : BookReaderScreen(book: book, initialChapterIndex: a.position),
         );
@@ -136,12 +152,17 @@ class ContinueCard extends StatelessWidget {
         final surah = int.tryParse(a.ref);
         if (surah == null) return null;
         final s = QuranRepository.instance.getSurah(surah);
+        final startAyah = a.position.clamp(1, s.ayahCount);
         return _Entry(
           icon: AppIcons.brainFill,
           title: s.name,
-          subtitle: l10n.memorization,
+          subtitle: a.position > 1
+              ? l10n.continueFromAyah(startAyah)
+              : l10n.memorization,
           open: () => HifzSessionScreen(
             verses: [for (var v = 1; v <= s.ayahCount; v++) (surah, v)],
+            initialIndex: startAyah - 1,
+            trackSurahNumber: surah,
           ),
         );
       case ActivityKind.pathway:

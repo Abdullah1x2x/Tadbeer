@@ -92,7 +92,7 @@ class QiblaLocator {
         'lon': position.longitude,
       });
       return QiblaLocated(position.latitude, position.longitude);
-    } on Exception {
+    } catch (_) {
       return const QiblaLocationFailed();
     }
   }

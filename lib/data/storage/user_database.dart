@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/utils/utils.dart' as sqflite_utils;
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../models/ayah_link_model.dart';
 import '../models/bookmark_model.dart';
@@ -115,6 +115,13 @@ class UserDatabase {
   /// يفتح قاعدة البيانات، في [customPath] إن مُرّر (أو في الذاكرة للاختبارات).
   Future<void> init([String? customPath]) async {
     if (_database != null && _database!.isOpen) return;
+
+    if (!kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.linux ||
+            defaultTargetPlatform == TargetPlatform.windows)) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
 
     // يعطّل مؤقت التحذير، فلا يترك مؤقتات معلّقة في اختبارات الواجهة.
     // ignore: deprecated_member_use
@@ -657,15 +664,21 @@ class UserDatabase {
   Future<void> clearAllUserData() async {
     if (!isOpen) return;
     try {
-      await db.delete('reading_position');
-      await db.delete('notes');
-      await db.delete('bookmarks');
-      await db.delete('highlights');
-      await db.delete('reminders');
-      await db.delete('ayah_links');
-      await db.delete('tadbeer_items');
-      await db.delete('app_state');
-      await db.delete('user_settings');
+      await db.transaction((txn) async {
+        for (final table in [
+          'reading_position',
+          'notes',
+          'bookmarks',
+          'highlights',
+          'reminders',
+          'ayah_links',
+          'tadbeer_items',
+          'app_state',
+          'user_settings',
+        ]) {
+          await txn.delete(table);
+        }
+      });
     } catch (e) {
       _reportIssue(UserDatabaseIssueKind.writeFailed, 'clearAllUserData', e);
     }

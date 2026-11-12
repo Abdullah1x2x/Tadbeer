@@ -40,29 +40,45 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
           .toList();
     }
 
-    if (_searchQuery.trim().isEmpty) {
+    final trimmed = _searchQuery.trim();
+    if (trimmed.isEmpty) {
       return list;
     }
 
-    final normQuery = ArabicSearchNormalizer.normalize(_searchQuery);
+    final normQuery = ArabicSearchNormalizer.normalize(trimmed).trim();
+    if (normQuery.isEmpty) {
+      return const [];
+    }
     return list.where((d) {
-      final normTitle = ArabicSearchNormalizer.normalize(d.title);
-      final normAuthor = ArabicSearchNormalizer.normalize(d.attributedTo);
-      final normSummary = ArabicSearchNormalizer.normalize(d.summary);
-      final normText = ArabicSearchNormalizer.normalize(d.content);
-
-      return normTitle.contains(normQuery) ||
-          normAuthor.contains(normQuery) ||
-          normSummary.contains(normQuery) ||
-          normText.contains(normQuery);
+      final norm = _normCache.putIfAbsent(
+        d,
+        () => (
+          title: ArabicSearchNormalizer.normalize(d.title),
+          author: ArabicSearchNormalizer.normalize(d.attributedTo),
+          summary: ArabicSearchNormalizer.normalize(d.summary),
+          content: ArabicSearchNormalizer.normalize(d.content),
+        ),
+      );
+      return norm.title.contains(normQuery) ||
+          norm.author.contains(normQuery) ||
+          norm.summary.contains(normQuery) ||
+          norm.content.contains(normQuery);
     }).toList();
   }
 
+  final Map<
+    AhlulbaytDua,
+    ({String title, String author, String summary, String content})
+  >
+  _normCache = {};
+
   void _copyDua(AhlulbaytDua dua) {
+    final l10n = context.l10n;
+    final appLabel = l10n.isArabic ? 'تطبيق تَدبِير' : l10n.appName;
     Clipboard.setData(
       ClipboardData(
         text:
-            '${dua.title}\n(${dua.attributedTo})\n\n${dua.content}\n\n— تطبيق تَدبِير',
+            '${dua.title}\n(${dua.attributedTo})\n\n${dua.content}\n\n— $appLabel',
       ),
     );
     HapticFeedback.selectionClick();
@@ -70,9 +86,12 @@ class _AhlulbaytDuasScreenState extends State<AhlulbaytDuasScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.itemCopied(dua.title),
+          l10n.itemCopied(dua.title),
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
+          style: TextStyle(
+            fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+            fontSize: 13,
+          ),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,

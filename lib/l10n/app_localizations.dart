@@ -5153,6 +5153,114 @@ abstract class AppLocalizations {
   /// In ar, this message translates to:
   /// **'أُزيل التظليل'**
   String get highlightRemoved;
+
+  /// No description provided for @addToHifz.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف للحفظ'**
+  String get addToHifz;
+
+  /// No description provided for @inHifzProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد الحفظ'**
+  String get inHifzProgress;
+
+  /// No description provided for @versesInProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد الحفظ: {n}'**
+  String versesInProgress(String n);
+
+  /// No description provided for @inProgressShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد الحفظ {n}'**
+  String inProgressShort(String n);
+
+  /// No description provided for @surahAllVerses.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل آيات السورة'**
+  String get surahAllVerses;
+
+  /// No description provided for @surahTrackedVerses.
+  ///
+  /// In ar, this message translates to:
+  /// **'الآيات المضافة للحفظ ({n})'**
+  String surahTrackedVerses(String n);
+
+  /// No description provided for @surahDueVerses.
+  ///
+  /// In ar, this message translates to:
+  /// **'المستحقة اليوم في السورة ({n})'**
+  String surahDueVerses(String n);
+
+  /// No description provided for @customAyahRange.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحديد نطاق آيات'**
+  String get customAyahRange;
+
+  /// No description provided for @startSession.
+  ///
+  /// In ar, this message translates to:
+  /// **'بدء الجلسة'**
+  String get startSession;
+
+  /// No description provided for @continueFromAyah.
+  ///
+  /// In ar, this message translates to:
+  /// **'المتابعة من الآية {n}'**
+  String continueFromAyah(String n);
+
+  /// No description provided for @revealNextWord.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة إضافية'**
+  String get revealNextWord;
+
+  /// No description provided for @removeFromHifz.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة من الحفظ'**
+  String get removeFromHifz;
+
+  /// No description provided for @sessionSummaryAllMastered.
+  ///
+  /// In ar, this message translates to:
+  /// **'أتقنت جميع الآيات ({n})! بارك الله فيك.'**
+  String sessionSummaryAllMastered(String n);
+
+  /// No description provided for @moreWordsCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'+{n} كلمات'**
+  String moreWordsCount(String n);
+
+  /// No description provided for @restartPathway.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعادة المسار'**
+  String get restartPathway;
+
+  /// No description provided for @inProgressFilter.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد التقدم'**
+  String get inProgressFilter;
+
+  /// No description provided for @completedFilter.
+  ///
+  /// In ar, this message translates to:
+  /// **'مكتمل'**
+  String get completedFilter;
+
+  /// No description provided for @myReflectionLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'وقفتي'**
+  String get myReflectionLabel;
 }
 
 class _AppLocalizationsDelegate

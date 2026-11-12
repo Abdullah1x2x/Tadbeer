@@ -19,9 +19,22 @@ class RecitationHandler extends BaseAudioHandler
   AudioPlayer? _player;
   final _subscriptions = <StreamSubscription<Object?>>[];
 
-  /// ينهي التلاوة في التطبيق كما يفعل زر الإغلاق فيه؛ بدونه كان الإيقاف من
-  /// الإشعار يترك مشغّلاً متوقفاً لا يعود بالتشغيل.
+  /// يربط أزرار الإشعار وشاشة القفل بمتحكم التلاوة في التطبيق.
   Future<void> Function()? onStop;
+  Future<void> Function()? onPlay;
+  Future<void> Function()? onPause;
+  Future<void> Function()? onSkipToNext;
+  Future<void> Function()? onSkipToPrevious;
+  Future<void> Function(int index)? onSkipToQueueItem;
+
+  /// يفصل المشغّل ويلغي الاشتراكات عند إغلاقه.
+  void detach() {
+    for (final s in _subscriptions) {
+      s.cancel();
+    }
+    _subscriptions.clear();
+    _player = null;
+  }
 
   /// يتبع [player] من الآن. المشغّل يُنشأ عند أول استخدام، فالوسيط يسبقه.
   void attach(AudioPlayer player) {
@@ -99,6 +112,11 @@ class RecitationHandler extends BaseAudioHandler
 
   @override
   Future<void> play() async {
+    final start = onPlay;
+    if (start != null) {
+      await start();
+      return;
+    }
     // المشغّل المتوقف لا شيء فيه يُستأنف: زر التشغيل عندها لا يفعل شيئاً بدل أن
     // ينتظر صوتاً لن يأتي.
     final player = _player;
@@ -110,20 +128,47 @@ class RecitationHandler extends BaseAudioHandler
   }
 
   @override
-  Future<void> pause() async => _player?.pause();
+  Future<void> pause() async {
+    final hold = onPause;
+    if (hold != null) {
+      await hold();
+      return;
+    }
+    await _player?.pause();
+  }
 
   @override
   Future<void> seek(Duration position) async => _player?.seek(position);
 
   @override
-  Future<void> skipToNext() async => _player?.seekToNext();
+  Future<void> skipToNext() async {
+    final nextAction = onSkipToNext;
+    if (nextAction != null) {
+      await nextAction();
+      return;
+    }
+    await _player?.seekToNext();
+  }
 
   @override
-  Future<void> skipToPrevious() async => _player?.seekToPrevious();
+  Future<void> skipToPrevious() async {
+    final prevAction = onSkipToPrevious;
+    if (prevAction != null) {
+      await prevAction();
+      return;
+    }
+    await _player?.seekToPrevious();
+  }
 
   @override
-  Future<void> skipToQueueItem(int index) async =>
-      _player?.seek(Duration.zero, index: index);
+  Future<void> skipToQueueItem(int index) async {
+    final jumpAction = onSkipToQueueItem;
+    if (jumpAction != null) {
+      await jumpAction(index);
+      return;
+    }
+    await _player?.seek(Duration.zero, index: index);
+  }
 
   @override
   Future<void> stop() async {

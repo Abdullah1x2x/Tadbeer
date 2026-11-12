@@ -107,6 +107,11 @@ class JustAudioEngine implements AudioEngine {
 
   @override
   Future<void> stop() => _player.stop();
+
+  Future<void> dispose() async {
+    RecitationHandler.instance?.detach();
+    await _player.dispose();
+  }
 }
 
 /// ملف في قائمة التشغيل، وما يُعرض عنه في الإشعار.
@@ -208,8 +213,19 @@ class QuranAudio extends ChangeNotifier {
     final existing = _engine;
     if (existing != null) return existing;
     final engine = _engine = _makeEngine();
-    // إيقاف الإشعار يغلق التلاوة، كما يفعل إيقاف الشريط.
-    RecitationHandler.instance?.onStop = stop;
+    final handler = RecitationHandler.instance;
+    if (handler != null) {
+      handler
+        ..onStop = stop
+        ..onPlay = () async {
+          if (!playing) await toggle();
+        }
+        ..onPause = () async {
+          if (playing || resting) await toggle();
+        }
+        ..onSkipToNext = next
+        ..onSkipToPrevious = previous;
+    }
     _subscriptions.addAll([
       engine.index.listen(_onIndex),
       engine.playing.listen((p) {
@@ -284,18 +300,22 @@ class QuranAudio extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// يختار القارئ، ويعيد الآية الحالية بصوته.
+  /// يختار القارئ، ويعيد تجهيز الآية الحالية بصوته دون فرض التشغيل إذا كانت متوقفة.
   Future<void> setReciter(Reciter r) async {
     await _save('reciter', r.id);
     final now = current;
-    if (now != null) await playFrom(now);
+    if (now != null) {
+      await _start(now, single: _single, autoPlay: playing || resting);
+    }
   }
 
   /// تكرار كل آية، من الآية الحالية فصاعداً.
   Future<void> setRepeat(int times) async {
     await _save('repeat', times);
     final now = current;
-    if (now != null) await playFrom(now);
+    if (now != null) {
+      await _start(now, single: _single, autoPlay: playing || resting);
+    }
   }
 
   /// يتابع التلاوة أو يقف عند آية واحدة، من الآية الجارية فصاعداً.
@@ -320,7 +340,11 @@ class QuranAudio extends ChangeNotifier {
   /// يتلو [ayah] وحدها ثم يتوقف.
   Future<void> playAyah(Ayah ayah) => _start(ayah, single: true);
 
-  Future<void> _start(Ayah ayah, {required bool single}) async {
+  Future<void> _start(
+    Ayah ayah, {
+    required bool single,
+    bool autoPlay = true,
+  }) async {
     // كل طلب يأخذ رقماً، فالطلب الأحدث وحده يكمل بعد أي انتظار.
     final request = ++_request;
     _pauseTimer?.cancel();
@@ -346,7 +370,12 @@ class QuranAudio extends ChangeNotifier {
       );
       await _player.load(queue.tracks).timeout(loadTimeout);
       if (request != _request) return;
-      await _player.play();
+      if (autoPlay) {
+        await _player.play();
+      } else {
+        loading = false;
+        notifyListeners();
+      }
     } on Object {
       if (request == _request) _fail();
     }
@@ -507,6 +536,21 @@ class QuranAudio extends ChangeNotifier {
     _pauseTimer?.cancel();
     for (final s in _subscriptions) {
       s.cancel();
+    }
+    _subscriptions.clear();
+    final handler = RecitationHandler.instance;
+    if (handler != null && handler.onStop == stop) {
+      handler
+        ..onStop = null
+        ..onPlay = null
+        ..onPause = null
+        ..onSkipToNext = null
+        ..onSkipToPrevious = null;
+    }
+    final engine = _engine;
+    _engine = null;
+    if (engine is JustAudioEngine) {
+      unawaited(engine.dispose());
     }
     super.dispose();
   }

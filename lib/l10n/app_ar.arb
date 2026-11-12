@@ -1760,5 +1760,73 @@
   },
   "pdfBooklet": "ملزمة PDF",
   "textBook": "كتاب نصي",
-  "highlightRemoved": "أُزيل التظليل"
+  "highlightRemoved": "أُزيل التظليل",
+  "addToHifz": "أضف للحفظ",
+  "inHifzProgress": "قيد الحفظ",
+  "versesInProgress": "قيد الحفظ: {n}",
+  "@versesInProgress": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "inProgressShort": "قيد الحفظ {n}",
+  "@inProgressShort": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "surahAllVerses": "كل آيات السورة",
+  "surahTrackedVerses": "الآيات المضافة للحفظ ({n})",
+  "@surahTrackedVerses": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "surahDueVerses": "المستحقة اليوم في السورة ({n})",
+  "@surahDueVerses": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "customAyahRange": "تحديد نطاق آيات",
+  "startSession": "بدء الجلسة",
+  "continueFromAyah": "المتابعة من الآية {n}",
+  "@continueFromAyah": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "revealNextWord": "كلمة إضافية",
+  "removeFromHifz": "إزالة من الحفظ",
+  "sessionSummaryAllMastered": "أتقنت جميع الآيات ({n})! بارك الله فيك.",
+  "@sessionSummaryAllMastered": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "moreWordsCount": "+{n} كلمات",
+  "@moreWordsCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "restartPathway": "إعادة المسار",
+  "inProgressFilter": "قيد التقدم",
+  "completedFilter": "مكتمل",
+  "myReflectionLabel": "وقفتي"
 }
+

@@ -43,24 +43,36 @@ class _RecitationDownloadsScreenState extends State<RecitationDownloadsScreen> {
     if (mounted) _refreshSize();
   }
 
+  bool _downloadingJuzAmma = false;
+
   /// ينزّل سور جزء عمّ (من النبأ إلى الناس) واحدة بعد أخرى.
   Future<void> _downloadJuzAmma() async {
+    if (_downloadingJuzAmma) return;
+    final targetReciter = _reciter;
     unawaited(HapticFeedback.selectionClick());
-    for (var s = 78; s <= 114; s++) {
-      if (!mounted) return;
-      if (AudioDownloads.instance.isDownloaded(_reciter, s)) continue;
-      if (!await AudioDownloads.instance.downloadSurah(_reciter, s)) break;
-      if (mounted) _refreshSize();
+    setState(() => _downloadingJuzAmma = true);
+    try {
+      for (var s = 78; s <= 114; s++) {
+        if (!mounted || _reciter.id != targetReciter.id) return;
+        if (AudioDownloads.instance.isDownloaded(targetReciter, s)) continue;
+        if (!await AudioDownloads.instance.downloadSurah(targetReciter, s)) {
+          break;
+        }
+        if (mounted) _refreshSize();
+      }
+    } finally {
+      if (mounted) setState(() => _downloadingJuzAmma = false);
     }
   }
 
   Future<void> _deleteAll() async {
     final l10n = context.l10n;
+    final targetReciter = _reciter;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.deleteAllDownloads),
-        content: Text(l10n.deleteAllDownloadsConfirm(_reciter.name)),
+        content: Text(l10n.deleteAllDownloadsConfirm(targetReciter.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -74,7 +86,7 @@ class _RecitationDownloadsScreenState extends State<RecitationDownloadsScreen> {
       ),
     );
     if (ok != true) return;
-    await AudioDownloads.instance.deleteAll(_reciter);
+    await AudioDownloads.instance.deleteAll(targetReciter);
     if (mounted) _refreshSize();
   }
 
@@ -88,76 +100,93 @@ class _RecitationDownloadsScreenState extends State<RecitationDownloadsScreen> {
         appBar: AppBar(title: Text(l10n.recitationDownloads)),
         body: ListenableBuilder(
           listenable: downloads,
-          builder: (context, _) => ListView(
+          builder: (context, _) => ListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            children: [
-              AppSelectField<String>(
-                title: l10n.reciterLabel,
-                icon: AppIcons.headphones,
-                value: _reciter.id,
-                options: [
-                  for (final r in reciters)
-                    AppSelectOption(
-                      value: r.id,
-                      label: r.lowQuality
-                          ? '${r.name} (${l10n.lowerQuality})'
-                          : r.name,
+            itemCount: 115,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AppSelectField<String>(
+                      title: l10n.reciterLabel,
+                      icon: AppIcons.headphones,
+                      value: _reciter.id,
+                      options: [
+                        for (final r in reciters)
+                          AppSelectOption(
+                            value: r.id,
+                            label: r.lowQuality
+                                ? '${r.name} (${l10n.lowerQuality})'
+                                : r.name,
+                          ),
+                      ],
+                      onChanged: (id) => setState(() {
+                        _reciter = reciterById(id);
+                        _bytes = downloads.bytesOf(_reciter);
+                      }),
                     ),
-                ],
-                onChanged: (id) => setState(() {
-                  _reciter = reciterById(id);
-                  _bytes = downloads.bytesOf(_reciter);
-                }),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                l10n.downloadsHint,
-                style: TextStyle(
-                  fontSize: 13,
-                  height: 1.6,
-                  color: AppColors.textSecondary(context),
-                ),
-              ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  Expanded(
-                    child: FutureBuilder<int>(
-                      future: _bytes,
-                      builder: (context, snap) => Text(
-                        // منزلة عشرية واحدة، ليظهر حجم الملفات الصغيرة.
-                        l10n.downloadsSize(
-                          l10n
-                              .digits(
-                                ((snap.data ?? 0) / 1048576).toStringAsFixed(1),
-                              )
-                              .replaceAll('.', l10n.isArabic ? '٫' : '.'),
-                        ),
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                    const SizedBox(height: 10),
+                    Text(
+                      l10n.downloadsHint,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.6,
+                        color: AppColors.textSecondary(context),
                       ),
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: _deleteAll,
-                    icon: const Icon(AppIcons.trash, size: 18),
-                    label: Text(l10n.deleteAllDownloads),
-                  ),
-                ],
-              ),
-              FilledButton.tonalIcon(
-                onPressed: _downloadJuzAmma,
-                icon: const Icon(AppIcons.downloadSimple),
-                label: Text(l10n.downloadJuzAmma),
-              ),
-              const SizedBox(height: 8),
-              for (var s = 1; s <= 114; s++)
-                _SurahRow(
-                  surah: s,
-                  reciter: _reciter,
-                  onDownload: () => _download(s),
-                  onDeleted: _refreshSize,
-                ),
-            ],
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FutureBuilder<int>(
+                            future: _bytes,
+                            builder: (context, snap) => Text(
+                              // منزلة عشرية واحدة، ليظهر حجم الملفات الصغيرة.
+                              l10n.downloadsSize(
+                                l10n
+                                    .digits(
+                                      ((snap.data ?? 0) / 1048576)
+                                          .toStringAsFixed(1),
+                                    )
+                                    .replaceAll('.', l10n.isArabic ? '٫' : '.'),
+                              ),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: _deleteAll,
+                          icon: const Icon(AppIcons.trash, size: 18),
+                          label: Text(l10n.deleteAllDownloads),
+                        ),
+                      ],
+                    ),
+                    FilledButton.tonalIcon(
+                      onPressed: _downloadingJuzAmma ? null : _downloadJuzAmma,
+                      icon: _downloadingJuzAmma
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(AppIcons.downloadSimple),
+                      label: Text(l10n.downloadJuzAmma),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              }
+              final s = index;
+              return _SurahRow(
+                surah: s,
+                reciter: _reciter,
+                onDownload: () => _download(s),
+                onDeleted: _refreshSize,
+              );
+            },
           ),
         ),
       ),

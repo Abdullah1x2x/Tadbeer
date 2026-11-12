@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/localization.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/utils/arabic_search_normalizer.dart';
 import '../data/adhkar_reminders.dart';
 import '../data/adhkar_repository.dart';
 import '../../continue/last_activity.dart';
@@ -32,20 +33,52 @@ class MorningEveningAdhkarScreen extends StatefulWidget {
 
 class _MorningEveningAdhkarScreenState
     extends State<MorningEveningAdhkarScreen> {
+  static const _countsKey = 'adhkar_counts';
   late AdhkarCategory _currentCategory;
   final Map<String, int> _counts = {};
+
+  static String _todayKey() {
+    final now = DateTime.now();
+    final m = now.month.toString().padLeft(2, '0');
+    final d = now.day.toString().padLeft(2, '0');
+    return '${now.year}-$m-$d';
+  }
+
+  void _loadSavedCounts() {
+    final saved = UserDataStore.instance.featureState(_countsKey);
+    if (saved['date'] != _todayKey()) return;
+    final raw = saved['counts'];
+    if (raw is! Map) return;
+    for (final e in raw.entries) {
+      final v = e.value;
+      if (e.key is String && v is num && v > 0) {
+        _counts[e.key as String] = v.toInt();
+      }
+    }
+  }
+
+  void _persistCounts() {
+    if (!UserDataStore.instance.isInitialized) return;
+    unawaited(
+      UserDataStore.instance.saveFeatureState(_countsKey, {
+        'date': _todayKey(),
+        'counts': Map<String, int>.from(_counts),
+      }),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _currentCategory = widget.initialCategory;
+    if (UserDataStore.instance.isInitialized) {
+      _loadSavedCounts();
+    }
     // الحفظ يُعلم المخزن، فلا يكون أثناء بناء الشاشة.
     WidgetsBinding.instance.addPostFrameCallback((_) => _recordActivity());
   }
 
-  /// أذكار الصباح والمساء وحدها يُستأنف منها، فهي ورد يومي له وقته.
   void _recordActivity() {
-    if (_currentCategory.index > AdhkarCategory.evening.index) return;
     LastActivityStore.record(
       ActivityKind.adhkar,
       ref: _currentCategory.name,
@@ -75,6 +108,7 @@ class _MorningEveningAdhkarScreenState
       setState(() {
         _counts[item.id] = currentDone + 1;
       });
+      _persistCounts();
       if (currentDone + 1 == item.repeatCount) {
         HapticFeedback.mediumImpact();
         _onItemCompleted();
@@ -105,13 +139,18 @@ class _MorningEveningAdhkarScreenState
     setState(() {
       _counts.clear();
     });
+    _persistCounts();
+    final l10n = context.l10n;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.adhkarCountersResetSuccess,
+          l10n.adhkarCountersResetSuccess,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
+          style: TextStyle(
+            fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+            fontSize: 13,
+          ),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -123,13 +162,17 @@ class _MorningEveningAdhkarScreenState
   void _copyDhikr(AdhkarItem item) {
     Clipboard.setData(ClipboardData(text: '${item.text}\n\n— ${item.source}'));
     HapticFeedback.selectionClick();
+    final l10n = context.l10n;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          context.l10n.dhikrCopiedSuccess,
+          l10n.dhikrCopiedSuccess,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13),
+          style: TextStyle(
+            fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
+            fontSize: 13,
+          ),
         ),
         duration: const Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
@@ -155,8 +198,8 @@ class _MorningEveningAdhkarScreenState
           leading: const BackButton(),
           title: Text(
             l10n.adhkarKind,
-            style: const TextStyle(
-              fontFamily: 'IBMPlexSansArabic',
+            style: TextStyle(
+              fontFamily: l10n.isArabic ? 'IBMPlexSansArabic' : null,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -342,9 +385,9 @@ class _TabButton extends StatelessWidget {
             ),
             const SizedBox(width: 6),
             Text(
-              '$title (${ArabicSearchNormalizer.toArabicDigits(count)})',
+              '$title (${context.l10n.digits(count)})',
               style: TextStyle(
-                fontFamily: 'IBMPlexSansArabic',
+                fontFamily: context.l10n.isArabic ? 'IBMPlexSansArabic' : null,
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
@@ -419,11 +462,7 @@ class _AdhkarCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  l10n.dhikrIndex(
-                    l10n.isArabic
-                        ? ArabicSearchNormalizer.toArabicDigits(index + 1)
-                        : (index + 1),
-                  ),
+                  l10n.dhikrIndex(l10n.digits(index + 1)),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -490,13 +529,7 @@ class _AdhkarCard extends StatelessWidget {
                         isComplete
                             ? l10n.completed
                             : (item.repeatCount > 1
-                                  ? l10n.remainingCount(
-                                      l10n.isArabic
-                                          ? ArabicSearchNormalizer.toArabicDigits(
-                                              remaining,
-                                            )
-                                          : remaining,
-                                    )
+                                  ? l10n.remainingCount(l10n.digits(remaining))
                                   : l10n.once),
                         style: TextStyle(
                           fontSize: 12,
@@ -530,31 +563,63 @@ class _AdhkarCard extends StatelessWidget {
 }
 
 /// نص الذكر؛ والقرآني منه برسم المصحف حين يكون مصحف المدينة هو المختار.
-class _AdhkarText extends StatelessWidget {
+class _AdhkarText extends StatefulWidget {
   final AdhkarItem item;
   final Color color;
 
   const _AdhkarText({required this.item, required this.color});
 
   @override
+  State<_AdhkarText> createState() => _AdhkarTextState();
+}
+
+class _AdhkarTextState extends State<_AdhkarText> {
+  Future<void>? _initFuture;
+
+  bool get _needsMadinahQcf =>
+      widget.item.quran.isNotEmpty &&
+      QuranRepository.instance.isLoaded &&
+      UserDataStore.instance.settings.mushafStyle == MushafStyle.madinah;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_needsMadinahQcf) {
+      _initFuture = QcfLayout.instance.init();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _AdhkarText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_needsMadinahQcf) {
+      _initFuture ??= QcfLayout.instance.init();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final plain = Text(
-      item.text,
+      widget.item.text,
       textAlign: TextAlign.center,
-      style: QcfPageBody.scriptStyle(fontSize: 20, height: 1.9, color: color),
+      textDirection: TextDirection.rtl,
+      style: QcfPageBody.scriptStyle(
+        fontSize: 20,
+        height: 1.9,
+        color: widget.color,
+      ),
     );
-    if (item.quran.isEmpty ||
-        !QuranRepository.instance.isLoaded ||
-        UserDataStore.instance.settings.mushafStyle != MushafStyle.madinah) {
+    if (!_needsMadinahQcf) {
       return plain;
     }
+    _initFuture ??= QcfLayout.instance.init();
     return FutureBuilder<void>(
-      future: QcfLayout.instance.init(),
+      future: _initFuture,
       builder: (context, _) {
         final repo = QuranRepository.instance;
         // سورة لكل فقرة، كما في نص الذكر.
         final parts = [
-          for (final (surah, from, to) in item.quran)
+          for (final (surah, from, to) in widget.item.quran)
             [
               for (var a = from; a <= to; a++)
                 switch (repo.getAyah(surah, a)) {
@@ -575,7 +640,7 @@ class _AdhkarText extends StatelessWidget {
                 style: part.first!.style(
                   fontSize: 21,
                   height: 1.9,
-                  color: color,
+                  color: widget.color,
                 ),
               ),
             ],

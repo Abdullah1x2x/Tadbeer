@@ -20,6 +20,7 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<QuranDua> _filteredDuas = const [];
   String _selectedCategory = 'الكل';
+  String _lastQuery = '';
 
   @override
   void initState() {
@@ -36,9 +37,12 @@ class _QuranDuasScreenState extends State<QuranDuasScreen> {
   }
 
   void _onFilterChanged() {
+    final query = _searchController.text;
+    if (query == _lastQuery) return;
+    _lastQuery = query;
     setState(() {
       _filteredDuas = QuranDuasRepository.instance.search(
-        _searchController.text,
+        query,
         categoryFilter: _selectedCategory,
       );
     });

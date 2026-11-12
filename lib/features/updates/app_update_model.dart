@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 /// نموذج معلومات التحديث المجلوب من ملف `version.json` في المستودع.
@@ -10,6 +11,10 @@ class AppUpdateInfo {
   final String telegramUrl;
   final String downloadUrl;
   final String apkUrl;
+  final String linuxUrl;
+  /// بصمة SHA-256 لكل ملف APK، مفهرسة باسم المعمارية (arm64-v8a، armeabi-v7a).
+  final Map<String, String> apkSha256s;
+  final String linuxSha256;
   final bool isMandatory;
 
   const AppUpdateInfo({
@@ -21,10 +26,20 @@ class AppUpdateInfo {
     required this.telegramUrl,
     required this.downloadUrl,
     this.apkUrl = '',
+    this.linuxUrl = '',
+    this.apkSha256s = const {},
+    this.linuxSha256 = '',
     this.isMandatory = false,
   });
 
   factory AppUpdateInfo.fromJson(Map<String, dynamic> json) {
+    final platforms = json['platforms'];
+    final linuxPlatform = platforms is Map ? platforms['linux'] : null;
+    final linuxPlatformUrl =
+        linuxPlatform is Map ? linuxPlatform['url'] as String? : null;
+    final linuxPlatformSha =
+        linuxPlatform is Map ? linuxPlatform['sha256'] as String? : null;
+
     return AppUpdateInfo(
       latestVersion: json['latest_version'] as String? ?? '1.0.0',
       buildNumber: json['build_number'] as int? ?? 1,
@@ -36,6 +51,13 @@ class AppUpdateInfo {
       downloadUrl: json['download_url'] as String? ??
           'https://github.com/Abdullah1x2x/Tadbeer/releases/latest',
       apkUrl: json['apk_url'] as String? ?? '',
+      linuxUrl: json['linux_url'] as String? ?? linuxPlatformUrl ?? '',
+      apkSha256s: {
+        if (json['apk_sha256s'] case final Map hashes)
+          for (final e in hashes.entries)
+            if (e.value is String) '${e.key}': e.value as String,
+      },
+      linuxSha256: json['linux_sha256'] as String? ?? linuxPlatformSha ?? '',
       isMandatory: json['is_mandatory'] as bool? ?? false,
     );
   }
@@ -49,6 +71,9 @@ class AppUpdateInfo {
     'telegram_url': telegramUrl,
     'download_url': downloadUrl,
     'apk_url': apkUrl,
+    'linux_url': linuxUrl,
+    if (apkSha256s.isNotEmpty) 'apk_sha256s': apkSha256s,
+    if (linuxSha256.isNotEmpty) 'linux_sha256': linuxSha256,
     'is_mandatory': isMandatory,
   };
 
@@ -59,6 +84,15 @@ class AppUpdateInfo {
     return 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/app-arm64-v8a-release.apk';
   }
 
+  /// الرابط المباشر لحزمة لينكس المضغوطة (x64 tar.gz).
+  String get directLinuxUrl {
+    if (linuxUrl.isNotEmpty) return linuxUrl;
+    if (downloadUrl.endsWith('.tar.gz') || downloadUrl.endsWith('.AppImage')) {
+      return downloadUrl;
+    }
+    return 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/tadbeer-linux-x64.tar.gz';
+  }
+
   /// المعماريات التي يُبنى لها ملف APK في كل إصدار (v8 و v7).
   static const _builtAbis = {'arm64-v8a', 'armeabi-v7a'};
 
@@ -67,6 +101,17 @@ class AppUpdateInfo {
   String apkUrlFor(String? abi) => _builtAbis.contains(abi)
       ? directApkUrl.replaceFirst('arm64-v8a', abi!)
       : directApkUrl;
+
+  /// رابط حزمة التحديث المناسبة للمنصة الحالية (أندرويد أو لينكس).
+  String packageUrlFor({String? abi, bool? isLinux}) =>
+      (isLinux ?? Platform.isLinux) ? directLinuxUrl : apkUrlFor(abi);
+
+  /// بصمة SHA-256 الاختيارية للحزمة المناسبة للمنصة الحالية، أو نص فارغ.
+  String expectedSha256For({String? abi, bool? isLinux}) =>
+      (isLinux ?? Platform.isLinux)
+          ? linuxSha256
+          // نفس اختيار apkUrlFor: معمارية بلا ملف خاص تنزّل ملف arm64.
+          : apkSha256s[_builtAbis.contains(abi) ? abi : 'arm64-v8a'] ?? '';
 
   /// يتحقق مما إذا كان هذا التحديث أحدث من الإصدار المثبت حالياً.
   bool isNewerThan(int currentBuildNumber, String currentVersion) {

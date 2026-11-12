@@ -173,24 +173,40 @@ mixin _AyahLinksSection on _StoreState {
       final targetKey = (toAyahNumber != null && toAyahNumber > ayahNumber)
           ? '$surahNumber:$ayahNumber-$toAyahNumber'
           : '$surahNumber:$ayahNumber';
-      final updatedVerses = existing.verses.where((v) {
+      bool matchesRemoved(AyahLinkVerse v) {
         if (verseId != null) {
-          return v.id != verseId;
+          return v.id == verseId;
         }
-        return v.ayahKey != targetKey &&
-            !(toAyahNumber == null &&
+        return v.ayahKey == targetKey ||
+            (toAyahNumber == null &&
                 v.surahNumber == surahNumber &&
                 v.ayahNumber == ayahNumber);
-      }).toList();
-      final removeKey = verseId ?? targetKey;
+      }
+
+      final removedVerses = existing.verses.where(matchesRemoved).toList();
+      final updatedVerses = existing.verses
+          .where((v) => !matchesRemoved(v))
+          .toList();
+      final keysToRemove = <String>{
+        ?verseId,
+        targetKey,
+        for (final v in removedVerses) ...{v.id, v.nodeKey, v.ayahKey},
+      };
       final updatedPositions = Map<String, LinkNodePosition>.from(
         existing.positions,
-      )..remove(removeKey);
+      )..removeWhere((k, _) => keysToRemove.contains(k));
+      final updatedNodeColors = Map<String, int>.from(existing.nodeColors)
+        ..removeWhere((k, _) => keysToRemove.contains(k));
       final updated = existing.copyWith(
         verses: updatedVerses,
         positions: updatedPositions,
+        nodeColors: updatedNodeColors,
         relationships: existing.relationships
-            .where((r) => r.fromAyahKey != removeKey && r.toAyahKey != removeKey)
+            .where(
+              (r) =>
+                  !keysToRemove.contains(r.fromAyahKey) &&
+                  !keysToRemove.contains(r.toAyahKey),
+            )
             .toList(),
         updatedAt: DateTime.now(),
       );
@@ -223,7 +239,9 @@ mixin _AyahLinksSection on _StoreState {
           }
           return v;
         }
-        if (!found && v.ayahKey == key) {
+        if (!found &&
+            (v.ayahKey == key ||
+                (v.surahNumber == surahNumber && v.ayahNumber == ayahNumber))) {
           found = true;
           return v.copyWith(note: note);
         }

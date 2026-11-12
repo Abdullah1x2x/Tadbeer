@@ -2929,4 +2929,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get highlightRemoved => 'Highlight removed';
+
+  @override
+  String get addToHifz => 'Add to Hifz';
+
+  @override
+  String get inHifzProgress => 'Learning';
+
+  @override
+  String versesInProgress(String n) {
+    return 'Learning: $n';
+  }
+
+  @override
+  String inProgressShort(String n) {
+    return '$n learning';
+  }
+
+  @override
+  String get surahAllVerses => 'All verses in surah';
+
+  @override
+  String surahTrackedVerses(String n) {
+    return 'Tracked verses ($n)';
+  }
+
+  @override
+  String surahDueVerses(String n) {
+    return 'Due today in surah ($n)';
+  }
+
+  @override
+  String get customAyahRange => 'Custom verse range';
+
+  @override
+  String get startSession => 'Start session';
+
+  @override
+  String continueFromAyah(String n) {
+    return 'Continue from verse $n';
+  }
+
+  @override
+  String get revealNextWord => 'Hint word';
+
+  @override
+  String get removeFromHifz => 'Remove from Hifz';
+
+  @override
+  String sessionSummaryAllMastered(String n) {
+    return 'You mastered all $n verses! Well done.';
+  }
+
+  @override
+  String moreWordsCount(String n) {
+    return '+$n more words';
+  }
+
+  @override
+  String get restartPathway => 'Restart pathway';
+
+  @override
+  String get inProgressFilter => 'In progress';
+
+  @override
+  String get completedFilter => 'Completed';
+
+  @override
+  String get myReflectionLabel => 'My reflection';
 }

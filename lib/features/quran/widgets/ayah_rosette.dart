@@ -203,7 +203,8 @@ class _RosetteState extends State<_Rosette>
     final s = _ayah.surahNumber, a = _ayah.ayahNumber;
     final bookmarked = store.isBookmarked(s, a);
     final highlight = store.getHighlight(s, a);
-    final inHifz = HifzStore.contains(s, a);
+    final hifzCard = HifzStore.card(s, a);
+    final inHifz = hifzCard != null;
     final host = widget.host;
     return [
       _Petal(
@@ -236,7 +237,11 @@ class _RosetteState extends State<_Rosette>
       ),
       _Petal(
         icon: inHifz ? AppIcons.brainFill : AppIcons.brain,
-        label: l10n.memorizedDone,
+        label: hifzCard == null
+            ? l10n.addToHifz
+            : hifzCard.isMemorized
+            ? l10n.memorizedDone
+            : l10n.inHifzProgress,
         active: inHifz,
         run: () => HifzStore.toggle(s, a),
       ),
@@ -251,7 +256,9 @@ class _RosetteState extends State<_Rosette>
         run: () {
           final surah = QuranRepository.instance.getSurah(s);
           Clipboard.setData(
-            ClipboardData(text: '﴿${_ayah.text}﴾ [سورة ${surah.name}: $a]'),
+            ClipboardData(
+              text: '﴿${_ayah.text}﴾ [${l10n.ayahReference(surah.name, a)}]',
+            ),
           );
           ScaffoldMessenger.maybeOf(host)?.showSnackBar(
             SnackBar(

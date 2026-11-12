@@ -69,6 +69,13 @@ class LocalReminderService implements ReminderScheduler {
       FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
+  Future<void> _scheduleQueue = Future<void>.value();
+
+  Future<T> _serialized<T>(Future<T> Function() action) {
+    final next = _scheduleQueue.then((_) => action(), onError: (_) => action());
+    _scheduleQueue = next.then<void>((_) {}, onError: (_) {});
+    return next;
+  }
 
   AppLifecycleListener? _lifecycle;
 
@@ -111,11 +118,11 @@ class LocalReminderService implements ReminderScheduler {
       defaultPresentList: true,
     );
     final linuxSettings = LinuxInitializationSettings(
-      defaultActionName: 'Open Tadbeer',
+      defaultActionName: _strings.isArabic ? 'فتح تدبير' : 'Open Tadbeer',
       defaultIcon: AssetsLinuxIcon('assets/icons/app_icon.png'),
     );
-    const windowsSettings = WindowsInitializationSettings(
-      appName: 'تَدبِير',
+    final windowsSettings = WindowsInitializationSettings(
+      appName: _strings.appName,
       appUserModelId: 'Com.Tadbeer.QuranApp',
       guid: 'a8c4e120-5b91-4d73-91e4-63c27f8419a2',
     );
@@ -432,12 +439,13 @@ class LocalReminderService implements ReminderScheduler {
         visibility: NotificationVisibility.public,
         styleInformation: style,
         actions: <AndroidNotificationAction>[
-          AndroidNotificationAction(
-            'open_quran',
-            strings.openMushaf,
-            showsUserInterface: true,
-            cancelNotification: true,
-          ),
+          if (withRead)
+            AndroidNotificationAction(
+              'open_quran',
+              strings.openMushaf,
+              showsUserInterface: true,
+              cancelNotification: true,
+            ),
           snoozeAction,
           AndroidNotificationAction(
             'dismiss_alarm',
@@ -640,14 +648,15 @@ class LocalReminderService implements ReminderScheduler {
       final shown = (await _notificationsPlugin.getActiveNotifications())
           .where((n) => n.id == id)
           .firstOrNull;
-      await _notificationsPlugin.cancel(id: id);
       if (shown == null) return;
+      await _notificationsPlugin.cancel(id: id);
       final alertType = shown.channelId == alarmChannelId
           ? ReminderAlertType.alarm
           : ReminderAlertType.notification;
       final payload = shown.payload ?? 'quran_resume';
+      final snoozeNotificationId = _snoozeId + (id.abs() % 100000);
       await _zonedScheduleSafe(
-        id: _snoozeId,
+        id: snoozeNotificationId,
         title: shown.title ?? '',
         body: shown.body ?? '',
         // لحظة مطلقة، فلا تحتاج قاعدة المناطق في عزلة الخلفية.
@@ -793,6 +802,16 @@ class LocalReminderService implements ReminderScheduler {
   Future<void> scheduleReminder(
     ReminderItem reminder, {
     bool requestPermissionIfNeeded = true,
+  }) => _serialized(
+    () => _scheduleReminderUnlocked(
+      reminder,
+      requestPermissionIfNeeded: requestPermissionIfNeeded,
+    ),
+  );
+
+  Future<void> _scheduleReminderUnlocked(
+    ReminderItem reminder, {
+    bool requestPermissionIfNeeded = true,
   }) async {
     if (_isRunningInFlutterTest) return;
     if (!_isInitialized) {
@@ -805,17 +824,24 @@ class LocalReminderService implements ReminderScheduler {
     }
 
     if (requestPermissionIfNeeded) {
-      await requestPermissions();
+      await requestPermissions(
+        exactAlarms: reminder.alertType == ReminderAlertType.alarm,
+      );
     }
 
     await cancelReminder(reminder);
 
     final scheduleMode = await _resolveAndroidScheduleMode(reminder.alertType);
+    final strings = _strings;
 
     if (reminder.id == portionReminderId) {
       await _schedulePortion(
         reminder,
-        _buildNotificationDetails(reminder.alertType, withRead: true),
+        _buildNotificationDetails(
+          reminder.alertType,
+          withRead: true,
+          bigText: strings.portionLeftBody,
+        ),
         scheduleMode,
       );
       return;
@@ -823,7 +849,11 @@ class LocalReminderService implements ReminderScheduler {
     if (reminder.id == streakReminderId) {
       await _scheduleStreak(
         reminder,
-        _buildNotificationDetails(reminder.alertType, withRead: true),
+        _buildNotificationDetails(
+          reminder.alertType,
+          withRead: true,
+          bigText: strings.streakAtRiskBody,
+        ),
         scheduleMode,
       );
       return;
@@ -831,10 +861,9 @@ class LocalReminderService implements ReminderScheduler {
 
     final title = reminder.title.trim().isNotEmpty
         ? reminder.title.trim()
-        : 'ورد القرآن الكريم';
+        : strings.defaultReminderTitle;
     // تذكيرات الأذكار تفتح الأذكار بدل المصحف.
     final isAdhkar = reminder.id.startsWith('adhkar_');
-    final strings = _strings;
     final greeting = strings.toReader(
       _readerName,
       isAdhkar ? strings.reminderAdhkarBody : strings.reminderQuranBody,
@@ -863,8 +892,15 @@ class LocalReminderService implements ReminderScheduler {
         tz.TZDateTime scheduledDate;
         final existingTarget = reminder.scheduledFor;
         if (existingTarget != null) {
-          // يحتفظ بالموعد الأصلي (عند المزامنة بعد إعادة التشغيل مثلاً).
-          scheduledDate = tz.TZDateTime.from(existingTarget, tz.local);
+          // يحتفظ بيوم الموعد الأصلي مع ضبط وقته وفق المنطقة المحلية الحالية.
+          scheduledDate = tz.TZDateTime(
+            tz.local,
+            existingTarget.year,
+            existingTarget.month,
+            existingTarget.day,
+            reminder.hour,
+            reminder.minute,
+          );
         } else {
           scheduledDate = nextDailyTime(now, reminder.hour, reminder.minute);
           // يحفظ الموعد بدقة، لتعرف المزامنات اللاحقة أنه رنّ.
@@ -900,9 +936,10 @@ class LocalReminderService implements ReminderScheduler {
           payload: payload,
         );
       } else if (reminder.repeatMode == ReminderRepeatMode.weekdays) {
-        final days = reminder.selectedDays.isEmpty
-            ? [1, 2, 3, 4, 5, 6, 7]
-            : reminder.selectedDays;
+        final rawDays = reminder.selectedDays.where(
+          (d) => d >= DateTime.monday && d <= DateTime.sunday,
+        );
+        final days = rawDays.isEmpty ? const [1, 2, 3, 4, 5, 6, 7] : rawDays;
 
         for (final day in days) {
           final scheduledDate = nextWeekdayTime(
@@ -1043,8 +1080,11 @@ tz.TZDateTime nextWeekdayTime(
   int hour,
   int minute,
 ) {
+  if (dayOfWeek < DateTime.monday || dayOfWeek > DateTime.sunday) {
+    throw RangeError.range(dayOfWeek, DateTime.monday, DateTime.sunday, 'dayOfWeek');
+  }
   var next = nextDailyTime(now, hour, minute);
-  while (next.weekday != dayOfWeek) {
+  for (var i = 0; i < 7 && next.weekday != dayOfWeek; i++) {
     next = tz.TZDateTime(
       now.location,
       next.year,

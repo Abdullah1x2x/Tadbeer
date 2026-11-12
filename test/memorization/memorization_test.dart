@@ -96,6 +96,154 @@ void main() {
 
       expect(HifzStore.card(1, 1)?.box, 1);
       expect(find.text('أحسنت! انتهت الجلسة'), findsOneWidget);
+      expect(find.text('أتقنت جميع الآيات (١)! بارك الله فيك.'), findsOneWidget);
+    });
+
+    test(
+      'summary separates memorized (box >= 3) from in-progress per surah',
+      () async {
+        await HifzStore.toggle(2, 1, now: day0);
+        await HifzStore.grade(1, 1, remembered: true, now: day0);
+        await HifzStore.grade(
+          1,
+          1,
+          remembered: true,
+          now: day0.add(const Duration(days: 1)),
+        );
+        await HifzStore.grade(
+          1,
+          1,
+          remembered: true,
+          now: day0.add(const Duration(days: 4)),
+        );
+
+        final s = HifzStore.summary(now: day0);
+        expect(s.memorizedCount, 1);
+        expect(s.inProgressCount, 1);
+        expect(s.memorizedInSurah(1), 1);
+        expect(s.inProgressInSurah(1), 0);
+        expect(s.memorizedInSurah(2), 0);
+        expect(s.inProgressInSurah(2), 1);
+        expect(s.dueInSurah(2), 1);
+        expect(s.due, [(2, 1)]);
+        expect(s.trackedInSurah(1), [(1, 1)]);
+      },
+    );
+
+    test('same-day repeat grading does not inflate box above due date', () async {
+      await HifzStore.grade(1, 2, remembered: true, now: day0);
+      expect(HifzStore.card(1, 2)?.box, 1);
+      expect(HifzStore.card(1, 2)?.due, DateTime(2026, 10, 20));
+
+      // Repeating "mastered" on the same day keeps box at 1 instead of jumping.
+      await HifzStore.grade(1, 2, remembered: true, now: day0);
+      expect(HifzStore.card(1, 2)?.box, 1);
+      expect(HifzStore.card(1, 2)?.due, DateTime(2026, 10, 20));
+
+      // Grading on or after due advances normally.
+      await HifzStore.grade(
+        1,
+        2,
+        remembered: true,
+        now: day0.add(const Duration(days: 1)),
+      );
+      expect(HifzStore.card(1, 2)?.box, 2);
+    });
+
+    test('remove deletes a tracked verse cleanly', () async {
+      await HifzStore.toggle(1, 3, now: day0);
+      expect(HifzStore.contains(1, 3), isTrue);
+
+      await HifzStore.remove(1, 3);
+      expect(HifzStore.contains(1, 3), isFalse);
+      expect(HifzStore.card(1, 3), isNull);
+    });
+
+    test('hifzWordsOf skips waqf symbols and single-word hint stays partial', () {
+      expect(hifzWordsOf('بِسْمِ ۖ اللَّهِ ۚ'), ['بِسْمِ', 'اللَّهِ']);
+      expect(hifzSingleWordHint('مُدْهَآمَّتَانِ'), 'مُ');
+      expect(hifzSingleWordHint('صٓ'), 'صٓ');
+    });
+
+    testWidgets('empty HifzSessionScreen renders safely without range error', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const HifzSessionScreen(verses: []),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('أحسنت! انتهت الجلسة'), findsOneWidget);
+      expect(find.text('لا مراجعة مستحقة اليوم'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('single-word verse hides full word and hides reveal-word', (
+      tester,
+    ) async {
+      final ayah = QuranRepository.instance.getAyah(55, 64)!;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const HifzSessionScreen(verses: [(55, 64)]),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('${hifzSingleWordHint(ayah.text)} …'),
+        findsOneWidget,
+      );
+      expect(find.textContaining(ayah.text), findsNothing);
+      expect(find.text('كلمة إضافية'), findsNothing);
+
+      await tester.tap(find.text('اضغط لكشف الآية'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('full')), findsOneWidget);
+    });
+
+    testWidgets('reveal-next-word progressively reveals multi-word verses', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const HifzSessionScreen(verses: [(1, 1)]),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('كلمة إضافية'), findsOneWidget);
+      await tester.tap(find.text('كلمة إضافية'));
+      await tester.pumpAndSettle();
+
+      // After revealing 2 words of a 4-word ayah, button remains until 1 left.
+      expect(find.text('كلمة إضافية'), findsOneWidget);
+    });
+
+    testWidgets('MemorizationScreen shows in-progress badge and filters surahs', (
+      tester,
+    ) async {
+      await tester.runAsync(() async {
+        await HifzStore.toggle(2, 1, now: day0);
+      });
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const MemorizationScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('قيد الحفظ: ١'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField), 'البقرة');
+      await tester.pumpAndSettle();
+      expect(find.textContaining('البقرة'), findsWidgets);
+      expect(find.textContaining('الفاتحة'), findsNothing);
     });
   });
 }

@@ -1039,5 +1039,24 @@
   },
   "pdfBooklet": "PDF booklet",
   "textBook": "Text book",
-  "highlightRemoved": "Highlight removed"
+  "highlightRemoved": "Highlight removed",
+  "addToHifz": "Add to Hifz",
+  "inHifzProgress": "Learning",
+  "versesInProgress": "Learning: {n}",
+  "inProgressShort": "{n} learning",
+  "surahAllVerses": "All verses in surah",
+  "surahTrackedVerses": "Tracked verses ({n})",
+  "surahDueVerses": "Due today in surah ({n})",
+  "customAyahRange": "Custom verse range",
+  "startSession": "Start session",
+  "continueFromAyah": "Continue from verse {n}",
+  "revealNextWord": "Hint word",
+  "removeFromHifz": "Remove from Hifz",
+  "sessionSummaryAllMastered": "You mastered all {n} verses! Well done.",
+  "moreWordsCount": "+{n} more words",
+  "restartPathway": "Restart pathway",
+  "inProgressFilter": "In progress",
+  "completedFilter": "Completed",
+  "myReflectionLabel": "My reflection"
 }
+

@@ -73,7 +73,9 @@ extension _QuranScreenDialogs on _QuranScreenState {
                           for (final fontOpt in QuranFontFamilyOption.values)
                             ChoiceChip(
                               label: Text(
-                                fontOpt.labelArabic,
+                                fontOpt.getLabel(
+                                  context.currentLanguage == AppLanguage.arabic,
+                                ),
                                 style: TextStyle(
                                   fontSize: 12.5,
                                   fontWeight: currentFamily == fontOpt

@@ -301,8 +301,10 @@ class AyahLinkRepository {
 
   /// يبحث في الروابط: العنوان والوصف وأسماء السور والخواطر.
   List<AyahLinkItem> searchLinks(String rawQuery) {
-    final normalized = ArabicSearchNormalizer.normalize(rawQuery).trim();
-    if (normalized.isEmpty) return allLinks;
+    final trimmed = rawQuery.trim();
+    if (trimmed.isEmpty) return allLinks;
+    final normalized = ArabicSearchNormalizer.normalize(trimmed).trim();
+    if (normalized.isEmpty) return const [];
 
     return allLinks.where((link) {
       final normTitle = ArabicSearchNormalizer.normalize(link.title);

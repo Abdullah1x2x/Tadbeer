@@ -66,8 +66,26 @@ class _NetworkConnectionsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _NetworkConnectionsPainter oldDelegate) {
-    // المواضع خريطة واحدة تتعدل أثناء السحب، فلا تكفي مقارنة المرجع.
-    return true;
+    if (oldDelegate.center != center ||
+        oldDelegate.showHubLines != showHubLines ||
+        oldDelegate.isDark != isDark ||
+        oldDelegate.positions.length != positions.length ||
+        oldDelegate.threads.length != threads.length) {
+      return true;
+    }
+    for (final entry in positions.entries) {
+      if (oldDelegate.positions[entry.key] != entry.value) {
+        return true;
+      }
+    }
+    for (var i = 0; i < threads.length; i++) {
+      final a = threads[i];
+      final b = oldDelegate.threads[i];
+      if (a.fromAyahKey != b.fromAyahKey || a.toAyahKey != b.toAyahKey) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 

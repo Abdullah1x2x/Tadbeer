@@ -33,11 +33,20 @@ class _NameScreenState extends State<NameScreen> {
     super.dispose();
   }
 
+  bool _submitting = false;
+
   Future<void> _go({required bool keep}) async {
-    unawaited(HapticFeedback.selectionClick());
-    final navigator = Navigator.of(context);
-    if (keep) await UserDataStore.instance.setUserName(_name.text);
-    navigator.pushReplacement(MaterialPageRoute(builder: widget.next));
+    if (_submitting) return;
+    _submitting = true;
+    try {
+      unawaited(HapticFeedback.selectionClick());
+      final navigator = Navigator.of(context);
+      if (keep) await UserDataStore.instance.setUserName(_name.text);
+      if (!mounted) return;
+      navigator.pushReplacement(MaterialPageRoute(builder: widget.next));
+    } finally {
+      if (mounted) _submitting = false;
+    }
   }
 
   @override

@@ -74,14 +74,26 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
         return StatefulBuilder(
           builder: (context, setSheetState) {
             final allDhikrs = TasbeehDhikr.defaultDhikrs;
+            final trimmedQuery = sheetSearchQuery.trim();
+            final normQuery = trimmedQuery.isEmpty
+                ? ''
+                : ArabicSearchNormalizer.normalize(trimmedQuery).trim();
+            final lowerQuery = trimmedQuery.toLowerCase();
             final filtered = allDhikrs.where((item) {
               final matchesSection =
                   sheetSection == null || item.section == sheetSection;
-              final matchesQuery =
-                  sheetSearchQuery.isEmpty ||
-                  item.arabicText.contains(sheetSearchQuery) ||
-                  item.virtue.contains(sheetSearchQuery);
-              return matchesSection && matchesQuery;
+              if (!matchesSection) return false;
+              if (trimmedQuery.isEmpty) return true;
+              if (item.englishTranslation.toLowerCase().contains(lowerQuery)) {
+                return true;
+              }
+              if (normQuery.isEmpty) return false;
+              return ArabicSearchNormalizer.normalize(
+                    item.arabicText,
+                  ).contains(normQuery) ||
+                  ArabicSearchNormalizer.normalize(
+                    item.virtue,
+                  ).contains(normQuery);
             }).toList();
 
             return DraggableScrollableSheet(
@@ -245,6 +257,7 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                                           ),
                                       title: Text(
                                         item.arabicText,
+                                        textDirection: TextDirection.rtl,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: QcfPageBody.scriptStyle(
@@ -261,7 +274,12 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                                         ),
                                       ),
                                       subtitle: Text(
-                                        '${item.category} • ${context.l10n.targetCount(item.defaultTarget)}',
+                                        !context.l10n.isArabic &&
+                                                item
+                                                    .englishTranslation
+                                                    .isNotEmpty
+                                            ? '${item.englishTranslation}\n${item.localizedCategory(context.l10n)} • ${context.l10n.targetCount(item.defaultTarget)}'
+                                            : '${item.localizedCategory(context.l10n)} • ${context.l10n.targetCount(item.defaultTarget)}',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: isDark
@@ -563,7 +581,7 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        dhikr.category,
+                        dhikr.localizedCategory(context.l10n),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -638,15 +656,12 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     IconButton(
-                      tooltip: context.l10n.nextDhikr,
-                      icon: const Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: Icon(AppIcons.caretRight, size: 24),
-                      ),
+                      tooltip: context.l10n.previousDhikr,
+                      icon: const Icon(AppIcons.caretLeft, size: 24),
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary,
-                      onPressed: _nextDhikr,
+                      onPressed: _previousDhikr,
                     ),
                     Expanded(
                       child: Center(
@@ -669,17 +684,46 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                                 key: ValueKey<String>(dhikr.id),
                                 width: double.infinity,
                                 alignment: Alignment.center,
-                                child: Text(
-                                  dhikr.arabicText,
-                                  textAlign: TextAlign.center,
-                                  textDirection: TextDirection.rtl,
-                                  style: QcfPageBody.scriptStyle(
-                                    fontSize: textFontSize,
-                                    height: 1.75,
-                                    color: isDark
-                                        ? AppColors.darkTextPrimary
-                                        : AppColors.lightPrimaryDark,
-                                  ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      dhikr.arabicText,
+                                      textAlign: TextAlign.center,
+                                      textDirection: TextDirection.rtl,
+                                      style: QcfPageBody.scriptStyle(
+                                        fontSize: !context.l10n.isArabic &&
+                                                dhikr
+                                                    .englishTranslation
+                                                    .isNotEmpty
+                                            ? (textFontSize - 1.5).clamp(
+                                                14.0,
+                                                19.0,
+                                              )
+                                            : textFontSize,
+                                        height: 1.75,
+                                        color: isDark
+                                            ? AppColors.darkTextPrimary
+                                            : AppColors.lightPrimaryDark,
+                                      ),
+                                    ),
+                                    if (!context.l10n.isArabic &&
+                                        dhikr.englishTranslation.isNotEmpty) ...[
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        dhikr.englishTranslation,
+                                        textAlign: TextAlign.center,
+                                        textDirection: TextDirection.ltr,
+                                        style: TextStyle(
+                                          fontSize: 12.5,
+                                          height: 1.35,
+                                          color: isDark
+                                              ? AppColors.darkTextSecondary
+                                              : AppColors.lightTextSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
                               ),
                             ),
@@ -688,15 +732,12 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                       ),
                     ),
                     IconButton(
-                      tooltip: context.l10n.previousDhikr,
-                      icon: const Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: Icon(AppIcons.caretLeft, size: 24),
-                      ),
+                      tooltip: context.l10n.nextDhikr,
+                      icon: const Icon(AppIcons.caretRight, size: 24),
                       color: isDark
                           ? AppColors.darkTextSecondary
                           : AppColors.lightTextSecondary,
-                      onPressed: _previousDhikr,
+                      onPressed: _nextDhikr,
                     ),
                   ],
                 ),
@@ -797,7 +838,9 @@ extension _TasbeehScreenSections on _TasbeehScreenState {
                         label,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontFamily: 'IBMPlexSansArabic',
+                          fontFamily: context.l10n.isArabic
+                              ? 'IBMPlexSansArabic'
+                              : null,
                           fontSize: 14,
                           fontWeight: isSelected
                               ? FontWeight.bold
