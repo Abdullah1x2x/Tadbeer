@@ -1,4 +1,4 @@
-# Builds signed Android APKs and the Linux x64 release archive when a version
+# Builds signed Android APKs and the Linux and Windows x64 release archives when a version
 # tag (v1.2.3) is pushed and attaches them to a GitHub release.
 #
 # Needs these repository secrets (Settings → Secrets and variables → Actions):
@@ -152,12 +152,63 @@ jobs:
             tadbeer-linux-x64.tar.gz
             SHA256SUMS-linux.txt
 
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    outputs:
+      sha256: ${{ steps.package.outputs.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.6
+          channel: stable
+          cache: true
+
+      - name: Install packages
+        run: flutter pub get
+
+      # The tests already run on Linux; this job only builds.
+      - name: Build Windows release bundle
+        run: flutter build windows --release
+
+      # bsdtar ships with Windows and writes zip paths with forward slashes.
+      - name: Package Windows release archive
+        id: package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force build/windows-dist/tadbeer | Out-Null
+          Copy-Item -Recurse build/windows/x64/runner/Release/* build/windows-dist/tadbeer/
+          tar -a -cf tadbeer-windows-x64.zip -C build/windows-dist tadbeer
+          $hash = (Get-FileHash tadbeer-windows-x64.zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  tadbeer-windows-x64.zip" | Out-File -Encoding ascii SHA256SUMS-windows.txt
+          "sha256=$hash" >> $env:GITHUB_OUTPUT
+
+      - name: Publish Windows release archive
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          generate_release_notes: true
+          files: |
+            tadbeer-windows-x64.zip
+            SHA256SUMS-windows.txt
+
+      - name: Keep Windows archive on manual runs
+        uses: actions/upload-artifact@v4
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        with:
+          name: windows-release
+          path: |
+            tadbeer-windows-x64.zip
+            SHA256SUMS-windows.txt
+
   # version.json on main is what installed apps read. Moving main forward
-  # only after both Android and Linux uploads finish means nobody is offered
+  # only after the Android, Linux and Windows uploads finish means nobody is offered
   # an update before its files exist. The build hashes are only known now, so
   # they land in one commit on top of the tag, which apps verify downloads by.
   announce:
-    needs: [android, linux]
+    needs: [android, linux, windows]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -170,12 +221,13 @@ jobs:
           V8: ${{ needs.android.outputs.v8_sha256 }}
           V7: ${{ needs.android.outputs.v7_sha256 }}
           LINUX: ${{ needs.linux.outputs.sha256 }}
+          WINDOWS: ${{ needs.windows.outputs.sha256 }}
         run: |
-          for h in "$V8" "$V7" "$LINUX"; do
+          for h in "$V8" "$V7" "$LINUX" "$WINDOWS"; do
             [[ "$h" =~ ^[0-9a-f]{64}$ ]] || { echo "Missing build hash"; exit 1; }
           done
-          jq --arg v8 "$V8" --arg v7 "$V7" --arg linux "$LINUX" \
-            '.apk_sha256s = {"arm64-v8a": $v8, "armeabi-v7a": $v7} | .linux_sha256 = $linux' \
+          jq --arg v8 "$V8" --arg v7 "$V7" --arg linux "$LINUX" --arg windows "$WINDOWS" \
+            '.apk_sha256s = {"arm64-v8a": $v8, "armeabi-v7a": $v7} | .linux_sha256 = $linux | .windows_sha256 = $windows' \
             version.json > version.json.new
           mv version.json.new version.json
           cp version.json docs/version.json

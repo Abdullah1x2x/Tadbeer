@@ -58,14 +58,37 @@ void main() {
         'https://example.org/v2/tadbeer-linux-x64.tar.gz',
       );
       expect(
-        update.packageUrlFor(abi: 'armeabi-v7a', isLinux: false),
+        update.packageUrlFor(
+          abi: 'armeabi-v7a',
+          isLinux: false,
+          isWindows: false,
+        ),
         'https://example.org/v2/app-armeabi-v7a-release.apk',
       );
+    });
+
+    test('selects the Windows zip and its hash on Windows', () {
+      final windows = AppUpdateInfo.fromJson({
+        'windows_url': 'https://example.org/v2/tadbeer-windows-x64.zip',
+        'windows_sha256': 'ab' * 32,
+        'linux_sha256': 'cd' * 32,
+      });
+      expect(
+        windows.packageUrlFor(isWindows: true),
+        'https://example.org/v2/tadbeer-windows-x64.zip',
+      );
+      expect(windows.expectedSha256For(isWindows: true), 'ab' * 32);
+      expect(
+        windows.expectedSha256For(isWindows: false, isLinux: true),
+        'cd' * 32,
+      );
+      expect(windows.toJson()['windows_sha256'], 'ab' * 32);
     });
   });
 
   group('release tool', () {
-    const changelog = '# سجل التغييرات\n\n'
+    const changelog =
+        '# سجل التغييرات\n\n'
         '$unreleasedHeading\n\n- إصلاح أول\n- إصلاح ثانٍ\n\n'
         '## 1.0.0 — 2026-11-10\n\n- قديم\n';
 
@@ -81,15 +104,24 @@ void main() {
 
     test('refuses a release with no notes', () {
       expect(
-        () => cutChangelog('$unreleasedHeading\n\n## 1.0.0\n- قديم\n', '1.0.1', 'd'),
+        () => cutChangelog(
+          '$unreleasedHeading\n\n## 1.0.0\n- قديم\n',
+          '1.0.1',
+          'd',
+        ),
         throwsFormatException,
       );
-      expect(() => cutChangelog('## 1.0.0\n', '1.0.1', 'd'), throwsFormatException);
+      expect(
+        () => cutChangelog('## 1.0.0\n', '1.0.1', 'd'),
+        throwsFormatException,
+      );
     });
 
     test('writes the version into pubspec and the service', () {
       expect(
-        pubspecVersion(setPubspecVersion('name: a\nversion: 1.0.0+1\n', '1.0.1', 2)),
+        pubspecVersion(
+          setPubspecVersion('name: a\nversion: 1.0.0+1\n', '1.0.1', 2),
+        ),
         ('1.0.1', 2),
       );
       final service = setServiceVersion(
@@ -101,7 +133,7 @@ void main() {
       expect(service, contains('currentBuildNumber = 65'));
     });
 
-    test('version.json lists the notes, tagged APK, and Linux archive', () {
+    test('version.json lists the notes, tagged APK, and desktop archives', () {
       final json = versionJson('1.0.1', 2, '2026-11-12', ['أ', 'ب']);
       expect(json['changelog'], '• أ\n• ب');
       final info = AppUpdateInfo.fromJson(json);
@@ -112,6 +144,10 @@ void main() {
       expect(
         info.directLinuxUrl,
         'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/tadbeer-linux-x64.tar.gz',
+      );
+      expect(
+        info.directWindowsUrl,
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/tadbeer-windows-x64.zip',
       );
     });
   });

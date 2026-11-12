@@ -12,9 +12,11 @@ class AppUpdateInfo {
   final String downloadUrl;
   final String apkUrl;
   final String linuxUrl;
+  final String windowsUrl;
   /// بصمة SHA-256 لكل ملف APK، مفهرسة باسم المعمارية (arm64-v8a، armeabi-v7a).
   final Map<String, String> apkSha256s;
   final String linuxSha256;
+  final String windowsSha256;
   final bool isMandatory;
 
   const AppUpdateInfo({
@@ -27,8 +29,10 @@ class AppUpdateInfo {
     required this.downloadUrl,
     this.apkUrl = '',
     this.linuxUrl = '',
+    this.windowsUrl = '',
     this.apkSha256s = const {},
     this.linuxSha256 = '',
+    this.windowsSha256 = '',
     this.isMandatory = false,
   });
 
@@ -52,12 +56,14 @@ class AppUpdateInfo {
           'https://github.com/Abdullah1x2x/Tadbeer/releases/latest',
       apkUrl: json['apk_url'] as String? ?? '',
       linuxUrl: json['linux_url'] as String? ?? linuxPlatformUrl ?? '',
+      windowsUrl: json['windows_url'] as String? ?? '',
       apkSha256s: {
         if (json['apk_sha256s'] case final Map hashes)
           for (final e in hashes.entries)
             if (e.value is String) '${e.key}': e.value as String,
       },
       linuxSha256: json['linux_sha256'] as String? ?? linuxPlatformSha ?? '',
+      windowsSha256: json['windows_sha256'] as String? ?? '',
       isMandatory: json['is_mandatory'] as bool? ?? false,
     );
   }
@@ -72,8 +78,10 @@ class AppUpdateInfo {
     'download_url': downloadUrl,
     'apk_url': apkUrl,
     'linux_url': linuxUrl,
+    'windows_url': windowsUrl,
     if (apkSha256s.isNotEmpty) 'apk_sha256s': apkSha256s,
     if (linuxSha256.isNotEmpty) 'linux_sha256': linuxSha256,
+    if (windowsSha256.isNotEmpty) 'windows_sha256': windowsSha256,
     'is_mandatory': isMandatory,
   };
 
@@ -93,6 +101,11 @@ class AppUpdateInfo {
     return 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/tadbeer-linux-x64.tar.gz';
   }
 
+  /// الرابط المباشر لحزمة ويندوز المضغوطة (x64 zip).
+  String get directWindowsUrl => windowsUrl.isNotEmpty
+      ? windowsUrl
+      : 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/tadbeer-windows-x64.zip';
+
   /// المعماريات التي يُبنى لها ملف APK في كل إصدار (v8 و v7).
   static const _builtAbis = {'arm64-v8a', 'armeabi-v7a'};
 
@@ -102,13 +115,19 @@ class AppUpdateInfo {
       ? directApkUrl.replaceFirst('arm64-v8a', abi!)
       : directApkUrl;
 
-  /// رابط حزمة التحديث المناسبة للمنصة الحالية (أندرويد أو لينكس).
-  String packageUrlFor({String? abi, bool? isLinux}) =>
-      (isLinux ?? Platform.isLinux) ? directLinuxUrl : apkUrlFor(abi);
+  /// رابط حزمة التحديث المناسبة للمنصة الحالية (أندرويد أو لينكس أو ويندوز).
+  String packageUrlFor({String? abi, bool? isLinux, bool? isWindows}) =>
+      (isWindows ?? Platform.isWindows)
+          ? directWindowsUrl
+          : (isLinux ?? Platform.isLinux)
+          ? directLinuxUrl
+          : apkUrlFor(abi);
 
   /// بصمة SHA-256 الاختيارية للحزمة المناسبة للمنصة الحالية، أو نص فارغ.
-  String expectedSha256For({String? abi, bool? isLinux}) =>
-      (isLinux ?? Platform.isLinux)
+  String expectedSha256For({String? abi, bool? isLinux, bool? isWindows}) =>
+      (isWindows ?? Platform.isWindows)
+          ? windowsSha256
+          : (isLinux ?? Platform.isLinux)
           ? linuxSha256
           // نفس اختيار apkUrlFor: معمارية بلا ملف خاص تنزّل ملف arm64.
           : apkSha256s[_builtAbis.contains(abi) ? abi : 'arm64-v8a'] ?? '';

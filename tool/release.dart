@@ -88,6 +88,8 @@ Map<String, Object> versionJson(
       '$_repo/releases/download/v$version/app-arm64-v8a-release.apk',
   'linux_url':
       '$_repo/releases/download/v$version/tadbeer-linux-x64.tar.gz',
+  'windows_url':
+      '$_repo/releases/download/v$version/tadbeer-windows-x64.zip',
   'is_mandatory': false,
 };
 

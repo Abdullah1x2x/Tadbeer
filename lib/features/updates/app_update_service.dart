@@ -276,7 +276,7 @@ class AppUpdateService {
 
   /// يتحقق مما إذا كانت حزمة التحديث قد حُمّلت مسبقاً وجاهزة للتثبيت.
   Future<void> checkExistingDownloadedApk(AppUpdateInfo update) async {
-    if (!Platform.isAndroid && !Platform.isLinux) return;
+    if (!Platform.isAndroid && !_isDesktop) return;
     try {
       final file = await getUpdatePackageFile(update);
       if (await file.exists()) {
@@ -312,8 +312,9 @@ class AppUpdateService {
   /// يبدأ تنزيل ملف التحديث في الخلفية مع تحديث الحالة المركزية.
   Future<void> startDownload(AppUpdateInfo update) async {
     if (_isStartingDownload || downloadState.value.isDownloading) return;
-    // أندرويد ينزّل APK ولينكس ينزّل حزمة tar.gz؛ بقية المنصات تفتح صفحة الإصدار.
-    if (!Platform.isAndroid && !Platform.isLinux) {
+    // أندرويد ينزّل APK، ولينكس وويندوز ينزّلان حزمة مضغوطة؛ بقية المنصات تفتح
+    // صفحة الإصدار.
+    if (!Platform.isAndroid && !_isDesktop) {
       await openDownload(update.downloadUrl);
       return;
     }
@@ -437,9 +438,10 @@ class AppUpdateService {
     );
   }
 
-  /// تثبيت الحزمة المحملة حالياً (APK في أندرويد، أو استبدال مجلد التطبيق في لينكس).
+  /// تثبيت الحزمة المحملة حالياً (APK في أندرويد، أو استبدال مجلد التطبيق في
+  /// لينكس وويندوز).
   ///
-  /// في لينكس تُجهَّز النسخة الجديدة وتُطبَّق عند إغلاق التطبيق، و[restart]
+  /// على سطح المكتب تُجهَّز النسخة الجديدة وتُطبَّق عند إغلاق التطبيق، و[restart]
   /// يغلقه الآن ويعيد تشغيله بالنسخة الجديدة.
   Future<bool> installCurrentDownloadedApk({bool restart = false}) async {
     final file = downloadState.value.targetFile;
@@ -447,21 +449,22 @@ class AppUpdateService {
     if (Platform.isAndroid) {
       return installApk(file.path);
     }
-    if (Platform.isLinux) {
+    if (_isDesktop) {
       final installDir = File(Platform.resolvedExecutable).parent;
-      // نسخ التطوير والمجلدات غير القابلة للكتابة (مثل Flatpak) تبقى على الطريقة اليدوية.
+      // نسخ التطوير والمجلدات غير القابلة للكتابة (مثل Flatpak أو Program Files)
+      // تبقى على الطريقة اليدوية.
       if (!kReleaseMode || !_canReplaceDir(installDir)) {
-        return openLinuxPackageFolder(file);
+        return openUpdatePackageFolder(file);
       }
-      if (_linuxStagedFrom != file.path) {
-        if (!await stageLinuxUpdate(file, installDir)) {
-          return openLinuxPackageFolder(file);
+      if (_desktopStagedFrom != file.path) {
+        if (!await stageDesktopUpdate(file, installDir)) {
+          return openUpdatePackageFolder(file);
         }
-        await _startLinuxSwapHelper(installDir);
-        _linuxStagedFrom = file.path;
+        await _startSwapHelper(installDir);
+        _desktopStagedFrom = file.path;
       }
       if (restart) {
-        File(_linuxRelaunchMarker(installDir)).writeAsStringSync('');
+        File(_relaunchMarker(installDir)).writeAsStringSync('');
         await UserDatabase.instance.close();
         exit(0);
       }
@@ -470,11 +473,13 @@ class AppUpdateService {
     return false;
   }
 
-  String? _linuxStagedFrom;
+  static bool get _isDesktop => Platform.isLinux || Platform.isWindows;
 
-  static String _linuxStagingPath(Directory installDir) =>
+  String? _desktopStagedFrom;
+
+  static String _stagingPath(Directory installDir) =>
       '${installDir.path}.update';
-  static String _linuxRelaunchMarker(Directory installDir) =>
+  static String _relaunchMarker(Directory installDir) =>
       '${installDir.path}.relaunch';
 
   static bool _canReplaceDir(Directory installDir) {
@@ -490,28 +495,36 @@ class AppUpdateService {
 
   /// يتحقق من أن كل مسارات الأرشيف داخل مجلد `tadbeer/` ولا تخرج منه.
   @visibleForTesting
-  static bool isSafeLinuxArchiveListing(List<String> entries) {
+  static bool isSafeUpdateArchiveListing(List<String> entries) {
     if (entries.isEmpty) return false;
     for (final entry in entries) {
       if (entry.isEmpty) continue;
-      if (entry.startsWith('/') || entry.contains('\\')) return false;
+      if (entry.startsWith('/') || entry.contains('\\') || entry.contains(':')) {
+        return false;
+      }
       final parts = entry.split('/');
       if (parts.first != 'tadbeer' || parts.contains('..')) return false;
     }
     return true;
   }
 
-  /// يفك أرشيف لينكس المحمّل إلى `<installDir>.update` بعد التحقق من محتواه.
+  /// يفك أرشيف التحديث المحمّل إلى `<installDir>.update` بعد التحقق من محتواه.
   ///
+  /// يستعمل `tar` في النظامين (ويندوز 10 وما بعده يحمل bsdtar الذي يقرأ zip).
   /// لا يلمس مجلد التطبيق نفسه، ويعيد false إن كان الأرشيف غير صالح.
   @visibleForTesting
-  Future<bool> stageLinuxUpdate(File archive, Directory installDir) async {
-    final staging = Directory(_linuxStagingPath(installDir));
+  Future<bool> stageDesktopUpdate(
+    File archive,
+    Directory installDir, {
+    @visibleForTesting bool? isWindows,
+  }) async {
+    final windows = isWindows ?? Platform.isWindows;
+    final staging = Directory(_stagingPath(installDir));
     final unpack = Directory('${installDir.path}.unpack');
     try {
-      final listing = await Process.run('tar', ['-tzf', archive.path]);
+      final listing = await Process.run('tar', ['-tf', archive.path]);
       if (listing.exitCode != 0 ||
-          !isSafeLinuxArchiveListing(
+          !isSafeUpdateArchiveListing(
             const LineSplitter().convert(listing.stdout as String),
           )) {
         return false;
@@ -520,13 +533,15 @@ class AppUpdateService {
       unpack.createSync(recursive: true);
       final extract = await Process.run(
         'tar',
-        ['-xzf', archive.path, '-C', unpack.path, '--no-same-owner'],
+        ['-xf', archive.path, '-C', unpack.path, '--no-same-owner'],
       );
       if (extract.exitCode != 0) return false;
 
       final bundle = Directory('${unpack.path}/tadbeer');
-      final valid = File('${bundle.path}/tadbeer').existsSync() &&
-          Directory('${bundle.path}/lib').existsSync() &&
+      final valid = (windows
+              ? File('${bundle.path}/tadbeer.exe').existsSync()
+              : File('${bundle.path}/tadbeer').existsSync() &&
+                  Directory('${bundle.path}/lib').existsSync()) &&
           Directory('${bundle.path}/data').existsSync() &&
           !bundle
               .listSync(recursive: true, followLinks: false)
@@ -537,7 +552,7 @@ class AppUpdateService {
       bundle.renameSync(staging.path);
       return true;
     } catch (e) {
-      debugPrint('Staging the Linux update failed: $e');
+      debugPrint('Staging the desktop update failed: $e');
       return false;
     } finally {
       try {
@@ -563,33 +578,81 @@ if [ -e "$marker" ]; then
 fi
 ''';
 
-  Future<void> _startLinuxSwapHelper(Directory installDir) async {
+  /// نسخة ويندوز من [linuxSwapScript]. ويندوز يقفل ملفات التطبيق لحظات بعد
+  /// خروجه، فتُعاد محاولة النقل.
+  @visibleForTesting
+  static const windowsSwapScript = r'''
+param([int]$AppPid, [string]$Dir, [string]$New, [string]$Marker)
+$old = "$Dir.old"
+Wait-Process -Id $AppPid -ErrorAction SilentlyContinue
+if (Test-Path -LiteralPath $New) {
+  if (Test-Path -LiteralPath $old) { Remove-Item -LiteralPath $old -Recurse -Force }
+  $moved = $false
+  for ($i = 0; $i -lt 20 -and -not $moved; $i++) {
+    try { Move-Item -LiteralPath $Dir -Destination $old -ErrorAction Stop; $moved = $true }
+    catch { Start-Sleep -Milliseconds 500 }
+  }
+  if ($moved) {
+    try {
+      Move-Item -LiteralPath $New -Destination $Dir -ErrorAction Stop
+      Remove-Item -LiteralPath $old -Recurse -Force -ErrorAction SilentlyContinue
+    } catch { Move-Item -LiteralPath $old -Destination $Dir }
+  }
+}
+if (Test-Path -LiteralPath $Marker) {
+  Remove-Item -LiteralPath $Marker -Force
+  Start-Process -FilePath (Join-Path $Dir 'tadbeer.exe') -WorkingDirectory $Dir
+}
+''';
+
+  Future<void> _startSwapHelper(Directory installDir) async {
+    final args = [
+      '$pid',
+      installDir.path,
+      _stagingPath(installDir),
+      _relaunchMarker(installDir),
+    ];
+    if (Platform.isWindows) {
+      final script = File('${installDir.path}.update.ps1')
+        ..writeAsStringSync(windowsSwapScript);
+      await Process.start(
+        'powershell',
+        [
+          '-NoProfile',
+          '-ExecutionPolicy',
+          'Bypass',
+          '-WindowStyle',
+          'Hidden',
+          '-File',
+          script.path,
+          ...args,
+        ],
+        // خارج مجلد التطبيق، وإلا منع ويندوز نقله.
+        workingDirectory: installDir.parent.path,
+        mode: ProcessStartMode.detached,
+      );
+      return;
+    }
     await Process.start(
       'sh',
-      [
-        '-c',
-        linuxSwapScript,
-        'tadbeer-update',
-        '$pid',
-        installDir.path,
-        _linuxStagingPath(installDir),
-        _linuxRelaunchMarker(installDir),
-      ],
+      ['-c', linuxSwapScript, 'tadbeer-update', ...args],
       mode: ProcessStartMode.detached,
     );
   }
 
-  /// يفتح مجلد الحزمة المحمّلة على لينكس عبر مدير الملفات الافتراضي.
-  Future<bool> openLinuxPackageFolder(File packageFile) async {
-    if (!Platform.isLinux) return false;
-    try {
-      final result = await Process.run(
-        'xdg-open',
-        [packageFile.parent.path],
-      ).timeout(const Duration(seconds: 5));
-      if (result.exitCode == 0) return true;
-    } catch (e) {
-      debugPrint('xdg-open failed for update folder: $e');
+  /// يفتح مجلد الحزمة المحمّلة عبر مدير الملفات الافتراضي.
+  Future<bool> openUpdatePackageFolder(File packageFile) async {
+    if (!_isDesktop) return false;
+    if (Platform.isLinux) {
+      try {
+        final result = await Process.run(
+          'xdg-open',
+          [packageFile.parent.path],
+        ).timeout(const Duration(seconds: 5));
+        if (result.exitCode == 0) return true;
+      } catch (e) {
+        debugPrint('xdg-open failed for update folder: $e');
+      }
     }
     try {
       return await launchUrl(
@@ -706,7 +769,7 @@ fi
 
   /// يحصل على المسار المحلي المناسب لحزمة التحديث حسب المنصة الحالية.
   Future<File> getUpdatePackageFile(AppUpdateInfo update) async {
-    if (Platform.isLinux) {
+    if (_isDesktop) {
       Directory? dir;
       try {
         dir = await getDownloadsDirectory();
@@ -721,7 +784,11 @@ fi
                   !rawVersion.contains('..')
               ? rawVersion
               : 'update';
-      return File('$canonicalDir/tadbeer-linux-x64-v$safeVersion.tar.gz');
+      return File(
+        Platform.isWindows
+            ? '$canonicalDir/tadbeer-windows-x64-v$safeVersion.zip'
+            : '$canonicalDir/tadbeer-linux-x64-v$safeVersion.tar.gz',
+      );
     }
     return getUpdateApkFile(update.buildNumber);
   }
