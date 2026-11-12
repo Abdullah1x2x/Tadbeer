@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../app/localization.dart';
 import '../../data/storage/user_data_store.dart';
+import '../../data/storage/user_database.dart';
 import 'app_update_dialog.dart';
 import 'app_update_model.dart';
 
@@ -435,17 +437,146 @@ class AppUpdateService {
     );
   }
 
-  /// تثبيت الحزمة المحملة حالياً (APK في أندرويد، أو فتح مجلد الحزمة في لينكس).
-  Future<bool> installCurrentDownloadedApk() async {
+  /// تثبيت الحزمة المحملة حالياً (APK في أندرويد، أو استبدال مجلد التطبيق في لينكس).
+  ///
+  /// في لينكس تُجهَّز النسخة الجديدة وتُطبَّق عند إغلاق التطبيق، و[restart]
+  /// يغلقه الآن ويعيد تشغيله بالنسخة الجديدة.
+  Future<bool> installCurrentDownloadedApk({bool restart = false}) async {
     final file = downloadState.value.targetFile;
     if (file == null || !await file.exists()) return false;
     if (Platform.isAndroid) {
       return installApk(file.path);
     }
     if (Platform.isLinux) {
-      return openLinuxPackageFolder(file);
+      final installDir = File(Platform.resolvedExecutable).parent;
+      // نسخ التطوير والمجلدات غير القابلة للكتابة (مثل Flatpak) تبقى على الطريقة اليدوية.
+      if (!kReleaseMode || !_canReplaceDir(installDir)) {
+        return openLinuxPackageFolder(file);
+      }
+      if (_linuxStagedFrom != file.path) {
+        if (!await stageLinuxUpdate(file, installDir)) {
+          return openLinuxPackageFolder(file);
+        }
+        await _startLinuxSwapHelper(installDir);
+        _linuxStagedFrom = file.path;
+      }
+      if (restart) {
+        File(_linuxRelaunchMarker(installDir)).writeAsStringSync('');
+        await UserDatabase.instance.close();
+        exit(0);
+      }
+      return true;
     }
     return false;
+  }
+
+  String? _linuxStagedFrom;
+
+  static String _linuxStagingPath(Directory installDir) =>
+      '${installDir.path}.update';
+  static String _linuxRelaunchMarker(Directory installDir) =>
+      '${installDir.path}.relaunch';
+
+  static bool _canReplaceDir(Directory installDir) {
+    try {
+      final probe = File('${installDir.parent.path}/.tadbeer-write-test');
+      probe.writeAsStringSync('');
+      probe.deleteSync();
+      return true;
+    } on FileSystemException {
+      return false;
+    }
+  }
+
+  /// يتحقق من أن كل مسارات الأرشيف داخل مجلد `tadbeer/` ولا تخرج منه.
+  @visibleForTesting
+  static bool isSafeLinuxArchiveListing(List<String> entries) {
+    if (entries.isEmpty) return false;
+    for (final entry in entries) {
+      if (entry.isEmpty) continue;
+      if (entry.startsWith('/') || entry.contains('\\')) return false;
+      final parts = entry.split('/');
+      if (parts.first != 'tadbeer' || parts.contains('..')) return false;
+    }
+    return true;
+  }
+
+  /// يفك أرشيف لينكس المحمّل إلى `<installDir>.update` بعد التحقق من محتواه.
+  ///
+  /// لا يلمس مجلد التطبيق نفسه، ويعيد false إن كان الأرشيف غير صالح.
+  @visibleForTesting
+  Future<bool> stageLinuxUpdate(File archive, Directory installDir) async {
+    final staging = Directory(_linuxStagingPath(installDir));
+    final unpack = Directory('${installDir.path}.unpack');
+    try {
+      final listing = await Process.run('tar', ['-tzf', archive.path]);
+      if (listing.exitCode != 0 ||
+          !isSafeLinuxArchiveListing(
+            const LineSplitter().convert(listing.stdout as String),
+          )) {
+        return false;
+      }
+      if (unpack.existsSync()) unpack.deleteSync(recursive: true);
+      unpack.createSync(recursive: true);
+      final extract = await Process.run(
+        'tar',
+        ['-xzf', archive.path, '-C', unpack.path, '--no-same-owner'],
+      );
+      if (extract.exitCode != 0) return false;
+
+      final bundle = Directory('${unpack.path}/tadbeer');
+      final valid = File('${bundle.path}/tadbeer').existsSync() &&
+          Directory('${bundle.path}/lib').existsSync() &&
+          Directory('${bundle.path}/data').existsSync() &&
+          !bundle
+              .listSync(recursive: true, followLinks: false)
+              .any((e) => e is Link);
+      if (!valid) return false;
+
+      if (staging.existsSync()) staging.deleteSync(recursive: true);
+      bundle.renameSync(staging.path);
+      return true;
+    } catch (e) {
+      debugPrint('Staging the Linux update failed: $e');
+      return false;
+    } finally {
+      try {
+        if (unpack.existsSync()) unpack.deleteSync(recursive: true);
+      } on FileSystemException catch (_) {}
+    }
+  }
+
+  /// ينتظر خروج التطبيق ثم يستبدل مجلده بالنسخة المجهزة، ويعيده إن فشل الاستبدال.
+  @visibleForTesting
+  static const linuxSwapScript = r'''
+pid="$1"; dir="$2"; new="$3"; marker="$4"; old="$dir.old"
+while kill -0 "$pid" 2>/dev/null; do sleep 0.5; done
+if [ -d "$new" ]; then
+  rm -rf "$old"
+  if mv "$dir" "$old"; then
+    if mv "$new" "$dir"; then rm -rf "$old"; else mv "$old" "$dir"; fi
+  fi
+fi
+if [ -e "$marker" ]; then
+  rm -f "$marker"
+  cd "$HOME" && setsid "$dir/tadbeer" >/dev/null 2>&1 &
+fi
+''';
+
+  Future<void> _startLinuxSwapHelper(Directory installDir) async {
+    await Process.start(
+      'sh',
+      [
+        '-c',
+        linuxSwapScript,
+        'tadbeer-update',
+        '$pid',
+        installDir.path,
+        _linuxStagingPath(installDir),
+        _linuxRelaunchMarker(installDir),
+      ],
+      mode: ProcessStartMode.detached,
+    );
   }
 
   /// يفتح مجلد الحزمة المحمّلة على لينكس عبر مدير الملفات الافتراضي.

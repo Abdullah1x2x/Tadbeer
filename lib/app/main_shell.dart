@@ -540,7 +540,7 @@ class _UpdateDownloadFloatingBanner extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () async {
                         final ok = await AppUpdateService.instance
-                            .installCurrentDownloadedApk();
+                            .installCurrentDownloadedApk(restart: true);
                         if (!ok && context.mounted) {
                           ScaffoldMessenger.maybeOf(context)
                             ?..clearSnackBars()

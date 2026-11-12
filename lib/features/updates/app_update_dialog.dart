@@ -30,7 +30,8 @@ class AppUpdateDialog extends StatelessWidget {
   }
 
   Future<void> _installOrWarn(BuildContext context) async {
-    final ok = await AppUpdateService.instance.installCurrentDownloadedApk();
+    final ok = await AppUpdateService.instance
+        .installCurrentDownloadedApk(restart: true);
     if (!ok && context.mounted) {
       final messenger = ScaffoldMessenger.maybeOf(context);
       messenger
