@@ -23,7 +23,14 @@ import 'package:tadbeer/features/quran/screens/quran_screen.dart';
 void main() {
   late Directory tempDir;
 
+  // A fixed day, so the ayahs of the day (and so the card's height) do not
+  // change with the date the tests run on.
+  final day = DateTime(2026, 11, 12);
+  // The day whose longest ayah is the longest of all (60:4).
+  final longestDay = DateTime(2026, 4, 28);
+
   setUpAll(() async {
+    AyahOfTheDay.now = () => day;
     final plex = FontLoader('IBMPlexSansArabic')
       ..addFont(rootBundle.load('assets/fonts/IBMPlexSansArabic-Regular.ttf'))
       ..addFont(rootBundle.load('assets/fonts/IBMPlexSansArabic-Bold.ttf'));
@@ -44,10 +51,15 @@ void main() {
     // With the Madinah Mushaf (the default) the card writes the day's
     // ayahs in its script; the layout loads here, outside any test's clock.
     await QuranRepository.instance.init();
-    for (final ayah in AyahOfTheDay.forDayAll(DateTime.now())) {
+    for (final ayah in [
+      ...AyahOfTheDay.forDayAll(day),
+      ...AyahOfTheDay.forDayAll(longestDay),
+    ]) {
       await QcfGlyphs.prepare(ayah);
     }
   });
+
+  tearDownAll(() => AyahOfTheDay.now = DateTime.now);
 
   /// Opens the store, with a commitment from two days ago when [busy], so
   /// the commitment card shows on Home.
@@ -197,10 +209,22 @@ void main() {
     expectVerseWhole(tester);
   });
 
+  testWidgets('the longest ayah shrinks a small phone a little, never cut', (
+    tester,
+  ) async {
+    AyahOfTheDay.now = () => longestDay;
+    addTearDown(() => AyahOfTheDay.now = () => day);
+    await tester.runAsync(() => openStore());
+    await pumpHome(tester, const Size(360, 540));
+    expect(tester.takeException(), isNull);
+    expect(extent(tester), lessThan(540 * 0.1));
+    expectVerseWhole(tester);
+  });
+
   testWidgets('the card writes the ayah in the Madinah glyphs', (tester) async {
     await tester.runAsync(() => openStore());
     await pumpHome(tester, const Size(393, 770));
-    final first = AyahOfTheDay.forDayAll(DateTime.now()).first;
+    final first = AyahOfTheDay.forDayAll(day).first;
     expect(find.text(QcfGlyphs.of(first)!.text), findsOneWidget);
     expect(extent(tester), 0);
     expectVerseWhole(tester);

@@ -32,6 +32,10 @@ class AyahOfTheDay {
   /// عدد آيات بطاقة الرئيسية في اليوم، تتتابع واحدة بعد أخرى.
   static const perDay = 12;
 
+  /// ساعة البطاقة؛ تستبدلها الاختبارات لتعرض يوماً بعينه.
+  @visibleForTesting
+  static DateTime Function() now = DateTime.now;
+
   static List<Ayah>? _pool;
   static List<Ayah>? _curated;
 
@@ -140,7 +144,7 @@ class AyahOfTheDayCard extends StatefulWidget {
   /// أقل ارتفاع تحتاجه البطاقة بعرض [width] لتعرض كل آيات اليوم كاملة مع
   /// إجراءاتها؛ وقد يتنحى السؤال.
   static double minHeight(BuildContext context, double width) {
-    final looks = _VerseLook.of(AyahOfTheDay.forDayAll(DateTime.now()));
+    final looks = _VerseLook.of(AyahOfTheDay.forDayAll(AyahOfTheDay.now()));
     return _chrome +
         _tallest(
           context,
@@ -174,7 +178,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
   @override
   void initState() {
     super.initState();
-    _load(DateTime.now());
+    _load(AyahOfTheDay.now());
     _prepareGlyphs();
     _restart();
   }
@@ -230,7 +234,7 @@ class _AyahOfTheDayCardState extends State<AyahOfTheDayCard> {
 
   void _tick() {
     if (!mounted) return;
-    final now = DateTime.now();
+    final now = AyahOfTheDay.now();
     if (now.day != _day.day ||
         now.month != _day.month ||
         now.year != _day.year) {
