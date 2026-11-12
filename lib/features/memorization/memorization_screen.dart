@@ -689,7 +689,6 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
     final font = UserDataStore.instance.quranFontFamily;
     final fallback = Text(
       '${ayah.text} ﴿${ArabicSearchNormalizer.toArabicDigits(ayahNum)}﴾',
-      key: const ValueKey('full'),
       textAlign: TextAlign.center,
       textDirection: TextDirection.rtl,
       style: TextStyle(fontFamily: font, fontSize: 26, height: 2.1),
@@ -706,7 +705,8 @@ class _HifzSessionScreenState extends State<HifzSessionScreen> {
         ),
       );
     }
-    return fallback;
+    // المفتاح على الغلاف وحده: النص البديل يظهر داخل QcfAyahText أثناء تحميل الخط.
+    return KeyedSubtree(key: const ValueKey('full'), child: fallback);
   }
 
   @override

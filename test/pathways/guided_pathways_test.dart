@@ -111,7 +111,12 @@ void main() {
       await tester.ensureVisible(find.text('حفظ ما كتبت الآن وإنهاء'));
       await tester.runAsync(() async {
         await tester.tap(find.text('حفظ ما كتبت الآن وإنهاء'));
-        await Future<void>.delayed(const Duration(milliseconds: 100));
+        // Real disk writes: slow CI runners need more than a fixed short wait.
+        for (var i = 0;
+            i < 50 && GuidedPathwayProgress.completedDays(pathway.id).isEmpty;
+            i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+        }
       });
       await tester.pumpAndSettle();
       expect(GuidedPathwayProgress.completedDays(pathway.id), {0});
