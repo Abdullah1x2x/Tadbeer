@@ -4,6 +4,7 @@
 library;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import '../data/models/user_settings_model.dart';
 import '../data/quran/quran_repository.dart';
 import '../data/storage/user_data_store.dart';
+import '../features/audio/desktop_player.dart';
+import '../features/audio/quran_audio.dart';
 import '../features/audio/recitation_handler.dart';
 import '../features/duas/data/adhkar_repository.dart';
 import '../features/duas/screens/morning_evening_adhkar_screen.dart';
@@ -22,7 +25,9 @@ import '../features/quran/qcf/qcf_layout.dart';
 import '../features/reminders/local_reminder_service.dart';
 import '../features/tasbeeh/tasbeeh_model.dart';
 import '../features/widgets/home_widget_sync.dart';
+import 'app.dart';
 import 'licenses.dart';
+import 'localization.dart';
 import 'main_shell.dart';
 
 /// يجهّز كل ما يحتاجه أول إطار.
@@ -120,14 +125,45 @@ void _attachSyncs() {
 
 /// يشغّل التلاوة على لينكس وويندوز عبر libmpv؛ أندرويد وiOS لهما مشغّلهما.
 ///
-/// على لينكس تأتي libmpv من النظام (حزمة mpv-libs أو libmpv2)، ودونها يعمل
-/// التطبيق بلا صوت.
+/// على لينكس تأتي libmpv من النظام (حزمة mpv-libs أو libmpv2)؛ ودونها يقول
+/// زر التلاوة ما يُثبَّت بدل أن يصمت.
 void _startDesktopAudio() {
+  if (Platform.isLinux && !linuxHasLibmpv()) {
+    QuranAudio.onPlayerMissing = _showPlayerMissing;
+    return;
+  }
   try {
     JustAudioMediaKit.ensureInitialized();
   } on Object catch (e) {
     debugPrint('Desktop audio unavailable: $e');
   }
+}
+
+void _showPlayerMissing() {
+  final messenger = appScaffoldMessengerKey.currentState;
+  final context = appScaffoldMessengerKey.currentContext;
+  if (messenger == null || context == null) return;
+  var osRelease = '';
+  try {
+    osRelease = File('/etc/os-release').readAsStringSync();
+  } on FileSystemException {
+    // توزيعة لا تصف نفسها: يُذكر اسم الحزمة وحده.
+  }
+  final command = mpvInstallCommand(osRelease);
+  final l10n = context.l10n;
+  messenger
+    ..clearSnackBars()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(l10n.audioPlayerMissing(command)),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 12),
+        action: SnackBarAction(
+          label: l10n.copy,
+          onPressed: () => Clipboard.setData(ClipboardData(text: command)),
+        ),
+      ),
+    );
 }
 
 /// تستمر التلاوة في الخلفية مع أزرارها في الإشعار؛ وعلى سطح المكتب تعمل داخل

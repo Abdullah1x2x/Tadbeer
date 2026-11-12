@@ -1685,6 +1685,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not play the recitation. Check your internet connection';
 
   @override
+  String audioPlayerMissing(String command) {
+    return 'Recitation on Linux needs the mpv library. Install it, then reopen the app:\n$command';
+  }
+
+  @override
   String get nextAyah => 'Next ayah';
 
   @override

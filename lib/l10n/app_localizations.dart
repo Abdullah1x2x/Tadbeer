@@ -3012,6 +3012,12 @@ abstract class AppLocalizations {
   /// **'تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت'**
   String get audioFailed;
 
+  /// No description provided for @audioPlayerMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'التلاوة على لينكس تحتاج مكتبة mpv. ثبّتها ثم أعد فتح التطبيق:\n{command}'**
+  String audioPlayerMissing(String command);
+
   /// No description provided for @nextAyah.
   ///
   /// In ar, this message translates to:

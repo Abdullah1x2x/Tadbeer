@@ -533,6 +533,14 @@
     }
   },
   "audioFailed": "Could not play the recitation. Check your internet connection",
+  "audioPlayerMissing": "Recitation on Linux needs the mpv library. Install it, then reopen the app:\n{command}",
+  "@audioPlayerMissing": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
   "nextAyah": "Next ayah",
   "previousAyah": "Previous ayah",
   "playAudio": "Play",

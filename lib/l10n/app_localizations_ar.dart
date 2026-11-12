@@ -1681,6 +1681,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get audioFailed => 'تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت';
 
   @override
+  String audioPlayerMissing(String command) {
+    return 'التلاوة على لينكس تحتاج مكتبة mpv. ثبّتها ثم أعد فتح التطبيق:\n$command';
+  }
+
+  @override
   String get nextAyah => 'الآية التالية';
 
   @override

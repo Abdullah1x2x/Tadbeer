@@ -195,6 +195,10 @@ class QuranAudio extends ChangeNotifier {
   /// مشغّل التطبيق الوحيد.
   static QuranAudio get instance => _instance;
 
+  /// يُضبط حين لا يوجد مشغّل صوت على الجهاز (لينكس بلا libmpv)؛ عندها يُستدعى
+  /// بدل التلاوة ليقول للقارئ ما يثبّته.
+  static VoidCallback? onPlayerMissing;
+
   /// للاختبارات: يضع مكانه مشغّلاً فوق محرك بديل.
   @visibleForTesting
   static set instance(QuranAudio audio) => _instance = audio;
@@ -345,6 +349,11 @@ class QuranAudio extends ChangeNotifier {
     required bool single,
     bool autoPlay = true,
   }) async {
+    final missing = onPlayerMissing;
+    if (missing != null) {
+      missing();
+      return;
+    }
     // كل طلب يأخذ رقماً، فالطلب الأحدث وحده يكمل بعد أي انتظار.
     final request = ++_request;
     _pauseTimer?.cancel();

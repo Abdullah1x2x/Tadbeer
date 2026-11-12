@@ -413,6 +413,18 @@ void main() {
       });
     });
 
+    test('without a player, playing says what to install instead', () async {
+      final engine = _FakeEngine();
+      final audio = QuranAudio.withEngine(engine);
+      var told = 0;
+      QuranAudio.onPlayerMissing = () => told++;
+      addTearDown(() => QuranAudio.onPlayerMissing = null);
+      await audio.playFrom(repo.getAyah(112, 1)!);
+      expect(told, 1);
+      expect(engine.calls, isEmpty);
+      expect(audio.active, isFalse);
+    });
+
     test('remembers the reciter and replays the ayah in their voice', () async {
       final engine = _FakeEngine();
       final audio = QuranAudio.withEngine(engine);

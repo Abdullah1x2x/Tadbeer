@@ -1005,6 +1005,14 @@
     }
   },
   "audioFailed": "تعذّر تشغيل التلاوة. تحقّق من اتصالك بالإنترنت",
+  "audioPlayerMissing": "التلاوة على لينكس تحتاج مكتبة mpv. ثبّتها ثم أعد فتح التطبيق:\n{command}",
+  "@audioPlayerMissing": {
+    "placeholders": {
+      "command": {
+        "type": "String"
+      }
+    }
+  },
   "nextAyah": "الآية التالية",
   "previousAyah": "الآية السابقة",
   "playAudio": "تشغيل",
