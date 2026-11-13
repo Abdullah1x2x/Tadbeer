@@ -9,5 +9,11 @@
   "apk_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.0/Tadbeer-1.0.0-android-arm64.apk",
   "linux_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.0/Tadbeer-1.0.0-linux-x64.tar.gz",
   "windows_url": "https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.0/Tadbeer-1.0.0-windows-x64.zip",
-  "is_mandatory": false
+  "is_mandatory": false,
+  "apk_sha256s": {
+    "arm64-v8a": "94717d58e491c59d5ab0d5995e15be7d9b67b56dc3bd464338f630326977b248",
+    "armeabi-v7a": "4b0313d100a4ccd8079be37ffa783266ca155bd7531740972a0123e9f19f2eaf"
+  },
+  "linux_sha256": "605ea703fe2932d2066a5fc5a62c0db72a9f04d4f3e6ff9429c522ff4a52b76e",
+  "windows_sha256": "d0a1cb47ebd22fb802919a20a824d5481a3c566b1bc537ec0aa4b6812a94cb9c"
 }
