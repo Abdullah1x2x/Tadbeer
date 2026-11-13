@@ -200,7 +200,7 @@ void main() {
 
       final file = await AppUpdateService.instance.getUpdatePackageFile(info);
       expect(file.path, isNot(contains('../../')));
-      expect(file.path.split(Platform.pathSeparator).last, contains('tadbeer-'));
+      expect(file.path.split(Platform.pathSeparator).last, startsWith('Tadbeer-update-'));
     });
 
     test('downloadApkFile rejects untrusted external URLs and non-loopback HTTP', () async {
