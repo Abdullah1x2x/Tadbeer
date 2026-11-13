@@ -11,7 +11,8 @@ void main() {
         'is_mandatory': true,
         'title': 'تحديث هام',
         'changelog': 'إصلاحات وتحسينات هامة',
-        'download_url': 'https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.2.0',
+        'download_url':
+            'https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.2.0',
         'telegram_url': 'https://t.me/tadbeerapp/42',
       };
 
@@ -23,7 +24,10 @@ void main() {
       expect(info.isMandatory, isTrue);
       expect(info.title, 'تحديث هام');
       expect(info.changelog, 'إصلاحات وتحسينات هامة');
-      expect(info.downloadUrl, 'https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.2.0');
+      expect(
+        info.downloadUrl,
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/tag/v1.2.0',
+      );
       expect(info.telegramUrl, 'https://t.me/tadbeerapp/42');
     });
 
@@ -34,10 +38,19 @@ void main() {
         'linux_sha256': 'abc123',
         'apk_sha256s': {'arm64-v8a': 'def456', 'armeabi-v7a': 'v7hash'},
       });
-      expect(flat.directLinuxUrl, 'https://example.org/tadbeer-linux-x64.tar.gz');
+      expect(
+        flat.directLinuxUrl,
+        'https://example.org/tadbeer-linux-x64.tar.gz',
+      );
       expect(flat.expectedSha256For(isLinux: true), 'abc123');
-      expect(flat.expectedSha256For(abi: 'arm64-v8a', isLinux: false), 'def456');
-      expect(flat.expectedSha256For(abi: 'armeabi-v7a', isLinux: false), 'v7hash');
+      expect(
+        flat.expectedSha256For(abi: 'arm64-v8a', isLinux: false),
+        'def456',
+      );
+      expect(
+        flat.expectedSha256For(abi: 'armeabi-v7a', isLinux: false),
+        'v7hash',
+      );
       // Same fallback as apkUrlFor: an unbuilt ABI downloads the arm64 file.
       expect(flat.expectedSha256For(abi: 'x86_64', isLinux: false), 'def456');
       expect(flat.expectedSha256For(isLinux: false), 'def456');
@@ -65,7 +78,18 @@ void main() {
       expect(info.changelog, '');
       expect(info.downloadUrl, contains('github.com'));
       expect(info.telegramUrl, 'https://t.me/tadbeerapp');
-      expect(info.directLinuxUrl, endsWith('tadbeer-linux-x64.tar.gz'));
+      expect(
+        info.directLinuxUrl,
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.0/Tadbeer-1.0.0-linux-x64.tar.gz',
+      );
+      expect(
+        info.directApkUrl,
+        endsWith('/v1.0.0/Tadbeer-1.0.0-android-arm64.apk'),
+      );
+      expect(
+        info.directWindowsUrl,
+        endsWith('/v1.0.0/Tadbeer-1.0.0-windows-x64.zip'),
+      );
     });
 
     group('isNewerThan', () {

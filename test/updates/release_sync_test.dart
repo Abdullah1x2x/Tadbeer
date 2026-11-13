@@ -27,21 +27,21 @@ void main() {
       expect(json['build_number'], build);
       expect(
         json['linux_url'],
-        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v$version/tadbeer-linux-x64.tar.gz',
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v$version/Tadbeer-$version-linux-x64.tar.gz',
       );
     });
   });
 
   group('apkUrlFor', () {
     final update = AppUpdateInfo.fromJson({
-      'apk_url': 'https://example.org/v2/app-arm64-v8a-release.apk',
+      'apk_url': 'https://example.org/v2/Tadbeer-2.0.0-android-arm64.apk',
       'linux_url': 'https://example.org/v2/tadbeer-linux-x64.tar.gz',
     });
 
     test('names the APK built for the device', () {
       expect(
         update.apkUrlFor('armeabi-v7a'),
-        'https://example.org/v2/app-armeabi-v7a-release.apk',
+        'https://example.org/v2/Tadbeer-2.0.0-android-armv7.apk',
       );
       expect(update.apkUrlFor('arm64-v8a'), update.directApkUrl);
     });
@@ -63,7 +63,7 @@ void main() {
           isLinux: false,
           isWindows: false,
         ),
-        'https://example.org/v2/app-armeabi-v7a-release.apk',
+        'https://example.org/v2/Tadbeer-2.0.0-android-armv7.apk',
       );
     });
 
@@ -133,21 +133,44 @@ void main() {
       expect(service, contains('currentBuildNumber = 65'));
     });
 
+    test('the release text lists the notes and every file to download', () {
+      final text = releaseNotes('1.0.1', ['أ', 'ب']);
+      expect(text, contains('- أ\n- ب'));
+      for (final file in [
+        'Tadbeer-1.0.1-android-arm64.apk',
+        'Tadbeer-1.0.1-android-armv7.apk',
+        'Tadbeer-1.0.1-linux-x64.tar.gz',
+        'Tadbeer-1.0.1-windows-x64.zip',
+        'SHA256SUMS.txt',
+      ]) {
+        expect(text, contains(file));
+      }
+    });
+
+    test('this version has its release text, with the same downloads', () {
+      final (version, _) = pubspecVersion(
+        File('pubspec.yaml').readAsStringSync(),
+      );
+      final text = File('.github/release-notes/v$version.md')
+          .readAsStringSync();
+      expect(text, endsWith(downloadsSection(version)));
+    });
+
     test('version.json lists the notes, tagged APK, and desktop archives', () {
       final json = versionJson('1.0.1', 2, '2026-11-12', ['أ', 'ب']);
       expect(json['changelog'], '• أ\n• ب');
       final info = AppUpdateInfo.fromJson(json);
       expect(
         info.apkUrlFor('armeabi-v7a'),
-        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/app-armeabi-v7a-release.apk',
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/Tadbeer-1.0.1-android-armv7.apk',
       );
       expect(
         info.directLinuxUrl,
-        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/tadbeer-linux-x64.tar.gz',
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/Tadbeer-1.0.1-linux-x64.tar.gz',
       );
       expect(
         info.directWindowsUrl,
-        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/tadbeer-windows-x64.zip',
+        'https://github.com/Abdullah1x2x/Tadbeer/releases/download/v1.0.1/Tadbeer-1.0.1-windows-x64.zip',
       );
     });
   });

@@ -142,11 +142,11 @@ Your data stays on your device. No account, ads or analytics. The internet is us
 
 ## Install
 
-Each release's files are on the [releases page](https://github.com/Abdullah1x2x/Tadbeer/releases/latest), with SHA-256 hashes in `SHA256SUMS-*.txt`.
+Each release's files are on the [releases page](https://github.com/Abdullah1x2x/Tadbeer/releases/latest), with SHA-256 hashes for all of them in `SHA256SUMS.txt`. File names carry the version, like `Tadbeer-1.0.0-…`.
 
-- **Android:** `app-arm64-v8a-release.apk` for most phones, `app-armeabi-v7a-release.apk` for older ones.
-- **Linux (x64):** extract `tadbeer-linux-x64.tar.gz` into `~/.local/opt` and run `~/.local/opt/tadbeer/tadbeer`. Recitation needs the mpv library: `sudo dnf install mpv-libs` on Fedora, `sudo apt install libmpv2` on Ubuntu and Debian.
-- **Windows (10 or later, x64):** extract `tadbeer-windows-x64.zip` into `%LOCALAPPDATA%\Programs` and run `tadbeer\tadbeer.exe`. The file is not signed, so the first run shows "Windows protected your PC": choose "More info", then "Run anyway".
+- **Android:** `Tadbeer-<version>-android-arm64.apk` for most phones, `Tadbeer-<version>-android-armv7.apk` for older ones.
+- **Linux (x64):** extract `Tadbeer-<version>-linux-x64.tar.gz` into `~/.local/opt` and run `~/.local/opt/tadbeer/tadbeer`. Recitation needs the mpv library: `sudo dnf install mpv-libs` on Fedora, `sudo apt install libmpv2` on Ubuntu and Debian.
+- **Windows (10 or later, x64, beta):** extract `Tadbeer-<version>-windows-x64.zip` into `%LOCALAPPDATA%\Programs` and run `tadbeer\tadbeer.exe`. The file is not signed, so the first run shows "Windows protected your PC": choose "More info", then "Run anyway".
 
 On Linux and Windows the app installs its own updates, as long as it sits in a folder it can write to (like the ones above, not `/opt` or `Program Files`).
 

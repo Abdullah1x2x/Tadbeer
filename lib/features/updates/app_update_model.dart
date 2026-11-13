@@ -13,6 +13,7 @@ class AppUpdateInfo {
   final String apkUrl;
   final String linuxUrl;
   final String windowsUrl;
+
   /// بصمة SHA-256 لكل ملف APK، مفهرسة باسم المعمارية (arm64-v8a، armeabi-v7a).
   final Map<String, String> apkSha256s;
   final String linuxSha256;
@@ -39,10 +40,12 @@ class AppUpdateInfo {
   factory AppUpdateInfo.fromJson(Map<String, dynamic> json) {
     final platforms = json['platforms'];
     final linuxPlatform = platforms is Map ? platforms['linux'] : null;
-    final linuxPlatformUrl =
-        linuxPlatform is Map ? linuxPlatform['url'] as String? : null;
-    final linuxPlatformSha =
-        linuxPlatform is Map ? linuxPlatform['sha256'] as String? : null;
+    final linuxPlatformUrl = linuxPlatform is Map
+        ? linuxPlatform['url'] as String?
+        : null;
+    final linuxPlatformSha = linuxPlatform is Map
+        ? linuxPlatform['sha256'] as String?
+        : null;
 
     return AppUpdateInfo(
       latestVersion: json['latest_version'] as String? ?? '1.0.0',
@@ -50,9 +53,9 @@ class AppUpdateInfo {
       releaseDate: json['release_date'] as String? ?? '',
       title: json['title'] as String? ?? 'تحديث جديد',
       changelog: json['changelog'] as String? ?? '',
-      telegramUrl:
-          json['telegram_url'] as String? ?? 'https://t.me/tadbeerapp',
-      downloadUrl: json['download_url'] as String? ??
+      telegramUrl: json['telegram_url'] as String? ?? 'https://t.me/tadbeerapp',
+      downloadUrl:
+          json['download_url'] as String? ??
           'https://github.com/Abdullah1x2x/Tadbeer/releases/latest',
       apkUrl: json['apk_url'] as String? ?? '',
       linuxUrl: json['linux_url'] as String? ?? linuxPlatformUrl ?? '',
@@ -85,11 +88,17 @@ class AppUpdateInfo {
     'is_mandatory': isMandatory,
   };
 
+  /// رابط ملف [platform] (مثل `android-arm64.apk`) في صفحة هذا الإصدار، حين
+  /// يخلو `version.json` من رابطه. الملفات تحمل رقم إصدارها في اسمها.
+  String _releaseFile(String platform) =>
+      'https://github.com/Abdullah1x2x/Tadbeer/releases/download/'
+      'v$latestVersion/Tadbeer-$latestVersion-$platform';
+
   /// الرابط المباشر لملف الـ APK للتنزيل والتثبيت الفوري.
   String get directApkUrl {
     if (apkUrl.isNotEmpty) return apkUrl;
     if (downloadUrl.endsWith('.apk')) return downloadUrl;
-    return 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/app-arm64-v8a-release.apk';
+    return _releaseFile('android-arm64.apk');
   }
 
   /// الرابط المباشر لحزمة لينكس المضغوطة (x64 tar.gz).
@@ -98,39 +107,41 @@ class AppUpdateInfo {
     if (downloadUrl.endsWith('.tar.gz') || downloadUrl.endsWith('.AppImage')) {
       return downloadUrl;
     }
-    return 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/tadbeer-linux-x64.tar.gz';
+    return _releaseFile('linux-x64.tar.gz');
   }
 
   /// الرابط المباشر لحزمة ويندوز المضغوطة (x64 zip).
-  String get directWindowsUrl => windowsUrl.isNotEmpty
-      ? windowsUrl
-      : 'https://github.com/Abdullah1x2x/Tadbeer/releases/latest/download/tadbeer-windows-x64.zip';
+  String get directWindowsUrl =>
+      windowsUrl.isNotEmpty ? windowsUrl : _releaseFile('windows-x64.zip');
 
-  /// المعماريات التي يُبنى لها ملف APK في كل إصدار (v8 و v7).
-  static const _builtAbis = {'arm64-v8a', 'armeabi-v7a'};
+  /// اسم كل معمارية يُبنى لها ملف APK (v8 و v7) في أسماء ملفات الإصدار.
+  static const _builtAbis = {'arm64-v8a': 'arm64', 'armeabi-v7a': 'armv7'};
 
   /// رابط حزمة معمارية الجهاز [abi]؛ ملفات الإصدار تختلف في اسم المعمارية
   /// فقط. أي معمارية أخرى تُبقي رابط arm64.
-  String apkUrlFor(String? abi) => _builtAbis.contains(abi)
-      ? directApkUrl.replaceFirst('arm64-v8a', abi!)
+  String apkUrlFor(String? abi) => _builtAbis.containsKey(abi)
+      ? directApkUrl.replaceFirst(
+          '-android-arm64.apk',
+          '-android-${_builtAbis[abi]}.apk',
+        )
       : directApkUrl;
 
   /// رابط حزمة التحديث المناسبة للمنصة الحالية (أندرويد أو لينكس أو ويندوز).
   String packageUrlFor({String? abi, bool? isLinux, bool? isWindows}) =>
       (isWindows ?? Platform.isWindows)
-          ? directWindowsUrl
-          : (isLinux ?? Platform.isLinux)
-          ? directLinuxUrl
-          : apkUrlFor(abi);
+      ? directWindowsUrl
+      : (isLinux ?? Platform.isLinux)
+      ? directLinuxUrl
+      : apkUrlFor(abi);
 
   /// بصمة SHA-256 الاختيارية للحزمة المناسبة للمنصة الحالية، أو نص فارغ.
   String expectedSha256For({String? abi, bool? isLinux, bool? isWindows}) =>
       (isWindows ?? Platform.isWindows)
-          ? windowsSha256
-          : (isLinux ?? Platform.isLinux)
-          ? linuxSha256
-          // نفس اختيار apkUrlFor: معمارية بلا ملف خاص تنزّل ملف arm64.
-          : apkSha256s[_builtAbis.contains(abi) ? abi : 'arm64-v8a'] ?? '';
+      ? windowsSha256
+      : (isLinux ?? Platform.isLinux)
+      ? linuxSha256
+      // نفس اختيار apkUrlFor: معمارية بلا ملف خاص تنزّل ملف arm64.
+      : apkSha256s[_builtAbis.containsKey(abi) ? abi : 'arm64-v8a'] ?? '';
 
   /// يتحقق مما إذا كان هذا التحديث أحدث من الإصدار المثبت حالياً.
   bool isNewerThan(int currentBuildNumber, String currentVersion) {

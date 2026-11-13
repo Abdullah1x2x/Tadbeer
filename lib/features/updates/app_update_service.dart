@@ -786,8 +786,8 @@ if (Test-Path -LiteralPath $Marker) {
               : 'update';
       return File(
         Platform.isWindows
-            ? '$canonicalDir/tadbeer-windows-x64-v$safeVersion.zip'
-            : '$canonicalDir/tadbeer-linux-x64-v$safeVersion.tar.gz',
+            ? '$canonicalDir/Tadbeer-$safeVersion-windows-x64.zip'
+            : '$canonicalDir/Tadbeer-$safeVersion-linux-x64.tar.gz',
       );
     }
     return getUpdateApkFile(update.buildNumber);

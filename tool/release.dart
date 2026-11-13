@@ -4,7 +4,8 @@
 //
 // Reads the notes under "## غير منشور" in CHANGELOG.md, then updates
 // pubspec.yaml, the constants in app_update_service.dart, CHANGELOG.md,
-// version.json, docs/version.json and the Arabic store changelog.
+// version.json, docs/version.json, the Arabic store changelog and the GitHub
+// release text (.github/release-notes/v<version>.md).
 // It commits nothing and pushes nothing; it prints the commands to run next.
 import 'dart:convert';
 import 'dart:io';
@@ -85,13 +86,39 @@ Map<String, Object> versionJson(
   'download_url': '$_repo/releases/tag/v$version',
   // The app swaps the ABI name for the device's own.
   'apk_url':
-      '$_repo/releases/download/v$version/app-arm64-v8a-release.apk',
+      '$_repo/releases/download/v$version/Tadbeer-$version-android-arm64.apk',
   'linux_url':
-      '$_repo/releases/download/v$version/tadbeer-linux-x64.tar.gz',
+      '$_repo/releases/download/v$version/Tadbeer-$version-linux-x64.tar.gz',
   'windows_url':
-      '$_repo/releases/download/v$version/tadbeer-windows-x64.zip',
+      '$_repo/releases/download/v$version/Tadbeer-$version-windows-x64.zip',
   'is_mandatory': false,
 };
+
+/// Which file to download on each system, the same in every release text.
+String downloadsSection(String version) => '''
+## التحميل · Downloads
+
+| النظام · System | الملف · File |
+|---|---|
+| أندرويد · Android (أغلب الهواتف · most phones) | `Tadbeer-$version-android-arm64.apk` |
+| أندرويد · Android (الهواتف القديمة · older phones) | `Tadbeer-$version-android-armv7.apk` |
+| لينكس · Linux x64 | `Tadbeer-$version-linux-x64.tar.gz` |
+| ويندوز · Windows 10+ x64 | `Tadbeer-$version-windows-x64.zip` |
+
+بصمات الملفات في `SHA256SUMS.txt` · File hashes are in `SHA256SUMS.txt`:
+
+```
+sha256sum -c SHA256SUMS.txt --ignore-missing
+```
+''';
+
+/// The GitHub release text for [version]: its notes, then the downloads.
+String releaseNotes(String version, List<String> notes) => '''
+## ما الجديد
+
+${notes.map((n) => '- $n').join('\n')}
+
+${downloadsSection(version)}''';
 
 void _rewrite(String path, String Function(String) change) {
   final file = File(path);
@@ -135,16 +162,20 @@ void main(List<String> args) {
     File(
       'fastlane/metadata/android/ar/changelogs/$build.txt',
     ).writeAsStringSync('${notes.map((n) => '- $n').join('\n')}\n');
+    File('.github/release-notes/v$version.md')
+      ..createSync(recursive: true)
+      ..writeAsStringSync(releaseNotes(version, notes));
 
     stdout.writeln('''
 Prepared $version (build $build).
 
 Write the English store notes: fastlane/metadata/android/en-US/changelogs/$build.txt
+Review the release text: .github/release-notes/v$version.md
 
 Then, in this order (push the tag only; the release workflow moves main
 forward once the APKs are uploaded, so nobody is offered a missing file):
   flutter test
-  git add pubspec.yaml CHANGELOG.md version.json docs/version.json lib/features/updates/app_update_service.dart fastlane
+  git add pubspec.yaml CHANGELOG.md version.json docs/version.json lib/features/updates/app_update_service.dart fastlane .github/release-notes
   git commit -m "release: v$version"
   git tag v$version
   git push origin v$version''');

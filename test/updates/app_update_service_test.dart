@@ -12,15 +12,17 @@ void main() {
     HttpOverrides.global = null;
   });
 
-  test('AppUpdateService fetches live version.json and parses version metadata',
-      () async {
-    final updateInfo = await AppUpdateService.instance.fetchUpdateInfo();
+  test(
+    'AppUpdateService fetches live version.json and parses version metadata',
+    () async {
+      final updateInfo = await AppUpdateService.instance.fetchUpdateInfo();
 
-    expect(updateInfo.latestVersion, isNotEmpty);
-    expect(updateInfo.buildNumber, greaterThanOrEqualTo(1));
-    expect(updateInfo.title, isNotEmpty);
-    expect(updateInfo.changelog, isNotEmpty);
-  });
+      expect(updateInfo.latestVersion, isNotEmpty);
+      expect(updateInfo.buildNumber, greaterThanOrEqualTo(1));
+      expect(updateInfo.title, isNotEmpty);
+      expect(updateInfo.changelog, isNotEmpty);
+    },
+  );
 
   group('fetchUpdateInfo', () {
     test('falls back to secondary URL when primary fails', () async {
@@ -61,8 +63,10 @@ void main() {
       final deadPort = deadServer.port;
       await deadServer.close(force: true);
 
-      final errorServer =
-          await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
+      final errorServer = await HttpServer.bind(
+        InternetAddress.loopbackIPv4,
+        0,
+      );
       addTearDown(() => errorServer.close(force: true));
       errorServer.listen((request) async {
         request.response.statusCode = HttpStatus.serviceUnavailable;
@@ -397,7 +401,10 @@ void main() {
         await request.response.close();
       });
 
-      await expectLater(download().drain<void>(), throwsA(isA<HttpException>()));
+      await expectLater(
+        download().drain<void>(),
+        throwsA(isA<HttpException>()),
+      );
 
       expect(target.existsSync(), isFalse);
       expect(File('${target.path}.part').existsSync(), isFalse);

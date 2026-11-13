@@ -144,11 +144,11 @@
 
 ## التثبيت
 
-ملفات كل إصدار في [صفحة الإصدارات](https://github.com/Abdullah1x2x/Tadbeer/releases/latest)، ومع كل ملف بصمة SHA-256 في `SHA256SUMS-*.txt`.
+ملفات كل إصدار في [صفحة الإصدارات](https://github.com/Abdullah1x2x/Tadbeer/releases/latest)، وبصمات SHA-256 لها كلها في `SHA256SUMS.txt`. في أسماء الملفات رقم الإصدار، مثل `Tadbeer-1.0.0-…`.
 
-- **أندرويد:** `app-arm64-v8a-release.apk` لأغلب الهواتف، و`app-armeabi-v7a-release.apk` للهواتف القديمة.
-- **لينكس (x64):** فك `tadbeer-linux-x64.tar.gz` في `~/.local/opt`، وشغّل `~/.local/opt/tadbeer/tadbeer`. التلاوة تحتاج مكتبة mpv: `sudo dnf install mpv-libs` في Fedora، أو `sudo apt install libmpv2` في Ubuntu وDebian.
-- **ويندوز (10 وما بعده، x64):** فك `tadbeer-windows-x64.zip` في `%LOCALAPPDATA%\Programs`، وشغّل `tadbeer\tadbeer.exe`. الملف غير موقّع، فيظهر عند أول تشغيل تحذير «Windows protected your PC»: اضغط «More info» ثم «Run anyway».
+- **أندرويد:** `Tadbeer-<الإصدار>-android-arm64.apk` لأغلب الهواتف، و`Tadbeer-<الإصدار>-android-armv7.apk` للهواتف القديمة.
+- **لينكس (x64):** فك `Tadbeer-<الإصدار>-linux-x64.tar.gz` في `~/.local/opt`، وشغّل `~/.local/opt/tadbeer/tadbeer`. التلاوة تحتاج مكتبة mpv: `sudo dnf install mpv-libs` في Fedora، أو `sudo apt install libmpv2` في Ubuntu وDebian.
+- **ويندوز (10 وما بعده، x64، تجريبي):** فك `Tadbeer-<الإصدار>-windows-x64.zip` في `%LOCALAPPDATA%\Programs`، وشغّل `tadbeer\tadbeer.exe`. الملف غير موقّع، فيظهر عند أول تشغيل تحذير «Windows protected your PC»: اضغط «More info» ثم «Run anyway».
 
 على لينكس وويندوز يثبّت التطبيق تحديثاته بنفسه ما دام في مجلد يملك الكتابة فيه (مثل المجلدين أعلاه، لا `/opt` ولا `Program Files`).
 

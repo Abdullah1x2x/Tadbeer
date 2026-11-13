@@ -69,7 +69,8 @@ dart run tool/release.dart 1.0.1
 يقرأ السطور تحت `## غير منشور` في `CHANGELOG.md`، ثم يكتب رقم الإصدار في `pubspec.yaml`، وثابتَي `AppUpdateService`، و`CHANGELOG.md`، و`version.json` و`docs/version.json`، وسجل المتجر العربي في `fastlane/`. لا يعمل commit ولا يرفع شيئاً؛ يطبع الأوامر التالية.
 
 - **ارفع الوسم وحده** (`git push origin v1.0.1`). التطبيقات المثبّتة تقرأ `version.json` من `main`. يبني `release.yml` ثلاث مهام (`android` و`linux` و`windows`) ويرفع ملفاتها، ثم تكتب مهمة `announce` بصماتها (`apk_sha256s` و`linux_sha256` و`windows_sha256`) في `version.json` و`docs/version.json` في commit فوق الوسم، وتدفعه إلى `main`. فلا يُعرض تحديث قبل وجود ملفه، والتطبيق يرفض أي ملف لا تطابق بصمته.
-- **ملفات كل إصدار:** `app-arm64-v8a-release.apk` و`app-armeabi-v7a-release.apk` و`SHA256SUMS-android.txt`، و`tadbeer-linux-x64.tar.gz` و`SHA256SUMS-linux.txt`، و`tadbeer-windows-x64.zip` و`SHA256SUMS-windows.txt`. الأرشيفان فيهما مجلد واحد اسمه `tadbeer/`.
+- **ملفات كل إصدار:** `Tadbeer-<v>-android-arm64.apk` و`Tadbeer-<v>-android-armv7.apk` و`Tadbeer-<v>-linux-x64.tar.gz` و`Tadbeer-<v>-windows-x64.zip`، و`SHA256SUMS.txt` واحد لها كلها. الأرشيفان فيهما مجلد واحد اسمه `tadbeer/`. يأخذ `release.yml` رقم الإصدار من `pubspec.yaml`، ويتوقف إن خالفه الوسم.
+- **وصف الإصدار** من `.github/release-notes/v<v>.md`: يكتبه `tool/release.dart` من سطور التغييرات وجدول التحميل (`downloadsSection`)، وأراجعه قبل الوسم. تنشره مهمة `announce` عنواناً ووصفاً للإصدار، مع `SHA256SUMS.txt`.
 - **إن غيّر الإصدار ملفاً في `.github/workflows/`** فارفع `main` قبل الوسم: GitHub يرفض أن يدفع `GITHUB_TOKEN` إلى `main` commits تعدّل ملفات workflow.
 - **للتجربة دون نشر:** Actions ← Release ← Run workflow على `main`، أو `gh workflow run release.yml --ref main`. تُحفظ الملفات في نتيجة التشغيل، ولا تعمل `announce`.
 - `test/updates/release_sync_test.dart` يفشل إن اختلف `pubspec.yaml` عن ثابتَي الخدمة، أو اختلفت نسختا `version.json`.
@@ -78,7 +79,7 @@ dart run tool/release.dart 1.0.1
   2. يُشغَّل سكربت منفصل (`linuxSwapScript` بـ `sh`، أو `windowsSwapScript` بـ PowerShell) ينتظر خروج التطبيق، ثم ينقل المجلد القديم إلى `.old` والجديد مكانه، ويعيد القديم إن فشل النقل.
   3. زر «تثبيت التحديث الآن» يكتب `<مجلد التطبيق>.relaunch` ويغلق التطبيق، فيعيد السكربت تشغيله. ودون الزر يُطبَّق التحديث عند الإغلاق التالي.
   - نسخ التطوير (`!kReleaseMode`) والمجلدات التي لا يكتب فيها التطبيق (Flatpak، `/opt`، `Program Files`) تفتح مجلد التنزيلات بدل ذلك.
-- التحديث داخل التطبيق ينزّل ملف معمارية الجهاز: `AppUpdateInfo.apkUrlFor` يبدّل `arm64-v8a` في `apk_url` بما تعيده قناة `tadbeer/device` (`abi`). أسماء ملفات الإصدار يجب أن تبقى `app-<abi>-release.apk`.
+- التحديث داخل التطبيق ينزّل ملف معمارية الجهاز: `AppUpdateInfo.apkUrlFor` يبدّل `-android-arm64.apk` في `apk_url` باسم معمارية الجهاز التي تعيدها قناة `tadbeer/device` (`armeabi-v7a` ← `armv7`). أسماء ملفات الإصدار يجب أن تبقى `Tadbeer-<v>-android-<arm64|armv7>.apk`.
 
 ---
 
