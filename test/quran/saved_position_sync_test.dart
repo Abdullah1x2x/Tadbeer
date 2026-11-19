@@ -29,6 +29,10 @@ void main() {
   testWidgets('saving a setting leaves the page; a new position moves it', (
     tester,
   ) async {
+    // A phone: the default 800x600 test screen shows facing pages.
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     final controls = ValueNotifier(true);
     addTearDown(controls.dispose);
     await tester.pumpWidget(

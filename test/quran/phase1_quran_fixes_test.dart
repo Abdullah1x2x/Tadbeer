@@ -83,6 +83,10 @@ void main() {
   testWidgets('QuranScreen uses LTR UI chrome in English while keeping Mushaf PageView RTL', (
     tester,
   ) async {
+    // A phone: the default 800x600 test screen shows facing pages.
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.runAsync(
       () => UserDataStore.instance.setMushafStyle(MushafStyle.text),
     );

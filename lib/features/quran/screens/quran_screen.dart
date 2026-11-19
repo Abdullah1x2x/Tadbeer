@@ -47,6 +47,14 @@ class QuranScreen extends StatefulWidget {
 
   @override
   State<QuranScreen> createState() => _QuranScreenState();
+
+  /// هل تتسع [size] لصفحتين متقابلتين: شاشة لوحية أو نافذة حاسوب، لا هاتف
+  /// (أقصر أضلاعه دون ٦٠٠)، عرضها ٧٠٠ فأكثر، وتزيد على طولها بما تظهر به كل
+  /// صفحة بقدر الصفحة الواحدة تقريباً (صفحة المدينة أطول من عرضها نحو ١٫٦٥ مرة).
+  static bool showsSpread(Size size) =>
+      size.width >= 700 &&
+      size.shortestSide >= 600 &&
+      size.width >= size.height * 1.2;
 }
 
 class _QuranScreenState extends State<QuranScreen> {
@@ -59,7 +67,6 @@ class _QuranScreenState extends State<QuranScreen> {
   /// صفحتان متقابلتان في الشاشات العريضة، فعناصر [PageView] أزواج لا صفحات.
   bool _wide = false;
   bool _tickerEnabled = true;
-  static const _spreadMinWidth = 900.0;
 
   /// عنصر [PageView] الذي يعرض [pageIndex].
   int _itemFor(int pageIndex) => _wide ? pageIndex ~/ 2 : pageIndex;
@@ -272,7 +279,7 @@ class _QuranScreenState extends State<QuranScreen> {
       }
     }
 
-    final wide = MediaQuery.sizeOf(context).width >= _spreadMinWidth;
+    final wide = QuranScreen.showsSpread(MediaQuery.sizeOf(context));
     if (wide == _wide) return;
     _wide = wide;
     _pager = null;

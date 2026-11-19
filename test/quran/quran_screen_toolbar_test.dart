@@ -166,6 +166,10 @@ void main() {
     testWidgets(
       'Tapping an Ayah opens nothing; a long press opens the rosette of actions',
       (tester) async {
+        // A phone: the default 800x600 test screen shows facing pages.
+        tester.view.physicalSize = const Size(412, 915);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
         await tester.pumpWidget(buildTestScreen());
         await tester.pumpAndSettle();
 

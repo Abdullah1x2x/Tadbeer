@@ -59,6 +59,10 @@ void main() {
   });
 
   testWidgets('a page counts when moving forward past it', (tester) async {
+    // A phone: the default 800x600 test screen shows facing pages.
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(host(const QuranScreen(initialPage: 50)));
     await tester.pump(const Duration(seconds: 1));
 

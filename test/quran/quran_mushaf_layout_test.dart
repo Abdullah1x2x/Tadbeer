@@ -112,6 +112,10 @@ void main() {
     testWidgets(
       'Renders Page 1 Al-Fatihah with header and natural start alignment',
       (tester) async {
+        // A phone: the default 800x600 test screen shows facing pages.
+        tester.view.physicalSize = const Size(412, 915);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
         await tester.pumpWidget(buildTestQuranApp(initialPage: 1));
         await tester.pumpAndSettle();
 
@@ -125,6 +129,10 @@ void main() {
     testWidgets('Renders Page 2 with Surah 2 header and Bismillah', (
       tester,
     ) async {
+      // A phone: the default 800x600 test screen shows facing pages.
+      tester.view.physicalSize = const Size(412, 915);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
       await tester.pumpWidget(buildTestQuranApp(initialPage: 2));
       await tester.pumpAndSettle();
 

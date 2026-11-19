@@ -90,6 +90,30 @@ void main() {
     expect(shownPages(tester), [5, 6]);
   });
 
+  test('facing pages only where each is as large as a single page', () {
+    // Tablets in landscape and desktop windows.
+    expect(QuranScreen.showsSpread(const Size(1180, 820)), isTrue);
+    expect(QuranScreen.showsSpread(const Size(1024, 768)), isTrue);
+    expect(QuranScreen.showsSpread(const Size(1920, 1080)), isTrue);
+    expect(QuranScreen.showsSpread(const Size(960, 800)), isTrue);
+    // A tall tablet or a square window: two pages would each be smaller.
+    expect(QuranScreen.showsSpread(const Size(1024, 1366)), isFalse);
+    expect(QuranScreen.showsSpread(const Size(900, 900)), isFalse);
+    // A phone on its side, and a narrow window.
+    expect(QuranScreen.showsSpread(const Size(915, 412)), isFalse);
+    expect(QuranScreen.showsSpread(const Size(680, 610)), isFalse);
+  });
+
+  testWidgets('a tall tablet shows one large page', (tester) async {
+    tester.view.physicalSize = const Size(1024, 1366);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(app(4));
+    await tester.pump();
+    expect(shownPages(tester), [4]);
+  });
+
   testWidgets('rotating keeps the reader on the same page', (tester) async {
     tester.view.physicalSize = const Size(1200, 800);
     tester.view.devicePixelRatio = 1;
