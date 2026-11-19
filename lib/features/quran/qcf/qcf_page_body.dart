@@ -103,6 +103,10 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   /// الحجم الذي تُقاس به الأسطر، وتُحسب منه المقاسات.
   static const _probe = 100.0;
 
+  /// عرض الصفحة الثابت الذي تُرصف به أسطرها، ثم تُكبَّر أو تُصغَّر كلها لعرض
+  /// الشاشة: نفس الأسطر بكشيدتها وتباعدها في كل جهاز.
+  static const _pageWidth = 400.0;
+
   /// ارتفاع السطر نسبةً إلى حجم الخط.
   static const _lineHeight = 1.9;
 
@@ -186,21 +190,39 @@ class _QcfPageBodyState extends State<QcfPageBody> {
     final lines = _layout.page(widget.pageNumber);
     if (lines.isEmpty) return widget.fallback;
     final widest = _measure(lines);
+    // حجم واحد لكل الصفحات بالعرض الثابت؛ والصفحة ذات السطر الأعرض تُضغط
+    // أسطرها قليلاً، ولا تصغر إلا إن زاد الضغط على [_squeeze].
+    final size = math.min(
+      _probe * _pageWidth / _typicalWidest,
+      _probe * _pageWidth / widest * _squeeze,
+    );
     return LayoutBuilder(
       builder: (context, box) {
-        // حجم واحد لكل الصفحات؛ والصفحة ذات السطر الأعرض تُضغط أسطرها قليلاً،
-        // ولا تصغر إلا إن زاد الضغط على [_squeeze].
-        final fit = math.min(
-          math.min(
-            _probe * box.maxWidth / _typicalWidest,
-            _probe * box.maxWidth / widest * _squeeze,
-          ),
-          box.maxHeight / (lines.length * _lineHeight),
+        // تكبير الصفحة لتملأ عرض الشاشة، أو أقل إن لم يتسع لها ارتفاعها.
+        final needed = lines.length * size * _lineHeight;
+        final scale = math.min(
+          box.maxWidth / _pageWidth,
+          box.maxHeight / needed,
         );
-        if (widget.zoom <= 1.0) {
-          return _printed(lines, fit * widget.zoom, box);
+        if (widget.zoom > 1.0) {
+          return _flowing(lines, size * scale * widget.zoom);
         }
-        return _flowing(lines, fit * widget.zoom);
+        // الارتفاع مرن: ما زاد من الشاشة تتباعد فيه الأسطر كما في [_printed].
+        final height = math.max(
+          needed,
+          box.maxHeight * _pageWidth / box.maxWidth,
+        );
+        return FittedBox(
+          child: SizedBox(
+            width: _pageWidth,
+            height: height,
+            child: _printed(
+              lines,
+              size * widget.zoom,
+              BoxConstraints.tight(Size(_pageWidth, height)),
+            ),
+          ),
+        );
       },
     );
   }
@@ -280,6 +302,8 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       semanticsLabel: QuranRepository.instance.getAyah(1, 1)?.text,
       maxLines: 1,
       softWrap: false,
+      // كسطر الكلمات: لئلا تسقط آخر كلمة منها.
+      textAlign: TextAlign.left,
       textDirection: TextDirection.rtl,
       textScaler: TextScaler.noScaling,
       style: TextStyle(
@@ -304,6 +328,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       _spans(line.words, size, fit: fit),
       maxLines: 1,
       softWrap: false,
+      // بمحاذاة غير اليسار يُعاد رصف السطر بعرضه المقيس نفسه، وقد ينقص عنه بكسر
+      // في بعض المقاسات فتنزل آخر كلمة إلى سطر ثانٍ لا يظهر.
+      textAlign: TextAlign.left,
       textDirection: TextDirection.rtl,
       // [size] already fits the page width, as measured at scale 1; the system
       // font setting would widen the line past both edges (zoom enlarges it).
@@ -316,15 +343,19 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   }
 
   _LineFit _fitLine(int index, QcfLine line, double size, double width) {
-    // النص المرسوم لا ما يقرؤه قارئ الشاشة، فلكل آية تسمية منطوقة.
-    double measure(_LineFit fit) => _textWidth(
-      _spans(
-        line.words,
-        size,
-        fit: fit,
-      ).toPlainText(includeSemanticsLabels: false, includePlaceholders: false),
-      size,
-    );
+    // يُقاس السطر بمقاطعه كما تُرسم وبتباعدها، فلا يختلف المقيس عن المرسوم.
+    double measure(_LineFit fit) {
+      final painter = TextPainter(
+        text: _spans(line.words, size, fit: fit, measuring: true),
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.left,
+        maxLines: 1,
+      )..layout();
+      final measured = painter.width;
+      painter.dispose();
+      return measured;
+    }
+
     final natural = measure(_LineFit.centred);
     if (natural >= width) return _LineFit(const {}, 0, width / natural);
     if (widget.pageNumber <= 2 || _endsSurah(index)) return _LineFit.centred;
@@ -346,8 +377,17 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       final used = measure(fit);
       // الكشيدة تغيّر أشكال الحروف قليلاً، فقد تزيد على المحسوب.
       if (used <= width || count == 0) {
-        final spacing = gaps > 0 ? math.max(0.0, (width - used) / gaps) : 0.0;
-        return _LineFit(fit.stretched, spacing, 1);
+        if (gaps == 0) return _LineFit(fit.stretched, 0, 1);
+        // لا يتسع كل فراغ للتباعد (كالذي يجاور علامة الآية)، فيُصحَّح بما قيس.
+        var spacing = math.max(0.0, (width - used) / gaps);
+        final spaced = measure(_LineFit(fit.stretched, spacing, 1));
+        if (spaced > used) spacing *= (width - used) / (spaced - used);
+        final result = measure(_LineFit(fit.stretched, spacing, 1));
+        return _LineFit(
+          fit.stretched,
+          spacing,
+          result > width ? width / result : 1,
+        );
       }
       count = count * 3 ~/ 4;
     }
@@ -409,7 +449,13 @@ class _QcfPageBodyState extends State<QcfPageBody> {
   /// مقطع لكل آية، فالنقر في أي موضع منها يختارها.
   ///
   /// [fit] يمدّ سطر Digital Khatt: كلماته بالكشيدة وتباعده، دون فراغ في آخره.
-  TextSpan _spans(List<QcfWord> words, double size, {_LineFit? fit}) {
+  /// و[measuring] للقياس وحده: بلا نقر ولا تسمية ولا أيقونات.
+  TextSpan _spans(
+    List<QcfWord> words,
+    double size, {
+    _LineFit? fit,
+    bool measuring = false,
+  }) {
     final runs = <InlineSpan>[];
     String codeOf(QcfWord w) => fit?.stretched[w] ?? w.code;
     // الفراغ بعد آخر كلمة يزيح السطر الممدود عن حافته.
@@ -431,9 +477,13 @@ class _QcfPageBodyState extends State<QcfPageBody> {
         }
         i++;
       }
-      final ayah = QuranRepository.instance.getAyah(first.surah, first.ayah);
+      final ayah = measuring
+          ? null
+          : QuranRepository.instance.getAyah(first.surah, first.ayah);
       final recognizer = ayah == null ? null : widget.recognizerFor(ayah);
-      final background = widget.backgroundFor(first.surah, first.ayah);
+      final background = measuring
+          ? null
+          : widget.backgroundFor(first.surah, first.ayah);
       if (text.isNotEmpty) {
         runs.add(
           TextSpan(
@@ -451,7 +501,9 @@ class _QcfPageBodyState extends State<QcfPageBody> {
       if (end != null) {
         // علامة رقم الآية تصير ذهبية على الآيات التي علّمها القارئ، وفوقها
         // أيقونات ما عليها.
-        final markers = widget.markersFor(first.surah, first.ayah);
+        final markers = measuring
+            ? const <(IconData, Color)>[]
+            : widget.markersFor(first.surah, first.ayah);
         runs.add(
           TextSpan(
             text: end,

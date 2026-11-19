@@ -37,6 +37,19 @@ void main() {
       (span.style?.fontFamily == QcfPageBody.digitalKhattFamily ||
           (span.children ?? const []).any(inDigitalKhatt));
 
+  /// The font size of the Digital Khatt span within [span].
+  double? dkSize(InlineSpan span) {
+    if (span is! TextSpan) return null;
+    if (span.style?.fontFamily == QcfPageBody.digitalKhattFamily) {
+      return span.style?.fontSize;
+    }
+    for (final child in span.children ?? const <InlineSpan>[]) {
+      final size = dkSize(child);
+      if (size != null) return size;
+    }
+    return null;
+  }
+
   /// Word lines drawn in Digital Khatt (the basmala is a plain line).
   Iterable<RenderParagraph> lines(WidgetTester tester) => tester
       .renderObjectList<RenderParagraph>(find.byType(RichText))
@@ -50,7 +63,8 @@ void main() {
     (const Size(412, 915), 1.0),
     (const Size(360, 740), 1.3),
   ]) {
-    for (final page in [3, 501, 502, 604]) {
+    // Page 4 at 412px dropped the last word of two lines.
+    for (final page in [3, 4, 501, 502, 604]) {
       testWidgets('page $page fills ${screen.width.toInt()}px at text scale '
           '$textScale without overflowing', (tester) async {
         tester.view.physicalSize = screen;
@@ -74,6 +88,8 @@ void main() {
             p.getMaxIntrinsicWidth(double.infinity) *
             p.getTransformTo(null).storage[0];
         for (final p in drawn) {
+          // The last word never wraps onto a hidden second line.
+          expect(p.didExceedMaxLines, isFalse);
           // A word line never spills over the page, so nothing is cut off.
           expect(shown(p), lessThanOrEqualTo(body.width + 1));
         }
@@ -86,4 +102,91 @@ void main() {
       });
     }
   }
+
+  /// Each word line as drawn: its text with the kashida and its own width.
+  Future<List<(String, double)>> drawnLines(
+    WidgetTester tester,
+    int page,
+    Size screen,
+  ) async {
+    tester.view.physicalSize = screen;
+    tester.view.devicePixelRatio = 1;
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.lightTheme,
+        home: Scaffold(body: QuranPageView(pageNumber: page)),
+      ),
+    );
+    await tester.pump();
+    return [
+      for (final p in lines(tester))
+        (
+          p.text.toPlainText(includeSemanticsLabels: false),
+          p.getMaxIntrinsicWidth(double.infinity),
+        ),
+    ];
+  }
+
+  testWidgets('every screen draws the same lines, only scaled', (tester) async {
+    addTearDown(tester.view.reset);
+    final phone = await drawnLines(tester, 4, const Size(360, 740));
+    final tablet = await drawnLines(tester, 4, const Size(800, 1280));
+    final landscape = await drawnLines(tester, 4, const Size(800, 360));
+    expect(tablet, phone);
+    expect(landscape, phone);
+  });
+
+  // The lines are laid out at one fixed width, so one screen checks them for
+  // every device: no word drops, spills over the page or touches the next.
+  testWidgets('no line in the mushaf drops, spills or crowds a word', (
+    tester,
+  ) async {
+    addTearDown(tester.view.reset);
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1;
+    final problems = <String>[];
+    for (var page = 1; page <= 604; page++) {
+      await tester.pumpWidget(
+        MaterialApp(
+          key: ValueKey(page),
+          theme: AppTheme.lightTheme,
+          home: Scaffold(body: QuranPageView(pageNumber: page)),
+        ),
+      );
+      await tester.pump();
+      final body = tester.getSize(find.byType(QcfPageBody));
+      for (final p in lines(tester)) {
+        final scale = p.getTransformTo(null).storage[0];
+        if (p.didExceedMaxLines) problems.add('page $page: a word wrapped');
+        if (p.getMaxIntrinsicWidth(double.infinity) * scale >
+            body.width + 0.5) {
+          problems.add('page $page: a line spills over');
+        }
+        final text = p.text.toPlainText(includeSemanticsLabels: false);
+        final size = dkSize(p.text)!;
+        final space = TextPainter(
+          text: TextSpan(
+            text: ' ',
+            style: TextStyle(
+              fontFamily: QcfPageBody.digitalKhattFamily,
+              fontSize: size,
+            ),
+          ),
+          textDirection: TextDirection.rtl,
+        )..layout();
+        for (var i = 0; i < text.length; i++) {
+          if (text[i] != ' ') continue;
+          final gap = p.getBoxesForSelection(
+            TextSelection(baseOffset: i, extentOffset: i + 1),
+          );
+          // Never narrower than the font's own space.
+          if (gap.isNotEmpty && gap.first.toRect().width < space.width - 0.01) {
+            problems.add('page $page: words too close');
+          }
+        }
+        space.dispose();
+      }
+    }
+    expect(problems, isEmpty);
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }

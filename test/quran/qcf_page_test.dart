@@ -112,7 +112,10 @@ void main() {
   for (final page in [1, 2]) {
     testWidgets('page $page keeps its lines together', (tester) async {
       await pumpPage(tester, size: const Size(412, 915), page: page);
-      final size = mushafFontSize(tester, page);
+      // The page is laid out at a fixed width and scaled to the screen.
+      final first = mushafLines(tester, page: page).first;
+      final size =
+          mushafFontSize(tester, page) * first.getTransformTo(null).storage[5];
       final tops = [
         for (final line in mushafLines(tester, page: page))
           line.localToGlobal(Offset.zero).dy,
@@ -133,7 +136,10 @@ void main() {
       expect(lines, hasLength(15));
       for (final line in lines) {
         expect(line.didExceedMaxLines, isFalse);
-        expect(line.size.width, lessThanOrEqualTo(size.width));
+        expect(
+          line.size.width * line.getTransformTo(null).storage[0],
+          lessThanOrEqualTo(size.width),
+        );
       }
       expect(tester.takeException(), isNull);
     });
