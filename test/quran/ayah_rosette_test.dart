@@ -172,6 +172,27 @@ void main() {
     expect(engine.loaded, isTrue);
   });
 
+  testWidgets('the plain sheet listens from the ayah too', (tester) async {
+    final engine = _SilentEngine();
+    final previous = QuranAudio.instance;
+    QuranAudio.instance = QuranAudio.withEngine(engine);
+    AudioDownloads.instance = AudioDownloads.at(
+      Directory('${tempDir.path}/recitations'),
+      (url, to) async {},
+    );
+    addTearDown(() => QuranAudio.instance = previous);
+
+    await open(tester, screenReader: true);
+    await tester.runAsync(() async {
+      await tester.tap(find.text('استماع'));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+    await tester.pumpAndSettle();
+    expect(find.byType(AyahActionSheet), findsNothing);
+    expect(QuranAudio.instance.current?.ayahNumber, 255);
+    expect(engine.loaded, isTrue);
+  });
+
   testWidgets('coming back to the heart opens the reflection', (tester) async {
     await open(tester);
     AyahRosette.dragTo(petal(0));
@@ -283,6 +304,54 @@ void main() {
   testWidgets('a screen reader gets the plain sheet', (tester) async {
     await open(tester, screenReader: true);
     expect(find.byType(AyahActionSheet), findsOneWidget);
+  });
+
+  group('on Android', () {
+    const device = MethodChannel('tadbeer/device');
+    late Future<bool> Function() touchExploration;
+
+    setUp(() {
+      AyahRosette.debugIsAndroid = true;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(device, (call) async {
+            expect(call.method, 'touchExploration');
+            return touchExploration();
+          });
+    });
+
+    tearDown(() {
+      AyahRosette.debugIsAndroid = null;
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(device, null);
+    });
+
+    testWidgets('TalkBack, exploring by touch, gets the plain sheet', (
+      tester,
+    ) async {
+      touchExploration = () async => true;
+      await open(tester, screenReader: true);
+      expect(find.byType(AyahActionSheet), findsOneWidget);
+    });
+
+    testWidgets('a service that only reads the screen, like an app locker, '
+        'keeps the rosette', (tester) async {
+      touchExploration = () async => false;
+      await open(tester, screenReader: true);
+      expect(find.byType(AyahActionSheet), findsNothing);
+      expect(find.text('رابط آيات'), findsWidgets);
+    });
+
+    testWidgets('lifting while the system answers opens it for tapping', (
+      tester,
+    ) async {
+      final answer = Completer<bool>();
+      touchExploration = () => answer.future;
+      await open(tester, screenReader: true);
+      AyahRosette.releaseAt(press);
+      answer.complete(false);
+      await tester.pumpAndSettle();
+      expect(labelsShown(tester), isTrue);
+    });
   });
 }
 

@@ -5,6 +5,7 @@ import android.hardware.GeomagneticField
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.view.accessibility.AccessibilityManager
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -28,6 +29,12 @@ class MainActivity : AudioServiceActivity() {
             .setMethodCallHandler { call, result ->
                 when (call.method) {
                     "manufacturer" -> result.success(Build.MANUFACTURER)
+                    // A screen reader explores by touch; other accessibility
+                    // services (an app locker) read the screen but do not.
+                    "touchExploration" -> result.success(
+                        (getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager)
+                            .isTouchExplorationEnabled,
+                    )
                     // The update download picks the APK built for this ABI.
                     "abi" -> result.success(Build.SUPPORTED_ABIS.firstOrNull())
                     // The compass reads magnetic north; the Qibla bearing is from

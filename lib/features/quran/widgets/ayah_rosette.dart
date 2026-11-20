@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -36,11 +37,18 @@ abstract final class AyahRosette {
 
   /// يفتح الوردة للآية عند [at] (موضع الإصبع)، أو في وسط الشاشة، وينتهي عند
   /// إغلاقها.
-  static Future<void> show(BuildContext context, Ayah ayah, {Offset? at}) {
-    if (MediaQuery.accessibleNavigationOf(context)) {
+  static Future<void> show(
+    BuildContext context,
+    Ayah ayah, {
+    Offset? at,
+  }) async {
+    _lifted = false;
+    if (MediaQuery.accessibleNavigationOf(context) && await _screenReader()) {
+      if (!context.mounted) return;
       return AyahActionSheet.show(context, ayah);
     }
-    _open?._dismiss();
+    if (!context.mounted) return;
+    unawaited(_open?._dismiss());
     final closed = Completer<void>();
     late final OverlayEntry entry;
     entry = OverlayEntry(
@@ -50,7 +58,7 @@ abstract final class AyahRosette {
         child: _Rosette(
           ayah: ayah,
           anchor: at,
-          dragging: at != null,
+          dragging: at != null && !_lifted,
           host: context,
           onClosed: () {
             if (entry.mounted) entry.remove();
@@ -76,7 +84,31 @@ abstract final class AyahRosette {
   static void dragTo(Offset global) => _open?._dragTo(global);
 
   /// رفع الإصبع: ينفّذ الإجراء الذي تحته، أو يُبقي الوردة مفتوحة للنقر.
-  static void releaseAt(Offset global) => _open?._releaseAt(global);
+  static void releaseAt(Offset global) {
+    // رُفع قبل أن تُفتح (أثناء سؤال النظام)، فتُفتح للنقر.
+    if (_open == null) _lifted = true;
+    _open?._releaseAt(global);
+  }
+
+  static bool _lifted = false;
+
+  @visibleForTesting
+  static bool? debugIsAndroid;
+
+  static const _device = MethodChannel('tadbeer/device');
+
+  /// على أندرويد يرفع Flutter علامة التنقل الميسّر لأي خدمة وصول تقرأ الشاشة،
+  /// كتطبيقات قفل التطبيقات؛ وقارئ الشاشة وحده يستكشف باللمس.
+  static Future<bool> _screenReader() async {
+    if (!(debugIsAndroid ?? Platform.isAndroid)) return true;
+    try {
+      return await _device.invokeMethod<bool>('touchExploration') ?? true;
+    } on PlatformException {
+      return true;
+    } on MissingPluginException {
+      return true;
+    }
+  }
 }
 
 /// إجراء حول الوردة.
