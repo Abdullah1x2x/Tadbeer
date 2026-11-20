@@ -13,6 +13,7 @@ import '../../../data/quran/quran_repository.dart';
 import '../qcf/qcf_ayah_text.dart';
 import '../qcf/qcf_layout.dart';
 import '../../ayah_links/widgets/ayah_link_picker_dialog.dart';
+import '../../audio/quran_audio.dart';
 import '../../../data/models/user_settings_model.dart';
 import '../../memorization/memorization_model.dart';
 import '../../share/ayah_share_sheet.dart';
@@ -579,6 +580,18 @@ class _AyahActionSheetState extends State<AyahActionSheet> {
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
+                        },
+                      ),
+                      _ActionButton(
+                        icon: AppIcons.headphones,
+                        label: l10n.listen,
+                        iconColor:
+                            QuranAudio.instance.current?.id == widget.ayah.id
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          QuranAudio.instance.playAyah(widget.ayah);
                         },
                       ),
                     ],

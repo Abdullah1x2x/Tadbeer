@@ -121,8 +121,8 @@ void main() {
     );
   });
 
-  group('AyahActionSheet Centering & All 7 Actions Tests', () {
-    testWidgets('Action sheet renders all 7 actions in equal Expanded slots', (
+  group('AyahActionSheet Centering & All 8 Actions Tests', () {
+    testWidgets('Action sheet renders all 8 actions in equal Expanded slots', (
       tester,
     ) async {
       final ayah = QuranRepository.instance.getAyah(1, 1)!;
@@ -138,9 +138,10 @@ void main() {
       expect(find.text('أضف للحفظ'), findsOneWidget);
       expect(find.text('نسخ'), findsOneWidget);
       expect(find.text('مشاركة'), findsOneWidget);
+      expect(find.text('استماع'), findsOneWidget);
 
       // Reflection leads on its own; the rest sit four to a row, each as
-      // wide as the others, with room left for another in the last row.
+      // wide as the others.
       final reflect = tester.getRect(find.text('وقفة تدبر'));
       final tiles = [
         for (final label in [
@@ -151,6 +152,7 @@ void main() {
           'أضف للحفظ',
           'مشاركة',
           'نسخ',
+          'استماع',
         ])
           tester.getRect(
             find.ancestor(of: find.text(label), matching: find.byType(InkWell)),
@@ -160,7 +162,7 @@ void main() {
       expect(rows, hasLength(2));
       expect(rows.first, greaterThan(reflect.bottom));
       expect(tiles.where((r) => r.top.round() == rows.first), hasLength(4));
-      expect(tiles.where((r) => r.top.round() == rows.last), hasLength(3));
+      expect(tiles.where((r) => r.top.round() == rows.last), hasLength(4));
       for (final r in tiles) {
         expect(r.width, closeTo(tiles.first.width, 0.5));
       }
